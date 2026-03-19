@@ -15,7 +15,7 @@ DiskLoop_Run: @ 0x080F8010
 	add r4, sb
 	movs r0, #0
 	strb r0, [r4, #0xc]
-	ldr r1, _080F80AC @ =PTR_ARRAY_083864ac
+	ldr r1, _080F80AC @ =sDiskAnalysisLoops
 	mov r2, sb
 	ldrb r0, [r2, #2]
 	lsls r0, r0, #2
@@ -84,7 +84,7 @@ _080F809C:
 	b _080F80CA
 	.align 2, 0
 _080F80A8: .4byte 0x00000DCC
-_080F80AC: .4byte PTR_ARRAY_083864ac
+_080F80AC: .4byte sDiskAnalysisLoops
 _080F80B0: .4byte gJoypad
 _080F80B4: .4byte StringOfsTable
 _080F80B8: .4byte gStringData
@@ -709,8 +709,8 @@ _080F85B4:
 	.align 2, 0
 _080F85DC: .4byte 0x00000ED8
 
-	thumb_func_start sd_analysis_080f85e0
-sd_analysis_080f85e0: @ 0x080F85E0
+	thumb_func_start DiskAnalysis_Run
+DiskAnalysis_Run: @ 0x080F85E0
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
 	ldrb r0, [r6, #3]
@@ -903,8 +903,8 @@ _080F8754:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start sd_analysis_080f875c
-sd_analysis_080f875c: @ 0x080F875C
+	thumb_func_start DiskAnalysis_Open
+DiskAnalysis_Open: @ 0x080F875C
 	push {r4, r5, r6, r7, lr}
 	mov r7, sl
 	mov r6, sb
@@ -1186,8 +1186,8 @@ _080F896A:
 _080F897C: .4byte u8_ARRAY_ARRAY_083864d8
 _080F8980: .4byte gJoypad
 
-	thumb_func_start sd_analysis_080f8984
-sd_analysis_080f8984: @ 0x080F8984
+	thumb_func_start DiskAnalysis_Close
+DiskAnalysis_Close: @ 0x080F8984
 	push {r4, r5, lr}
 	adds r3, r0, #0
 	ldr r0, _080F89B8 @ =0x00000DCC

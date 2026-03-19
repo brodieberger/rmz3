@@ -251,10 +251,10 @@ static void DiskLoop_OpenScreen(struct GameState *g) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-const DiskLoopFunc PTR_ARRAY_083864ac[3] = {
-    sd_analysis_080f85e0,
-    sd_analysis_080f875c,
-    sd_analysis_080f8984,
+const DiskLoopFunc sDiskAnalysisLoops[3] = {
+    DiskAnalysis_Run,
+    DiskAnalysis_Open,
+    DiskAnalysis_Close,
 };
 
 const u16 DiskECrystalAmounts[16] = {
