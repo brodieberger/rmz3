@@ -249,6 +249,421 @@ static void DiskLoop_OpenScreen(struct GameState *g) {
   }
 }
 
+// @ 0x080F8010
+NAKED void DiskLoop_Run(struct GameState* p){
+  asm(".syntax unified
+	push {r4, r5, r6, r7, lr}
+	mov r7, sb
+	mov r6, r8
+	push {r6, r7}
+	mov sb, r0
+	ldr r4, _080F80A8 @ =0x00000DCC
+	add r4, sb
+	movs r0, #0
+	strb r0, [r4, #0xc]
+	ldr r1, _080F80AC @ =sDiskAnalysisLoops
+	mov r2, sb
+	ldrb r0, [r2, #2]
+	lsls r0, r0, #2
+	adds r0, r0, r1
+	ldr r1, [r0]
+	mov r0, sb
+	bl _call_via_r1
+	ldr r0, _080F80B0 @ =gJoypad
+	ldrh r1, [r0, #4]
+	movs r0, #8
+	ands r0, r1
+	cmp r0, #0
+	beq _080F8046
+	movs r0, #3
+	mov r3, sb
+	strb r0, [r3, #1]
+_080F8046:
+	ldr r7, _080F80B4 @ =StringOfsTable
+	movs r1, #0xef
+	lsls r1, r1, #2
+	adds r0, r7, r1
+	ldrh r0, [r0]
+	ldr r2, _080F80B8 @ =gStringData
+	mov r8, r2
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #1
+	bl PrintString
+	ldrb r0, [r4, #0xa]
+	adds r0, #1
+	movs r1, #0x16
+	movs r2, #1
+	bl printThreeDigitNumber
+	ldr r0, _080F80BC @ =gStageDiskManager
+	ldr r1, [r0]
+	ldrb r2, [r4, #0xa]
+	lsls r0, r2, #0x18
+	lsrs r3, r0, #0x18
+	lsrs r0, r0, #0x1a
+	adds r5, r1, r0
+	ldrb r1, [r5]
+	movs r0, #0xf
+	ands r0, r1
+	movs r1, #3
+	ands r1, r2
+	asrs r0, r1
+	movs r2, #1
+	ands r0, r2
+	cmp r0, #0
+	bne _080F808E
+	b _080F823C
+_080F808E:
+	ldrb r0, [r5]
+	adds r1, #4
+	asrs r0, r1
+	ands r0, r2
+	cmp r0, #0
+	bne _080F809C
+	b _080F8214
+_080F809C:
+	cmp r3, #5
+	bhi _080F80C0
+	movs r3, #0xaf
+	lsls r3, r3, #2
+	adds r0, r3, #0
+	b _080F80CA
+	.align 2, 0
+_080F80A8: .4byte 0x00000DCC
+_080F80AC: .4byte sDiskAnalysisLoops
+_080F80B0: .4byte gJoypad
+_080F80B4: .4byte StringOfsTable
+_080F80B8: .4byte gStringData
+_080F80BC: .4byte gStageDiskManager
+_080F80C0:
+	cmp r3, #0x13
+	bhi _080F80E0
+	movs r1, #0xaf
+	lsls r1, r1, #2
+	adds r0, r1, #0
+_080F80CA:
+	ldrb r4, [r4, #0xa]
+	adds r0, r0, r4
+	lsls r0, r0, #1
+	adds r0, r0, r7
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #4
+	bl PrintString
+	b _080F81F8
+_080F80E0:
+	cmp r3, #0x5d
+	bhi _080F8140
+	ldrb r0, [r4, #0xa]
+	adds r6, r0, #0
+	adds r6, #0x50
+	movs r2, #0xb4
+	lsls r2, r2, #3
+	adds r0, r7, r2
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #4
+	bl PrintString
+	lsls r4, r6, #1
+	adds r4, r4, r7
+	ldrh r0, [r4]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #6
+	bl PrintString
+	ldr r3, _080F8138 @ =0x000005A2
+	adds r0, r7, r3
+	ldrh r5, [r0]
+	add r5, r8
+	ldrh r0, [r4]
+	add r0, r8
+	bl getStringLength
+	adds r1, r0, #0
+	lsls r1, r1, #0x10
+	asrs r1, r1, #0x10
+	adds r1, #0x11
+	adds r0, r5, #0
+	movs r2, #6
+	bl PrintString
+	ldr r1, _080F813C @ =0x000005A4
+	adds r0, r7, r1
+	ldrh r0, [r0]
+	add r0, r8
+	b _080F81BC
+	.align 2, 0
+_080F8138: .4byte 0x000005A2
+_080F813C: .4byte 0x000005A4
+_080F8140:
+	cmp r3, #0x6d
+	bhi _080F81E0
+	ldr r2, _080F81C8 @ =0x000005A6
+	adds r0, r7, r2
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #4
+	bl PrintString
+	movs r6, #0
+	ldr r1, _080F81CC @ =DiskECrystalAmounts
+	ldrb r0, [r4, #0xa]
+	subs r0, #0x5e
+	lsls r0, r0, #1
+	adds r0, r0, r1
+	ldrh r2, [r0]
+	cmp r2, #0
+	beq _080F817C
+_080F8166:
+	adds r0, r2, #0
+	movs r1, #0xa
+	bl __udivsi3
+	lsls r0, r0, #0x10
+	lsrs r2, r0, #0x10
+	adds r0, r6, #1
+	lsls r0, r0, #0x10
+	lsrs r6, r0, #0x10
+	cmp r2, #0
+	bne _080F8166
+_080F817C:
+	ldr r1, _080F81CC @ =DiskECrystalAmounts
+	ldr r0, _080F81D0 @ =0x00000DCC
+	add r0, sb
+	ldrb r0, [r0, #0xa]
+	subs r0, #0x5e
+	lsls r0, r0, #1
+	adds r0, r0, r1
+	ldrh r2, [r0]
+	adds r1, r6, #0
+	adds r1, #0x11
+	lsls r1, r1, #0x18
+	lsrs r1, r1, #0x18
+	adds r0, r2, #0
+	movs r2, #6
+	bl PrintNumber
+	ldr r4, _080F81D4 @ =StringOfsTable
+	movs r3, #0xb5
+	lsls r3, r3, #3
+	adds r0, r4, r3
+	ldrh r0, [r0]
+	ldr r5, _080F81D8 @ =gStringData
+	adds r0, r0, r5
+	adds r1, r6, #0
+	adds r1, #0x12
+	movs r2, #6
+	bl PrintString
+	ldr r0, _080F81DC @ =0x000005AA
+	adds r4, r4, r0
+	ldrh r0, [r4]
+	adds r0, r0, r5
+_080F81BC:
+	movs r1, #0x11
+	movs r2, #8
+	bl PrintString
+	b _080F81F8
+	.align 2, 0
+_080F81C8: .4byte 0x000005A6
+_080F81CC: .4byte DiskECrystalAmounts
+_080F81D0: .4byte 0x00000DCC
+_080F81D4: .4byte StringOfsTable
+_080F81D8: .4byte gStringData
+_080F81DC: .4byte 0x000005AA
+_080F81E0:
+	ldrb r0, [r4, #0xa]
+	movs r1, #0x9a
+	lsls r1, r1, #2
+	adds r0, r0, r1
+	lsls r0, r0, #1
+	adds r0, r0, r7
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #4
+	bl PrintString
+_080F81F8:
+	ldr r0, _080F8208 @ =StringOfsTable
+	ldr r2, _080F820C @ =0x000003BA
+	adds r0, r0, r2
+	ldrh r0, [r0]
+	ldr r1, _080F8210 @ =gStringData
+	adds r0, r0, r1
+	b _080F822E
+	.align 2, 0
+_080F8208: .4byte StringOfsTable
+_080F820C: .4byte 0x000003BA
+_080F8210: .4byte gStringData
+_080F8214:
+	ldr r3, _080F8238 @ =0x000003BE
+	adds r0, r7, r3
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #0x11
+	movs r2, #4
+	bl PrintString
+	movs r1, #0xee
+	lsls r1, r1, #2
+	adds r0, r7, r1
+	ldrh r0, [r0]
+	add r0, r8
+_080F822E:
+	movs r1, #1
+	movs r2, #0x12
+	bl PrintString
+	b _080F824C
+	.align 2, 0
+_080F8238: .4byte 0x000003BE
+_080F823C:
+	ldr r2, _080F82AC @ =0x000003BA
+	adds r0, r7, r2
+	ldrh r0, [r0]
+	add r0, r8
+	movs r1, #1
+	movs r2, #0x12
+	bl PrintString
+_080F824C:
+	ldr r5, _080F82B0 @ =0x00000DCC
+	add r5, sb
+	ldrb r0, [r5, #0xe]
+	cmp r0, #0
+	beq _080F82BC
+	ldr r2, _080F82B4 @ =gPaletteManager
+	ldrb r1, [r5, #0x12]
+	lsls r1, r1, #0xa
+	ldrb r0, [r5, #0x11]
+	lsls r0, r0, #5
+	orrs r1, r0
+	ldrb r0, [r5, #0x10]
+	orrs r0, r1
+	strh r0, [r2]
+	ldr r2, _080F82B8 @ =gWindowRegBuffer
+	ldrh r1, [r2]
+	movs r3, #0x80
+	lsls r3, r3, #6
+	adds r0, r3, #0
+	orrs r0, r1
+	strh r0, [r2]
+	movs r0, #0x10
+	strb r0, [r2, #0xc]
+	ldrb r1, [r2, #0xe]
+	movs r0, #3
+	orrs r0, r1
+	strb r0, [r2, #0xe]
+	ldrb r3, [r5, #0xe]
+	adds r1, r3, #0
+	adds r1, #0x40
+	movs r4, #0xff
+	ands r1, r4
+	movs r0, #0x40
+	subs r0, r0, r3
+	lsls r0, r0, #8
+	orrs r1, r0
+	strh r1, [r2, #4]
+	ldrb r3, [r5, #0xf]
+	adds r1, r3, #0
+	adds r1, #0x50
+	ands r1, r4
+	movs r0, #0x50
+	subs r0, r0, r3
+	lsls r0, r0, #8
+	orrs r1, r0
+	strh r1, [r2, #8]
+	b _080F82CE
+	.align 2, 0
+_080F82AC: .4byte 0x000003BA
+_080F82B0: .4byte 0x00000DCC
+_080F82B4: .4byte gPaletteManager
+_080F82B8: .4byte gWindowRegBuffer
+_080F82BC:
+	ldr r2, _080F82F0 @ =gWindowRegBuffer
+	ldrh r1, [r2]
+	ldr r0, _080F82F4 @ =0x0000DFFF
+	ands r0, r1
+	movs r1, #0
+	strh r0, [r2]
+	strb r1, [r5, #0x10]
+	strb r1, [r5, #0x11]
+	strb r1, [r5, #0x12]
+_080F82CE:
+	movs r0, #0x40
+	bl UpdateBlinkMotionState
+	ldr r0, _080F82F8 @ =0x00000DCC
+	add r0, sb
+	ldrb r0, [r0, #0xc]
+	cmp r0, #0
+	beq _080F82E4
+	mov r0, sb
+	bl setSecretDiskPalette
+_080F82E4:
+	pop {r3, r4}
+	mov r8, r3
+	mov sb, r4
+	pop {r4, r5, r6, r7}
+	pop {r0}
+	bx r0
+	.align 2, 0
+_080F82F0: .4byte gWindowRegBuffer
+_080F82F4: .4byte 0x0000DFFF
+_080F82F8: .4byte 0x00000DCC
+  .syntax divided\n");
+}
+
+//0x080F82FC
+NAKED void DiskLoop_BlackOut(struct GameState* p){
+  asm(".syntax unified
+	push {r4, lr}
+	adds r2, r0, #0
+	ldrh r0, [r2, #4]
+	subs r0, #1
+	movs r3, #0
+	adds r1, r0, #0
+	strh r0, [r2, #4]
+	lsls r0, r0, #0x10
+	cmp r0, #0
+	bne _080F833C
+	ldr r0, _080F8334 @ =gPaletteManager
+	ldr r4, _080F8338 @ =0x00000402
+	adds r1, r0, r4
+	strb r3, [r1]
+	subs r4, #1
+	adds r1, r0, r4
+	strb r3, [r1]
+	movs r1, #0x80
+	lsls r1, r1, #3
+	adds r0, r0, r1
+	strb r3, [r0]
+	movs r0, #4
+	strb r0, [r2, #1]
+	adds r0, r2, #0
+	bl DiskLoop_Exit
+	b _080F8356
+	.align 2, 0
+_080F8334: .4byte gPaletteManager
+_080F8338: .4byte 0x00000402
+_080F833C:
+	ldr r2, _080F835C @ =gPaletteManager
+	ldr r3, _080F8360 @ =0x00000402
+	adds r0, r2, r3
+	strb r1, [r0]
+	movs r0, #0xff
+	ands r0, r1
+	ldr r4, _080F8364 @ =0x00000401
+	adds r1, r2, r4
+	strb r0, [r1]
+	movs r1, #0x80
+	lsls r1, r1, #3
+	adds r2, r2, r1
+	strb r0, [r2]
+_080F8356:
+	pop {r4}
+	pop {r0}
+	bx r0
+	.align 2, 0
+_080F835C: .4byte gPaletteManager
+_080F8360: .4byte 0x00000402
+_080F8364: .4byte 0x00000401
+  .syntax divided\n");
+}
+
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 const DiskLoopFunc sDiskAnalysisLoops[3] = {
@@ -256,6 +671,38 @@ const DiskLoopFunc sDiskAnalysisLoops[3] = {
     DiskAnalysis_Open,
     DiskAnalysis_Close,
 };
+/*
+NAKED void getDiskInStageRun(u8 disk_number){ 
+  asm(".syntax unified\n\
+	push {r4, lr}
+	lsls r0, r0, #0x18
+	lsrs r4, r0, #0x18
+	ldr r3, _080F8CDC @ =gStageDiskManager
+	ldr r2, [r3]
+	lsrs r0, r0, #0x1a
+	adds r2, r2, r0
+	movs r1, #3
+	ands r1, r4
+	movs r0, #1
+	lsls r0, r1
+	ldrb r1, [r2]
+	orrs r0, r1
+	strb r0, [r2]
+	adds r0, r3, #4
+	ldrb r1, [r3, #0xe]
+	adds r0, r0, r1
+	strb r4, [r0]
+	ldrb r0, [r3, #0xe]
+	adds r0, #1
+	strb r0, [r3, #0xe]
+	pop {r4}
+	pop {r0}
+	bx r0
+	.align 2, 0
+_080F8CDC: .4byte gStageDiskManager
+.syntax divided\n");
+}
+*/
 
 const u16 DiskECrystalAmounts[16] = {
     80, 100, 200, 150, 40, 100, 100, 50, 80, 100, 100, 40, 500, 100, 100, 100,

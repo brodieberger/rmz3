@@ -52,12 +52,12 @@ struct ElfMenuState {
 struct MenuState {
   u8 unk_00[4];
   u16 frame;
-  u16 unk_06;
-  u16 unk_08;
-  u8 unk_0a;
-  u8 unk_0b;
-  u32 unk_0c;
-  u32 rank;
+  u16 unk_06; // unused?
+  u16 unk_08; // unused?
+  u8 selectedDisk;
+  u8 selectedRow;
+  u32 unk_0c; // Some kind of animation timer?
+  u8 selectionRGB[4]; // Border color of selected disk
   struct Widget* mc_14;  // e.g. 0203d938
   struct Widget* mc_18;  // e.g. 0203d830
   u8 unk_1c[8];

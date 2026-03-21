@@ -236,7 +236,7 @@ static void FUN_080e77f4(struct Widget *w) {
 
 static void FUN_080e786c(struct Widget *w) {
   struct GameState *g = (struct GameState *)(w->s).unk_28;
-  if ((g->mode[2] == 0) && (&(g->sceneState).menu)->unk_0b != 0) {
+  if ((g->mode[2] == 0) && (&(g->sceneState).menu)->selectedRow != 0) {
     (w->s).flags |= DISPLAY;
   } else {
     (w->s).flags &= ~DISPLAY;
@@ -245,7 +245,7 @@ static void FUN_080e786c(struct Widget *w) {
 
 static void FUN_080e789c(struct Widget *w) {
   struct GameState *g = (struct GameState *)(w->s).unk_28;
-  if ((g->mode[2] == 0) && (&(g->sceneState).menu)->unk_0b != 30) {
+  if ((g->mode[2] == 0) && (&(g->sceneState).menu)->selectedRow != 30) {
     (w->s).flags |= DISPLAY;
   } else {
     (w->s).flags &= ~DISPLAY;
