@@ -4,37 +4,6 @@
 	
 	.text
 
-	thumb_func_start DiskLoop_Exit
-DiskLoop_Exit: @ 0x080F8368
-	push {r4, lr}
-	adds r4, r0, #0
-	movs r0, #0x40
-	bl ClearBlink
-	ldr r2, _080F8398 @ =gWindowRegBuffer
-	ldrh r1, [r2]
-	ldr r0, _080F839C @ =0x0000DFFF
-	ands r0, r1
-	movs r1, #0
-	strh r0, [r2]
-	ldr r0, _080F83A0 @ =gPaletteManager
-	strh r1, [r0]
-	ldr r0, _080F83A4 @ =0x00000DCC
-	adds r1, r4, r0
-	movs r0, #1
-	strb r0, [r1, #0xd]
-	ldr r1, _080F83A8 @ =0x05030400
-	adds r0, r4, #0
-	bl SetGameMode
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080F8398: .4byte gWindowRegBuffer
-_080F839C: .4byte 0x0000DFFF
-_080F83A0: .4byte gPaletteManager
-_080F83A4: .4byte 0x00000DCC
-_080F83A8: .4byte 0x05030400
-
 	thumb_func_start sd_analysis_080f83ac
 sd_analysis_080f83ac: @ 0x080F83AC
 	push {r4, r5, r6, lr}
