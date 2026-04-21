@@ -40,7 +40,7 @@ BeeServer_Init: @ 0x0804CE68
 	ands r0, r1
 	cmp r0, #0
 	beq _0804CECC
-	ldr r1, _0804CEC8 @ =0x08363258
+	ldr r1, _0804CEC8 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x30
 	bl ResetBossBody
@@ -49,9 +49,9 @@ BeeServer_Init: @ 0x0804CE68
 _0804CEBC: .4byte gBossFnTable
 _0804CEC0: .4byte 0x08363318
 _0804CEC4: .4byte gSystemSavedataManager
-_0804CEC8: .4byte 0x08363258
+_0804CEC8: .4byte sCollisions
 _0804CECC:
-	ldr r1, _0804CFB8 @ =0x08363258
+	ldr r1, _0804CFB8 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x20
 	bl ResetBossBody
@@ -163,7 +163,7 @@ _0804CED6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0804CFB8: .4byte 0x08363258
+_0804CFB8: .4byte sCollisions
 _0804CFBC: .4byte onCollision
 _0804CFC0: .4byte gStaticMotionGraphics
 _0804CFC4: .4byte wStaticGraphicTilenums
@@ -678,7 +678,7 @@ _0804D384:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _0804D3D8 @ =0x08363258
+	ldr r2, _0804D3D8 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r6, #0
@@ -699,7 +699,7 @@ _0804D3C8: .4byte 0x00269EC3
 _0804D3CC: .4byte 0xFFFFE000
 _0804D3D0: .4byte 0x00004601
 _0804D3D4: .4byte 0x08363324
-_0804D3D8: .4byte 0x08363258
+_0804D3D8: .4byte sCollisions
 _0804D3DC:
 	ldr r1, _0804D414 @ =0x00004602
 	adds r0, r6, #0
@@ -768,7 +768,7 @@ _0804D444:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _0804D490 @ =0x08363258
+	ldr r2, _0804D490 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r4, #0
@@ -789,7 +789,7 @@ _0804D47C:
 _0804D484: .4byte 0x0000010F
 _0804D488: .4byte 0x00004603
 _0804D48C: .4byte 0x0836332E
-_0804D490: .4byte 0x08363258
+_0804D490: .4byte sCollisions
 
 	thumb_func_start FUN_0804d494
 FUN_0804d494: @ 0x0804D494

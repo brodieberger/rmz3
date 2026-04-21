@@ -13,7 +13,7 @@ const EnemyRoutine gPantheonAquaRoutine = {
     [ENTITY_INIT] =      PantheonAqua_Init,
     [ENTITY_UPDATE] =    PantheonAqua_Update,
     [ENTITY_DIE] =       PantheonAqua_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

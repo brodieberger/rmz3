@@ -3,6 +3,7 @@
 #include "gfx.h"
 #include "global.h"
 #include "menu.h"
+#include "widget/exskill_icons.h"
 
 static void ExMenuLoop_Init(struct GameState* g);
 static void ExMenuLoop_Update(struct GameState* g);
@@ -432,5 +433,5 @@ static void ExMenuLoop_Exit(struct GameState* g) {
   m->inactive = TRUE;
   ClearBlink(0x3E);
   ClearBlink(0x3F);
-  (m->w)->props.exskill.unk_004[0] = 1;
+  ((struct ExSkillIcons*)(m->w))->unk_004[0] = 1;
 }

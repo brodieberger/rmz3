@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/unk_18.inc");
+
 static const struct Collision sCollisions[4];
 static const u8 sInitModes[4];
 

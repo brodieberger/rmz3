@@ -20,13 +20,14 @@ void ZeroAttack_Air(struct Zero* z) {
   return;
 }
 
+// 0x0802f3c4
 static void air0(struct Zero* z) {
   (z->unk_b4).attackMode[0] = 1;
   air1(z);
 }
 
 // 0x0802f3d8
-WIP static void air1(struct Zero* z) {
+NON_MATCH static void air1(struct Zero* z) {
 #if MODERN
   u8 w;
   bool8 ok = IsAttackOK(z, &z->usingWeapon);
@@ -192,6 +193,7 @@ static void split_heavens(struct Zero* z);
 static void air_rolling_saber(struct Zero* z);
 static void saber_smash(struct Zero* z);
 
+// 0x0802f67c
 static void onSaber(struct Zero* z) {
   // clang-format off
   static ZeroFunc const seq[] = {
@@ -222,7 +224,7 @@ static void onSaber(struct Zero* z) {
 }
 
 // 0x0802f6d4
-WIP static void handle_saber_input(struct Zero* z) {
+NON_MATCH static void handle_saber_input(struct Zero* z) {
 #if MODERN
   u8 c;
   struct Zero_b4* b4 = &(z->unk_b4);
@@ -233,7 +235,7 @@ WIP static void handle_saber_input(struct Zero* z) {
     c = GetWeaponCharge(z, TRUE);
   }
 
-  if (z->ultimateCommand_22c[1] == 3) {
+  if ((z->input).ultimateCommand_22c[1] == 3) {
     c = FULL_CHARGE;
   }
   if (c == FULL_CHARGE) {
@@ -242,15 +244,15 @@ WIP static void handle_saber_input(struct Zero* z) {
     air_charge_saber(z);
 
   } else {
-    zero_input_t input = z->zeroInput;
-    if ((input & DPAD_UP) && (isElfUsed_2(z, ELF_MALTHAS))) {
+    zero_input_t input = (z->input).val;  // input へのアクセスがうまくいかない
+    if ((input & ZERO_INPUT_DPAD_UP) && (isElfUsed_2(z, ELF_MALTHAS))) {
       (z->unk_b4).attackMode[1] = 6;
       (z->unk_b4).attackMode[2] = 0;
       air_rolling_saber(z);
 
     } else {
       struct Zero_b4* b4 = &(z->unk_b4);
-      if ((input & DPAD_DOWN) && ((b4->status).exSkill & (1 << EXSKILL_ID_SMASH))) {
+      if ((input & ZERO_INPUT_DPAD_DOWN) && ((b4->status).exSkill & (1 << EXSKILL_ID_SMASH))) {
         (z->unk_b4).attackMode[1] = 7;
         (z->unk_b4).attackMode[2] = 0;
         saber_smash(z);
@@ -277,7 +279,7 @@ static void air_saber(struct Zero* z) {
 
   KeepMotion(z, MOTION(DM025_ZERO_SABER_AIR, 0x00));
   if (((z->s).motion.cmdIdx == 5) && ((z->s).motion.duration < 2)) {
-    if (z->zeroInput & DPAD_DOWN) {
+    if ((z->input).val & DPAD_DOWN) {
       (z->unk_b4).attackMode[1] = 2;
     } else {
       (z->unk_b4).attackMode[1] = 3;  // air_saber_hold
@@ -293,7 +295,7 @@ void air_saber_hold(struct Zero* z) {
     (z->unk_b4).attackMode[2]++;
   }
   KeepMotion(z, MOTION(DM025_ZERO_SABER_AIR, 0x00));
-  if ((z->zeroInput & DPAD_DOWN) == 0) {
+  if (((z->input).val & DPAD_DOWN) == 0) {
     (z->unk_b4).attackMode[1] = 3;
     (z->unk_b4).attackMode[2] = 0;
   }
@@ -338,7 +340,7 @@ static void air_charge_saber(struct Zero* z) {
   }
 
   if (((z->s).motion.state == MOTION_END) || done) {
-    if (z->zeroInput & DPAD_DOWN) {
+    if ((z->input).val & DPAD_DOWN) {
       (z->unk_b4).attackMode[1] = 2;
       (z->unk_b4).attackMode[2] = 0;
       air_saber_hold(z);
@@ -354,111 +356,47 @@ static void air_charge_saber(struct Zero* z) {
 }
 
 // 0x0802f9b0
-NAKED static void split_heavens(struct Zero* z) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r4, r0, #0\n\
-	adds r5, r4, #0\n\
-	adds r5, #0xb4\n\
-	adds r0, #0xee\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #1\n\
-	beq _0802FA02\n\
-	cmp r0, #1\n\
-	bgt _0802F9CA\n\
-	cmp r0, #0\n\
-	beq _0802F9D4\n\
-	b _0802FA74\n\
-_0802F9CA:\n\
-	cmp r0, #2\n\
-	beq _0802FA1A\n\
-	cmp r0, #3\n\
-	beq _0802FA2C\n\
-	b _0802FA74\n\
-_0802F9D4:\n\
-	ldr r1, _0802F9EC @ =0x00001201\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r5, #0xe]\n\
-	cmp r0, #2\n\
-	bne _0802F9F0\n\
-	adds r0, r4, #0\n\
-	movs r1, #0x11\n\
-	bl CreateWeaponSaber\n\
-	b _0802F9F8\n\
-	.align 2, 0\n\
-_0802F9EC: .4byte 0x00001201\n\
-_0802F9F0:\n\
-	adds r0, r4, #0\n\
-	movs r1, #0x10\n\
-	bl CreateWeaponSaber\n\
-_0802F9F8:\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xee\n\
-	ldrb r0, [r1]\n\
-	adds r0, #1\n\
-	strb r0, [r1]\n\
-_0802FA02:\n\
-	ldr r1, _0802FA54 @ =0x00001201\n\
-	adds r0, r4, #0\n\
-	bl KeepMotion\n\
-	ldrb r0, [r4, #0xe]\n\
-	cmp r0, #2\n\
-	bne _0802FA74\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xee\n\
-	ldrb r0, [r1]\n\
-	adds r0, #1\n\
-	strb r0, [r1]\n\
-_0802FA1A:\n\
-	ldr r1, _0802FA58 @ =0x00001202\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xee\n\
-	ldrb r0, [r1]\n\
-	adds r0, #1\n\
-	strb r0, [r1]\n\
-_0802FA2C:\n\
-	ldr r1, _0802FA58 @ =0x00001202\n\
-	adds r0, r4, #0\n\
-	bl KeepMotion\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x73\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #3\n\
-	bne _0802FA74\n\
-	ldrb r0, [r4, #0xe]\n\
-	cmp r0, #1\n\
-	bne _0802FA60\n\
-	ldr r1, _0802FA5C @ =0x00000403\n\
-	adds r0, r4, #0\n\
-	movs r2, #2\n\
-	movs r3, #1\n\
-	bl GotoMotion\n\
-	b _0802FA6C\n\
-	.align 2, 0\n\
-_0802FA54: .4byte 0x00001201\n\
-_0802FA58: .4byte 0x00001202\n\
-_0802FA5C: .4byte 0x00000403\n\
-_0802FA60:\n\
-	ldr r1, _0802FA7C @ =0x00000404\n\
-	adds r0, r4, #0\n\
-	movs r2, #2\n\
-	movs r3, #1\n\
-	bl GotoMotion\n\
-_0802FA6C:\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xec\n\
-	movs r0, #0\n\
-	strb r0, [r1]\n\
-_0802FA74:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_0802FA7C: .4byte 0x00000404\n\
- .syntax divided\n");
+static void split_heavens(struct Zero* z) {
+  switch (((&z->unk_b4)->attackMode)[2]) {
+    case 0: {
+      SetMotion(&z->s, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 1));
+      if (((&z->unk_b4)->status).element == ELEMENT_FLAME) {
+        CreateWeaponSaber(z, SABER_TENRETUJIN_FIRE_2);
+      } else {
+        CreateWeaponSaber(z, SABER_TENRETUJIN_2);
+      }
+      ((&z->unk_b4)->attackMode)[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      KeepMotion(z, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 1));
+      if ((z->s).mode[2] != 2) {
+        return;
+      }
+      ((&z->unk_b4)->attackMode)[2]++;
+      FALLTHROUGH;
+    }
+    case 2: {
+      SetMotion(&z->s, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 2));
+      ((&z->unk_b4)->attackMode)[2]++;
+      FALLTHROUGH;
+    }
+    case 3: {
+      KeepMotion(z, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 2));
+      if ((z->s).motion.state == MOTION_END) {
+        if ((z->s).mode[2] == 1) {
+          GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 3), 2, 1);
+        } else {
+          GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 4), 2, 1);
+        }
+        ((&z->unk_b4)->attackMode)[0] = 0;
+      }
+      break;
+    }
+    default: {
+      break;
+    }
+  }
 }
 
 static void air_rolling_saber(struct Zero* z) {
@@ -471,7 +409,7 @@ static void air_rolling_saber(struct Zero* z) {
 
   KeepMotion(z, MOTION(DM026_ZERO_SABER_AIR_ROLLING, 0x00));
   if ((z->s).motion.state == MOTION_END) {
-    if (z->zeroInput & DPAD_DOWN) {
+    if ((z->input).val & DPAD_DOWN) {
       (z->unk_b4).attackMode[1] = 2;
       (z->unk_b4).attackMode[2] = 0;
       air_saber_hold(z);

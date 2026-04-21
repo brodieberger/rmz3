@@ -10,7 +10,7 @@ CreatePuffy: @ 0x0807C584
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _0807C5DC @ =gZakoHeaderPtr
+	ldr r0, _0807C5DC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -50,7 +50,7 @@ _0807C5D2:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0807C5DC: .4byte gZakoHeaderPtr
+_0807C5DC: .4byte gEnemyHeaderPtr
 _0807C5E0: .4byte gEnemyFnTable
 
 	thumb_func_start Puffy_Init
@@ -164,7 +164,7 @@ _0807C694:
 	strb r6, [r5, #0xe]
 	strb r6, [r5, #0xf]
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807C6E2
 	movs r1, #0x82
@@ -221,7 +221,7 @@ _0807C728:
 	adds r0, r4, #0
 	bl FUN_0807cb50
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807C758
 	ldrb r1, [r4, #0xd]

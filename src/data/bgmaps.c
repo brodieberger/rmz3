@@ -5,6 +5,8 @@
   0x085222a0..0854727F
 */
 
+// TODO: 素直にアセンブリで書いた方がよさそう
+
 #define PATH(bin) "data/bgmaps/" bin
 
 #define INC_BGMAP(n, w, h, bin)               \

@@ -13,7 +13,7 @@ const EnemyRoutine gLeviathanMinigameEnemyRoutine = {
     [ENTITY_INIT] =      LeviathanMinigameEnemy_Init,
     [ENTITY_UPDATE] =    LeviathanMinigameEnemy_Update,
     [ENTITY_DIE] =       LeviathanMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

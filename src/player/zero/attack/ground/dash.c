@@ -242,7 +242,7 @@ static void buster_3(struct Zero* z) {
   ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {
     u8 foot;
-    if (((z->last & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, (foot == FOOT_CHIP_SHADOW) || (foot == FOOT_CHIP_ULTIMA)))) {
+    if ((((z->input).raw & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, (foot == FOOT_CHIP_SHADOW) || (foot == FOOT_CHIP_ULTIMA)))) {
       LoadZeroPalette(&z->s, GetZeroColor(z));
       z->posture = POSTURE_DASH;
     }
@@ -296,7 +296,7 @@ static void handle_saber_input(struct Zero* z) {
     c = GetWeaponCharge(z, TRUE);
   }
 
-  if (z->ultimateCommand_22c[1] == 3) {
+  if ((z->input).ultimateCommand_22c[1] == 3) {
     c = FULL_CHARGE;
   }
 
@@ -309,7 +309,7 @@ static void handle_saber_input(struct Zero* z) {
     (z->unk_b4).attackMode[2] = 0;
     charge_saber_ground(z);
   } else {
-    if ((z->zeroInput & (DPAD_UP | DPAD_DOWN)) && (isElfUsed_2(z, ELF_MALTHAS))) {
+    if (((z->input).val & (DPAD_UP | DPAD_DOWN)) && (isElfUsed_2(z, ELF_MALTHAS))) {
       (z->unk_b4).attackMode[1] = 3;
       (z->unk_b4).attackMode[2] = 0;
       dash_rolling_saber(z);
@@ -329,7 +329,7 @@ static void handle_saber_input(struct Zero* z) {
 }
 
 // 0x0802f008
-WIP static void dash_saber(struct Zero* z) {
+NON_MATCH static void dash_saber(struct Zero* z) {
 #if MODERN
   if ((z->unk_b4).attackMode[2] == 0) {
     SetMotion(&z->s, MOTION(DM023_ZERO_SABER_DASH, 0x00));

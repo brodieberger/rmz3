@@ -21,12 +21,10 @@ void SetTaskPivot(struct TaskManager* tm, struct Pivot* pivot) {
   return;
 }
 
-#if MODERN == 0
 static void unused_08004e58(struct TaskManager* tm, void* r1) {
   tm->_ = r1;
   return;
 }
-#endif
 
 void PrependTask(struct TaskManager* tm, struct Task* task) {
   task->next = (*tm->tasks)[0];

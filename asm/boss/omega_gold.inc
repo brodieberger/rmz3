@@ -4,54 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateOmegaGold
-CreateOmegaGold: @ 0x0805AF50
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r4, r1, #0x18
-	ldr r0, _0805AFA4 @ =gBossHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0805AF9C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _0805AFA8 @ =gBossFnTable
-	movs r0, #0x12
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x48]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	ldr r0, [r5]
-	ldr r1, [r5, #4]
-	str r0, [r3, #0x54]
-	str r1, [r3, #0x58]
-	strb r4, [r3, #0x10]
-_0805AF9C:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_0805AFA4: .4byte gBossHeaderPtr
-_0805AFA8: .4byte gBossFnTable
-
 	thumb_func_start OmegaGold_Init
 OmegaGold_Init: @ 0x0805AFAC
 	push {r4, r5, r6, r7, lr}
@@ -156,11 +108,11 @@ OmegaGold_Init: @ 0x0805AFAC
 	add r1, sl
 	adds r0, r4, #0
 	bl LoadPalette
-	ldr r1, _0805B110 @ =0x08364C74
+	ldr r1, _0805B110 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x60
 	bl ResetBossBody
-	ldr r1, _0805B114 @ =FUN_0805b8e0
+	ldr r1, _0805B114 @ =onCollision
 	adds r0, r7, #0
 	adds r0, #0x74
 	str r1, [r0, #0x24]
@@ -214,8 +166,8 @@ _0805B100: .4byte wStaticGraphicTilenums
 _0805B104: .4byte gStaticMotionGraphics+12
 _0805B108: .4byte wStaticMotionPalIDs
 _0805B10C: .4byte 0x000007E4
-_0805B110: .4byte 0x08364C74
-_0805B114: .4byte FUN_0805b8e0
+_0805B110: .4byte sCollisions
+_0805B114: .4byte onCollision
 _0805B118: .4byte 0xFFFFB000
 _0805B11C: .4byte gBossFnTable
 _0805B120:
@@ -1204,133 +1156,4 @@ _0805B86C:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start nop_0805b874
-nop_0805b874: @ 0x0805B874
-	movs r0, #1
-	bx lr
 
-	thumb_func_start FUN_0805b878
-FUN_0805b878: @ 0x0805B878
-	push {lr}
-	adds r1, r0, #0
-	ldrb r0, [r1, #0xe]
-	cmp r0, #0
-	beq _0805B888
-	cmp r0, #1
-	beq _0805B892
-	b _0805B8A6
-_0805B888:
-	str r0, [r1, #0x5c]
-	str r0, [r1, #0x60]
-	ldrb r0, [r1, #0xe]
-	adds r0, #1
-	strb r0, [r1, #0xe]
-_0805B892:
-	ldr r0, [r1, #0x60]
-	adds r0, #0x40
-	str r0, [r1, #0x60]
-	cmp r0, #0x40
-	ble _0805B8A0
-	movs r0, #0x40
-	str r0, [r1, #0x60]
-_0805B8A0:
-	adds r0, r1, #0
-	bl UpdateMotionGraphic
-_0805B8A6:
-	pop {r0}
-	bx r0
-	.align 2, 0
-
-	thumb_func_start FUN_0805b8ac
-FUN_0805b8ac: @ 0x0805B8AC
-	push {r4, r5, lr}
-	adds r4, r1, #0
-	movs r3, #0
-	ldr r2, _0805B8CC @ =0x080FEFD0
-	adds r5, r2, #0
-_0805B8B6:
-	ldrh r1, [r2]
-	cmp r1, r4
-	bne _0805B8D0
-	adds r0, r3, #1
-	movs r1, #3
-	bl __modsi3
-	lsls r0, r0, #1
-	adds r0, r0, r5
-	ldrh r0, [r0]
-	b _0805B8D8
-	.align 2, 0
-_0805B8CC: .4byte 0x080FEFD0
-_0805B8D0:
-	adds r2, #2
-	adds r3, #1
-	cmp r3, #2
-	ble _0805B8B6
-_0805B8D8:
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start FUN_0805b8e0
-FUN_0805b8e0: @ 0x0805B8E0
-	push {lr}
-	adds r3, r0, #0
-	ldr r1, [r3, #0x2c]
-	ldr r2, [r1, #0x2c]
-	cmp r2, #0
-	beq _0805B900
-	ldrb r0, [r2, #0xc]
-	cmp r0, #1
-	bls _0805B8F8
-	movs r0, #0
-	str r0, [r1, #0x2c]
-	b _0805B900
-_0805B8F8:
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	strb r0, [r2, #0xa]
-_0805B900:
-	ldr r0, [r3, #0x2c]
-	adds r1, r0, #0
-	adds r1, #0xbc
-	ldr r2, [r1]
-	cmp r2, #0
-	beq _0805B920
-	ldrb r0, [r2, #0xc]
-	cmp r0, #1
-	bls _0805B918
-	movs r0, #0
-	str r0, [r1]
-	b _0805B920
-_0805B918:
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	strb r0, [r2, #0xa]
-_0805B920:
-	pop {r0}
-	bx r0
-
-	thumb_func_start floatGoldOmega1
-floatGoldOmega1: @ 0x0805B924
-	adds r3, r0, #0
-	adds r3, #0xc0
-	ldrh r1, [r3]
-	adds r1, #1
-	movs r2, #0xff
-	ands r1, r2
-	strh r1, [r3]
-	ldr r2, _0805B948 @ =gSineTable
-	lsls r1, r1, #1
-	adds r1, r1, r2
-	movs r3, #0
-	ldrsh r2, [r1, r3]
-	lsls r2, r2, #3
-	ldr r1, [r0, #0x68]
-	adds r1, r1, r2
-	str r1, [r0, #0x58]
-	bx lr
-	.align 2, 0
-_0805B948: .4byte gSineTable

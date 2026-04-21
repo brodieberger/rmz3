@@ -7,16 +7,16 @@
 
 static const motion_t sMotions[2];
 
-static void ChargeEffect_Init(struct VFX* p);
+static void ChargeEffect_Init(struct Entity* p);
 static void ChargeEffect_Update(struct VFX* p);
 static void ChargeEffect_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gChargeEffectRoutine = {
-    [ENTITY_INIT] =      ChargeEffect_Init,
-    [ENTITY_UPDATE] =    ChargeEffect_Update,
-    [ENTITY_DIE] =       ChargeEffect_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)ChargeEffect_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)ChargeEffect_Update,
+    [ENTITY_DIE] =       (VFXFunc)ChargeEffect_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
@@ -39,20 +39,12 @@ struct VFX* CreateChargeEffect(struct Zero* z, struct VFX* v, u8 r2) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-static void ChargeEffect_Init(struct VFX* p) {
-  bool8 xflip;
-  InitNonAffineMotion(&p->s);
-  (p->s).flags |= FLIPABLE;
-  xflip = FALSE;
-  if (xflip) {
-    (p->s).flags |= X_FLIP;
-  } else {
-    (p->s).flags &= ~X_FLIP;
-  }
-  (p->s).spr.xflip = xflip & 1;
-  (p->s).spr.oam.xflip = xflip;
+static void ChargeEffect_Init(struct Entity* p) {
+  InitNonAffineMotion(p);
+  p->flags |= FLIPABLE;
+  SET_XFLIP(p, FALSE);
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  ChargeEffect_Update(p);
+  ChargeEffect_Update((void*)p);
 }
 
 // --------------------------------------------

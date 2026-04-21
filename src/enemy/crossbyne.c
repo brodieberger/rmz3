@@ -2,8 +2,6 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/crossbyne.inc");
-
 void Crossbyne_Init(struct Enemy* p);
 void Crossbyne_Update(struct Enemy* p);
 void Crossbyne_Die(struct Enemy* p);
@@ -13,10 +11,54 @@ const EnemyRoutine gCrossbyneRoutine = {
     [ENTITY_INIT] =      Crossbyne_Init,
     [ENTITY_UPDATE] =    Crossbyne_Update,
     [ENTITY_DIE] =       Crossbyne_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
+
+// --------------------------------------------
+
+struct Entity* FUN_0807cbf4(s32 x, s32 y, u8 n) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = n;
+    (p->coord).x = x, (p->coord).y = y;
+  }
+  return p;
+}
+
+static const struct Coord16 Coord16_ARRAY_08367c14[4];
+
+// 0x0807cc50
+static void FUN_0807cc50(s32 x, s32 y) {
+  s32 i;
+  const struct Coord16* c = Coord16_ARRAY_08367c14;
+
+  for (i = 0; i < (s32)ARRAY_COUNT(Coord16_ARRAY_08367c14); i++) {
+    struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 24;
+      INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
+      p->tileNum = 0, p->palID = 0;
+      p->flags2 |= WHITE_PAINTABLE;
+      p->invincibleID = p->uniqueID;
+      p->work[0] = 2, p->work[1] = i;
+      (p->coord).x = x;
+      (p->coord).x += c[i].x;
+      (p->coord).y = y;
+      (p->coord).y += c[i].y;
+    }
+  }
+}
+
+INCASM("asm/enemy/crossbyne.inc");
+
+// --------------------------------------------
 
 void FUN_0807cf5c(struct Enemy* p);
 void FUN_0807cf60(struct Enemy* p);

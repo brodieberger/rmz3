@@ -97,7 +97,7 @@ _080756DA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080756E0: .4byte 0x0836705C
+_080756E0: .4byte sCollisions+(24*1)
 _080756E4: .4byte gSineTable
 
 	thumb_func_start FUN_080756e8
@@ -172,7 +172,7 @@ _08075768:
 	movs r0, #1
 	b _080757C2
 	.align 2, 0
-_08075778: .4byte 0x0836708C
+_08075778: .4byte sCollisions+(24*3)
 _0807577C: .4byte pZero2
 _08075780: .4byte gSineTable
 _08075784:

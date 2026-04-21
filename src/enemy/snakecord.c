@@ -13,7 +13,7 @@ const EnemyRoutine gSnakecordRoutine = {
     [ENTITY_INIT] =      Snakecord_Init,
     [ENTITY_UPDATE] =    Snakecord_Update,
     [ENTITY_DIE] =       Snakecord_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -90,6 +90,7 @@ const EnemyFunc PTR_ARRAY_08366e90[3] = {
 
 // --------------------------------------------
 
+// 0x08366e9c
 static const struct Collision sCollisions[] = {
     {
       kind : DRP,
@@ -217,6 +218,7 @@ static const struct Collision sCollisions[] = {
 
 // --------------------------------------------
 
+// 0x08366fec
 static const u8 u8_ARRAY_08366fec[13] = {
     4, 4, 4, 4, 4, 4, 9, 9, 11, 11, 11, 11, 11,
 };

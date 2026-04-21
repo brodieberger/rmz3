@@ -3,7 +3,7 @@
 		src/sram.o (.rodata);
 		src/data/data_080fea74.o (.rodata);
 		src/bg0/text.o (.rodata);
-		asm/font.o (.rodata);
+		src/data/font.o (.rodata);
 		src/data/minigame_string.o (.rodata);
 		src/libs/m4a_tables.o (.rodata);
 
@@ -183,8 +183,8 @@
 		src/drop.o (.rodata);
 		src/element.o (.rodata);
 
-		src/zero.o (.rodata);
-		src/player/zero.o (.rodata);
+		src/player.o (.rodata);
+		src/player/zero/zero.o (.rodata);
       src/player/zero/input/input.o (.rodata);
       src/player/zero/update.o (.rodata);
       src/player/zero/attack/ground.o (.rodata);
@@ -196,12 +196,12 @@
       src/player/zero/attack/ladder.o (.rodata);
       src/player/zero/util.o (.rodata);
       src/player/zero/attack/util.o (.rodata);
-		src/player/fefnir.o (.rodata);
-		src/player/phantom.o (.rodata);
-		src/player/harpuia.o (.rodata);
-		src/player/copy_x.o (.rodata);
-		src/player/leviathan.o (.rodata);
-		src/player/zero_minigame.o (.rodata);
+		src/player/minigame/fefnir.o (.rodata);
+		src/player/minigame/phantom.o (.rodata);
+		src/player/minigame/harpuia.o (.rodata);
+		src/player/minigame/copy_x.o (.rodata);
+		src/player/minigame/leviathan.o (.rodata);
+		src/player/minigame/zero.o (.rodata);
 
 		src/weapon/weapon.o (.rodata);
       src/weapon/buster.o (.rodata);
@@ -348,7 +348,7 @@
       src/projectile/unk_20.o (.rodata);
       src/projectile/pantheon_aqua_mod.o (.rodata);
       src/projectile/cubit.o (.rodata);
-      src/projectile/unk_23.o (.rodata);
+      src/projectile/locomo_if.o (.rodata);
       src/projectile/copy_x.o (.rodata);
       src/projectile/unk_25.o (.rodata);
       src/projectile/unk_26.o (.rodata);
@@ -369,6 +369,10 @@
       src/projectile/omega_zx.o (.rodata);
       src/projectile/unk_42.o (.rodata);
       src/projectile/unk_43.o (.rodata);
+      src/projectile/unk_44.o (.rodata);
+      src/projectile/unk_45.o (.rodata);
+      src/projectile/unk_46.o (.rodata);
+      src/projectile/childre_ship.o (.rodata);
 
 		src/vfx.o (.rodata);
       src/vfx/smoke.o (.rodata);
@@ -403,8 +407,8 @@
       src/vfx/unk_31.o (.rodata);
       src/vfx/unk_32.o (.rodata);
       src/vfx/unk_33.o (.rodata);
-      src/vfx/unk_34.o (.rodata);
-      src/vfx/unk_35.o (.rodata);
+      src/vfx/ballchain.o (.rodata);
+      src/vfx/wormer_dust_cloud.o (.rodata);
       src/vfx/unk_36.o (.rodata);
       src/vfx/unk_37.o (.rodata);
       src/vfx/unk_38.o (.rodata);
@@ -414,7 +418,7 @@
       src/vfx/exlife_indicator.o (.rodata);
       src/vfx/unk_43.o (.rodata);
       src/vfx/unk_44.o (.rodata);
-      src/vfx/unk_45.o (.rodata);
+      src/vfx/particle_iceball.o (.rodata);
       src/vfx/unk_46.o (.rodata);
       src/vfx/unk_47.o (.rodata);
       src/vfx/elf_particle.o (.rodata);
@@ -423,7 +427,7 @@
       src/vfx/unk_51.o (.rodata);
       src/vfx/unk_52.o (.rodata);
       src/vfx/unk_53.o (.rodata);
-      src/vfx/unk_54.o (.rodata);
+      src/vfx/particle_icicle.o (.rodata);
       src/vfx/unk_55.o (.rodata);
       src/vfx/unk_56.o (.rodata);
       src/vfx/unk_57.o (.rodata);
@@ -473,13 +477,13 @@
       src/solid/locomoif_platform.o (.rodata);
       src/solid/glacierle_arm.o (.rodata);
       src/solid/unk_16.o (.rodata);
-      src/solid/unk_17.o (.rodata);
+      src/solid/sub_arcadia_platform.o (.rodata);
       src/solid/snowboard.o (.rodata);
       src/solid/base_elevator.o (.rodata);
       src/solid/door_2d_gray_v.o (.rodata);
       src/solid/actor.o (.rodata);
       src/solid/door_2d_gray_h.o (.rodata);
-      src/solid/unk_23.o (.rodata);
+      src/solid/turtloid_s.o (.rodata);
       src/solid/phantom_teleporter.o (.rodata);
       src/solid/unk_25.o (.rodata);
       src/solid/ice_block.o (.rodata);
@@ -548,9 +552,28 @@
       src/widget/disk_modal_border.o (.rodata);
       src/widget/unk_13.o (.rodata);
 
-		asm/string.o (.rodata);
+		src/data/strings/strings.o (.rodata);
 		src/bg0/text_window.o (.rodata);
-    asm/text.o (.rodata);
+      src/data/texts/00xx.o (.rodata);
+      src/data/texts/01xx.o (.rodata);
+      src/data/texts/02xx.o (.rodata);
+      src/data/texts/03xx.o (.rodata);
+      src/data/texts/04xx.o (.rodata);
+      src/data/texts/05xx.o (.rodata);
+      src/data/texts/06xx.o (.rodata);
+      src/data/texts/07xx.o (.rodata);
+      src/data/texts/08xx.o (.rodata);
+      src/data/texts/09xx.o (.rodata);
+      src/data/texts/0Axx.o (.rodata);
+      src/data/texts/0Bxx.o (.rodata);
+      src/data/texts/0Cxx.o (.rodata);
+      src/data/texts/0Dxx.o (.rodata);
+      src/data/texts/0Exx.o (.rodata);
+      src/data/texts/0Fxx.o (.rodata);
+      src/data/texts/10xx.o (.rodata);
+      src/data/texts/11xx.o (.rodata);
+      src/data/texts/12xx.o (.rodata);
+      src/data/texts/13xx.o (.rodata);
 		src/intro.o (.rodata);
 
 		src/game.o (.rodata);
@@ -558,13 +581,20 @@
         src/game/main_overworld.o (.rodata);
         src/game/main_overworld/cmd_room_talk.o (.rodata);
         src/game/main_overworld/sunken_library_search.o (.rodata);
-		  src/game/menu.o (.rodata);
-		    src/game/menu/main.o (.rodata);
-		    src/game/menu/keyconfig.o (.rodata);
-		    src/game/menu/elf.o (.rodata);
-		    src/game/menu/exskill.o (.rodata);
-		  src/game/analysis.o (.rodata);
-		  src/game/minigame.o (.rodata);
+      src/game/menu.o (.rodata);
+        src/game/menu/main.o (.rodata);
+        src/game/menu/keyconfig.o (.rodata);
+        src/game/menu/elf.o (.rodata);
+        src/game/menu/exskill.o (.rodata);
+      src/game/analysis.o (.rodata);
+      src/game/minigame.o (.rodata);
+        src/game/minigame/zero.o (.rodata);
+        src/game/minigame/ciel.o (.rodata);
+        src/game/minigame/copy_x.o (.rodata);
+        src/game/minigame/harpuia.o (.rodata);
+        src/game/minigame/fefnir.o (.rodata);
+        src/game/minigame/leviathan.o (.rodata);
+        src/game/minigame/phantom.o (.rodata);
 		FILL(0xFF)
 		. += 106244;
 
@@ -572,7 +602,7 @@
 
 		src/data/bgmaps.o (.rodata);
 		src/data/graphic_table/bg.o (.rodata);
-		graphics/dialog/header.o (.rodata);
+		src/data/graphic_table/dialog.o (.rodata);
 		src/blink.o (.rodata);
 
     sprites/static/anim.o (.rodata);
@@ -581,8 +611,8 @@
 		. += 40;
 
 		src/data/graphic_table/elf.o (.rodata);
-		src/data/terrain.o (.rodata);
+		src/stage/terrain.o (.rodata);
 		FILL(0xFF)
 		. += 120;
 
-    INCLUDE "linker/rodata_tileset.txt"
+    src/data/tilesets.o (.rodata);

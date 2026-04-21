@@ -430,7 +430,7 @@ _08045E52:
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
 	bl InitNonAffineMotion
-	ldr r1, _080460C4 @ =0x0836265C
+	ldr r1, _080460C4 @ =sCollisions
 	adds r0, r6, #0
 	movs r2, #0x60
 	bl ResetBossBody
@@ -706,7 +706,7 @@ _080460A8:
 	.align 2, 0
 _080460BC: .4byte gBossFnTable
 _080460C0: .4byte 0x08362714
-_080460C4: .4byte 0x0836265C
+_080460C4: .4byte sCollisions
 _080460C8: .4byte FUN_08045d28
 _080460CC: .4byte 0xFFFFF800
 _080460D0: .4byte 0xFFFFB000
@@ -2773,7 +2773,7 @@ _080474F4:
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0804758C @ =0x0836265C
+	ldr r1, _0804758C @ =sCollisions
 	bl SetDDP
 	adds r4, r6, #0
 	adds r4, #0xc6
@@ -2841,7 +2841,7 @@ _08047584:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0804758C: .4byte 0x0836265C
+_0804758C: .4byte sCollisions
 _08047590: .4byte RNG_0202f388
 _08047594: .4byte 0x000343FD
 _08047598: .4byte 0x00269EC3
@@ -3855,7 +3855,7 @@ _08047F3C: .4byte 0xFFFFFC00
 _08047F40:
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08047F7C @ =0x0836265C
+	ldr r1, _08047F7C @ =sCollisions
 	bl SetDDP
 	adds r0, r6, #0
 	adds r0, #0xb8
@@ -3885,7 +3885,7 @@ _08047F74:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08047F7C: .4byte 0x0836265C
+_08047F7C: .4byte sCollisions
 _08047F80: .4byte 0xFFFFE000
 
 	thumb_func_start FUN_08047f84

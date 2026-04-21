@@ -4,6 +4,14 @@
 
 struct Zero;
 
+struct CyberElf1 {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct Zero* player;  // 0xB4
+  u8 unk_b8[12];        // 0xB8
+};
+static_assert(sizeof(struct CyberElf1) == sizeof(struct Elf));
+
 void Elf1_Init(struct Elf* p);
 void Elf1_Update(struct Elf* p);
 void Elf1_Die(struct Elf* p);
@@ -20,18 +28,18 @@ const ElfRoutine gElf1Routine = {
 
 // --------------------------------------------
 
-struct Elf* CreateElf1(struct Zero* p, u8 breed, u8 availability, u8 _) {
-  struct Elf* e = (struct Elf*)AllocEntityFirst(gElfHeaderPtr);
+struct Entity* CreateElf1(struct Zero* p, u8 breed, u8 availability, u8 _) {
+  struct CyberElf1* e = (struct CyberElf1*)AllocEntityFirst(gElfHeaderPtr);
   if (e != NULL) {
     (e->s).taskCol = 16;
     INIT_ELF_ROUTINE(e, 1);
     (e->s).tileNum = 0;
     (e->s).palID = 0;
-    *(struct Zero**)(&(e->props.raw[0])) = p;
+    e->player = p;
     (e->s).work[0] = breed;
     (e->s).work[1] = availability;
   }
-  return e;
+  return (struct Entity*)e;
 }
 
 INCASM("asm/cyberelf/unk_1.inc");
@@ -46,6 +54,7 @@ void FUN_080e2414(struct Elf* p);
 void FUN_080e244c(struct Elf* p);
 
 // clang-format off
+// 0x08371ca0
 const ElfFunc sElf1Updates[6] = {
     FUN_080e2310,
     FUN_080e234c,

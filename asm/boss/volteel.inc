@@ -69,7 +69,7 @@ _0804357C:
 	cmp r0, #0
 	beq _080435BE
 	movs r0, #0x7f
-	bl stopSound
+	bl StopSound
 _080435BE:
 	ldr r2, _080435DC @ =gOverworld
 	movs r1, #0xe8
@@ -669,12 +669,12 @@ _08043A40:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08043A5C @ =0x08362348
+	ldr r1, _08043A5C @ =sCollisions+(24*1)
 	bl SetDDP
 	b _08043A76
 	.align 2, 0
 _08043A58: .4byte 0xFFFFEE00
-_08043A5C: .4byte 0x08362348
+_08043A5C: .4byte sCollisions+(24*1)
 _08043A60:
 	ldr r1, _08043AB8 @ =0x0000A501
 	adds r0, r6, #0
@@ -780,7 +780,7 @@ _08043B18:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08043B4C @ =0x08362348
+	ldr r1, _08043B4C @ =sCollisions+(24*1)
 	bl SetDDP
 _08043B38:
 	ldrb r0, [r6, #0xe]
@@ -792,7 +792,7 @@ _08043B3E:
 	b _08043D94
 	.align 2, 0
 _08043B48: .4byte 0x0000A501
-_08043B4C: .4byte 0x08362348
+_08043B4C: .4byte sCollisions+(24*1)
 _08043B50:
 	ldr r0, [r6, #0x54]
 	ldr r1, [r6, #0x58]
@@ -1378,7 +1378,7 @@ _08043FFE:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _080440AC @ =0x08362348
+	ldr r1, _080440AC @ =sCollisions+(24*1)
 	bl SetDDP
 	ldr r4, _080440B0 @ =0x7FFFFFFF
 	ldr r0, [r5, #0x54]
@@ -1460,7 +1460,7 @@ _080440A2:
 	bx r0
 	.align 2, 0
 _080440A8: .4byte 0x0000A503
-_080440AC: .4byte 0x08362348
+_080440AC: .4byte sCollisions+(24*1)
 _080440B0: .4byte 0x7FFFFFFF
 _080440B4: .4byte 0xFFFFF000
 _080440B8: .4byte 0xFFFFB000
@@ -1601,12 +1601,12 @@ _080441B0:
 	str r0, [r6, #0x60]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _080441E4 @ =0x08362348
+	ldr r1, _080441E4 @ =sCollisions+(24*1)
 	bl SetDDP
 	bl _080449DC
 	.align 2, 0
 _080441E0: .4byte 0xFFFFFE30
-_080441E4: .4byte 0x08362348
+_080441E4: .4byte sCollisions+(24*1)
 _080441E8:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -1778,7 +1778,7 @@ _0804432A:
 	bne _0804434A
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08044398 @ =0x08362348
+	ldr r1, _08044398 @ =sCollisions+(24*1)
 	bl SetDDP
 	movs r0, #1
 	strb r0, [r6, #0x13]
@@ -1792,7 +1792,7 @@ _0804434A:
 	bne _08044366
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0804439C @ =0x08362330
+	ldr r1, _0804439C @ =sCollisions
 	bl SetDDP
 	movs r0, #2
 	strb r0, [r6, #0x13]
@@ -1822,8 +1822,8 @@ _08044390:
 	b _0804495C
 	.align 2, 0
 _08044394: .4byte 0x0000A511
-_08044398: .4byte 0x08362348
-_0804439C: .4byte 0x08362330
+_08044398: .4byte sCollisions+(24*1)
+_0804439C: .4byte sCollisions
 _080443A0:
 	ldr r1, _080443E0 @ =0x0000A512
 	adds r0, r6, #0
@@ -1886,7 +1886,7 @@ _080443E4:
 	strb r1, [r6, #0xa]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08044468 @ =0x08362330
+	ldr r1, _08044468 @ =sCollisions
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1927,7 +1927,7 @@ _08044442:
 	movs r4, #1
 	b _0804447A
 	.align 2, 0
-_08044468: .4byte 0x08362330
+_08044468: .4byte sCollisions
 _0804446C:
 	mov r0, sb
 	strb r4, [r0]
@@ -2244,7 +2244,7 @@ _08044666:
 	strb r0, [r1]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _08044730 @ =0x08362330
+	ldr r1, _08044730 @ =sCollisions
 	bl SetDDP
 	movs r0, #0xc0
 	strb r0, [r5]
@@ -2267,7 +2267,7 @@ _08044666:
 _08044724: .4byte RNG_0202f388
 _08044728: .4byte 0x000343FD
 _0804472C: .4byte 0x00269EC3
-_08044730: .4byte 0x08362330
+_08044730: .4byte sCollisions
 _08044734:
 	cmp r0, #1
 	bne _080447A4
@@ -2303,7 +2303,7 @@ _08044734:
 	adds r0, #0xca
 	strb r7, [r0]
 	subs r0, #0x56
-	ldr r1, _080447A0 @ =0x08362330
+	ldr r1, _080447A0 @ =sCollisions
 	bl SetDDP
 	mov r0, r8
 	strb r0, [r5]
@@ -2323,7 +2323,7 @@ _08044734:
 	ands r0, r1
 	b _08044866
 	.align 2, 0
-_080447A0: .4byte 0x08362330
+_080447A0: .4byte sCollisions
 _080447A4:
 	cmp r1, #2
 	bne _08044804
@@ -2360,7 +2360,7 @@ _080447A4:
 	mov r2, r8
 	strb r2, [r0]
 	subs r0, #0x56
-	ldr r1, _08044800 @ =0x08362330
+	ldr r1, _08044800 @ =sCollisions
 	bl SetDDP
 	movs r0, #0x40
 	strb r0, [r5]
@@ -2370,7 +2370,7 @@ _080447A4:
 	strb r0, [r1]
 	b _08044856
 	.align 2, 0
-_08044800: .4byte 0x08362330
+_08044800: .4byte sCollisions
 _08044804:
 	adds r0, r6, #0
 	adds r0, #0xdc
@@ -2405,7 +2405,7 @@ _08044804:
 	movs r4, #1
 	strb r4, [r0]
 	subs r0, #0x56
-	ldr r1, _08044924 @ =0x08362330
+	ldr r1, _08044924 @ =sCollisions
 	bl SetDDP
 	mov r0, r8
 	strb r0, [r5]
@@ -2514,7 +2514,7 @@ _080448FA:
 	orrs r0, r1
 	b _08044932
 	.align 2, 0
-_08044924: .4byte 0x08362330
+_08044924: .4byte sCollisions
 _08044928: .4byte 0x0000A512
 _0804492C:
 	ldrb r1, [r6, #0xa]
@@ -2576,7 +2576,7 @@ _08044964:
 	strb r1, [r6, #0xa]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _080449E8 @ =0x08362330
+	ldr r1, _080449E8 @ =sCollisions
 	bl SetDDP
 	movs r0, #9
 	strb r0, [r6, #0xe]
@@ -2611,7 +2611,7 @@ _080449DC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080449E8: .4byte 0x08362330
+_080449E8: .4byte sCollisions
 _080449EC: .4byte 0x0000A512
 
 	thumb_func_start FUN_080449f0
@@ -2827,7 +2827,7 @@ _08044B54:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08044C08 @ =0x08362330
+	ldr r1, _08044C08 @ =sCollisions
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -2876,7 +2876,7 @@ _08044BF8: .4byte 0xFFFFD400
 _08044BFC: .4byte 0xFFFFB000
 _08044C00: .4byte 0xFFFFEE00
 _08044C04: .4byte 0x0000A512
-_08044C08: .4byte 0x08362330
+_08044C08: .4byte sCollisions
 _08044C0C: .4byte 0x0000A513
 _08044C10: .4byte 0x08362498
 _08044C14:
@@ -3114,7 +3114,7 @@ _08044DDC:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08044E28 @ =0x08362348
+	ldr r1, _08044E28 @ =sCollisions+(24*1)
 	bl SetDDP
 	movs r0, #0x12
 	strb r0, [r4, #0x13]
@@ -3143,7 +3143,7 @@ _08044E1C:
 	b _08044EF0
 	.align 2, 0
 _08044E24: .4byte 0x0000A508
-_08044E28: .4byte 0x08362348
+_08044E28: .4byte sCollisions+(24*1)
 _08044E2C:
 	ldr r1, _08044E54 @ =0x0000A509
 	adds r0, r4, #0
@@ -3223,7 +3223,7 @@ _08044EC6:
 	strb r0, [r1]
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08044EFC @ =0x08362348
+	ldr r1, _08044EFC @ =sCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -3246,7 +3246,7 @@ _08044EF2:
 	bx r0
 	.align 2, 0
 _08044EF8: .4byte 0x0002D026
-_08044EFC: .4byte 0x08362348
+_08044EFC: .4byte sCollisions+(24*1)
 
 	thumb_func_start FUN_08044f00
 FUN_08044f00: @ 0x08044F00
@@ -3287,7 +3287,7 @@ _08044F44:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _08044F90 @ =0x08362348
+	ldr r1, _08044F90 @ =sCollisions+(24*1)
 	bl SetDDP
 	movs r0, #0x7b
 	bl PlaySound
@@ -3316,7 +3316,7 @@ _08044F82:
 	b _080450AC
 	.align 2, 0
 _08044F8C: .4byte 0x0000A50C
-_08044F90: .4byte 0x08362348
+_08044F90: .4byte sCollisions+(24*1)
 _08044F94:
 	ldrb r0, [r5, #0x13]
 	cmp r0, #0
@@ -3357,7 +3357,7 @@ _08044FD8:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _0804500C @ =0x08362348
+	ldr r1, _0804500C @ =sCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
@@ -3375,7 +3375,7 @@ _08044FF0:
 	b _080450AC
 	.align 2, 0
 _08045008: .4byte 0x0000A50D
-_0804500C: .4byte 0x08362348
+_0804500C: .4byte sCollisions+(24*1)
 _08045010:
 	movs r4, #0
 	movs r0, #0x1e
@@ -3385,7 +3385,7 @@ _08045010:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _08045078 @ =0x08362348
+	ldr r1, _08045078 @ =sCollisions+(24*1)
 	bl SetDDP
 	movs r0, #0x7b
 	bl PlaySound
@@ -3427,7 +3427,7 @@ _0804506E:
 	b _080450AC
 	.align 2, 0
 _08045074: .4byte 0x0000A50B
-_08045078: .4byte 0x08362348
+_08045078: .4byte sCollisions+(24*1)
 _0804507C: .4byte 0x08362528
 _08045080:
 	ldr r1, _080450B4 @ =0x0000A50D
@@ -3435,7 +3435,7 @@ _08045080:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _080450B8 @ =0x08362348
+	ldr r1, _080450B8 @ =sCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
@@ -3458,7 +3458,7 @@ _080450AE:
 	bx r0
 	.align 2, 0
 _080450B4: .4byte 0x0000A50D
-_080450B8: .4byte 0x08362348
+_080450B8: .4byte sCollisions+(24*1)
 
 	thumb_func_start FUN_080450bc
 FUN_080450bc: @ 0x080450BC
@@ -3884,7 +3884,7 @@ _080453F6:
 	bne _08045454
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08045460 @ =0x08362330
+	ldr r1, _08045460 @ =sCollisions
 	bl SetDDP
 	adds r0, r4, #0
 	adds r0, #0x4d
@@ -3927,7 +3927,7 @@ _08045454:
 	bx r0
 	.align 2, 0
 _0804545C: .4byte 0x0000A515
-_08045460: .4byte 0x08362330
+_08045460: .4byte sCollisions
 
 	thumb_func_start FUN_08045464
 FUN_08045464: @ 0x08045464
@@ -4029,13 +4029,13 @@ _0804551C:
 	b _08045562
 _0804552E:
 	movs r0, #0x7f
-	bl stopSound
+	bl StopSound
 	ldr r1, _08045568 @ =0x0000A50A
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804556C @ =0x08362348
+	ldr r1, _0804556C @ =sCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -4058,7 +4058,7 @@ _08045562:
 	bx r0
 	.align 2, 0
 _08045568: .4byte 0x0000A50A
-_0804556C: .4byte 0x08362348
+_0804556C: .4byte sCollisions+(24*1)
 
 	thumb_func_start FUN_08045570
 FUN_08045570: @ 0x08045570
@@ -4077,7 +4077,7 @@ volteelMode11: @ 0x08045574
 	cmp r0, #0
 	beq _0804558E
 	movs r0, #0x7f
-	bl stopSound
+	bl StopSound
 _0804558E:
 	ldr r2, _080455A4 @ =gOverworld
 	movs r1, #0xe8
@@ -4174,7 +4174,7 @@ _08045624:
 	cmp r0, #0
 	beq _08045642
 	movs r0, #0x7f
-	bl stopSound
+	bl StopSound
 _08045642:
 	ldr r0, _08045674 @ =pZero2
 	ldr r0, [r0]

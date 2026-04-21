@@ -131,7 +131,7 @@ _0807B972:
 	strb r5, [r6, #0xe]
 	strb r5, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807B9D6
 	movs r1, #0xf8
@@ -249,7 +249,7 @@ _0807BAB4:
 	str r0, [r5, #0x58]
 _0807BAB6:
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807BACA
 	ldrb r1, [r5, #0xd]

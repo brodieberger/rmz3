@@ -6,62 +6,66 @@
   ヘッド、ボディ、フットのチップリスト
 */
 
+struct ArmorIcons {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  struct Widget* parent;
+  u8 unk_78[12];
+};
+static_assert(sizeof(struct ArmorIcons) == sizeof(struct Widget));
+
 #define ARMORS_HEAD 0
 #define ARMORS_BODY 1
 #define ARMORS_FOOT 2
 
-static void ArmorIcons_Init(struct Widget *w);
-static void ArmorIcons_Update(struct Widget *w);
-static void ArmorIcons_Die(struct Widget *w);
+static void ArmorIcons_Init(struct Widget* w);
+static void ArmorIcons_Update(struct Widget* w);
+static void ArmorIcons_Die(struct Entity* p);
 
 // clang-format off
 const WidgetRoutine gArmorIconsRoutine = {
-    [ENTITY_INIT] =      ArmorIcons_Init,
-    [ENTITY_UPDATE] =    ArmorIcons_Update,
-    [ENTITY_DIE] =       ArmorIcons_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ArmorIcons_Init,
+    [ENTITY_UPDATE] =    (void*)ArmorIcons_Update,
+    [ENTITY_DIE] =       (void*)ArmorIcons_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *CreateArmorIcons(struct GameState *g, u8 r1, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
-  if (w != NULL) {
-    (w->s).taskCol = 16;
-    INIT_WIDGET_ROUTINE(w, 5);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = r2;
+struct Entity* CreateArmorIcons(struct GameState* g, u8 r1, u8 r2) {
+  struct Entity* p = AllocEntityFirst(gWidgetHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 16;
+    INIT_WIDGET_ROUTINE(p, 5);
+    p->tileNum = 0, p->palID = 0;
+    p->unk_28 = (void*)g;
+    p->work[0] = r1, p->work[1] = r2;
   }
-  return w;
+  return p;
 }
 
-struct Widget *CreateArmorIcons2(struct GameState *g, struct Widget *p, u8 r2, u8 r3) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Entity* CreateArmorIcons2(struct GameState* g, struct Widget* p, u8 r2, u8 r3) {
+  struct ArmorIcons* w = (struct ArmorIcons*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 5);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
-    w->props.armorIcon.w = p;
-    (w->s).work[0] = 1;
-    (w->s).work[1] = r2;
-    w->props.armorIcon.unk_78[0] = r3;
+    (w->s).tileNum = 0, (w->s).palID = 0;
+    (w->s).unk_28 = (void*)g;
+    w->parent = p;
+    (w->s).work[0] = 1, (w->s).work[1] = r2;
+    w->unk_78[0] = r3;
   }
-  return w;
+  return (void*)w;
 }
 
 // --------------------------------------------
 
-static void FUN_080e6ab8(struct Widget *w);
-static void FUN_080e6bb8(struct Widget *w);
+static void FUN_080e6ab8(struct Widget* w);
+static void FUN_080e6bb8(struct Widget* w);
 
-static void ArmorIcons_Init(struct Widget *w) {
+static void ArmorIcons_Init(struct Widget* w) {
   s32 x, y;
 
   if ((w->s).work[0] != 0) {
@@ -77,10 +81,10 @@ static void ArmorIcons_Init(struct Widget *w) {
   ArmorIcons_Update(w);
 }
 
-static void FUN_080e6f6c(struct Widget *w);
-static void FUN_080e6c94(struct Widget *w);
+static void FUN_080e6f6c(struct Widget* w);
+static void FUN_080e6c94(struct Widget* w);
 
-static void ArmorIcons_Update(struct Widget *w) {
+static void ArmorIcons_Update(struct Widget* w) {
   (w->s).coord = (w->s).unk_coord;
   if ((w->s).work[0] != 0) {
     FUN_080e6f6c(w);
@@ -93,14 +97,11 @@ static void ArmorIcons_Update(struct Widget *w) {
   }
 }
 
-static void ArmorIcons_Die(struct Widget *w) {
-  SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
-  return;
-}
+static void ArmorIcons_Die(struct Entity* p) { SET_WIDGET_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
 
-NAKED static void FUN_080e6ab8(struct Widget *w) {
+NAKED static void FUN_080e6ab8(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -224,7 +225,7 @@ _080E6BB4: .4byte sChipHeight\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080e6bb8(struct Widget *w) {
+NAKED static void FUN_080e6bb8(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -331,7 +332,7 @@ _080E6C90: .4byte sFootChipMotions\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080e6c94(struct Widget *w) {
+NAKED static void FUN_080e6c94(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -700,7 +701,7 @@ _080E6F62:\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080e6f6c(struct Widget *w) {
+NAKED static void FUN_080e6f6c(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\

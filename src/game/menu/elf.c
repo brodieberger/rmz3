@@ -119,13 +119,13 @@ static void ElfMenuLoop_Update(struct GameState* g) {
     }
     gBlendRegBuffer.bldalpha = (ELF_MENU->unk_b & 0x1F) | ((0x10 - ELF_MENU->unk_b) << 8);
     if (tab != ELF_MENU->tab) {
-      LoadGraphic(gGraphic_ElfTab(ELF_MENU->tab), (void*)CHAR_BASE(1));
+      LoadGraphic((void*)gGraphic_ElfTab(ELF_MENU->tab), (void*)CHAR_BASE(1));
       LoadPalette(gPalette_ElfTab(ELF_MENU->tab), 0);
     }
 
     if (g->mode[3] >= 2) {
       if (tab != ELF_MENU->tab || (prev < 2)) {
-        LoadGraphic((const struct Graphic*)((void*)BG_GRAPHIC(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), (void*)CHAR_BASE(1));
+        LoadGraphic((void*)((void*)BG_GRAPHIC(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), (void*)CHAR_BASE(1));
         LoadPalette((const struct Palette*)((void*)BG_PALETTE(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), 0);
       }
     } else {

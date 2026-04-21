@@ -11,7 +11,7 @@ FUN_080949d4: @ 0x080949D4
 	adds r6, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _08094A48 @ =gZakoHeaderPtr
+	ldr r0, _08094A48 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -64,7 +64,7 @@ _08094A40:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08094A48: .4byte gZakoHeaderPtr
+_08094A48: .4byte gEnemyHeaderPtr
 _08094A4C: .4byte gEnemyFnTable
 _08094A50: .4byte 0x08369F44
 
@@ -75,7 +75,7 @@ FUN_08094a54: @ 0x08094A54
 	adds r7, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r5, r2, #0x18
-	ldr r0, _08094ACC @ =gZakoHeaderPtr
+	ldr r0, _08094ACC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -130,7 +130,7 @@ _08094AC4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08094ACC: .4byte gZakoHeaderPtr
+_08094ACC: .4byte gEnemyHeaderPtr
 _08094AD0: .4byte gEnemyFnTable
 _08094AD4: .4byte 0x08369F44
 

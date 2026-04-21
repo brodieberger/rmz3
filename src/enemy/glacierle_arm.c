@@ -13,7 +13,7 @@ const EnemyRoutine gGlacierleAtkArmRoutine = {
     [ENTITY_INIT] =      GlacierleAtkArm_Init,
     [ENTITY_UPDATE] =    GlacierleAtkArm_Update,
     [ENTITY_DIE] =       GlacierleAtkArm_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

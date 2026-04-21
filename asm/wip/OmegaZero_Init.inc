@@ -15,7 +15,7 @@
 	movs r4, #4
 	ldr r0, [r0, #4]
 	str r0, [r7, #0x14]
-	ldr r1, _0805D8DC @ =0x083651EC
+	ldr r1, _0805D8DC @ =sInitModes
 	ldrb r0, [r7, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -30,7 +30,7 @@
 	bl InitNonAffineMotion
 	adds r0, r7, #0
 	bl ResetDynamicMotion
-	ldr r1, _0805D8E0 @ =0x0836512C
+	ldr r1, _0805D8E0 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x60
 	bl ResetBossBody
@@ -159,8 +159,8 @@ _0805D8C2:
 	bx r0
 	.align 2, 0
 _0805D8D8: .4byte gBossFnTable
-_0805D8DC: .4byte 0x083651EC
-_0805D8E0: .4byte 0x0836512C
+_0805D8DC: .4byte sInitModes
+_0805D8E0: .4byte sCollisions
 _0805D8E4: .4byte onCollision
 _0805D8E8: .4byte gStaticMotionGraphics
 _0805D8EC: .4byte wStaticGraphicTilenums

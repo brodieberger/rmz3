@@ -12,7 +12,7 @@ const SolidRoutine gSeagullsRoutine = {
     [ENTITY_INIT] =      Seagulls_Init,
     [ENTITY_UPDATE] =    Seagulls_Update,
     [ENTITY_DIE] =       Seagulls_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

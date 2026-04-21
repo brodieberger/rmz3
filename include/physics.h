@@ -3,6 +3,7 @@
 
 #include "types.h"
 
+s32 PushoutToUp1(s32 x, s32 y);
 s32 PushoutToUp2(s32 x, s32 y);
 s32 PushoutToDown2(s32 x, s32 y);
 

@@ -19,7 +19,7 @@ const SolidRoutine gVolcanoCoffinRoutine = {
     [ENTITY_INIT] =      VolcanoCoffin_Init,
     [ENTITY_UPDATE] =    VolcanoCoffin_Update,
     [ENTITY_DIE] =       VolcanoCoffin_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

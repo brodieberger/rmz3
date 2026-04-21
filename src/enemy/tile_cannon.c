@@ -13,7 +13,7 @@ const EnemyRoutine gTileCannonRoutine = {
     [ENTITY_INIT] =      TileCannon_Init,
     [ENTITY_UPDATE] =    TileCannon_Update,
     [ENTITY_DIE] =       TileCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

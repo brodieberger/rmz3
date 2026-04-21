@@ -10,7 +10,7 @@ createPantheonZombie: @ 0x0807FD20
 	adds r5, r0, #0
 	adds r6, r1, #0
 	adds r7, r2, #0
-	ldr r0, _0807FD7C @ =gZakoHeaderPtr
+	ldr r0, _0807FD7C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -53,7 +53,7 @@ _0807FD76:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807FD7C: .4byte gZakoHeaderPtr
+_0807FD7C: .4byte gEnemyHeaderPtr
 _0807FD80: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807fd84

@@ -103,10 +103,7 @@ static void Projectile12_Update(struct Projectile* p) {
 
 static void Projectile12_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -117,7 +114,7 @@ static void FUN_0809f640(struct Projectile* p) {
   (p->s).mode[2] = 0;
 }
 
-INCASM("asm/projectile/projectile.inc");
+INCASM("asm/projectile/unk_12.inc");
 
 // --------------------------------------------
 

@@ -9,7 +9,7 @@ FUN_0807b0d0: @ 0x0807B0D0
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	adds r6, r1, #0
-	ldr r0, _0807B11C @ =gZakoHeaderPtr
+	ldr r0, _0807B11C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r4, r0, #0
@@ -45,7 +45,7 @@ _0807B116:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B11C: .4byte gZakoHeaderPtr
+_0807B11C: .4byte gEnemyHeaderPtr
 _0807B120: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807b124
@@ -55,7 +55,7 @@ FUN_0807b124: @ 0x0807B124
 	adds r5, r1, #0
 	adds r6, r2, #0
 	adds r7, r3, #0
-	ldr r0, _0807B17C @ =gZakoHeaderPtr
+	ldr r0, _0807B17C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -94,7 +94,7 @@ _0807B174:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B17C: .4byte gZakoHeaderPtr
+_0807B17C: .4byte gEnemyHeaderPtr
 _0807B180: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807b184
@@ -102,7 +102,7 @@ FUN_0807b184: @ 0x0807B184
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r0, _0807B1D4 @ =gZakoHeaderPtr
+	ldr r0, _0807B1D4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -139,7 +139,7 @@ _0807B1CC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B1D4: .4byte gZakoHeaderPtr
+_0807B1D4: .4byte gEnemyHeaderPtr
 _0807B1D8: .4byte gEnemyFnTable
 
 	thumb_func_start nop_0807b1dc
@@ -516,7 +516,7 @@ FUN_0807b494: @ 0x0807B494
 _0807B4A4:
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
-	bl FUN_080bea24
+	bl CreateIceballParticle2
 	adds r1, r5, #0
 	adds r1, #0x25
 	movs r0, #0xf
@@ -926,7 +926,7 @@ FUN_0807b7c0: @ 0x0807B7C0
 	strb r0, [r4, #0xa]
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
-	bl FUN_080bea24
+	bl CreateIceballParticle2
 	ldr r1, _0807B7FC @ =gEnemyFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2
@@ -972,7 +972,7 @@ _0807B812:
 	strb r0, [r4, #0xa]
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
-	bl FUN_080bea80
+	bl CreateIceballParticle4
 	ldr r1, _0807B85C @ =gEnemyFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2

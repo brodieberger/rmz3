@@ -306,6 +306,7 @@ INCASM("asm/boss/volteel.inc");
 
 // --------------------------------------------
 
+// 0x08362330
 static const struct Collision sCollisions[24] = {
     [0] = {
       kind : DRP,
@@ -543,6 +544,7 @@ static const struct Collision sCollisions[24] = {
     },
 };
 
+// 0x08362570
 const struct Coord Coord_ARRAY_08362570[7] = {
     {0x00000000, -0x00002000}, {0x00000600, -0x00002500}, {0x00000600, -0x00002500}, {0x00000000, 0x00000400}, {0x00000000, 0x00000400}, {-0x00001000, 0x00000000}, {-0x00001000, 0x00000000},
 };

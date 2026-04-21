@@ -332,7 +332,7 @@ _0800355C:\n\
 	lsls r2, r2, #0x14\n\
 	adds r0, r0, r2\n\
 	str r0, [r5, #0x10]\n\
-	ldr r4, _080035B4 @ =0x02000010\n\
+	ldr r4, _080035B4 @ =gSaveHeader\n\
 	adds r1, r4, #0\n\
 	movs r2, #0x10\n\
 	bl ReadSram\n\
@@ -358,7 +358,7 @@ _0800355C:\n\
 	b _0800368E\n\
 	.align 2, 0\n\
 _080035B0: .4byte 0x00000AAA\n\
-_080035B4: .4byte 0x02000010\n\
+_080035B4: .4byte gSaveHeader\n\
 _080035B8: .4byte sINTI\n\
 _080035BC: .4byte 0x0000FFFF\n\
 _080035C0: .4byte gSramState\n\
@@ -405,7 +405,7 @@ _08003602:\n\
 	ldr r0, [r5, #8]\n\
 	str r0, [r5, #0xc]\n\
 	ldr r4, [r5, #0x14]\n\
-	ldr r7, _08003650 @ =0x02000010\n\
+	ldr r7, _08003650 @ =gSaveHeader\n\
 	cmp r4, #0\n\
 	beq _08003630\n\
 	adds r3, r7, #0\n\
@@ -437,7 +437,7 @@ _08003630:\n\
 	b _0800368E\n\
 	.align 2, 0\n\
 _0800364C: .4byte gSramState\n\
-_08003650: .4byte 0x02000010\n\
+_08003650: .4byte gSaveHeader\n\
 _08003654: .4byte 0x0000FFFF\n\
 _08003658:\n\
 	ldrh r0, [r6, #0x1e]\n\

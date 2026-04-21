@@ -265,6 +265,7 @@ static void Tretista_Die(struct Boss* p) {
 
 INCASM("asm/boss/tretista.inc");
 
+// 0x083633b0
 static const struct Collision sCollisions[13] = {
     [0] = {
       kind : DRP,

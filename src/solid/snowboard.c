@@ -14,7 +14,7 @@ const SolidRoutine gSnowboardRoutine = {
     [ENTITY_INIT] =      Solid18_Init,
     [ENTITY_UPDATE] =    Solid18_Update,
     [ENTITY_DIE] =       Solid18_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

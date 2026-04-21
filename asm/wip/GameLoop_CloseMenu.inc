@@ -15,7 +15,7 @@
 	ands r0, r1
 	cmp r0, #0
 	beq _080EEE16
-	bl ApplyCyberSpaceColorFilter
+	bl EnableCyberSpaceColorFilter
 _080EEE16:
 	adds r0, r5, #0
 	bl RestoreGraphicState
@@ -99,7 +99,7 @@ _080EEEB2:
 	movs r0, #0
 	strb r0, [r1]
 	movs r7, #0
-	ldr r1, _080EEF88 @ =0x0202F360
+	ldr r1, _080EEF88 @ =gWhitePaintFlags
 	str r7, [sp]
 	movs r6, #8
 	ldr r2, _080EEF8C @ =0x01000008
@@ -115,7 +115,7 @@ _080EEEB2:
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
-	ldr r0, _080EEF98 @ =gZakoHeaderPtr
+	ldr r0, _080EEF98 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
@@ -179,11 +179,11 @@ _080EEEB2:
 	b _080EEFCC
 	.align 2, 0
 _080EEF84: .4byte 0x0202F354
-_080EEF88: .4byte 0x0202F360
+_080EEF88: .4byte gWhitePaintFlags
 _080EEF8C: .4byte 0x01000008
 _080EEF90: .4byte gSolidHeaderPtr
 _080EEF94: .4byte gBossHeaderPtr
-_080EEF98: .4byte gZakoHeaderPtr
+_080EEF98: .4byte gEnemyHeaderPtr
 _080EEF9C: .4byte 0x0203029C
 _080EEFA0: .4byte gElfHeaderPtr
 _080EEFA4: .4byte gProjectileHeaderPtr

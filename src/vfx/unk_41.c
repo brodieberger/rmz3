@@ -1,6 +1,8 @@
 #include "global.h"
 #include "vfx.h"
 
+// ヘルバットシルトのレーザーに関係?
+
 INCASM("asm/vfx/unk_41.inc");
 
 void VFX41_Init(struct VFX* vfx);
@@ -12,7 +14,7 @@ const VFXRoutine gVFX41Routine = {
     [ENTITY_INIT] =      VFX41_Init,
     [ENTITY_UPDATE] =    VFX41_Update,
     [ENTITY_DIE] =       VFX41_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
@@ -40,13 +42,13 @@ static const s32* const PTR_ARRAY_0836ef68[3] = {
 };
 
 static const motion_t motion_t_ARRAY_0836ef74[3] = {
-    MOTION(0xA9, 0x09),
-    MOTION(0xA9, 0x08),
-    MOTION(0xA9, 0x07),
+    MOTION(DM169_HELLBAT_LASER, 9),
+    MOTION(DM169_HELLBAT_LASER, 8),
+    MOTION(DM169_HELLBAT_LASER, 7),
 };
 
 static const motion_t motion_t_ARRAY_0836ef7a[3] = {
-    MOTION(0xA9, 0x0D),
-    MOTION(0xA9, 0x0C),
-    MOTION(0xA9, 0x0B),
+    MOTION(DM169_HELLBAT_LASER, 13),
+    MOTION(DM169_HELLBAT_LASER, 12),
+    MOTION(DM169_HELLBAT_LASER, 11),
 };

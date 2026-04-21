@@ -8,26 +8,26 @@ void Enemy14_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gTopGabyoallRoutine = {
-    [ENTITY_INIT] =      Enemy14_Init,
-    [ENTITY_UPDATE] =    Enemy14_Update,
-    [ENTITY_DIE] =       Enemy14_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Enemy14_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Enemy14_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Enemy14_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreateTopGabyoall(struct Coord* c, u8 r1, u8 r2) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Entity* CreateTopGabyoall(struct Coord* c, u8 r1, u8 r2) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_TOP_GABYOALL);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = r1;
-    (p->s).work[1] = r2;
-    (p->s).coord = *c;
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_TOP_GABYOALL);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = r1;
+    p->work[1] = r2;
+    p->coord = *c;
     return p;
   } else {
     return NULL;
@@ -43,17 +43,15 @@ void FUN_0806f89c(struct Enemy* p);
 
 static void Enemy14_Init(struct Enemy* p) {
   static const EnemyFunc sInitializers[4] = {
-      FUN_0806f5d0,
-      FUN_0806f6cc,
-      FUN_0806f7dc,
-      FUN_0806f89c,
+      (EnemyFunc)FUN_0806f5d0,
+      (EnemyFunc)FUN_0806f6cc,
+      (EnemyFunc)FUN_0806f7dc,
+      (EnemyFunc)FUN_0806f89c,
   };
-  (sInitializers[(p->s).work[0]])(p);
+  (sInitializers[(p->s).work[0]])((void*)p);
 }
 
 // --------------------------------------------
-
-INCASM("asm/enemy/unk_14.inc");
 
 void FUN_0806f964(struct Enemy* p);
 void FUN_0806fb08(struct Enemy* p);
@@ -61,11 +59,28 @@ void FUN_0806fc78(struct Enemy* p);
 void FUN_0806fe38(struct Enemy* p);
 
 static const EnemyFunc PTR_ARRAY_08366960[4] = {
-    FUN_0806f964,
-    FUN_0806fb08,
-    FUN_0806fc78,
-    FUN_0806fe38,
+    (EnemyFunc)FUN_0806f964,
+    (EnemyFunc)FUN_0806fb08,
+    (EnemyFunc)FUN_0806fc78,
+    (EnemyFunc)FUN_0806fe38,
 };
+
+// --------------------------------------------
+
+INCASM("asm/enemy/top_gabyoall.inc");
+
+// 0x08070000
+void FUN_08070000(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+  if (body->hitboxFlags & (BODY_STATUS_WHITE | BODY_STATUS_B3)) {
+    struct Entity* self = (struct Entity*)body->parent;
+    if (self->mode[1] != 2) {
+      self->mode[1] = 2;
+      self->mode[2] = 0;
+    } else {
+      self->work[2] = 64;
+    }
+  }
+}
 
 // --------------------------------------------
 

@@ -262,7 +262,7 @@ _0801094C:
 	cmp r0, #0
 	beq _0801095E
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _0801095E:
 	movs r5, #0
 	mov r8, r5
@@ -702,7 +702,7 @@ _08010C98:
 	cmp r0, #0
 	beq _08010CB6
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08010CB6:
 	pop {r4, r5, r6}
 	pop {r0}

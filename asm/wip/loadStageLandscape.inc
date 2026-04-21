@@ -5,7 +5,7 @@
 	push {r5, r6, r7}
 	sub sp, #0x2c
 	mov r8, r1
-	ldr r3, _080090BC @ =0x020029E0
+	ldr r3, _080090BC @ =gOverworld+0x7E0
 	ldrb r1, [r1]
 	mov r4, r8
 	ldrb r2, [r4, #2]
@@ -118,7 +118,7 @@ _08009092:
 	adds r3, r3, r0
 	b _080090C8
 	.align 2, 0
-_080090BC: .4byte 0x020029E0
+_080090BC: .4byte gOverworld+0x7E0
 _080090C0: .4byte 0x0100AE08
 _080090C4:
 	adds r3, #0x1e

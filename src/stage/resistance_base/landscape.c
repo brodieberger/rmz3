@@ -1,6 +1,7 @@
 #include "blink.h"
 #include "gfx.h"
 #include "global.h"
+#include "mod.h"
 #include "overworld.h"
 
 #define HEIGHT 14
@@ -38,10 +39,10 @@ static void initResistanceBase(struct Coord* _ UNUSED) {
     gOverworld.work.resistanceBase.weather = SUNSET;  // sunset
   }
 
-  if ((gSystemSavedataManager.mods[4] & (1 << 4)) != 0) {
+  if (MOD_ENABLED(gSystemSavedataManager.mods, 36)) {
     LoadScreenIntoMetatileMap(5, 6, 7);
   }
-  if ((gSystemSavedataManager.mods[5] & (1 << 1)) != 0) {
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_FLOWER)) {
     LoadScreenIntoMetatileMap(6, 2, 86);
     LoadScreenIntoMetatileMap(6, 3, 87);
     LoadScreenIntoMetatileMap(7, 3, 88);

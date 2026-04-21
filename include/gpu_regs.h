@@ -8,7 +8,11 @@
 #define USE_BG2 0x24
 #define USE_BG3 0x38
 
+#define BGCNT16(n) *((u16*)&gVideoRegBuffer.bgcnt[n])
 #define BGOFS(n) ((struct BgOfs*)gVideoRegBuffer.bgofs[(n)])
+#define CHAR_BASE(n) ((*((u16*)&gVideoRegBuffer.bgcnt[n]) & 0xc) << 0xc)
+#define SCREEN_BASE(n) (gVideoRegBuffer.bgcnt[n].screenBaseBlock * 0x800)
+#define SCREEN_BASE_16(n) ((BGCNT16(n) & 0x1F00) << 3)
 
 struct BgOfs {
   u16 x;
@@ -62,16 +66,16 @@ extern u16 wMOSAIC;  // wMOSAIC
 // --------------------------------------------
 
 void ResetVideoRegister(void);
-void FlashVideoRegister(void);
+void FlushVideoRegister(void);
 void LoadBgMap(u8 bg16, const u32* tbl, u8 idx, s8 x, s8 y);
 void loadBgMap_08004248(u16* dst, const u32* tbl, s32 idx, u8 x, s32 y);
 void ResetOAM(void);
-void FlashOAM(void);
+void FlushOAM(void);
 void ClearBLDCLT_1(void);
-void FlashBlendRegister(void);
+void FlushBlendRegister(void);
 void ResetWindow(void);
-void FlashWinRegister(void);
+void FlushWinRegister(void);
 void ClearMOSAIC(void);
-void FlashMOSAIC(void);
+void FlushMOSAIC(void);
 
 #endif  // GUARD_RMZ3_GPU_REGS_H

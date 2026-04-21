@@ -100,7 +100,7 @@ static void Solid50_Die(struct Solid* p) {
 
 static void Solid50_Disappear(struct Solid* p) {
   (p->s).flags2 &= ~ENTITY_HAZARD;
-  DeleteSolid(p);
+  DeleteSolid((void*)p);
 }
 
 // --------------------------------------------

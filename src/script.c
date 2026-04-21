@@ -8,17 +8,17 @@
 #include "text.h"
 #include "zero.h"
 
-extern const s32 s32_ARRAY_080fece4[2];
+extern const struct Coord gMaxCoords;
 
 static bool32 runFieldScript(struct VM* vm);
 static void PrintScriptString(struct VM* vm);
 static void readInput(struct VM* vm);
-static void filterEmergencyRed(struct VM* vm);
+static void StepEmergencyRed(struct VM* vm);
 static void quakeScreen(struct VM* vm);
 static void StepTransition(struct VM* vm);
 static void tryDeleteIndicator(struct VM* vm);
 static void tryForceZeroXCoord(struct VM* vm);
-static void NoEntryZero(struct VM* vm);
+static void UpdatePlayerMovableArea(struct VM* vm);
 
 void ClearVM(struct VM* vm, u32 stageID) {
   s32 i;
@@ -52,7 +52,7 @@ void ClearVM(struct VM* vm, u32 stageID) {
 
 void FUN_08021b88(struct VM* _ UNUSED) {
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
+  gPaletteManager.post_process = NULL;
   ClearBlinkings();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
@@ -73,8 +73,8 @@ void SetScript(struct VM* vm, const struct Command* script) {
     TurnUpBGM();
     gTimeElfTimer = 0;
   }
-  stopSound(SE_TIME_ELF);
-  stopSound(SE_TIME_ELF_HURRY);
+  StopSound(SE_TIME_ELF);
+  StopSound(SE_TIME_ELF_HURRY);
 }
 
 /*
@@ -91,12 +91,12 @@ bool32 RunVM(struct VM* vm) {
   vm->time++;
 
   readInput(vm);
-  filterEmergencyRed(vm);
+  StepEmergencyRed(vm);
   quakeScreen(vm);
   StepTransition(vm);
   tryDeleteIndicator(vm);
   tryForceZeroXCoord(vm);
-  NoEntryZero(vm);
+  UpdatePlayerMovableArea(vm);
   return done;
 }
 
@@ -460,111 +460,53 @@ static void tryForceZeroXCoord(struct VM* vm) {
 }
 
 // gOverworld.range の見えない壁に阻まれる処理
-WIP static void NoEntryZero(struct VM* vm) {
-#if MODERN
-  s32 top = 0;
-  s32 left = 0;
-  s32 right = s32_ARRAY_080fece4[0];
-  s32 bottom = s32_ARRAY_080fece4[1];
+static void UpdatePlayerMovableArea(struct VM* vm) {
+  struct Zero* player = (struct Zero*)vm->entities[0].entity;
+  struct Coord c1 = {x : 0, y : 0};
+  struct Coord c2 = {x : gMaxCoords.x, y : gMaxCoords.y};
 
-  struct Zero* z = (struct Zero*)vm->entities[0].entity;
-  if (z != NULL) {
+  if (player != NULL) {
     struct Camera* camera = &gStageRun.vm.camera;
     if (camera->mode > 3) {
-      left = camera->left;
-      top = camera->top;
-      right = camera->right;
-      bottom = camera->bottom;
+      c1.x = camera->left;
+      c1.y = camera->top;
+      c2.x = camera->right;
+      c2.y = camera->bottom;
     }
 
-    if (left < gOverworld.range.left) {
-      left = gOverworld.range.left;
+    if (c1.x < gOverworld.range.left) {
+      c1.x = gOverworld.range.left;
     }
-    if (top < gOverworld.range.top) {
-      top = gOverworld.range.top;
+    if (c1.y < gOverworld.range.top) {
+      c1.y = gOverworld.range.top;
     }
-    if (right > gOverworld.range.right) {
-      right = gOverworld.range.right;
+    if (c2.x > gOverworld.range.right) {
+      c2.x = gOverworld.range.right;
     }
-    if (bottom > gOverworld.range.bottom) {
-      bottom = gOverworld.range.bottom;
+    if (c2.y > gOverworld.range.bottom) {
+      c2.y = gOverworld.range.bottom;
     }
-    SetDisableArea(z, left, top, right, bottom);
+    SetDisableArea(player, c1.x, c1.y, c2.x, c2.y);
 
-    z = (struct Zero*)vm->entities[1].entity;
-    if ((z != NULL) && ((z->s).kind == ENTITY_PLAYER)) {
-      SetDisableArea(z, left, top, right, bottom);
+    player = (struct Zero*)vm->entities[1].entity;
+    if ((player != NULL) && ((player->s).kind == ENTITY_PLAYER)) {
+      SetDisableArea(player, c1.x, c1.y, c2.x, c2.y);
     }
   }
-#else
-  INCCODE("asm/wip/NoEntryZero.inc");
-#endif
 }
 
-NAKED static void filterEmergencyRed(struct VM* vm) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	movs r1, #0xa6\n\
-	lsls r1, r1, #1\n\
-	adds r5, r0, r1\n\
-	ldrh r3, [r5]\n\
-	ldr r0, _08022314 @ =0x0000BFFF\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _0802230C\n\
-	ldr r1, _08022318 @ =gSineTable\n\
-	lsls r0, r3, #0x1a\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #0x17\n\
-	adds r0, r0, r2\n\
-	lsrs r0, r0, #0x17\n\
-	adds r0, r0, r1\n\
-	ldrh r0, [r0]\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x15\n\
-	movs r1, #8\n\
-	subs r4, r1, r0\n\
-	movs r2, #0xff\n\
-	lsls r2, r2, #8\n\
-	ands r2, r3\n\
-	adds r0, r3, #1\n\
-	movs r1, #0xff\n\
-	ands r0, r1\n\
-	orrs r2, r0\n\
-	strh r2, [r5]\n\
-	ldr r3, _0802231C @ =gPaletteManager\n\
-	asrs r0, r4, #1\n\
-	adds r0, #0x20\n\
-	movs r6, #0x80\n\
-	lsls r6, r6, #3\n\
-	adds r1, r3, r6\n\
-	strb r0, [r1]\n\
-	movs r0, #0x20\n\
-	subs r0, r0, r4\n\
-	adds r6, #1\n\
-	adds r1, r3, r6\n\
-	strb r0, [r1]\n\
-	ldr r1, _08022320 @ =0x00000402\n\
-	adds r3, r3, r1\n\
-	strb r0, [r3]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #7\n\
-	ands r2, r0\n\
-	cmp r2, #0\n\
-	beq _0802230C\n\
-	cmp r4, #0\n\
-	bne _0802230C\n\
-	strh r4, [r5]\n\
-_0802230C:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_08022314: .4byte 0x0000BFFF\n\
-_08022318: .4byte gSineTable\n\
-_0802231C: .4byte gPaletteManager\n\
-_08022320: .4byte 0x00000402\n\
- .syntax divided\n");
+// update Emergency effect (blend red)
+static void StepEmergencyRed(struct VM* vm) {
+  if ((vm->emergency & ((u16)~EMERGENCY_TEMPORARY)) != 0) {
+    s32 n = 8 - (COS(vm->emergency << 2) >> 5);
+    vm->emergency = (vm->emergency & 0xFF00) | ((vm->emergency + 1) & 0xFF);
+    gPaletteManager.filter[0] = 0x20 + (n >> 1);
+    gPaletteManager.filter[2] = gPaletteManager.filter[1] = 0x20 - n;
+
+    if ((vm->emergency & EMERGENCY_TEMPORARY) && (n == 0)) {
+      vm->emergency = 0;
+    }
+  }
 }
 
 static void quakeScreen(struct VM* vm) {

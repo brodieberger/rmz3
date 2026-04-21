@@ -4,13 +4,10 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
-#include "vfx.h"
 
-struct VFX* CreateVFX55(struct Boss* p, u8 r1, u8 r2);
+struct Entity* CreateVFX55(struct Boss* e, u8 r1, u8 r2);
 
 void copyx_08057744(struct Boss* p);
-
-static const struct Collision sCollisions[10];
 
 static void CopyX_Init(struct Boss* p);
 static void CopyX_Update(struct Boss* p);
@@ -18,35 +15,33 @@ static void CopyX_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gCopyXRoutine = {
-    [ENTITY_INIT] =      CopyX_Init,
-    [ENTITY_UPDATE] =    CopyX_Update,
-    [ENTITY_DIE] =       CopyX_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)CopyX_Init,
+    [ENTITY_UPDATE] =    (BossFunc)CopyX_Update,
+    [ENTITY_DIE] =       (BossFunc)CopyX_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
+// --------------------------------------------
+
 void CreateCopyX(struct Coord* c) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-
+    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_COPY_X);
-
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-
-    ((p->s).coord).x = c->x;
-    ((p->s).coord).y = c->y;
-
-    (p->s).work[0] = 0;
-    (p->s).work[1] = 0;
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    (p->coord).x = c->x;
+    (p->coord).y = c->y;
+    p->work[0] = 0, p->work[1] = 0;
   }
 }
 
 // --------------------------------------------
+
+static const struct Collision sCollisions[];
 
 NAKED static void CopyX_Init(struct Boss* p) {
   asm(".syntax unified\n\
@@ -467,10 +462,7 @@ static void CopyX_Update(struct Boss* p) {
     ClearBlink(92);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[2] = 1;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     CopyX_Die(p);
     return;
   }
@@ -525,6 +517,8 @@ static void CopyX_Die(struct Boss* p) {
   (sDeads[(p->s).mode[1]])(p);
 }
 
+// --------------------------------------------
+
 static void copyx_080557a4(struct Boss* p) {
   if ((p->s).scriptEntity->flags & (1 << 0)) {
     (p->s).mode[1] = 1;
@@ -549,7 +543,7 @@ static void copyxMode1(struct Boss* p) {
       (p->s).mode[3]++;
     }
   } else if (!(gStageRun.vm.active & 1)) {
-    SetMotion(&p->s, MOTION(DM179_COPY_X, 0x00));
+    SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
     (p->s).mode[1] = 2;
     (p->s).mode[2] = 1;
   }
@@ -557,6 +551,7 @@ static void copyxMode1(struct Boss* p) {
 
 INCASM("asm/boss/copy_x.inc");
 
+// 0x08363c18
 static const struct Collision sCollisions[10] = {
     {
       kind : DDP,

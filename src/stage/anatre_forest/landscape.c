@@ -102,77 +102,21 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
   }
 }
 
-NAKED static void FUN_08010444(struct Coord* _ UNUSED) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	ldr r2, _080104BC @ =gOverworld\n\
-	ldr r1, _080104C0 @ =0x000007D4\n\
-	adds r0, r2, r1\n\
-	ldrh r1, [r0]\n\
-	lsrs r0, r1, #8\n\
-	cmp r0, #8\n\
-	bne _080104B6\n\
-	movs r0, #0xff\n\
-	ands r0, r1\n\
-	cmp r0, #2\n\
-	bne _080104B6\n\
-	movs r4, #0\n\
-	ldr r1, _080104C4 @ =0x0002D035\n\
-	adds r0, r2, r1\n\
-	ldr r1, _080104C8 @ =0x08340128\n\
-	ldrb r0, [r0]\n\
-	ldrb r2, [r1]\n\
-	cmp r0, r2\n\
-	bls _08010480\n\
-	adds r3, r1, #0\n\
-	adds r2, r0, #0\n\
-_08010470:\n\
-	adds r0, r4, #1\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r4, r0, #0x10\n\
-	lsls r0, r4, #1\n\
-	adds r0, r0, r3\n\
-	ldrb r0, [r0]\n\
-	cmp r2, r0\n\
-	bhi _08010470\n\
-_08010480:\n\
-	ldr r6, _080104CC @ =gStageTilesetOffsets+(18*4)\n\
-	lsls r4, r4, #1\n\
-	adds r0, r1, #1\n\
-	adds r4, r4, r0\n\
-	ldrb r0, [r4]\n\
-	lsls r1, r0, #2\n\
-	adds r1, r1, r0\n\
-	lsls r1, r1, #2\n\
-	ldr r5, _080104D0 @ =0x08705150\n\
-	adds r1, r1, r5\n\
-	ldr r0, [r6]\n\
-	adds r0, r0, r1\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #7\n\
-	bl RequestGraphicTransfer\n\
-	ldrb r0, [r4]\n\
-	lsls r1, r0, #2\n\
-	adds r1, r1, r0\n\
-	lsls r1, r1, #2\n\
-	adds r1, r1, r5\n\
-	ldr r0, [r6]\n\
-	adds r0, r0, r1\n\
-	adds r0, #0xc\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-_080104B6:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080104BC: .4byte gOverworld\n\
-_080104C0: .4byte 0x000007D4\n\
-_080104C4: .4byte 0x0002D035\n\
-_080104C8: .4byte 0x08340128\n\
-_080104CC: .4byte gStageTilesetOffsets+(18*4)\n\
-_080104D0: .4byte 0x08705150\n\
- .syntax divided\n");
+static const u8 u8_ARRAY_ARRAY_08340128[6][2];
+
+NON_MATCH static void FUN_08010444(struct Coord* _ UNUSED) {
+#if MODERN
+  if (((gOverworld.terrain.tilesets[0] >> 8) == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 2)) {
+    u16 i;
+    for (i = 0; gOverworld.work.anatreForest.unk_00d > u8_ARRAY_ARRAY_08340128[i][0]; i++) {
+    }
+
+    RequestGraphicTransfer(&(TILESETS(18, 158)[u8_ARRAY_ARRAY_08340128[i][1]]).g, (void*)0x4000);
+    LoadPalette(&(TILESETS(18, 158)[u8_ARRAY_ARRAY_08340128[i][1]]).pal, 0);
+  }
+#else
+  INCCODE("asm/wip/FUN_08010444.inc");
+#endif
 }
 
 static void FUN_080104d4(struct Coord* _ UNUSED) {
@@ -180,10 +124,7 @@ static void FUN_080104d4(struct Coord* _ UNUSED) {
   if (leaf = gOverworld.work.anatreForest.leaf, leaf != NULL) {
     (leaf->s).flags &= ~DISPLAY;
     (leaf->s).flags &= ~FLIPABLE;
-    (leaf->body).status = 0;
-    (leaf->body).prevStatus = 0;
-    (leaf->body).invincibleTime = 0;
-    (leaf->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(leaf);
     SET_SOLID_ROUTINE(leaf, ENTITY_DISAPPEAR);
   }
   ClearBlink(218);
@@ -328,7 +269,7 @@ _0801062A:\n\
 	movs r0, #0xc0\n\
 	lsls r0, r0, #0x13\n\
 	adds r2, r2, r0\n\
-	ldr r3, _0801065C @ =0x020029E0\n\
+	ldr r3, _0801065C @ =gOverworld+0x7E0\n\
 	adds r0, r6, #0\n\
 	mov r1, sp\n\
 	bl FUN_08006ae0\n\
@@ -337,7 +278,7 @@ _0801062A:\n\
 _08010650: .4byte gOverworld\n\
 _08010654: .4byte 0x0002D02C\n\
 _08010658: .4byte gVideoRegBuffer+4\n\
-_0801065C: .4byte 0x020029E0\n\
+_0801065C: .4byte gOverworld+0x7E0\n\
 _08010660:\n\
 	ldr r0, [r4, #0x5c]\n\
 	lsrs r0, r0, #4\n\
@@ -396,10 +337,7 @@ static void LayerExit_AnatreForest_5(struct StageLayer* l, const struct Stage* _
   if (p != NULL) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     gOverworld.work.anatreForest.unk_008 = NULL;
   }
@@ -437,6 +375,7 @@ const struct Stage gAnatreForestLandscape = {
   behavior : sScreenBehavior,
 };
 
+// [y, タイルセット]
 static const u8 u8_ARRAY_ARRAY_08340128[6][2] = {
     {160, 0}, {176, 1}, {180, 2}, {184, 0}, {251, 1}, {255, 2},
 };

@@ -29,7 +29,7 @@
 	strb r2, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080637A8 @ =0x08365AC8
+	ldr r1, _080637A8 @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -38,7 +38,7 @@
 	.align 2, 0
 _080637A0: .4byte gSystemSavedataManager
 _080637A4: .4byte gCurStory
-_080637A8: .4byte 0x08365AC8
+_080637A8: .4byte sCollisions
 _080637AC:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -47,7 +47,7 @@ _080637AC:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _0806381C @ =0x08365AC8
+	ldr r1, _0806381C @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -95,7 +95,7 @@ _080637C4:
 	strb r3, [r6, #0xd]
 	b _08063830
 	.align 2, 0
-_0806381C: .4byte 0x08365AC8
+_0806381C: .4byte sCollisions
 _08063820: .4byte FUN_0806465c
 _08063824: .4byte gEnemyFnTable
 _08063828: .4byte pZero2

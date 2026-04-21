@@ -26,7 +26,7 @@ static void zeroTryAttack(struct Zero* z) {
   _zeroTryAttack(z);
 }
 
-WIP static void _zeroTryAttack(struct Zero* z) {
+NON_MATCH static void _zeroTryAttack(struct Zero* z) {
 #if MODERN
   bool8 ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {
@@ -235,7 +235,7 @@ void onSaber_GroundIdle(struct Zero* z) {
 }
 
 // 0x0802d3d0
-WIP static void handle_saber_input(struct Zero* z) {
+NON_MATCH static void handle_saber_input(struct Zero* z) {
 #if MODERN
   u8 charge;
   struct Zero_b4* b4 = &(z->unk_b4);
@@ -248,7 +248,7 @@ WIP static void handle_saber_input(struct Zero* z) {
     charge = GetWeaponCharge(z, TRUE);
   }
 
-  if (z->ultimateCommand_22c[1] == 3) {
+  if ((z->input).ultimateCommand_22c[1] == 3) {
     charge = FULL_CHARGE;
   }
 
@@ -259,14 +259,14 @@ WIP static void handle_saber_input(struct Zero* z) {
     return;
   }
 
-  if (((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT)) && (z->zeroInput & DPAD_UP)) {
+  if (((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT)) && ((z->input).val & DPAD_UP)) {
     (z->unk_b4).attackMode[1] = 7;
     (z->unk_b4).attackMode[2] = 0;
     split_heavens(z);
     return;
   }
 
-  if (((b4->status).exSkill & (1 << EXSKILL_ID_THROW)) && (z->zeroInput & DPAD_DOWN)) {
+  if (((b4->status).exSkill & (1 << EXSKILL_ID_THROW)) && ((z->input).val & DPAD_DOWN)) {
     (z->unk_b4).attackMode[1] = 6;
     (z->unk_b4).attackMode[2] = 0;
     throw_blade(z);
@@ -319,7 +319,7 @@ static void triple_slash_1st(struct Zero* z) {
 }
 
 // 0x0802d59c
-WIP static void triple_slash_2nd(struct Zero* z) {
+NON_MATCH static void triple_slash_2nd(struct Zero* z) {
 #if MODERN
   weapon_t w[4];
 
@@ -335,7 +335,7 @@ WIP static void triple_slash_2nd(struct Zero* z) {
   }
 
   if (((z->s).motion.cmdIdx >= 4) && (z->tripleSlashCounter > 1)) {
-    zero_input_t* input = &z->zeroInput;
+    zero_input_t* input = &(z->input).val;
     if ((*input & DPAD_UP) && isElfUsed_2(z, ELF_LIZETUS)) {
       (z->unk_b4).attackMode[1] = 5;
       (z->unk_b4).attackMode[2] = 0;
@@ -380,7 +380,7 @@ static void triple_slash_3rd(struct Zero* z) {
   if ((z->s).motion.cmdIdx >= 6) {
     struct Zero_b4* b4 = &z->unk_b4;
     if (z->tripleSlashCounter >= 2) {
-      if ((z->zeroInput & DPAD_UP) && ((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT))) {
+      if (((z->input).val & DPAD_UP) && ((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT))) {
         if (((b4->status).head == HEAD_CHIP_NONE) && ((b4->status).body == BODY_CHIP_LIGHT) && ((b4->status).foot == FOOT_CHIP_QUICK)) {
           (z->s).mode[1] = ZERO_AIR;
           (z->s).mode[2] = 0;
@@ -398,6 +398,7 @@ static void triple_slash_3rd(struct Zero* z) {
   }
 }
 
+// 0x0802d798
 void charge_saber_ground(struct Zero* z) {
   if ((z->unk_b4).attackMode[2] == 0) {
     SetMotion(&z->s, MOTION(DM020_ZERO_SABER_CHARGE, 0));
@@ -421,124 +422,42 @@ void charge_saber_ground(struct Zero* z) {
   z->chargeSaber = 1;
 }
 
-NAKED static void slash_up(struct Zero* z) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r4, r0, #0\n\
-	adds r5, r4, #0\n\
-	adds r5, #0xee\n\
-	ldrb r0, [r5]\n\
-	cmp r0, #0\n\
-	bne _0802D84E\n\
-	movs r1, #0x88\n\
-	lsls r1, r1, #5\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	b _0802D874\n\
-_0802D84E:\n\
-	movs r1, #0x88\n\
-	lsls r1, r1, #5\n\
-	adds r0, r4, #0\n\
-	bl KeepMotion\n\
-	ldrb r0, [r5]\n\
-	cmp r0, #1\n\
-	bne _0802D87A\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x72\n\
-	ldrb r0, [r0]\n\
-	lsls r0, r0, #0x18\n\
-	asrs r0, r0, #0x18\n\
-	cmp r0, #1\n\
-	bgt _0802D87A\n\
-	adds r0, r4, #0\n\
-	movs r1, #0xc\n\
-	bl CreateWeaponSaber\n\
-_0802D874:\n\
-	ldrb r0, [r5]\n\
-	adds r0, #1\n\
-	strb r0, [r5]\n\
-_0802D87A:\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x73\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #3\n\
-	bne _0802D89E\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xec\n\
-	movs r0, #0\n\
-	strb r0, [r1]\n\
-	adds r0, r4, #0\n\
-	bl GetDefaultMotion\n\
-	adds r1, r0, #0\n\
-	lsls r1, r1, #0x10\n\
-	lsrs r1, r1, #0x10\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-_0802D89E:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+// 0x0802d834
+static void slash_up(struct Zero* z) {
+  if (((&z->unk_b4)->attackMode)[2] == 0) {
+    SetMotion(&z->s, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
+    ((&z->unk_b4)->attackMode)[2]++;
+  } else {
+    KeepMotion(z, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
+    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+      CreateWeaponSaber(z, SABER_SLASH_UP);
+      (z->unk_b4).attackMode[2]++;
+    }
+  }
+
+  if ((z->s).motion.state == MOTION_END) {
+    ((&z->unk_b4)->attackMode)[0] = 0;
+    SetMotion(&z->s, GetDefaultMotion(z));
+  }
 }
 
-NAKED static void throw_blade(struct Zero* z) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r4, r0, #0\n\
-	adds r5, r4, #0\n\
-	adds r5, #0xee\n\
-	ldrb r0, [r5]\n\
-	cmp r0, #0\n\
-	bne _0802D8BE\n\
-	movs r1, #0x98\n\
-	lsls r1, r1, #5\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	b _0802D8E4\n\
-_0802D8BE:\n\
-	movs r1, #0x98\n\
-	lsls r1, r1, #5\n\
-	adds r0, r4, #0\n\
-	bl KeepMotion\n\
-	ldrb r0, [r5]\n\
-	cmp r0, #1\n\
-	bne _0802D8EA\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x72\n\
-	ldrb r0, [r0]\n\
-	lsls r0, r0, #0x18\n\
-	asrs r0, r0, #0x18\n\
-	cmp r0, #1\n\
-	bgt _0802D8EA\n\
-	adds r0, r4, #0\n\
-	movs r1, #0xd\n\
-	bl CreateWeaponSaber\n\
-_0802D8E4:\n\
-	ldrb r0, [r5]\n\
-	adds r0, #1\n\
-	strb r0, [r5]\n\
-_0802D8EA:\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x73\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #3\n\
-	bne _0802D90E\n\
-	adds r1, r4, #0\n\
-	adds r1, #0xec\n\
-	movs r0, #0\n\
-	strb r0, [r1]\n\
-	adds r0, r4, #0\n\
-	bl GetDefaultMotion\n\
-	adds r1, r0, #0\n\
-	lsls r1, r1, #0x10\n\
-	lsrs r1, r1, #0x10\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-_0802D90E:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+// 0x0802d8a4
+static void throw_blade(struct Zero* z) {
+  if (((&z->unk_b4)->attackMode)[2] == 0) {
+    SetMotion(&z->s, MOTION(DM019_ZERO_SABER_ZANEIDAN, 0));
+    ((&z->unk_b4)->attackMode)[2]++;
+  } else {
+    KeepMotion(z, MOTION(DM019_ZERO_SABER_ZANEIDAN, 0));
+    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+      CreateWeaponSaber(z, SABER_ZANEIDAN);
+      (z->unk_b4).attackMode[2]++;
+    }
+  }
+
+  if ((z->s).motion.state == MOTION_END) {
+    ((&z->unk_b4)->attackMode)[0] = 0;
+    SetMotion(&z->s, GetDefaultMotion(z));
+  }
 }
 
 static void split_heavens(struct Zero* z) {
@@ -929,7 +848,7 @@ static void rod_charge_horizontal(struct Zero* z) {
 
 static void nop_0802dd84(struct Zero* _ UNUSED) { return; }
 
-WIP static void rod_1000slash(struct Zero* z) {
+NON_MATCH static void rod_1000slash(struct Zero* z) {
 #if MODERN
   motion_t m;
   weapon_t w[4];

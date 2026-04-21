@@ -59,6 +59,8 @@ NAME := rmz3
 # MODIFIERS はデバッグビルドなどで debug のように設定されることがあるので、 MODIFIERS を使う場合は := ではなく = で遅延評価すること
 MODIFIERS := 
 
+# The “modern” option is meant to build using the latest toolchain instead of agbcc (an older version of gcc used in rmz3), but because there are still hard-coded addresses in this project, 
+# the rom built with “modern” won’t run all the way through, as the linking process won’t complete correctly.
 ifeq ($(filter modern,$(MAKECMDGOALS)),modern)
 MODIFIERS := $(MODIFIERS)-modern
 MODERN := 1
@@ -67,9 +69,10 @@ endif
 MODERN ?= 0
 
 # Build target
-RONNAME = ${NAME}${MODIFIERS}
-ROM = ${RONNAME}.gba
-ELF = ${RONNAME}.elf
+RONNAME = $(NAME)$(MODIFIERS)
+BUILD_DIR := build/$(RONNAME)
+ROM = $(RONNAME).gba
+ELF = $(RONNAME).elf
 
 all: $(ROM) compare
 
@@ -81,10 +84,6 @@ else
   AGBCC := tools/agbcc/bin/agbcc$(EXE)
 endif
 
-# arm-none-eabi-as を GBA用にカスタムしたもので charmap機能が便利なので使っている
-# ...が、正直全部 arm-none-eabi-as (AS) でビルドした方が楽な気がしてきた。
-AGBASM := tools/agbasm$(EXE)
-
 AS := $(TOOL)/arm-none-eabi-as
 LD = $(TOOL)/arm-none-eabi-ld
 OBJCOPY = $(TOOL)/arm-none-eabi-objcopy
@@ -94,7 +93,6 @@ include make_tools.mk
 # Flags
 ARCH := -mcpu=arm7tdmi -march=armv4t -mthumb 
 ASFLAGS := $(ARCH) -mthumb-interwork -g
-AGBASM_FLAGS := $(ASFLAGS) --agbasm-colon-defined-global-labels --agbasm-multiline-macros --agbasm-charmap --agbasm-no-gba-thumb-after-label-disasm-fix
 
 CFLAGS := -mthumb-interwork  -Wimplicit -Wparentheses -Werror -O2 -fshort-enums
 ifeq ($(MODERN),1)
@@ -104,42 +102,48 @@ ifeq ($(MODERN),1)
 else
 	CPPFLAGS := -I tools/agbcc -I tools/agbcc/include -iquote include -nostdinc -DMODERN=$(MODERN)
 	CFLAGS += -fhex-asm
-	LIBPATH := -L tools/agbcc/lib
+	LIBPATH := -L ../../tools/agbcc/lib
 endif
 LDFLAGS := $(LIBPATH) -lgcc -lc
 
 include assets.mk
 
-# アセンブラに agbasm を使うので特別処理
-ASM_STRING := asm/string.s
-
-ASM_DATAS := $(SONG_ASMS) $(SPRITE_TABLES) data/tilesets/offsets.s
-ASM_CODES := $(wildcard asm/*.s) $(wildcard asm/*/*.s) src/libs/m4a_1.s
+ASM_DATAS := $(SONG_ASMS) $(SPRITE_TABLES)
+ASM_CODES := $(wildcard asm/*.s) $(wildcard asm/*/*.s) $(shell find src -type f -name '*.s')
 ASM_SRCS := $(ASM_CODES) $(ASM_DATAS)
-ASM_OBJS := $(ASM_SRCS:.s=.o)
+ASM_OBJS := $(addprefix $(BUILD_DIR)/, $(ASM_SRCS:.s=.o))
+
+# PRERPOC を使うので特別処理
+STRINGS := $(wildcard src/data/strings/*.s) $(wildcard src/data/texts/*.s)
+STRINGS_OBJS := $(addprefix $(BUILD_DIR)/, $(STRINGS:.s=.o))
 
 # *.s から *.o を作るが、 ファイルによっては別アセンブラを使う必要があったり、 プリプロセッサを通す必要があったりするため、 いくつかの変数に分けて管理している。
 # gccプリプロセッサで処理するもの
 ASM_SCRIPTS := $(wildcard asm/scripts/*.s)
-# ASM_SCRIPTS, ASM_STRING を除いたもの (普通にアセンブリできるもの)
-GCCASFILE := $(filter-out $(ASM_STRING) $(ASM_SCRIPTS), $(ASM_SRCS))
+ASM_SCRIPTS_OBJS := $(addprefix $(BUILD_DIR)/, $(ASM_SCRIPTS:.s=.o))
+# ASM_SCRIPTS を除いたもの (普通にアセンブリできるもの)
+GCCASFILE := $(filter-out $(ASM_SCRIPTS), $(ASM_SRCS))
 
 C_SRCS := $(shell find src -type f -name '*.c')
-C_OBJS := $(C_SRCS:.c=.o)
-C_DEPS := $(C_SRCS:.c=.d)
+C_OBJS := $(addprefix $(BUILD_DIR)/, $(C_SRCS:.c=.o))
+C_DEPS := $(C_OBJS:.o=.d)
+
+OBJS := $(ASM_OBJS) $(C_OBJS) $(GFX_HDR)
+OBJS_REL := $(patsubst $(BUILD_DIR)/%,%,$(OBJS))
+
+SUBDIRS := $(sort $(dir $(OBJS)))
+$(shell mkdir -p $(SUBDIRS))
 
 ifneq ($(MODERN),1)
 # Special configurations required for lib files
-src/mmbn4.o: CFLAGS := -O -mno-thumb-interwork
-src/libs/agb_sram.o: CFLAGS := -O -mthumb-interwork
-src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
+$(BUILD_DIR)/src/mmbn4.o: CFLAGS := -O -mno-thumb-interwork
+$(BUILD_DIR)/src/libs/agb_sram.o: CFLAGS := -O -mthumb-interwork
+$(BUILD_DIR)/src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
 endif
 
-ifeq ($(MODERN),1)
-	LDSCRIPT := ld_script_modern.ld
-else
-	LDSCRIPT := ld_script.ld
-endif
+LDSCRIPT = ld_script$(MODIFIERS).ld
+LD_INC := $(wildcard linker/*.txt)
+LD_BUILD := $(addprefix $(BUILD_DIR)/, $(LD_INC))
 
 ######## ルール定義 #############
 
@@ -186,28 +190,33 @@ clean: clean-code clean-assets
 
 # Cファイルは、AGBCCの都合で一旦アセンブリに変換してからオブジェクトファイルにする必要があるので .s も中間生成される
 clean-code:
-	@rm -f $(C_SRCS:.c=.s) $(C_OBJS) $(C_DEPS)
-	@rm -f $(ASM_OBJS)
+	rm -rf ./$(BUILD_DIR)
 
 $(ROM): $(ELF)
 	$(OBJCOPY) -O binary $< $@
 
 # Linker rule
-$(ELF): $(ASM_OBJS) $(C_OBJS) $(GFX_HDR) ld_script.ld
-	$(LD) -T $(LDSCRIPT) -Map $(NAME).map -o $@ $(ASM_OBJS) $(C_OBJS) $(GFX_HDR) $(LDFLAGS)
+$(LDSCRIPT): $(LD_BUILD)
 
-$(C_OBJS): %.o: %.c
+$(LD_BUILD): $(BUILD_DIR)/linker/%.txt: linker/%.txt
+	@mkdir -p $(dir $@)
+	@cp $< $@
+
+$(ELF): $(LDSCRIPT) $(OBJS)
+	cd $(BUILD_DIR) && $(LD) -T ../../$< -Map $(RONNAME).map -o ../../$@ $(OBJS_REL) $(LDFLAGS)
+
+$(C_OBJS): $(BUILD_DIR)/%.o: %.c
 ifeq ($(MODERN),1)
 	@$(AGBCC) $(CFLAGS) $< -c -o $@
 else
-	$(CPP) $(CPPFLAGS) $< | $(AGBCC) $(CFLAGS) -o $(subst .c,.s,$<)
-	@echo ".text\n\t.align\t2, 0\n" >> $(subst .c,.s,$<)
-	$(AS) $(ASFLAGS) $(subst .c,.s,$<) -o $@ 
+	$(CPP) $(CPPFLAGS) $< | $(AGBCC) $(CFLAGS) -o $(BUILD_DIR)/$(subst .c,.s,$<)
+	@echo ".text\n\t.align\t2, 0\n" >> $(BUILD_DIR)/$(subst .c,.s,$<)
+	$(AS) $(ASFLAGS) $(BUILD_DIR)/$(subst .c,.s,$<) -o $@ 
 endif
 
 # 依存関係ファイル (.d), agbcc には依存関係を生成する機能がないっぽいため、 scaninc ツールを使って生成する
 SCANINC := tools/scaninc/scaninc$(EXE)
-$(C_DEPS): %.d: %.c
+$(C_DEPS): $(BUILD_DIR)/%.d: %.c
 	$(SCANINC) -M $@ -I include $<
 
 # NODEP が 1 のときは依存関係ファイルを読み込まない、これをしないと make clean とかのときに不要な .dファイルを作ろうとしてしまう
@@ -215,9 +224,13 @@ ifneq ($(NODEP),1)
 -include $(C_DEPS)
 endif
 
-# AGBASM を使うための特別ルール
-asm/string.o: asm/string.s $(STR_BINS)
-	$(AGBASM) $(AGBASM_FLAGS) -o $@ $<
+$(BUILD_DIR)/%.o: %.s
+	$(AS) $(ASFLAGS) $< -o $@
 
-$(ASM_SCRIPTS:.s=.o): %.o: %.s
+# PREPROC
+PREPROC := tools/preproc/preproc$(EXE)
+$(STRINGS_OBJS): $(BUILD_DIR)/%.o: %.s
+	$(PREPROC) $< charmap.txt | $(AS) $(ASFLAGS) -o $@ -
+
+$(ASM_SCRIPTS_OBJS): $(BUILD_DIR)/%.o: %.s
 	$(CPP) $(CPPFLAGS) $< | $(AS) $(ASFLAGS) -o $@ -

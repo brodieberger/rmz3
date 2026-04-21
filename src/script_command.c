@@ -16,6 +16,8 @@
 #include "vfx.h"
 #include "zero.h"
 
+void FUN_080251a8(void);
+
 static bool32 Cmd_goto(struct VM* vm);
 static bool32 Cmd_wait(struct VM* vm);
 static bool32 Cmd_time(struct VM* vm);
@@ -48,7 +50,7 @@ static bool32 Cmd_cmd1c(struct VM* vm);
 static bool32 Cmd_sweep(struct VM* vm);
 static bool32 Cmd_lockmenu(struct VM* vm);
 static bool32 Cmd_eventflag(struct VM* vm);
-static bool32 Cmd_cmd20(struct VM* vm);
+static bool32 Cmd_load_graphic_primitive(struct VM* vm);
 static bool32 Cmd_drop(struct VM* vm);
 static bool32 Cmd_missionresult(struct VM* vm);
 static bool32 Cmd_goodluck(struct VM* vm);
@@ -89,7 +91,7 @@ const CommandHandler gScriptCommands[38] = {
     [29] = Cmd_sweep,
     [30] = Cmd_lockmenu,
     [31] = Cmd_eventflag,
-    [32] = Cmd_cmd20,
+    [32] = Cmd_load_graphic_primitive,
     [33] = Cmd_drop,
     [34] = Cmd_missionresult,
     [35] = Cmd_goodluck,
@@ -264,7 +266,7 @@ static bool32 Cmd_adjust_camera(struct VM* vm) {
   return FALSE;
 }
 
-WIP static bool32 Cmd_cmd06(struct VM* vm) {
+NON_MATCH static bool32 Cmd_cmd06(struct VM* vm) {
 #if MODERN
   struct Command* c = vm->pc;
   switch (c->val2) {
@@ -425,6 +427,15 @@ static bool32 Cmd_spawn(struct VM* vm) {
   return FALSE;
 }
 
+// なんかこれ用意したらコンパイル結果がやっと一致してくれた
+struct __attribute__((packed, aligned(1))) EntityOamData_06 {
+  /*0x06*/ u8 unused : 4;
+  /*    */ u8 xflip : 1;
+  /*    */ u8 yflip : 1;
+  /*    */ u8 size : 2;
+  /*    */ u8 : 8;
+};
+
 static bool32 Cmd_entity(struct VM* vm) {
   struct EntityOamData_06* fxxk;
   struct Command* c = vm->pc;
@@ -505,7 +516,7 @@ static bool32 Cmd_entity(struct VM* vm) {
   return FALSE;
 }
 
-WIP static bool32 Cmd_flag(struct VM* vm) {
+NON_MATCH static bool32 Cmd_flag(struct VM* vm) {
 #if MODERN
   struct Command0D* c = (struct Command0D*)vm->pc;
   if (c->flags & (1 << 1)) {
@@ -553,11 +564,11 @@ static bool32 Cmd_cmd0f(struct VM* vm) {
 static bool32 Cmd_emergency(struct VM* vm) {
   switch (vm->pc->status) {
     case 0: {
-      vm->emergency = (u16)(vm->pc->work) | 0x8000;
+      vm->emergency = (u16)(vm->pc->work) | EMERGENCY_ENABLED;
       break;
     }
     case 1: {
-      vm->emergency |= 0x4000;
+      vm->emergency |= EMERGENCY_TEMPORARY;
       break;
     }
   }
@@ -643,7 +654,7 @@ _08022CB4:\n\
 	adds r0, #1\n\
 	strh r0, [r4, #6]\n\
 _08022CC8:\n\
-	ldr r3, _08022D04 @ =0x0200214E\n\
+	ldr r3, _08022D04 @ =gVideoRegBuffer+0xE\n\
 	ldrh r0, [r4, #6]\n\
 	movs r1, #0xf\n\
 	ands r1, r0\n\
@@ -675,7 +686,7 @@ _08022CDE:\n\
 	movs r1, #0\n\
 	b _08022D84\n\
 	.align 2, 0\n\
-_08022D04: .4byte 0x0200214E\n\
+_08022D04: .4byte gVideoRegBuffer+0xE\n\
 _08022D08: .4byte StringOfsTable\n\
 _08022D0C: .4byte gStringData\n\
 _08022D10:\n\
@@ -710,7 +721,7 @@ _08022D38:\n\
 	adds r0, #1\n\
 	strh r0, [r4, #6]\n\
 _08022D4C:\n\
-	ldr r3, _08022D8C @ =0x0200214E\n\
+	ldr r3, _08022D8C @ =gVideoRegBuffer+0xE\n\
 	ldrh r0, [r4, #6]\n\
 	movs r1, #0xf\n\
 	ands r1, r0\n\
@@ -743,7 +754,7 @@ _08022D84:\n\
 	bl PrintRows\n\
 	b _08022DBC\n\
 	.align 2, 0\n\
-_08022D8C: .4byte 0x0200214E\n\
+_08022D8C: .4byte gVideoRegBuffer+0xE\n\
 _08022D90: .4byte StringOfsTable\n\
 _08022D94: .4byte gStringData\n\
 _08022D98:\n\
@@ -1037,7 +1048,7 @@ static bool32 Cmd_se(struct VM* vm) {
       break;
     }
     case 1: {
-      stopSound(pc->work);
+      StopSound(pc->work);
       break;
     }
     case 2: {
@@ -1284,11 +1295,12 @@ static bool32 Cmd_eventflag(struct VM* vm) {
   return FALSE;
 }
 
-static bool32 Cmd_cmd20(struct VM* vm) {
+// 汎用的なグラフィックデータを読み込んでおくためのコマンド
+static bool32 Cmd_load_graphic_primitive(struct VM* vm) {
   LOAD_STATIC_GRAPHIC(SM000_BATTLE_EFFECT);
   LOAD_STATIC_GRAPHIC(SM003_EMOTION_BUBBLE);
   LOAD_STATIC_GRAPHIC(SM209_NUMBER);
-  FUN_080251a8();
+  FUN_080251a8();  // Load element graphics
   return FALSE;
 }
 
@@ -1352,8 +1364,8 @@ static bool32 Cmd_killtimeelf(struct VM* vm) {
     TurnUpBGM();
     gTimeElfTimer = 0;
   }
-  stopSound(SE_TIME_ELF);
-  stopSound(SE_TIME_ELF_HURRY);
+  StopSound(SE_TIME_ELF);
+  StopSound(SE_TIME_ELF_HURRY);
   return FALSE;
 }
 
@@ -2078,7 +2090,7 @@ _08023DBC: .4byte 0x00000111\n\
 _08023DC0: .4byte gVideoRegBuffer\n\
 _08023DC4: .4byte 0x0000EDFF\n\
 _08023DC8:\n\
-	bl UnmaskBg0\n\
+	bl DisableBG0\n\
 	ldr r1, _08023E18 @ =gVideoRegBuffer+6\n\
 	ldr r2, _08023E1C @ =0x00001F83\n\
 	adds r0, r2, #0\n\
@@ -2192,7 +2204,7 @@ _08023EA8:\n\
 	lsls r2, r2, #3\n\
 	movs r3, #0xf0\n\
 	lsls r3, r3, #2\n\
-	bl MaskBg0\n\
+	bl EnableBG0\n\
 _08023EC2:\n\
 	bl LoadAsciiBold\n\
 	b _08023EE6\n\

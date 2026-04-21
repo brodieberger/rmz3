@@ -2,6 +2,10 @@
 #include "global.h"
 #include "projectile.h"
 
+// Hanumachine
+
+INCASM("asm/projectile/unk_36.inc");
+
 void Projectile36_Init(struct Projectile* p);
 void Projectile36_Update(struct Projectile* p);
 void Projectile36_Die(struct Projectile* p);

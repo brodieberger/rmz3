@@ -269,7 +269,7 @@ _080E277C:
 	ldr r0, [r5, #0x58]
 	adds r0, r0, r1
 	str r0, [r4, #0x68]
-	ldr r1, _080E2814 @ =0x08371CCC
+	ldr r1, _080E2814 @ =sNurseBUpdates
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -337,7 +337,7 @@ _080E280E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E2814: .4byte 0x08371CCC
+_080E2814: .4byte sNurseBUpdates
 _080E2818: .4byte gSineTable
 
 	thumb_func_start NurseB_Die

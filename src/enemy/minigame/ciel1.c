@@ -13,7 +13,7 @@ const EnemyRoutine gCielMinigameEnemy1Routine = {
     [ENTITY_INIT] =      CielMinigameEnemy_Init,
     [ENTITY_UPDATE] =    CielMinigameEnemy_Update,
     [ENTITY_DIE] =       CielMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

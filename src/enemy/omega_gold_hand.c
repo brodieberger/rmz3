@@ -11,16 +11,16 @@ const EnemyRoutine gOmegaGoldHandRoutine = {
     [ENTITY_INIT] =      OmegaGoldHand_Init,
     [ENTITY_UPDATE] =    OmegaGoldHand_Update,
     [ENTITY_DIE] =       OmegaGoldHand_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 struct Enemy* FUN_08082b58(struct Coord* c, bool8 isLeftHand, struct Boss* omega) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_OMEGA_GOLD_HAND);
+    INIT_ENEMY_ROUTINE(p, ENEMY_OMEGA_GOLD_HAND);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;

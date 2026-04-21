@@ -67,8 +67,7 @@
 #define SCREEN_WIDTH (240 << 8)
 #define SCREEN_HEIGHT (160 << 8)
 
-#define PLTTDATA(u16val) \
-  { u16val & 0x1F, (u16val >> 5) & 0x1F, (u16val >> 10) & 0x1F, (u16val >> 15) & 0x1 }
+#define PLTTDATA(u16val) {u16val & 0x1F, (u16val >> 5) & 0x1F, (u16val >> 10) & 0x1F, (u16val >> 15) & 0x1}
 
 #define DISK_COUNT 180
 #define MISSION_COUNT 12
@@ -81,6 +80,9 @@
 #define LOHALF(n) ((n) & 0xFFFF)
 #define HI_NIBBLE(byte) (((u8)byte) >> 4)
 #define LO_NIBBLE(byte) (((u8)byte) & 0xF)
+
+#define PTR_U32(p) ((u32)(void*)(p))
+#define SELF_REL_PTR(ptr32) ((void*)((char*)ptr32 + *((u32*)ptr32)))
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) >= (b) ? (a) : (b))

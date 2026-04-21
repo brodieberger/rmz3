@@ -1,126 +1,55 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/element_effect.h"
 
-struct VFX* CreateFlameEffect(struct Entity* friend, struct Coord* c, u8 r2) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, 10);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).unk_28 = friend;
-    (g->props).ee.c.x = c->x;
-    (g->props).ee.c.y = c->y;
-    (g->s).work[2] = r2;
-    *(u8*)&(g->props).ee.c.y = r2;
+static void FlameEffect_Init(struct Entity* p);
+static void FlameEffect_Update(struct VFX* p);
+static void FlameEffect_Die(struct Entity* p);
+
+// clang-format off
+const VFXRoutine gFlameEffectRoutine = {
+    [ENTITY_INIT] =      (void*)FlameEffect_Init,
+    [ENTITY_UPDATE] =    (void*)FlameEffect_Update,
+    [ENTITY_DIE] =       (void*)FlameEffect_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
+};
+// clang-format on
+
+struct ElementEffect* CreateFlameEffect(struct Entity* e, struct Coord* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_FLAME_EFFECT);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).unk_28 = e;
+    (p->c).x = c->x, (p->c).y = c->y;
+    (p->s).work[2] = r2;
+    *((u8*)&(p->c).y) = r2;
   }
-
-  return g;
+  return p;
 }
 
-static NAKED void FlameEffect_Init(struct VFX* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	ldr r4, [r6, #0x28]\n\
-	bl InitNonAffineMotion\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080B4DDA\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x49\n\
-	ldrb r0, [r0]\n\
-	adds r3, r6, #0\n\
-	adds r3, #0x49\n\
-	movs r1, #0xc\n\
-	ands r1, r0\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0xd\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	strb r0, [r3]\n\
-_080B4DDA:\n\
-	adds r1, r6, #0\n\
-	adds r1, #0x25\n\
-	movs r0, #0\n\
-	strb r0, [r1]\n\
-	adds r0, r6, #0\n\
-	movs r1, #0xe\n\
-	bl ForceEntityPalette\n\
-	ldr r2, _080B4E10 @ =RNG_0202f388\n\
-	ldr r1, [r2]\n\
-	ldr r0, _080B4E14 @ =0x000343FD\n\
-	muls r0, r1, r0\n\
-	ldr r1, _080B4E18 @ =0x00269EC3\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #1\n\
-	lsrs r1, r0, #1\n\
-	str r1, [r2]\n\
-	lsrs r2, r0, #0x11\n\
-	movs r0, #1\n\
-	ands r2, r0\n\
-	cmp r2, #0\n\
-	beq _080B4E1C\n\
-	ldrb r0, [r6, #0xa]\n\
-	movs r1, #0x10\n\
-	orrs r0, r1\n\
-	b _080B4E22\n\
-	.align 2, 0\n\
-_080B4E10: .4byte RNG_0202f388\n\
-_080B4E14: .4byte 0x000343FD\n\
-_080B4E18: .4byte 0x00269EC3\n\
-_080B4E1C:\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-_080B4E22:\n\
-	strb r0, [r6, #0xa]\n\
-	movs r4, #1\n\
-	movs r5, #1\n\
-	adds r1, r5, #0\n\
-	ands r1, r2\n\
-	adds r0, r6, #0\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	adds r3, r6, #0\n\
-	adds r3, #0x4a\n\
-	lsls r1, r1, #4\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	strb r0, [r3]\n\
-	ldr r1, _080B4E70 @ =0x00001B07\n\
-	adds r0, r6, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r6, #0xa]\n\
-	orrs r4, r0\n\
-	strb r4, [r6, #0xa]\n\
-	ldr r1, _080B4E74 @ =gVFXFnTable\n\
-	ldrb r0, [r6, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	str r5, [r6, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r6, #0x14]\n\
-	adds r0, r6, #0\n\
-	bl FlameEffect_Update\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080B4E70: .4byte 0x00001B07\n\
-_080B4E74: .4byte gVFXFnTable\n\
- .syntax divided\n");
+static void FlameEffect_Init(struct Entity* p) {
+  struct Entity* owner = p->unk_28;
+  InitNonAffineMotion(p);
+  if (owner->flags & OAM_PRIO) {
+    (p->spr).oam.priority = (owner->spr).oam.priority;
+  }
+  p->taskCol = 0;
+  ForceEntityPalette(p, 14);
+
+  RNG_0202f388 = LCG(RNG_0202f388);
+  SET_XFLIP(p, ((RNG_0202f388 >> 16) & 1));
+
+  SetMotion(p, MOTION(SM027_FLAME_EFFECT, 7));
+  p->flags |= DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  FlameEffect_Update((void*)p);
 }
 
-static NAKED void FlameEffect_Update(struct VFX* p) {
+NAKED static void FlameEffect_Update(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r4, r0, #0\n\
@@ -338,17 +267,7 @@ _080B4FFC: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void FlameEffect_Die(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void FlameEffect_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
-
-// clang-format off
-const VFXRoutine gFlameEffectRoutine = {
-    [ENTITY_INIT] =      FlameEffect_Init,
-    [ENTITY_UPDATE] =    FlameEffect_Update,
-    [ENTITY_DIE] =       FlameEffect_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
-};
-// clang-format on

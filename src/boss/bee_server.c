@@ -69,6 +69,7 @@ static const BossFunc sDeads[1] = {
 
 // --------------------------------------------
 
+// 0x08363258
 static const struct Collision sCollisions[8] = {
     {
       kind : DRP,

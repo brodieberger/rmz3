@@ -13,7 +13,7 @@ const EnemyRoutine gGallisniRoutine = {
     [ENTITY_INIT] =      Gallisni_Init,
     [ENTITY_UPDATE] =    Gallisni_Update,
     [ENTITY_DIE] =       Gallisni_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

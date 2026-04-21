@@ -122,7 +122,7 @@ _080EF082:
 	movs r2, #0x82
 	movs r3, #0
 	bl LoadBgMap
-	bl CancelCyberSpaceColorFilter
+	bl DisableCyberSpaceColorFilter
 	movs r0, #0x89
 	lsls r0, r0, #1
 	bl PlaySound
@@ -198,7 +198,7 @@ _080EF18C: .4byte gMission
 _080EF190:
 	strb r3, [r1, #7]
 _080EF192:
-	bl ApplyCyberSpaceColorFilter
+	bl EnableCyberSpaceColorFilter
 	b _080EF1D2
 _080EF198:
 	ldr r2, _080EF1C0 @ =gCurStory
@@ -206,7 +206,7 @@ _080EF198:
 	movs r0, #0xef
 	ands r0, r1
 	strb r0, [r2, #4]
-	bl CancelCyberSpaceColorFilter
+	bl DisableCyberSpaceColorFilter
 	ldr r0, _080EF1C4 @ =gOverworld
 	movs r2, #0xe8
 	lsls r2, r2, #1
@@ -267,7 +267,7 @@ _080EF1D2:
 	ldr r0, _080EF244 @ =gSolidHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
-	ldr r0, _080EF248 @ =gZakoHeaderPtr
+	ldr r0, _080EF248 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
 	movs r0, #8
@@ -278,7 +278,7 @@ _080EF238: .4byte pZero2
 _080EF23C: .4byte gIsUsingDoor3D
 _080EF240: .4byte gStageRun+288
 _080EF244: .4byte gSolidHeaderPtr
-_080EF248: .4byte gZakoHeaderPtr
+_080EF248: .4byte gEnemyHeaderPtr
 _080EF24C:
 	ldrh r0, [r7, #4]
 	subs r0, #1
@@ -407,7 +407,7 @@ _080EF32C:
 	movs r0, #0
 	strb r0, [r1]
 	movs r0, #0
-	ldr r1, _080EF3D8 @ =0x0202F360
+	ldr r1, _080EF3D8 @ =gWhitePaintFlags
 	str r0, [sp, #4]
 	ldr r2, _080EF3DC @ =0x01000008
 	add r0, sp, #4
@@ -429,7 +429,7 @@ _080EF32C:
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
-	ldr r0, _080EF3F0 @ =gZakoHeaderPtr
+	ldr r0, _080EF3F0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
@@ -465,13 +465,13 @@ _080EF3CC:
 	bx r0
 	.align 2, 0
 _080EF3D4: .4byte 0x0202F354
-_080EF3D8: .4byte 0x0202F360
+_080EF3D8: .4byte gWhitePaintFlags
 _080EF3DC: .4byte 0x01000008
 _080EF3E0: .4byte 0x0203029C
 _080EF3E4: .4byte gElfHeaderPtr
 _080EF3E8: .4byte gSolidHeaderPtr
 _080EF3EC: .4byte gBossHeaderPtr
-_080EF3F0: .4byte gZakoHeaderPtr
+_080EF3F0: .4byte gEnemyHeaderPtr
 _080EF3F4: .4byte gProjectileHeaderPtr
 _080EF3F8: .4byte gVFXHeaderPtr
 _080EF3FC: .4byte gPickupHeaderPtr

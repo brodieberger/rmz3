@@ -21,7 +21,7 @@ const SolidRoutine gModElfRoutine = {
     [ENTITY_INIT] =      ModElf_Init,
     [ENTITY_UPDATE] =    ModElf_Update,
     [ENTITY_DIE] =       ModElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

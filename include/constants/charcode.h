@@ -3,7 +3,7 @@
 
 #define CHAR_KANJI 0xF0
 #define CHAR_MUGSHOT 0xF3
-#define CHAR_INSERT 0xF9
+#define CHAR_VARIABLE 0xF9
 #define CHAR_LF 0xFC
 #define CHAR_NEXT 0xFD
 

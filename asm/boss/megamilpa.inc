@@ -648,7 +648,7 @@ _0803DB64:
 	cmp r4, #0
 	bne _0803DB88
 	ldr r0, _0803DB9C @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	movs r0, #1
 	strb r0, [r6, #0xd]
 	strb r4, [r6, #0xe]
@@ -992,7 +992,7 @@ _0803DE0E:
 	b _0803DE2C
 _0803DE20:
 	ldr r0, _0803DE50 @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	movs r0, #1
 	strb r0, [r5, #0xd]
 	strb r4, [r5, #0xe]

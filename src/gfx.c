@@ -4,83 +4,132 @@
 #include "global.h"
 #include "motion.h"
 
+// GraphicTransfer.type
+enum TransferType {
+  TT_GRAPHIC,    // struct Graphic
+  TT_BG_MAP,     // BG map
+  TT_VRAM_FILL,  // VRAM fill
+};
+
+IWRAM_DATA ALIGNED(16) struct PaletteManager gPaletteManager = {};
+IWRAM_DATA ALIGNED(16) struct OamManager gOamManager = {};
+
 /**
  * @brief VRAM全体を 0x11111111 で埋める (Reset VRAM by filling 0x11111111)
  */
 void ClearVRAM(void) {
   gGraphicTransferManager.len = 0;
-  gGraphicTransferManager.bg0mask.bg0 = NULL;
+  gGraphicTransferManager.bg0.buffer = NULL;
   DmaFill32(3, 0x11111111, VRAM, VRAM_SIZE);
 }
 
 /**
  * @brief 0x02001f00 のタスクどおりに転送を行う
  */
-NAKED void doGraphicTransferTasks(void) {
-  // TODO
-  INCCODE("asm/wip/doGraphicTransferTasks.inc");
+void doGraphicTransferTasks(void) {
+  s32 i;
+  struct GraphicTransferManager* gtman = &gGraphicTransferManager;
+  s32 len = gtman->len;
+
+  if ((gtman->bg0).buffer != NULL) {
+    // buffer を dst に転送した後で, backdrop で buffer をクリア
+    DmaCopy32(3, (gtman->bg0).buffer, (void*)(VRAM + (gtman->bg0).dst), (gtman->bg0).bytesize);
+    DmaFill32(3, (gtman->bg0).backdrop, (gtman->bg0).buffer, (gtman->bg0).bytesize);
+  }
+
+  while (len != 0) {
+    struct GraphicTransfer* t = &gGraphicTransferManager.tasks[--len];
+    u32 type = t->type;
+    if (type != TT_GRAPHIC) {
+      if (type == TT_BG_MAP) {
+        // 1: BG map
+        if (t->bytesize < 32) {
+          CpuCopy16(t->src, VRAM + t->dst, t->bytesize);
+        } else {
+          CpuFastCopy(t->src, VRAM + t->dst, t->bytesize);
+        }
+      } else {
+        // 2, 3: VRAM fill
+        CpuFastFill(t->src, VRAM + t->dst, t->bytesize);
+      }
+    } else {
+      LoadGraphic((void*)t->src, t->dst);  // 0: struct Graphic
+    }
+  }
+
+  gGraphicTransferManager.len = 0;
 }
 
+// このグラフィックを構成するタイル1枚あたりのバイト数(e.g. 4bpp: TILESIZE(g) = 32, 8bpp: 64)
+#define TILESIZE(g) ((u32)g->tilesize << 3)
+
 // 0x080037c0
-WIP void LoadGraphic(const struct Graphic* g, void* dst) {
-#if MODERN
-  u32 buf[8];
+void LoadGraphic(const struct GraphicV2* g, void* dst) {
+  if (g->size != 0) {
+    dst += g->tileId * TILESIZE(g);
 
-  s32 size = g->size;
-  if (size != 0) {
-    void* ofs = dst + g->ofs * (g->props & 0x7F8);
-    u8 props1 = PROPS1(g);
+    // VRAM layout
+    if (g->map2d) {
+      void* src = SELF_REL_PTR(&g->src);
+      s32 size = g->size;
 
-    if (g->props & CHUNKED) {
-      void* src = (void*)(PTR_U32(&g->src) + g->src);
-      if (props1 & LZ77) {
+      if (g->lz77) {
         while (size > 0) {
-          if (*(s32*)(src) < 0) {
-            CpuFastCopy(VRAM + ofs + g->chunkSize, buf, 32);
-            LZ77UnCompVram(src + 4, VRAM + ofs);
-            CpuFastCopy(buf, VRAM + ofs + g->chunkSize, 32);
+          // block
+          //   u32 bytesize : 30;   // bit0..30
+          //   u32 compressed : 1;  // bit31
+          //   u8 data[.bytesize];
+          if ((*(u32*)src) & (1 << 31)) {
+            u32 buf[8];
+            CpuFastCopy(VRAM + dst + g->rowsize, buf, 32);
+            LZ77UnCompVram(src + 4, VRAM + dst);
+            CpuFastCopy(buf, VRAM + dst + g->rowsize, 32);
           } else {
-            CpuFastCopy(src + 4, VRAM + ofs, g->chunkSize);
+            CpuFastCopy(src + 4, VRAM + dst, g->rowsize);
           }
-          ofs += (((u32)g->props << 21) >> 24) << 8;  // Next row
-          size -= (*(u32*)(src)) & 0x7FFFFFFF;
-          src += (*(u32*)(src)) & 0x7FFFFFFF;
+          // Next row
+          dst += TILESIZE(g) << 5;  // BGマップは 1行32タイルなので (<< 5) で次の行に移動
+          size -= (*(u32*)src) & 0x7FFFFFFF;
+          src += (*(u32*)src) & 0x7FFFFFFF;
         }
 
-      } else if (IS_RLU_COMPRESSED(g)) {
+      } else if (g->rlu) {
         while (size > 0) {
-          if (*(s32*)(src) < 0) {
-            RLUnCompVram(src + 4, VRAM + ofs);
+          // block
+          //   u32 bytesize : 30;   // bit0..30
+          //   u32 compressed : 1;  // bit31
+          //   u8 data[.bytesize];
+          if ((*(u32*)src) & (1 << 31)) {
+            RLUnCompVram(src + 4, VRAM + dst);
           } else {
-            CpuFastCopy(src + 4, VRAM + ofs, g->chunkSize);
+            CpuFastCopy(src + 4, VRAM + dst, g->rowsize);
           }
-          ofs += ((g->props << 21) >> 24) << 8;  // Next row
-          size -= (*(u32*)(src)) & 0x7FFFFFFF;
-          src += (*(u32*)(src)) & 0x7FFFFFFF;
+          // Next row
+          dst += TILESIZE(g) << 5;  // BGマップは 1行32タイルなので (<< 5) で次の行に移動
+          size -= (*(u32*)src) & 0x7FFFFFFF;
+          src += (*(u32*)src) & 0x7FFFFFFF;
         }
 
       } else {
         while (size > 0) {
-          CpuFastCopy(src, VRAM + ofs, g->chunkSize);
-          ofs += ((g->props << 21) >> 24) << 8;  // Next row
-          src += g->chunkSize;
-          size -= g->chunkSize;
+          CpuFastCopy((void*)src, VRAM + dst, g->rowsize);
+          // Next row
+          dst += TILESIZE(g) << 5;  // BGマップは 1行32タイルなので (<< 5) で次の行に移動
+          src += g->rowsize;
+          size -= g->rowsize;
         }
       }
 
     } else {
-      if (props1 & LZ77) {
-        LZ77UnCompVram((void*)(PTR_U32(&g->src) + g->src), VRAM + ofs);
-      } else if (IS_RLU_COMPRESSED(g)) {
-        RLUnCompVram((void*)(PTR_U32(&g->src) + g->src), VRAM + ofs);
+      if (g->lz77) {
+        LZ77UnCompVram(SELF_REL_PTR(&g->src), VRAM + dst);
+      } else if (g->rlu) {
+        RLUnCompVram(SELF_REL_PTR(&g->src), VRAM + dst);
       } else {
-        CpuFastCopy((void*)(PTR_U32(&g->src) + g->src), VRAM + ofs, size);
+        CpuFastCopy(SELF_REL_PTR(&g->src), VRAM + dst, g->size);
       }
     }
   }
-#else
-  INCCODE("asm/wip/LoadGraphic.inc");
-#endif
 }
 
 /**
@@ -98,7 +147,7 @@ s32 RequestGraphicTransfer(const struct Graphic* g, void* dst) {
   }
   if ((u32)gGraphicTransferManager.len < 16) {
     gGraphicTransferManager.tasks[i].dst = dst;
-    gGraphicTransferManager.tasks[i].type = 0;
+    gGraphicTransferManager.tasks[i].type = TT_GRAPHIC;
     gGraphicTransferManager.tasks[i].src = (void*)g;
     gGraphicTransferManager.len++;
     return 0;
@@ -114,8 +163,8 @@ s32 RequestGraphicTransfer(const struct Graphic* g, void* dst) {
 s32 RequestBgMapTransfer(u16* src, void* dst, s32 bytesize) {
   const s32 len = gGraphicTransferManager.len;
   if (len < 16) {
-    gGraphicTransferManager.tasks[len].type = 1;
-    gGraphicTransferManager.tasks[len].unk = bytesize;
+    gGraphicTransferManager.tasks[len].type = TT_BG_MAP;
+    gGraphicTransferManager.tasks[len].bytesize = bytesize;
     gGraphicTransferManager.tasks[len].dst = dst;
     gGraphicTransferManager.tasks[len].src = src;
     gGraphicTransferManager.len++;
@@ -126,15 +175,14 @@ s32 RequestBgMapTransfer(u16* src, void* dst, s32 bytesize) {
 
 /**
  * @note バイル研究所くらいでしか使ってない
- * @details グラフィックデータ(詳細不明, type=2)を gGraphicTransferManager(0x02001f00) に追加する
  * @return 0(success), -1(fail)
  * @note 0x08003a08
  */
 s32 RequestType2Transfer(void* src, void* dst, s32 r2) {
   const s32 len = gGraphicTransferManager.len;
   if (len < 16) {
-    gGraphicTransferManager.tasks[len].type = 2;
-    gGraphicTransferManager.tasks[len].unk = r2;
+    gGraphicTransferManager.tasks[len].type = TT_VRAM_FILL;
+    gGraphicTransferManager.tasks[len].bytesize = r2;
     gGraphicTransferManager.tasks[len].dst = dst;
     gGraphicTransferManager.tasks[len].src = src;
     gGraphicTransferManager.len++;
@@ -143,26 +191,18 @@ s32 RequestType2Transfer(void* src, void* dst, s32 r2) {
   return -1;
 }
 
-/**
- * @fn void MaskBg0(u32* dst, u32 bg0map, u32 bytesize, u32 mask)
- * @brief 引数 mask で BG0 をマスクする マスクデータは、0x080036cc で毎フレームVRAMに転送される
- * @param bg0 BG0のバッファ、これをnullにすると転送は起きない (常に 0x02030b70?)
- * @param bg0map 0x0600_0000 + bg0map がマスクデータの転送先 (常に BG0のマップアドレスを指す)
- * @param bytesize size of mask data
- * @param mask mask data
- * @note 0x08003a64
- */
-void MaskBg0(u32* bg0, u32 bg0map, u32 bytesize, u16 mask) {
-  gGraphicTransferManager.bg0mask.bg0 = (void*)bg0;
-  gGraphicTransferManager.bg0mask.map = bg0map;
-  gGraphicTransferManager.bg0mask.bytesize = bytesize;
-  gGraphicTransferManager.bg0mask.mask = ((((u32)mask) << 16) | mask);
-  DmaFill32(3, gGraphicTransferManager.bg0mask.mask, bg0, bytesize);
+// 0x08003a64
+void EnableBG0(u32* buffer, u32 dst, u32 bytesize, u16 backdrop) {
+  gGraphicTransferManager.bg0.buffer = (void*)buffer;
+  gGraphicTransferManager.bg0.dst = dst;
+  gGraphicTransferManager.bg0.bytesize = bytesize;
+  gGraphicTransferManager.bg0.backdrop = ((((u32)backdrop) << 16) | backdrop);
+  DmaFill32(3, gGraphicTransferManager.bg0.backdrop, buffer, bytesize);
 }
 
-// Disable BG0 Mask
-void UnmaskBg0(void) {
-  gGraphicTransferManager.bg0mask.bg0 = NULL;
+// Disable BG0 (HUD layer)
+void DisableBG0(void) {
+  gGraphicTransferManager.bg0.buffer = NULL;
   return;
 }
 
@@ -173,67 +213,71 @@ void InitPaletteManager(void) {
   DmaCopy32(3, &gPaletteManager, PLTT, PLTT_SIZE);
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
   gPaletteManager.unk_406 = 0;
-  gPaletteManager.unk_408 = NULL;
+  gPaletteManager.post_process = NULL;
 }
 
-static void gfx_08003cf0(struct PaletteManager* pal, u32* dst, u32 colorData, u32* mask);
-static void gfx_08003d34(struct PaletteManager* pal, u32* dest, s32* param_3, u32* param_4);
-static void flashPalette_08003d84(struct PaletteManager* pal, u32* dst, s32* param_3, u32* param_4);
+static void FadeBlack(u32* src, u32* dst, u32 lv, u32* mask);
+static void FadeWhite(u32* src, u32* dst, u32* fades, u32* mask);
+static void FadeColor(u32* src, u32* dst, u32* fades, u32* mask);
 
-WIP void flashPalette_08003b24(void) {
-#if MODERN
+// 0x08003b24
+void FlushPalette(void) {
   u32 mask[3];
-  mask[0] = 0x1F001F;    // 0b00000000000111110000000000011111
-  mask[1] = 0x3E003E0;   // 0b00000011111000000000001111100000
-  mask[2] = 0x7C007C00;  // 0b01111100000000000111110000000000
-  if (gPaletteManager.filter[0] == gPaletteManager.filter[1]) {
-    if (gPaletteManager.filter[0] == 0x20) {
-      DmaCopy32(3, &gPaletteManager, PLTT, PLTT_SIZE);
-    } else if (gPaletteManager.filter[0] < 0x20) {
-      gfx_08003cf0(&gPaletteManager, (u32*)PLTT, gPaletteManager.filter[0], mask);
+  u32 fadeval[6];  // [R1, G1, B1, R2, G2, B2]
+  struct PaletteManager* pman = &gPaletteManager;
+
+  // mask for ((RGB555 << 16) | RGB555)
+  mask[0] = (0x1F << 16) | 0x1F;                  // Red
+  mask[1] = ((0x1F << 5) << 16) | (0x1F << 5);    // Green
+  mask[2] = ((0x1F << 10) << 16) | (0x1F << 10);  // Blue
+
+  if (pman->filter[0] == pman->filter[1]) {  // R と G のFadeレベルが同じなら、単一フェードとして扱う
+    if (pman->filter[0] == 0x20) {
+      DmaCopy32(3, pman->buf, PLTT, PLTT_SIZE);
+    } else if (pman->filter[0] < 0x20) {
+      FadeBlack((u32*)pman->buf, (u32*)PLTT, pman->filter[0], mask);
     } else {
-      u32 val[2];
-      val[0] = 0x40 - gPaletteManager.filter[0];
-      val[1] = ((gPaletteManager.filter[0] - 0x21) << 16) | (gPaletteManager.filter[0] - 0x21);
-      gfx_08003d34(&gPaletteManager, (u32*)PLTT, val, mask);
+      fadeval[0] = 0x40 - pman->filter[0];
+      fadeval[1] = (pman->filter[0] - 0x21) | ((pman->filter[0] - 0x21) << 16);
+      FadeWhite((u32*)pman->buf, (u32*)PLTT, fadeval, mask);
     }
   } else {
-    u32 val[6];
-    if (gPaletteManager.filter[0] < 0x21) {
-      val[0] = gPaletteManager.filter[0];
-      val[3] = 0;
+    if (pman->filter[0] < 0x21) {
+      fadeval[0] = pman->filter[0];
+      fadeval[3] = 0;
     } else {
-      val[0] = 0x40 - gPaletteManager.filter[0];
-      val[3] = ((gPaletteManager.filter[0] - 0x21) << 16) | (gPaletteManager.filter[0] - 0x21);
+      fadeval[0] = 0x40 - pman->filter[0];
+      fadeval[3] = (pman->filter[0] - 0x21) | ((pman->filter[0] - 0x21) << 16);
     }
 
-    if (gPaletteManager.filter[1] < 0x21) {
-      val[1] = gPaletteManager.filter[1];
-      val[4] = 0;
+    if (pman->filter[1] < 0x21) {
+      fadeval[1] = pman->filter[1];
+      fadeval[4] = 0;
     } else {
-      val[1] = 0x40 - gPaletteManager.filter[1];
-      val[4] = ((gPaletteManager.filter[1] - 0x21) << 16) | (gPaletteManager.filter[1] - 0x21);
+      fadeval[1] = 0x40 - pman->filter[1];
+      fadeval[4] = (pman->filter[1] - 0x21) | ((pman->filter[1] - 0x21) << 16);
     }
 
-    if (gPaletteManager.filter[2] < 0x21) {
-      val[2] = gPaletteManager.filter[2];
-      val[5] = 0;
+    if (pman->filter[2] < 0x21) {
+      fadeval[2] = pman->filter[2];
+      fadeval[5] = 0;
     } else {
-      val[2] = 0x40 - gPaletteManager.filter[2];
-      val[5] = ((gPaletteManager.filter[2] - 0x21) << 16) | (gPaletteManager.filter[2] - 0x21);
+      fadeval[2] = 0x40 - pman->filter[2];
+      fadeval[5] = (pman->filter[2] - 0x21) | ((pman->filter[2] - 0x21) << 16);
     }
-    flashPalette_08003d84(&gPaletteManager, (u32*)PLTT, val, mask);
+    FadeColor((u32*)gPaletteManager.buf, (u32*)PLTT, fadeval, mask);
   }
-  if (gPaletteManager.unk_406 != 0) {
-    DmaFill16(3, 0xFFFF, PLTT + gPaletteManager.unk_404, gPaletteManager.unk_406);
-    gPaletteManager.unk_406 = 0;
+
+  {
+    struct PaletteManager* pman = &gPaletteManager;
+    if (pman->unk_406 != 0) {
+      DmaFill16(3, 0xFFFF, PLTT + pman->unk_404, pman->unk_406);
+      pman->unk_406 = 0;
+    }
+    if (pman->post_process != NULL) {
+      pman->post_process();
+    }
   }
-  if (gPaletteManager.unk_408 != NULL) {
-    gPaletteManager.unk_408();
-  }
-#else
-  INCCODE("asm/wip/flashPalette_08003b24.inc");
-#endif
 }
 
 /**
@@ -245,9 +289,9 @@ void LoadPalette(const struct Palette* p, u32 ofs) {
   if (p->size != 0) {
     ofs += (p->dst << 5);
     if (p->lz77) {
-      LZ77UnCompWram((void*)(PTR_U32(&p->src) + p->src), (u8*)&gPaletteManager.buf + ofs);
+      LZ77UnCompWram(SELF_REL_PTR(&p->src), (u8*)&gPaletteManager.buf + ofs);
     } else {
-      DmaCopy32(3, (void*)(PTR_U32(&p->src) + p->src), (u8*)&gPaletteManager.buf + ofs, p->size);
+      DmaCopy32(3, SELF_REL_PTR(&p->src), (u8*)&gPaletteManager.buf + ofs, p->size);
     }
   }
 }
@@ -255,47 +299,25 @@ void LoadPalette(const struct Palette* p, u32 ofs) {
 /**
  * @note 0x08003cf0
  */
-NAKED static void gfx_08003cf0(struct PaletteManager* pal, u32* dst, u32 colorData, u32* mask) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	movs r4, #0xff\n\
-_08003CF4:\n\
-	mov lr, r1\n\
-	ldr r1, [r0]\n\
-	ldr r5, [r3]\n\
-	ands r5, r1\n\
-	muls r5, r2, r5\n\
-	lsrs r5, r5, #5\n\
-	ldr r6, [r3]\n\
-	ands r6, r5\n\
-	ldr r5, [r3, #4]\n\
-	ands r5, r1\n\
-	muls r5, r2, r5\n\
-	lsrs r5, r5, #5\n\
-	ldr r7, [r3, #4]\n\
-	ands r7, r5\n\
-	orrs r6, r7\n\
-	ldr r5, [r3, #8]\n\
-	ands r5, r1\n\
-	lsrs r5, r5, #5\n\
-	muls r5, r2, r5\n\
-	ldr r7, [r3, #8]\n\
-	ands r7, r5\n\
-	orrs r6, r7\n\
-	mov r1, lr\n\
-	str r6, [r1]\n\
-	adds r0, #4\n\
-	adds r1, #4\n\
-	subs r4, #1\n\
-	bpl _08003CF4\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	mov lr, r0\n\
-	bx lr\n\
-	 .syntax divided\n");
+WIP static void FadeBlack(u32* src, u32* dst, u32 lv, u32* mask) {
+#ifdef ALWAYS_FALSE
+  // 画面が黄色くなるので、コードがおかしい
+  s32 i;
+  for (i = 0; i < 256; i++) {
+    u32 c = *src;
+    u32 r = (((c & mask[0]) * lv) >> 5) & mask[0];
+    u32 g = (((c & mask[1]) * lv) >> 5) & mask[1];
+    u32 b = (((c & mask[2]) * lv) >> 5) & mask[2];
+    *dst = r | g | b;
+    src++;
+    dst++;
+  }
+#else
+  INCCODE("asm/wip/FadeBlack.inc");
+#endif
 }
 
-NAKED static void gfx_08003d34(struct PaletteManager* pal, u32* dest, s32* param_3, u32* param_4) {
+NAKED static void FadeWhite(u32* src, u32* dst, u32* fades, u32* mask) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7}\n\
 	ldr r4, [r2]\n\
@@ -341,10 +363,8 @@ _08003D3A:\n\
  .syntax divided\n");
 }
 
-/**
- * @note 0x08003d84
- */
-NAKED static void flashPalette_08003d84(struct PaletteManager* pal, u32* dst, s32* param_3, u32* param_4) {
+// 0x08003d84
+NAKED static void FadeColor(u32* src, u32* dst, u32* fades, u32* mask) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7}\n\
 	movs r7, #0xff\n\

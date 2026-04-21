@@ -11,24 +11,22 @@ const EnemyRoutine gGeneratorCannonRoutine = {
     [ENTITY_INIT] =      GeneratorCannon_Init,
     [ENTITY_UPDATE] =    GeneratorCannon_Update,
     [ENTITY_DIE] =       GeneratorCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-void CreateGeneratorCannon(s32 x, s32 y, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+// 0x0808c388
+static void CreateGeneratorCannon(s32 x, s32 y, u8 n) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_GENERATOR_CANNON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = 1;
-    (p->s).work[2] = n;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_GENERATOR_CANNON);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 1, p->work[2] = n;
+    (p->coord).x = x, (p->coord).y = y;
   }
 }
 

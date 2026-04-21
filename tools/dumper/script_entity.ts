@@ -2,11 +2,7 @@
 
 import { Command } from '@cliffy/command';
 import { Parser } from '@binary-parser';
-import { CoordParser, toHex } from '../common/index.ts';
-
-const BASE = 0x0800_0000;
-const SIZE = 16;
-const ROM = 'baserom.gba';
+import { BASE, CoordParser, ROM_PATH, toHex } from '../common/index.ts';
 
 const ScriptEntityTemplate = new Parser().endianness('little')
   .uint8('kind')
@@ -16,17 +12,29 @@ const ScriptEntityTemplate = new Parser().endianness('little')
   .nest('coord', { type: CoordParser })
   .uint32('flag');
 
+/**
+ * e.g. ./tools/dumper/script_entity.ts 0x08350b98 15 > tmp/result.txt
+ *
+ * Entity_08350b98: @ 0x08350b98
+ *  .byte PLAYER, ZERO, 0, 0
+ *  .4byte 352*PX, 768*PX
+ *  .4byte DIR_RIGHT
+ *
+ * ... (total 15 entries)
+ */
 const main = async () => {
   const { args } = await new Command()
     .name('script_entity.ts')
     .version('1.0.0')
-    .description('Parser for ScriptEntityTemplate struct')
-    .arguments('<start> <length:number>')
+    .description('asm/scripts/xxx.s のために Entity_xxx をダンプするスクリプト')
+    .argument('<start:string>', '開始アドレス')
+    .argument('<length:number>', 'エントリ数')
     .usage('0x08350b98 15')
     .parse(Deno.args);
 
-  const rom = Deno.readFileSync(ROM);
+  const rom = Deno.readFileSync(ROM_PATH);
   const [start, len] = [Number(args[0]), Number(args[1])];
+  const SIZE = 16;
 
   for (let i = 0; i < len; i++) {
     console.log('');

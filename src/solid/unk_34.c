@@ -14,7 +14,7 @@ const SolidRoutine gSolid34Routine = {
     [ENTITY_INIT] =      Solid34_Init,
     [ENTITY_UPDATE] =    Solid34_Update,
     [ENTITY_DIE] =       Solid34_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

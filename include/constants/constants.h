@@ -28,7 +28,7 @@
 #define SECOND 60
 
 // Element ID
-#define ELEMENT_NONE -1
+#define ELEMENT_NONE 0
 #define ELEMENT_THUNDER 1
 #define ELEMENT_FLAME 2
 #define ELEMENT_ICE 3

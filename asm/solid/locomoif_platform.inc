@@ -417,7 +417,7 @@ _080CE828:
 	cmp r0, #0
 	bne _080CE862
 	ldr r0, _080CE868 @ =0x0000010B
-	bl stopSound
+	bl StopSound
 	adds r0, r6, #0
 	adds r0, #0xbd
 	strb r5, [r0]

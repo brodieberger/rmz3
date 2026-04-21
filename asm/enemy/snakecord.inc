@@ -493,7 +493,7 @@ FUN_08074208: @ 0x08074208
 	b _080742E2
 _08074228:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080742E2
 	ldrb r0, [r4, #0xd]
@@ -563,7 +563,7 @@ _080742B0: .4byte 0x08366E30
 _080742B4: .4byte 0x08366E60
 _080742B8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080742E0
 	ldrb r0, [r4, #0xd]
@@ -707,7 +707,7 @@ Snakecord_Init: @ 0x08074360
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080743E4 @ =0x08366E9C
+	ldr r1, _080743E4 @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -718,7 +718,7 @@ _080743D4: .4byte gEnemyFnTable
 _080743D8: .4byte 0x0836700C
 _080743DC: .4byte gSystemSavedataManager
 _080743E0: .4byte gCurStory
-_080743E4: .4byte 0x08366E9C
+_080743E4: .4byte sCollisions
 _080743E8:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -727,7 +727,7 @@ _080743E8:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080744C4 @ =0x08366E9C
+	ldr r1, _080744C4 @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -759,7 +759,7 @@ _08074400:
 	add r1, r8
 	mov sl, r1
 _08074436:
-	ldr r0, _080744D0 @ =gZakoHeaderPtr
+	ldr r0, _080744D0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	str r3, [sp]
 	bl AllocEntityLast
@@ -833,10 +833,10 @@ _080744BE:
 	str r5, [r6, #0x58]
 	b _080744DE
 	.align 2, 0
-_080744C4: .4byte 0x08366E9C
+_080744C4: .4byte sCollisions
 _080744C8: .4byte FUN_08074134
 _080744CC: .4byte gSineTable
-_080744D0: .4byte gZakoHeaderPtr
+_080744D0: .4byte gEnemyHeaderPtr
 _080744D4: .4byte gEnemyFnTable
 _080744D8:
 	adds r0, r6, #0
@@ -1177,7 +1177,7 @@ _080747E0:
 	strb r0, [r6, #0xe]
 _08074806:
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08074836
 	ldr r0, [r6, #0x54]
@@ -1601,7 +1601,7 @@ _08074C7C:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08074CB0 @ =0x08366E9C
+	ldr r2, _08074CB0 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _08074CA4:
@@ -1610,7 +1610,7 @@ _08074CA4:
 	bx r0
 	.align 2, 0
 _08074CAC: .4byte 0x08366FEC
-_08074CB0: .4byte 0x08366E9C
+_08074CB0: .4byte sCollisions
 
 	thumb_func_start FUN_08074cb4
 FUN_08074cb4: @ 0x08074CB4
@@ -2090,7 +2090,7 @@ _08075030:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08075064 @ =0x08366E9C
+	ldr r2, _08075064 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _08075058:
@@ -2099,7 +2099,7 @@ _08075058:
 	bx r0
 	.align 2, 0
 _08075060: .4byte 0x08366FEC
-_08075064: .4byte 0x08366E9C
+_08075064: .4byte sCollisions
 
 	thumb_func_start MaybeKillSnakecord
 MaybeKillSnakecord: @ 0x08075068

@@ -4,21 +4,21 @@
 
 // シエルのミニゲームに関係？
 
-static void Ghost79_Init(struct VFX *p);
-static void Ghost79_Update(struct VFX *p);
-static void Ghost79_Die(struct VFX *p);
+static void Ghost79_Init(struct VFX* p);
+static void Ghost79_Update(struct VFX* p);
+static void Ghost79_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost79Routine = {
-    [ENTITY_INIT] =      Ghost79_Init,
-    [ENTITY_UPDATE] =    Ghost79_Update,
-    [ENTITY_DIE] =       Ghost79_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost79_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost79_Update,
+    [ENTITY_DIE] =       (void*)Ghost79_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-NAKED void CreateGhost79_1(s32 x, s32 y, struct Entity *p, void *param_4, void *param_5, void *param_6, u8 param_7) {
+NAKED void CreateGhost79_1(s32 x, s32 y, struct Entity* p, void* param_4, void* param_5, void* param_6, u8 param_7) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -135,7 +135,7 @@ _080C8ED4: .4byte gStaticMotionGraphics+12\n\
  .syntax divided\n");
 }
 
-NAKED void CreateGhost79_2(struct Entity *p, u8 r1, u8 r2) {
+NAKED void CreateGhost79_2(struct Entity* p, u8 r1, u8 r2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r6, r0, #0\n\
@@ -185,10 +185,10 @@ _080C8F2C: .4byte gVFXFnTable\n\
 
 // --------------------------------------------
 
-static void FUN_080c8f78(struct VFX *p);
-static void FUN_080c8fc8(struct VFX *p);
+static void FUN_080c8f78(struct VFX* p);
+static void FUN_080c8fc8(struct VFX* p);
 
-static void Ghost79_Init(struct VFX *p) {
+static void Ghost79_Init(struct VFX* p) {
   static VFXFunc const sInitializers[] = {
       FUN_080c8f78,
       FUN_080c8fc8,
@@ -198,10 +198,10 @@ static void Ghost79_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c9018(struct VFX *p);
-static void FUN_080c9044(struct VFX *p);
+static void FUN_080c9018(struct VFX* p);
+static void FUN_080c9044(struct VFX* p);
 
-static void Ghost79_Update(struct VFX *p) {
+static void Ghost79_Update(struct VFX* p) {
   static VFXFunc const sUpdates[] = {
       FUN_080c9018,
       FUN_080c9044,
@@ -211,10 +211,10 @@ static void Ghost79_Update(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c9114(struct VFX *p);
-static void FUN_080c912c(struct VFX *p);
+static void FUN_080c9114(struct VFX* p);
+static void FUN_080c912c(struct VFX* p);
 
-static void Ghost79_Die(struct VFX *p) {
+static void Ghost79_Die(struct VFX* p) {
   static VFXFunc const sDeinitializers[] = {
       FUN_080c9114,
       FUN_080c912c,
@@ -224,7 +224,7 @@ static void Ghost79_Die(struct VFX *p) {
 
 // --------------------------------------------
 
-NAKED static void FUN_080c8f78(struct VFX *p) {
+NAKED static void FUN_080c8f78(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -267,7 +267,7 @@ _080C8FA8:\n\
  .syntax divided\n");
 }
 
-static void FUN_080c8fc8(struct VFX *vfx) {
+static void FUN_080c8fc8(struct VFX* vfx) {
   register u8 r0 asm("r1");
   register u8 flags asm("r0");
   bool8 xflip;
@@ -287,14 +287,14 @@ static void FUN_080c8fc8(struct VFX *vfx) {
 
 // --------------------------------------------
 
-static void FUN_080c9018(struct VFX *p) {
+static void FUN_080c9018(struct VFX* p) {
   if ((p->s).work[2] != 0) {
     SET_VFX_ROUTINE(p, ENTITY_DIE);
     Ghost79_Die(p);
   }
 }
 
-NAKED static void FUN_080c9044(struct VFX *p) {
+NAKED static void FUN_080c9044(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -405,6 +405,6 @@ _080C9106:\n\
 
 // --------------------------------------------
 
-static void FUN_080c9114(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void FUN_080c9114(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
-static void FUN_080c912c(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void FUN_080c912c(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }

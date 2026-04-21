@@ -7,16 +7,16 @@
 // 多分アナトレーの森でスイッチで動く壁
 
 static void Solid16_Init(struct Solid* p);
-static void Solid16_Update(struct Solid* p);
+static void Solid16_Update(struct Entity* p);
 static void Solid16_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gSolid16Routine = {
-    [ENTITY_INIT] =      Solid16_Init,
-    [ENTITY_UPDATE] =    Solid16_Update,
-    [ENTITY_DIE] =       Solid16_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Solid16_Init,
+    [ENTITY_UPDATE] =    (void*)Solid16_Update,
+    [ENTITY_DIE] =       (void*)Solid16_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -25,12 +25,10 @@ struct Solid* FUN_080cedc0(u8 n) {
   if (p != NULL) {
     (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_016);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
+    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
     (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 0;
+    (p->s).work[0] = n, (p->s).work[1] = 0;
   }
   return p;
 }
@@ -40,14 +38,12 @@ void FUN_080cee14(u8 n, s32 x, s32 y) {
   if (p != NULL) {
     (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_016);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
+    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
     (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord.x = x + PIXEL(24);
     (p->s).coord.y = y;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 1;
+    (p->s).work[0] = n, (p->s).work[1] = 1;
     (p->s).flags |= DISPLAY;
     InitNonAffineMotion(&p->s);
     SetMotion(&p->s, MOTION(SM112_ANATRE_CUBE, 15));
@@ -77,17 +73,17 @@ static void Solid16_Init(struct Solid* p) {
     (p->s).flags2 &= ~WHITE_PAINTABLE;
     (p->s).invincibleID = (p->s).uniqueID;
     SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
-    Solid16_Update(p);
+    Solid16_Update((void*)p);
   } else {
     SET_SOLID_ROUTINE(p, ENTITY_DIE);
     Solid16_Die(p);
   }
 }
 
-static void Solid16_Update(struct Solid* p) {
+static void Solid16_Update(struct Entity* p) {
   struct Entity* player = &pZero2->s;
-  (p->s).coord.x = (player->coord).x;
-  (p->s).coord.y = (player->coord).y;
+  (p->coord).x = (player->coord).x;
+  (p->coord).y = (player->coord).y;
 }
 
 static void Solid16_Die(struct Solid* p) {

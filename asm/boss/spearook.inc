@@ -570,7 +570,7 @@ _08061F9C:
 	adds r0, r7, #0
 	bl InitNonAffineMotion
 _08061FA2:
-	ldr r1, _0806208C @ =0x08365784
+	ldr r1, _0806208C @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x60
 	bl ResetBossBody
@@ -681,7 +681,7 @@ _0806205C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806208C: .4byte 0x08365784
+_0806208C: .4byte sCollisions
 _08062090: .4byte FUN_08061d24
 _08062094: .4byte 0x000010B8
 _08062098: .4byte gStaticMotionGraphics

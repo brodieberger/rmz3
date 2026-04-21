@@ -13,10 +13,10 @@ void ResetVideoRegister(void) {
   *(u16*)(&gVideoRegBuffer.bgcnt[1]) = 0x4205;
   *(u16*)(&gVideoRegBuffer.bgcnt[2]) = 0x4406;
   *(u16*)(&gVideoRegBuffer.bgcnt[3]) = 0x4807;
-  FlashVideoRegister();
+  FlushVideoRegister();
 }
 
-void FlashVideoRegister(void) {
+void FlushVideoRegister(void) {
   vu16 dispcnt = REG_DISPCNT;
   dispcnt &= 0xF0E8;
   gVideoRegBuffer.dispcnt &= 0x0F17;
@@ -34,12 +34,12 @@ void FlashVideoRegister(void) {
  * @param y BgMapのY座標(タイル単位)
  * @note 0x080041c4
  */
-WIP void LoadBgMap(u8 bg16, const u32* tbl, u8 idx, s8 x, s8 y) {
+NON_MATCH void LoadBgMap(u8 bg16, const u32* tbl, u8 idx, s8 x, s8 y) {
 #if MODERN
   u16* base = (void*)(VRAM + SCREEN_BASE_16(bg16 >> 4));
   u16* dst = &base[(y * 32) + x];
 
-  struct BgMapHeader* hdr = (struct BgMapHeader*)OFFSET_TABLE(tbl, idx);
+  struct BgMapHeader* hdr = (struct BgMapHeader*)SELF_REL_PTR(&tbl[idx]);
   u32 w = hdr->w * 2;
   u16 row = hdr->h;
   u16* src = (u16*)&hdr[1];
@@ -123,11 +123,11 @@ void ResetOAM(void) {
   gOamManager.dispcnt = 0x1040;
   gOamManager.p = gOamManager.buf;
   DmaFill32(3, 0x200, gOamManager.buf, 1024);
-  FlashOAM();
+  FlushOAM();
 }
 
 // 0x080042F8
-WIP void FlashOAM(void) {
+NON_MATCH void FlushOAM(void) {
 #if MODERN
   vu16 dispcnt = REG_DISPCNT;
   dispcnt &= ~(DISPCNT_OBJ_ON);
@@ -141,7 +141,7 @@ WIP void FlashOAM(void) {
   DmaCopy32(3, gOamManager.buf, OAM, 1024);
   gOamManager.p = gOamManager.buf;
 #else
-  INCCODE("asm/wip/FlashOAM.inc");
+  INCCODE("asm/wip/FlushOAM.inc");
 #endif
 }
 
@@ -151,7 +151,7 @@ void ClearBLDCLT_1(void) {
   return;
 }
 
-void FlashBlendRegister(void) {
+void FlushBlendRegister(void) {
   REG_BLDALPHA = gBlendRegBuffer.bldalpha;
   REG_BLDY = gBlendRegBuffer.bldy;
   REG_BLDCNT = gBlendRegBuffer.bldclt;
@@ -168,7 +168,7 @@ void ResetWindow(void) {
 /**
  * @note 0x080043AC
  */
-void FlashWinRegister(void) {
+void FlushWinRegister(void) {
   vu16 dispcnt = REG_DISPCNT;
   dispcnt &= ~(DISPCNT_WIN0_ON | DISPCNT_WIN1_ON | DISPCNT_OBJWIN_ON);
   dispcnt |= gWindowRegBuffer.dispcnt;
@@ -184,7 +184,7 @@ void ClearMOSAIC(void) {
   return;
 }
 
-void FlashMOSAIC(void) {
+void FlushMOSAIC(void) {
   REG_MOSAIC = wMOSAIC;
   return;
 }

@@ -1,6 +1,6 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 static void Ghost70_Init(struct VFX* p);
 void Ghost70_Update(struct VFX* p);
@@ -11,7 +11,7 @@ const VFXRoutine gGhost70Routine = {
     [ENTITY_INIT] =      Ghost70_Init,
     [ENTITY_UPDATE] =    Ghost70_Update,
     [ENTITY_DIE] =       Ghost70_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

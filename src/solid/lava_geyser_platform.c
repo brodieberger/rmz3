@@ -7,7 +7,7 @@
 static const u8 sInitModes[4];
 static const struct Rect sSize;
 
-bool8 FUN_080cc814(struct Solid* p);
+bool8 FUN_080cc814(struct Entity* p);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,7 +20,7 @@ const SolidRoutine gLavaGeyserPlatformRoutine = {
     [ENTITY_INIT] =      Solid6_Init,
     [ENTITY_UPDATE] =    Solid6_Update,
     [ENTITY_DIE] =       Solid6_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -67,10 +67,7 @@ static void Solid6_Update(struct Solid* p) {
   if (((p->s).unk_28)->mode[0] == 4) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }

@@ -1365,7 +1365,7 @@ _08068206:
 	cmp r0, #0
 	beq _08068230
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 _08068230:
 	ldr r6, _08068288 @ =pZero2
 	ldr r2, [r6]

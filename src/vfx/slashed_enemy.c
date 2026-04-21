@@ -21,7 +21,7 @@ const VFXRoutine gSlashedEnemyRoutine = {
     [ENTITY_INIT] =      (VFXFunc)SlashedEnemy_Init,
     [ENTITY_UPDATE] =    (VFXFunc)SlashedEnemy_Update,
     [ENTITY_DIE] =       (VFXFunc)SlashedEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

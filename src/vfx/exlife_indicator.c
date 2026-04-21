@@ -3,18 +3,20 @@
 #include "task.h"
 #include "vfx.h"
 
+// Z x (残機数) の表示
+
 static void TaskCB_080be5d0(struct Sprite* s, struct DrawPivot* c);
 
-static void ExlifeIndicator_Init(struct VFX* vfx);
+static void ExlifeIndicator_Init(struct Entity* p);
 static void ExlifeIndicator_Update(struct VFX* vfx);
-static void ExlifeIndicator_Die(struct VFX* vfx);
+static void ExlifeIndicator_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gExlifeIndicatorRoutine = {
-    [ENTITY_INIT] =      ExlifeIndicator_Init,
-    [ENTITY_UPDATE] =    ExlifeIndicator_Update,
-    [ENTITY_DIE] =       ExlifeIndicator_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)ExlifeIndicator_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)ExlifeIndicator_Update,
+    [ENTITY_DIE] =       (VFXFunc)ExlifeIndicator_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
@@ -31,17 +33,17 @@ struct VFX* CreateExlifeIndicator(u8 extraLife) {
   return vfx;
 }
 
-static void ExlifeIndicator_Init(struct VFX* vfx) {
-  SetTaskCallback((struct Task*)&(vfx->s).spr, TaskCB_080be5d0);
-  (vfx->s).spr.sprites = (struct MetaspriteHeader*)vfx;
-  (vfx->s).flags &= ~OAM_PRIO;
-  (vfx->s).flags |= DISPLAY;
+static void ExlifeIndicator_Init(struct Entity* p) {
+  SetTaskCallback((struct Task*)&p->spr, TaskCB_080be5d0);
+  (p->spr).sprites = (struct MetaspriteHeader*)p;
+  p->flags &= ~OAM_PRIO;
+  p->flags |= DISPLAY;
   LOAD_STATIC_GRAPHIC(SM060_EXLIFE_INDICATOR);
-  (vfx->s).coord.x = PIXEL(0);
-  (vfx->s).coord.y = PIXEL(148);
-  SET_VFX_ROUTINE(vfx, ENTITY_UPDATE);
-  (vfx->s).work[2] = 0;
-  ExlifeIndicator_Update(vfx);
+  (p->coord).x = PIXEL(0);
+  (p->coord).y = PIXEL(148);
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  p->work[2] = 0;
+  ExlifeIndicator_Update((void*)p);
 }
 
 NAKED static void ExlifeIndicator_Update(struct VFX* vfx) {
@@ -108,24 +110,24 @@ _080BE5AC: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void ExlifeIndicator_Die(struct VFX* vfx) {
-  (vfx->s).flags &= ~DISPLAY;
-  SET_VFX_ROUTINE(vfx, ENTITY_EXIT);
+static void ExlifeIndicator_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 static void TaskCB_080be5d0(struct Sprite* s, struct DrawPivot* c) {
   // clang-format off
   static const motion_t sMotions[10] = {
-    MOTION(SM060_EXLIFE_INDICATOR, 0x00),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x01),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x02),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x03),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x04),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x05),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x06),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x07),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x08),
-    MOTION(SM060_EXLIFE_INDICATOR, 0x09),
+    MOTION(SM060_EXLIFE_INDICATOR, 0), // Zx0
+    MOTION(SM060_EXLIFE_INDICATOR, 1), // Zx1
+    MOTION(SM060_EXLIFE_INDICATOR, 2), // Zx2
+    MOTION(SM060_EXLIFE_INDICATOR, 3), // Zx3
+    MOTION(SM060_EXLIFE_INDICATOR, 4), // Zx4
+    MOTION(SM060_EXLIFE_INDICATOR, 5), // Zx5
+    MOTION(SM060_EXLIFE_INDICATOR, 6), // Zx6
+    MOTION(SM060_EXLIFE_INDICATOR, 7), // Zx7
+    MOTION(SM060_EXLIFE_INDICATOR, 8), // Zx8
+    MOTION(SM060_EXLIFE_INDICATOR, 9), // Zx9
   };
   // clang-format on
   struct VFX* p = (struct VFX*)s->sprites;

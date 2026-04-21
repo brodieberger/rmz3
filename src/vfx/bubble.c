@@ -14,7 +14,7 @@ const VFXRoutine gBubbleRoutine = {
     [ENTITY_INIT] =      Bubble_Init,
     [ENTITY_UPDATE] =    Bubble_Update,
     [ENTITY_DIE] =       Bubble_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

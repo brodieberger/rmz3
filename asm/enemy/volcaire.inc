@@ -24,7 +24,7 @@ FUN_080772f8: @ 0x080772F8
 	b _0807737E
 _08077318:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807737E
 	ldr r1, _08077354 @ =0x0836726C
@@ -54,7 +54,7 @@ _08077354: .4byte 0x0836726C
 _08077358: .4byte 0x0836728C
 _0807735C:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807737C
 	adds r0, r4, #0
@@ -459,7 +459,7 @@ _0807765C:
 	bl SetDDP
 _08077666:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _0807768A
@@ -538,7 +538,7 @@ _080776F2:
 	strb r0, [r4, #0xe]
 _080776FC:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _080777B8
 	ldr r0, [r4, #0x60]

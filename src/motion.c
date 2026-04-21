@@ -45,7 +45,7 @@ void SetMotionSubID(struct Motion* p, motion_sub_id_t subid) {
   p->state = MOTION_STATE_0;
 }
 
-WIP void UpdateMotionState(struct Motion* m) {
+NON_MATCH void UpdateMotionState(struct Motion* m) {
 #if MODERN
   u8 p;
   m->duration--;

@@ -16,7 +16,7 @@ const SolidRoutine gSolid27Routine = {
     [ENTITY_INIT] =      Solid27_Init,
     [ENTITY_UPDATE] =    Solid27_Update,
     [ENTITY_DIE] =       Solid27_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

@@ -2,24 +2,34 @@
 #include "story.h"
 #include "vfx.h"
 
-static const s32 *const PTR_s32_ARRAY_0836e9c4[3];
+struct VFX21 {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u16 unk_0;
+  u16 unk_2;
+  s32 unk_4;
+  u8 unk_8[8];
+};
+static_assert(sizeof(struct VFX21) == sizeof(struct VFX));
 
-static void BatringNecro_Init(struct VFX *vfx);
-static void BatringNecro_Update(struct VFX *vfx);
-static void Ghost21_Die(struct VFX *vfx);
+static const s32* const PTR_s32_ARRAY_0836e9c4[3];
+
+static void BatringNecro_Init(struct VFX* vfx);
+static void BatringNecro_Update(struct VFX* vfx);
+static void Ghost21_Die(struct VFX* vfx);
 
 // clang-format off
 const VFXRoutine gBatringNecroRoutine = {
     [ENTITY_INIT] =      BatringNecro_Init,
     [ENTITY_UPDATE] =    BatringNecro_Update,
     [ENTITY_DIE] =       Ghost21_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-struct VFX *FUN_080b7680(struct Coord *c, u8 param_2) {
-  struct VFX *vfx = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080b7680(struct Coord* c, u8 param_2) {
+  struct VFX* vfx = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (vfx != NULL) {
     (vfx->s).taskCol = 1;
     INIT_VFX_ROUTINE(vfx, VFX_BATRING_NECRO);
@@ -33,26 +43,24 @@ struct VFX *FUN_080b7680(struct Coord *c, u8 param_2) {
   return vfx;
 }
 
-struct VFX *FUN_080b76d4(struct Coord *c, u8 r1, u16 r2, s32 r3) {
-  struct VFX *vfx = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
-  if (vfx != NULL) {
-    (vfx->s).taskCol = 1;
-    INIT_VFX_ROUTINE(vfx, VFX_BATRING_NECRO);
-    (vfx->s).tileNum = 0;
-    (vfx->s).palID = 0;
-    (vfx->s).work[0] = r1;
-    (vfx->s).work[1] = 1;
-    (vfx->s).coord.x = c->x;
-    (vfx->s).coord.y = c->y;
-    (vfx->props).vfx21.unk_0 = r2;
-    (vfx->props).vfx21.unk_4 = r3;
+struct Entity* FUN_080b76d4(struct Coord* c, u8 r1, u16 r2, s32 r3) {
+  struct VFX21* p = (struct VFX21*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_BATRING_NECRO);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).work[0] = r1, (p->s).work[1] = 1;
+    (p->s).coord.x = c->x;
+    (p->s).coord.y = c->y;
+    p->unk_0 = r2;
+    p->unk_4 = r3;
   }
-  return vfx;
+  return (struct Entity*)p;
 }
 
 // --------------------------------------------
 
-NAKED static void BatringNecro_Init(struct VFX *vfx) {
+NAKED static void BatringNecro_Init(struct VFX* vfx) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -171,11 +179,11 @@ _080B781C: .4byte gVFXFnTable\n\
 
 // --------------------------------------------
 
-static void nop_080b788c(struct VFX *vfx);
-void FUN_080b7890(struct VFX *vfx);
-void FUN_080b7a04(struct VFX *vfx);
+static void nop_080b788c(struct VFX* vfx);
+void FUN_080b7890(struct VFX* vfx);
+void FUN_080b7a04(struct VFX* vfx);
 
-static void BatringNecro_Update(struct VFX *vfx) {
+static void BatringNecro_Update(struct VFX* vfx) {
   static const VFXFunc sUpdates[3] = {
       nop_080b788c,
       FUN_080b7890,
@@ -191,14 +199,14 @@ static void BatringNecro_Update(struct VFX *vfx) {
 
 // --------------------------------------------
 
-static void Ghost21_Die(struct VFX *vfx) {
+static void Ghost21_Die(struct VFX* vfx) {
   (vfx->s).flags &= ~DISPLAY;
   SET_VFX_ROUTINE(vfx, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void nop_080b788c(struct VFX *vfx) {
+static void nop_080b788c(struct VFX* vfx) {
   // nop
   return;
 }
@@ -211,7 +219,7 @@ static const s32 s32_ARRAY_0836e964[8 * 3] = {
     0x00000120, -0x00000200, -0x000000B0, -0x00000160, -0x000000B0, -0x00000200, 0x00000120, -0x00000160, -0x000000B0, -0x00000160, -0x000000B0, -0x00000200, 0x00000120, -0x00000160, 0x00000120, -0x00000200, -0x000000B0, -0x00000200, 0x00000120, -0x00000160, 0x00000120, -0x00000200, -0x000000B0, -0x00000160,
 };
 
-static const s32 *const PTR_s32_ARRAY_0836e9c4[3] = {
+static const s32* const PTR_s32_ARRAY_0836e9c4[3] = {
     &s32_ARRAY_0836e964[0],
     &s32_ARRAY_0836e964[8],
     &s32_ARRAY_0836e964[16],

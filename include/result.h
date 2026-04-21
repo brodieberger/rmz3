@@ -1,8 +1,9 @@
 #ifndef GUARD_RMZ3_RESULT_H
 #define GUARD_RMZ3_RESULT_H
 
-#include "entity.h"
 #include "global.h"
+
+struct Widget;
 
 struct ResultState {
   u8 mode[4];  // 現在実行する処理を決める

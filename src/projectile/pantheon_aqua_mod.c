@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/pantheon_aqua_mod.inc");
+
 void PantheonAquaModProjectile_Init(struct Projectile* p);
 void PantheonAquaModProjectile_Update(struct Projectile* p);
 void PantheonAquaModProjectile_Die(struct Projectile* p);

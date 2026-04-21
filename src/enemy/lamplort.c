@@ -2,10 +2,10 @@
 #include "enemy.h"
 #include "global.h"
 
-static void Lamplort_Init(struct Enemy *p);
-void Lamplort_Update(struct Enemy *p);
-void Lamplort_Die(struct Enemy *p);
-void Lamplort_Disappear(struct Enemy *p);
+static void Lamplort_Init(struct Enemy* p);
+void Lamplort_Update(struct Enemy* p);
+void Lamplort_Die(struct Enemy* p);
+void Lamplort_Disappear(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gLamplortRoutine = {
@@ -17,11 +17,11 @@ const EnemyRoutine gLamplortRoutine = {
 };
 // clang-format on
 
-struct Enemy *CreateLamplort(struct Coord *c, u8 n) {
-  struct Enemy *p = (struct Enemy *)AllocEntityFirst(gZakoHeaderPtr);
+struct Enemy* CreateLamplort(struct Coord* c, u8 n) {
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_LAMPLORT);
+    INIT_ENEMY_ROUTINE(p, ENEMY_LAMPLORT);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -34,7 +34,7 @@ struct Enemy *CreateLamplort(struct Coord *c, u8 n) {
 
 // --------------------------------------------
 
-NAKED static void Lamplort_Init(struct Enemy *p) {
+NAKED static void Lamplort_Init(struct Enemy* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	sub sp, #8\n\
@@ -166,7 +166,7 @@ _0806C306:\n\
 	bl CreateProjectile6\n\
 	str r0, [r6, #0x2c]\n\
 	adds r0, r6, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _0806C362\n\
 	movs r1, #0xc8\n\
@@ -205,16 +205,16 @@ _0806C38C: .4byte gEnemyFnTable\n\
 
 INCASM("asm/enemy/lamplort.inc");
 
-void FUN_0806c81c(struct Enemy *p);
-void FUN_0806c824(struct Enemy *p);
-void FUN_0806c8c8(struct Enemy *p);
-void FUN_0806c9c0(struct Enemy *p);
-void true_0806cac4(struct Enemy *p);
-void FUN_0806cb58(struct Enemy *p);
-void FUN_0806cc00(struct Enemy *p);
-void true_0806cd48(struct Enemy *p);
-void FUN_0806cda4(struct Enemy *p);
-void FUN_0806cdac(struct Enemy *p);
+void FUN_0806c81c(struct Enemy* p);
+void FUN_0806c824(struct Enemy* p);
+void FUN_0806c8c8(struct Enemy* p);
+void FUN_0806c9c0(struct Enemy* p);
+void true_0806cac4(struct Enemy* p);
+void FUN_0806cb58(struct Enemy* p);
+void FUN_0806cc00(struct Enemy* p);
+void true_0806cd48(struct Enemy* p);
+void FUN_0806cda4(struct Enemy* p);
+void FUN_0806cdac(struct Enemy* p);
 
 // clang-format off
 static const EnemyFunc sUpdates1[10] = {
@@ -231,16 +231,16 @@ static const EnemyFunc sUpdates1[10] = {
 };
 // clang-format on
 
-void FUN_0806c820(struct Enemy *p);
-void FUN_0806c828(struct Enemy *p);
-void FUN_0806c8cc(struct Enemy *p);
-void FUN_0806c9c4(struct Enemy *p);
-void FUN_0806cac8(struct Enemy *p);
-void FUN_0806cb5c(struct Enemy *p);
-void lamplort_0806cc04(struct Enemy *p);
-void FUN_0806cd4c(struct Enemy *p);
-void FUN_0806cda8(struct Enemy *p);
-void FUN_0806cdb0(struct Enemy *p);
+void FUN_0806c820(struct Enemy* p);
+void FUN_0806c828(struct Enemy* p);
+void FUN_0806c8cc(struct Enemy* p);
+void FUN_0806c9c4(struct Enemy* p);
+void FUN_0806cac8(struct Enemy* p);
+void FUN_0806cb5c(struct Enemy* p);
+void lamplort_0806cc04(struct Enemy* p);
+void FUN_0806cd4c(struct Enemy* p);
+void FUN_0806cda8(struct Enemy* p);
+void FUN_0806cdb0(struct Enemy* p);
 
 // clang-format off
 static const EnemyFunc sUpdates2[10] = {

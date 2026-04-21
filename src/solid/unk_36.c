@@ -1,8 +1,8 @@
 #include "collision.h"
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
 #include "solid.h"
+#include "vfx.h"
 
 static const struct Rect sSize;
 
@@ -15,7 +15,7 @@ const SolidRoutine gSolid36Routine = {
     [ENTITY_INIT] =      Solid36_Init,
     [ENTITY_UPDATE] =    Solid36_Update,
     [ENTITY_DIE] =       Solid36_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

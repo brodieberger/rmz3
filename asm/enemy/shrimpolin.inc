@@ -25,7 +25,7 @@ _08069C90:
 	strb r0, [r4, #0xe]
 _08069CA2:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _08069CE0

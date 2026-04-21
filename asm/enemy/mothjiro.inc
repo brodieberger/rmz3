@@ -102,7 +102,7 @@ _08087C6C:
 	strb r4, [r6, #0xe]
 	strb r4, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08087CD8
 	movs r1, #0xd6
@@ -166,7 +166,7 @@ _08087D2C:
 	cmp r0, #0
 	bne _08087D5C
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08087D8C
 	ldr r0, [r5]

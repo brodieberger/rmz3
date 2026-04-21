@@ -39,7 +39,7 @@ _080EE89A:
 	movs r0, #0
 	strb r0, [r1]
 	movs r0, #0
-	ldr r1, _080EE91C @ =0x0202F360
+	ldr r1, _080EE91C @ =gWhitePaintFlags
 	str r0, [sp]
 	movs r4, #8
 	ldr r2, _080EE920 @ =0x01000008
@@ -81,7 +81,7 @@ _080EE90C: .4byte gLifeRecoverAmount
 _080EE910: .4byte 0x0202F344
 _080EE914: .4byte 0x00001ED8
 _080EE918: .4byte 0x0202F354
-_080EE91C: .4byte 0x0202F360
+_080EE91C: .4byte gWhitePaintFlags
 _080EE920: .4byte 0x01000008
 _080EE924: .4byte gCurStory
 _080EE928: .4byte 0x0202F33C
@@ -94,7 +94,7 @@ _080EE930:
 	cmp r0, #0
 	beq _080EE944
 	movs r0, #0x25
-	bl stopSound
+	bl StopSound
 _080EE944:
 	movs r0, #0x26
 	bl isSoundPlaying
@@ -121,7 +121,7 @@ _080EE964:
 	cmp r0, #0
 	beq _080EE980
 	movs r0, #0x26
-	bl stopSound
+	bl StopSound
 _080EE980:
 	movs r0, #0
 	ldr r1, [sp, #8]
@@ -201,7 +201,7 @@ _080EEA04:
 	ldr r0, _080EEAAC @ =gBossHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
-	ldr r0, _080EEAB0 @ =gZakoHeaderPtr
+	ldr r0, _080EEAB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
 	ldr r0, _080EEAB4 @ =0x0203029C
@@ -229,7 +229,7 @@ _080EEA42:
 	ldr r0, _080EEAAC @ =gBossHeaderPtr
 	ldr r0, [r0]
 	bl RegisterHitboxes
-	ldr r0, _080EEAB0 @ =gZakoHeaderPtr
+	ldr r0, _080EEAB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl RegisterHitboxes
 	ldr r0, _080EEAB4 @ =0x0203029C
@@ -254,7 +254,7 @@ _080EEAA0: .4byte 0x00057E3E
 _080EEAA4: .4byte 0x014996FE
 _080EEAA8: .4byte gSolidHeaderPtr
 _080EEAAC: .4byte gBossHeaderPtr
-_080EEAB0: .4byte gZakoHeaderPtr
+_080EEAB0: .4byte gEnemyHeaderPtr
 _080EEAB4: .4byte 0x0203029C
 _080EEAB8: .4byte gWeaponHeaderPtr
 _080EEABC: .4byte gPickupHeaderPtr
@@ -272,7 +272,7 @@ _080EEACC:
 	ldr r5, _080EEC64 @ =gBossHeaderPtr
 	ldr r0, [r5]
 	bl RunDamageEffect
-	ldr r6, _080EEC68 @ =gZakoHeaderPtr
+	ldr r6, _080EEC68 @ =gEnemyHeaderPtr
 	ldr r0, [r6]
 	bl RunDamageEffect
 	ldr r3, _080EEC6C @ =0x0203029C
@@ -453,7 +453,7 @@ _080EEC50:
 	.align 2, 0
 _080EEC60: .4byte gSolidHeaderPtr
 _080EEC64: .4byte gBossHeaderPtr
-_080EEC68: .4byte gZakoHeaderPtr
+_080EEC68: .4byte gEnemyHeaderPtr
 _080EEC6C: .4byte 0x0203029C
 _080EEC70: .4byte gPickupHeaderPtr
 _080EEC74: .4byte gElfHeaderPtr

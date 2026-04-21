@@ -4,7 +4,19 @@
 #include "story.h"
 #include "vfx.h"
 
-static const struct Collision sCollisions[5];
+struct GyroCannon {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct {
+    struct VFX* elementEffect;  // 0xB4
+    u8 unk_b8[4];               // 0xB8
+    bool8 is_right;             // 0xBC
+    u32 unk_c0;                 // 0xC0
+  } props;
+};
+static_assert(sizeof(struct GyroCannon) == sizeof(struct Enemy));
+
+static const struct Collision sCollisions[];
 
 static void GyroCannon_Init(struct Enemy* p);
 static void GyroCannon_Update(struct Enemy* p);
@@ -12,26 +24,24 @@ static void GyroCannon_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gGyroCannonRoutine = {
-    [ENTITY_INIT] =      GyroCannon_Init,
-    [ENTITY_UPDATE] =    GyroCannon_Update,
-    [ENTITY_DIE] =       GyroCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)GyroCannon_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)GyroCannon_Update,
+    [ENTITY_DIE] =       (EnemyFunc)GyroCannon_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreateGyroCannon(struct Entity* friend, u8 n, u8 r2) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+static struct Entity* CreateGyroCannon(struct Entity* e, u8 n, u8 r2) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_GYRO_CANNON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).unk_28 = friend;
-    (p->s).work[0] = n;
-    (p->s).work[1] = r2;
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_GYRO_CANNON);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->unk_28 = e;
+    p->work[0] = n, p->work[1] = r2;
   }
   return p;
 }
@@ -39,15 +49,15 @@ struct Enemy* CreateGyroCannon(struct Entity* friend, u8 n, u8 r2) {
 // --------------------------------------------
 
 static void initGyroCannonWithPropeller(struct Enemy* p);
-static void initGyroCannonWithoutPropeller(struct Enemy* p);
+static void initGyroCannonWithoutPropeller(struct GyroCannon* p);
 
 static void GyroCannon_Init(struct Enemy* p) {
-  SET_ZAKO_ROUTINE(p, ENTITY_UPDATE);
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   if ((p->s).work[0] != 0) {
-    initGyroCannonWithoutPropeller(p);
+    initGyroCannonWithoutPropeller((void*)p);
   } else {
     initGyroCannonWithPropeller(p);
   }
@@ -63,11 +73,8 @@ static void GyroCannon_Update(struct Enemy* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
-    SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+    EXIT_BODY(p);
+    SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
@@ -87,11 +94,8 @@ static void GyroCannon_Die(struct Enemy* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
-    SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+    EXIT_BODY(p);
+    SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
@@ -189,7 +193,7 @@ _0806D150: .4byte FUN_0806df10\n\
  .syntax divided\n");
 }
 
-static void initGyroCannonWithoutPropeller(struct Enemy* p) {
+static void initGyroCannonWithoutPropeller(struct GyroCannon* p) {
   SetMotion(&p->s, MOTION(SM023_GYRO_CANNON, 6));
   UpdateMotionGraphic(&p->s);
   INIT_BODY(p, &sCollisions[2], 6, NULL);
@@ -198,7 +202,7 @@ static void initGyroCannonWithoutPropeller(struct Enemy* p) {
   (p->s).spr.xflip = FALSE;
   (p->s).spr.oam.xflip = FALSE;
 
-  p->props.gyroCannon.elementEffect = NULL;
+  (p->props).elementEffect = NULL;
 }
 
 static const struct Coord sElementCoord;
@@ -356,7 +360,7 @@ _0806D2DC:\n\
 	ldr r1, _0806D324 @ =sCollisions\n\
 	bl SetDDP\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	bne _0806D31C\n\
 	ldrb r0, [r5, #0xb]\n\
@@ -530,12 +534,12 @@ _0806DF0C: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
+// 0x0806df10
 static void FUN_0806df10(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    struct Zero* other = (struct Zero*)body->enemy->parent;
-    struct Enemy* owner = (struct Enemy*)body->parent;
-    struct GyroCannonProps* props = (struct GyroCannonProps*)(owner->props).raw;
-    props->is_right = (other->s).coord.x > (owner->s).coord.x;
+    struct Entity* other = (struct Entity*)body->enemy->parent;
+    struct GyroCannon* self = (struct GyroCannon*)body->parent;
+    (&self->props)->is_right = (other->coord).x > (self->s).coord.x;
   }
 }
 
@@ -577,6 +581,7 @@ static const EnemyFunc sUpdates2[3] = {
 
 static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
 
+// 0x083666a8
 static const struct Collision sCollisions[5] = {
     {
       kind : DDP,
@@ -623,6 +628,7 @@ static const struct Collision sCollisions[5] = {
     },
 };
 
+// 0x08366720
 static const struct SlashedEnemy sSlashedEnemies[4] = {
     {
       m : 0x170B,
@@ -632,7 +638,6 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
       unk_coord_0c : {0x03FF, 0x01FF},
       unk_10 : {0x0000, 0x0040},
       unk_14 : {0, 0},
-      _ : {0, 0, 0, 0},
     },
     {
       m : 0x170C,
@@ -642,7 +647,6 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
       unk_coord_0c : {0x01FF, 0x01FF},
       unk_10 : {0x0000, 0x0040},
       unk_14 : {0, 0},
-      _ : {0, 0, 0, 0},
     },
     {
       m : 0x170D,
@@ -652,7 +656,6 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
       unk_coord_0c : {0x03FF, 0x01FF},
       unk_10 : {0x0000, 0x0040},
       unk_14 : {0, 0},
-      _ : {0, 0, 0, 0},
     },
     {
       m : 0x170E,
@@ -662,6 +665,5 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
       unk_coord_0c : {0x01FF, 0x01FF},
       unk_10 : {0x0000, 0x0040},
       unk_14 : {0, 0},
-      _ : {0, 0, 0, 0},
     },
 };

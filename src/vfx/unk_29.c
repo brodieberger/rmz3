@@ -13,7 +13,7 @@ const VFXRoutine gGhost29Routine = {
     [ENTITY_INIT] =      Ghost29_Init,
     [ENTITY_UPDATE] =    Ghost29_Update,
     [ENTITY_DIE] =       Ghost29_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

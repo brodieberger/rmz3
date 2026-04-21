@@ -11,7 +11,7 @@ const EnemyRoutine gOmegaGoldSwordRoutine = {
     [ENTITY_INIT] =      OmegaGoldSword_Init,
     [ENTITY_UPDATE] =    OmegaGoldSword_Update,
     [ENTITY_DIE] =       OmegaGoldSword_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -19,10 +19,10 @@ const EnemyRoutine gOmegaGoldSwordRoutine = {
 // --------------------------------------------
 
 struct Enemy* CreateOmegaGoldSword(struct Coord* c, u8 r1, struct Entity* e) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_OMEGA_GOLD_SWORD);
+    INIT_ENEMY_ROUTINE(p, ENEMY_OMEGA_GOLD_SWORD);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;

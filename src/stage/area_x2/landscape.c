@@ -179,7 +179,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
 // 0x08011820
 // レジスタの割り当てがうまくいかないだけ
-WIP static void LayerDraw_AreaX2_2(struct StageLayer* l, const struct Stage* stage) {
+NON_MATCH static void LayerDraw_AreaX2_2(struct StageLayer* l, const struct Stage* stage) {
 #if MODERN
   u16 eva;
   struct Overworld* ow = &gOverworld;
@@ -491,7 +491,7 @@ static void LayerUpdate_5(struct StageLayer* l, const struct Stage* _ UNUSED) {
       l->unk_10++;
       (l->scroll).y = -l->unk_10;
       if (l->unk_10 >= 180) {
-        stopSound(SE_UNK_e0);
+        StopSound(SE_UNK_e0);
         l->phase++;
       }
       break;

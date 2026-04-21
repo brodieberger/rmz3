@@ -531,7 +531,7 @@ _0809617A:
 	cmp r0, #0
 	bne _080961A0
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0809619A
 	movs r0, #1
@@ -549,7 +549,7 @@ _080961A0:
 	strb r0, [r4, #0xf]
 _080961AE:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _080961BA
 	strb r0, [r4, #0xf]
@@ -621,7 +621,7 @@ _08096232:
 _0809623C: .4byte 0x0836A0BC
 _08096240:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _080962B4
 	ldr r0, [r4, #0x54]
@@ -1113,7 +1113,7 @@ FUN_0809664c: @ 0x0809664C
 	beq _080966BC
 	b _080966E2
 _0809665C:
-	ldr r0, _080966E8 @ =gZakoHeaderPtr
+	ldr r0, _080966E8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r2, r0, #0
@@ -1184,7 +1184,7 @@ _080966E2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080966E8: .4byte gZakoHeaderPtr
+_080966E8: .4byte gEnemyHeaderPtr
 _080966EC: .4byte gEnemyFnTable
 _080966F0: .4byte 0x0836A14C
 _080966F4: .4byte 0x0000DB0E

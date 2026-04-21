@@ -11,7 +11,7 @@ FUN_08099f54: @ 0x08099F54
 	adds r5, r1, #0
 	adds r6, r2, #0
 	adds r7, r3, #0
-	ldr r0, _08099FB0 @ =gZakoHeaderPtr
+	ldr r0, _08099FB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -52,7 +52,7 @@ _08099FA8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08099FB0: .4byte gZakoHeaderPtr
+_08099FB0: .4byte gEnemyHeaderPtr
 _08099FB4: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08099fb8
@@ -64,7 +64,7 @@ FUN_08099fb8: @ 0x08099FB8
 	lsrs r4, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r5, r3, #0x18
-	ldr r0, _0809A024 @ =gZakoHeaderPtr
+	ldr r0, _0809A024 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -112,7 +112,7 @@ _0809A01E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809A024: .4byte gZakoHeaderPtr
+_0809A024: .4byte gEnemyHeaderPtr
 _0809A028: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809a02c
@@ -121,7 +121,7 @@ FUN_0809a02c: @ 0x0809A02C
 	adds r6, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r5, r1, #0x18
-	ldr r0, _0809A0A8 @ =gZakoHeaderPtr
+	ldr r0, _0809A0A8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -179,7 +179,7 @@ _0809A0A0:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809A0A8: .4byte gZakoHeaderPtr
+_0809A0A8: .4byte gEnemyHeaderPtr
 _0809A0AC: .4byte gEnemyFnTable
 _0809A0B0: .4byte 0xFFFF6800
 
@@ -1452,7 +1452,7 @@ _0809AA5A:
 	lsls r4, r4, #0x10
 	lsrs r4, r4, #0x10
 	adds r2, r4, #0
-	bl minigame_str_080e9d04
+	bl PrintMinigameNumber
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0
@@ -1515,7 +1515,7 @@ _0809AAE0:
 	lsrs r1, r1, #0x10
 	lsls r2, r4, #0x10
 	lsrs r2, r2, #0x10
-	bl minigame_str_080e9d04
+	bl PrintMinigameNumber
 	ldr r0, _0809AB20 @ =0x080FF070
 	adds r1, r5, #2
 	adds r2, r4, #0
@@ -1533,7 +1533,7 @@ _0809AAFC:
 	lsls r4, r4, #0x10
 	lsrs r4, r4, #0x10
 	adds r2, r4, #0
-	bl minigame_str_080e9d04
+	bl PrintMinigameNumber
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

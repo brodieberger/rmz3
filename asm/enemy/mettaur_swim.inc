@@ -12,7 +12,7 @@ FUN_08088b4c:
 	.byte 0x30, 0x21, 0x59, 0x72, 0xC0, 0x30, 0x00, 0x68, 0x00, 0x68, 0x58, 0x61, 0x00, 0x20, 0x1A, 0x84
 	.byte 0x19, 0x1C, 0x22, 0x31, 0x08, 0x70, 0xD9, 0x7A, 0x10, 0x20, 0x08, 0x43, 0xD8, 0x72, 0x18, 0x7F
 	.byte 0x58, 0x77, 0x5D, 0x65, 0x9E, 0x65, 0x1C, 0x74, 0x18, 0x1C, 0x70, 0xBC, 0x02, 0xBC, 0x08, 0x47
-	.4byte gZakoHeaderPtr
+	.4byte gEnemyHeaderPtr
 	.4byte gEnemyFnTable
 
 	thumb_func_start FUN_08088ba8
@@ -434,7 +434,7 @@ _08088ECE:
 	ldrb r0, [r5, #0x10]
 	cmp r0, #1
 	bne _08088F16
-	ldr r0, _08088F78 @ =gZakoHeaderPtr
+	ldr r0, _08088F78 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -488,7 +488,7 @@ _08088F20:
 	str r0, [r5, #0x58]
 _08088F3E:
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08088F68
 	ldr r1, _08088F84 @ =0x083688D4
@@ -514,7 +514,7 @@ _08088F6E:
 	bx r0
 	.align 2, 0
 _08088F74: .4byte 0x0836894E
-_08088F78: .4byte gZakoHeaderPtr
+_08088F78: .4byte gEnemyHeaderPtr
 _08088F7C: .4byte gEnemyFnTable
 _08088F80: .4byte 0x000007FF
 _08088F84: .4byte 0x083688D4
@@ -738,7 +738,7 @@ _08089130:
 	cmp r0, #0
 	bne _08089150
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808914A
 	movs r0, #1
@@ -794,7 +794,7 @@ _0808919C:
 	strb r0, [r4, #0xf]
 _080891AC:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _080891B8
 	strb r0, [r4, #0xf]

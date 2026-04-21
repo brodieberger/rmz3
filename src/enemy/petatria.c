@@ -13,7 +13,7 @@ const EnemyRoutine gPetatriaRoutine = {
     [ENTITY_INIT] =      Petatria_Init,
     [ENTITY_UPDATE] =    Petatria_Update,
     [ENTITY_DIE] =       Petatria_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

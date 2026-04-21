@@ -13,7 +13,7 @@ const EnemyRoutine gHellBouncerRoutine = {
     [ENTITY_INIT] =      HellBouncer_Init,
     [ENTITY_UPDATE] =    HellBouncer_Update,
     [ENTITY_DIE] =       HellBouncer_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

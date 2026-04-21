@@ -11,7 +11,7 @@ const EnemyRoutine gMothjiroRoutine = {
     [ENTITY_INIT] =      Mothjiro_Init,
     [ENTITY_UPDATE] =    Mothjiro_Update,
     [ENTITY_DIE] =       Mothjiro_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -19,10 +19,10 @@ const EnemyRoutine gMothjiroRoutine = {
 // --------------------------------------------
 
 struct Enemy* CreateMothjiro(struct Coord* c, u8 r1) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_MOTHJIRO);
+    INIT_ENEMY_ROUTINE(p, ENEMY_MOTHJIRO);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;

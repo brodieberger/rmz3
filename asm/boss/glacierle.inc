@@ -52,14 +52,14 @@ _08057F76:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08057FA4 @ =0x08363DCC
+	ldr r2, _08057FA4 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	b _08058010
 	.align 2, 0
 _08057F9C: .4byte 0x0000B201
 _08057FA0: .4byte 0x08364AAE
-_08057FA4: .4byte 0x08363DCC
+_08057FA4: .4byte sCollisions
 _08057FA8:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -256,7 +256,7 @@ _0805810E:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _0805814C @ =0x08363DCC
+	ldr r2, _0805814C @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	cmp r6, #0
@@ -271,7 +271,7 @@ _0805813C: .4byte 0xFFFFCE00
 _08058140: .4byte 0xFFFFF000
 _08058144: .4byte 0x00FFFF00
 _08058148: .4byte 0x08364AB1
-_0805814C: .4byte 0x08363DCC
+_0805814C: .4byte sCollisions
 _08058150:
 	ldrb r1, [r4, #0x12]
 	cmp r1, #0
@@ -332,7 +332,7 @@ _080581A4:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _080581D4 @ =0x08363DCC
+	ldr r2, _080581D4 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _080581C6:
@@ -342,7 +342,7 @@ _080581C6:
 	.align 2, 0
 _080581CC: .4byte 0x0000B206
 _080581D0: .4byte 0x08364AB9
-_080581D4: .4byte 0x08363DCC
+_080581D4: .4byte sCollisions
 
 	thumb_func_start glacierle_080581d8
 glacierle_080581d8: @ 0x080581D8
@@ -493,7 +493,7 @@ _080582D2:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058314 @ =0x08363DCC
+	ldr r2, _08058314 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	b _0805835E
@@ -502,7 +502,7 @@ _08058304: .4byte 0x00001FFF
 _08058308: .4byte 0xFFFFE600
 _0805830C: .4byte 0xFFFFF000
 _08058310: .4byte 0x08364ABC
-_08058314: .4byte 0x08363DCC
+_08058314: .4byte sCollisions
 _08058318:
 	movs r0, #0xc
 	strb r0, [r5, #0x12]
@@ -536,7 +536,7 @@ _08058336:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058368 @ =0x08363DCC
+	ldr r2, _08058368 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _0805835E:
@@ -545,7 +545,7 @@ _0805835E:
 	bx r0
 	.align 2, 0
 _08058364: .4byte 0x08364ABC
-_08058368: .4byte 0x08363DCC
+_08058368: .4byte sCollisions
 
 	thumb_func_start glacierle_0805836c
 glacierle_0805836c: @ 0x0805836C
@@ -655,7 +655,7 @@ _08058416:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058458 @ =0x08363DCC
+	ldr r2, _08058458 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	ldrb r0, [r4, #0x12]
@@ -670,7 +670,7 @@ _08058416:
 	.align 2, 0
 _08058450: .4byte 0x0000B208
 _08058454: .4byte 0x08364ABF
-_08058458: .4byte 0x08363DCC
+_08058458: .4byte sCollisions
 _0805845C:
 	adds r2, r4, #0
 	adds r2, #0xb4
@@ -747,7 +747,7 @@ _080584C8:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _0805850C @ =0x08363DCC
+	ldr r2, _0805850C @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	ldrb r0, [r4, #0x12]
@@ -763,7 +763,7 @@ _080584C8:
 	.align 2, 0
 _08058504: .4byte 0x0000B212
 _08058508: .4byte 0x08364AC2
-_0805850C: .4byte 0x08363DCC
+_0805850C: .4byte sCollisions
 _08058510:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -1326,7 +1326,7 @@ _08058946:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058988 @ =0x08363DCC
+	ldr r2, _08058988 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r4, #0
@@ -1341,7 +1341,7 @@ _08058946:
 	.align 2, 0
 _08058980: .4byte 0x0000B20A
 _08058984: .4byte 0x08364ACE
-_08058988: .4byte 0x08363DCC
+_08058988: .4byte sCollisions
 _0805898C:
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
@@ -1428,7 +1428,7 @@ _08058A1C:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058A60 @ =0x08363DCC
+	ldr r2, _08058A60 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	ldr r0, [r4, #0x70]
@@ -1444,7 +1444,7 @@ _08058A54:
 	.align 2, 0
 _08058A58: .4byte 0x0000B20B
 _08058A5C: .4byte 0x08364AD3
-_08058A60: .4byte 0x08363DCC
+_08058A60: .4byte sCollisions
 _08058A64: .4byte 0x00FFFF00
 _08058A68:
 	adds r0, r4, #0
@@ -1558,7 +1558,7 @@ _08058B1C:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058B80 @ =0x08363DCC
+	ldr r2, _08058B80 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r4, #0
@@ -1577,7 +1577,7 @@ _08058B70: .4byte 0xFFFFD300
 _08058B74: .4byte 0xFFFFFE00
 _08058B78: .4byte 0xFFFFE200
 _08058B7C: .4byte 0x08364AD3
-_08058B80: .4byte 0x08363DCC
+_08058B80: .4byte sCollisions
 _08058B84:
 	movs r0, #0x92
 	bl PlaySound
@@ -2082,7 +2082,7 @@ _08058F4C:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08058FA4 @ =0x08363DCC
+	ldr r2, _08058FA4 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	ldr r0, [r6, #0x54]
@@ -2101,7 +2101,7 @@ _08058F4C:
 _08058F98: .4byte gEnemyFnTable
 _08058F9C: .4byte 0x0000B211
 _08058FA0: .4byte 0x08364B20
-_08058FA4: .4byte 0x08363DCC
+_08058FA4: .4byte sCollisions
 _08058FA8:
 	movs r0, #0x91
 	bl PlaySound
@@ -2205,7 +2205,7 @@ _08059058:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08059088 @ =0x08363DCC
+	ldr r2, _08059088 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _0805907A:
@@ -2215,7 +2215,7 @@ _0805907A:
 	.align 2, 0
 _08059080: .4byte 0x0000B216
 _08059084: .4byte 0x08364B22
-_08059088: .4byte 0x08363DCC
+_08059088: .4byte sCollisions
 
 	thumb_func_start glacierleIceCarnival2
 glacierleIceCarnival2: @ 0x0805908C
@@ -2750,7 +2750,7 @@ _0805949A:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _080594D8 @ =0x08363DCC
+	ldr r2, _080594D8 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 _080594BC:
@@ -2765,7 +2765,7 @@ _080594BC:
 _080594CC: .4byte gEnemyFnTable
 _080594D0: .4byte 0x0000B219
 _080594D4: .4byte 0x08364B26
-_080594D8: .4byte 0x08363DCC
+_080594D8: .4byte sCollisions
 
 	thumb_func_start glacierle_080594dc
 glacierle_080594dc: @ 0x080594DC

@@ -78,7 +78,7 @@ Elf11_Init: @ 0x080E509C
 	movs r1, #2
 	orrs r0, r1
 	strb r0, [r4, #0xa]
-	ldr r1, _080E50F8 @ =0x08371DF8
+	ldr r1, _080E50F8 @ =sInitializers
 	ldrb r0, [r4, #0x10]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -92,7 +92,7 @@ Elf11_Init: @ 0x080E509C
 	bx r0
 	.align 2, 0
 _080E50F4: .4byte gElfFnTable
-_080E50F8: .4byte 0x08371DF8
+_080E50F8: .4byte sInitializers
 
 	thumb_func_start Elf11_Update
 Elf11_Update: @ 0x080E50FC
@@ -155,7 +155,7 @@ _080E5170:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E5178: .4byte 0x08371E08
+_080E5178: .4byte sUpdates
 
 	thumb_func_start Elf11_Die
 Elf11_Die: @ 0x080E517C
@@ -313,7 +313,7 @@ _080E529A:
 _080E529C:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
-	bl FUN_08034520
+	bl GetBeeAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	ldrb r2, [r6, #0xa]
@@ -348,7 +348,7 @@ _080E529C:
 	lsls r0, r0, #3
 	b _080E52F2
 	.align 2, 0
-_080E52EC: .4byte 0x08371E18
+_080E52EC: .4byte sCollisions
 _080E52F0:
 	ldr r0, _080E52FC @ =0xFFFFFA00
 _080E52F2:
@@ -398,7 +398,7 @@ FUN_080e5300: @ 0x080E5300
 	strb r0, [r7, #0xa]
 	adds r0, r7, #0
 	bl UpdateMotionGraphic
-	bl FUN_08034520
+	bl GetBeeAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	ldrb r1, [r7, #0xa]
@@ -465,7 +465,7 @@ FUN_080e5300: @ 0x080E5300
 	lsls r0, r0, #1
 	b _080E5494
 	.align 2, 0
-_080E53DC: .4byte 0x08371E18
+_080E53DC: .4byte sCollisions
 _080E53E0: .4byte gSineTable
 _080E53E4:
 	mov r4, sb
@@ -702,7 +702,7 @@ _080E5596:
 _080E5598:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
-	bl FUN_0803455c
+	bl GetArchimAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	ldrb r2, [r6, #0xa]
@@ -737,7 +737,7 @@ _080E5598:
 	lsls r0, r0, #3
 	b _080E55EE
 	.align 2, 0
-_080E55E8: .4byte 0x08371E18
+_080E55E8: .4byte sCollisions
 _080E55EC:
 	ldr r0, _080E5600 @ =0xFFFFFC00
 _080E55EE:
@@ -795,7 +795,7 @@ _080E5650:
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
-	bl FUN_0803455c
+	bl GetArchimAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	ldrb r2, [r6, #0xa]
@@ -827,7 +827,7 @@ _080E5650:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E569C: .4byte 0x08371F08
+_080E569C: .4byte sCollisions+(24*10)
 
 	thumb_func_start FUN_080e56a0
 FUN_080e56a0: @ 0x080E56A0

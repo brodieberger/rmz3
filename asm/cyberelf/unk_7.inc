@@ -119,7 +119,7 @@ _080E3AFA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E3B44: .4byte 0x08371D94
+_080E3B44: .4byte u8_ARRAY_08371d94
 _080E3B48: .4byte gElfFnTable
 
 	thumb_func_start Elf7_Update
@@ -241,7 +241,7 @@ _080E3C2A:
 	adds r2, r0, r4
 	b _080E3C54
 	.align 2, 0
-_080E3C40: .4byte 0x08371D88
+_080E3C40: .4byte sUpdates
 _080E3C44: .4byte gSineTable
 _080E3C48: .4byte 0x000FFFFF
 _080E3C4C:

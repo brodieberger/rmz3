@@ -1,7 +1,10 @@
 #include "collision.h"
 #include "entity.h"
+#include "game.h"
 #include "global.h"
 #include "solid.h"
+#include "story.h"
+#include "text.h"
 
 static void MainNPC_Init(struct Solid* p);
 static void MainNPC_Update(struct Solid* p);
@@ -22,7 +25,7 @@ const SolidRoutine gMainNPCRoutine = {
     [ENTITY_INIT] =      MainNPC_Init,
     [ENTITY_UPDATE] =    MainNPC_Update,
     [ENTITY_DIE] =       MainNPC_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -51,18 +54,18 @@ static void FUN_080daee8(struct Solid* p);
 static void UpdateCiel(struct Solid* p);
 void UpdateCerveau(struct Solid* p);
 void UpdateBlockingColbor(struct Solid* p);
-void UpdateSearchConsole(struct Solid* p);
-void FUN_080db930(struct Solid* p);
+static void UpdateSearchConsole(Object* p);
+static void FUN_080db930(Object* p);
 
 static void MainNPC_Update(struct Solid* p) {
   // clang-format off
   static SolidFunc const sUpdates[] = {
-    FUN_080daee8,
-    UpdateCiel,
-    UpdateCerveau,
-    UpdateBlockingColbor,
-    UpdateSearchConsole,
-    FUN_080db930,
+    (SolidFunc)FUN_080daee8,
+    (SolidFunc)UpdateCiel,
+    (SolidFunc)UpdateCerveau,
+    (SolidFunc)UpdateBlockingColbor,
+    (SolidFunc)UpdateSearchConsole,
+    (SolidFunc)FUN_080db930,
   };
   // clang-format on
   (sUpdates[(p->s).work[0]])(p);
@@ -100,10 +103,7 @@ static void FUN_080daee8(struct Solid* p) {
 
 static void deleteMainNPC(struct Solid* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags2 &= ~ENTITY_HAZARD;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
@@ -181,13 +181,14 @@ const struct Collision Collision_ARRAY_083713e0[2] = {
     },
 };
 
-const struct Collision Collision_ARRAY_08371410[2] = {
+// --------------------------------------------
+
+static const struct Collision Collision_ARRAY_08371410[2] = {
     {
       kind : DDP,
       faction : FACTION_NEUTRAL,
       special : CHATABLE,
       damage : 255,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
       range : {PIXEL(0), PIXEL(0), PIXEL(24), PIXEL(1)},
@@ -198,8 +199,76 @@ const struct Collision Collision_ARRAY_08371410[2] = {
       special : CHATABLE,
       damage : 255,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x00,
       remaining : 0,
       range : {PIXEL(0), PIXEL(0), PIXEL(0), PIXEL(0)},
     },
 };
+
+static void UpdateSearchConsole(Object* p) {
+  switch ((p->s).mode[1]) {
+    case 0: {
+      (p->s).flags |= FLIPABLE;
+      INIT_BODY(p, Collision_ARRAY_08371410, 64, NULL);
+      (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
+      (p->s).mode[1]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      if (((p->body).status & BODY_STATUS_CHAT) && gInChat && (gCollisionManager.talkTo == &p->body)) {
+        PlaySound(SE_ARCADIA_RINGTONE);
+        SetGameMode(&gGameState, GAMEMODE(MAINGAME, OVERWORLD, 7, 0));
+        (p->s).mode[1]++;
+      }
+      break;
+    }
+    case 2: {
+      if (gGameState.mode[2] != 0) {
+        return;
+      }
+      gInChat = FALSE;
+      (p->s).mode[1] = 1;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+}
+
+static void FUN_080db930(Object* p) {
+  switch ((p->s).mode[1]) {
+    case 0: {
+      if (FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE) || !FLAG(gCurStory.s.gameflags, FLAG_12)) {
+        (p->s).flags &= ~DISPLAY;
+        (p->s).flags &= ~FLIPABLE;
+        EXIT_BODY(p);
+        SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
+        break;
+      }
+      (p->s).flags |= FLIPABLE;
+      INIT_BODY(p, Collision_ARRAY_08371410, 64, NULL);
+      (p->s).coord.x += PIXEL(8);
+      (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
+      (p->s).mode[1]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      if (((p->body).status & BODY_STATUS_CHAT) && gInChat && (gCollisionManager.talkTo == &p->body)) {
+        PrintNormalMessage(0x1333);
+        (p->s).mode[1]++;
+      }
+      break;
+    }
+    case 2: {
+      if ((&gTextWindow.text)->mode != 0) {
+        return;
+      }
+      gInChat = FALSE;
+      (p->s).mode[1] = 1;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+}

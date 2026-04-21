@@ -11,7 +11,7 @@ const EnemyRoutine gEyeCannonRoutine = {
     [ENTITY_INIT] =      EyeCannon_Init,
     [ENTITY_UPDATE] =    EyeCannon_Update,
     [ENTITY_DIE] =       EyeCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -23,7 +23,7 @@ static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struc
 
 static bool8 FUN_08084708(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;
     EyeCannon_Die(p);
     return TRUE;

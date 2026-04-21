@@ -4,35 +4,35 @@
 
 static const u8 sSubtankCoords[4];
 
-static void SubtankIcon_Init(struct Widget *w);
-static void SubtankIcon_Update(struct Widget *w);
-static void SubtankIcon_Die(struct Widget *w);
+static void SubtankIcon_Init(struct Widget* w);
+static void SubtankIcon_Update(struct Widget* w);
+static void SubtankIcon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gSubtankIconRoutine = {
-    [ENTITY_INIT] =      SubtankIcon_Init,
-    [ENTITY_UPDATE] =    SubtankIcon_Update,
-    [ENTITY_DIE] =       SubtankIcon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)SubtankIcon_Init,
+    [ENTITY_UPDATE] =    (void*)SubtankIcon_Update,
+    [ENTITY_DIE] =       (void*)SubtankIcon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Widget *CreateSubtankIcon(struct GameState *g, u8 r1, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityLast(gWidgetHeaderPtr);
+struct Widget* CreateSubtankIcon(struct GameState* g, u8 r1, u8 r2) {
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 3);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = r1;
     (w->s).work[1] = r2;
   }
   return w;
 }
 
-static void SubtankIcon_Init(struct Widget *w) {
+static void SubtankIcon_Init(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
@@ -45,7 +45,7 @@ static void SubtankIcon_Init(struct Widget *w) {
   SubtankIcon_Update(w);
 }
 
-NAKED static void SubtankIcon_Update(struct Widget *w) {
+NAKED static void SubtankIcon_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
@@ -235,7 +235,7 @@ _080E6790: .4byte gVideoRegBuffer+16\n\
  .syntax divided\n");
 }
 
-static void SubtankIcon_Die(struct Widget *w) {
+static void SubtankIcon_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }

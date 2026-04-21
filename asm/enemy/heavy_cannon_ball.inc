@@ -11,7 +11,7 @@ CreateHeavyCannonBall: @ 0x0807AA8C
 	adds r7, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r5, r2, #0x18
-	ldr r0, _0807AAE0 @ =gZakoHeaderPtr
+	ldr r0, _0807AAE0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r4, r0, #0
@@ -48,7 +48,7 @@ _0807AAD8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807AAE0: .4byte gZakoHeaderPtr
+_0807AAE0: .4byte gEnemyHeaderPtr
 _0807AAE4: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807aae8

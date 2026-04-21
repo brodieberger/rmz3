@@ -77,8 +77,8 @@ _0802851E:
 	b _0802854E
 	.align 2, 0
 _08028524: .4byte gOverworld
-_08028528: .4byte 0x020023DC
-_0802852C: .4byte 0x020023E0
+_08028528: .4byte gOverworld+0x1DC
+_0802852C: .4byte gOverworld+0x1E0
 _08028530: .4byte 0x0000880F
 _08028534: .4byte 0xFFFFFF00
 _08028538:

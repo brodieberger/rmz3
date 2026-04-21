@@ -7,8 +7,6 @@ void getDiskInStageRun(u8 n);
 void SaveGraphicState(struct GameState* g);
 void RestoreGraphicState(struct GameState* g);
 
-#define IS_DISK_UNLOCKED(flags, diskid) ((flags[diskid >> 2] & 0x0F) >> (diskid & 3))
-
 void OverworldLoop_CerveauTalk(struct GameState* g) {
   switch (g->mode[3]) {
     default: {
@@ -20,7 +18,7 @@ void OverworldLoop_CerveauTalk(struct GameState* g) {
           (&gTextWindow.text)->flag |= TEXT_FLAG_TERMINATE;
           break;
         }
-        gTextPrinter.inserted = (char_t*)STRING(892);
+        gTextPrinter.variable = (char_t*)STRING(892);
         PrintTextWindow(0x100, 0x5A);
         getDiskInStageRun(0x5b);
         break;

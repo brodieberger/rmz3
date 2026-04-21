@@ -87,10 +87,7 @@ static void exitOldLifeSpace(struct Coord* _ UNUSED) {
   if (leaf != NULL) {
     (leaf->s).flags &= ~DISPLAY;
     (leaf->s).flags &= ~FLIPABLE;
-    (leaf->body).status = 0;
-    (leaf->body).prevStatus = 0;
-    (leaf->body).invincibleTime = 0;
-    (leaf->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(leaf);
     SET_SOLID_ROUTINE(leaf, ENTITY_DISAPPEAR);
   }
 }
@@ -409,6 +406,7 @@ static void LayerUpdate_9(struct StageLayer* l, const struct Stage* _ UNUSED) {
   }
 }
 
+// 0x0800e284
 NAKED metatile_attr_t FUN_0800e284(s32 x, s32 y) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\

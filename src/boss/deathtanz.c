@@ -4,7 +4,7 @@
 #include "overworld.h"
 
 static const u8 sDeathtanzModes[32];
-static const struct Collision sCollisions[71];
+static const struct Collision sCollisions[];
 static const u8 sInitModes[2];
 
 static void Deathtanz_Init(struct Boss* p);
@@ -13,10 +13,10 @@ static void Deathtanz_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gDeathtanzRoutine = {
-    [ENTITY_INIT] =      Deathtanz_Init,
-    [ENTITY_UPDATE] =    Deathtanz_Update,
-    [ENTITY_DIE] =       Deathtanz_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Deathtanz_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Deathtanz_Update,
+    [ENTITY_DIE] =       (BossFunc)Deathtanz_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -196,7 +196,7 @@ static void Deathtanz_Init(struct Boss* p) {
 
 // --------------------------------------------
 
-static void nop_0804908c(struct Boss* p);
+static void nop_0804908c(void* _);
 static void tryMakeFlinch(struct Boss* p);
 
 void deathtanzMode0(struct Boss* p);
@@ -224,53 +224,53 @@ void deathtanzKnockBackDamage(struct Boss* p);
 static void Deathtanz_Update(struct Boss* p) {
   // clang-format off
   static const BossFunc sUpdates1[21] = {
-      nop_0804908c,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      nop_0804908c,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)nop_0804908c,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
   };
   // clang-format on
 
   // clang-format off
   static const BossFunc sUpdates2[21] = {
-      deathtanzMode0,
-      deathtanzNeutral,
-      deathtanzMode2,
-      deathtanzMode3,
-      deathtanzMode4,
-      deathtanzPreAI,
-      deathtanzMode6,
-      deathtanzMode7,
-      deathtanzMode8,
-      deathtanzMode9,
-      deathtanzMode10,
-      deathtanzMode11,
-      deathtanzMode12,
-      deathtanzMode13,
-      deathtanzMode14,
-      deathtanzMode15,
-      deathtanzMode16,
-      deathtanzEX1,
-      deathtanzEX2,
-      deathtanzMode19,
-      deathtanzKnockBackDamage,
+      (BossFunc)deathtanzMode0,
+      (BossFunc)deathtanzNeutral,
+      (BossFunc)deathtanzMode2,
+      (BossFunc)deathtanzMode3,
+      (BossFunc)deathtanzMode4,
+      (BossFunc)deathtanzPreAI,
+      (BossFunc)deathtanzMode6,
+      (BossFunc)deathtanzMode7,
+      (BossFunc)deathtanzMode8,
+      (BossFunc)deathtanzMode9,
+      (BossFunc)deathtanzMode10,
+      (BossFunc)deathtanzMode11,
+      (BossFunc)deathtanzMode12,
+      (BossFunc)deathtanzMode13,
+      (BossFunc)deathtanzMode14,
+      (BossFunc)deathtanzMode15,
+      (BossFunc)deathtanzMode16,
+      (BossFunc)deathtanzEX1,
+      (BossFunc)deathtanzEX2,
+      (BossFunc)deathtanzMode19,
+      (BossFunc)deathtanzKnockBackDamage,
   };
   // clang-format on
 
@@ -288,18 +288,15 @@ void deathtanz_0804adb0(struct Boss* p);
 
 static void Deathtanz_Die(struct Boss* p) {
   static const BossFunc sDeads[2] = {
-      FUN_0804ac44,
-      deathtanz_0804adb0,
+      (BossFunc)FUN_0804ac44,
+      (BossFunc)deathtanz_0804adb0,
   };
   (sDeads[(p->s).mode[1]])(p);
 }
 
 // --------------------------------------------
 
-static void nop_0804908c(struct Boss* p) {
-  // nop
-  return;
-}
+static void nop_0804908c(void* p) {}
 
 static void tryMakeFlinch(struct Boss* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
@@ -314,6 +311,7 @@ INCASM("asm/boss/deathtanz.inc");
 
 // --------------------------------------------
 
+// 0x083627dc
 static const struct Collision sCollisions[71] = {
     [0] = {
       kind : DRP,
@@ -1032,14 +1030,17 @@ static const u8 sDeathtanzModes[32] = {
 
 static const u8 sInitModes[2] = {0, 19};
 
+// 0x08362ea6
 static const u8 u8_ARRAY_08362ea6[16] = {
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3,
 };
 
+// 0x08362eb6
 static const u8 sPostures[14] = {
     39, 39, 42, 42, 45, 45, 48, 51, 54, 57, 57, 57, 57, 0,
 };
 
+// 0x08362ec4
 static const struct Coord sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(35)},
     {PIXEL(0), -PIXEL(35)},

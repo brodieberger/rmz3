@@ -50,20 +50,14 @@ void MenuExit_BlizzardArrow(struct Weapon* w) {
   if (((&z->unk_b4)->status).element != ELEMENT_ICE) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
     return;
   }
   if (z->unk_136 & (1 << 0)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }

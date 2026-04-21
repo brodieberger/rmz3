@@ -17,7 +17,7 @@ const SolidRoutine gMinigameNinjaStarRoutine = {
     [ENTITY_INIT] =      MgNinjaStar_Init,
     [ENTITY_UPDATE] =    MgNinjaStar_Update,
     [ENTITY_DIE] =       MgNinjaStar_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

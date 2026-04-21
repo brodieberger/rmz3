@@ -10,7 +10,7 @@ CreatePetatria: @ 0x0808FE74
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _0808FECC @ =gZakoHeaderPtr
+	ldr r0, _0808FECC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -50,7 +50,7 @@ _0808FEC2:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0808FECC: .4byte gZakoHeaderPtr
+_0808FECC: .4byte gEnemyHeaderPtr
 _0808FED0: .4byte gEnemyFnTable
 
 	thumb_func_start Petatria_Init
@@ -195,7 +195,7 @@ _0808FFCA:
 	strb r0, [r6, #0xf]
 _0808FFE6:
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	beq _08090060
@@ -326,7 +326,7 @@ _080900DC:
 	adds r0, r4, #0
 	bl FUN_08091188
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r6, r0, #0
 	cmp r6, #0
 	bne _08090122

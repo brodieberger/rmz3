@@ -62,7 +62,7 @@ _08035FDC: .4byte 0xFFFF9400
 
 	thumb_func_start Leviathan_Die
 Leviathan_Die: @ 0x08035FE0
-	ldr r2, _08035FF4 @ =gZeroFnTable
+	ldr r2, _08035FF4 @ =gPlayerFnTable
 	ldrb r1, [r0, #9]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -73,7 +73,7 @@ Leviathan_Die: @ 0x08035FE0
 	str r1, [r0, #0x14]
 	bx lr
 	.align 2, 0
-_08035FF4: .4byte gZeroFnTable
+_08035FF4: .4byte gPlayerFnTable
 
 	thumb_func_start leviathanMode0Pre
 leviathanMode0Pre: @ 0x08035FF8

@@ -1,8 +1,7 @@
 #include "collision.h"
 #include "enemy.h"
 #include "global.h"
-
-INCASM("asm/enemy/omega_zero_rock.inc");
+#include "stagerun.h"
 
 void OmegaZeroRock_Init(struct Enemy* p);
 void OmegaZeroRock_Update(struct Enemy* p);
@@ -10,15 +9,57 @@ void OmegaZeroRock_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gOmegaZeroRockRoutine = {
-    [ENTITY_INIT] =      OmegaZeroRock_Init,
-    [ENTITY_UPDATE] =    OmegaZeroRock_Update,
-    [ENTITY_DIE] =       OmegaZeroRock_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)OmegaZeroRock_Init,
+    [ENTITY_UPDATE] =    (void*)OmegaZeroRock_Update,
+    [ENTITY_DIE] =       (void*)OmegaZeroRock_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
+
+void CreateOzChargeSaberRock(s32 x, u8 r1) {
+  s32 y;
+  s32 prev_x = x;
+
+  x -= PIXEL(48);
+  RNG_0202f388 = LCG(RNG_0202f388);
+  x += ((RNG_0202f388 >> 16) % PIXEL(96));
+
+  y = ((&gStageRun.vm.camera)->viewport).y - PIXEL(112);
+
+  {
+    struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 24;
+      INIT_ENEMY_ROUTINE(p, ENEMY_OZ_ROCK);
+      p->tileNum = 0, p->palID = 0;
+      p->flags2 |= WHITE_PAINTABLE;
+      p->invincibleID = p->uniqueID;
+      p->work[0] = 0;
+      (p->coord).x = x, (p->coord).y = y;
+      (p->unk_coord).x = prev_x;
+      p->work[3] = r1;
+    }
+  }
+}
+
+// 0x0808B5E4
+static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+
+static bool8 FUN_0808b5e8(Object* p) {
+  if ((p->body).status & BODY_STATUS_DEAD) {
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
+    OmegaZeroRock_Die((void*)p);
+    return TRUE;
+  }
+  return FALSE;
+}
+
+// --------------------------------------------
+
+INCASM("asm/enemy/omega_zero_rock.inc");
 
 void nop_0808b704(struct Enemy* p);
 

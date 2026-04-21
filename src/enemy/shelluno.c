@@ -13,7 +13,7 @@ const EnemyRoutine gShellunoRoutine = {
     [ENTITY_INIT] =      Shelluno_Init,
     [ENTITY_UPDATE] =    Shelluno_Update,
     [ENTITY_DIE] =       Shelluno_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

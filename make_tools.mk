@@ -4,7 +4,7 @@
 MAKEFLAGS += --no-print-directory
 
 # Inclusive list. If you don't want a tool to be built, don't add it here.
-TOOL_NAMES := gbagfx mid2agb scaninc
+TOOL_NAMES := gbagfx mid2agb scaninc preproc
 
 # TOOLDIRS = tools/gbagfx tools/mid2agb tools/scaninc
 TOOL_DIRS := $(patsubst %,tools/%,$(TOOL_NAMES))

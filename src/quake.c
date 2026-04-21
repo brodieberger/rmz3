@@ -1,5 +1,6 @@
+#include "quake.h"
+
 #include "global.h"
-#include "overworld.h"
 
 static void clearQuakeManager(void);
 
@@ -47,7 +48,7 @@ void CalcQuake(struct Coord* c, struct Coord* ofs) {
 
   if ((power >> 6) != 0) {
     s32 mag;
-    s32 val = SINX((u8)(((gQuakeManager.frame++) & 3) << 6), power);
+    s32 val = SINX((((gQuakeManager.frame++) & 3) << 6), power);
     if (val < 0) {
       val += 0xFF;
     }

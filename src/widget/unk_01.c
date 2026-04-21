@@ -6,21 +6,21 @@
   メインメニューの、"メイン", "サブ", "サブタンク", "ヘッド" などの項目名
 */
 
-struct Widget *CreateMenuComp1(struct GameState *m, u8 kind, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* CreateMenuComp1(struct GameState* m, u8 kind, u8 r2) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 1);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)m;
+    (w->s).unk_28 = (struct Entity*)m;
     (w->s).work[0] = kind;
     (w->s).work[1] = r2;
   }
   return w;
 }
 
-NAKED static void MenuComp1_Init(struct Widget *p) {
+NAKED static void MenuComp1_Init(struct Widget* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -114,7 +114,7 @@ _080E634C: .4byte gWidgetFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void MenuComp1_Update(struct Widget *p) {
+NAKED static void MenuComp1_Update(struct Widget* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -208,7 +208,7 @@ _080E6404: .4byte gVideoRegBuffer+16\n\
  .syntax divided\n");
 }
 
-static void MenuComp1_Die(struct Widget *w) {
+static void MenuComp1_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }
@@ -217,11 +217,11 @@ static void MenuComp1_Die(struct Widget *w) {
 
 // clang-format off
 const WidgetRoutine gMenuComp1Routine = {
-    [ENTITY_INIT] =      MenuComp1_Init,
-    [ENTITY_UPDATE] =    MenuComp1_Update,
-    [ENTITY_DIE] =       MenuComp1_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuComp1_Init,
+    [ENTITY_UPDATE] =    (void*)MenuComp1_Update,
+    [ENTITY_DIE] =       (void*)MenuComp1_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 

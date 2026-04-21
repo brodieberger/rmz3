@@ -93,7 +93,7 @@ _0808E59C:
 	strb r4, [r6, #0xe]
 	strb r4, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808E5F8
 	movs r1, #0xea
@@ -152,7 +152,7 @@ _0808E648:
 	adds r0, r4, #0
 	bl FUN_0808f1e0
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808E67E
 	ldrb r0, [r4, #0xd]
@@ -174,7 +174,7 @@ _0808E67E:
 	cmp r1, #0
 	bne _0808E6A4
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808E6A4
 	ldrb r1, [r4, #0xd]
@@ -186,7 +186,7 @@ _0808E67E:
 _0808E6A0: .4byte 0x08369340
 _0808E6A4:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808E6B4
 	movs r0, #0

@@ -5,7 +5,7 @@
 #include "sound.h"
 
 struct ChildreProps {
-  struct Entity *unk_b4;
+  struct Entity* unk_b4;
   u32 unk_b8;
   struct Coord unk_bc;
   u8 unk_c4;
@@ -34,7 +34,7 @@ struct DeathtanzProps {
 
 struct GlacierleProps {
   u32 unk_b4;
-  struct VFX *unk_b8;
+  struct VFX* unk_b8;
   s32 unk_bc;
   u8 unk_c0;
   u8 unk_c1;
@@ -45,33 +45,11 @@ struct GlacierleProps {
 };
 
 struct OmegaWhiteProps {
-  u8 unk_b4;
-  s8 unk_b5[2];
-  u8 unk_b7;
+  u8 unk_b4[4];
   s32 unk_y;
-  u32 unk_bc;
+  struct Entity* unk_bc;  // omegaWhite_080b91d4
   u16 unk_c0;
   u8 unk_c2[18];
-  u32 unk_d4;
-  u8 unk_d8[12];
-};
-
-struct OmegaZeroProps {
-  s32 x;
-  s32 y;
-  void *vfx;
-  u8 oldMode_c0;
-  u8 unk_c1;
-  u16 unk_c2;
-  bool8 isRight;
-  u8 prevMode;
-  u8 unk_c6;
-  u8 unk_c7;
-  void *unk_c8;
-  void *unk_cc;
-  SoundID se;
-  u8 unk_d2;
-  u8 unk_d3;
   u32 unk_d4;
   u8 unk_d8[12];
 };
@@ -100,13 +78,11 @@ struct PAquaModProps {
 };
 
 struct Boss {
-  struct Entity s;
-  struct Body body;
+  OBJECT_HDR;
 
   union {
     u8 raw[48];
     struct OmegaWhiteProps omegaWhite;
-    struct OmegaZeroProps oz;
     struct CopyXProps copyx;
     struct GlacierleProps glacierle;
     struct ChildreProps childre;
@@ -116,7 +92,6 @@ struct Boss {
   } props;
 };  // 228 bytes
 
-typedef void (*BossFunc)(struct Boss *);
-typedef BossFunc BossRoutine[5];
+typedef void (*BossFunc)(struct Boss*);
 
 #endif  // GUARD_RMZ3_ENTITY_BOSS_H

@@ -16,7 +16,7 @@ const SolidRoutine gDoor2DGrayHRoutine = {
     [ENTITY_INIT] =      Solid22_Init,
     [ENTITY_UPDATE] =    Solid22_Update,
     [ENTITY_DIE] =       Solid22_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -56,10 +56,7 @@ static void Solid22_Update(struct Solid* p) {
 // --------------------------------------------
 
 static void Solid22_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }

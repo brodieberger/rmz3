@@ -2,7 +2,7 @@
 #include "collision.h"
 #include "global.h"
 
-static const struct Collision sCollisions[22];
+static const struct Collision sCollisions[];
 static const struct Coord sElementCoord;
 
 INCASM("asm/boss/hanumachine.inc");
@@ -13,10 +13,10 @@ void Hanumachine_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gHanumachineRoutine = {
-    [ENTITY_INIT] =      Hanumachine_Init,
-    [ENTITY_UPDATE] =    Hanumachine_Update,
-    [ENTITY_DIE] =       Hanumachine_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Hanumachine_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Hanumachine_Update,
+    [ENTITY_DIE] =       (BossFunc)Hanumachine_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -128,6 +128,7 @@ static const BossFunc sUpdates2[30] = {
 
 // --------------------------------------------
 
+// 0x08364e38
 static const struct Collision sCollisions[22] = {
     {
       kind : DDP,

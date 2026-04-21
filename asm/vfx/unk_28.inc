@@ -172,7 +172,7 @@ _080BA1C4:
 	beq _080BA23C
 	b _080BA292
 _080BA1D2:
-	ldr r4, _080BA254 @ =0x0836EBAC
+	ldr r4, _080BA254 @ =PTR_ARRAY_0836ebac
 	movs r1, #0x74
 	adds r1, r1, r7
 	mov r8, r1
@@ -237,7 +237,7 @@ _080BA23C:
 	orrs r0, r1
 	b _080BA26A
 	.align 2, 0
-_080BA254: .4byte 0x0836EBAC
+_080BA254: .4byte PTR_ARRAY_0836ebac
 _080BA258: .4byte RNG_0202f388
 _080BA25C: .4byte 0x000343FD
 _080BA260: .4byte 0x00269EC3

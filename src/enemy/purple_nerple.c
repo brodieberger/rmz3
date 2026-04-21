@@ -13,7 +13,7 @@ const EnemyRoutine gPurpleNerpleRoutine = {
     [ENTITY_INIT] =      PurpleNerple_Init,
     [ENTITY_UPDATE] =    PurpleNerple_Update,
     [ENTITY_DIE] =       PurpleNerple_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

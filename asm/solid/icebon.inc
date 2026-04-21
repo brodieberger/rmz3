@@ -4,48 +4,6 @@
 	
 	.text
 
-	thumb_func_start icebon_080ca104
-icebon_080ca104: @ 0x080CA104
-	push {r4, lr}
-	adds r4, r0, #0
-	ldrb r0, [r4, #0xe]
-	cmp r0, #0
-	beq _080CA114
-	cmp r0, #1
-	beq _080CA12E
-	b _080CA148
-_080CA114:
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _080CA150 @ =0x0836FC50
-	bl SetDDP
-	movs r1, #0x80
-	lsls r1, r1, #5
-	adds r0, r4, #0
-	bl SetMotion
-	ldrb r0, [r4, #0xe]
-	adds r0, #1
-	strb r0, [r4, #0xe]
-_080CA12E:
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-	ldrb r0, [r4, #0x12]
-	subs r0, #1
-	strb r0, [r4, #0x12]
-	lsls r0, r0, #0x18
-	lsrs r1, r0, #0x18
-	cmp r1, #0
-	bne _080CA148
-	movs r0, #2
-	strb r0, [r4, #0xd]
-	strb r1, [r4, #0xe]
-_080CA148:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080CA150: .4byte 0x0836FC50
-
 	thumb_func_start icebon_080ca154
 icebon_080ca154: @ 0x080CA154
 	push {r4, r5, r6, r7, lr}

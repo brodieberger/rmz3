@@ -1,8 +1,8 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
-INCASM("asm/vfx/unk_68.inc");
+// ファントム(ボス)関連?
 
 void FUN_080c4d30(struct VFX* p);
 void FUN_080c4db8(struct VFX* p);
@@ -28,10 +28,23 @@ void Ghost68_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost68Routine = {
-    [ENTITY_INIT] =      Ghost68_Init,
-    [ENTITY_UPDATE] =    Ghost68_Update,
-    [ENTITY_DIE] =       Ghost68_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)Ghost68_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)Ghost68_Update,
+    [ENTITY_DIE] =       (VFXFunc)Ghost68_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
+
+void FUN_080c4be0(s32 x, s32 y) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_068);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 0;
+    (p->coord).x = x, (p->coord).y = y;
+  }
+}
+
+INCASM("asm/vfx/unk_68.inc");

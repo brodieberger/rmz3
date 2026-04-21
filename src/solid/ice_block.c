@@ -40,10 +40,7 @@ NON_MATCH static void IceBlock_Init(struct Solid* p) {
     if (FUN_0800bd38((p->s).coord.x, (p->s).coord.y) == 0) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
       return;
     }
@@ -78,7 +75,7 @@ static void IceBlock_Disappear(struct Solid* p) {
   if ((p->s).work[0] != 0) {
     FUN_0800bdd4((p->s).coord.x, (p->s).coord.y - PIXEL(8));
   }
-  DeleteSolid(p);
+  DeleteSolid((void*)p);
 }
 
 static const struct Collision sCollisions[2] = {

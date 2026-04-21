@@ -2,22 +2,22 @@
 #include "global.h"
 #include "widget.h"
 
-static void DiskIcon_Init(struct Widget *w);
-static void DiskIcon_Update(struct Widget *w);
-static void DiskIcon_Die(struct Widget *w);
+static void DiskIcon_Init(struct Widget* w);
+static void DiskIcon_Update(struct Widget* w);
+static void DiskIcon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gDiskIconRoutine = {
-    [ENTITY_INIT] =      DiskIcon_Init,
-    [ENTITY_UPDATE] =    DiskIcon_Update,
-    [ENTITY_DIE] =       DiskIcon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)DiskIcon_Init,
+    [ENTITY_UPDATE] =    (void*)DiskIcon_Update,
+    [ENTITY_DIE] =       (void*)DiskIcon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreateDiskIcon(struct Coord *c, u8 n, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+void CreateDiskIcon(struct Coord* c, u8 n, u8 r2) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 10);
@@ -29,7 +29,7 @@ void CreateDiskIcon(struct Coord *c, u8 n, u8 r2) {
   }
 }
 
-static void DiskIcon_Init(struct Widget *w) {
+static void DiskIcon_Init(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
@@ -43,7 +43,7 @@ static void DiskIcon_Init(struct Widget *w) {
   DiskIcon_Update(w);
 }
 
-NAKED static void DiskIcon_Update(struct Widget *w) {
+NAKED static void DiskIcon_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -202,4 +202,4 @@ _080E7E40: .4byte 0x00007F02\n\
    .syntax divided\n");
 }
 
-static void DiskIcon_Die(struct Widget *w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
+static void DiskIcon_Die(struct Widget* w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }

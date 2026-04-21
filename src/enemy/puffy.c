@@ -13,7 +13,7 @@ const EnemyRoutine gPuffyRoutine = {
     [ENTITY_INIT] =      Puffy_Init,
     [ENTITY_UPDATE] =    Puffy_Update,
     [ENTITY_DIE] =       Puffy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

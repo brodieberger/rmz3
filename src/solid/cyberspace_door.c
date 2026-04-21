@@ -5,6 +5,13 @@
 #include "sprite.h"
 #include "story.h"
 
+struct CyberDoorObject {
+  OBJECT_HDR;
+  struct MetaspriteHeader* sprites;  // 0xB4
+  u8 unk_bc[12];                     // 0xBC
+};
+static_assert(sizeof(struct CyberDoorObject) == sizeof(struct Solid));
+
 static const struct Collision sCollisions[2];
 
 static void CyberSpaceDoor_Init(struct Solid* p);
@@ -14,10 +21,10 @@ static void CyberSpaceDoor_Disappear(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gCyberSpaceDoorRoutine = {
-    [ENTITY_INIT] =      CyberSpaceDoor_Init,
-    [ENTITY_UPDATE] =    CyberSpaceDoor_Update,
-    [ENTITY_DIE] =       CyberSpaceDoor_Die,
-    [ENTITY_DISAPPEAR] = CyberSpaceDoor_Disappear,
+    [ENTITY_INIT] =      (SolidFunc)CyberSpaceDoor_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)CyberSpaceDoor_Update,
+    [ENTITY_DIE] =       (SolidFunc)CyberSpaceDoor_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)CyberSpaceDoor_Disappear,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -160,10 +167,7 @@ static void CyberSpaceDoor_Update(struct Solid* p) {
 }
 
 static void CyberSpaceDoor_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
@@ -181,7 +185,7 @@ static void CyberSpaceDoor_Disappear(struct Solid* p) {
     }
     *border = val;
   }
-  DeleteSolid(p);
+  DeleteSolid((void*)p);
 }
 
 // --------------------------------------------
@@ -456,7 +460,7 @@ _080DBDF0: .4byte gStageRun\n\
 }
 
 void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
-  struct Solid* p = (struct Solid*)s->sprites;
+  struct CyberDoorObject* p = (struct CyberDoorObject*)s->sprites;
   if (!FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
     if ((p->s).work[0] != 0) {
       return;
@@ -467,10 +471,10 @@ void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
     }
   }
 
-  (p->s).spr.sprites = (p->props.cyberDoor).sprites;
+  (p->s).spr.sprites = p->sprites;
   UpdateMotionGraphic(&p->s);
   TaskCB_DrawNoAffineSprite(s, dp);
-  (p->props.cyberDoor).sprites = (p->s).spr.sprites;
+  p->sprites = (p->s).spr.sprites;
   (p->s).spr.sprites = (struct MetaspriteHeader*)p;
 }
 

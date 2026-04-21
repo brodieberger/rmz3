@@ -21,6 +21,7 @@ struct LayerGraphic {
   const struct ChunkMap* map;  // このステージレイヤ　のチャンクマップ (ステージ全体分)
 };  // 24 bytes
 
+struct BgOfs;
 void UpdateBGOFS(struct LayerGraphic* p, struct BgOfs* bgofs);
 
 void FUN_08006bb4(struct LayerGraphic* l, struct Coord* c, u32* bgmap, MetatileMap* mm);

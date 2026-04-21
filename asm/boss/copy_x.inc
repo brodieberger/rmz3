@@ -4007,7 +4007,7 @@ copyx_0805763c: @ 0x0805763C
 	strb r0, [r4, #0x12]
 	strb r5, [r4, #0x13]
 	movs r0, #0x39
-	bl stopSound
+	bl StopSound
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]

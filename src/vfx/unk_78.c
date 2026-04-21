@@ -6,22 +6,22 @@
   シエルのミニゲームに関係
 */
 
-static void Ghost78_Init(struct VFX *p);
-static void Ghost78_Update(struct VFX *p);
-static void Ghost78_Die(struct VFX *p);
+static void Ghost78_Init(struct VFX* p);
+static void Ghost78_Update(struct VFX* p);
+static void Ghost78_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost78Routine = {
-    [ENTITY_INIT] =      Ghost78_Init,
-    [ENTITY_UPDATE] =    Ghost78_Update,
-    [ENTITY_DIE] =       Ghost78_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost78_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost78_Update,
+    [ENTITY_DIE] =       (void*)Ghost78_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreateGhost78_1(struct Entity *p, struct Coord *c, u8 r2, u8 r3) {
-  struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost78_1(struct Entity* p, struct Coord* c, u8 r2, u8 r3) {
+  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (g != NULL) {
     (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_UNK_078);
@@ -34,8 +34,8 @@ void CreateGhost78_1(struct Entity *p, struct Coord *c, u8 r2, u8 r3) {
   }
 }
 
-void CreateGhost78_2(struct Coord *c, u8 r1, u8 r2, u8 r3) {
-  struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost78_2(struct Coord* c, u8 r1, u8 r2, u8 r3) {
+  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (g != NULL) {
     (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_UNK_078);
@@ -44,17 +44,17 @@ void CreateGhost78_2(struct Coord *c, u8 r1, u8 r2, u8 r3) {
     (g->s).coord = *c;
     (g->s).work[0] = r1;
     (g->s).work[1] = r2;
-    *((u8 *)&g->props.tmp.unk_7c + 1) = r3;
+    *((u8*)&g->props.tmp.unk_7c + 1) = r3;
   }
 }
 
 // --------------------------------------------
 
-static void FUN_080c8938(struct VFX *p);
-static void FUN_080c89c8(struct VFX *p);
-static void FUN_080c8acc(struct VFX *p);
+static void FUN_080c8938(struct VFX* p);
+static void FUN_080c89c8(struct VFX* p);
+static void FUN_080c8acc(struct VFX* p);
 
-static void Ghost78_Init(struct VFX *p) {
+static void Ghost78_Init(struct VFX* p) {
   static VFXFunc const sInitializers[] = {
       FUN_080c8938,
       FUN_080c89c8,
@@ -65,11 +65,11 @@ static void Ghost78_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c8c00(struct VFX *p);
-static void FUN_080c8ccc(struct VFX *p);
-static void FUN_080c8d30(struct VFX *p);
+static void FUN_080c8c00(struct VFX* p);
+static void FUN_080c8ccc(struct VFX* p);
+static void FUN_080c8d30(struct VFX* p);
 
-static void Ghost78_Update(struct VFX *p) {
+static void Ghost78_Update(struct VFX* p) {
   static VFXFunc const sUpdates[] = {
       FUN_080c8c00,
       FUN_080c8ccc,
@@ -80,11 +80,11 @@ static void Ghost78_Update(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c8da0(struct VFX *p);
-static void FUN_080c8db8(struct VFX *p);
-static void FUN_080c8dd0(struct VFX *p);
+static void FUN_080c8da0(struct VFX* p);
+static void FUN_080c8db8(struct VFX* p);
+static void FUN_080c8dd0(struct VFX* p);
 
-static void Ghost78_Die(struct VFX *p) {
+static void Ghost78_Die(struct VFX* p) {
   static VFXFunc const sDeinitializers[] = {
       FUN_080c8da0,
       FUN_080c8db8,
@@ -95,7 +95,7 @@ static void Ghost78_Die(struct VFX *p) {
 
 // --------------------------------------------
 
-NAKED static void FUN_080c8938(struct VFX *p) {
+NAKED static void FUN_080c8938(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -167,7 +167,7 @@ _080C89C4: .4byte 0x0000EA03\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080c89c8(struct VFX *p) {
+NAKED static void FUN_080c89c8(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -295,7 +295,7 @@ _080C8A8A:\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080c8acc(struct VFX *p) {
+NAKED static void FUN_080c8acc(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -448,7 +448,7 @@ _080C8BFC: .4byte gSineTable\n\
 
 // --------------------------------------------
 
-NAKED static void FUN_080c8c00(struct VFX *p) {
+NAKED static void FUN_080c8c00(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -547,7 +547,7 @@ _080C8CC8: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void FUN_080c8ccc(struct VFX *p) {
+static void FUN_080c8ccc(struct VFX* p) {
   UpdateMotionGraphic(&p->s);
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
@@ -563,7 +563,7 @@ static void FUN_080c8ccc(struct VFX *p) {
   }
 }
 
-static void FUN_080c8d30(struct VFX *p) {
+static void FUN_080c8d30(struct VFX* p) {
   UpdateMotionGraphic(&p->s);
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
@@ -583,8 +583,8 @@ static void FUN_080c8d30(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c8da0(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void FUN_080c8da0(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
-static void FUN_080c8db8(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void FUN_080c8db8(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
-static void FUN_080c8dd0(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void FUN_080c8dd0(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }

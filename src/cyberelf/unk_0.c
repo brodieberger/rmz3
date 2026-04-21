@@ -3,6 +3,15 @@
 #include "global.h"
 #include "zero.h"
 
+struct CyberElf0 {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[8];         // 0xB4
+  struct Zero* player;  // 0xBC
+  u8 unk_c0[4];         // 0xC0
+};
+static_assert(sizeof(struct CyberElf0) == sizeof(struct Elf));
+
 void Elf0_Init(struct Elf* p);
 void Elf0_Update(struct Elf* p);
 void Elf0_Die(struct Elf* p);
@@ -17,18 +26,18 @@ const ElfRoutine gElf0Routine = {
 };
 // clang-format on
 
-struct Elf* CreateElf0(struct Zero* z, u8 breed, u8 availability, u8 _) {
-  struct Elf* p = (struct Elf*)AllocEntityFirst(gElfHeaderPtr);
+struct Entity* CreateElf0(struct Zero* z, u8 breed, u8 availability, u8 _) {
+  struct CyberElf0* p = (struct CyberElf0*)AllocEntityFirst(gElfHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 0);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
-    *(struct Zero**)(&(p->props.raw[8])) = z;
+    p->player = z;
     (p->s).work[0] = breed;
     (p->s).work[1] = availability;
   }
-  return p;
+  return (struct Entity*)p;
 }
 
 INCASM("asm/cyberelf/unk_0.inc");

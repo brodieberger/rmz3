@@ -21,7 +21,7 @@ void ZeroAttackGround_Walk(struct Zero* z) {
       FUN_0802e338,
       FUN_0802e3ac,
       FUN_0802e3b0,
-  };
+  };  // 0x0835e624
   (seq[(z->unk_b4).attackMode[0]])(z);
   return;
 }
@@ -248,7 +248,7 @@ static void walk_saber_0(struct Zero* z) {
     c = GetWeaponCharge(z, TRUE);
   }
 
-  if (z->ultimateCommand_22c[1] == 3) {
+  if ((z->input).ultimateCommand_22c[1] == 3) {
     c = FULL_CHARGE;
   }
 

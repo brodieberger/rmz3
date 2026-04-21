@@ -12,7 +12,7 @@ const VFXRoutine gVFX61Routine = {
     [ENTITY_INIT] =      VFX61_Init,
     [ENTITY_UPDATE] =    VFX61_Update,
     [ENTITY_DIE] =       VFX61_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

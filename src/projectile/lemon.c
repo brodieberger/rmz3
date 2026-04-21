@@ -5,9 +5,9 @@
 
 static const struct Collision sCollisions[6];
 
-static void Lemon_Init(struct Projectile *p);
-static void Lemon_Update(struct Projectile *p);
-static void Lemon_Die(struct Projectile *p);
+static void Lemon_Init(struct Projectile* p);
+static void Lemon_Update(struct Projectile* p);
+static void Lemon_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gLemonRoutine = {
@@ -21,7 +21,7 @@ const ProjectileRoutine gLemonRoutine = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-NAKED struct Projectile *CreateLemon(struct Coord *c, s32 r1, u8 r2) {
+NAKED struct Projectile* CreateLemon(struct Coord* c, s32 r1, u8 r2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r6, r0, #0\n\
@@ -102,10 +102,10 @@ _0809CA30: .4byte gSineTable\n\
 }
 
 #if MODERN == 0
-NAKED static struct Projectile *unused_0809ca34(struct Coord *c, s32 r1, u8 r2) { INCCODE("asm/unused/unused_0809ca34.inc"); }
+NAKED static struct Projectile* unused_0809ca34(struct Coord* c, s32 r1, u8 r2) { INCCODE("asm/unused/unused_0809ca34.inc"); }
 #endif
 
-static void Lemon_Init(struct Projectile *p) {
+static void Lemon_Init(struct Projectile* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
@@ -116,7 +116,7 @@ static void Lemon_Init(struct Projectile *p) {
   Lemon_Update(p);
 }
 
-NAKED static void Lemon_Update(struct Projectile *p) {
+NAKED static void Lemon_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -314,12 +314,9 @@ _0809CCB0: .4byte sCollisions\n\
  .syntax divided\n");
 }
 
-static void Lemon_Die(struct Projectile *p) {
+static void Lemon_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

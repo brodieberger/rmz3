@@ -161,7 +161,7 @@ _0803D2BC: .4byte wStaticMotionPalIDs\n\
 
 // --------------------------------------------
 
-static void nop_0803d6a0(struct Boss* p);
+static void nop_0803d6a0(void* _);
 
 void FUN_0803d6a4(struct Boss* p);
 void FUN_0803d6fc(struct Boss* p);
@@ -173,20 +173,20 @@ void FUN_0803dc34(struct Boss* p);
 static void Megamilpa_Update(struct Boss* p) {
   // clang-format off
   static const BossFunc sUpdates1[6] = {
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0,
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0,
   };
   static const BossFunc sUpdates2[6] = {
-      FUN_0803d6a4, 
-      FUN_0803d6fc, 
-      FUN_0803d7a0, 
-      FUN_0803d844, 
-      FUN_0803dba0, 
-      FUN_0803dc34,
+      (BossFunc)FUN_0803d6a4, 
+      (BossFunc)FUN_0803d6fc, 
+      (BossFunc)FUN_0803d7a0, 
+      (BossFunc)FUN_0803d844, 
+      (BossFunc)FUN_0803dba0, 
+      (BossFunc)FUN_0803dc34,
   };
   // clang-format on
 
@@ -226,7 +226,7 @@ _0803D358: @ jump table\n\
 	.4byte _0803D448 @ case 4\n\
 _0803D36C:\n\
 	ldr r0, _0803D3BC @ =0x0000010D\n\
-	bl stopSound\n\
+	bl StopSound\n\
 	ldr r3, _0803D3C0 @ =gStageRun\n\
 	ldrh r2, [r3, #8]\n\
 	movs r4, #1\n\
@@ -590,7 +590,7 @@ _0803D640:\n\
 	cmp r0, #0\n\
 	beq _0803D652\n\
 	ldr r0, _0803D69C @ =0x0000010D\n\
-	bl stopSound\n\
+	bl StopSound\n\
 	strb r6, [r5]\n\
 _0803D652:\n\
 	adds r0, r4, #0\n\
@@ -634,10 +634,7 @@ _0803D69C: .4byte 0x0000010D\n\
 
 // --------------------------------------------
 
-static void nop_0803d6a0(struct Boss* p) {
-  // nop
-  return;
-}
+static void nop_0803d6a0(void* _) {}
 
 // --------------------------------------------
 

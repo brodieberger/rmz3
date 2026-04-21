@@ -4,22 +4,22 @@
 static const u8 sInitModes[2];
 static const motion_t sMotions[4];
 
-static void Ghost31_Init(struct VFX *p);
-static void Ghost31_Update(struct VFX *p);
-static void Ghost31_Die(struct VFX *p);
+static void Ghost31_Init(struct VFX* p);
+static void Ghost31_Update(struct VFX* p);
+static void Ghost31_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost31Routine = {
     [ENTITY_INIT] =      Ghost31_Init,
     [ENTITY_UPDATE] =    Ghost31_Update,
     [ENTITY_DIE] =       Ghost31_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
 void CreateVFX31_1(s32 x, s32 y) {
-  struct VFX *p = (struct VFX *)AllocEntityLast(gVFXHeaderPtr);
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, 31);
@@ -34,7 +34,7 @@ void CreateVFX31_1(s32 x, s32 y) {
 void CreateVFX31_2(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct VFX *p = (struct VFX *)AllocEntityLast(gVFXHeaderPtr);
+    struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
       (p->s).taskCol = 1;
       INIT_VFX_ROUTINE(p, 31);
@@ -50,7 +50,7 @@ void CreateVFX31_2(s32 x, s32 y) {
 
 // --------------------------------------------
 
-static void Ghost31_Init(struct VFX *p) {
+static void Ghost31_Init(struct VFX* p) {
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = sInitModes[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
@@ -61,10 +61,10 @@ static void Ghost31_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080ba658(struct VFX *p);
-static void FUN_080ba6a4(struct VFX *p);
+static void FUN_080ba658(struct VFX* p);
+static void FUN_080ba6a4(struct VFX* p);
 
-static void Ghost31_Update(struct VFX *p) {
+static void Ghost31_Update(struct VFX* p) {
   static const VFXFunc sUpdates[2] = {
       FUN_080ba658,
       FUN_080ba6a4,
@@ -72,9 +72,9 @@ static void Ghost31_Update(struct VFX *p) {
   (sUpdates[(p->s).mode[1]])(p);
 }
 
-static void Ghost31_Die(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void Ghost31_Die(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
-static void FUN_080ba658(struct VFX *p) {
+static void FUN_080ba658(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       SetMotion(&p->s, MOTION(SM038_UNK, 0x00));
@@ -91,7 +91,7 @@ static void FUN_080ba658(struct VFX *p) {
   }
 }
 
-NAKED static void FUN_080ba6a4(struct VFX *p) {
+NAKED static void FUN_080ba6a4(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r7, r0, #0\n\

@@ -3,18 +3,18 @@
 #include "story.h"
 #include "vfx.h"
 
+// パンテオン(ガーディアン)が粉々になって飛び散るときのエフェクト(これもパーティクルと言えなくもない...？)
+
 static void Ghost17_Init(struct VFX* p);
 static void Ghost17_Update(struct VFX* p);
 static void Ghost17_Die(struct VFX* p);
-
-static const motion_t sMotions[3];
 
 // clang-format off
 const VFXRoutine gGhost17Routine = {
     [ENTITY_INIT] =      Ghost17_Init,
     [ENTITY_UPDATE] =    Ghost17_Update,
     [ENTITY_DIE] =       Ghost17_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
@@ -243,120 +243,35 @@ _080B6A98: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080b6a9c(struct VFX* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	adds r7, r0, #0\n\
-	ldr r0, [r7, #0x28]\n\
-	ldrb r0, [r0, #0xa]\n\
-	lsrs r4, r0, #4\n\
-	movs r0, #1\n\
-	ands r4, r0\n\
-	ldrb r5, [r7, #0x11]\n\
-	adds r0, r7, #0\n\
-	bl InitNonAffineMotion\n\
-	ldrb r1, [r7, #0xa]\n\
-	movs r0, #1\n\
-	movs r6, #0\n\
-	orrs r0, r1\n\
-	movs r1, #2\n\
-	orrs r0, r1\n\
-	strb r0, [r7, #0xa]\n\
-	ldr r1, _080B6AE4 @ =sMotions\n\
-	lsls r0, r5, #1\n\
-	adds r0, r0, r1\n\
-	ldrh r1, [r0]\n\
-	adds r0, r7, #0\n\
-	bl SetMotion\n\
-	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
-	adds r2, r4, #0\n\
-	cmp r4, #0\n\
-	beq _080B6AE8\n\
-	ldrb r0, [r7, #0xa]\n\
-	movs r1, #0x10\n\
-	orrs r0, r1\n\
-	b _080B6AEE\n\
-	.align 2, 0\n\
-_080B6AE4: .4byte sMotions\n\
-_080B6AE8:\n\
-	ldrb r1, [r7, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-_080B6AEE:\n\
-	strb r0, [r7, #0xa]\n\
-	movs r0, #1\n\
-	mov ip, r0\n\
-	mov r1, ip\n\
-	ands r1, r2\n\
-	adds r0, r7, #0\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	adds r3, r7, #0\n\
-	adds r3, #0x4a\n\
-	lsls r1, r1, #4\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	strb r0, [r3]\n\
-	cmp r4, #0\n\
-	beq _080B6B18\n\
-	movs r0, #2\n\
-	subs r5, r0, r5\n\
-_080B6B18:\n\
-	subs r1, r5, #1\n\
-	lsls r1, r1, #8\n\
-	ldr r6, _080B6B70 @ =RNG_0202f388\n\
-	ldr r0, [r6]\n\
-	ldr r5, _080B6B74 @ =0x000343FD\n\
-	muls r0, r5, r0\n\
-	ldr r3, _080B6B78 @ =0x00269EC3\n\
-	adds r0, r0, r3\n\
-	lsls r0, r0, #1\n\
-	lsrs r2, r0, #1\n\
-	lsrs r0, r0, #0x11\n\
-	ldr r4, _080B6B7C @ =0x000001FF\n\
-	ands r0, r4\n\
-	adds r1, r1, r0\n\
-	ldr r0, _080B6B80 @ =0xFFFFFF00\n\
-	adds r1, r1, r0\n\
-	str r1, [r7, #0x5c]\n\
-	adds r0, r2, #0\n\
-	muls r0, r5, r0\n\
-	adds r0, r0, r3\n\
-	lsls r0, r0, #1\n\
-	lsrs r1, r0, #1\n\
-	str r1, [r6]\n\
-	lsrs r0, r0, #0x11\n\
-	ands r0, r4\n\
-	ldr r1, _080B6B84 @ =0xFFFFFE00\n\
-	subs r1, r1, r0\n\
-	str r1, [r7, #0x60]\n\
-	ldr r1, _080B6B88 @ =gVFXFnTable\n\
-	ldrb r0, [r7, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	mov r1, ip\n\
-	str r1, [r7, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r7, #0x14]\n\
-	adds r0, r7, #0\n\
-	bl Ghost17_Update\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080B6B70: .4byte RNG_0202f388\n\
-_080B6B74: .4byte 0x000343FD\n\
-_080B6B78: .4byte 0x00269EC3\n\
-_080B6B7C: .4byte 0x000001FF\n\
-_080B6B80: .4byte 0xFFFFFF00\n\
-_080B6B84: .4byte 0xFFFFFE00\n\
-_080B6B88: .4byte gVFXFnTable\n\
- .syntax divided\n");
+static void FUN_080b6a9c(struct VFX* p) {
+  static const motion_t sMotions[3] = {
+      MOTION(SM020_PANTHEON_GUARDIAN, 8),
+      MOTION(SM020_PANTHEON_GUARDIAN, 7),
+      MOTION(SM020_PANTHEON_GUARDIAN, 9),
+  };  // 0x0836e870
+  register s32 dx asm("r1");
+
+  bool8 xflip = (((struct Entity*)(p->s).unk_28)->flags & X_FLIP) != 0;
+  register u32 idx asm("r5") = (p->s).work[1];
+
+  InitNonAffineMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetMotion(&p->s, sMotions[idx]);
+  UpdateMotionGraphic(&p->s);
+  SET_XFLIP(&p->s, xflip);
+
+  if (xflip) idx = 2 - idx;
+  dx = (idx - 1) * PIXEL(1);
+
+  RNG_0202f388 = LCG(RNG_0202f388);
+  (p->s).d.x = dx + ((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(1);
+
+  RNG_0202f388 = LCG(RNG_0202f388);
+  (p->s).d.y = -((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(2);
+
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  Ghost17_Update((void*)p);
 }
 
 NAKED static void FUN_080b6b8c(struct VFX* p) {
@@ -402,9 +317,3 @@ _080B6BD4:\n\
 _080B6BDC: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
-
-static const motion_t sMotions[3] = {
-    MOTION(SM020_PANTHEON_GUARDIAN, 0x08),
-    MOTION(SM020_PANTHEON_GUARDIAN, 0x07),
-    MOTION(SM020_PANTHEON_GUARDIAN, 0x09),
-};

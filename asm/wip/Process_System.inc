@@ -48,14 +48,14 @@ _080019B6:
 	adds r1, r3, #0
 	ands r0, r1
 	strh r0, [r2]
-	bl FlashVideoRegister
-	bl FlashOAM
-	bl FlashBlendRegister
-	bl FlashWinRegister
-	bl FlashMOSAIC
+	bl FlushVideoRegister
+	bl FlushOAM
+	bl FlushBlendRegister
+	bl FlushWinRegister
+	bl FlushMOSAIC
 	bl transferData
 	bl FUN_080e98ec
-	bl flashPalette_08003b24
+	bl FlushPalette
 	bl doGraphicTransferTasks
 	ldr r0, _08001A84 @ =gSramState
 	ldrb r0, [r0]
@@ -111,7 +111,7 @@ _08001A66:
 	b _08001994
 	.align 2, 0
 _08001A70: .4byte gSystemBuffer
-_08001A74: .4byte 0x030016F5
+_08001A74: .4byte gIntrManager+357
 _08001A78: .4byte 0x00001202
 _08001A7C: .4byte 0x04000006
 _08001A80: .4byte 0x0000FF7F

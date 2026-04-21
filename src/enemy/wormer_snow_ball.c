@@ -13,7 +13,7 @@ const EnemyRoutine gWormerSnowBallRoutine = {
     [ENTITY_INIT] =      WormerSnowBall_Init,
     [ENTITY_UPDATE] =    WormerSnowBall_Update,
     [ENTITY_DIE] =       WormerSnowBall_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

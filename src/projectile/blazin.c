@@ -10,10 +10,10 @@ static void Projectile9_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gBlazinProjectileRoutine = {
-    [ENTITY_INIT] =      Projectile9_Init,
-    [ENTITY_UPDATE] =    Projectile9_Update,
-    [ENTITY_DIE] =       Projectile9_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_INIT] =      (ProjectileFunc)Projectile9_Init,
+    [ENTITY_UPDATE] =    (ProjectileFunc)Projectile9_Update,
+    [ENTITY_DIE] =       (ProjectileFunc)Projectile9_Die,
+    [ENTITY_DISAPPEAR] = (ProjectileFunc)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
@@ -254,10 +254,7 @@ static void Projectile9_Update(struct Projectile* p) {
 
 static void Projectile9_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -272,6 +269,7 @@ INCASM("asm/projectile/blazin.inc");
 
 // --------------------------------------------
 
+// 0x0836ad60
 static const struct Collision sCollisions[14] = {
     [0] = {
       kind : DRP,

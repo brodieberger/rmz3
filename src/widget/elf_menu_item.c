@@ -8,30 +8,30 @@
 
 static const motion_t sElfMenuItemMotions[5];
 
-static void ElfMenuItem_Init(struct Widget *w);
-static void ElfMenuItem_Update(struct Widget *w);
-static void ElfMenuItem_Die(struct Widget *w);
+static void ElfMenuItem_Init(struct Widget* w);
+static void ElfMenuItem_Update(struct Widget* w);
+static void ElfMenuItem_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gElfMenuItemRoutine = {
-    [ENTITY_INIT] =      ElfMenuItem_Init,
-    [ENTITY_UPDATE] =    ElfMenuItem_Update,
-    [ENTITY_DIE] =       ElfMenuItem_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ElfMenuItem_Init,
+    [ENTITY_UPDATE] =    (void*)ElfMenuItem_Update,
+    [ENTITY_DIE] =       (void*)ElfMenuItem_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *CreateElfMenuItem(struct GameState *g, u8 row, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* CreateElfMenuItem(struct GameState* g, u8 row, u8 r2) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 7);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = row;
     (w->s).work[1] = r2;
   }
@@ -40,7 +40,7 @@ struct Widget *CreateElfMenuItem(struct GameState *g, u8 row, u8 r2) {
 
 // --------------------------------------------
 
-NAKED static void ElfMenuItem_Init(struct Widget *w) {
+NAKED static void ElfMenuItem_Init(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -133,7 +133,7 @@ _080E736C: .4byte 0xFFFFFF00\n\
  .syntax divided\n");
 }
 
-NAKED static void ElfMenuItem_Update(struct Widget *w) {
+NAKED static void ElfMenuItem_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -379,7 +379,7 @@ _080E7540:\n\
  .syntax divided\n");
 }
 
-static void ElfMenuItem_Die(struct Widget *w) {
+static void ElfMenuItem_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }

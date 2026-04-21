@@ -4,35 +4,35 @@
 
 static const u8 u8_ARRAY_08372198[CYBERELF_LENGTH];
 
-static void ElfIcon_Init(struct Widget *w);
-static void ElfIcon_Update(struct Widget *w);
-static void ElfIcon_Die(struct Widget *w);
+static void ElfIcon_Init(struct Widget* w);
+static void ElfIcon_Update(struct Widget* w);
+static void ElfIcon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gElfIconRoutine = {
-    [ENTITY_INIT] =      ElfIcon_Init,
-    [ENTITY_UPDATE] =    ElfIcon_Update,
-    [ENTITY_DIE] =       ElfIcon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ElfIcon_Init,
+    [ENTITY_UPDATE] =    (void*)ElfIcon_Update,
+    [ENTITY_DIE] =       (void*)ElfIcon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Widget *CreateElfIcon(struct GameState *g) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* CreateElfIcon(struct GameState* g) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 11);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = 0;
     (w->s).work[1] = 0;
   }
   return w;
 }
 
-static void ElfIcon_Init(struct Widget *w) {
+static void ElfIcon_Init(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   wStaticGraphicTilenums[143] = 863;
   wStaticMotionPalIDs[143] = 11;
@@ -47,7 +47,7 @@ static void ElfIcon_Init(struct Widget *w) {
   ElfIcon_Update(w);
 }
 
-NAKED static void ElfIcon_Update(struct Widget *w) {
+NAKED static void ElfIcon_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -395,7 +395,7 @@ _080E81E0:\n\
  .syntax divided\n");
 }
 
-static void ElfIcon_Die(struct Widget *w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
+static void ElfIcon_Die(struct Widget* w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
 
 static const u8 u8_ARRAY_08372198[CYBERELF_LENGTH] = {
     2, 4, 4, 4, 4, 6, 6, 47, 47, 4, 4, 4, 4, 4, 4, 4, 4, 10, 10, 10, 10, 10, 10, 6, 6, 12, 12, 15, 17, 19, 21, 23, 24, 24, 25, 25, 26, 26, 27, 27, 30, 31, 33, 33, 33, 33, 33, 33, 34, 34, 34, 34, 35, 36, 36, 36, 36, 36, 38, 38, 38, 39, 39, 39, 39, 39, 41, 41, 41, 42, 42, 42, 42, 42,

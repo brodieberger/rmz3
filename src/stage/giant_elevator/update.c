@@ -410,12 +410,12 @@ _0801FB5C:\n\
 	beq _0801FB6A\n\
 	b _0801FDA8\n\
 _0801FB6A:\n\
-	ldr r4, _0801FB74 @ =0x0834CFB4\n\
+	ldr r4, _0801FB74 @ =sGiantElevatorZakoRushCoords\n\
 	adds r6, r4, #4\n\
 	b _0801FB8A\n\
 	.align 2, 0\n\
 _0801FB70: .4byte 0x0000017D\n\
-_0801FB74: .4byte 0x0834CFB4\n\
+_0801FB74: .4byte sGiantElevatorZakoRushCoords\n\
 _0801FB78:\n\
 	ldr r0, [r2]\n\
 	subs r0, #1\n\
@@ -427,7 +427,7 @@ _0801FB78:\n\
 	bne _0801FB8A\n\
 	b _0801FECC\n\
 _0801FB8A:\n\
-	ldr r0, _0801FBC4 @ =gZakoHeaderPtr\n\
+	ldr r0, _0801FBC4 @ =gEnemyHeaderPtr\n\
 	ldr r1, [r0]\n\
 	movs r2, #8\n\
 	ldrsh r0, [r1, r2]\n\
@@ -438,7 +438,7 @@ _0801FB8A:\n\
 	ble _0801FB9E\n\
 	b _080200D2\n\
 _0801FB9E:\n\
-	ldr r2, _0801FBC8 @ =0x0834CEE4\n\
+	ldr r2, _0801FBC8 @ =u8_ARRAY_ARRAY_0834cee4\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #1\n\
 	adds r0, r5, r1\n\
@@ -456,8 +456,8 @@ _0801FB9E:\n\
 	bl FUN_08098838\n\
 	b _0801FBF6\n\
 	.align 2, 0\n\
-_0801FBC4: .4byte gZakoHeaderPtr\n\
-_0801FBC8: .4byte 0x0834CEE4\n\
+_0801FBC4: .4byte gEnemyHeaderPtr\n\
+_0801FBC8: .4byte u8_ARRAY_ARRAY_0834cee4\n\
 _0801FBCC:\n\
 	cmp r0, #1\n\
 	bne _0801FBE4\n\
@@ -486,7 +486,7 @@ _0801FBF6:\n\
 	ldr r1, [r2]\n\
 	adds r0, r1, #1\n\
 	str r0, [r2]\n\
-	ldr r3, _0801FC34 @ =0x0834CEE4\n\
+	ldr r3, _0801FC34 @ =u8_ARRAY_ARRAY_0834cee4\n\
 	lsls r1, r1, #2\n\
 	adds r0, r3, #2\n\
 	adds r1, r1, r0\n\
@@ -512,9 +512,9 @@ _0801FBF6:\n\
 _0801FC30:\n\
 	b _0801FECC\n\
 	.align 2, 0\n\
-_0801FC34: .4byte 0x0834CEE4\n\
+_0801FC34: .4byte u8_ARRAY_ARRAY_0834cee4\n\
 _0801FC38:\n\
-	ldr r0, _0801FC68 @ =gZakoHeaderPtr\n\
+	ldr r0, _0801FC68 @ =gEnemyHeaderPtr\n\
 	ldr r0, [r0]\n\
 	movs r7, #0xa\n\
 	ldrsh r1, [r0, r7]\n\
@@ -524,7 +524,7 @@ _0801FC38:\n\
 	bge _0801FC4A\n\
 	b _080200D2\n\
 _0801FC4A:\n\
-	ldr r1, _0801FC6C @ =0x0834CEE4\n\
+	ldr r1, _0801FC6C @ =u8_ARRAY_ARRAY_0834cee4\n\
 	movs r7, #0xc0\n\
 	lsls r7, r7, #1\n\
 	adds r0, r5, r7\n\
@@ -539,8 +539,8 @@ _0801FC4A:\n\
 	strb r0, [r4]\n\
 	b _080200D2\n\
 	.align 2, 0\n\
-_0801FC68: .4byte gZakoHeaderPtr\n\
-_0801FC6C: .4byte 0x0834CEE4\n\
+_0801FC68: .4byte gEnemyHeaderPtr\n\
+_0801FC6C: .4byte u8_ARRAY_ARRAY_0834cee4\n\
 _0801FC70:\n\
 	movs r0, #0\n\
 	strb r0, [r4]\n\
@@ -703,11 +703,11 @@ _0801FDA8:\n\
 	.align 2, 0\n\
 _0801FDB0: .4byte 0x0000017D\n\
 _0801FDB4:\n\
-	ldr r4, _0801FDBC @ =0x0834CFB4\n\
+	ldr r4, _0801FDBC @ =sGiantElevatorZakoRushCoords\n\
 	adds r6, r4, #4\n\
 	b _0801FDD2\n\
 	.align 2, 0\n\
-_0801FDBC: .4byte 0x0834CFB4\n\
+_0801FDBC: .4byte sGiantElevatorZakoRushCoords\n\
 _0801FDC0:\n\
 	ldr r0, [r2]\n\
 	subs r0, #1\n\
@@ -719,7 +719,7 @@ _0801FDC0:\n\
 	bne _0801FDD2\n\
 	b _0801FECC\n\
 _0801FDD2:\n\
-	ldr r0, _0801FE0C @ =gZakoHeaderPtr\n\
+	ldr r0, _0801FE0C @ =gEnemyHeaderPtr\n\
 	ldr r1, [r0]\n\
 	movs r2, #8\n\
 	ldrsh r0, [r1, r2]\n\
@@ -730,7 +730,7 @@ _0801FDD2:\n\
 	ble _0801FDE6\n\
 	b _080200D2\n\
 _0801FDE6:\n\
-	ldr r2, _0801FE10 @ =0x0834CF30\n\
+	ldr r2, _0801FE10 @ =u8_ARRAY_ARRAY_0834cf30\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #1\n\
 	adds r0, r5, r1\n\
@@ -748,8 +748,8 @@ _0801FDE6:\n\
 	bl FUN_08098838\n\
 	b _0801FE3E\n\
 	.align 2, 0\n\
-_0801FE0C: .4byte gZakoHeaderPtr\n\
-_0801FE10: .4byte 0x0834CF30\n\
+_0801FE0C: .4byte gEnemyHeaderPtr\n\
+_0801FE10: .4byte u8_ARRAY_ARRAY_0834cf30\n\
 _0801FE14:\n\
 	cmp r0, #1\n\
 	bne _0801FE2C\n\
@@ -778,7 +778,7 @@ _0801FE3E:\n\
 	ldr r1, [r2]\n\
 	adds r0, r1, #1\n\
 	str r0, [r2]\n\
-	ldr r3, _0801FE7C @ =0x0834CF30\n\
+	ldr r3, _0801FE7C @ =u8_ARRAY_ARRAY_0834cf30\n\
 	lsls r1, r1, #2\n\
 	adds r0, r3, #2\n\
 	adds r1, r1, r0\n\
@@ -804,9 +804,9 @@ _0801FE3E:\n\
 _0801FE78:\n\
 	b _0801FECC\n\
 	.align 2, 0\n\
-_0801FE7C: .4byte 0x0834CF30\n\
+_0801FE7C: .4byte u8_ARRAY_ARRAY_0834cf30\n\
 _0801FE80:\n\
-	ldr r0, _0801FEB4 @ =gZakoHeaderPtr\n\
+	ldr r0, _0801FEB4 @ =gEnemyHeaderPtr\n\
 	ldr r0, [r0]\n\
 	movs r7, #0xa\n\
 	ldrsh r1, [r0, r7]\n\
@@ -816,7 +816,7 @@ _0801FE80:\n\
 	bge _0801FE92\n\
 	b _080200D2\n\
 _0801FE92:\n\
-	ldr r1, _0801FEB8 @ =0x0834CF30\n\
+	ldr r1, _0801FEB8 @ =u8_ARRAY_ARRAY_0834cf30\n\
 	movs r7, #0xc0\n\
 	lsls r7, r7, #1\n\
 	adds r0, r5, r7\n\
@@ -833,8 +833,8 @@ _0801FE92:\n\
 	strb r0, [r1]\n\
 	b _080200D2\n\
 	.align 2, 0\n\
-_0801FEB4: .4byte gZakoHeaderPtr\n\
-_0801FEB8: .4byte 0x0834CF30\n\
+_0801FEB4: .4byte gEnemyHeaderPtr\n\
+_0801FEB8: .4byte u8_ARRAY_ARRAY_0834cf30\n\
 _0801FEBC: .4byte 0x0000017D\n\
 _0801FEC0:\n\
 	ldr r0, _0801FED8 @ =gStageRun+16\n\
@@ -1175,6 +1175,7 @@ const u8 u8_ARRAY_ARRAY_0834cf30[33][4] = {
 
 // --------------------------------------------
 
+// 0x0834cfb4
 const struct Coord sGiantElevatorZakoRushCoords[2] = {
     {0xE7000, 0x6B000},
     {0xF9000, 0x6B000},

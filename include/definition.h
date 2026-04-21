@@ -7,10 +7,13 @@
 #define BG_MODE_0 0xFFF8
 
 #define POW2(n) (n * n)
-#define OFFSET_TABLE(tbl, n) ((void*)((u32)(void*)&tbl[n] + (u32)tbl[n]))
-#define PTR_U32(p) ((u32)(void*)(p))
 
 typedef s32 (*ShapeChecker)(s32 x, s32 y);
+
+// bitfield
+#define FLAG(gameflags, n) (gameflags[n >> 3] & (1 << (n & 7)))
+#define SET_FLAG(gameflags, n) (gameflags[n >> 3] |= (1 << (n & 7)))
+#define CLEAR_FLAG(gameflags, n) (gameflags[n >> 3] &= ~(1 << (n & 7)))
 
 struct Coord;
 
@@ -85,7 +88,6 @@ void* memcpy(void* buf1, const void* buf2, u32 n);
 extern bool8 gIsPlayDamageSE;
 extern u8 wPauseFrame;
 extern u32 gWhitePaintFlags[256 / 32];  // 被ダメ無敵時の白塗り(ビットフィールド)
-extern u8 (*gUnlockedElfPtr)[CYBERELF_LENGTH];
 extern u32 gLifeRecoverAmount;
 extern u32 gSubtankRecoverAmount;
 extern u32 gECrystalGainAmount;

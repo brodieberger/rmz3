@@ -2,6 +2,24 @@
 #include "collision.h"
 #include "global.h"
 
+void FUN_080c4be0(s32 x, s32 y);
+
+static const motion_t sMotions[];
+
+void FUN_0805ecc8(struct Entity* p) {
+  s32 i;
+  for (i = 0; i < 4; i++) {
+    s32 x, y;
+
+    RNG_0202f388 = LCG(RNG_0202f388);
+    x = (p->coord).x + PIXEL(((RNG_0202f388 >> 16) % 24) - 12);
+
+    RNG_0202f388 = LCG(RNG_0202f388);
+    y = (p->coord).y - PIXEL(-(RNG_0202f388 >> 16) & 0x1F);
+    FUN_080c4be0(x, y);
+  }
+}
+
 INCASM("asm/boss/phantom.inc");
 
 void Phantom_Init(struct Boss* p);
@@ -10,16 +28,19 @@ void Phantom_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gPhantomBossRoutine = {
-    [ENTITY_INIT] =      Phantom_Init,
-    [ENTITY_UPDATE] =    Phantom_Update,
-    [ENTITY_DIE] =       Phantom_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Phantom_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Phantom_Update,
+    [ENTITY_DIE] =       (BossFunc)Phantom_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
+// --------------------------------------------
+
 // clang-format off
-const motion_t motion_t_ARRAY_08365214[21] = {
+// 0x08365214
+static const motion_t sMotions[21] = {
     MOTION(DM188_PHANTOM, 0x00),
     MOTION(DM188_PHANTOM, 0x0B),
     MOTION(DM188_PHANTOM, 0x0D),
@@ -44,10 +65,12 @@ const motion_t motion_t_ARRAY_08365214[21] = {
 };
 // clang-format on
 
+// 0x08365240
 static const s32 s32_ARRAY_08365240[32] = {
     0x00000000, 0x00000040, 0x000000C0, 0x00000180, 0x00000280, 0x000003C0, 0x00000540, 0x00000700, 0x00000900, 0x00000B40, 0x00000DC0, 0x00001080, 0x00001380, 0x000016C0, 0x00001A40, 0x00001E00, 0x00002200, 0x00002640, 0x00002AC0, 0x00002F80, 0x00003480, 0x000039C0, 0x00003F40, 0x00004500, 0x00004B00, 0x00005140, 0x000057C0, 0x00005E80, 0x00006580, 0x00006CC0, 0x00007440, 0x00007C00,
 };
 
+// 0x083652c0
 static const struct Collision sCollisions[14] = {
     {
       kind : DDP,
@@ -55,9 +78,6 @@ static const struct Collision sCollisions[14] = {
       special : CS_BOSS,
       damage : 3,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       hitzone : 5,
       remaining : 1,
       layer : 0x00000001,
@@ -79,9 +99,6 @@ static const struct Collision sCollisions[14] = {
       special : CS_BOSS,
       damage : 4,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       hitzone : 5,
       remaining : 1,
       layer : 0x00000001,
@@ -103,9 +120,6 @@ static const struct Collision sCollisions[14] = {
       special : CS_BOSS,
       damage : 4,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       hitzone : 5,
       remaining : 1,
       layer : 0x00000001,
@@ -163,9 +177,7 @@ static const struct Collision sCollisions[14] = {
       special : CS_BOSS,
       damage : 3,
       atkType : 0x00,
-      element : 0x00,
       nature : BODY_NATURE_B2,
-      comboLv : 0,
       hitzone : 5,
       remaining : 1,
       layer : 0x00000001,
@@ -188,9 +200,6 @@ static const struct Collision sCollisions[14] = {
       special : CS_BOSS,
       damage : 3,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       hitzone : 5,
       remaining : 1,
       layer : 0x00000001,
@@ -214,7 +223,7 @@ void phantom_08060668(struct Boss* p);
 
 static const BossFunc sDeads[1] = {
     phantom_08060668,
-};
+};  // 0x08365410
 
 // --------------------------------------------
 

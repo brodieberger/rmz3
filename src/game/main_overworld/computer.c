@@ -1,7 +1,7 @@
 #include "game.h"
 #include "global.h"
 
-NAKED void OverworldLoop_Computer(struct GameState *p) {
+NAKED void OverworldLoop_Computer(struct GameState* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -342,7 +342,7 @@ _080F24AC:\n\
 	bl FUN_08001134\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r4, r0, #0x18\n\
-	bl FUN_08000fb8\n\
+	bl SioLink_IsSessionIdle\n\
 	lsls r0, r0, #0x18\n\
 	cmp r0, #0\n\
 	bne _080F24C6\n\
@@ -363,14 +363,14 @@ _080F24D4:\n\
 	b _080F2614\n\
 _080F24D8:\n\
 	bl FUN_08001098\n\
-	ldr r1, _080F24E8 @ =0x02030B54\n\
+	ldr r1, _080F24E8 @ =gUnkMmbn4\n\
 	ldr r0, _080F24EC @ =gSystemSavedataManager\n\
 	ldr r0, [r0, #0x40]\n\
 	str r0, [r1]\n\
 	movs r0, #0xf\n\
 	b _080F2614\n\
 	.align 2, 0\n\
-_080F24E8: .4byte 0x02030B54\n\
+_080F24E8: .4byte gUnkMmbn4\n\
 _080F24EC: .4byte gSystemSavedataManager\n\
 _080F24F0:\n\
 	bl FUN_08001154\n\

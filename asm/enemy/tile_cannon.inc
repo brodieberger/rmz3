@@ -45,7 +45,7 @@ _08078100:
 FUN_08078108: @ 0x08078108
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _08078168 @ =gZakoHeaderPtr
+	ldr r0, _08078168 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -92,7 +92,7 @@ _08078160:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08078168: .4byte gZakoHeaderPtr
+_08078168: .4byte gEnemyHeaderPtr
 _0807816C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08078170
@@ -134,7 +134,7 @@ tilecannon_08078198: @ 0x08078198
 	b _08078208
 _080781A8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078208
 	ldr r1, _080781E4 @ =0x08367418
@@ -169,7 +169,7 @@ _080781EC:
 	bl FUN_080780c4
 _080781F8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078206
 	movs r0, #1
@@ -780,7 +780,7 @@ _08078676:
 	strb r0, [r5, #0xe]
 _0807869A:
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08078736
 	ldr r0, _08078748 @ =pZero2
@@ -963,7 +963,7 @@ _08078808:
 	strb r0, [r5, #0xe]
 _08078812:
 	adds r0, r2, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08078842
 	ldrb r0, [r5, #0x13]

@@ -13,7 +13,7 @@ const EnemyRoutine gDeathtanzRockRoutine = {
     [ENTITY_INIT] =      DeathtanzRock_Init,
     [ENTITY_UPDATE] =    DeathtanzRock_Update,
     [ENTITY_DIE] =       DeathtanzRock_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

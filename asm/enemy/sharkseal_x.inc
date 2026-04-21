@@ -10,7 +10,7 @@ CreateSharksealX: @ 0x08070028
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _0807007C @ =gZakoHeaderPtr
+	ldr r0, _0807007C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -49,7 +49,7 @@ _08070074:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0807007C: .4byte gZakoHeaderPtr
+_0807007C: .4byte gEnemyHeaderPtr
 _08070080: .4byte gEnemyFnTable
 
 	thumb_func_start SharksealX_Init
@@ -180,7 +180,7 @@ _0807015C:
 	adds r0, #0xbc
 	strb r4, [r0]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080701A4
 	movs r1, #0xc0
@@ -257,7 +257,7 @@ _08070204:
 	cmp r0, #7
 	beq _08070244
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08070244
 	ldrb r1, [r4, #0xd]

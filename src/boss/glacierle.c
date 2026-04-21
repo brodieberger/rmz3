@@ -8,7 +8,7 @@
 void CreateSolidGlacierleArm(struct Boss* glacierle, s32 x, s32 y);
 
 static const u8 u8_ARRAY_08364aac[2];
-static const struct Collision sCollisions[135];
+static const struct Collision sCollisions[];
 static const struct Coord sElementCoord;
 static const u8 sGlacierleModes[48];
 
@@ -677,6 +677,7 @@ INCASM("asm/boss/glacierle.inc");
 
 // --------------------------------------------
 
+// 0x08363dcc
 static const struct Collision sCollisions[135] = {
     [0] = {
       kind : DRP,

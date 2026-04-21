@@ -512,10 +512,7 @@ static void exitOcean(struct Coord* _ UNUSED) {
     struct Solid* btn = (*(&gOverworld.work.ocean.btns))[i];
     (btn->s).flags &= ~DISPLAY;
     (btn->s).flags &= ~FLIPABLE;
-    (btn->body).status = 0;
-    (btn->body).prevStatus = 0;
-    (btn->body).invincibleTime = 0;
-    (btn->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(btn);
     SET_SOLID_ROUTINE(btn, ENTITY_DISAPPEAR);
   }
 }

@@ -17,7 +17,7 @@ const VFXRoutine gEmotionBubbleRoutine = {
     [ENTITY_INIT] =      EmotionBubble_Init,
     [ENTITY_UPDATE] =    EmotionBubble_Update,
     [ENTITY_DIE] =       EmotionBubble_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

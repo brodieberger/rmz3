@@ -1,42 +1,40 @@
 #ifndef GUARD_RMZ3_MAP_ITEM_H
 #define GUARD_RMZ3_MAP_ITEM_H
 
-#include "collision.h"
-#include "constants/constants.h"
-#include "entity.h"
+#include "entity/entity.h"
 #include "types.h"
 
-#define SET_ITEM_ROUTINE(item, routine)           \
-  {                                               \
-    u32 tbl, id;                                  \
-    PickupFunc **r;                               \
-    tbl = (u32)gPickupFnTable;                    \
-    id = (((item)->s).id) << 2;                   \
-    r = (PickupFunc **)(tbl + id);                \
-                                                  \
-    *(u32 *)((item)->s).mode = routine;           \
-    ((item)->s).onUpdate = (void *)(*r)[routine]; \
-  }
+struct Zero;
 
-#define INIT_ITEM_ROUTINE(item, itemID)               \
-  {                                                   \
-    u32 tbl;                                          \
-    PickupFunc **r;                                   \
-    tbl = (u32)gPickupFnTable;                        \
-    ((item)->s).id = itemID;                          \
-                                                      \
-    r = (PickupFunc **)(tbl + (itemID << 2));         \
-    ((item)->s).onUpdate = (void *)(*r)[ENTITY_INIT]; \
-  }
+struct Pickup {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  s32 y;
+  struct Zero* z;  // ゼロがアイテム拾うとセットされる
+  u8 work[8];
+};  // 196 bytes
 
-extern const PickupRoutine *const gPickupFnTable[2];
+// --------------------------------------------
 
-extern const PickupRoutine gPickupItemRoutine;
-extern const PickupRoutine gPickupDiskRoutine;
+extern struct Pickup gPickups[10];
 
-void DeletePickup(struct Pickup *p);
+struct EntityHeader;
+extern struct EntityHeader* gPickupHeaderPtr;
 
-struct Pickup *CreatePickupItem(u8 itemID, struct Coord *c, u8 param_3);
-struct Pickup *CreateMapDisk(u8 diskNo, struct Coord *c, u8 r2);
+typedef void (*PickupFunc)(struct Pickup*);
+typedef PickupFunc PickupRoutine[5];
+extern const PickupRoutine* const gPickupFnTable[2];
+
+// --------------------------------------------
+
+#define INIT_ITEM_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gPickupFnTable, entity, entityID)
+#define SET_ITEM_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gPickupFnTable, entity, modeID)
+
+// --------------------------------------------
+
+void DeletePickup(struct Entity* p);
+
+struct Entity* CreatePickupItem(u8 itemID, struct Coord* c, u8 param_3);
+struct Entity* CreateMapDisk(u8 diskNo, struct Coord* c, u8 r2);
 
 #endif  // GUARD_RMZ3_MAP_ITEM_H

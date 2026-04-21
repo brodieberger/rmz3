@@ -55,7 +55,7 @@ Elf3_Init: @ 0x080E29E8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E2A4C: .4byte 0x08371CF0
+_080E2A4C: .4byte sElf3Collisions
 _080E2A50: .4byte FUN_080e2af0
 _080E2A54: .4byte gElfFnTable
 

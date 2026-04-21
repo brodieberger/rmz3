@@ -991,7 +991,7 @@ _08097702:
 	cmp r0, #0
 	bne _08097732
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0809772C
 	movs r0, #1
@@ -1009,7 +1009,7 @@ _08097732:
 	strb r0, [r4, #0xf]
 _08097740:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _0809774C
 	strb r0, [r4, #0xf]
@@ -1071,7 +1071,7 @@ _080977A8:
 	str r0, [r7]
 _080977C4:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _0809782E

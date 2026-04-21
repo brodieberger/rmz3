@@ -13,7 +13,7 @@ const EnemyRoutine gCattatankRoutine = {
     [ENTITY_INIT] =      Cattatank_Init,
     [ENTITY_UPDATE] =    Cattatank_Update,
     [ENTITY_DIE] =       Cattatank_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

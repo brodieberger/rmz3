@@ -3,24 +3,24 @@
 #include "task.h"
 #include "vfx.h"
 
-static void Ghost84_Init(struct VFX *p);
-static void Ghost84_Update(struct VFX *p);
-static void Ghost84_Die(struct VFX *p);
+static void Ghost84_Init(struct VFX* p);
+static void Ghost84_Update(struct VFX* p);
+static void Ghost84_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost84Routine = {
-    [ENTITY_INIT] =      Ghost84_Init,
-    [ENTITY_UPDATE] =    Ghost84_Update,
-    [ENTITY_DIE] =       Ghost84_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost84_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost84_Update,
+    [ENTITY_DIE] =       (void*)Ghost84_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
-struct VFX *CreateGhost84(struct Entity *p) {
-  struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* CreateGhost84(struct Entity* p) {
+  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (g != NULL) {
     (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_UNK_084);
@@ -35,11 +35,11 @@ struct VFX *CreateGhost84(struct Entity *p) {
 
 // --------------------------------------------
 
-static void FUN_080c9d20(struct Sprite *p, struct DrawPivot *_);
+static void FUN_080c9d20(struct Sprite* p, struct DrawPivot* _);
 
-static void Ghost84_Init(struct VFX *p) {
-  SetTaskCallback((struct Task *)&(p->s).spr, FUN_080c9d20);
-  (p->s).spr.sprites = (struct MetaspriteHeader *)p;
+static void Ghost84_Init(struct VFX* p) {
+  SetTaskCallback((struct Task*)&(p->s).spr, FUN_080c9d20);
+  (p->s).spr.sprites = (struct MetaspriteHeader*)p;
   (p->s).flags &= 0xF7;
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
@@ -50,7 +50,7 @@ static void Ghost84_Init(struct VFX *p) {
   Ghost84_Update(p);
 }
 
-NAKED static void Ghost84_Update(struct VFX *p) {
+NAKED static void Ghost84_Update(struct VFX* p) {
   asm(".syntax unified\n\
 	push {lr}\n\
 	adds r2, r0, #0\n\
@@ -112,15 +112,15 @@ _080C9CF4: .4byte sUpdates\n\
  .syntax divided\n");
 }
 
-static void Ghost84_Die(struct VFX *p) {
+static void Ghost84_Die(struct VFX* p) {
   (p->s).flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void nop_080c9d18(struct VFX *p);
-static void nop_080c9d1c(struct VFX *p);
+static void nop_080c9d18(struct VFX* p);
+static void nop_080c9d1c(struct VFX* p);
 
 static const VFXFunc sUpdates[2] = {
     nop_080c9d18,
@@ -129,11 +129,11 @@ static const VFXFunc sUpdates[2] = {
 
 // --------------------------------------------
 
-static void nop_080c9d18(struct VFX *p) { return; }
+static void nop_080c9d18(struct VFX* p) { return; }
 
-static void nop_080c9d1c(struct VFX *p) { return; }
+static void nop_080c9d1c(struct VFX* p) { return; }
 
-NAKED static void FUN_080c9d20(struct Sprite *p, struct DrawPivot *_) {
+NAKED static void FUN_080c9d20(struct Sprite* p, struct DrawPivot* _) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\

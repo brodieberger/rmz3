@@ -12,7 +12,7 @@ FUN_0809bdd4: @ 0x0809BDD4
 	lsrs r5, r1, #0x18
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _0809BE2C @ =gZakoHeaderPtr
+	ldr r0, _0809BE2C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -51,7 +51,7 @@ _0809BE24:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809BE2C: .4byte gZakoHeaderPtr
+_0809BE2C: .4byte gEnemyHeaderPtr
 _0809BE30: .4byte gEnemyFnTable
 
 	thumb_func_start CielMinigameEnemy_Init
@@ -450,12 +450,12 @@ _0809C12C:
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	movs r4, #0
-	ldr r1, _0809C1A4 @ =0x0836A85C
+	ldr r1, _0809C1A4 @ =u8_ARRAY_ARRAY_0836a85c
 	mov r8, r1
 	lsls r1, r0, #1
 	adds r1, r1, r0
 	lsls r6, r1, #1
-	ldr r2, _0809C1A8 @ =0x0836A87A
+	ldr r2, _0809C1A8 @ =u8_ARRAY_ARRAY_0836a87a
 	mov sb, r2
 	lsls r1, r0, #2
 	adds r1, r1, r0
@@ -508,8 +508,8 @@ _0809C148:
 	ldrb r0, [r0]
 	b _0809C1BC
 	.align 2, 0
-_0809C1A4: .4byte 0x0836A85C
-_0809C1A8: .4byte 0x0836A87A
+_0809C1A4: .4byte u8_ARRAY_ARRAY_0836a85c
+_0809C1A8: .4byte u8_ARRAY_ARRAY_0836a87a
 _0809C1AC: .4byte 0x00000E04
 _0809C1B0:
 	adds r0, r4, #1

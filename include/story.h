@@ -19,10 +19,6 @@
 
 #define ENEMY_KILLCOUNT(n) (gCurStory.s.counts[29 + n])
 
-#define FLAG(gameflags, n) (gameflags[n >> 3] & (1 << (n & 7)))
-#define SET_FLAG(gameflags, n) (gameflags[n >> 3] |= (1 << (n & 7)))
-#define CLEAR_FLAG(gameflags, n) (gameflags[n >> 3] &= ~(1 << (n & 7)))
-
 #define IS_MISSION (!FLAG(gCurStory.s.gameflags, IS_FREERUN))
 #define IS_METTAUR (FLAG(gCurStory.s.gameflags, METTAUR_ENABLED))
 
@@ -62,8 +58,9 @@ struct PlayInfo {
   u8 _[3];
 };  // 80 bytes
 
+// これ全部 bitfield で struct じゃなくて u8[84] の方が適切かもしれん
 struct Story {
-  u16 id;  // stage ID
+  u16 id;  // stageID と思ってたけど違うかもしれない
   u16 pad_02;
 
   // 0x0202fdc4

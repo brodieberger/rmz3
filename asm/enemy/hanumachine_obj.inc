@@ -12,7 +12,7 @@ FUN_080866a4: @ 0x080866A4
 	lsrs r6, r1, #0x18
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _08086700 @ =gZakoHeaderPtr
+	ldr r0, _08086700 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	mov ip, r0
@@ -51,7 +51,7 @@ FUN_080866a4: @ 0x080866A4
 	strb r0, [r3, #0xa]
 	b _08086714
 	.align 2, 0
-_08086700: .4byte gZakoHeaderPtr
+_08086700: .4byte gEnemyHeaderPtr
 _08086704: .4byte gEnemyFnTable
 _08086708:
 	mov r0, ip

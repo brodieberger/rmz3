@@ -96,7 +96,7 @@ LocomoIF_Init: @ 0x080547AC
 	ands r0, r1
 	cmp r0, #0
 	beq _08054810
-	ldr r1, _0805480C @ =0x08363AF8
+	ldr r1, _0805480C @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x30
 	bl ResetBossBody
@@ -105,9 +105,9 @@ LocomoIF_Init: @ 0x080547AC
 _08054800: .4byte gBossFnTable
 _08054804: .4byte 0x08363B40
 _08054808: .4byte gSystemSavedataManager
-_0805480C: .4byte 0x08363AF8
+_0805480C: .4byte sCollisions
 _08054810:
-	ldr r1, _08054A18 @ =0x08363AF8
+	ldr r1, _08054A18 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x20
 	bl ResetBossBody
@@ -348,7 +348,7 @@ _0805481A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08054A18: .4byte 0x08363AF8
+_08054A18: .4byte sCollisions
 _08054A1C: .4byte nop_0805474c
 _08054A20: .4byte gStaticMotionGraphics
 _08054A24: .4byte wStaticGraphicTilenums
@@ -1044,7 +1044,7 @@ _080550C4:
 	bne _080550DC
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _080550E8 @ =0x08363AF8
+	ldr r1, _080550E8 @ =sCollisions
 	bl SetDDP
 _080550DC:
 	pop {r4, r5}
@@ -1052,7 +1052,7 @@ _080550DC:
 	bx r0
 	.align 2, 0
 _080550E4: .4byte 0x00005405
-_080550E8: .4byte 0x08363AF8
+_080550E8: .4byte sCollisions
 
 	thumb_func_start locomoIF_080550ec
 locomoIF_080550ec: @ 0x080550EC

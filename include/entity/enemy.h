@@ -3,55 +3,14 @@
 
 #include "entity/entity.h"
 
-struct VFX;
-
-struct PantheonProps {
-  s32 x;
-  u8 unk_b8[4];
-  u8 unk_bc;
-  u8 unk_bd;
-  u8 unk_be;
-  u8 unk_bf;
-  struct Entity* unk_c0;
-};
-
-struct GyroCannonProps {
-  struct VFX* elementEffect;
-  u8 unk_004;
-  u8 unk_005;
-  u16 unk_006;
-  bool8 is_right;
-  u8 unk_009;
-  u8 unk_00a;
-  u8 unk_00b;
-  u8 unk_00c[4];
-};
-
-struct ShrimporinProps {
-  struct VFX* elementEffect;
-  u8 unk_004[12];
-};
-
-struct FlopperProps {
-  struct Coord c;
-  u32 unk_08;
-  u8 unk_0c[4];
-};
+// TODO: Solid などの "Object と 16バイトのバッファ" をもつ 196バイトの構造体　として共通化する
 
 struct Enemy {
-  struct Entity s;
-  struct Body body;
-  // 0xB4..
-  union {
-    u8 raw[16];
-    struct PantheonProps pantheon;
-    struct GyroCannonProps gyroCannon;
-    struct ShrimporinProps shrimpolin;
-    struct FlopperProps flopper;
-  } props;
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 props[16];
 };  // 196 bytes
 
 typedef void (*EnemyFunc)(struct Enemy*);
-typedef EnemyFunc EnemyRoutine[5];
 
 #endif  // GUARD_RMZ3_ENTITY_ENEMY_H

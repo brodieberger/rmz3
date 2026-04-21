@@ -10,7 +10,7 @@ FUN_08082bbc: @ 0x08082BBC
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _08082C10 @ =gZakoHeaderPtr
+	ldr r0, _08082C10 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -49,7 +49,7 @@ _08082C08:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08082C10: .4byte gZakoHeaderPtr
+_08082C10: .4byte gEnemyHeaderPtr
 _08082C14: .4byte gEnemyFnTable
 
 	thumb_func_start OmegaGoldHand_Init

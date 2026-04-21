@@ -125,7 +125,7 @@ _080B95AC:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080B95E0
-	ldr r0, _080B9618 @ =0x0202F360
+	ldr r0, _080B9618 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -175,7 +175,7 @@ _080B95FC:
 	adds r0, #1
 	b _080B9634
 	.align 2, 0
-_080B9618: .4byte 0x0202F360
+_080B9618: .4byte gWhitePaintFlags
 _080B961C:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
@@ -273,7 +273,7 @@ _080B96BE:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080B96F2
-	ldr r0, _080B9708 @ =0x0202F360
+	ldr r0, _080B9708 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -306,7 +306,7 @@ _080B9700:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B9708: .4byte 0x0202F360
+_080B9708: .4byte gWhitePaintFlags
 
 	thumb_func_start FUN_080b970c
 FUN_080b970c: @ 0x080B970C

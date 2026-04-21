@@ -6,6 +6,20 @@
 
 extern const motion_t ElfActions[3];
 
+extern const ElfRoutine gElf0Routine;
+extern const ElfRoutine gElf1Routine;
+extern const ElfRoutine gNurseBRoutine;
+extern const ElfRoutine gElf3Routine;
+extern const ElfRoutine gNurseERoutine;
+extern const ElfRoutine gElf5Routine;
+extern const ElfRoutine gElf6Routine;
+extern const ElfRoutine gElf7Routine;
+extern const ElfRoutine gFollowerElfRoutine;
+extern const ElfRoutine gSeaOtterElfRoutine;
+extern const ElfRoutine gElf10Routine;
+extern const ElfRoutine gElf11Routine;
+extern const ElfRoutine gBirdElfRoutine;
+
 // clang-format off
 const ElfRoutine *const gElfFnTable[13] = {
   [0] =  &gElf0Routine,
@@ -40,27 +54,23 @@ void DeleteElf(struct Elf* p) {
   SET_ELF_ROUTINE(p, ENTITY_EXIT);
 }
 
-#if MODERN == 0
-NAKED static struct Elf* unused_080e14d4(u8 r0, struct Entity* e) { INCCODE("asm/unused/unused_080e14d4.inc"); }
-#endif
+NAKED static struct Entity* unused_080e14d4(u8 r0, struct Entity* e) { INCCODE("asm/unused/unused_080e14d4.inc"); }
 
 static struct Enemy* getNearestEnemy(struct Coord* c) {
-  struct Enemy* p = (struct Enemy*)GetNearestEntity(gZakoHeaderPtr, c);
+  struct Enemy* p = (struct Enemy*)GetNearestEntity(gEnemyHeaderPtr, c);
   if (p == NULL) {
     return NULL;
   }
   return p;
 }
 
-#if MODERN == 0
-static struct Boss* getNearestBoss(struct Coord* c) {
-  struct Boss* p = (struct Boss*)GetNearestEntity(gBossHeaderPtr, c);
+static struct Entity* unused_GetNearestBoss(struct Coord* c) {
+  struct Entity* p = GetNearestEntity(gBossHeaderPtr, c);
   if (p == NULL) {
     return NULL;
   }
   return p;
 }
-#endif
 
 void close_menu_080e1540(ElfFunc fn) {
   struct Entity* p;
@@ -462,7 +472,7 @@ _080E1822:\n\
 bool8 IsAllElfUnlocked(void) {
   u8 i;
   for (i = 0; i < CYBERELF_LENGTH; i++) {
-    if ((((*gUnlockedElfPtr)[i]) & ELF_AVABILITY_UNLOCKED) == 0) {
+    if (!(ELF_AVABILITY(i) & ELF_AVABILITY_UNLOCKED)) {
       return FALSE;
     }
   }
@@ -526,31 +536,31 @@ u8 CalcElfPenalty(struct Zero* z) {
     penalty = ((&z->unk_b4)->status).asset.fusions;
     ((&z->unk_b4)->status).asset.fusions = 0;
   } else {
-    if ((*gUnlockedElfPtr)[0] & ELF_AVABILITY_USED) penalty = 5;
-    if ((*gUnlockedElfPtr)[1] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[2] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[3] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[4] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[5] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[6] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[27] & ELF_AVABILITY_USED) penalty += 5;
-    if ((*gUnlockedElfPtr)[28] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[29] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[30] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[31] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[40] & ELF_AVABILITY_USED) penalty += 5;
-    if ((*gUnlockedElfPtr)[41] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[42] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[43] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[44] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[45] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[46] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[47] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[48] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[49] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[50] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[51] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[52] & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(0) & ELF_AVABILITY_USED) penalty = 5;
+    if (ELF_AVABILITY(1) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(2) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(3) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(4) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(5) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(6) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(27) & ELF_AVABILITY_USED) penalty += 5;
+    if (ELF_AVABILITY(28) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(29) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(30) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(31) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(40) & ELF_AVABILITY_USED) penalty += 5;
+    if (ELF_AVABILITY(41) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(42) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(43) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(44) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(45) & ELF_AVABILITY_USED) penalty += 2;
+    if (ELF_AVABILITY(46) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(47) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(48) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(49) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(50) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(51) & ELF_AVABILITY_USED) penalty += 1;
+    if (ELF_AVABILITY(52) & ELF_AVABILITY_USED) penalty += 1;
     penalty += ((&z->unk_b4)->status).asset.fusions;
     ((&z->unk_b4)->status).asset.fusions = 0;
   }
@@ -582,7 +592,7 @@ motion_t GetElfMotion(u8 category) {
 
 // 立ち止まっていると回復するエルフのためのチェック関数
 bool8 CheckPlayerStandStill(struct Zero* z) {
-  if (!(z->last & 0x8000) && ((W_TERRAIN_V2.id & 0x7F) != STAGE_BASE)) {
+  if (!((z->input).raw & 0x8000) && ((W_TERRAIN_V2.id & 0x7F) != STAGE_BASE)) {
     return TRUE;
   }
   return FALSE;

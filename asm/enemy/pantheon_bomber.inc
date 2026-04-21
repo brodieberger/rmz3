@@ -10,7 +10,7 @@ CreatePantheonBomber: @ 0x08085D0C
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _08085D64 @ =gZakoHeaderPtr
+	ldr r0, _08085D64 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -50,7 +50,7 @@ _08085D5A:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08085D64: .4byte gZakoHeaderPtr
+_08085D64: .4byte gEnemyHeaderPtr
 _08085D68: .4byte gEnemyFnTable
 
 	thumb_func_start PantheonBomber_Init
@@ -153,7 +153,7 @@ _08085DDC:
 	strb r4, [r6, #0xe]
 	strb r4, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08085E4A
 	ldr r1, _08085E6C @ =0x00006903
@@ -218,7 +218,7 @@ _08085EA0:
 	cmp r0, #0
 	bne _08085ED0
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08085F10
 	ldr r0, [r5]

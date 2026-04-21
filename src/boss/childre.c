@@ -4,7 +4,7 @@
 #include "stagerun.h"
 
 static const u8 sInitModes[4];
-static const struct Collision sCollisions[16];
+static const struct Collision sCollisions[];
 
 static void Childre_Init(struct Boss* p);
 static void Childre_Update(struct Boss* p);
@@ -313,6 +313,7 @@ INCASM("asm/boss/childre.inc");
 
 // --------------------------------------------
 
+// 0x08361eac
 static const struct Collision sCollisions[16] = {
     [0] = {
       kind : DRP,

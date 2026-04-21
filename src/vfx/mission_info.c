@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "gfx.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 /*
 work[0]:
@@ -24,7 +24,7 @@ const VFXRoutine gGhost71Routine = {
     [ENTITY_INIT] =      Ghost71_Init,
     [ENTITY_UPDATE] =    Ghost71_Update,
     [ENTITY_DIE] =       Ghost71_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

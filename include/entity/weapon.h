@@ -5,8 +5,8 @@
 
 struct Weapon;
 
-struct Weapon_b4 {
-  struct Zero *z;
+struct WeaponProps {
+  struct Zero* z;
   /*
     props[n][0]: 属性？
     props[n][1]: 攻撃力？
@@ -18,7 +18,7 @@ struct Weapon_b4 {
 };
 
 struct Rod_b4 {
-  struct Zero *z;
+  struct Zero* z;
   u8 element;
   u8 atk;
   u8 unk_06;
@@ -32,7 +32,7 @@ struct Rod_b4 {
 };
 
 struct Buster_b4 {
-  struct Zero *z;
+  struct Zero* z;
   struct Coord c;
   u8 unk_c0;
   u8 element;
@@ -42,7 +42,7 @@ struct Buster_b4 {
 };
 
 struct Saber_b4 {
-  struct Zero *z;
+  struct Zero* z;
   u8 props[8];
   u8 element;
   u8 atk;
@@ -53,8 +53,8 @@ struct Saber_b4 {
 
 // エルフで出せるやつ
 struct SaberWave_b4 {
-  struct Weapon *saber;  // projectile -> saber (if saber, this is null)
-  struct Zero *z;
+  struct Weapon* saber;  // projectile -> saber (if saber, this is null)
+  struct Zero* z;
   u8 props[4];
   u8 element;
   u8 atk;
@@ -63,38 +63,19 @@ struct SaberWave_b4 {
   u8 unk_c4[40];
 };
 
-struct SoulLauncherProps {
-  struct Zero *z;
-  u8 unk_b8[8];
-  u8 unk_c0;
-  u8 element;
-  u8 unk_c2[42];
-};
-
-// EXSkill (Ja: ザンエイダン)
-struct ThrowBladeProps {
-  struct Weapon *saber;
-  u8 unk_b8[8];
-  u8 element;
-  u8 unk_c1[43];
-};
-
 struct Weapon {
-  struct Entity s;
-  struct Body body;
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
   union {
     u8 raw[56];
-    struct Weapon_b4 common;
+    struct WeaponProps common;
     struct Buster_b4 buster;
     struct Saber_b4 saber;
     struct SaberWave_b4 wave;  // Not EXSkill
-    struct ThrowBladeProps throw_blade;
-    struct SoulLauncherProps soul_launcher;
     struct Rod_b4 rod;
   } props;
 };  // 236 bytes
 
-typedef void (*WeaponFunc)(struct Weapon *);
-typedef WeaponFunc WeaponRoutine[5];
+typedef void (*WeaponFunc)(struct Weapon*);
 
 #endif  // GUARD_RMZ3_ENTITY_WEAPON_H

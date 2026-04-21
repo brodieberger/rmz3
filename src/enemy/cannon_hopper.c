@@ -13,7 +13,7 @@ const EnemyRoutine gCannonHopperRoutine = {
     [ENTITY_INIT] =      CannonHopper_Init,
     [ENTITY_UPDATE] =    CannonHopper_Update,
     [ENTITY_DIE] =       CannonHopper_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

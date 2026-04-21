@@ -2,6 +2,7 @@
 #include "cyberelf.h"
 #include "global.h"
 #include "mission.h"
+#include "mod.h"
 #include "weapon.h"
 #include "zero.h"
 
@@ -160,11 +161,9 @@ void FUN_080322c4(struct ZeroStatus* status) {
   status->charge[1] = 0;
 }
 
-static const u8 u8_ARRAY_0835e84c[2] = {2, 1};
-static const u8 u8_ARRAY_0835e84e[2] = {4, 3};
-static const u8 u8_ARRAY_0835e850[2] = {6, 5};
+static const u8 u8_ARRAY_0835e84c[3][2] = {{2, 1}, {4, 3}, {6, 5}};
 
-WIP void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
+NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
 #if MODERN
   motion_t zm;
   weapon_t w[4];
@@ -201,24 +200,19 @@ WIP void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
         z->rodToggle = 0x0;
       }
 
-      input = &z->zeroInput;
-      if (*input & DPAD_RIGHT) {
-        (z->s).spr.xflip = TRUE;
-        (z->s).spr.oam.xflip = TRUE;
-        (z->s).flags |= X_FLIP;
-      }
-      if (*input & DPAD_LEFT) {
-        (z->s).spr.xflip = FALSE;
-        (z->s).spr.oam.xflip = FALSE;
-        (z->s).flags &= ~X_FLIP;
-      }
+      input = &(z->input).val;
+      if (*input & DPAD_RIGHT) SET_XFLIP(z, TRUE);
+      if (*input & DPAD_LEFT) SET_XFLIP(z, FALSE);
       if (*input & DPAD_UP) {
-        (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84e[r2];
-      } else if (*input & DPAD_DOWN) {
-        (z->unk_b4).attackMode[1] = u8_ARRAY_0835e850[r2];
+        (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[1][r2];
       } else {
-        (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[r2];
+        if (*input & DPAD_DOWN) {
+          (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[2][r2];
+        } else {
+          (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[0][r2];
+        }
       }
+
       (z->unk_b4).attackMode[2] = 0;
       z->unk_rod_133 = 0;
       return;
@@ -359,9 +353,9 @@ void zero_08032724(struct Zero* z) {
   }
 }
 
-WIP void setStageElfFlags(struct Zero* z) {
+NON_MATCH void setStageElfFlags(struct Zero* z) {
 #if MODERN
-  if (((*gUnlockedElfPtr)[ELF_BYSE] & ELF_AVABILITY_UNLOCKED) && (((*gUnlockedElfPtr)[ELF_BYSE] & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_BYSE || SATELITE_2 == ELF_BYSE)) {
+  if ((ELF_AVABILITY(ELF_BYSE) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_BYSE) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_BYSE || SATELITE_2 == ELF_BYSE)) {
     SET_FLAG(gCurStory.s.gameflags, BYSE_ENABLED);
     SET_FLAG(gGameState.save.story.gameflags, FLAG_7);
     SET_FLAG(gGameState.save.savedStory.gameflags, FLAG_7);
@@ -371,13 +365,13 @@ WIP void setStageElfFlags(struct Zero* z) {
     CLEAR_FLAG(gGameState.save.savedStory.gameflags, FLAG_7);
   }
 
-  if (((*gUnlockedElfPtr)[ELF_DYLPHINA] & ELF_AVABILITY_UNLOCKED) && (((*gUnlockedElfPtr)[ELF_DYLPHINA] & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_DYLPHINA || SATELITE_2 == ELF_DYLPHINA)) {
+  if ((ELF_AVABILITY(ELF_DYLPHINA) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_DYLPHINA) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_DYLPHINA || SATELITE_2 == ELF_DYLPHINA)) {
     SET_FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED);
   } else {
     CLEAR_FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED);
   }
 
-  if (((*gUnlockedElfPtr)[ELF_PUTITE] & ELF_AVABILITY_UNLOCKED) && (((*gUnlockedElfPtr)[ELF_PUTITE] & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_PUTITE || SATELITE_2 == ELF_PUTITE)) {
+  if ((ELF_AVABILITY(ELF_PUTITE) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_PUTITE) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_PUTITE || SATELITE_2 == ELF_PUTITE)) {
     SET_FLAG(gCurStory.s.gameflags, PUTITE_ENABLED);
   } else {
     CLEAR_FLAG(gCurStory.s.gameflags, PUTITE_ENABLED);
@@ -398,8 +392,8 @@ u8 FUN_08032880(struct Zero* z, u8 r1) {
   if (r1 == 0xFF) {
     for (i = 0; i < ARRAY_COUNT(sSatelitableElfIDs); i++) {
       u8 id = sSatelitableElfIDs[i];
-      if ((*gUnlockedElfPtr)[id] & ELF_AVABILITY_UNLOCKED) {
-        if (((*gUnlockedElfPtr)[id] & ELF_AVABILITY_USED) == 0) {
+      if (ELF_AVABILITY(id) & ELF_AVABILITY_UNLOCKED) {
+        if (!(ELF_AVABILITY(id) & ELF_AVABILITY_USED)) {
           ctr++;
         }
       }
@@ -409,7 +403,7 @@ u8 FUN_08032880(struct Zero* z, u8 r1) {
 
   for (i = 0; i < ARRAY_COUNT(sSatelitableElfIDs); i++) {
     u8 id = sSatelitableElfIDs[i];
-    if (((*gUnlockedElfPtr)[id] & (ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED)) == ELF_AVABILITY_UNLOCKED) {
+    if ((ELF_AVABILITY(id) & (ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED)) == ELF_AVABILITY_UNLOCKED) {
       if (ctr == r1) {
         if (sSatelitableElfIDs[i] <= ELF_SLOPPE) {
           return 0;
@@ -443,7 +437,7 @@ s16 getWallFallSpeed(struct Zero* z) {
   s16 dy = 0x180;
   struct Zero_b4* b4 = &z->unk_b4;
 
-  if (!(z->zeroInput & DPAD_DOWN)) {
+  if (!((z->input).val & DPAD_DOWN)) {
     if (((b4->status).foot == FOOT_CHIP_FROG) || ((b4->status).foot == FOOT_CHIP_ULTIMA)) {
       if (IsElfUsed(z, ELF_KWAPPA) && ((b4->status).body == BODY_CHIP_LIGHT)) {
         return 0;
@@ -468,7 +462,7 @@ s16 CalcDx(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
   s16 dx;
 
-  if (z->last & INPUT_DISABLED) {
+  if ((z->input).raw & INPUT_DISABLED) {
     return PIXEL(2);
   }
 
@@ -485,7 +479,7 @@ s16 CalcDx(struct Zero* z) {
 }
 
 s16 CalcMaxWalkSpeed(struct Zero* z) {
-  if (z->last & INPUT_DISABLED) {
+  if ((z->input).raw & INPUT_DISABLED) {
     return 0x200;
   }
 
@@ -497,7 +491,7 @@ s16 CalcMaxWalkSpeed(struct Zero* z) {
 }
 
 s16 GetDashSpeed(struct Zero* z) {
-  if (z->last & INPUT_DISABLED) {
+  if ((z->input).raw & INPUT_DISABLED) {
     return 0x380;
   }
 
@@ -551,30 +545,22 @@ NON_MATCH s16 GetSplitHeavenSpeed(struct Zero* z) {
 #endif
 }
 
-WIP bool8 IsElfUsed(struct Zero* z, cyberelf_t elfID) {
-#if MODERN
-  const u8 availability = (*gUnlockedElfPtr)[elfID];
-  if (availability & ELF_AVABILITY_UNLOCKED) {
-    struct Zero_b4* b4;
-    cyberelf_t* satelites;
+// 0x08032c84
+bool8 IsElfUsed(struct Zero* z, cyberelf_t id) {
+  struct Zero_b4* b4;
+  cyberelf_t* satelites;
 
-    if (availability & ELF_AVABILITY_USED) {
+  if (ELF_AVABILITY(id) & ELF_AVABILITY_UNLOCKED) {
+    if (ELF_AVABILITY(id) & ELF_AVABILITY_USED) {
       return TRUE;
     }
-    if (z->inCyberSpace) {
-      return TRUE;
-    }
-
     b4 = &z->unk_b4;
     satelites = (b4->status).asset.satelites;
-    if ((satelites[0] == elfID) || (satelites[1] == elfID)) {
+    if ((z->inCyberSpace) || ((satelites[0] == id) || (satelites[1] == id))) {
       return TRUE;
     }
   }
   return FALSE;
-#else
-  INCCODE("asm/wip/IsElfUsed.inc");
-#endif
 }
 
 u8 GetZeroColor(struct Zero* z) {
@@ -593,7 +579,7 @@ void InstantlyKilling(struct Zero* z) {
   if ((z->body).hp != 0) {
     if (((z->body).invincibleTime == 0) || (z->unk_149 != 0)) {
       if (IsElfUsed(z, ELF_PUTITE)) {
-        if (gSystemSavedataManager.mods[2] & (1 << 3)) {
+        if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_DAMAGE_50P)) {
           AddMissionDamage(PUTITED_DAMAGE / 2);
           CalcPutitedSpikeDamage(&z->body, PUTITED_DAMAGE / 2);
         } else {

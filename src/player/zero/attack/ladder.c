@@ -361,11 +361,11 @@ static void onSaber(struct Zero* z) {
 }
 
 // 0x08031298
-WIP static void handle_saber_input(struct Zero* z) {
+NON_MATCH static void handle_saber_input(struct Zero* z) {
 #if MODERN
   u8 charge;
   struct Zero_b4* b4 = &(z->unk_b4);
-  const zero_input_t input = z->zeroInput;
+  const zero_input_t input = (z->input).val;
 
   if (input & DPAD_RIGHT) {
     (z->s).spr.xflip = TRUE;
@@ -383,8 +383,8 @@ WIP static void handle_saber_input(struct Zero* z) {
   } else {
     charge = GetWeaponCharge(z, TRUE);
   }
-  if (z->ultimateCommand_22c[1] == 3) {
-    bool8 xflip = (z->ultimateCommand_22c[2]) & 1;
+  if ((z->input).ultimateCommand_22c[1] == 3) {
+    bool8 xflip = ((z->input).ultimateCommand_22c[2]) & 1;
     (z->s).spr.xflip = xflip;
     (z->s).spr.oam.xflip = xflip;
     if (xflip) {
@@ -525,11 +525,11 @@ NON_MATCH static void onRod(struct Zero* z) {
 }
 
 // 0x08031578
-WIP static void handle_rod_input(struct Zero* z) {
+NON_MATCH static void handle_rod_input(struct Zero* z) {
 #if MODERN
   u8 charge;
   struct Zero_b4* b4 = &(z->unk_b4);
-  const zero_input_t input = z->zeroInput;
+  const zero_input_t input = (z->input).val;
 
   if (input & DPAD_RIGHT) {
     (z->s).spr.xflip = TRUE;
@@ -550,8 +550,8 @@ WIP static void handle_rod_input(struct Zero* z) {
 
   z->unk_rod_133 = 0;
 
-  if (z->ultimateCommand_224[1] == 3) {
-    bool8 xflip = (z->ultimateCommand_224[2]) & 1;
+  if ((z->input).ultimateCommand_224[1] == 3) {
+    bool8 xflip = ((z->input).ultimateCommand_224[2]) & 1;
     (z->s).spr.xflip = xflip;
     (z->s).spr.oam.xflip = xflip;
     if (xflip) {

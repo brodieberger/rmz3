@@ -15,7 +15,7 @@ const SolidRoutine gSolid44Routine = {
     [ENTITY_INIT] =      Solid44_Init,
     [ENTITY_UPDATE] =    Solid44_Update,
     [ENTITY_DIE] =       Solid44_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -28,10 +28,7 @@ static void Solid44_Init(struct Solid* p) {
     if (attr == 0) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     } else {
       INIT_BODY(p, &sCollisions[0], 0, NULL);
@@ -69,10 +66,7 @@ static void Solid44_Update(struct Solid* p) {
       (p2->s).coord.y = (p->s).coord.y;
     }
     (p->s).coord.x -= PIXEL(8);
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     (p->s).flags |= FLIPABLE;
     SET_SOLID_ROUTINE(p, ENTITY_DIE);
     Solid44_Die(p);

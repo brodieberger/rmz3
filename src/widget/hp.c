@@ -6,30 +6,30 @@
   メニュー画面のHPゲージを構成するメモリ1つ
 */
 
-static void MenuHP_Init(struct Widget *w);
-static void MenuHP_Update(struct Widget *w);
-static void MenuHP_Die(struct Widget *w);
+static void MenuHP_Init(struct Widget* w);
+static void MenuHP_Update(struct Widget* w);
+static void MenuHP_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gMenuHPRoutine = {
-    [ENTITY_INIT] =      MenuHP_Init,
-    [ENTITY_UPDATE] =    MenuHP_Update,
-    [ENTITY_DIE] =       MenuHP_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuHP_Init,
+    [ENTITY_UPDATE] =    (void*)MenuHP_Update,
+    [ENTITY_DIE] =       (void*)MenuHP_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *CreateMenuHPGauge(struct GameState *g, u8 x, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* CreateMenuHPGauge(struct GameState* g, u8 x, u8 r2) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 4);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = x;
     (w->s).work[1] = r2;
   }
@@ -38,7 +38,7 @@ struct Widget *CreateMenuHPGauge(struct GameState *g, u8 x, u8 r2) {
 
 // --------------------------------------------
 
-static void MenuHP_Init(struct Widget *w) {
+static void MenuHP_Init(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
@@ -50,7 +50,7 @@ static void MenuHP_Init(struct Widget *w) {
   MenuHP_Update(w);
 }
 
-NAKED static void MenuHP_Update(struct Widget *w) {
+NAKED static void MenuHP_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -188,7 +188,7 @@ _080E6964: .4byte gVideoRegBuffer+16\n\
  .syntax divided\n");
 }
 
-static void MenuHP_Die(struct Widget *w) {
+static void MenuHP_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }

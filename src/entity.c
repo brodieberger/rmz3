@@ -6,6 +6,7 @@
 #include "overworld.h"
 #include "task.h"
 
+// 0x08016db4
 void ResetEntityEnvironment(void) {
   InitMotionLocation();
   gEntityIDGenerator = 0;
@@ -86,7 +87,7 @@ void RegisterHitboxes(struct EntityHeader* h) {
  * @brief 各EntityHeaderの持つEntityを見ていって、必要な場合は 無敵点滅処理 と ダメージSE を行う
  * @note 0x08016EF4
  */
-WIP void RunDamageEffect(struct EntityHeader* h) {
+NON_MATCH void RunDamageEffect(struct EntityHeader* h) {
 #if MODERN
   struct CollidableEntity* p;
 
@@ -112,7 +113,7 @@ WIP void RunDamageEffect(struct EntityHeader* h) {
 #endif
 }
 
-WIP void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
+NON_MATCH void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
 #if MODERN
   struct Entity* p;
 
@@ -155,7 +156,7 @@ WIP void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
 }
 
 // gWhitePaintFlags を見て白塗りにするか以外は DrawEntity と同じ
-WIP void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* tm) {
+NON_MATCH void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* tm) {
 #if MODERN
   struct Entity* p;
 

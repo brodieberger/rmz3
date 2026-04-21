@@ -125,7 +125,7 @@ _0806841A:
 	strb r2, [r6, #0xe]
 	strb r2, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08068438
 	movs r1, #0x80
@@ -184,7 +184,7 @@ _08068478:
 	cmp r0, #8
 	beq _080684B0
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080684B0
 	ldrb r1, [r4, #0xd]

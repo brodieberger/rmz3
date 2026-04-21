@@ -32,7 +32,7 @@ static void IntroLoop_Minigame(struct Intro* p);
 /*
   Process の1つ
   無限ループとして、 sIntroLoops を実行し続ける
-  ただし、 sIntroLoops の実行後は GameLoop に処理を戻し、別のProcessを挟む
+  ただし、 sIntroLoops の実行後は RunScheduler に処理を戻し、別のProcessを挟む
 */
 void Process_Intro(struct Process* p) {
   // clang-format off
@@ -176,7 +176,7 @@ static void IntroLoop_DemoPlay1(struct Intro* p) {
   switch (p->mode[1]) {
     case 0: {
       gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-      gPaletteManager.unk_408 = NULL;
+      gPaletteManager.post_process = NULL;
       ClearBlinkings();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
@@ -202,7 +202,7 @@ static void IntroLoop_DemoPlay1(struct Intro* p) {
       }
       if (gProcessManager.processes[1].status == PROCESS_DISABLED) {
         gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-        gPaletteManager.unk_408 = NULL;
+        gPaletteManager.post_process = NULL;
         ClearBlinkings();
         gBlendRegBuffer.bldclt = 0;
         gWindowRegBuffer.dispcnt = 0;
@@ -282,7 +282,7 @@ static void IntroLoop_DemoPlay2(struct Intro* p) {
   switch (p->mode[1]) {
     case 0: {
       gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-      gPaletteManager.unk_408 = NULL;
+      gPaletteManager.post_process = NULL;
       ClearBlinkings();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
@@ -314,7 +314,7 @@ static void IntroLoop_DemoPlay2(struct Intro* p) {
       }
       if (gProcessManager.processes[1].status == PROCESS_DISABLED) {
         gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-        gPaletteManager.unk_408 = NULL;
+        gPaletteManager.post_process = NULL;
         ClearBlinkings();
         gBlendRegBuffer.bldclt = 0;
         gWindowRegBuffer.dispcnt = 0;
@@ -375,9 +375,9 @@ static void IntroLoop_TitleScreen(struct Intro* p) {
 
 // 04 00 xx nn
 static void InitTitleAnimation(struct Intro* p) {
-  UnmaskBg0();
+  DisableBG0();
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
+  gPaletteManager.post_process = NULL;
   ClearBlinkings();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
@@ -388,7 +388,7 @@ static void InitTitleAnimation(struct Intro* p) {
   gVideoRegBuffer.dispcnt &= BG_MODE_0;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   p->unk_236 = 0;
-  *(u8*)&p->unk_250 = 0;
+  p->cardEState = 0;
   *(u32*)&p->unk_24c = 0;
   p->mode[2] = 0;
   p->mode[1] = 1;
@@ -402,7 +402,7 @@ static void intro_080ed480(struct Intro* p, u8 step);
 static void FUN_080ed6c4(struct Intro* p);
 static void intro_080ed770(struct Intro* p, u8 r1);
 
-WIP static void updateTitleAnimation(struct Intro* p) {
+NON_MATCH static void updateTitleAnimation(struct Intro* p) {
 #if MODERN
   switch (p->mode[2]) {
     case 0: {
@@ -514,7 +514,7 @@ NAKED static void InitTitleScreen(struct Intro* p) {
 	lsls r2, r2, #3\n\
 	movs r3, #0xf0\n\
 	lsls r3, r3, #2\n\
-	bl MaskBg0\n\
+	bl EnableBG0\n\
 	subs r5, r6, #4\n\
 	ldrh r1, [r5]\n\
 	ldr r0, _080EC32C @ =0x0000FFF8\n\
@@ -676,8 +676,8 @@ static void HandleTitleAction(struct Intro* p) {
   gWindowRegBuffer.winin[2] |= 0xE;
   gBlendRegBuffer.bldclt = 0;
   ClearBlink(0xf0);
-  sio_0800100c();
-  sio_08001778();
+  SioLink_SendDisconnect();
+  EReader_SioAbortSession();
   switch (p->cursor) {
     case 0: {
       SetGameMode(&gGameState, GAMEMODE(MAINGAME, NEW_GAME, 0, 0));
@@ -704,6 +704,7 @@ static void HandleTitleAction(struct Intro* p) {
   }
 }
 
+// eカード通信セッション全体をステートマシンで制御するトップレベル関数
 NAKED static u8 intro_080ecd28(struct Intro* p) { INCCODE("asm/todo/intro_080ecd28.inc"); }
 
 static void loadTitleScreen(struct Intro* _ UNUSED) {
@@ -1502,7 +1503,7 @@ static void IntroLoop_StartMainGame(struct Intro* p) {
   switch (p->mode[1]) {
     case 0: {
       gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-      gPaletteManager.unk_408 = NULL;
+      gPaletteManager.post_process = NULL;
       ClearBlinkings();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
@@ -1584,7 +1585,7 @@ static void IntroLoop_Minigame(struct Intro* p) {
 
 static void FUN_080ed9c0(struct Intro* p) {
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
+  gPaletteManager.post_process = NULL;
   ClearBlinkings();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
@@ -2100,7 +2101,7 @@ static void FUN_080edf04(struct Intro* p) {
   switch (p->mode[2]) {
     case 0: {
       gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-      gPaletteManager.unk_408 = NULL;
+      gPaletteManager.post_process = NULL;
       ClearBlinkings();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;

@@ -15,7 +15,7 @@ CreateWormerRockDrone: @ 0x08076E58
 	lsrs r5, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r6, r3, #0x18
-	ldr r0, _08076ED4 @ =gZakoHeaderPtr
+	ldr r0, _08076ED4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r4, r0, #0
@@ -69,7 +69,7 @@ _08076ECA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08076ED4: .4byte gZakoHeaderPtr
+_08076ED4: .4byte gEnemyHeaderPtr
 _08076ED8: .4byte gEnemyFnTable
 _08076EDC: .4byte gSineTable
 

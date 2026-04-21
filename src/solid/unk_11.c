@@ -5,8 +5,6 @@
 
 void FUN_0800e370(struct Coord* c);
 
-static const struct Collision sCollision;
-
 static void Solid11_Init(struct Solid* p);
 static void Solid11_Update(struct Solid* p);
 static void Solid11_Die(struct Solid* p);
@@ -16,28 +14,34 @@ const SolidRoutine gSolid11Routine = {
     [ENTITY_INIT] =      Solid11_Init,
     [ENTITY_UPDATE] =    Solid11_Update,
     [ENTITY_DIE] =       Solid11_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 static void Solid11_Init(struct Solid* p) {
-  struct Coord* velocity;
+  static const struct Collision sCollision = {
+    kind : DRP,
+    faction : FACTION_ENEMY,
+    LAYER(RECOIL_PUSHABLE),
+    hitzone : 0xFF,
+    remaining : 0,
+    range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(32)},
+  };
 
   const metatile_attr_t attr = GetMetatileAttr((p->s).coord.x, (p->s).coord.y);
   if (attr == 0) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
   INIT_BODY(p, &sCollision, 0, NULL);
-  velocity = &(p->s).d;
-  velocity->x = velocity->y = 0;
+  {
+    struct Coord* d = &(p->s).d;
+    d->x = d->y = 0;
+  }
   (p->s).coord.x += PIXEL(8);
   (p->s).coord.y += PIXEL(8);
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
@@ -47,10 +51,7 @@ static void Solid11_Init(struct Solid* p) {
 static void Solid11_Update(struct Solid* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
     if ((p->body).status & BODY_STATUS_RECOILED) {
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
@@ -88,14 +89,3 @@ static void Solid11_Die(struct Solid* p) {
     }
   }
 }
-
-// --------------------------------------------
-
-static const struct Collision sCollision = {
-  kind : DRP,
-  faction : FACTION_ENEMY,
-  LAYER(RECOIL_PUSHABLE),
-  hitzone : 0xFF,
-  remaining : 0,
-  range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(32)},
-};

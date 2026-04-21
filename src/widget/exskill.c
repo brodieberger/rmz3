@@ -6,37 +6,37 @@
 
 static const motion_t sExIconMotions[12];
 
-static void ExIcon_Init(struct Widget *w);
-static void ExIcon_Update(struct Widget *w);
-static void ExIcon_Die(struct Widget *w);
+static void ExIcon_Init(struct Widget* w);
+static void ExIcon_Update(struct Widget* w);
+static void ExIcon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gExIconRoutine = {
-    [ENTITY_INIT] =      ExIcon_Init,
-    [ENTITY_UPDATE] =    ExIcon_Update,
-    [ENTITY_DIE] =       ExIcon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ExIcon_Init,
+    [ENTITY_UPDATE] =    (void*)ExIcon_Update,
+    [ENTITY_DIE] =       (void*)ExIcon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *CreateExSkillIcon(struct GameState *g, u8 kind) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* CreateExSkillIcon(struct GameState* g, u8 kind) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 6);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = kind;
     (w->s).work[1] = 0;
   }
   return w;
 }
 
-NON_MATCH static void ExIcon_Init(struct Widget *w) {
+NON_MATCH static void ExIcon_Init(struct Widget* w) {
 #if MODERN
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   (w->s).flags |= DISPLAY;
@@ -44,7 +44,7 @@ NON_MATCH static void ExIcon_Init(struct Widget *w) {
   (w->s).spr.xflip = FALSE;
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;
-  (w->s).coord.x = (u32)(KIND & 3) * PIXEL(24) + PIXEL(16) + PIXEL(256);
+  (w->s).coord.x = (u32)(KIND & 3) * PIXEL(24) + PIXEL(16) + PIXEL(256);  // ここの += PIXEL(16)+PIXEL(256) のアセンブリが合わない
   (w->s).coord.y = (u32)(KIND >> 2) * PIXEL(24) + PIXEL(28);
   ExIcon_Update(w);
 #else
@@ -52,10 +52,10 @@ NON_MATCH static void ExIcon_Init(struct Widget *w) {
 #endif
 }
 
-static void ExIcon_Update(struct Widget *w) {
+static void ExIcon_Update(struct Widget* w) {
   u8 n;
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
-  struct Zero *z = g->z2;
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
+  struct Zero* z = g->z2;
 
   if ((&((g->sceneState).menu).exskill)->inactive) {
     (w->s).flags &= ~DISPLAY;
@@ -76,7 +76,7 @@ static void ExIcon_Update(struct Widget *w) {
   UpdateMotionGraphic(&w->s);
 }
 
-static void ExIcon_Die(struct Widget *w) {
+static void ExIcon_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }

@@ -171,7 +171,7 @@ _080141C8:
 	.align 2, 0
 _080141E4: .4byte gVideoRegBuffer+12
 _080141E8: .4byte 0xFFFFFB50
-_080141EC: .4byte 0x0200214E
+_080141EC: .4byte gVideoRegBuffer+0xE
 
 	thumb_func_start FUN_080141f0
 FUN_080141f0: @ 0x080141F0
@@ -273,7 +273,7 @@ _0801428C:
 	.align 2, 0
 _080142A8: .4byte gVideoRegBuffer+12
 _080142AC: .4byte 0xFFFFFB50
-_080142B0: .4byte 0x0200214E
+_080142B0: .4byte gVideoRegBuffer+0xE
 
 	thumb_func_start gelevator_080142b4
 gelevator_080142b4: @ 0x080142B4
@@ -445,7 +445,7 @@ _08014424:
 	cmp r0, #3
 	bne _08014450
 	ldr r0, _0801444C @ =0x00000141
-	bl stopSound
+	bl StopSound
 	movs r0, #0xa1
 	lsls r0, r0, #1
 	bl PlaySound
@@ -460,7 +460,7 @@ _0801444C: .4byte 0x00000141
 _08014450:
 	movs r0, #0xa1
 	lsls r0, r0, #1
-	bl stopSound
+	bl StopSound
 	ldr r0, _08014474 @ =0x00000141
 	bl PlaySound
 	movs r0, #0x80
@@ -512,10 +512,10 @@ _080144AC:
 	bl ShiftMetatile
 	str r5, [r6]
 	ldr r0, _08014554 @ =0x00000141
-	bl stopSound
+	bl StopSound
 	movs r0, #0xa1
 	lsls r0, r0, #1
-	bl stopSound
+	bl StopSound
 	ldr r0, _08014558 @ =0x00000143
 	bl PlaySound
 	movs r0, #0xa2

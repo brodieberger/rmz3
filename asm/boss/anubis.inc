@@ -98,7 +98,7 @@ _08050114:
 	cmp r1, r0
 	beq _0805013E
 	adds r0, r1, #0
-	bl stopSound
+	bl StopSound
 	ldr r0, _08050178 @ =0x0000FFFF
 	strh r0, [r5]
 _0805013E:
@@ -180,7 +180,7 @@ Anubis_Init: @ 0x08050194
 	bl InitNonAffineMotion
 	adds r0, r7, #0
 	bl ResetDynamicMotion
-	ldr r1, _080502F4 @ =0x0836356C
+	ldr r1, _080502F4 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -314,7 +314,7 @@ _080502D6:
 	.align 2, 0
 _080502EC: .4byte gBossFnTable
 _080502F0: .4byte 0x083635B4
-_080502F4: .4byte 0x0836356C
+_080502F4: .4byte sCollisions
 _080502F8: .4byte FUN_080500c8
 _080502FC: .4byte 0x000005B4
 _08050300: .4byte gStaticMotionGraphics
@@ -1215,7 +1215,7 @@ _080509D8:
 	cmp r1, r0
 	beq _08050A0C
 	adds r0, r1, #0
-	bl stopSound
+	bl StopSound
 	ldr r0, _08050A18 @ =0x0000FFFF
 	strh r0, [r5]
 _08050A0C:
@@ -1316,7 +1316,7 @@ _08050A9C:
 	cmp r1, r0
 	beq _08050AD0
 	adds r0, r1, #0
-	bl stopSound
+	bl StopSound
 	ldr r0, _08050AE0 @ =0x0000FFFF
 	strh r0, [r5]
 _08050AD0:
@@ -1359,7 +1359,7 @@ _08050AF4:
 _08050B10:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08050B68 @ =0x0836356C
+	ldr r1, _08050B68 @ =sCollisions
 	bl SetDDP
 	adds r2, r4, #0
 	adds r2, #0xc0
@@ -1401,7 +1401,7 @@ _08050B62:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08050B68: .4byte 0x0836356C
+_08050B68: .4byte sCollisions
 _08050B6C: .4byte 0x0000AF08
 _08050B70: .4byte 0xFFFFFEFF
 

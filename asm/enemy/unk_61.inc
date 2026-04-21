@@ -12,7 +12,7 @@ FUN_080935b4: @ 0x080935B4
 	lsrs r7, r1, #0x18
 	lsls r2, r2, #0x18
 	lsrs r6, r2, #0x18
-	ldr r0, _08093620 @ =gZakoHeaderPtr
+	ldr r0, _08093620 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -59,7 +59,7 @@ _08093618:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08093620: .4byte gZakoHeaderPtr
+_08093620: .4byte gEnemyHeaderPtr
 _08093624: .4byte gEnemyFnTable
 _08093628: .4byte 0xFFFFE400
 

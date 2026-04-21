@@ -7,6 +7,7 @@
 #include "sprite.h"
 #include "text.h"
 #include "weapon.h"
+#include "widget.h"
 #include "zero.h"
 
 void EachMenuLoop_MainMenu(struct GameState* p);
@@ -228,27 +229,27 @@ _080F37E4: .4byte 0x00000401\n\
 
 // --------------------------------------------
 
-struct Elf* CreateElf1(struct Zero* z, u8 breed, u8 availability, u8 _);
-struct Elf* CreateElf5(struct Zero* z, u8 breed, u8 availability, u8 _);
-struct Elf* CreateElf6(struct Zero* z, u8 breed, u8 availability, u8 _);
-struct Elf* CreateElf7(struct Zero* z, u8 breed, u8 availability, u8 _);
-struct Elf* elf_080e4bf4(struct Zero* z, u8 breed, u8 availability, u8 _);
+struct Entity* CreateElf1(struct Zero* z, u8 breed, u8 availability, u8 _);
+struct Entity* CreateElf5(struct Zero* z, u8 breed, u8 availability, u8 _);
+struct Entity* CreateElf6(struct Zero* z, u8 breed, u8 availability, u8 _);
+struct Entity* CreateElf7(struct Zero* z, u8 breed, u8 availability, u8 _);
+struct Entity* elf_080e4bf4(struct Zero* z, u8 breed, u8 availability, u8 _);
 
 // clang-format off
 const MenuElfFunc gExitMenuScripts[13] = {
-    CreateElf0,
-    CreateElf1,
-    CreateNurseBElf, 
-    CreateNurseBElf, 
-    CreateNurseEElf, 
-    CreateElf5, 
-    CreateElf6, 
-    CreateElf7, 
-    CreateFollowerElf, 
-    CreateSeaotterElf, 
-    elf_080e4bf4, 
-    elf_080e4bf4, 
-    CreateBirdElf,
+    (MenuElfFunc)CreateElf0,
+    (MenuElfFunc)CreateElf1,
+    (MenuElfFunc)CreateNurseBElf, 
+    (MenuElfFunc)CreateNurseBElf, 
+    (MenuElfFunc)CreateNurseEElf, 
+    (MenuElfFunc)CreateElf5, 
+    (MenuElfFunc)CreateElf6, 
+    (MenuElfFunc)CreateElf7, 
+    (MenuElfFunc)CreateFollowerElf, 
+    (MenuElfFunc)CreateSeaotterElf, 
+    (MenuElfFunc)elf_080e4bf4, 
+    (MenuElfFunc)elf_080e4bf4, 
+    (MenuElfFunc)CreateBirdElf,
 };
 // clang-format on
 
@@ -893,9 +894,11 @@ void FUN_080f3d44(struct Weapon* w) {
 
 // --------------------------------------------
 
+struct FollowerCyberElf;
+
 void FUN_080e2510(struct Elf* e);
 void FUN_080e2b78(struct Elf* e);
-void MenuExit_FollowerElf(struct Elf* e);
+void MenuExit_FollowerElf(struct FollowerCyberElf* e);
 void MenuExit_SeaOtterElf(struct Elf* e);
 void FUN_080e4b88(struct Elf* e);
 void FUN_080e58bc(struct Elf* e);
@@ -903,22 +906,22 @@ void FUN_080e58bc(struct Elf* e);
 void close_menu_080f3d64(struct Elf* e) {
   // clang-format off
   static const ElfFunc PTR_ARRAY_08386344[13] = {
-    [0]  = NULL, 
-    [1]  = NULL, 
-    [2]  = FUN_080e2510, 
-    [3]  = NULL, 
-    [4]  = FUN_080e2b78, 
-    [5]  = NULL, 
-    [6]  = NULL, 
-    [7]  = NULL, 
-    [8]  = MenuExit_FollowerElf, 
-    [9]  = MenuExit_SeaOtterElf, 
-    [10] = FUN_080e4b88, 
-    [11] = NULL, 
-    [12] = FUN_080e58bc,
-  };
+    [0]  = (ElfFunc)NULL, 
+    [1]  = (ElfFunc)NULL, 
+    [2]  = (ElfFunc)FUN_080e2510, 
+    [3]  = (ElfFunc)NULL, 
+    [4]  = (ElfFunc)FUN_080e2b78, 
+    [5]  = (ElfFunc)NULL, 
+    [6]  = (ElfFunc)NULL, 
+    [7]  = (ElfFunc)NULL, 
+    [8]  = (ElfFunc)MenuExit_FollowerElf, 
+    [9]  = (ElfFunc)MenuExit_SeaOtterElf, 
+    [10] = (ElfFunc)FUN_080e4b88, 
+    [11] = (ElfFunc)NULL, 
+    [12] = (ElfFunc)FUN_080e58bc,
+  }; // 0x08386344
   // clang-format on
   if (PTR_ARRAY_08386344[(e->s).id] != NULL) {
-    (PTR_ARRAY_08386344[(e->s).id])(e);
+    (PTR_ARRAY_08386344[(e->s).id])((void*)e);
   }
 }

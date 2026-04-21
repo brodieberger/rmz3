@@ -220,7 +220,7 @@ _080DEAC6:
 	.align 2, 0
 _080DEACC: .4byte gOverworld
 _080DEAD0: .4byte 0x0002D024
-_080DEAD4: .4byte 0x083717C0
+_080DEAD4: .4byte sSize
 _080DEAD8: .4byte 0x00002001
 _080DEADC: .4byte gStageRun+232
 _080DEAE0: .4byte 0xFFFF8000

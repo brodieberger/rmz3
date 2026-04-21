@@ -79,9 +79,9 @@
 		src/drop.o (.text);
 		src/element.o (.text);
 
-		src/zero.o (.text);
+		src/player.o (.text);
 		src/input_log.o (.text);
-		src/player/zero.o (.text);
+		src/player/zero/zero.o (.text);
       src/player/zero/input/input.o (.text);
       src/player/zero/update.o (.text);
       src/player/zero/attack/ground.o (.text);
@@ -95,12 +95,12 @@
         src/player/zero/input/util.o (.text);
         src/player/zero/attack/util.o (.text);
 
-		src/player/fefnir.o (.text);
-		src/player/phantom.o (.text);
-		src/player/harpuia.o (.text);
-		src/player/copy_x.o (.text);
-		src/player/leviathan.o (.text);
-		src/player/zero_minigame.o (.text);
+		src/player/minigame/fefnir.o (.text);
+		src/player/minigame/phantom.o (.text);
+		src/player/minigame/harpuia.o (.text);
+		src/player/minigame/copy_x.o (.text);
+		src/player/minigame/leviathan.o (.text);
+		src/player/minigame/zero.o (.text);
 
 		src/weapon/weapon.o (.text);
       src/weapon/buster.o (.text);
@@ -237,11 +237,41 @@
       src/projectile/blazin_tail.o (.text);
       src/projectile/ear_shot.o (.text);
       src/projectile/unk_12.o (.text);
+      src/projectile/unk_13.o (.text);
+      src/projectile/unk_14.o (.text);
+      src/projectile/hellbat.o (.text);
+      src/projectile/unk_16.o (.text);
+      src/projectile/unk_17.o (.text);
+      src/projectile/unk_18.o (.text);
+      src/projectile/tretista.o (.text);
+      src/projectile/unk_20.o (.text);
+      src/projectile/pantheon_aqua_mod.o (.text);
+      src/projectile/cubit.o (.text);
+      src/projectile/locomo_if.o (.text);
+      src/projectile/copy_x.o (.text);
+      src/projectile/unk_25.o (.text);
+      src/projectile/unk_26.o (.text);
+      src/projectile/unk_27.o (.text);
+      src/projectile/unk_28.o (.text);
+      src/projectile/unk_29.o (.text);
+      src/projectile/unk_30.o (.text);
+      src/projectile/unk_31.o (.text);
+      src/projectile/unk_32.o (.text);
+      src/projectile/omega_gold.o (.text);
+      src/projectile/unk_34.o (.text);
+      src/projectile/pantheon_bomber.o (.text);
+      src/projectile/unk_36.o (.text);
+      src/projectile/unk_37.o (.text);
       src/projectile/omega_zero.o (.text);
       src/projectile/claveker_yellow_balls.o (.text);
       src/projectile/phantom.o (.text);
       src/projectile/omega_zx.o (.text);
       src/projectile/unk_42.o (.text);
+      src/projectile/unk_43.o (.text);
+      src/projectile/unk_44.o (.text);
+      src/projectile/unk_45.o (.text);
+      src/projectile/unk_46.o (.text);
+      src/projectile/childre_ship.o (.text);
 
 		src/vfx.o (.text);
       src/vfx/smoke.o (.text);
@@ -276,8 +306,8 @@
       src/vfx/unk_31.o (.text);
       src/vfx/unk_32.o (.text);
       src/vfx/unk_33.o (.text);
-      src/vfx/unk_34.o (.text);
-      src/vfx/unk_35.o (.text);
+      src/vfx/ballchain.o (.text);
+      src/vfx/wormer_dust_cloud.o (.text);
       src/vfx/unk_36.o (.text);
       src/vfx/unk_37.o (.text);
       src/vfx/unk_38.o (.text);
@@ -287,7 +317,7 @@
       src/vfx/exlife_indicator.o (.text);
       src/vfx/unk_43.o (.text);
       src/vfx/unk_44.o (.text);
-      src/vfx/unk_45.o (.text);
+      src/vfx/particle_iceball.o (.text);
       src/vfx/unk_46.o (.text);
       src/vfx/unk_47.o (.text);
       src/vfx/elf_particle.o (.text);
@@ -296,7 +326,7 @@
       src/vfx/unk_51.o (.text);
       src/vfx/unk_52.o (.text);
       src/vfx/unk_53.o (.text);
-      src/vfx/unk_54.o (.text);
+      src/vfx/particle_icicle.o (.text);
       src/vfx/unk_55.o (.text);
       src/vfx/unk_56.o (.text);
       src/vfx/unk_57.o (.text);
@@ -346,13 +376,13 @@
       src/solid/locomoif_platform.o (.text);
       src/solid/glacierle_arm.o (.text);
       src/solid/unk_16.o (.text);
-      src/solid/unk_17.o (.text);
+      src/solid/sub_arcadia_platform.o (.text);
       src/solid/snowboard.o (.text);
       src/solid/base_elevator.o (.text);
       src/solid/door_2d_gray_v.o (.text);
       src/solid/actor.o (.text);
       src/solid/door_2d_gray_h.o (.text);
-      src/solid/unk_23.o (.text);
+      src/solid/turtloid_s.o (.text);
       src/solid/phantom_teleporter.o (.text);
       src/solid/unk_25.o (.text);
       src/solid/ice_block.o (.text);
@@ -453,3 +483,10 @@
         src/game/menu/exskill.o (.text);
       src/game/analysis.o (.text);
       src/game/minigame.o (.text);
+        src/game/minigame/zero.o (.text);
+        src/game/minigame/ciel.o (.text);
+        src/game/minigame/copy_x.o (.text);
+        src/game/minigame/harpuia.o (.text);
+        src/game/minigame/fefnir.o (.text);
+        src/game/minigame/leviathan.o (.text);
+        src/game/minigame/phantom.o (.text);

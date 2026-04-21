@@ -1,8 +1,6 @@
 #include "gfx.h"
 #include "global.h"
 
-// I'll replace this file by graphics/elf/header.json in the future
-
 #define INCELFGFX(base, name)         \
   __asm__(                            \
       ".section .rodata\n"            \

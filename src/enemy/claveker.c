@@ -11,16 +11,16 @@ const EnemyRoutine gClavekerRoutine = {
     [ENTITY_INIT] =      Claveker_Init,
     [ENTITY_UPDATE] =    Claveker_Update,
     [ENTITY_DIE] =       Claveker_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 struct Enemy* CreateClaveker(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CLAVEKER);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CLAVEKER);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;

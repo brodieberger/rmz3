@@ -22,11 +22,11 @@ FUN_0800e308: @ 0x0800E308
 	subs r2, #0xf8
 	asrs r2, r2, #1
 	lsls r2, r2, #3
-	ldr r0, _0800E330 @ =0x0833DFE2
+	ldr r0, _0800E330 @ =MetatilePatch_0833dfe2
 	b _0800E342
 	.align 2, 0
 _0800E32C: .4byte 0xFFFFF000
-_0800E330: .4byte 0x0833DFE2
+_0800E330: .4byte MetatilePatch_0833dfe2
 _0800E334:
 	cmp r3, #0x38
 	ble _0800E354
@@ -34,7 +34,7 @@ _0800E334:
 	subs r2, #0xf6
 	asrs r2, r2, #1
 	lsls r2, r2, #3
-	ldr r0, _0800E350 @ =0x0833E032
+	ldr r0, _0800E350 @ =sMetatilePatch2x1_0833e032
 _0800E342:
 	adds r2, r2, r0
 	adds r0, r1, #0
@@ -42,13 +42,13 @@ _0800E342:
 	bl PatchMetatileMap
 	b _0800E368
 	.align 2, 0
-_0800E350: .4byte 0x0833E032
+_0800E350: .4byte sMetatilePatch2x1_0833e032
 _0800E354:
 	adds r2, r1, #0
 	subs r2, #0xf2
 	asrs r2, r2, #1
 	lsls r2, r2, #3
-	ldr r0, _0800E36C @ =0x0833DFFA
+	ldr r0, _0800E36C @ =sMetatilePatch2x1_0833dffa
 	adds r2, r2, r0
 	adds r0, r1, #0
 	adds r1, r3, #0
@@ -57,5 +57,5 @@ _0800E368:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800E36C: .4byte 0x0833DFFA
+_0800E36C: .4byte sMetatilePatch2x1_0833dffa
 

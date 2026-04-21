@@ -11,35 +11,35 @@ work[0]:
   3:
 */
 
-static void DiskModalBorder_Init(struct Widget *w);
-static void DiskModalBorder_Update(struct Widget *w);
-static void DiskModalBorder_Die(struct Widget *w);
+static void DiskModalBorder_Init(struct Widget* w);
+static void DiskModalBorder_Update(struct Widget* w);
+static void DiskModalBorder_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gDiskModalBorderRoutine = {
-    [ENTITY_INIT] =      DiskModalBorder_Init,
-    [ENTITY_UPDATE] =    DiskModalBorder_Update,
-    [ENTITY_DIE] =       DiskModalBorder_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)DiskModalBorder_Init,
+    [ENTITY_UPDATE] =    (void*)DiskModalBorder_Update,
+    [ENTITY_DIE] =       (void*)DiskModalBorder_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Widget *createSecretDiskModalBorder(struct GameState *g, u8 n) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* createSecretDiskModalBorder(struct GameState* g, u8 n) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 12);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = n;
     (w->s).work[1] = 0;
   }
   return w;
 }
 
-NAKED static void DiskModalBorder_Init(struct Widget *w) {
+NAKED static void DiskModalBorder_Init(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -133,7 +133,7 @@ _080E82F4:\n\
  .syntax divided\n");
 }
 
-NAKED static void DiskModalBorder_Update(struct Widget *w) {
+NAKED static void DiskModalBorder_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -236,4 +236,4 @@ _080E83B2:\n\
  .syntax divided\n");
 }
 
-static void DiskModalBorder_Die(struct Widget *w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
+static void DiskModalBorder_Die(struct Widget* w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }

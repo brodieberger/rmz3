@@ -23,7 +23,7 @@ const SolidRoutine gSolid10Routine = {
     [ENTITY_INIT] =      Solid10_Init,
     [ENTITY_UPDATE] =    Solid10_Update,
     [ENTITY_DIE] =       Solid10_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -34,10 +34,7 @@ static void Solid10_Init(struct Solid* p) {
   if (GetMetatileAttr((p->s).coord.x, (p->s).coord.y) == 0) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }

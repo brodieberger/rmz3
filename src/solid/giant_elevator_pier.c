@@ -13,7 +13,7 @@ const SolidRoutine gGiantElevatorPierRoutine = {
     [ENTITY_INIT] =      Solid45_Init,
     [ENTITY_UPDATE] =    Solid45_Update,
     [ENTITY_DIE] =       Solid45_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

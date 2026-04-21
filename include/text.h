@@ -37,7 +37,7 @@ struct TextPrinter {
   struct CharTile* cur;   // 次に描画する文字
   struct CharTile* used;  // 一度curとして使われたもの
   struct CharTile* freelist;
-  char_t* inserted;  // 文字コードF9で挿入されるテキスト
+  char_t* variable;  // 文字コードF9で挿入されるテキスト
   u8 startX;
   u8 startY;
   u8 endX;
@@ -51,9 +51,6 @@ extern char_t gTerminateCharCode;
 extern const u8 gFontBold[][TILE_SIZE_4BPP];
 extern const struct PlttData gFontPalette[96];
 
-extern const u16* const gTextOffsetTable[20];
-extern const char_t* const gTextTable[20];
-
 void LoadAsciiBold(void);
 void ResetCharTiles(void);
 void LoadKatakanaBold(void);
@@ -65,7 +62,7 @@ void PrintString(const char_t* s, u32 x, u32 y);
 s16 getStringLength(char_t* s);
 void text_080e9b40(const char_t* s, u32 x, u32 y, u16 count);
 void PrintRows(char_t* s, u32 x, u32 y, u16 count, u16 r4);
-void PrintUnicodeString(u8* s, u32 x, u32 y);
+void PrintUnicodeString(const char_t* s, u32 x8, u32 y8);
 char_t* SkipString(char_t* s, s32 skipBytesize);
 
 #endif  // GUARD_RMZ3_TEXT_H

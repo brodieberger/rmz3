@@ -9,7 +9,7 @@ static s32 printStringWithLen(u8 startX, u8 startY, char_t* s, u16 len);
 
 void InitTextPrinter(u32* bg0) {
   gTextPrinter.bg0 = (tile_id_t*)bg0;
-  gTextPrinter.inserted = &gTerminateCharCode;
+  gTextPrinter.variable = &gTerminateCharCode;
   gTextPrinter.startX = 0;
   gTextPrinter.endX = 30;
   gTextPrinter.startY = 0;
@@ -33,7 +33,7 @@ void LoadAsciiBold(void) {
   ResetCharTiles();
 }
 
-WIP void ResetCharTiles(void) {
+NON_MATCH void ResetCharTiles(void) {
 #if MODERN
   struct CharTile* tile;
   gTextPrinter.freelist = NULL;
@@ -345,8 +345,8 @@ _080E9A70: .4byte gFontBig+32\n\
 s16 getStringLength(char_t* s) {
   s16 len = 0;
   for (; *s < CHAR_NEXT; s++) {
-    if (*s == CHAR_INSERT) {  // Insert
-      len += getStringLength(gTextPrinter.inserted);
+    if (*s == CHAR_VARIABLE) {  // Insert
+      len += getStringLength(gTextPrinter.variable);
     }
     if (*s < 0xF0) {
       len++;
@@ -404,8 +404,8 @@ void PrintRows(char_t* s, u32 x, u32 y, u16 rowStart, u16 rowEnd) {
 
       len = 0;
       for (; (line < rowEnd) && (*s < CHAR_NEXT); s++) {
-        if (*s == CHAR_INSERT) {
-          len += getStringLength(gTextPrinter.inserted);
+        if (*s == CHAR_VARIABLE) {
+          len += getStringLength(gTextPrinter.variable);
         }
         if (*s < CHAR_KANJI) {
           len++;
@@ -430,38 +430,33 @@ char_t* SkipString(char_t* s, s32 skipBytesize) {
       s++;
       skipBytesize--;
 
-    } else if (*s < CHAR_INSERT) {
+    } else if (*s < CHAR_VARIABLE) {
       s++;
     }
   }
   return s;
 }
 
-// x, y is 8x8 tile unit
-WIP void PrintUnicodeString(u8* s, u32 x, u32 y) {
-#if MODERN
+void PrintUnicodeString(const char_t* s, u32 x8, u32 y8) {
   tile_id_t* dst = gTextPrinter.bg0;
-  if (y < 32) {
-    dst = &dst[x + (y * 32)];
+  if (y8 < 32) {
+    dst = &dst[x8 + (y8 * 32)];
     while (*s != 0) {
-      if (x > 31) return;
+      if (x8 > 31) return;
+
       if (*s < UNICODE_A) {
-        *dst = 928 + *s;
+        *dst++ = 928 + *s++;
       } else if (*s < UNICODE_NBSP) {
-        *dst = 896 + *s;
+        *dst++ = 896 + *s++;
       } else {
-        *dst = 736 + *s;
+        *dst++ = 736 + *s++;
       }
-      s++;
-      dst++;
     }
   }
-#else
-  INCCODE("asm/wip/PrintUnicodeString.inc");
-#endif
 }
 
-NAKED void minigame_str_080e9d04(s32 r0, u16 r1, u16 r2) { INCCODE("asm/todo/minigame_str_080e9d04.inc"); };
+// 0x080e9d04
+NAKED void PrintMinigameNumber(s32 score, u16 x, u16 y) { INCCODE("asm/todo/PrintMinigameNumber.inc"); };
 
 #if MODERN == 0
 NAKED void unused_080e9d94(s32 r0, u16 r1, u16 r2) { INCCODE("asm/unused/unused_080e9d94.inc"); };

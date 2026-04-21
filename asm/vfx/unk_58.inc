@@ -867,7 +867,7 @@ _080C2232:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080C2266
-	ldr r0, _080C2290 @ =0x0202F360
+	ldr r0, _080C2290 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -911,7 +911,7 @@ _080C2288:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C2290: .4byte 0x0202F360
+_080C2290: .4byte gWhitePaintFlags
 
 	thumb_func_start FUN_080c2294
 FUN_080c2294: @ 0x080C2294
@@ -990,7 +990,7 @@ _080C2316:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080C234A
-	ldr r0, _080C2360 @ =0x0202F360
+	ldr r0, _080C2360 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -1023,7 +1023,7 @@ _080C2358:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C2360: .4byte 0x0202F360
+_080C2360: .4byte gWhitePaintFlags
 
 	thumb_func_start FUN_080c2364
 FUN_080c2364: @ 0x080C2364

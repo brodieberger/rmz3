@@ -109,7 +109,7 @@ _0808A99C:
 	movs r0, #0x14
 	strb r0, [r1]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808AA5C
 	movs r1, #0xdc
@@ -146,7 +146,7 @@ _0808AA00:
 	movs r0, #0x16
 	strb r0, [r1]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808AA5C
 	ldrb r0, [r6, #0xb]
@@ -234,7 +234,7 @@ _0808AAD4:
 	cmp r0, #0
 	beq _0808AB82
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808AB82
 	ldr r1, [r4, #0x28]
@@ -311,7 +311,7 @@ _0808AB62:
 	bl UpdateMotionGraphic
 _0808AB82:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _0808AC28
 	ldrb r1, [r4, #0x10]
@@ -953,7 +953,7 @@ _0808B07A:
 	cmp r0, #0
 	bne _0808B0E4
 _0808B090:
-	ldr r0, _0808B0D4 @ =gZakoHeaderPtr
+	ldr r0, _0808B0D4 @ =gEnemyHeaderPtr
 	ldr r1, [r0]
 	movs r2, #8
 	ldrsh r0, [r1, r2]
@@ -988,7 +988,7 @@ _0808B0C6:
 	b _0808B0FA
 	.align 2, 0
 _0808B0D0: .4byte gSineTable
-_0808B0D4: .4byte gZakoHeaderPtr
+_0808B0D4: .4byte gEnemyHeaderPtr
 _0808B0D8: .4byte gCurStory
 _0808B0DC: .4byte gSystemSavedataManager
 _0808B0E0: .4byte 0x000032DA

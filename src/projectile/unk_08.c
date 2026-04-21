@@ -64,10 +64,7 @@ static void Projectile8_Update(struct Projectile* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
@@ -85,10 +82,7 @@ static void Projectile8_Update(struct Projectile* p) {
     }
   } else {
     if ((p->s).motion.cmdIdx == 2) {
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
     }
     if ((p->s).motion.state == MOTION_END) {
       SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
@@ -101,10 +95,7 @@ static void Projectile8_Die(struct Projectile* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }

@@ -3,6 +3,32 @@
 
 // クロールシールドの電気びりびり
 
+// 0x08361724
+static const struct Collision sCollisions[2] = {
+    {
+      kind : DDP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 4,
+      element : ELEMENT_THUNDER,
+      nature : ELEMENT_ENCHANTABLE,
+      comboLv : 1,
+      remaining : 1,
+      layer : 0x00000004,
+      range : {PIXEL(0), PIXEL(0), PIXEL(18), PIXEL(18)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 0,
+      LAYER(0xFFFFFFFF),
+      hitzone : 0xFF,
+      remaining : 0,
+      range : {PIXEL(0), PIXEL(0), PIXEL(18), PIXEL(18)},
+    },
+};
+
 void ElecShieldSweep_Init(struct Weapon* w);
 void ElecShieldSweep_Update(struct Weapon* w);
 void ElecShieldSweep_Die(struct Weapon* w);
@@ -22,10 +48,7 @@ void MenuExit_ShieldSweepElec(struct Weapon* w) {
   if (((&z->unk_b4)->status).element != ELEMENT_THUNDER || (z->unk_136 & (1 << 3))) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }

@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/omega_gold.inc");
+
 void OmegaGoldProjectile_Init(struct Projectile* p);
 void OmegaGoldProjectile_Update(struct Projectile* p);
 void OmegaGoldProjectile_Die(struct Projectile* p);

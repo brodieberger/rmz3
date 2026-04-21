@@ -2,30 +2,30 @@
 #include "global.h"
 #include "widget.h"
 
-static void MenuCursor_Init(struct Widget *w);
-static void MenuCursor_Update(struct Widget *w);
-static void MenuCursor_Die(struct Widget *w);
+static void MenuCursor_Init(struct Widget* w);
+static void MenuCursor_Update(struct Widget* w);
+static void MenuCursor_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gMenuCursorRoutine = {
-    [ENTITY_INIT] =      MenuCursor_Init,
-    [ENTITY_UPDATE] =    MenuCursor_Update,
-    [ENTITY_DIE] =       MenuCursor_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuCursor_Init,
+    [ENTITY_UPDATE] =    (void*)MenuCursor_Update,
+    [ENTITY_DIE] =       (void*)MenuCursor_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *createMenuCursor(struct GameState *g, u8 kind) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* createMenuCursor(struct GameState* g, u8 kind) {
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 8);
     (w->s).tileNum = 0;
     (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = kind;
     (w->s).work[1] = 0;
   }
@@ -34,14 +34,14 @@ struct Widget *createMenuCursor(struct GameState *g, u8 kind) {
 
 // --------------------------------------------
 
-static void FUN_080e76b4(struct Widget *w);
-static void FUN_080e76dc(struct Widget *w);
-static void FUN_080e7704(struct Widget *w);
-static void FUN_080e7720(struct Widget *w);
-static void FUN_080e7748(struct Widget *w);
-static void FUN_080e7770(struct Widget *w);
+static void FUN_080e76b4(struct Widget* w);
+static void FUN_080e76dc(struct Widget* w);
+static void FUN_080e7704(struct Widget* w);
+static void FUN_080e7720(struct Widget* w);
+static void FUN_080e7748(struct Widget* w);
+static void FUN_080e7770(struct Widget* w);
 
-static void MenuCursor_Init(struct Widget *w) {
+static void MenuCursor_Init(struct Widget* w) {
   // clang-format off
   static const WidgetFunc sInitializers[6] = {
       FUN_080e76b4,
@@ -65,12 +65,12 @@ static void MenuCursor_Init(struct Widget *w) {
 
 // --------------------------------------------
 
-static void FUN_080e778c(struct Widget *w);
-static void FUN_080e77c0(struct Widget *w);
-static void FUN_080e77f4(struct Widget *w);
-static void FUN_080e786c(struct Widget *w);
-static void FUN_080e789c(struct Widget *w);
-static void FUN_080e78cc(struct Widget *w);
+static void FUN_080e778c(struct Widget* w);
+static void FUN_080e77c0(struct Widget* w);
+static void FUN_080e77f4(struct Widget* w);
+static void FUN_080e786c(struct Widget* w);
+static void FUN_080e789c(struct Widget* w);
+static void FUN_080e78cc(struct Widget* w);
 
 // clang-format off
 static const WidgetFunc sUpdates[6] = {
@@ -83,7 +83,7 @@ static const WidgetFunc sUpdates[6] = {
 };
 // clang-format on
 
-NAKED static void MenuCursor_Update(struct Widget *w) {
+NAKED static void MenuCursor_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -154,52 +154,52 @@ _080E7698: .4byte sUpdates\n\
 
 // --------------------------------------------
 
-static void MenuCursor_Die(struct Widget *w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
+static void MenuCursor_Die(struct Widget* w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
 
 // --------------------------------------------
 
-static void FUN_080e76b4(struct Widget *w) {
+static void FUN_080e76b4(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0A));
   (w->s).coord.x = PIXEL(356);
   (w->s).coord.y = PIXEL(6);
 }
 
-static void FUN_080e76dc(struct Widget *w) {
+static void FUN_080e76dc(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0C));
   (w->s).coord.x = PIXEL(356);
   (w->s).coord.y = PIXEL(122);
 }
 
-static void FUN_080e7704(struct Widget *w) {
+static void FUN_080e7704(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0E));
 }
 
-static void FUN_080e7720(struct Widget *w) {
+static void FUN_080e7720(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0A));
   (w->s).coord.x = PIXEL(114);
   (w->s).coord.y = PIXEL(14);
 }
 
-static void FUN_080e7748(struct Widget *w) {
+static void FUN_080e7748(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0C));
   (w->s).coord.x = PIXEL(114);
   (w->s).coord.y = PIXEL(128);
 }
 
-static void FUN_080e7770(struct Widget *w) {
+static void FUN_080e7770(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   SetMotion(&w->s, MOTION(SM083_ELF_MENU_ICON, 0x0E));
 }
 
 // --------------------------------------------
 
-static void FUN_080e778c(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e778c(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if ((g->mode[3] == 3) && ((&((g->sceneState).menu).elf)->unk_f & (1 << 0))) {
     (w->s).flags |= DISPLAY;
   } else {
@@ -207,8 +207,8 @@ static void FUN_080e778c(struct Widget *w) {
   }
 }
 
-static void FUN_080e77c0(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e77c0(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if ((g->mode[3] == 3) && ((&((g->sceneState).menu).elf)->unk_f & (1 << 1))) {
     (w->s).flags |= DISPLAY;
   } else {
@@ -216,8 +216,8 @@ static void FUN_080e77c0(struct Widget *w) {
   }
 }
 
-static void FUN_080e77f4(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e77f4(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if (g->mode[3] == 2) {
     (w->s).flags |= DISPLAY;
     (w->s).coord.x = PIXEL(10);
@@ -234,8 +234,8 @@ static void FUN_080e77f4(struct Widget *w) {
   (w->s).coord.x += PIXEL(256);
 }
 
-static void FUN_080e786c(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e786c(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if ((g->mode[2] == 0) && (&(g->sceneState).menu)->unk_0b != 0) {
     (w->s).flags |= DISPLAY;
   } else {
@@ -243,8 +243,8 @@ static void FUN_080e786c(struct Widget *w) {
   }
 }
 
-static void FUN_080e789c(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e789c(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if ((g->mode[2] == 0) && (&(g->sceneState).menu)->unk_0b != 30) {
     (w->s).flags |= DISPLAY;
   } else {
@@ -252,8 +252,8 @@ static void FUN_080e789c(struct Widget *w) {
   }
 }
 
-static void FUN_080e78cc(struct Widget *w) {
-  struct GameState *g = (struct GameState *)(w->s).unk_28;
+static void FUN_080e78cc(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
   if ((&(g->sceneState).menu)->unk_4b != 2) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;

@@ -3,7 +3,7 @@
 #include "global.h"
 #include "overworld.h"
 
-static const struct Collision sCollisions[29];
+static const struct Collision sCollisions[];
 static const struct Coord sExplosionCoords[2];
 
 void hellbat_0804cbe4(struct Boss* p);
@@ -14,10 +14,10 @@ static void Hellbat_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gHellbatRoutine = {
-    [ENTITY_INIT] =      Hellbat_Init,
-    [ENTITY_UPDATE] =    Hellbat_Update,
-    [ENTITY_DIE] =       Hellbat_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Hellbat_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Hellbat_Update,
+    [ENTITY_DIE] =       (BossFunc)Hellbat_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -791,6 +791,7 @@ static bool32 nop_0804b6b4(struct Boss* p) {
 
 INCASM("asm/boss/hellbat.inc");
 
+// 0x08362f50
 static const struct Collision sCollisions[29] = {
     [0] = {
       kind : DRP,

@@ -1,10 +1,8 @@
 #ifndef GUARD_RMZ3_MENU_H
 #define GUARD_RMZ3_MENU_H
 
-#include "common.h"
-#include "cyberelf.h"
-#include "entity.h"
 #include "gba/gba.h"
+#include "types.h"
 
 /*
   GameState.mode:
@@ -13,6 +11,10 @@
     idx=2: スライド中なら2
     idx=3: メインメニューなら選択しているコンポーネント メイン=1, サブ=2, ..., フット=6
 */
+
+struct Elf;
+struct Widget;
+struct Zero;
 
 struct GameState;
 typedef void (*MenuLoopFunc)(struct GameState*);
@@ -63,7 +65,7 @@ struct MenuState {
   u8 unk_1c[8];
 
   struct ExSkillMenuState exskill;
-  struct KeyConfigMenuState kc;
+  struct KeyConfigMenuState kc;  // 0x2c..
   struct ElfMenuState elf;
   u8 unk_40[8];
   cyberelf_t satelites[2];
@@ -74,11 +76,10 @@ struct MenuState {
   u8 unk_4e[178];
 };
 
-void InitWidgetHeader(struct EntityHeader* h, struct Widget* p, s16 len);
 void MainLoop_Menu(struct GameState* p);
-
 bool8 TrySlideMenu(struct GameState* g);
 
+struct BgMapHeader;
 void CopyBgMap(u16* dst, struct BgMapHeader* src, u8 x, u8 y);
 
 #endif  // GUARD_RMZ3_MENU_H

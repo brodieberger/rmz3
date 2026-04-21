@@ -3,38 +3,64 @@
 #include "solid.h"
 #include "vfx.h"
 
+struct IcebonIceObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  s32 y;
+  u8 unk_04[12];
+};
+static_assert(sizeof(struct IcebonIceObject) == sizeof(struct Solid));
+
 static const u8 sInitModes[2];
 static const struct Collision sCollisions[5];
 static const motion_t sMotions[4];
 
-static void IcebonIce_Init(struct Solid* p);
+static void IcebonIce_Init(struct IcebonIceObject* p);
 static void IcebonIce_Update(struct Solid* p);
-static void IcebonIce_Die(struct Solid* p);
+static void IcebonIce_Die(Object* p);
 
 // clang-format off
 const SolidRoutine gIcebonIceRoutine = {
-    [ENTITY_INIT] =      IcebonIce_Init,
-    [ENTITY_UPDATE] =    IcebonIce_Update,
-    [ENTITY_DIE] =       IcebonIce_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_INIT] =      (SolidFunc)IcebonIce_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)IcebonIce_Update,
+    [ENTITY_DIE] =       (SolidFunc)IcebonIce_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
+
+void icebon_080ca550(struct Entity* e, u8 n) {
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 30;
+    INIT_SOLID_ROUTINE(p, SOLID_ICEBON_ICE);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->coord.x = (e->coord).x;
+    p->coord.y = (e->coord).y - PIXEL(21);
+    p->work[0] = n;
+    p->unk_28 = e;
+  }
+}
+
+// --------------------------------------------
 
 static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
   // nop
   return;
 }
 
-static void IcebonIce_Init(struct Solid* p) {
+static void IcebonIce_Init(struct IcebonIceObject* p) {
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = sInitModes[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
   INIT_BODY(p, &sCollisions[0], 8, onCollision);
-  (p->props.icebonIce).y = (p->s).coord.y;
-  IcebonIce_Update(p);
+  p->y = (p->s).coord.y;
+  IcebonIce_Update((void*)p);
 }
 
 // --------------------------------------------
@@ -76,7 +102,7 @@ static void IcebonIce_Update(struct Solid* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
     (p->s).flags2 &= ~ENTITY_HAZARD;
     SET_SOLID_ROUTINE(p, ENTITY_DIE);
-    IcebonIce_Die(p);
+    IcebonIce_Die((void*)p);
     return;
   }
 
@@ -86,14 +112,11 @@ static void IcebonIce_Update(struct Solid* p) {
 
 // --------------------------------------------
 
-static void IcebonIce_Die(struct Solid* p) {
+static void IcebonIce_Die(Object* p) {
   struct Coord c;
 
   PlaySound(SE_ICE_BREAK);
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
 
   c.x = (p->s).coord.x;

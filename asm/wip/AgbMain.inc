@@ -29,7 +29,7 @@
 	movs r3, #0xf0
 	lsls r3, r3, #2
 	adds r0, r4, #0
-	bl MaskBg0
+	bl EnableBG0
 	adds r0, r4, #0
 	bl InitTextPrinter
 	ldr r1, _08001854 @ =gPaletteManager
@@ -74,7 +74,7 @@
 	ldr r1, _08001878 @ =Process_System
 	movs r0, #2
 	bl ResetProcess
-	bl GameLoop
+	bl RunScheduler
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

@@ -301,7 +301,7 @@ _08015638: .4byte 0x08704540
 _0801563C: .4byte 0x0870454C
 _08015640: .4byte 0x08704554
 _08015644: .4byte 0x08704560
-_08015648: .4byte 0x0200214E
+_08015648: .4byte gVideoRegBuffer+0xE
 _0801564C: .4byte _08015650
 _08015650: @ jump table
 	.4byte _08015664 @ case 0
@@ -697,7 +697,7 @@ _08015976:
 	adds r1, r5, r3
 	ldr r0, [r2, #0x58]
 	str r0, [r1]
-	ldr r0, _08015A20 @ =0x0202F360
+	ldr r0, _08015A20 @ =gWhitePaintFlags
 	ldrb r1, [r2, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -762,7 +762,7 @@ _08015A10: .4byte gOverworld
 _08015A14: .4byte 0x0002D025
 _08015A18: .4byte 0x0002D034
 _08015A1C: .4byte 0x0002D038
-_08015A20: .4byte 0x0202F360
+_08015A20: .4byte gWhitePaintFlags
 _08015A24: .4byte gPaletteManager
 _08015A28: .4byte 0x00000404
 _08015A2C: .4byte 0x00000406
@@ -816,7 +816,7 @@ _08015A7A:
 	adds r1, r5, r4
 	ldr r0, [r2, #4]
 	str r0, [r1]
-	ldr r0, _08015B90 @ =0x0202F360
+	ldr r0, _08015B90 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -934,7 +934,7 @@ _08015B80: .4byte gBgMapOffsets
 _08015B84: .4byte 0x0002D040
 _08015B88: .4byte 0x0002D04C
 _08015B8C: .4byte 0x0002D044
-_08015B90: .4byte 0x0202F360
+_08015B90: .4byte gWhitePaintFlags
 _08015B94: .4byte gPaletteManager
 _08015B98: .4byte 0x00000404
 _08015B9C: .4byte 0x00000406
@@ -1405,7 +1405,7 @@ _08015F48:
 	cmp r0, #0
 	beq _08015F64
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08015F64:
 	ldr r1, _08015F74 @ =gBlendRegBuffer
 	ldr r0, _08015F78 @ =0x00000C04
@@ -1540,7 +1540,7 @@ _0801605A:
 	cmp r0, #0
 	beq _08016076
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08016076:
 	pop {r4, r5, r6}
 	pop {r0}

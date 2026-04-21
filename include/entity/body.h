@@ -59,14 +59,14 @@ struct Body {
   u32 status;
   u32 prevStatus;
 
-  u8 invincibleTime;  // bit0..6: invincible frame, bit7: ???
+  u8 invincibleTime;  // bit0..6: 無敵時間(フレーム数), bit7: このbitがセットされている場合は、bit0..6の値に関係なく無敵
   u8 unk_21;
   u8 invincibleLv;  // 無敵レベル(防御側の連鎖値)
   u8 unk_23 : 4;
   u8 elemented : 4;  // Element damaged?
   BodyFunc fn;       // ダメージを与えた時 or 食らった時 に呼び出される
   u32 unk_28;
-  struct CollidableEntity* parent;  // Objectの親ステート
+  struct CollidableEntity* parent;  // 0x2C, Objectの親ステート
   s16 hp;
   s16 unk_32[2];
 

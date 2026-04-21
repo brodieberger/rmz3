@@ -54,10 +54,7 @@ NON_MATCH void MenuExit_ReflectLaser(struct Weapon* w) {
   if ((((&z->unk_b4)->status).element != 0) || (z->unk_136 & (1 << 0))) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 #else
@@ -89,9 +86,7 @@ struct Weapon* CreateReflectLaser(struct Zero* z, struct Entity* p, u8 n) {
   return w;
 }
 
-#if MODERN == 0
 NAKED static struct Weapon* unused_CreateReflectLaser(struct Zero* z, struct Entity* p, void* r2, u8 r3, u8 r4) { INCCODE("asm/unused/unused_CreateReflectLaser.inc"); }
-#endif
 
 INCASM("asm/weapon/reflect_laser.inc");
 

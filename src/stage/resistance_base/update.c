@@ -577,10 +577,7 @@ static void updateElevator(struct StageRun* p) {
   lift = gResistanceBaseElevatorPtr;
   (lift->s).flags &= ~DISPLAY;
   (lift->s).flags &= ~FLIPABLE;
-  (lift->body).status = 0;
-  (lift->body).prevStatus = 0;
-  (lift->body).invincibleTime = 0;
-  (lift->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(lift);
   SET_SOLID_ROUTINE(lift, ENTITY_DISAPPEAR);
   p->unk_0a ^= 1;
 }

@@ -5,6 +5,7 @@
 #include "sprite.h"
 #include "stagerun.h"
 #include "text_window.h"
+#include "widget.h"
 
 #define STAGE_CHIP_NONE 0
 #define STAGE_CHIP_HEAD 1
@@ -1219,7 +1220,7 @@ _0802498E:\n\
 	ldr r0, _080249E4 @ =gGameState\n\
 	adds r1, r2, #0\n\
 	movs r2, #1\n\
-	bl openSecretDisk\n\
+	bl OpenSecretDisk\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r5, r0, #0x10\n\
 	cmp r5, #0\n\
@@ -1566,7 +1567,7 @@ _08024D10: .4byte 0x000001B1\n\
 }
 
 // リザルトスコアをカウントアップさせる演出
-WIP static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x, u8 y) {
+NON_MATCH static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x, u8 y) {
 #if MODERN
   s32 turbo;
   if (score >> 4) {

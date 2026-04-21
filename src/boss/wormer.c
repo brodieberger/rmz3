@@ -85,6 +85,7 @@ static const BossFunc sUpdates2[11] = {
 };
 // clang-format on
 
+// 0x083620f8
 static const struct Collision sCollisions[15] = {
     [0] = {
       kind : DRP,

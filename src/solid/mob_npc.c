@@ -4,6 +4,15 @@
 
 // レジスタンスベースのモブキャラ
 
+struct MobObject {
+  OBJECT_HDR;
+  u8 unk_00[8];     // 0xB4
+  s16 unk_08;       // 0xBC
+  motion_t motion;  // 0xBE
+  u8 unk_0c[4];     // 0xC0
+};
+static_assert(sizeof(struct MobObject) == sizeof(struct Solid));
+
 static const struct Collision sCollisions[3];
 static const motion_t sMotions[27];
 
@@ -17,10 +26,10 @@ static void MobNPC_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gMobNPCRoutine = {
-    [ENTITY_INIT] =      MobNPC_Init,
-    [ENTITY_UPDATE] =    MobNPC_Update,
-    [ENTITY_DIE] =       MobNPC_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_INIT] =      (SolidFunc)MobNPC_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)MobNPC_Update,
+    [ENTITY_DIE] =       (SolidFunc)MobNPC_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -140,20 +149,20 @@ _080D9530: .4byte sMobNPCInitializers\n\
  .syntax divided\n");
 }
 
-static void mob_neutral_080d95a8(struct Solid* p);
+static void mob_neutral_080d95a8(struct MobObject* p);
 static void FUN_080d95f8(struct Solid* p);
-static void FUN_080d9734(struct Solid* p);
+static void FUN_080d9734(struct MobObject* p);
 void mob_chat_080d97b4(struct Solid* p);
 void FUN_080d98e8(struct Solid* p);
 
 static void MobNPC_Update(struct Solid* p) {
   // clang-format off
   static const SolidFunc sUpdates[5] = {
-      mob_neutral_080d95a8,
-      FUN_080d95f8,
-      FUN_080d9734,
-      mob_chat_080d97b4,
-      FUN_080d98e8,
+      (SolidFunc)mob_neutral_080d95a8,
+      (SolidFunc)FUN_080d95f8,
+      (SolidFunc)FUN_080d9734,
+      (SolidFunc)mob_chat_080d97b4,
+      (SolidFunc)FUN_080d98e8,
   };
   // clang-format on
 
@@ -161,19 +170,19 @@ static void MobNPC_Update(struct Solid* p) {
     (p->s).mode[1] = ENTITY_DISAPPEAR;
     (p->s).mode[2] = 0;
   }
-  (sUpdates[(p->s).mode[1]])(p);
+  (sUpdates[(p->s).mode[1]])((void*)p);
 }
 
 static void MobNPC_Die(struct Solid* p) { SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR); }
 
-static void mob_neutral_080d95a8(struct Solid* p) {
+static void mob_neutral_080d95a8(struct MobObject* p) {
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, (p->props).mob.motion);
+    SetMotion(&p->s, p->motion);
     (p->s).work[2] = 64;
     (p->s).mode[2]++;
   }
   UpdateMotionGraphic(&p->s);
-  if (((p->props).mob.unk_08 != 0) && (--(p->s).work[2] == 0xff)) {
+  if ((p->unk_08 != 0) && (--(p->s).work[2] == 0xff)) {
     (p->s).mode[1] = 1;
     (p->s).mode[2] = 0;
   }
@@ -342,9 +351,9 @@ _080D972C:\n\
  .syntax divided\n");
 }
 
-static void FUN_080d9734(struct Solid* p) {
+static void FUN_080d9734(struct MobObject* p) {
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, (p->props).mob.motion);
+    SetMotion(&p->s, p->motion);
     (p->s).work[2] = 64;
     (p->s).mode[2]++;
   }

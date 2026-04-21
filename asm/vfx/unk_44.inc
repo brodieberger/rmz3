@@ -4,123 +4,6 @@
 	
 	.text
 
-	thumb_func_start createGhost44
-createGhost44: @ 0x080BE818
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080BE864 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080BE85C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080BE868 @ =gVFXFnTable
-	movs r1, #0x2c
-	strb r1, [r3, #9]
-	adds r0, #0xb0
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r5, [r3, #0x10]
-	strb r0, [r3, #0x11]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-_080BE85C:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080BE864: .4byte gVFXHeaderPtr
-_080BE868: .4byte gVFXFnTable
-
-	thumb_func_start VFX44_Init
-VFX44_Init: @ 0x080BE86C
-	push {r4, lr}
-	adds r4, r0, #0
-	bl InitNonAffineMotion
-	ldrb r1, [r4, #0xa]
-	movs r0, #1
-	movs r3, #0
-	adds r2, r0, #0
-	orrs r2, r1
-	movs r0, #2
-	orrs r2, r0
-	orrs r2, r3
-	strb r2, [r4, #0xa]
-	ldrb r1, [r4, #0x10]
-	cmp r1, #0
-	bne _080BE8A8
-	movs r0, #0xef
-	ands r2, r0
-	strb r2, [r4, #0xa]
-	adds r0, r4, #0
-	adds r0, #0x4c
-	strb r1, [r0]
-	adds r2, r4, #0
-	adds r2, #0x4a
-	ldrb r1, [r2]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	strb r0, [r2]
-	b _080BE8C8
-_080BE8A8:
-	movs r1, #1
-	movs r0, #0x10
-	orrs r2, r0
-	strb r2, [r4, #0xa]
-	adds r0, r4, #0
-	adds r0, #0x4c
-	strb r1, [r0]
-	adds r3, r4, #0
-	adds r3, #0x4a
-	movs r2, #0x10
-	ldrb r1, [r3]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	orrs r0, r2
-	strb r0, [r3]
-_080BE8C8:
-	movs r2, #0
-	str r2, [r4, #0x60]
-	movs r0, #0xff
-	strb r0, [r4, #0x12]
-	ldr r1, _080BE8F4 @ =gVFXFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #1
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r4, #0x14]
-	strb r2, [r4, #0xd]
-	strb r2, [r4, #0xe]
-	strb r2, [r4, #0xf]
-	adds r0, r4, #0
-	bl VFX44_Update
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BE8F4: .4byte gVFXFnTable
-
 	thumb_func_start VFX44_Update
 VFX44_Update: @ 0x080BE8F8
 	push {lr}
@@ -168,7 +51,7 @@ _080BE94C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080BE950: .4byte 0x0836EFE0
+_080BE950: .4byte sUpdates
 
 	thumb_func_start VFX44_Die
 VFX44_Die: @ 0x080BE954

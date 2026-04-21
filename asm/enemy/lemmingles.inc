@@ -4,69 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_0806e590
-FUN_0806e590: @ 0x0806E590
-	push {r4, r5, r6, r7, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	lsls r2, r2, #0x18
-	lsrs r7, r2, #0x18
-	lsls r3, r3, #0x18
-	lsrs r5, r3, #0x18
-	ldr r0, _0806E5F8 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0806E5F2
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _0806E5FC @ =gEnemyFnTable
-	movs r0, #0xd
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x34]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-	strb r6, [r3, #0x10]
-	strb r5, [r3, #0x11]
-	strb r7, [r3, #0x12]
-	adds r1, r3, #0
-	adds r1, #0xb8
-	ldr r0, [r4, #0x54]
-	str r0, [r1]
-_0806E5F2:
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806E5F8: .4byte gZakoHeaderPtr
-_0806E5FC: .4byte gEnemyFnTable
-
-	thumb_func_start nop_0806e600
-nop_0806e600: @ 0x0806E600
-	bx lr
-	.align 2, 0
-
 	thumb_func_start FUN_0806e604
 FUN_0806e604: @ 0x0806E604
 	push {r4, lr}
@@ -151,7 +88,7 @@ FUN_0806e674: @ 0x0806E674
 	b _0806E6FA
 _0806E694:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0806E6FA
 	ldr r1, _0806E6D0 @ =0x08366828
@@ -181,7 +118,7 @@ _0806E6D0: .4byte 0x08366828
 _0806E6D4: .4byte 0x08366844
 _0806E6D8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0806E6F8
 	adds r0, r4, #0
@@ -335,7 +272,7 @@ _0806E7F8:
 	movs r0, #0
 	str r0, [r4, #0x24]
 _0806E804:
-	ldr r0, _0806E828 @ =nop_0806e600
+	ldr r0, _0806E828 @ =onCollision
 	str r0, [r4, #0x24]
 	adds r1, r5, #0
 	adds r1, #0xb4
@@ -351,7 +288,7 @@ _0806E804:
 	bx r0
 	.align 2, 0
 _0806E824: .4byte 0x0836686C
-_0806E828: .4byte nop_0806e600
+_0806E828: .4byte onCollision
 
 	thumb_func_start Lemmingles_Update
 Lemmingles_Update: @ 0x0806E82C
@@ -565,7 +502,7 @@ _0806E9B8:
 	adds r0, r2, #0
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _0806E9D6
@@ -617,7 +554,7 @@ _0806EA0C:
 	strb r0, [r4, #0xe]
 _0806EA20:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _0806EA58

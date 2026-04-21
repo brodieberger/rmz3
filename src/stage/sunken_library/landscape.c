@@ -27,7 +27,7 @@ static void initSunkenLib(struct Coord* _ UNUSED) {
   LoadBlink(150, 0);
 }
 
-WIP static void updateSunkenLib(struct Coord* _ UNUSED) {
+NON_MATCH static void updateSunkenLib(struct Coord* _ UNUSED) {
 #if MODERN
   if ((TILESET_ID(0) == STAGE_SUNKEN_LIBRARY) && (TILESET_IDX(0) == 4)) {
     if ((STAGE.unk_000 & (1 << 0)) == 0) {

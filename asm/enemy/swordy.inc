@@ -10,7 +10,7 @@ CreateSwordy: @ 0x0807BEA8
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _0807BEFC @ =gZakoHeaderPtr
+	ldr r0, _0807BEFC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -49,7 +49,7 @@ _0807BEF4:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0807BEFC: .4byte gZakoHeaderPtr
+_0807BEFC: .4byte gEnemyHeaderPtr
 _0807BF00: .4byte gEnemyFnTable
 
 	thumb_func_start Swordy_Init
@@ -112,7 +112,7 @@ Swordy_Init: @ 0x0807BF04
 	strb r5, [r7, #0xe]
 	strb r5, [r7, #0xf]
 	adds r0, r7, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807BF94
 	movs r1, #0xfc
@@ -167,7 +167,7 @@ _0807BFD8:
 	adds r0, r4, #0
 	bl FUN_0807c530
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807C020
 	adds r6, r4, #0

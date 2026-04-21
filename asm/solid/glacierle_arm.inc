@@ -199,7 +199,7 @@ _080CEA8E:
 	adds r2, r2, r3
 	lsls r2, r2, #8
 	rsbs r2, r2, #0
-	bl CreateVFX54
+	bl CreateIcicleParticle
 	adds r5, #1
 	ldrb r0, [r4, #0x12]
 	adds r0, r0, r6

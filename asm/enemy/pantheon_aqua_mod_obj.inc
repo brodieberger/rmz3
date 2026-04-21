@@ -8,7 +8,7 @@
 createPAquaModRubble: @ 0x08080804
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _08080850 @ =gZakoHeaderPtr
+	ldr r0, _08080850 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -45,14 +45,14 @@ _0808084A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080850: .4byte gZakoHeaderPtr
+_08080850: .4byte gEnemyHeaderPtr
 _08080854: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08080858
 FUN_08080858: @ 0x08080858
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _080808AC @ =gZakoHeaderPtr
+	ldr r0, _080808AC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -93,14 +93,14 @@ _080808A6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080808AC: .4byte gZakoHeaderPtr
+_080808AC: .4byte gEnemyHeaderPtr
 _080808B0: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_080808b4
 FUN_080808b4: @ 0x080808B4
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _08080900 @ =gZakoHeaderPtr
+	ldr r0, _08080900 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -137,14 +137,14 @@ _080808FA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080900: .4byte gZakoHeaderPtr
+_08080900: .4byte gEnemyHeaderPtr
 _08080904: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08080908
 FUN_08080908: @ 0x08080908
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _0808095C @ =gZakoHeaderPtr
+	ldr r0, _0808095C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -184,14 +184,14 @@ _08080954:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808095C: .4byte gZakoHeaderPtr
+_0808095C: .4byte gEnemyHeaderPtr
 _08080960: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08080964
 FUN_08080964: @ 0x08080964
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _080809B8 @ =gZakoHeaderPtr
+	ldr r0, _080809B8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -232,14 +232,14 @@ _080809B2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080809B8: .4byte gZakoHeaderPtr
+_080809B8: .4byte gEnemyHeaderPtr
 _080809BC: .4byte gEnemyFnTable
 
 	thumb_func_start createLaserSign2
 createLaserSign2: @ 0x080809C0
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _08080A1C @ =gZakoHeaderPtr
+	ldr r0, _08080A1C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -284,7 +284,7 @@ _08080A16:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080A1C: .4byte gZakoHeaderPtr
+_08080A1C: .4byte gEnemyHeaderPtr
 _08080A20: .4byte gEnemyFnTable
 _08080A24: .4byte 0xFFFFF400
 
@@ -292,7 +292,7 @@ _08080A24: .4byte 0xFFFFF400
 createSweepLaserSign: @ 0x08080A28
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r0, _08080A84 @ =gZakoHeaderPtr
+	ldr r0, _08080A84 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -337,7 +337,7 @@ _08080A7E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080A84: .4byte gZakoHeaderPtr
+_08080A84: .4byte gEnemyHeaderPtr
 _08080A88: .4byte gEnemyFnTable
 _08080A8C: .4byte 0xFFFFF400
 
@@ -351,7 +351,7 @@ createStretchedGrabArm: @ 0x08080A90
 	mov r8, r0
 	lsls r1, r1, #0x18
 	lsrs r6, r1, #0x18
-	ldr r0, _08080B68 @ =gZakoHeaderPtr
+	ldr r0, _08080B68 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r4, r0, #0
@@ -407,7 +407,7 @@ _08080B06:
 	ldr r0, _08080B78 @ =0x083659E0
 	mov sb, r0
 _08080B0E:
-	ldr r0, _08080B68 @ =gZakoHeaderPtr
+	ldr r0, _08080B68 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r2, r0, #0
@@ -453,7 +453,7 @@ _08080B54:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080B68: .4byte gZakoHeaderPtr
+_08080B68: .4byte gEnemyHeaderPtr
 _08080B6C: .4byte gEnemyFnTable
 _08080B70: .4byte 0xFFFFE900
 _08080B74: .4byte 0xFFFFFC00
@@ -469,7 +469,7 @@ createStretchedArms: @ 0x08080B7C
 	adds r7, r0, #0
 	movs r6, #0
 _08080B8A:
-	ldr r0, _08080C58 @ =gZakoHeaderPtr
+	ldr r0, _08080C58 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r4, r0, #0
@@ -524,7 +524,7 @@ _08080BEA:
 	ldr r1, _08080C5C @ =0x083659E0
 	mov sl, r1
 _08080BF6:
-	ldr r0, _08080C58 @ =gZakoHeaderPtr
+	ldr r0, _08080C58 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r2, r0, #0
@@ -574,7 +574,7 @@ _08080C3E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080C58: .4byte gZakoHeaderPtr
+_08080C58: .4byte gEnemyHeaderPtr
 _08080C5C: .4byte 0x083659E0
 _08080C60: .4byte 0xFFFFE900
 
@@ -583,7 +583,7 @@ FUN_08080c64: @ 0x08080C64
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r0, _08080CB4 @ =gZakoHeaderPtr
+	ldr r0, _08080CB4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -621,7 +621,7 @@ _08080CAE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080CB4: .4byte gZakoHeaderPtr
+_08080CB4: .4byte gEnemyHeaderPtr
 _08080CB8: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08080cbc

@@ -69,7 +69,7 @@ Hanumachine_Init: @ 0x0805B94C
 	strb r5, [r0]
 	adds r0, #1
 	strb r5, [r0]
-	ldr r1, _0805BA50 @ =0x08364E38
+	ldr r1, _0805BA50 @ =sCollisions
 	adds r0, r6, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -121,7 +121,7 @@ _0805BA40: .4byte gStaticMotionGraphics
 _0805BA44: .4byte wStaticGraphicTilenums
 _0805BA48: .4byte gStaticMotionGraphics+12
 _0805BA4C: .4byte wStaticMotionPalIDs
-_0805BA50: .4byte 0x08364E38
+_0805BA50: .4byte sCollisions
 _0805BA54: .4byte FUN_0805d568
 _0805BA58: .4byte gBossFnTable
 
@@ -758,7 +758,7 @@ hanu_0805bf10: @ 0x0805BF10
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805BF5C @ =0x08364E38
+	ldr r1, _0805BF5C @ =sCollisions
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -784,7 +784,7 @@ _0805BF54:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805BF5C: .4byte 0x08364E38
+_0805BF5C: .4byte sCollisions
 
 	thumb_func_start hanu_0805bf60
 hanu_0805bf60: @ 0x0805BF60
@@ -3354,7 +3354,7 @@ FUN_0805d310: @ 0x0805D310
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805D354 @ =0x08364E38
+	ldr r1, _0805D354 @ =sCollisions
 	bl SetDDP
 	ldrb r1, [r4, #0xa]
 	movs r0, #0x10
@@ -3367,7 +3367,7 @@ FUN_0805d310: @ 0x0805D310
 	b _0805D36A
 	.align 2, 0
 _0805D350: .4byte 0x0000B506
-_0805D354: .4byte 0x08364E38
+_0805D354: .4byte sCollisions
 _0805D358: .4byte 0xFFFFFE80
 _0805D35C: .4byte 0xFFFFF000
 _0805D360:
@@ -3444,7 +3444,7 @@ _0805D3D4:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _0805D43C @ =0x08364E38
+	ldr r1, _0805D43C @ =sCollisions
 	bl SetDDP
 	adds r4, r5, #0
 	adds r4, #0xbc
@@ -3480,7 +3480,7 @@ _0805D3D4:
 	b _0805D446
 	.align 2, 0
 _0805D438: .4byte 0x0000B502
-_0805D43C: .4byte 0x08364E38
+_0805D43C: .4byte sCollisions
 _0805D440:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xef

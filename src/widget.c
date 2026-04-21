@@ -50,7 +50,7 @@ void InitWidgetHeader(struct EntityHeader* h, struct Widget* w, s16 len) {
   gWidgetHeaderPtr = h;
 }
 
-void DeleteWidget(struct Widget* w) {
-  (w->s).flags &= ~DISPLAY;
+void DeleteWidget(struct Entity* w) {
+  w->flags &= ~DISPLAY;
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
 }

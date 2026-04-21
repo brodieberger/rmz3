@@ -18,7 +18,7 @@ const SolidRoutine gDoor2DGrayVRoutine = {
     [ENTITY_INIT] =      Door2DGray_Init,
     [ENTITY_UPDATE] =    Door2DGray_Update,
     [ENTITY_DIE] =       Door2DGray_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -52,10 +52,7 @@ static void Door2DGray_Update(struct Solid* p) {
 }
 
 static void Door2DGray_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }

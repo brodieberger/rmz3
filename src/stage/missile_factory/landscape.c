@@ -117,7 +117,7 @@ static void FUN_0800e460(struct Coord* c) {
     SetStageNoiseVolume(SE_UNK_10b);
   } else {
     if (isSoundPlaying(SE_UNK_10b)) {
-      stopSound(SE_UNK_10b);
+      StopSound(SE_UNK_10b);
     }
   }
 }

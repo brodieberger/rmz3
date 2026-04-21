@@ -40,8 +40,8 @@
 #define METATILE_SLIP (1 << 12)
 
 // X方向に動くコンベア(蟻地獄も？)
-#define METATILE_CONVEYOR1 (1 << 13)
-#define METATILE_CONVEYOR0 (1 << 14)
+#define METATILE_CONVEYOR1 (1 << 13)  // 0x2000
+#define METATILE_CONVEYOR0 (1 << 14)  // 0x4000
 
 // すり抜け床
 #define METATILE_SOFT_PLATFORM (1 << 15)

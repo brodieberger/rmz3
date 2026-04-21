@@ -3,6 +3,8 @@
 #include "global.h"
 #include "mmbn4.h"
 
+#define MASTER_HANDSHAKE 0x8FFF
+
 static void InitTimer(void);
 static void StopTimer(void);
 static void StartTransfer(void);
@@ -52,7 +54,7 @@ static void EnableSerial(void) {
 
   sNumVBlanksWithoutSerialIntr = 0;
   sSendBufferEmpty = 0;
-  u8_02000008 = 0;
+  sHandshakePlayerCount = 0;
   gLastSendQueueCount = 0;
   gLastRecvQueueCount = 0;
   sChecksumAvailable = FALSE;
@@ -310,7 +312,7 @@ void LinkVSync(void) {
           gLink.lag = LAG_SLAVE;
           gLink.localId = 0;
           gLink.playerCount = 0;
-          gLink.link_field_F = FALSE;
+          gLink.link_field_11 = FALSE;
         }
         break;
       }
@@ -326,7 +328,7 @@ void LinkVSync(void) {
       if (gLink.state == LINK_STATE_HANDSHAKE) {
         gLink.localId = 0;
         gLink.playerCount = 0;
-        gLink.link_field_F = FALSE;
+        gLink.link_field_11 = FALSE;
       }
     }
   }
@@ -422,7 +424,7 @@ _08002B14:\n\
 	b _08002BF6\n\
 _08002B24:\n\
 	ldr r2, _08002BA0 @ =0x0400012A\n\
-	ldr r1, _08002BA4 @ =0x020014F4\n\
+	ldr r1, _08002BA4 @ =gLinkHandshake\n\
 	ldrh r0, [r1]\n\
 	strh r0, [r2]\n\
 _08002B2C:\n\
@@ -460,7 +462,7 @@ _08002B3E:\n\
 	mov r6, sb\n\
 	adds r6, #0x2a\n\
 _08002B6C:\n\
-	ldr r2, _08002BA4 @ =0x020014F4\n\
+	ldr r2, _08002BA4 @ =gLinkHandshake\n\
 	ldrh r1, [r2]\n\
 	mov r7, r8\n\
 	ands r1, r7\n\
@@ -489,7 +491,7 @@ _08002B90:\n\
 	b _08002BBC\n\
 	.align 2, 0\n\
 _08002BA0: .4byte 0x0400012A\n\
-_08002BA4: .4byte 0x020014F4\n\
+_08002BA4: .4byte gLinkHandshake\n\
 _08002BA8: .4byte gLink\n\
 _08002BAC: .4byte 0x04000120\n\
 _08002BB0: .4byte 0x00008FFF\n\
@@ -595,7 +597,7 @@ _08002C74: .4byte 0x0400012A\n\
 _08002C78: .4byte 0x00008FFF\n\
 _08002C7C:\n\
 	ldr r0, _08002CA8 @ =0x0400012A\n\
-	ldr r1, _08002CAC @ =0x020014F4\n\
+	ldr r1, _08002CAC @ =gLinkHandshake\n\
 	ldrh r1, [r1]\n\
 	strh r1, [r0]\n\
 _08002C84:\n\
@@ -620,7 +622,7 @@ _08002C98:\n\
 	bx r1\n\
 	.align 2, 0\n\
 _08002CA8: .4byte 0x0400012A\n\
-_08002CAC: .4byte 0x020014F4\n\
+_08002CAC: .4byte gLinkHandshake\n\
 _08002CB0: .4byte gLink\n\
 _08002CB4: .4byte 0x04000120\n\
  .syntax divided\n");
@@ -728,7 +730,7 @@ void ResetSendBuffer(void) {
   gLink.sendQueue.pos = 0;
   for (i = 0; i < CMD_LENGTH; i++) {
     for (j = 0; j < QUEUE_CAPACITY; j++) {
-      gLink.sendQueue.data[i][j] = 0xEFFF;
+      gLink.sendQueue.data[i][j] = LINKCMD_NONE;
     }
   }
 }
@@ -747,21 +749,18 @@ void ResetRecvBuffer(void) {
 }
 
 u8 GetLinkState(void) { return gLink.state; }
-u8 get0x02001539(void) { return gLink.recvCmdIndex; }
 
-#if MODERN == 0
-static void unused_Set0x02001500(u8 val) {
-  u8_02001500 = val;
-  return;
-}
-#endif
+// 0x08003084
+static u8 unused_GetRecvCmdIndex(void) { return gLink.recvCmdIndex; }
 
-u8 FUN_0800309c(u8 idx) { return gLink.unk_2a[idx]; }
+// 0x08003090
+static void unused_Set0x02001500(u8 val) { u8_02001500 = val; }
+
+u8 SioLink_GetPlayerStatus(u8 idx) { return gLink.unk_2a[idx]; }
 
 u8 GetLastSendQueueCount(void) { return gLastSendQueueCount; }
 u8 GetLastRecvQueueCount(void) { return gLastRecvQueueCount; }
 
-#if MODERN == 0
 static bool8 unused_080030c8(void) {
   if ((gLastSendQueueCount < 6) && (gLastRecvQueueCount < 6)) {
     return FALSE;
@@ -769,4 +768,3 @@ static bool8 unused_080030c8(void) {
     return TRUE;
   }
 }
-#endif

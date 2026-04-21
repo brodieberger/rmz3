@@ -3,6 +3,32 @@
 #include "collision.h"
 #include "global.h"
 
+extern const BossRoutine gMegamilpaRoutine;
+extern const BossRoutine gOmegaWhiteRoutine;
+extern const BossRoutine gBlazinRoutine;
+extern const BossRoutine gChildreRoutine;
+extern const BossRoutine gWormerRoutine;
+extern const BossRoutine gVolteelRoutine;
+extern const BossRoutine gBabyElfRoutine;
+extern const BossRoutine gDeathtanzRoutine;
+extern const BossRoutine gHellbatRoutine;
+extern const BossRoutine gBeeServerRoutine;
+extern const BossRoutine gTretistaRoutine;
+extern const BossRoutine gAnubisRoutine;
+extern const BossRoutine gPantheonAquaModRoutine;
+extern const BossRoutine gCubitRoutine;
+extern const BossRoutine gLocomoIFRoutine;
+extern const BossRoutine gCopyXRoutine;
+extern const BossRoutine gGlacierleRoutine;
+extern const BossRoutine gBlizzackRoutine;
+extern const BossRoutine gOmegaGoldRoutine;
+extern const BossRoutine gHanumachineRoutine;
+extern const BossRoutine gOmegaZeroRoutine;
+extern const BossRoutine gPhantomBossRoutine;
+extern const BossRoutine gOmegaZXRoutine;
+extern const BossRoutine gReactorCoreRoutine;
+extern const BossRoutine gSpearookRoutine;
+
 // clang-format off
 const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
     [BOSS_MEGAMILPA] =          &gMegamilpaRoutine,

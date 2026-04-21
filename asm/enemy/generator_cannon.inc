@@ -82,7 +82,7 @@ FUN_0808c450: @ 0x0808C450
 	b _0808C4DE
 _0808C470:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808C4DE
 	ldr r1, _0808C4AC @ =0x08368F08
@@ -112,7 +112,7 @@ _0808C4AC: .4byte 0x08368F08
 _0808C4B0: .4byte 0x08368F28
 _0808C4B4:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808C4DC
 	ldrb r0, [r4, #0x10]
@@ -498,7 +498,7 @@ _0808C79A:
 	ldr r1, _0808C7D8 @ =0x08368F70
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _0808C7BA
@@ -553,7 +553,7 @@ _0808C7F0:
 	strb r0, [r4, #0xe]
 _0808C814:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _0808C85A
 	ldrb r0, [r4, #0x12]

@@ -283,7 +283,7 @@ _080E47AC:
 	ldr r0, [r2]
 	b _080E4860
 	.align 2, 0
-_080E47E4: .4byte 0x08371DC0
+_080E47E4: .4byte sUpdates
 _080E47E8:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0x10
@@ -763,33 +763,3 @@ _080E4B50:
 	pop {r0}
 	bx r0
 	.align 2, 0
-
-	thumb_func_start FUN_080e4b58
-FUN_080e4b58: @ 0x080E4B58
-	push {lr}
-	adds r1, r0, #0
-	ldrb r2, [r1, #0xe]
-	cmp r2, #0
-	bne _080E4B6A
-	movs r0, #0x40
-	strb r0, [r1, #0xf]
-	adds r0, r2, #1
-	strb r0, [r1, #0xe]
-_080E4B6A:
-	ldr r0, [r1, #0x5c]
-	cmp r0, #0x90
-	ble _080E4B7E
-	ldrb r0, [r1, #0xf]
-	subs r0, #1
-	strb r0, [r1, #0xf]
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #0xff
-	bne _080E4B84
-_080E4B7E:
-	movs r0, #0
-	strb r0, [r1, #0xd]
-	strb r0, [r1, #0xe]
-_080E4B84:
-	pop {r0}
-	bx r0

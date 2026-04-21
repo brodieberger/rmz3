@@ -13,7 +13,7 @@ const EnemyRoutine gSeimeranRoutine = {
     [ENTITY_INIT] =      Seimeran_Init,
     [ENTITY_UPDATE] =    Seimeran_Update,
     [ENTITY_DIE] =       Seimeran_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

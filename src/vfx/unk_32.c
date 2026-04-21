@@ -10,7 +10,7 @@ const VFXRoutine gGhost32Routine = {
     [ENTITY_INIT] =      Ghost32_Init,
     [ENTITY_UPDATE] =    Ghost32_Update,
     [ENTITY_DIE] =       Ghost32_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

@@ -96,7 +96,7 @@ static const struct PreloadEntity* const sStagePreloadEntities[STAGE_COUNT] = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-WIP void InitStageEntityManager(u8 stageID, bool8 missionDone) {
+NON_MATCH void InitStageEntityManager(u8 stageID, bool8 missionDone) {
 #if MODERN
   s32 i;
   struct StageEntityManager* manager = &gStageEntityManager;
@@ -784,7 +784,7 @@ _08018164: .4byte 0x00000211\n\
 _08018168: .4byte 0x0000020E\n\
 _0801816C: .4byte 0x00000226\n\
 _08018170:\n\
-	ldr r1, _0801819C @ =0x0202FDB9\n\
+	ldr r1, _0801819C @ =gStageEntityManager+0x229\n\
 	ldrb r0, [r1]\n\
 	cmp r0, #0\n\
 	beq _080181A0\n\
@@ -806,7 +806,7 @@ _08018170:\n\
 	strb r0, [r2, #0x10]\n\
 	b _080181CE\n\
 	.align 2, 0\n\
-_0801819C: .4byte 0x0202FDB9\n\
+_0801819C: .4byte gStageEntityManager+0x229 @ gStageEntityManager.unk_226[3]\n\
 _080181A0:\n\
 	ldrh r1, [r5, #6]\n\
 	lsls r1, r1, #3\n\
@@ -1086,10 +1086,10 @@ struct Entity* CreateStageEntity(u8 kind, u8 id) {
     }
 
     case ENTITY_ENEMY: {
-      p = AllocEntityFirst(gZakoHeaderPtr);
+      p = AllocEntityFirst(gEnemyHeaderPtr);
       if (p != NULL) {
         p->taskCol = 24;
-        INIT_ZAKO_ROUTINE((struct Enemy*)p, id);
+        INIT_ENEMY_ROUTINE((struct Enemy*)p, id);
         p->tileNum = 0;
         p->palID = 0;
         p->flags2 |= WHITE_PAINTABLE;
@@ -1150,7 +1150,7 @@ struct Entity* CreateStageEntity(u8 kind, u8 id) {
       p = AllocEntityFirst(gElfHeaderPtr);
       if (p != NULL) {
         p->taskCol = 16;
-        INIT_ELF_ROUTINE((struct Elf*)p, id);
+        INIT_ELF_ROUTINE(p, id);
         p->tileNum = 0;
         p->palID = 0;
       }
@@ -1172,10 +1172,7 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_PLAYER: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_PLAYER_ROUTINE((struct Zero*)p, ENTITY_DISAPPEAR);
       break;
     }
@@ -1187,10 +1184,7 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_BOSS: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_BOSS_ROUTINE((struct Boss*)p, ENTITY_DISAPPEAR);
       break;
     }
@@ -1198,21 +1192,15 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_ENEMY: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
-      SET_ZAKO_ROUTINE((struct Enemy*)p, ENTITY_DISAPPEAR);
+      EXIT_BODY(p);
+      SET_ENEMY_ROUTINE((struct Enemy*)p, ENTITY_DISAPPEAR);
       break;
     }
 
     case ENTITY_PROJECTILE: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_PROJECTILE_ROUTINE((struct Projectile*)p, ENTITY_DISAPPEAR);
       break;
     }
@@ -1227,10 +1215,7 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_SOLID: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_SOLID_ROUTINE((struct Solid*)p, ENTITY_DISAPPEAR);
       break;
     }
@@ -1238,10 +1223,7 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_ITEM: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_ITEM_ROUTINE((struct Pickup*)p, ENTITY_DISAPPEAR);
       break;
     }
@@ -1249,11 +1231,8 @@ void DeleteStageEntity(struct CollidableEntity* p) {
     case ENTITY_ELF: {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
-      SET_ELF_ROUTINE((struct Elf*)p, ENTITY_DISAPPEAR);
+      EXIT_BODY(p);
+      SET_ELF_ROUTINE(p, ENTITY_DISAPPEAR);
       break;
     }
   }
@@ -1672,7 +1651,7 @@ _08018B00: .4byte gStaticMotionGraphics+12\n\
 _08018B04: .4byte wStaticMotionPalIDs\n\
 _08018B08: .4byte 0x00001054\n\
 _08018B0C: .4byte gSystemSavedataManager\n\
-_08018B10: .4byte 0x03002E60\n\
+_08018B10: .4byte gPaletteManager+(464*2)\n\
 _08018B14: .4byte 0x01000008\n\
 _08018B18: .4byte gStageEntityManager\n\
 _08018B1C: .4byte 0x0000020E\n\
@@ -1791,7 +1770,7 @@ _08018BFC: .4byte 0x00000211\n\
  .syntax divided\n");
 }
 
-WIP static void FUN_08018c00(u8 stageID, u8 area) {
+NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
 #if MODERN
   const struct PreloadEntity* preload;
 
@@ -1822,7 +1801,7 @@ WIP static void FUN_08018c00(u8 stageID, u8 area) {
 #endif
 }
 
-WIP static void FUN_08018d10(u8 stageID, u8 area) {
+NON_MATCH static void FUN_08018d10(u8 stageID, u8 area) {
 #if MODERN
   const struct PreloadEntity* preload;
 
@@ -1967,7 +1946,7 @@ _08018EE2:\n\
 	cmp r2, r0\n\
 	bne _08018E94\n\
 _08018EF2:\n\
-	ldr r0, _08018F98 @ =gZakoHeaderPtr\n\
+	ldr r0, _08018F98 @ =gEnemyHeaderPtr\n\
 	ldr r4, [r0]\n\
 	adds r0, r4, #0\n\
 	bl ignoreEntityFn\n\
@@ -2052,7 +2031,7 @@ _08018F88: .4byte gVFXHeaderPtr\n\
 _08018F8C: .4byte gVFXFnTable\n\
 _08018F90: .4byte gProjectileHeaderPtr\n\
 _08018F94: .4byte gProjectileFnTable\n\
-_08018F98: .4byte gZakoHeaderPtr\n\
+_08018F98: .4byte gEnemyHeaderPtr\n\
 _08018F9C: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
@@ -2163,7 +2142,7 @@ _08019058:\n\
 	cmp r2, r0\n\
 	bne _08019014\n\
 _08019068:\n\
-	ldr r0, _080190F0 @ =gZakoHeaderPtr\n\
+	ldr r0, _080190F0 @ =gEnemyHeaderPtr\n\
 	ldr r4, [r0]\n\
 	adds r0, r4, #0\n\
 	bl ignoreEntityFn\n\
@@ -2230,7 +2209,7 @@ _080190E0: .4byte gVFXHeaderPtr\n\
 _080190E4: .4byte gVFXFnTable\n\
 _080190E8: .4byte gProjectileHeaderPtr\n\
 _080190EC: .4byte gProjectileFnTable\n\
-_080190F0: .4byte gZakoHeaderPtr\n\
+_080190F0: .4byte gEnemyHeaderPtr\n\
 _080190F4: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }

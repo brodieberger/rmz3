@@ -16,7 +16,7 @@ CreateDeathtanzRock: @ 0x0807A4E8
 	mov r8, r2
 	lsls r3, r3, #0x18
 	lsrs r7, r3, #0x18
-	ldr r0, _0807A5B0 @ =gZakoHeaderPtr
+	ldr r0, _0807A5B0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -55,7 +55,7 @@ _0807A544:
 	movs r5, #0
 	movs r6, #0
 _0807A548:
-	ldr r0, _0807A5B0 @ =gZakoHeaderPtr
+	ldr r0, _0807A5B0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r2, r0, #0
@@ -107,7 +107,7 @@ _0807A59A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A5B0: .4byte gZakoHeaderPtr
+_0807A5B0: .4byte gEnemyHeaderPtr
 _0807A5B4: .4byte gEnemyFnTable
 _0807A5B8: .4byte 0x0836773C
 

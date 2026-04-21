@@ -1,9 +1,8 @@
-#!/usr/bin/env -S deno run --allow-read --unstable
+#!/usr/bin/env -S deno run --allow-read
 
 import { Command } from '@cliffy/command';
-import { loadU32 } from '../../common/index.ts';
+import { BASE, ROM_PATH } from '../../common/index.ts';
 
-const BASE = 0x0800_0000;
 const SIZE = 4;
 
 type MotionCmd = {
@@ -15,20 +14,22 @@ const main = async () => {
   const { args, options } = await new Command()
     .name('sequence.ts')
     .version('1.0.0')
-    .description('開始アドレス(start) から 長さNだけ、 JSONのMotionCmd構造体としてダンプします。')
+    .description('開始アドレス(start) から 長さNだけ、 JSONのMotionCmd構造体として標準出力に表示します。')
     .arguments('<start>')
     .option('-l, --label=[s:string]', 'label name')
     .usage('0x083b5864')
     .parse(Deno.args);
 
-  const rom = Deno.readFileSync('baserom.gba');
+  const rom = Deno.readFileSync(ROM_PATH);
+  const view = new DataView(rom.buffer);
   const start = Number(args[0]);
-  const length = (loadU32(rom, start, BASE) - start) / 4;
+  const length = (view.getUint32(start - BASE, true) - start) / SIZE;
 
   const result: MotionCmd[][] = [];
   for (let i = 0; i < length; i++) {
     let idx = 0;
-    const arr = loadU32(rom, start + SIZE * i, BASE) - BASE;
+
+    const arr = view.getUint32((start + (SIZE * i)) - BASE, true) - BASE;
     const seq: MotionCmd[] = [];
     for (;;) {
       const frameIdx = rom[arr + (idx * 2) + 0];
@@ -43,9 +44,9 @@ const main = async () => {
   }
 
   if (options.label && options.label !== '') {
-    console.log(JSON.stringify({ label: options.label, data: result }));
+    console.log(JSON.stringify({ label: options.label, data: result }, null, 2));
   } else {
-    console.log(JSON.stringify({ data: result }));
+    console.log(JSON.stringify({ data: result }, null, 2));
   }
 };
 

@@ -3,6 +3,8 @@
 
 #include "entity/entity.h"
 
+// TODO: Solid などの Object と 16バイトのバッファ をもつ 196バイトの 構造体　として共通化する
+
 // 飛び道具だと思ってたけど、特定のエンティティに従属しているエンティティのことを指すかも？
 struct Projectile {
   struct Entity s;
@@ -14,6 +16,5 @@ struct Projectile {
 };  // 196 bytes
 
 typedef void (*ProjectileFunc)(struct Projectile*);
-typedef ProjectileFunc ProjectileRoutine[5];
 
 #endif  // GUARD_RMZ3_ENTITY_PROJECTILE_H

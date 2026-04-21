@@ -13,7 +13,7 @@ const EnemyRoutine gMettaurSwimRoutine = {
     [ENTITY_INIT] =      MettaurSwim_Init,
     [ENTITY_UPDATE] =    MettaurSwim_Update,
     [ENTITY_DIE] =       MettaurSwim_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

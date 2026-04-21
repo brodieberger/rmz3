@@ -17,17 +17,17 @@ const EnemyRoutine gBatringRoutine = {
     [ENTITY_INIT] =      Batring_Init,
     [ENTITY_UPDATE] =    Batring_Update,
     [ENTITY_DIE] =       Batring_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 // Unused
 static struct Enemy* CreateBatring(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_BATRING);
+    INIT_ENEMY_ROUTINE(p, ENEMY_BATRING);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -220,7 +220,7 @@ _0806710A:\n\
 	movs r0, #0\n\
 	strb r0, [r6, #0x11]\n\
 	adds r0, r6, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08067142\n\
 	ldrb r0, [r6, #0x10]\n\
@@ -320,7 +320,7 @@ NAKED static void Batring_Update(struct Enemy* p) {
 	cmp r0, #8\n\
 	bne _08067182\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _0806719C\n\
 _08067182:\n\
@@ -393,7 +393,7 @@ _080671E4:\n\
 	cmp r0, #7\n\
 	beq _08067212\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	bne _08067222\n\
 _08067212:\n\

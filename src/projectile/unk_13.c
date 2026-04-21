@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/unk_13.inc");
+
 void Projectile13_Init(struct Projectile* p);
 void Projectile13_Update(struct Projectile* p);
 void Projectile13_Die(struct Projectile* p);

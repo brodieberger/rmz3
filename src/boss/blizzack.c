@@ -2,21 +2,36 @@
 #include "collision.h"
 #include "global.h"
 
-INCASM("asm/boss/blizzack.inc");
-
 void Blizzack_Init(struct Boss* p);
 void Blizzack_Update(struct Boss* p);
 void Blizzack_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gBlizzackRoutine = {
-    [ENTITY_INIT] =      Blizzack_Init,
-    [ENTITY_UPDATE] =    Blizzack_Update,
-    [ENTITY_DIE] =       Blizzack_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Blizzack_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Blizzack_Update,
+    [ENTITY_DIE] =       (BossFunc)Blizzack_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
+
+void CreateBlizzack(struct Coord* c) {
+  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_BOSS_ROUTINE(p, BOSS_BLIZZACK);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->coord = *c;
+    p->work[0] = 0, p->work[1] = 0;
+  }
+}
+
+// --------------------------------------------
+
+INCASM("asm/boss/blizzack.inc");
 
 void blizzackMode0(struct Boss* p);
 void blizzackMode1(struct Boss* p);
@@ -41,28 +56,29 @@ void blizzackMode19(struct Boss* p);
 void blizzackMode20(struct Boss* p);
 
 // clang-format off
+// 0x08364b50
 static const BossFunc sUpdates[21] = {
-    blizzackMode0,
-    blizzackMode1,
-    blizzackNeutral,
-    blizzackPreAI,
-    blizzackNextMode,
-    blizzackJump,
-    blizzackStamp,
-    blizzackMode7,
-    blizzackMode8,
-    blizzackMode9,
-    blizzackStartBlizzard,
-    blizzackBlizzard,
-    blizzackEndBlizzard,
-    blizzackBombJump,
-    blizzackBomb,
-    blizzackBombFall,
-    blizzackBombStamp,
-    blizzackMode17,
-    blizzackMode18,
-    blizzackMode19,
-    blizzackMode20,
+    (BossFunc)blizzackMode0,
+    (BossFunc)blizzackMode1,
+    (BossFunc)blizzackNeutral,
+    (BossFunc)blizzackPreAI,
+    (BossFunc)blizzackNextMode,
+    (BossFunc)blizzackJump,
+    (BossFunc)blizzackStamp,
+    (BossFunc)blizzackMode7,
+    (BossFunc)blizzackMode8,
+    (BossFunc)blizzackMode9,
+    (BossFunc)blizzackStartBlizzard,
+    (BossFunc)blizzackBlizzard,
+    (BossFunc)blizzackEndBlizzard,
+    (BossFunc)blizzackBombJump,
+    (BossFunc)blizzackBomb,
+    (BossFunc)blizzackBombFall,
+    (BossFunc)blizzackBombStamp,
+    (BossFunc)blizzackMode17,
+    (BossFunc)blizzackMode18,
+    (BossFunc)blizzackMode19,
+    (BossFunc)blizzackMode20,
 };
 // clang-format on
 
@@ -73,13 +89,14 @@ void blizzack_0805ad2c(struct Boss* p);
 void blizzack_0805add0(struct Boss* p);
 
 static const BossFunc sDeads[3] = {
-    blizzack_0805ac5c,
-    blizzack_0805ad2c,
-    blizzack_0805add0,
+    (BossFunc)blizzack_0805ac5c,
+    (BossFunc)blizzack_0805ad2c,
+    (BossFunc)blizzack_0805add0,
 };
 
 // --------------------------------------------
 
+// 0x08364bb0
 static const struct Collision sCollisions[4] = {
     {
       kind : DDP,
@@ -87,7 +104,6 @@ static const struct Collision sCollisions[4] = {
       special : CS_BOSS,
       damage : 4,
       atkType : 0x00,
-      comboLv : 0,
       hitzone : 8,
       remaining : 1,
       layer : 0x00000001,
@@ -109,8 +125,6 @@ static const struct Collision sCollisions[4] = {
       special : CS_BOSS,
       damage : 4,
       atkType : 0x00,
-      element : 0x00,
-      comboLv : 0,
       hitzone : 8,
       remaining : 1,
       layer : 0x00000001,
@@ -128,4 +142,5 @@ static const struct Collision sCollisions[4] = {
     },
 };
 
+// 0x08364c10
 static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(24)};

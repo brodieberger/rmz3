@@ -61,10 +61,7 @@ static void ClavekerYellowBalls_Update(struct Projectile* p) {
 
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
     ClavekerYellowBalls_Die(p);
     return;
@@ -74,10 +71,7 @@ static void ClavekerYellowBalls_Update(struct Projectile* p) {
 
 static void ClavekerYellowBalls_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

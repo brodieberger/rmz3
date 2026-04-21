@@ -2,11 +2,9 @@
 #include "global.h"
 #include "projectile.h"
 
-static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41];
-
-static void OmegaZeroProjectile_Init(struct Projectile *p);
-static void OmegaZeroProjectile_Update(struct Projectile *p);
-static void OmegaZeroProjectile_Die(struct Projectile *p);
+static void OmegaZeroProjectile_Init(struct Projectile* p);
+static void OmegaZeroProjectile_Update(struct Projectile* p);
+static void OmegaZeroProjectile_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gOmegaZeroProjectileRoutine = {
@@ -18,75 +16,168 @@ const ProjectileRoutine gOmegaZeroProjectileRoutine = {
 };
 // clang-format on
 
-static const u8 sOmegaZeroProjectileInitModes[8];
-static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41];
+// --------------------------------------------
 
-NAKED static void OmegaZeroProjectile_Init(struct Projectile *p) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r4, r0, #0\n\
-	ldr r1, _080AE53C @ =gProjectileFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r4, #0x14]\n\
-	ldr r1, _080AE540 @ =0x0836D264\n\
-	ldrb r0, [r4, #0x10]\n\
-	adds r0, r0, r1\n\
-	ldrb r0, [r0]\n\
-	strb r0, [r4, #0xd]\n\
-	ldrb r0, [r4, #0xa]\n\
-	movs r1, #2\n\
-	orrs r0, r1\n\
-	movs r1, #1\n\
-	orrs r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	adds r0, r4, #0\n\
-	bl InitNonAffineMotion\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #4\n\
-	orrs r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	adds r5, r4, #0\n\
-	adds r5, #0x74\n\
-	ldr r1, _080AE544 @ =0x0836C9C0\n\
-	adds r2, r4, #0\n\
-	adds r2, #0x54\n\
-	adds r0, r5, #0\n\
-	movs r3, #1\n\
-	bl InitBody\n\
-	str r4, [r5, #0x2c]\n\
-	ldr r0, _080AE548 @ =nop_080ae4d8\n\
-	str r0, [r5, #0x24]\n\
-	adds r0, r4, #0\n\
-	bl OmegaZeroProjectile_Update\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080AE53C: .4byte gProjectileFnTable\n\
-_080AE540: .4byte sOmegaZeroProjectileInitModes\n\
-_080AE544: .4byte gOmegaZeroProjectileCollisions_0836c9c0\n\
-_080AE548: .4byte nop_080ae4d8\n\
- .syntax divided\n");
+void CreateOzArcBlade(struct Entity* e, u8 n) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 2;
+    (p->coord).x = (e->coord).x;
+    (p->coord).y = (e->coord).y;
+    p->work[2] = n;
+    p->work[3] = (e->flags >> 4) & 1;
+  }
+}
+
+void CreateMessenkou(struct Entity* e) {
+  s32 i;
+  for (i = 0; i < 5; i++) {
+    struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 8;
+      INIT_PROJECTILE_ROUTINE(p, 38);
+      p->tileNum = 0;
+      p->palID = 0;
+      p->work[0] = 1;
+      (p->coord).x = (e->coord).x;
+      (p->coord).y = (e->coord).y;
+      p->work[2] = i;
+    }
+  }
+}
+
+struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 0;
+    p->work[1] = kind;
+    p->unk_28 = e;
+  }
+  return (struct Projectile*)p;
+}
+
+// 0x080ae300
+void CreateRekkoha(struct Entity* e, u8 n) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 3;
+    p->work[2] = n * 51;
+    p->unk_28 = e;
+    (p->coord).y = (e->coord).y - PIXEL(48);
+  }
+}
+
+void CreateDoubleChargeWave1(struct Entity* e) {
+  s32 ex, x;
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 4;
+    p->work[2] = (e->flags >> 4) & 1;
+
+    // は?
+    ex = (e->coord).x;
+    x = (p->coord).x = ex - PIXEL(26);
+    if (e->flags & X_FLIP) {
+      x = ex + PIXEL(26);
+    }
+    (p->coord).x = x;
+
+    (p->coord).y = (e->coord).y - PIXEL(23);
+  }
+}
+
+void CreateDoubleChargeWave2(struct Entity* e) {
+  s32 ex, x;
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 5;
+    p->work[2] = (e->flags >> 4) & 1;
+
+    // は?
+    ex = (e->coord).x;
+    x = (p->coord).x = ex - PIXEL(26);
+    if (e->flags & X_FLIP) {
+      x = ex + PIXEL(26);
+    }
+    (p->coord).x = x;
+
+    (p->coord).y = (e->coord).y - PIXEL(23);
+  }
+}
+
+void CreateDoubleChargeWave3(struct Entity* e) {
+  s32 ex, x;
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 38);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->work[0] = 6;
+    p->work[2] = (e->flags >> 4) & 1;
+
+    // は?
+    ex = (e->coord).x;
+    x = (p->coord).x = ex - PIXEL(40);
+    if (e->flags & X_FLIP) {
+      x = ex + PIXEL(40);
+    }
+    (p->coord).x = x;
+
+    (p->coord).y = (e->coord).y - PIXEL(15);
+  }
 }
 
 // --------------------------------------------
 
-static void nop_080ae5b4(struct Projectile *_);
-static void OmegaZeroSaber_Update(struct Projectile *p);
-static void Messenkou_Update(struct Projectile *p);
-static void ArcBlade_Update(struct Projectile *p);
-static void Rekkoha_Update(struct Projectile *p);
-static void DoubleChargeWave1_Update(struct Projectile *p);
-static void DoubleChargeWave2_Update(struct Projectile *p);
-static void DoubleChargeWave3_Update(struct Projectile *p);
+static const u8 sOmegaZeroProjectileInitModes[8];
+static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41];
 
-static void OmegaZeroProjectile_Update(struct Projectile *p) {
+// 0x080ae4d8
+static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+
+static void OmegaZeroProjectile_Init(struct Projectile* p) {
+  SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
+  (p->s).mode[1] = sOmegaZeroProjectileInitModes[(p->s).work[0]];
+  (p->s).flags |= FLIPABLE;
+  (p->s).flags |= DISPLAY;
+  InitNonAffineMotion(&p->s);
+  INIT_BODY(p, &gOmegaZeroProjectileCollisions_0836c9c0[0], 1, onCollision);
+  OmegaZeroProjectile_Update(p);
+}
+
+// --------------------------------------------
+
+static void nop_080ae5b4(struct Projectile* _);
+static void OmegaZeroSaber_Update(struct Projectile* p);
+static void Messenkou_Update(struct Projectile* p);
+static void ArcBlade_Update(struct Projectile* p);
+static void Rekkoha_Update(struct Projectile* p);
+static void DoubleChargeWave1_Update(struct Projectile* p);
+static void DoubleChargeWave2_Update(struct Projectile* p);
+static void DoubleChargeWave3_Update(struct Projectile* p);
+
+static void OmegaZeroProjectile_Update(struct Projectile* p) {
   // clang-format off
   static const ProjectileFunc sUpdates1[7] = {
       nop_080ae5b4,
@@ -115,7 +206,7 @@ static void OmegaZeroProjectile_Update(struct Projectile *p) {
 
 // --------------------------------------------
 
-static void OmegaZeroProjectile_Die(struct Projectile *p) {
+static void OmegaZeroProjectile_Die(struct Projectile* p) {
   (p->body).status = 0;
   (p->body).prevStatus = 0;
   (p->body).invincibleTime = 0;
@@ -126,10 +217,10 @@ static void OmegaZeroProjectile_Die(struct Projectile *p) {
 
 // --------------------------------------------
 
-static void nop_080ae5b4(struct Projectile *_) { return; }
+static void nop_080ae5b4(struct Projectile* _) { return; }
 
 // 01 00 xx --
-NAKED static void OmegaZeroSaber_Update(struct Projectile *p) {
+NAKED static void OmegaZeroSaber_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -280,7 +371,7 @@ _080AE6D8: .4byte gProjectileFnTable\n\
 }
 
 // 01 01 xx --
-NAKED static void Messenkou_Update(struct Projectile *p) {
+NAKED static void Messenkou_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -417,7 +508,7 @@ _080AE7E4: .4byte gProjectileFnTable\n\
 }
 
 // 01 02 xx --
-NAKED static void ArcBlade_Update(struct Projectile *p) {
+NAKED static void ArcBlade_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -562,7 +653,7 @@ _080AE900: .4byte gProjectileFnTable\n\
 }
 
 // 01 03 xx --
-NAKED static void Rekkoha_Update(struct Projectile *p) {
+NAKED static void Rekkoha_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -734,7 +825,7 @@ _080AEA48: .4byte gProjectileFnTable\n\
 }
 
 // 01 04 xx --
-NAKED static void DoubleChargeWave1_Update(struct Projectile *p) {
+NAKED static void DoubleChargeWave1_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -865,7 +956,7 @@ _080AEB44: .4byte gProjectileFnTable\n\
 }
 
 // 01 05 xx --
-NAKED static void DoubleChargeWave2_Update(struct Projectile *p) {
+NAKED static void DoubleChargeWave2_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
@@ -1034,7 +1125,7 @@ _080AEC94: .4byte gProjectileFnTable\n\
 }
 
 // 01 06 xx --
-NAKED static void DoubleChargeWave3_Update(struct Projectile *p) {
+NAKED static void DoubleChargeWave3_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -1164,530 +1255,458 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x0400, 0x0000, 0x0800, 0x0800},
+      range : {-PIXEL(4), PIXEL(0), PIXEL(8), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0200, -0x0600, 0x0800, 0x0800},
+      range : {PIXEL(2), -PIXEL(6), PIXEL(8), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0200, 0x0600, 0x0800, 0x0800},
+      range : {PIXEL(2), PIXEL(6), PIXEL(8), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x0F00, 0x0F00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(15), PIXEL(15)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 5,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x0E00, -0x4C00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(14), -PIXEL(76)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0600, 0x0000, 0x1900, 0x1A00},
+      range : {PIXEL(6), PIXEL(0), PIXEL(25), PIXEL(26)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0600, 0x0000, 0x1900, 0x1A00},
+      range : {PIXEL(6), PIXEL(0), PIXEL(25), PIXEL(26)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0300, -0x0100, 0x0A00, 0x1F00},
+      range : {PIXEL(3), -PIXEL(1), PIXEL(10), PIXEL(31)},
     },
     {
       kind : DRP,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x00,
+      hitzone : 0,
       hardness : HARDNESS_B3,
       remaining : 0,
-      range : {0x0000, 0x0000, 0x0800, 0x0800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 2,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2000, -0x1200, 0x2600, 0x1A00},
+      range : {-PIXEL(32), -PIXEL(18), PIXEL(38), PIXEL(26)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 2,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x0800, -0x2200, 0x3A00, 0x0800},
+      range : {-PIXEL(8), -PIXEL(34), PIXEL(58), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 2,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0D00, -0x2100, 0x1000, 0x0A00},
+      range : {PIXEL(13), -PIXEL(33), PIXEL(16), PIXEL(10)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2000, -0x1200, 0x2600, 0x1A00},
+      range : {-PIXEL(32), -PIXEL(18), PIXEL(38), PIXEL(26)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x0800, -0x2200, 0x3A00, 0x0800},
+      range : {-PIXEL(8), -PIXEL(34), PIXEL(58), PIXEL(8)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0D00, -0x2100, 0x1000, 0x0A00},
+      range : {PIXEL(13), -PIXEL(33), PIXEL(16), PIXEL(10)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 3,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 2,
       layer : 0x00000020,
-      range : {-0x0F00, -0x2200, 0x3800, 0x0E00},
+      range : {-PIXEL(15), -PIXEL(34), PIXEL(56), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 3,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2700, -0x1200, 0x1A00, 0x1600},
+      range : {-PIXEL(39), -PIXEL(18), PIXEL(26), PIXEL(22)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 3,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1600, 0x0000, 0x2F00, 0x0E00},
+      range : {-PIXEL(22), PIXEL(0), PIXEL(47), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 3,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x0E00, 0x0100, 0x1E00, 0x0E00},
+      range : {-PIXEL(14), PIXEL(1), PIXEL(30), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 2,
       layer : 0x00000020,
-      range : {-0x0F00, -0x2200, 0x3800, 0x0E00},
+      range : {-PIXEL(15), -PIXEL(34), PIXEL(56), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2700, -0x1200, 0x1A00, 0x1600},
+      range : {-PIXEL(39), -PIXEL(18), PIXEL(26), PIXEL(22)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1600, 0x0000, 0x2F00, 0x0E00},
+      range : {-PIXEL(22), PIXEL(0), PIXEL(47), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x0E00, 0x0100, 0x1E00, 0x0E00},
+      range : {-PIXEL(14), PIXEL(1), PIXEL(30), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x04,
-      hitzone : 0x00,
+      comboLv : 4,
       remaining : 2,
       layer : 0x00000020,
-      range : {-0x0F00, -0x2200, 0x3800, 0x0E00},
+      range : {-PIXEL(15), -PIXEL(34), PIXEL(56), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x04,
-      hitzone : 0x00,
+      comboLv : 4,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2700, -0x1200, 0x1A00, 0x1600},
+      range : {-PIXEL(39), -PIXEL(18), PIXEL(26), PIXEL(22)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x04,
-      hitzone : 0x00,
+      comboLv : 4,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1600, 0x0000, 0x2F00, 0x0E00},
+      range : {-PIXEL(22), PIXEL(0), PIXEL(47), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x04,
-      hitzone : 0x00,
+      comboLv : 4,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x0E00, 0x0100, 0x1E00, 0x0E00},
+      range : {-PIXEL(14), PIXEL(1), PIXEL(30), PIXEL(14)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0600, -0x0200, 0x0800, 0x1000},
+      range : {PIXEL(6), -PIXEL(2), PIXEL(8), PIXEL(16)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x1300, -0x1100, 0x0900, 0x1200},
+      range : {PIXEL(19), -PIXEL(17), PIXEL(9), PIXEL(18)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 4,
       layer : 0x00000020,
-      range : {0x1400, -0x1C00, 0x0E00, 0x2400},
+      range : {PIXEL(20), -PIXEL(28), PIXEL(14), PIXEL(36)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 3,
       layer : 0x00000020,
-      range : {0x0000, -0x3100, 0x2200, 0x0C00},
+      range : {PIXEL(0), -PIXEL(49), PIXEL(34), PIXEL(12)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 2,
       layer : 0x00000020,
-      range : {-0x1E00, -0x3100, 0x1C00, 0x0C00},
+      range : {-PIXEL(30), -PIXEL(49), PIXEL(28), PIXEL(12)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2A00, -0x1900, 0x1700, 0x2200},
+      range : {-PIXEL(42), -PIXEL(25), PIXEL(23), PIXEL(34)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 4,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x2100, -0x0300, 0x1D00, 0x0A00},
+      range : {-PIXEL(33), -PIXEL(3), PIXEL(29), PIXEL(10)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0600, -0x0200, 0x0800, 0x1000},
+      range : {PIXEL(6), -PIXEL(2), PIXEL(8), PIXEL(16)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x1300, -0x1100, 0x0900, 0x1200},
+      range : {PIXEL(19), -PIXEL(17), PIXEL(9), PIXEL(18)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 4,
       layer : 0x00000020,
-      range : {0x1400, -0x1C00, 0x0E00, 0x2400},
+      range : {PIXEL(20), -PIXEL(28), PIXEL(14), PIXEL(36)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 3,
       layer : 0x00000020,
-      range : {0x0000, -0x3100, 0x2200, 0x0C00},
+      range : {PIXEL(0), -PIXEL(49), PIXEL(34), PIXEL(12)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 2,
       layer : 0x00000020,
-      range : {-0x1E00, -0x3100, 0x1C00, 0x0C00},
+      range : {-PIXEL(30), -PIXEL(49), PIXEL(28), PIXEL(12)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 1,
       layer : 0x00000020,
-      range : {-0x2A00, -0x1900, 0x1700, 0x2200},
+      range : {-PIXEL(42), -PIXEL(25), PIXEL(23), PIXEL(34)},
     },
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
       damage : 1,
-      atkType : ATK_SABER,
-      element : 0x00,
+      atkType : 0x01,
       nature : 0x80,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x2100, -0x0300, 0x1D00, 0x0A00},
+      range : {-PIXEL(33), -PIXEL(3), PIXEL(29), PIXEL(10)},
     },
 };
 
@@ -1836,19 +1855,19 @@ const struct Collision gOmegaZeroProjectileCollisions_0836ce84[5] = {
     },
 };
 
-const struct Collision *const PTR_ARRAY_0836cefc[2] = {
+const struct Collision* const PTR_ARRAY_0836cefc[2] = {
     [0] = &(gOmegaZeroProjectileCollisions_0836ce84[1]),
     [1] = &(gOmegaZeroProjectileCollisions_0836ce84[0]),
 };
 
-const struct Collision *const PTR_ARRAY_0836cf04[4] = {
+const struct Collision* const PTR_ARRAY_0836cf04[4] = {
     [0] = &(gOmegaZeroProjectileCollisions_0836ce84[2]),
     [1] = &(gOmegaZeroProjectileCollisions_0836ce84[2]),
     [2] = &(gOmegaZeroProjectileCollisions_0836ce84[3]),
     [3] = &(gOmegaZeroProjectileCollisions_0836ce84[4]),
 };
 
-const struct Collision *const PTR_ARRAY_0836cf14[2] = {
+const struct Collision* const PTR_ARRAY_0836cf14[2] = {
     [0] = &(gOmegaZeroProjectileCollisions_0836c9c0[8]),
     [1] = &(gOmegaZeroProjectileCollisions_0836c9c0[8]),
 };
@@ -2117,13 +2136,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0300, -0x1A00, 0x2400, 0x2C00},
+      range : {PIXEL(3), -PIXEL(26), PIXEL(36), PIXEL(44)},
     },
     {
       kind : DDP,
@@ -2131,13 +2147,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x0500, -0x2600, 0x2A00, 0x1D00},
+      range : {-PIXEL(5), -PIXEL(38), PIXEL(42), PIXEL(29)},
     },
     {
       kind : DDP,
@@ -2145,13 +2158,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1A00, -0x1F00, 0x1F00, 0x2800},
+      range : {-PIXEL(26), -PIXEL(31), PIXEL(31), PIXEL(40)},
     },
     {
       kind : DDP,
@@ -2159,13 +2169,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1C00, -0x0D00, 0x1E00, 0x2C00},
+      range : {-PIXEL(28), -PIXEL(13), PIXEL(30), PIXEL(44)},
     },
     {
       kind : DDP,
@@ -2173,13 +2180,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1400, 0x0A00, 0x2800, 0x1F00},
+      range : {-PIXEL(20), PIXEL(10), PIXEL(40), PIXEL(31)},
     },
     {
       kind : DDP,
@@ -2187,13 +2191,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0000, 0x0C00, 0x2A00, 0x1D00},
+      range : {PIXEL(0), PIXEL(12), PIXEL(42), PIXEL(29)},
     },
     {
       kind : DDP,
@@ -2201,13 +2202,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x1300, 0x0300, 0x1F00, 0x2800},
+      range : {PIXEL(19), PIXEL(3), PIXEL(31), PIXEL(40)},
     },
     {
       kind : DDP,
@@ -2215,13 +2213,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x1600, -0x0E00, 0x1E00, 0x2C00},
+      range : {PIXEL(22), -PIXEL(14), PIXEL(30), PIXEL(44)},
     },
     {
       kind : DDP,
@@ -2229,13 +2224,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {0x0D00, -0x2300, 0x2800, 0x1F00},
+      range : {PIXEL(13), -PIXEL(35), PIXEL(40), PIXEL(31)},
     },
     {
       kind : DDP,
@@ -2243,13 +2235,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1900, -0x1300, 0x2000, 0x3200},
+      range : {-PIXEL(25), -PIXEL(19), PIXEL(32), PIXEL(50)},
     },
     {
       kind : DDP,
@@ -2257,13 +2246,10 @@ static const struct Collision gOmegaZeroProjectileCollisions_0836d124[11] = {
       special : HALFABLE,
       damage : 3,
       atkType : ATK_SABER,
-      element : 0x00,
       nature : 0x80,
-      comboLv : 0x00,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000020,
-      range : {-0x1700, -0x0700, 0x1C00, 0x1800},
+      range : {-PIXEL(23), -PIXEL(7), PIXEL(28), PIXEL(24)},
     },
 };
 
@@ -2284,7 +2270,7 @@ static const struct Collision *const PTR_ARRAY_0836d22c[12] = {
 };
 // clang-format on
 
-static const struct Collision *const PTR_ARRAY_0836d25c[2] = {
+static const struct Collision* const PTR_ARRAY_0836d25c[2] = {
     [0] = &(gOmegaZeroProjectileCollisions_0836c9c0[8]),
     [1] = &(gOmegaZeroProjectileCollisions_0836c9c0[8]),
 };

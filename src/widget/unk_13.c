@@ -3,59 +3,67 @@
 #include "global.h"
 #include "widget.h"
 
-static void MenuComp13_Init(struct Widget *w);
-static void MenuComp13_Update(struct Widget *w);
-static void MenuComp13_Die(struct Widget *w);
+struct Widget13 {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u8 unk_0[4];
+  motion_t unk_4;  // unk_78
+  u16 tileNum;
+  u8 unk_8;
+  u8 unk_9;
+  u8 palID;
+  u8 unk_b;
+  u8 unk_c;
+};
+static_assert(sizeof(struct Widget13) == sizeof(struct Widget));
+
+static void MenuComp13_Init(struct Widget* w);
+static void MenuComp13_Update(struct Widget* w);
+static void MenuComp13_Die(struct Widget13* w);
 
 // clang-format off
 const WidgetRoutine gMenuComp13Routine = {
-    [ENTITY_INIT] =      MenuComp13_Init,
-    [ENTITY_UPDATE] =    MenuComp13_Update,
-    [ENTITY_DIE] =       MenuComp13_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuComp13_Init,
+    [ENTITY_UPDATE] =    (void*)MenuComp13_Update,
+    [ENTITY_DIE] =       (void*)MenuComp13_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Widget *FUN_080e83d0(void *r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Entity* FUN_080e83d0(void* r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
+  struct Widget13* w = (struct Widget13*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 13);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)r0;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = r2;
-    (w->s).coord.x = x;
-    (w->s).coord.y = y;
-    (w->props).w13.unk_4 = r3;
-    (w->props).w13.unk_9 = r6;
-    (w->props).w13.unk_b = 0;
+    (w->s).tileNum = 0, (w->s).palID = 0;
+    (w->s).unk_28 = (struct Entity*)r0;
+    (w->s).work[0] = r1, (w->s).work[1] = r2;
+    (w->s).coord.x = x, (w->s).coord.y = y;
+    w->unk_4 = r3;
+    w->unk_9 = r6;
+    w->unk_b = 0;
   }
-  return w;
+  return (void*)w;
 }
 
-struct Widget *FUN_080e844c(void *r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Entity* FUN_080e844c(void* r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
+  struct Widget13* w = (struct Widget13*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
     (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 13);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)r0;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = r2;
-    (w->s).coord.x = x;
-    (w->s).coord.y = y;
-    (w->props).w13.unk_4 = r3;
-    (w->props).w13.unk_9 = r6;
-    (w->props).w13.unk_b = 1;
+    (w->s).tileNum = 0, (w->s).palID = 0;
+    (w->s).unk_28 = (void*)r0;
+    (w->s).work[0] = r1, (w->s).work[1] = r2;
+    (w->s).coord.x = x, (w->s).coord.y = y;
+    w->unk_4 = r3;
+    w->unk_9 = r6;
+    w->unk_b = 1;
   }
-  return w;
+  return (void*)w;
 }
 
-NAKED static void MenuComp13_Init(struct Widget *w) {
+NAKED static void MenuComp13_Init(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -542,7 +550,7 @@ _080E88A8: .4byte 0x00006401\n\
  .syntax divided\n");
 }
 
-NAKED static void MenuComp13_Update(struct Widget *w) {
+NAKED static void MenuComp13_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -2086,19 +2094,19 @@ _080E9540: .4byte gBlendRegBuffer\n\
  .syntax divided\n");
 }
 
-static void MenuComp13_Die(struct Widget *w) {
+static void MenuComp13_Die(struct Widget13* w) {
   if ((w->s).work[1] != 0) {
-    const motion_t m = (w->props).w13.unk_4;
-    wDynamicGraphicTilenums[m >> 8] = (w->props).w13.tileNum;
-    wDynamicMotionPalIDs[m >> 8] = (w->props).w13.palID;
+    const motion_t m = w->unk_4;
+    wDynamicGraphicTilenums[m >> 8] = w->tileNum;
+    wDynamicMotionPalIDs[m >> 8] = w->palID;
   } else {
-    const motion_t m = (w->props).w13.unk_4;
-    wStaticGraphicTilenums[m >> 8] = (w->props).w13.tileNum;
-    wStaticMotionPalIDs[m >> 8] = (w->props).w13.palID;
+    const motion_t m = w->unk_4;
+    wStaticGraphicTilenums[m >> 8] = w->tileNum;
+    wStaticMotionPalIDs[m >> 8] = w->palID;
   }
 
-  if ((w->props).w13.unk_c != 0) {
-    ClearBlink((w->props).w13.unk_c);
+  if (w->unk_c != 0) {
+    ClearBlink(w->unk_c);
   }
 
   (w->s).flags &= ~DISPLAY;

@@ -7,17 +7,27 @@
 #include "metatile.h"
 #include "motion.h"
 
-struct ScriptEntity;
+// Entity.flags
+#define DISPLAY (1 << 0)
+#define FLIPABLE (1 << 1)
+#define COLLIDABLE (1 << 2)
+#define OAM_PRIO (1 << 3)  // このフラグがセットされていたらOAMの優先度に従う セットされてないなら優先度0扱い
+// X_FLIP (1 << 4)
+// Y_FLIP (1 << 5)
+#define AFFINE (1 << 6)
+#define SCRIPTED (1 << 7)  // ScriptedEntityか
 
-#define INIT_BODY(p, collisions, hp, onCollision)  \
-  {                                                \
-    struct Body* body;                             \
-    (p->s).flags |= COLLIDABLE;                    \
-    body = &p->body;                               \
-    InitBody(body, collisions, &(p->s).coord, hp); \
-    body->parent = (struct CollidableEntity*)p;    \
-    body->fn = onCollision;                        \
-  }
+// Entity.flags2
+#define SCALEROT (1 << 0)
+#define ENTITY_FLAG2_B1 (1 << 1)  // 意味のないフラグに見える(どちらにしろScalerotSpriteするので)
+#define DYNAMIC (1 << 2)          // Entity has "Dynamic sprite" (See sprites/README.md)
+#define ENTITY_HAZARD (1 << 3)
+#define WHITE_PAINTABLE (1 << 4)  // (if damaged) white painted by RunDamageEffect
+#define PALETTE_FORCED (1 << 5)
+#define ENTITY_FLAGS2_B6 (1 << 6)
+#define STOPPED (1 << 7)
+
+struct ScriptEntity;
 
 struct EntityOamData {
   /*0x00*/ u32 y : 8;
@@ -44,14 +54,6 @@ struct EntityOamData {
   /*    */ u8 : 8;
 };
 
-struct __attribute__((packed, aligned(1))) EntityOamData_06 {
-  /*0x06*/ u8 unused : 4;
-  /*    */ u8 xflip : 1;
-  /*    */ u8 yflip : 1;
-  /*    */ u8 size : 2;
-  /*    */ u8 : 8;
-};
-
 // Entityを表す複数のスプライトが集まったメタスプライト(モーションによっては複数のメタスプライトを持つ時もある)
 // TODO: この構造は間違い (Task関係の構造体っぽい)
 struct Sprite {
@@ -69,17 +71,6 @@ struct Sprite {
     u16 x;
     u16 y;
   } mag;  // size magnification (x, y)
-};
-
-struct __attribute__((packed, aligned(1))) EntityFlags {
-  u8 display : 1;
-  u8 flipable : 1;
-  u8 collidable : 1;
-  u8 oamprio : 1;
-  u8 xflip : 1;
-  u8 yflip : 1;
-  u8 affine : 1;
-  u8 b7 : 1;
 };
 
 struct Entity {
@@ -100,40 +91,52 @@ struct Entity {
   // 場合によっては次の処理時のmode[0]をmode[3]に格納しておくなど汎用のバッファとしても使われる
   u8 mode[4];
 
-  u8 work[4];      // general purpose
-  void* onUpdate;  // EntityFunc
-  struct ScriptEntity* scriptEntity;
-  u8 uniqueID;      // すべてのEntityを区別するためのID
-  u8 invincibleID;  // 被ダメ時の無敵を表す白塗りをEntityに適用する際にEntityの区別に用いるID
+  u8 work[4];                         // 0x10, general purpose
+  void* onUpdate;                     // 0x14, EntityFunc
+  struct ScriptEntity* scriptEntity;  // 0x18
+  u8 uniqueID;                        // 0x1C, すべてのEntityを区別するためのID
+  u8 invincibleID;                    // 0x1D, 被ダメ時の無敵を表す白塗りをEntityに適用する際にEntityの区別に用いるID
 
   // motion_t
-  motion_id_t motionID;         // upper byte for motion_t, gDynamicMotionCmdTable または gStaticMotionCmdTable の idx (Dynamic: 0..162, Static: 0..252)
-  motion_sub_id_t motionSubID;  // lower byte for motion_t
+  motion_id_t motionID;         // 0x1E, upper byte for motion_t, gDynamicMotionCmdTable または gStaticMotionCmdTable の idx (Dynamic: 0..162, Static: 0..252)
+  motion_sub_id_t motionSubID;  // 0x1F, lower byte for motion_t
 
-  u16 tileNum;
-  u8 palID;  // これを変えると色が変わる
-  u8 savedPalID;
-  u8 angle;  // Affine spriteのときの回転度合い
-  u8 taskCol;
-  metatile_attr_t hazardAttr;
+  u16 tileNum;                 // 0x20
+  u8 palID;                    // 0x22, これを変えると色が変わる
+  u8 savedPalID;               // 0x23
+  u8 angle;                    // 0x24, Affine spriteのときの回転度合い
+  u8 taskCol;                  // 0x25
+  metatile_attr_t hazardAttr;  // 0x26
+
+  // ここからは Entity の種類によって別構造体にわけるべき？
+
+  // ほとんど Entity* を入れているが、たまに別の構造体へのポインタも入れているっぽい?
   struct Entity* unk_28;
   struct Entity* unk_2c;
+
   const struct Rect* size;
-  struct Sprite spr;
+  struct Sprite spr;  // 全然違う使い方の場合もあるっぽい
+
+  // TODO: あくまで、基本的には, .coord が座標, .d が移動速度 というだけで、3つのCoordの用途には例外もある？ (例: AfterImage_Init では残像3つ分の座標を保存するために使われているっぽい)
   struct Coord coord;
   struct Coord d;  // 移動速度
   struct Coord unk_coord;
+
   struct Motion motion;
 };  // 116 bytes
 
 // 当たり判定のある Entity
-struct CollidableEntity {
+typedef struct CollidableEntity {
   struct Entity s;
   struct Body body;
-};  // 180 bytes (0xB4..)
+} Object;  // 180 bytes (0xB4..)
 
-typedef void (*EntityFunc)(struct Entity*);
+#define OBJECT_HDR \
+  struct Entity s; \
+  struct Body body;
 
 // --------------------------------------------
+
+typedef void (*EntityFunc)(struct Entity*);
 
 #endif  // GUARD_RMZ3_ENTITY_ENTITY_H

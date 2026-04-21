@@ -17,7 +17,7 @@ const SolidRoutine gDoor2DBlueRoutine = {
     [ENTITY_INIT] =      Door2DBlue_Init,
     [ENTITY_UPDATE] =    Door2DBlue_Update,
     [ENTITY_DIE] =       Door2DBlue_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -97,10 +97,7 @@ static void Door2DBlue_Update(struct Solid* p) {
 }
 
 static void Door2DBlue_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }

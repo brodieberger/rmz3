@@ -3,24 +3,35 @@
 #include "story.h"
 #include "vfx.h"
 
+struct FollowerCyberElf {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct Zero* player;  // 0xB4
+  cyberelf_t id;        // 0xB8
+  u8 unk_b9[7];         // 0xB9
+  u8 unk_0c;            // 0xC0
+  bool8 isSatelite1;    // 0xC1
+};
+static_assert(sizeof(struct FollowerCyberElf) == sizeof(struct Elf));
+
 static void FollowerElf_Init(struct Elf* e);
 static void FollowerElf_Update(struct Elf* e);
-static void FollowerElf_Die(struct Elf* e);
+static void FollowerElf_Die(struct FollowerCyberElf* e);
 
 // clang-format off
 const ElfRoutine gFollowerElfRoutine = {
-    [ENTITY_INIT] =      FollowerElf_Init,
-    [ENTITY_UPDATE] =    FollowerElf_Update,
-    [ENTITY_DIE] =       FollowerElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
+    [ENTITY_INIT] =      (ElfFunc)FollowerElf_Init,
+    [ENTITY_UPDATE] =    (ElfFunc)FollowerElf_Update,
+    [ENTITY_DIE] =       (ElfFunc)FollowerElf_Die,
+    [ENTITY_DISAPPEAR] = (ElfFunc)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
 // clang-format on
 
-void MenuExit_FollowerElf(struct Elf* e) {
-  struct Zero* player = (e->props.follower).player;
-  if ((e->props.follower).isSatelite1 == 0) {
-    if ((e->props.follower).id == ((&player->unk_b4)->status).asset.satelites[0]) {
+void MenuExit_FollowerElf(struct FollowerCyberElf* e) {
+  struct Zero* player = e->player;
+  if (e->isSatelite1 == 0) {
+    if (e->id == ((&player->unk_b4)->status).asset.satelites[0]) {
       return;
     }
     if (player->unk_121 == ELF_BYSE) {
@@ -28,11 +39,9 @@ void MenuExit_FollowerElf(struct Elf* e) {
     }
     (e->s).flags &= ~DISPLAY;
     (e->s).flags &= ~FLIPABLE;
-    (e->body).status = 0;
-    (e->body).prevStatus = 0;
-    (e->body).invincibleTime = 0;
+    EXIT_BODY(e);
   } else {
-    if ((e->props.follower).id == ((&player->unk_b4)->status).asset.satelites[1]) {
+    if (e->id == ((&player->unk_b4)->status).asset.satelites[1]) {
       return;
     }
     if (player->unk_121 == ELF_BYSE) {
@@ -40,32 +49,29 @@ void MenuExit_FollowerElf(struct Elf* e) {
     }
     (e->s).flags &= ~DISPLAY;
     (e->s).flags &= ~FLIPABLE;
-    (e->body).status = 0;
-    (e->body).prevStatus = 0;
-    (e->body).invincibleTime = 0;
+    EXIT_BODY(e);
   }
-  (e->s).flags &= ~COLLIDABLE;
   SET_ELF_ROUTINE(e, ENTITY_DISAPPEAR);
 }
 
 struct Elf* CreateFollowerElf(struct Zero* p, u8 breed, u8 availability, bool8 isSatelite1) {
-  struct Elf* e = (struct Elf*)AllocEntityFirst(gElfHeaderPtr);
+  struct FollowerCyberElf* e = (struct FollowerCyberElf*)AllocEntityFirst(gElfHeaderPtr);
   if (e != NULL) {
     (e->s).taskCol = 16;
     INIT_ELF_ROUTINE(e, 8);
     (e->s).tileNum = 0;
     (e->s).palID = 0;
-    (e->props.follower).player = p;
+    e->player = p;
     (e->s).work[0] = breed;
     (e->s).work[1] = availability;
-    (e->props.follower).isSatelite1 = isSatelite1;
+    e->isSatelite1 = isSatelite1;
     if (isSatelite1 == 0) {
-      (e->props.follower).id = ((&p->unk_b4)->status).asset.satelites[0];
+      e->id = ((&p->unk_b4)->status).asset.satelites[0];
     } else {
-      (e->props.follower).id = ((&p->unk_b4)->status).asset.satelites[1];
+      e->id = ((&p->unk_b4)->status).asset.satelites[1];
     }
   }
-  return e;
+  return (void*)e;
 }
 
 NAKED static void FollowerElf_Init(struct Elf* e) {
@@ -518,8 +524,8 @@ _080E44E4:\n\
  .syntax divided\n");
 }
 
-static void FollowerElf_Die(struct Elf* e) {
-  struct Zero* player = (e->props.follower).player;
+static void FollowerElf_Die(struct FollowerCyberElf* e) {
+  struct Zero* player = e->player;
   FUN_080bfce8(&(e->s).coord, 0);
   if (player->unk_121 == ELF_BYSE) {
     CLEAR_FLAG(gCurStory.s.gameflags, BYSE_ENABLED);

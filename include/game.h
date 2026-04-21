@@ -74,10 +74,10 @@ struct GameState {
   */
   u32 bg0[512];
 
-  struct EntityHeader entityHeaders[10];
-  struct TaskManager taskManager;   // 02031500
-  struct TaskManager taskManager2;  // 0203170c
-  struct Pivot unk_0db8;            // 02031918, メニュー画面、リザルト画面のスプライトの位置を管理する
+  struct EntityHeader entityHeaders[10];  // 02031370, index は include/constants/entity.h の ENTITY_XXX と対応
+  struct TaskManager taskManager;         // 02031500
+  struct TaskManager taskManager2;        // 0203170c
+  struct Pivot unk_0db8;                  // 02031918, メニュー画面、リザルト画面のスプライトの位置を管理する
 
   /*
     02031924
@@ -90,9 +90,10 @@ struct GameState {
   struct Coord unk_0dc4;
 
   union {
+    u8 raw[256];
     struct MenuState menu;
     struct ResultState result;
-    struct MinigameState minigame;
+    struct MinigameState mg;
   } sceneState;  // 0203192c, 256 bytes
 
   // 02031a2c
@@ -120,11 +121,13 @@ struct GameState {
 
 extern struct GameState gGameState;
 extern u8 gUnkSineTableIdx;
-extern u16 CopyFrom_08386130[32];
+extern u16 gCyberSpaceColorHashtable[96];
 extern void* PTR_0202f384;
 extern struct SaveSlot SaveState_020003a8;
 
 void SetGameMode(struct GameState* p, u32 mode);
+
+struct Pickup;
 
 void InitBossHeader(struct EntityHeader* h, struct Boss* p, s16 len);
 void InitWeaponHeader(struct EntityHeader* h, struct Weapon* w, s16 len);
@@ -134,6 +137,7 @@ void InitVFXHeader(struct EntityHeader* h, struct VFX* p, s16 len);
 void InitSolidHeader(struct EntityHeader* h, struct Solid* p, s16 len);
 void InitPickupHeader(struct EntityHeader* h, struct Pickup* p, s16 len);
 void InitElfHeader(struct EntityHeader* h, struct Elf* p, s16 len);
+void InitWidgetHeader(struct EntityHeader* h, struct Widget* p, s16 len);
 
 void UpdateVFXs(void);
 void UpdateProjectiles(void);

@@ -13,7 +13,7 @@ const EnemyRoutine gEnemy61Routine = {
     [ENTITY_INIT] =      Enemy61_Init,
     [ENTITY_UPDATE] =    Enemy61_Update,
     [ENTITY_DIE] =       Enemy61_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

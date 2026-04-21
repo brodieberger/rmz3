@@ -1640,7 +1640,7 @@ _0800F778:
 	adds r1, r5, r0
 	ldr r0, [r2, #0x58]
 	str r0, [r1]
-	ldr r0, _0800F82C @ =0x0202F360
+	ldr r0, _0800F82C @ =gWhitePaintFlags
 	ldrb r1, [r2, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -1708,7 +1708,7 @@ _0800F81C: .4byte gBgMapOffsets
 _0800F820: .4byte 0x0002D038
 _0800F824: .4byte 0x0002D03C
 _0800F828: .4byte 0x0002D040
-_0800F82C: .4byte 0x0202F360
+_0800F82C: .4byte gWhitePaintFlags
 _0800F830: .4byte gPaletteManager
 _0800F834: .4byte 0x00000404
 _0800F838: .4byte 0x00000406

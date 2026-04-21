@@ -17,7 +17,7 @@ const SolidRoutine gGiantElevatorPlatformRoutine = {
     [ENTITY_INIT] =      Solid46_Init,
     [ENTITY_UPDATE] =    Solid46_Update,
     [ENTITY_DIE] =       Solid46_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -62,4 +62,5 @@ static void Solid46_Init(struct Solid* p) {
 
 INCASM("asm/solid/giant_elevator_platform.inc");
 
+// 0x083717c0
 static const struct Rect sSize = {PIXEL(0), PIXEL(8), PIXEL(64), PIXEL(16)};

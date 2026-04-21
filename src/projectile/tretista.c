@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/tretista.inc");
+
 void TretistaProjectile_Init(struct Projectile* p);
 void TretistaProjectile_Update(struct Projectile* p);
 void TretistaProjectile_Die(struct Projectile* p);

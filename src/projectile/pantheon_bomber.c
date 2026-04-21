@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/pantheon_bomber.inc");
+
 void PantheonBombProjectile_Init(struct Projectile* p);
 void PantheonBombProjectile_Update(struct Projectile* p);
 void PantheonBombProjectile_Die(struct Projectile* p);

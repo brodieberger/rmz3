@@ -11,7 +11,7 @@ FUN_0809af20: @ 0x0809AF20
 	adds r5, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r6, r2, #0x18
-	ldr r0, _0809AF80 @ =gZakoHeaderPtr
+	ldr r0, _0809AF80 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -54,7 +54,7 @@ _0809AF76:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809AF80: .4byte gZakoHeaderPtr
+_0809AF80: .4byte gEnemyHeaderPtr
 _0809AF84: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809af88
@@ -64,7 +64,7 @@ FUN_0809af88: @ 0x0809AF88
 	adds r4, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r5, r2, #0x18
-	ldr r0, _0809AFE8 @ =gZakoHeaderPtr
+	ldr r0, _0809AFE8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -108,7 +108,7 @@ _0809AFE0:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809AFE8: .4byte gZakoHeaderPtr
+_0809AFE8: .4byte gEnemyHeaderPtr
 _0809AFEC: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809aff0
@@ -120,7 +120,7 @@ FUN_0809aff0: @ 0x0809AFF0
 	lsrs r5, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r6, r3, #0x18
-	ldr r0, _0809B05C @ =gZakoHeaderPtr
+	ldr r0, _0809B05C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -167,7 +167,7 @@ _0809B052:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809B05C: .4byte gZakoHeaderPtr
+_0809B05C: .4byte gEnemyHeaderPtr
 _0809B060: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809b064
@@ -179,7 +179,7 @@ FUN_0809b064: @ 0x0809B064
 	lsrs r5, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r6, r3, #0x18
-	ldr r0, _0809B0D0 @ =gZakoHeaderPtr
+	ldr r0, _0809B0D0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -226,7 +226,7 @@ _0809B0C6:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809B0D0: .4byte gZakoHeaderPtr
+_0809B0D0: .4byte gEnemyHeaderPtr
 _0809B0D4: .4byte gEnemyFnTable
 
 	thumb_func_start HarpuiaMinigameEnemy_Init

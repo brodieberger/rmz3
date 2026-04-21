@@ -55,7 +55,3 @@ static const struct Collision sCollision = {
 };
 
 static const u8 u8_ARRAY_0836d730[4] = {0, 0, 0, 0};
-
-INCASM("asm/projectile/projectile2.inc");
-
-// --------------------------------------------

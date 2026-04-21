@@ -4,11 +4,15 @@
 #include "system.h"
 #include "text.h"
 
+static const u16* const gTextOffsetTable[20];
+static const char_t* const gTextTable[20];
+static const u32 sVramOffsets[2];
+
 extern const struct ColorGraphic gDialogGraphics[];
 
 static void resetTextWindow(struct TextWindowText* t);
 static void setupTextWindow(struct TextWindowText* t);
-static void updateTextWindow(struct TextWindowText* t);
+static void _UpdateTextWindow(struct TextWindowText* t);
 static bool32 isMugshotChanged(struct TextWindowText* t);
 
 void ClearTextWindow(void* bg0) {
@@ -26,21 +30,17 @@ void ClearTextWindow(void* bg0) {
 
 void UpdateTextWindow(void) {
   gTextWindow.frame++;
-  updateTextWindow(&gTextWindow.text);
+  _UpdateTextWindow(&gTextWindow.text);
 }
 
-#if MODERN == 0
-static void unused_080ea664(void) { gWindowRegBuffer.dispcnt &= 0xdfff; }
-#endif
+static void unused_080ea664(void) { gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON; }
 
-#if MODERN == 0
 static void unused_080ea678(TextID n) {
   struct TextWindowText* t;
   PrintTextWindow(n, TW_OPTION);
   t = &gTextWindow.text;
   t->flag |= 1;
 }
-#endif
 
 void PrintNormalMessage(TextID n) {
   PrintTextWindow(n, TW_NORMAL);
@@ -342,13 +342,14 @@ static void mugshotMessage(struct TextWindowText* t);
 static void inlineMessage(struct TextWindowText* t);
 static void text_080eb6e8(struct TextWindowText* t);
 
-static void updateTextWindow(struct TextWindowText* t) {
+// 0x080ea8e8
+static void _UpdateTextWindow(struct TextWindowText* t) {
   static const TextFunc routine[] = {
       doNoTextWindow,
       mugshotMessage,
       inlineMessage,
       text_080eb6e8,
-  };
+  };  // 0x083767a8
   (routine[(t->props).kind])(t);
 }
 
@@ -366,7 +367,8 @@ static bool32 isMugshotChanged(struct TextWindowText* t) {
   return result;
 }
 
-NAKED void loadMugshot(struct TextWindowText* t, u8 mugshot) {
+// 0x080ea930
+NAKED static void loadMugshot(struct TextWindowText* t, u8 mugshot) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r6, r0, #0\n\
@@ -384,7 +386,7 @@ NAKED void loadMugshot(struct TextWindowText* t, u8 mugshot) {
 	movs r1, #0xc\n\
 	ands r1, r2\n\
 	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA968 @ =u32_08376858\n\
+	ldr r2, _080EA968 @ =sVramOffsets\n\
 	ldr r2, [r2, #4]\n\
 	adds r1, r1, r2\n\
 	bl RequestGraphicTransfer\n\
@@ -393,7 +395,7 @@ NAKED void loadMugshot(struct TextWindowText* t, u8 mugshot) {
 _080EA95C: .4byte gSystemSavedataManager\n\
 _080EA960: .4byte gDialogGraphics\n\
 _080EA964: .4byte gVideoRegBuffer+4\n\
-_080EA968: .4byte u32_08376858\n\
+_080EA968: .4byte sVramOffsets\n\
 _080EA96C:\n\
 	ldrb r1, [r4]\n\
 	lsls r0, r1, #2\n\
@@ -406,7 +408,7 @@ _080EA96C:\n\
 	movs r1, #0xc\n\
 	ands r1, r2\n\
 	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA9E0 @ =u32_08376858\n\
+	ldr r2, _080EA9E0 @ =sVramOffsets\n\
 	ldr r2, [r2, #4]\n\
 	adds r1, r1, r2\n\
 	bl RequestGraphicTransfer\n\
@@ -434,7 +436,7 @@ _080EA99E:\n\
 	movs r1, #0xc\n\
 	ands r1, r2\n\
 	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA9E0 @ =u32_08376858\n\
+	ldr r2, _080EA9E0 @ =sVramOffsets\n\
 	ldr r2, [r2]\n\
 	adds r1, r1, r2\n\
 	bl RequestGraphicTransfer\n\
@@ -450,7 +452,7 @@ _080EA9D2:\n\
 	.align 2, 0\n\
 _080EA9D8: .4byte gDialogGraphics+(57*20)\n\
 _080EA9DC: .4byte gVideoRegBuffer+4\n\
-_080EA9E0: .4byte u32_08376858\n\
+_080EA9E0: .4byte sVramOffsets\n\
 _080EA9E4: .4byte gDialogGraphics+(57*20)+12\n\
 _080EA9E8: .4byte gDialogGraphics\n\
 _080EA9EC: .4byte gDialogGraphics+12\n\
@@ -2252,3 +2254,112 @@ _080EB8B2:\n\
 	bx r0\n\
  .syntax divided\n");
 }
+
+// --------------------------------------------
+
+extern const u16 TextOfs_System[];
+extern const u16 TextOfs_083789ac[];
+extern const u16 TextOfs_CielChats[];
+extern const u16 TextOfs_SpaceCraft[];
+extern const u16 TextOfs_Volcano[];
+extern const u16 TextOfs_OceanHighwayRuins[];
+extern const u16 TextOfs_WeaponRepairFactory[];
+extern const u16 TextOfs_OldLifeSpace[];
+extern const u16 TextOfs_MissileFactory[];
+extern const u16 TextOfs_TwilightDesert[];
+extern const u16 TextOfs_AnatreForest[];
+extern const u16 TextOfs_IceBase[];
+extern const u16 TextOfs_AreaX2[];
+extern const u16 TextOfs_EnergyFactory[];
+extern const u16 TextOfs_SnowyPlains[];
+extern const u16 TextOfs_SunkenLibrary[];
+extern const u16 TextOfs_GiantElevator[];
+extern const u16 TextOfs_SubArcadia[];
+extern const u16 TextOfs_WeilLabo[];
+extern const u16 TextOfs_Others[];
+
+// clang-format off
+// 0x083767b8
+static const u16* const gTextOffsetTable[20] = {
+  TextOfs_System,
+  TextOfs_083789ac,
+  TextOfs_CielChats,
+  TextOfs_SpaceCraft,
+  TextOfs_Volcano,
+  TextOfs_OceanHighwayRuins,
+  TextOfs_WeaponRepairFactory,
+  TextOfs_OldLifeSpace,
+  TextOfs_MissileFactory,
+  TextOfs_TwilightDesert,
+  TextOfs_AnatreForest,
+  TextOfs_IceBase,
+  TextOfs_AreaX2,
+  TextOfs_EnergyFactory,
+  TextOfs_SnowyPlains,
+  TextOfs_SunkenLibrary,
+  TextOfs_GiantElevator,
+  TextOfs_SubArcadia,
+  TextOfs_WeilLabo,
+  TextOfs_Others,
+};
+// clang-format on
+
+extern const char_t Text_System[];
+extern const char_t Text_ResultNotifications[];
+extern const char_t Text_CielChats[];
+extern const char_t Text_SpaceCraft[];
+extern const char_t Text_Volcano[];
+extern const char_t Text_OceanHighwayRuins[];
+extern const char_t Text_WeaponRepairFactory[];
+extern const char_t Text_OldLifeSpace[];
+extern const char_t Text_MissileFactory[];
+extern const char_t Text_TwilightDesert[];
+extern const char_t Texts_AnatreForest[];
+extern const char_t Texts_IceBase[];
+extern const char_t Texts_AreaX2[];
+extern const char_t Texts_EnergyFactory[];
+extern const char_t Texts_SnowyPlains[];
+extern const char_t Text_SunkenLibrary[];
+extern const char_t Texts_GiantElevator[];
+extern const char_t Text_SubArcadia[];
+extern const char_t Text_WeilLabo[];
+extern const char_t Text_Others[];
+
+// clang-format off
+// 0x08376808
+static const char_t* const gTextTable[20] = {
+    Text_System,
+    Text_ResultNotifications,
+    Text_CielChats,
+    Text_SpaceCraft,
+    Text_Volcano,
+    Text_OceanHighwayRuins,
+    Text_WeaponRepairFactory,
+    Text_OldLifeSpace,
+    Text_MissileFactory,
+    Text_TwilightDesert,
+    Texts_AnatreForest,
+    Texts_IceBase,
+    Texts_AreaX2,
+    Texts_EnergyFactory,
+    Texts_SnowyPlains,
+    Text_SunkenLibrary,
+    Texts_GiantElevator,
+    Text_SubArcadia,
+    Text_WeilLabo,
+    Text_Others,
+};
+// clang-format on
+
+// 0x08376858
+static const u32 sVramOffsets[2] = {0x4C00, 0x5800};
+
+// 0x08376860
+static const u16 MugshotLeftTileMasks[] = {
+    0x1260, 0x1261, 0x1262, 0x1263, 0x1264, 0x1265, 0x1266, 0x1267, 0x1268, 0x1269, 0x126A, 0x126B, 0x126C, 0x126D, 0x126E, 0x126F, 0x1270, 0x1271, 0x1272, 0x1273, 0x1274, 0x1275, 0x1276, 0x1277, 0x1278, 0x1279, 0x127A, 0x127B, 0x127C, 0x127D, 0x127E, 0x127F, 0x1280, 0x1281, 0x1282, 0x1283, 0x1284, 0x1285, 0x1286, 0x1287, 0x1288, 0x1289, 0x128A, 0x128B, 0x128C, 0x128D, 0x128E, 0x128F,
+};
+
+// 0x083768c0
+static const u16 MugshotRightTileMasks[] = {
+    0x1665, 0x1664, 0x1663, 0x1662, 0x1661, 0x1660, 0x166B, 0x166A, 0x1669, 0x1668, 0x1667, 0x1666, 0x1671, 0x1670, 0x166F, 0x166E, 0x166D, 0x166C, 0x1677, 0x1676, 0x1675, 0x1674, 0x1673, 0x1672, 0x167D, 0x167C, 0x167B, 0x167A, 0x1679, 0x1678, 0x1683, 0x1682, 0x1681, 0x1680, 0x167F, 0x167E, 0x1689, 0x1688, 0x1687, 0x1686, 0x1685, 0x1684, 0x168F, 0x168E, 0x168D, 0x168C, 0x168B, 0x168A,
+};

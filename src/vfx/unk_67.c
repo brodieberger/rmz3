@@ -1,6 +1,6 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 INCASM("asm/vfx/unk_67.inc");
 
@@ -13,7 +13,7 @@ const VFXRoutine gGhost67Routine = {
     [ENTITY_INIT] =      Ghost67_Init,
     [ENTITY_UPDATE] =    Ghost67_Update,
     [ENTITY_DIE] =       Ghost67_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

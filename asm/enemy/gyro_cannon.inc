@@ -42,14 +42,14 @@ _0806D360:
 	ldr r1, _0806D388 @ =0x083666D8
 	bl SetDDP
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _0806D396
 	adds r0, r4, #0
 	bl UpdateMotionGraphic
 	b _0806D396
 	.align 2, 0
-_0806D388: .4byte 0x083666D8
+_0806D388: .4byte sCollisions+(24*2)
 _0806D38C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -73,7 +73,7 @@ _0806D396:
 	ands r0, r1
 	b _0806D3E0
 	.align 2, 0
-_0806D3B8: .4byte 0x083666F0
+_0806D3B8: .4byte sCollisions+(24*3)
 _0806D3BC:
 	movs r0, #0x40
 	strb r0, [r4, #0x12]
@@ -256,7 +256,7 @@ _0806D508:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806D520: .4byte 0x08366694
+_0806D520: .4byte sUpdates2
 
 	thumb_func_start FUN_0806d524
 FUN_0806d524: @ 0x0806D524
@@ -278,7 +278,7 @@ FUN_0806d524: @ 0x0806D524
 	lsls r0, r0, #0x10
 	cmp r0, #0
 	bne _0806D5F4
-	ldr r7, _0806D56C @ =0x08366720
+	ldr r7, _0806D56C @ =sSlashedEnemies
 	adds r2, r4, #0
 	adds r2, #0xb4
 	ldrb r5, [r2, #8]
@@ -293,7 +293,7 @@ FUN_0806d524: @ 0x0806D524
 	b _0806D572
 	.align 2, 0
 _0806D568: .4byte 0xFFFFEE00
-_0806D56C: .4byte 0x08366720
+_0806D56C: .4byte sSlashedEnemies
 _0806D570:
 	adds r3, r5, #0
 _0806D572:
@@ -302,7 +302,7 @@ _0806D572:
 	movs r2, #0
 	bl CreateSlashedEnemy
 	mov r5, sp
-	ldr r7, _0806D594 @ =0x08366720
+	ldr r7, _0806D594 @ =sSlashedEnemies
 	ldrb r2, [r6, #8]
 	ldrb r1, [r4, #0xa]
 	movs r3, #0x10
@@ -313,7 +313,7 @@ _0806D572:
 	orrs r3, r2
 	b _0806D59A
 	.align 2, 0
-_0806D594: .4byte 0x08366720
+_0806D594: .4byte sSlashedEnemies
 _0806D598:
 	adds r3, r2, #0
 _0806D59A:
@@ -333,7 +333,7 @@ _0806D59A:
 	orrs r3, r2
 	b _0806D5C2
 	.align 2, 0
-_0806D5BC: .4byte 0x0836673C
+_0806D5BC: .4byte sSlashedEnemies+(28*1)
 _0806D5C0:
 	adds r3, r2, #0
 _0806D5C2:
@@ -353,7 +353,7 @@ _0806D5C2:
 	orrs r3, r2
 	b _0806D5EA
 	.align 2, 0
-_0806D5E4: .4byte 0x0836673C
+_0806D5E4: .4byte sSlashedEnemies+(28*1)
 _0806D5E8:
 	adds r3, r2, #0
 _0806D5EA:
@@ -607,7 +607,7 @@ _0806D7CE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806D7D4: .4byte 0x08366708
+_0806D7D4: .4byte sCollisions+(24*4)
 _0806D7D8: .4byte 0xFFFFE800
 _0806D7DC: .4byte gEnemyFnTable
 
@@ -1061,7 +1061,7 @@ _0806DB14:
 	strb r6, [r4, #0xe]
 	b _0806DB52
 	.align 2, 0
-_0806DB40: .4byte 0x083666C0
+_0806DB40: .4byte sCollisions+(24*1)
 _0806DB44: .4byte 0xFFFFF600
 _0806DB48: .4byte sCollisions
 _0806DB4C:
@@ -1121,7 +1121,7 @@ gyroCannon_0806db8c: @ 0x0806DB8C
 	orrs r3, r2
 	b _0806DBB6
 	.align 2, 0
-_0806DBB0: .4byte 0x08366758
+_0806DBB0: .4byte sSlashedEnemies+(28*2)
 _0806DBB4:
 	adds r3, r2, #0
 _0806DBB6:
@@ -1147,7 +1147,7 @@ _0806DBB6:
 	orrs r3, r6
 	b _0806DBEA
 	.align 2, 0
-_0806DBE4: .4byte 0x08366758
+_0806DBE4: .4byte sSlashedEnemies+(28*2)
 _0806DBE8:
 	adds r3, r6, #0
 _0806DBEA:
@@ -1168,7 +1168,7 @@ _0806DBEA:
 	orrs r3, r2
 	b _0806DC12
 	.align 2, 0
-_0806DC0C: .4byte 0x08366774
+_0806DC0C: .4byte sSlashedEnemies+(28*3)
 _0806DC10:
 	adds r3, r2, #0
 _0806DC12:
@@ -1189,7 +1189,7 @@ _0806DC12:
 	orrs r3, r2
 	b _0806DC3A
 	.align 2, 0
-_0806DC34: .4byte 0x08366774
+_0806DC34: .4byte sSlashedEnemies+(28*3)
 _0806DC38:
 	adds r3, r2, #0
 _0806DC3A:
@@ -1329,7 +1329,7 @@ _0806DD2E:
 	b _0806DD5A
 	.align 2, 0
 _0806DD50: .4byte 0xFFFFFE00
-_0806DD54: .4byte 0x08366758
+_0806DD54: .4byte sSlashedEnemies+(28*2)
 _0806DD58:
 	adds r3, r5, #0
 _0806DD5A:
@@ -1350,7 +1350,7 @@ _0806DD5A:
 	orrs r3, r2
 	b _0806DD82
 	.align 2, 0
-_0806DD7C: .4byte 0x08366774
+_0806DD7C: .4byte sSlashedEnemies+(28*3)
 _0806DD80:
 	adds r3, r2, #0
 _0806DD82:

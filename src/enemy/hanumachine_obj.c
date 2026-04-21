@@ -13,7 +13,7 @@ const EnemyRoutine gHanumachineObjRoutine = {
     [ENTITY_INIT] =      HanumachineObj_Init,
     [ENTITY_UPDATE] =    HanumachineObj_Update,
     [ENTITY_DIE] =       HanumachineObj_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

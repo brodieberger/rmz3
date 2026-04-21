@@ -69,10 +69,7 @@ static void BlazinTail_Update(struct Projectile* p) {
 // --------------------------------------------
 
 static void BlazinTail_Die(struct Projectile* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

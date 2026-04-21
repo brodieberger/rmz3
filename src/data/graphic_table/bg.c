@@ -542,7 +542,7 @@ const struct ColorGraphic gGraphics_ElfCategory[3] = {
         size : 576,
         ofs : 576,
         chunkSize : 288,
-        props : (BPP4 | CHUNKED)
+        props : (BPP4 | MAP2D)
       },
       pal : {
         src : 0x000137A8,  // 0x0855ACC8
@@ -558,7 +558,7 @@ const struct ColorGraphic gGraphics_ElfCategory[3] = {
         size : 576,
         ofs : 576,
         chunkSize : 288,
-        props : (BPP4 | CHUNKED)
+        props : (BPP4 | MAP2D)
       },
       pal : {
         src : 0x000139F4,  // 0x0855AF28
@@ -574,7 +574,7 @@ const struct ColorGraphic gGraphics_ElfCategory[3] = {
         size : 576,
         ofs : 576,
         chunkSize : 288,
-        props : (BPP4 | CHUNKED)
+        props : (BPP4 | MAP2D)
       },
       pal : {
         src : 0x00013C40,  // 0x0855B188
@@ -593,7 +593,7 @@ const struct ColorGraphic gGraphics_ModSecretDisk[2] = {
         size : 256,
         ofs : 235,
         chunkSize : 128,
-        props : (BPP4 | CHUNKED)
+        props : (BPP4 | MAP2D)
       },
       pal : {
         src : 0x00013D4C,  // 0x0855B2A8
@@ -609,7 +609,7 @@ const struct ColorGraphic gGraphics_ModSecretDisk[2] = {
         size : 256,
         ofs : 235,
         chunkSize : 128,
-        props : (BPP4 | CHUNKED)
+        props : (BPP4 | MAP2D)
       },
       pal : {
         src : 0x00013E58,  // 0x0855B3C8
@@ -643,7 +643,7 @@ const struct Graphic gGraphic_0854758C = {
   size : 576,
   ofs : 576,
   chunkSize : 288,
-  props : (BPP4 | CHUNKED)
+  props : (BPP4 | MAP2D)
 };
 const struct Palette gPalette_0854758C = {
   src : 0x00014090,  // 0x0855B628
@@ -658,7 +658,7 @@ const struct Graphic gGraphic_NurseElfTab = {
   size : 512,
   ofs : 672,
   chunkSize : 256,
-  props : (BPP4 | CHUNKED)
+  props : (BPP4 | MAP2D)
 };
 const struct Palette gPalette_NurseElfTab = {
   src : 0x0001429C,  // 0x0855B848
@@ -673,7 +673,7 @@ const struct Graphic gGraphic_AnimalElfTab = {
   size : 512,
   ofs : 672,
   chunkSize : 256,
-  props : (BPP4 | CHUNKED)
+  props : (BPP4 | MAP2D)
 };
 const struct Palette gPalette_AnimalElfTab = {
   src : 0x000144A8,  // 0x0855BA68
@@ -688,7 +688,7 @@ const struct Graphic gGraphic_HackerElfTab = {
   size : 512,
   ofs : 672,
   chunkSize : 256,
-  props : (BPP4 | CHUNKED)
+  props : (BPP4 | MAP2D)
 };
 const struct Palette gPalette_HackerElfTab = {
   src : 0x000146B4,  // 0x0855BC88

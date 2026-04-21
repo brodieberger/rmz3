@@ -18,52 +18,17 @@ enum ZeroPosture {
   POSTURE_COUNT,
 };
 
-#if MODERN
-#define SET_PLAYER_ROUTINE(player, routine)                                            \
-  {                                                                                    \
-    *(u32*)(&((player)->s).mode[0]) = routine;                                         \
-    ((player)->s).onUpdate = (ZeroFunc)((*gZeroFnTable[(((player)->s).id)])[routine]); \
-  }
-#else
-#define SET_PLAYER_ROUTINE(player, routine)        \
-  {                                                \
-    u32 tbl, id;                                   \
-    ZeroFunc** r;                                  \
-    tbl = (u32)gZeroFnTable;                       \
-    id = (((player)->s).id) << 2;                  \
-    r = (ZeroFunc**)(tbl + id);                    \
-                                                   \
-    *(u32*)((player)->s).mode = routine;           \
-    ((player)->s).onUpdate = (void*)(*r)[routine]; \
-  }
-#endif
+typedef ZeroFunc ZeroRoutine[5];
+extern const ZeroRoutine* const gPlayerFnTable[PLAYER_ENTITY_COUNT];
 
-#if MODERN
-#define INIT_PLAYER_ROUTINE(player, playerID)                                           \
-  {                                                                                     \
-    ((player)->s).id = playerID;                                                        \
-    ((player)->s).onUpdate = (void*)((*gZeroFnTable[(((player)->s).id)])[ENTITY_INIT]); \
-  }
-#else
-#define INIT_PLAYER_ROUTINE(player, playerID)          \
-  {                                                    \
-    u32 tbl;                                           \
-    ZeroFunc** r;                                      \
-    tbl = (u32)gZeroFnTable;                           \
-    ((player)->s).id = playerID;                       \
-                                                       \
-    r = (ZeroFunc**)(tbl + (playerID << 2));           \
-    ((player)->s).onUpdate = (void*)(*r)[ENTITY_INIT]; \
-  }
-#endif
+#define INIT_PLAYER_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gPlayerFnTable, entity, entityID)
+#define SET_PLAYER_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gPlayerFnTable, entity, modeID)
 
 enum ZeroGround {
   GROUND_IDLE,
   GROUND_WALK,
   GROUND_DASH,
 };
-
-typedef bool8 (*WeaponOKFunc)(struct Zero*);
 
 #define HEAD ((z->unk_b4).status.head)
 #define BODY(z) (((&z->unk_b4)->status).body)
@@ -74,19 +39,6 @@ typedef bool8 (*WeaponOKFunc)(struct Zero*);
 
 extern struct Zero* pZero;
 extern struct Zero* pZero2;
-
-extern const struct PlttData gZeroPalettes[9][SLOT_4BPP];
-extern const struct PlttData gZeroShadowPalettes[9][SLOT_4BPP];
-extern const struct PlttData gZeroShadowDashPalette[9][SLOT_4BPP];
-extern const ZeroRoutine* const gZeroFnTable[PLAYER_ENTITY_COUNT];
-extern const ZeroFunc PTR_ARRAY_0835e624[4];
-
-extern const ZeroRoutine gFefnirRoutine;
-extern const ZeroRoutine gPhantomMiniRoutine;
-extern const ZeroRoutine gHarpuiaRoutine;
-extern const ZeroRoutine gCopyXMiniRoutine;
-extern const ZeroRoutine gLeviathanRoutine;
-extern const ZeroRoutine gZeroMiniRoutine;
 
 extern const struct Collision gZeroCollisions[POSTURE_COUNT];
 extern const struct Rect gZeroRanges[POSTURE_COUNT];
@@ -124,24 +76,6 @@ u8 CalcBusterBonus(struct Zero* z);
 s16 CalcMaxWalkSpeed(struct Zero* z);
 void FUN_080322c4(struct ZeroStatus* d);
 bool8 IsButtonMashed(struct Zero* z);
-
-void Zero_Init(struct Zero* z);
-void Zero_Update(struct Zero* z);
-void Zero_Die(struct Zero* z);
-void Zero_Disappear(struct Zero* z);
-
-void HandlePlayerInput_Ground(struct Zero* z);
-void HandlePlayerInput_Air(struct Zero* z);
-void HandlePlayerInput_Wall(struct Zero* z);
-void HandlePlayerInput_Ladder(struct Zero* z);
-void HandlePlayerInput_Damaged(struct Zero* z);
-void HandlePlayerInput_Door2D(struct Zero* z);
-void HandlePlayerInput_Door3D(struct Zero* z);
-void HandlePlayerInput_Mode7(struct Zero* z);
-void HandlePlayerInput_Float(struct Zero* z);
-void HandlePlayerInput_Talk(struct Zero* z);
-void HandlePlayerInput_Teleport(struct Zero* z);
-void HandlePlayerInput_Cyber(struct Zero* z);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 

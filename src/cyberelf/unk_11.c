@@ -2,6 +2,8 @@
 #include "cyberelf.h"
 #include "global.h"
 
+// Bee?
+
 INCASM("asm/cyberelf/unk_11.inc");
 
 static const ElfFunc sInitializers[4];
@@ -29,6 +31,7 @@ void FUN_080e5300(struct Elf* p);
 void FUN_080e54ac(struct Elf* p);
 void FUN_080e5608(struct Elf* p);
 
+// 0x08371df8
 static const ElfFunc sInitializers[4] = {
     FUN_080e51b0,
     FUN_080e5300,
@@ -43,6 +46,7 @@ void FUN_080e5718(struct Elf* p);
 void FUN_080e5798(struct Elf* p);
 void FUN_080e5818(struct Elf* p);
 
+// 0x08371e08
 static const ElfFunc sUpdates[4] = {
     FUN_080e56a0,
     FUN_080e5718,
@@ -52,6 +56,7 @@ static const ElfFunc sUpdates[4] = {
 
 // --------------------------------------------
 
+// 0x08371e18
 static const struct Collision sCollisions[15] = {
     [0] = {
       kind : DDP,

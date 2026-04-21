@@ -4,52 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateMegamilpaNode
-CreateMegamilpaNode: @ 0x08065720
-	push {r4, r5, lr}
-	lsls r0, r0, #0x18
-	lsrs r5, r0, #0x18
-	ldr r0, _08065770 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08065768
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _08065774 @ =gEnemyFnTable
-	movs r0, #2
-	strb r0, [r4, #9]
-	ldr r0, [r1, #8]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	strb r2, [r4, #0x10]
-	adds r0, r4, #0
-	adds r0, #0xb8
-	strb r5, [r0]
-_08065768:
-	adds r0, r4, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_08065770: .4byte gZakoHeaderPtr
-_08065774: .4byte gEnemyFnTable
-
 	thumb_func_start MegamilpaNode_Init
 MegamilpaNode_Init: @ 0x08065778
 	push {r4, r5, r6, r7, lr}

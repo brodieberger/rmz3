@@ -1,9 +1,9 @@
 #include "collision.h"
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
 #include "solid.h"
 #include "syssav.h"
+#include "vfx.h"
 
 // 改造カードで出現する、鉢植え、花
 
@@ -16,7 +16,7 @@ const SolidRoutine gModPlantRoutine = {
     [ENTITY_INIT] =      ModPlant_Init,
     [ENTITY_UPDATE] =    ModPlant_Update,
     [ENTITY_DIE] =       ModPlant_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

@@ -11,7 +11,7 @@ const EnemyRoutine gCielMinigameEnemy2Routine = {
     [ENTITY_INIT] =      CielMinigameEnemy2_Init,
     [ENTITY_UPDATE] =    CielMinigameEnemy2_Update,
     [ENTITY_DIE] =       CielMinigameEnemy2_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -19,10 +19,10 @@ const EnemyRoutine gCielMinigameEnemy2Routine = {
 // --------------------------------------------
 
 struct Enemy* FUN_0809c1cc(struct Entity* e, u8 a, u8 b) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CIEL_MG_2);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CIEL_MG_2);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -160,7 +160,7 @@ _0809C312:\n\
 	ldr r1, _0809C344 @ =0x00000E0F\n\
 	adds r0, r2, r1\n\
 	ldrb r1, [r0]\n\
-	ldr r0, _0809C348 @ =gZakoHeaderPtr\n\
+	ldr r0, _0809C348 @ =gEnemyHeaderPtr\n\
 	ldr r0, [r0]\n\
 	movs r3, #0xa\n\
 	ldrsh r0, [r0, r3]\n\
@@ -183,7 +183,7 @@ _0809C312:\n\
 	b _0809C38C\n\
 	.align 2, 0\n\
 _0809C344: .4byte 0x00000E0F\n\
-_0809C348: .4byte gZakoHeaderPtr\n\
+_0809C348: .4byte gEnemyHeaderPtr\n\
 _0809C34C: .4byte 0x00000E12\n\
 _0809C350:\n\
 	ldr r0, [r4, #0x54]\n\
@@ -226,4 +226,4 @@ _0809C38E:\n\
  .syntax divided\n");
 }
 
-static void CielMinigameEnemy2_Die(struct Enemy* p) { SET_ZAKO_ROUTINE(p, ENTITY_EXIT); }
+static void CielMinigameEnemy2_Die(struct Enemy* p) { SET_ENEMY_ROUTINE(p, ENTITY_EXIT); }

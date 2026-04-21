@@ -10,7 +10,7 @@ FUN_08098838: @ 0x08098838
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _08098894 @ =gZakoHeaderPtr
+	ldr r0, _08098894 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -53,7 +53,7 @@ _0809888C:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08098894: .4byte gZakoHeaderPtr
+_08098894: .4byte gEnemyHeaderPtr
 _08098898: .4byte gEnemyFnTable
 
 	thumb_func_start Cattatank_Init
@@ -211,7 +211,7 @@ _080989BA:
 	strb r4, [r0]
 	str r4, [r6, #0x5c]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080989E4
 	ldr r1, _08098A04 @ =0x0000D503
@@ -251,7 +251,7 @@ Cattatank_Update: @ 0x08098A08
 	cmp r0, #6
 	bne _08098A2A
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08098AD0
 _08098A2A:
@@ -350,7 +350,7 @@ _08098AD0:
 	cmp r1, #9
 	beq _08098B00
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08098B10
 _08098B00:
@@ -2949,7 +2949,7 @@ _08099EF6:
 	cmp r0, #0
 	beq _08099F20
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 _08099F20:
 	movs r1, #0
 	movs r0, #6
@@ -2966,7 +2966,7 @@ _08099F2C:
 	cmp r0, #0x40
 	beq _08099F4E
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _08099F4E

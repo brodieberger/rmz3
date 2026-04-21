@@ -13,7 +13,7 @@ const EnemyRoutine gSwordyRoutine = {
     [ENTITY_INIT] =      Swordy_Init,
     [ENTITY_UPDATE] =    Swordy_Update,
     [ENTITY_DIE] =       Swordy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

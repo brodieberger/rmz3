@@ -265,7 +265,7 @@ _0803CA1C:
 	str r3, [r7, #0x58]
 	movs r0, #0xff
 	strb r0, [r7, #0x12]
-	ldr r1, _0803CA40 @ =incrementSaberHitCount_0803cb64
+	ldr r1, _0803CA40 @ =onCollision
 	adds r0, r7, #0
 	adds r0, #0x74
 	str r1, [r0, #0x24]
@@ -280,7 +280,7 @@ _0803CA30:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803CA40: .4byte incrementSaberHitCount_0803cb64
+_0803CA40: .4byte onCollision
 
 	thumb_func_start SmashElec_Update
 SmashElec_Update: @ 0x0803CA44
@@ -434,29 +434,3 @@ _0803CB52:
 	pop {r0}
 	bx r0
 
-	thumb_func_start incrementSaberHitCount_0803cb64
-incrementSaberHitCount_0803cb64: @ 0x0803CB64
-	push {lr}
-	adds r2, r0, #0
-	ldr r0, [r2, #0x14]
-	movs r1, #4
-	ands r0, r1
-	cmp r0, #0
-	beq _0803CB86
-	ldr r2, [r2, #0x2c]
-	ldr r3, _0803CB8C @ =gMission
-	ldrh r1, [r3, #0x1e]
-	ldr r0, _0803CB90 @ =0x0000FFFE
-	cmp r1, r0
-	bhi _0803CB82
-	adds r0, r1, #1
-	strh r0, [r3, #0x1e]
-_0803CB82:
-	movs r0, #1
-	strb r0, [r2, #0x11]
-_0803CB86:
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0803CB8C: .4byte gMission
-_0803CB90: .4byte 0x0000FFFE

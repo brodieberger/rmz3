@@ -1,25 +1,12 @@
 *.gba
-*.map
 build
 agbcc
-*.cfg
 *.sav
 *.cheats
 *.elf
-*.o
-*.d
-*.memo.*
-tools/agbasm*
-tmp*.py
-rmz-text-compiler
-data/string/**/*.bin
-tools/gbagfx/gbagfx
-data/texts/*/*.bin
 graphics/dialog/mugshot/**/*.bin
 graphics/elf/type/**/*.bin
-tmp*.s
-tmp.txt
-*.tmp.*
+tmp/
 graphics/**/*.4bpp
 sprites/**/*.4bpp
 graphics/**/*.lz
@@ -30,11 +17,10 @@ sprites/**/sequence.inc
 data/tilesets/*/header.s
 graphics/**/header.s
 tools/mgba
-tools/tmp
 
-src/**/*.s
 sound/songs/midi/*.s
-!src/libs/m4a_1.s
 
 graphics/**/*.gbapal
 sprites/**/*.gbapal
+data/tilesets/**/header.json
+graphics/**/header.json

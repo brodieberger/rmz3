@@ -37,7 +37,7 @@
         "*.elf": true,
         "graphics/**/*.{4bpp,lz,gbapal}": true,
         "sprites/**/*.{4bpp,lz,gbapal}": true,
-        "**/*.{o,d}": true,
+        "src/*.{o,d}": true,
         "baserom.gba": true,
         "src/**/*.s": { "when": "$(basename).c" },
         "sound/songs/midi/*.s": false,

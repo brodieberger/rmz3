@@ -13,7 +13,7 @@ const EnemyRoutine gHeavyCannonBallRoutine = {
     [ENTITY_INIT] =      HeavyCannon_Init,
     [ENTITY_UPDATE] =    HeavyCannon_Update,
     [ENTITY_DIE] =       HeavyCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

@@ -36,7 +36,7 @@ _0806C3AC:
 _0806C3C8: .4byte gEnemyFnTable
 _0806C3CC:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0806C3F2
 	ldr r1, [r4, #0x2c]
@@ -69,7 +69,7 @@ _0806C3F2:
 	cmp r0, #9
 	beq _0806C42C
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0806C42C
 	ldrb r1, [r4, #0xd]

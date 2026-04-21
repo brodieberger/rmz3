@@ -20,7 +20,7 @@
 #define VFX_SLASHED_ENEMY 16
 #define VFX_UNK_017 17
 #define VFX_UNK_018 18
-#define VFX_UNK_019 19
+#define VFX_MEGAMILPA_DEAD 19  // メガミルパが死んで崩れ落ちるときのエフェクト(石と本体の2種類)
 #define VFX_UNK_020 20
 #define VFX_BATRING_NECRO 21
 #define VFX_UNK_022 22
@@ -35,8 +35,8 @@
 #define VFX_UNK_031 31
 #define VFX_UNK_032 32
 #define VFX_UNK_033 33
-#define VFX_UNK_034 34
-#define VFX_UNK_035 35
+#define VFX_BALLCHAIN 34
+#define VFX_ORWORMER_DUST_CLOUD 35  // OrWormer の出す土埃のエフェクト
 #define VFX_UNK_036 36
 #define VFX_UNK_037 37
 #define VFX_UNK_038 38
@@ -46,7 +46,7 @@
 #define VFX_EXLIFE_INDICATOR 42
 #define VFX_UNK_043 43
 #define VFX_UNK_044 44
-#define VFX_UNK_045 45
+#define VFX_ICEBALL_PARTICLE 45
 #define VFX_UNK_046 46
 #define VFX_UNK_047 47
 #define VFX_ELF_PARTICLE 48
@@ -55,7 +55,7 @@
 #define VFX_UNK_051 51
 #define VFX_UNK_052 52
 #define VFX_UNK_053 53
-#define VFX_UNK_054 54
+#define VFX_ICICLE_PARTICLE 54
 #define VFX_UNK_055 55
 #define VFX_UNK_056 56
 #define VFX_UNK_057 57

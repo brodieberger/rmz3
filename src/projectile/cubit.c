@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/cubit.inc");
+
 void CubitProjectile_Init(struct Projectile* p);
 void CubitProjectile_Update(struct Projectile* p);
 void CubitProjectile_Die(struct Projectile* p);

@@ -10,7 +10,7 @@ CreatePantheonAqua: @ 0x08071C88
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _08071CDC @ =gZakoHeaderPtr
+	ldr r0, _08071CDC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -49,7 +49,7 @@ _08071CD4:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08071CDC: .4byte gZakoHeaderPtr
+_08071CDC: .4byte gEnemyHeaderPtr
 _08071CE0: .4byte gEnemyFnTable
 
 	thumb_func_start PantheonAqua_Init
@@ -227,7 +227,7 @@ _08071DFA:
 	ldr r0, [r6, #0x58]
 	str r0, [r1]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08071E5C
 	movs r1, #0x9c
@@ -323,7 +323,7 @@ _08071EE4:
 	cmp r0, #6
 	beq _08071F0E
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08071F90
 _08071F0E:

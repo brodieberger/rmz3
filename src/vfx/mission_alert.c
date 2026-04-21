@@ -26,7 +26,7 @@ const VFXRoutine gMissionAlertRoutine = {
     [ENTITY_INIT] =      MissionAlert_Init,
     [ENTITY_UPDATE] =    MissionAlert_Update,
     [ENTITY_DIE] =       MissionAlert_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

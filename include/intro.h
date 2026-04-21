@@ -2,7 +2,8 @@
 #define GUARD_RMZ3_INTRO_H
 
 #include "global.h"
-#include "system.h"
+
+struct Process;
 
 struct Intro {
   u8 unk_00[4];
@@ -39,15 +40,15 @@ struct Intro {
   u8 demoKeyFrameEnd;  // .demoKeyFrame がこの値と等しくなったら次のidxへ
   KEY_INPUT unk_24c;
   u16 unk_24e;
-  u16 unk_250;
+
+  u8 cardEState;  // 0x250, 0x080ecd28 でのステートマシンのフェーズ
+  u8 unk_251;
   u8 unk_252;
   u8 unk_253;
 };  // 596 bytes
 
 extern struct Intro gIntro;
 
-extern const struct Graphic gGraphic_Inti;
-extern const struct Palette gPalette_Inti;
 extern const struct Graphic gGraphic_085472a8;
 extern const struct Palette gPalette_085472a8;
 

@@ -2,7 +2,7 @@
 #include "global.h"
 #include "solid.h"
 
-// ------------------------------------------------------------------------------------------------------------------------------------
+static const struct Collision sCollisions[];
 
 void initHeavyCannon(struct Solid* p);
 void heavyCannonAI(struct Solid* p);
@@ -19,73 +19,26 @@ const SolidRoutine gHeavyCannonRoutine = {
 };
 // clang-format on
 
-NAKED struct Enemy* FUN_080cbdc0(struct Enemy* pair) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r2, r0, #0\n\
-	adds r0, #0x8c\n\
-	ldr r0, [r0]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #2\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080CBE30\n\
-	ldrb r0, [r2, #0x10]\n\
-	cmp r0, #3\n\
-	bhi _080CBE00\n\
-	ldr r1, [r2, #0x2c]\n\
-	ldr r5, _080CBDFC @ =gSolidFnTable\n\
-	cmp r1, #0\n\
-	beq _080CBE12\n\
-	adds r4, r5, #0\n\
-	movs r3, #2\n\
-_080CBDE4:\n\
-	ldrb r0, [r1, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r4\n\
-	str r3, [r1, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #8]\n\
-	str r0, [r1, #0x14]\n\
-	ldr r1, [r1, #0x2c]\n\
-	cmp r1, #0\n\
-	bne _080CBDE4\n\
-	b _080CBE12\n\
-	.align 2, 0\n\
-_080CBDFC: .4byte gSolidFnTable\n\
-_080CBE00:\n\
-	ldr r0, [r2, #0x28]\n\
-	ldr r1, [r2, #0x2c]\n\
-	cmp r0, #0\n\
-	beq _080CBE0A\n\
-	str r1, [r0, #0x2c]\n\
-_080CBE0A:\n\
-	ldr r5, _080CBE2C @ =gSolidFnTable\n\
-	cmp r1, #0\n\
-	beq _080CBE12\n\
-	str r0, [r1, #0x28]\n\
-_080CBE12:\n\
-	ldrb r0, [r2, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r5\n\
-	movs r1, #2\n\
-	str r1, [r2, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #8]\n\
-	str r0, [r2, #0x14]\n\
-	adds r0, r2, #0\n\
-	bl killHeavyCannon\n\
-	movs r0, #1\n\
-	b _080CBE32\n\
-	.align 2, 0\n\
-_080CBE2C: .4byte gSolidFnTable\n\
-_080CBE30:\n\
-	movs r0, #0\n\
-_080CBE32:\n\
-	pop {r4, r5}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
+static bool8 FUN_080cbdc0(Object* p) {
+  if ((p->body).status & BODY_STATUS_DEAD) {
+    struct Entity* next;
+    if ((p->s).work[0] < 4) {
+      next = (struct Entity*)(p->s).unk_2c;
+      while (next != NULL) {
+        SET_SOLID_ROUTINE(next, ENTITY_DIE);
+        next = (struct Entity*)next->unk_2c;
+      }
+    } else {
+      struct Entity* prev = (struct Entity*)(p->s).unk_28;
+      next = (struct Entity*)(p->s).unk_2c;
+      if (prev != NULL) prev->unk_2c = next;
+      if (next != NULL) next->unk_28 = prev;
+    }
+    SET_SOLID_ROUTINE(p, ENTITY_DIE);
+    killHeavyCannon((void*)p);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 INCASM("asm/solid/heavy_cannon.inc");
@@ -96,96 +49,110 @@ void FUN_080cc298(struct Solid* p);
 void FUN_080cc2d4(struct Solid* p);
 
 const SolidFunc gHeavyCannonUpdates1[3] = {
-    FUN_080cc298,
-    FUN_080cc298,
-    FUN_080cc2d4,
+    (void*)FUN_080cc298,
+    (void*)FUN_080cc298,
+    (void*)FUN_080cc2d4,
 };
-
-// --------------------------------------------
 
 void FUN_080cc320(struct Solid* p);
 void FUN_080cc4dc(struct Solid* p);
-void FUN_080cc51c(struct Solid* p);
+static void FUN_080cc51c(struct Solid* p);
 
 const SolidFunc gHeavyCannonUpdates2[3] = {
-    FUN_080cc320,
-    FUN_080cc4dc,
-    FUN_080cc51c,
+    (void*)FUN_080cc320,
+    (void*)FUN_080cc4dc,
+    (void*)FUN_080cc51c,
 };
 
 // --------------------------------------------
 
-const struct Collision gHeavyCannonCollisions[6] = {
+void FUN_080cbe38(struct Solid* p);
+
+static void FUN_080cc51c(struct Solid* p) {
+  if ((p->s).mode[3] == 0) {
+    if ((p->s).work[0] < 4) {
+      SetDDP(&p->body, &sCollisions[5]);
+    } else {
+      SetDDP(&p->body, &sCollisions[2]);
+    }
+    (p->s).mode[3]++;
+  }
+  FUN_080cbe38((void*)p);
+}
+
+// --------------------------------------------
+
+// 0x0836FE8C
+static const struct Collision sCollisions[6] = {
     [0] = {
       kind : DRP,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x00,
+      hitzone : 0,
       hardness : HARDNESS_B3,
       remaining : 0,
-      range : {0x0000, 0x0000, 0x0800, 0x0800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(8)},
     },
     [1] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, -0x0500, 0x1A00, 0x1000},
+      range : {PIXEL(0), -PIXEL(5), PIXEL(26), PIXEL(16)},
     },
     [2] = {
       kind : DRP,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       hardness : HARDNESS_B3,
       remaining : 0,
-      range : {0x0000, -0x0500, 0x1A00, 0x1000},
+      range : {PIXEL(0), -PIXEL(5), PIXEL(26), PIXEL(16)},
     },
     [3] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      atkType : 0x00,
-      element : 0x00,
-      nature : BODY_NATURE_B2,
-      comboLv : 0x00,
+      nature : 0x04,
       remaining : 2,
       layer : 0x00000001,
-      range : {0x0000, -0x1900, 0x1600, 0x0800},
+      range : {PIXEL(0), -PIXEL(25), PIXEL(22), PIXEL(8)},
     },
     [4] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 3,
-      hitzone : 0x00,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, -0x0C00, 0x1A00, 0x1F00},
+      range : {PIXEL(0), -PIXEL(12), PIXEL(26), PIXEL(31)},
     },
     [5] = {
       kind : DRP,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       hardness : HARDNESS_B3,
       remaining : 0,
-      range : {0x0000, -0x0800, 0x1A00, 0x1700},
+      range : {PIXEL(0), -PIXEL(8), PIXEL(26), PIXEL(23)},
     },
 };
 
+// 0x0836ff1c
 const u8 u8_ARRAY_0836ff1c[6] = {0, 0, 0, 0, 1, 0};
 
+// 0x0836ff22
 const motion_t gHeavyCannonMotions[3] = {
-    MOTION(SM056_HEAVY_CANNON, 0x05),
-    MOTION(SM056_HEAVY_CANNON, 0x06),
-    MOTION(SM056_HEAVY_CANNON, 0x07),
+    MOTION(SM056_HEAVY_CANNON, 5),
+    MOTION(SM056_HEAVY_CANNON, 6),
+    MOTION(SM056_HEAVY_CANNON, 7),
 };
 
-const struct Coord Coord_0836ff28 = {0x0, -0x800};
+// 0x0836ff28
+const struct Coord Coord_0836ff28 = {PIXEL(0), -PIXEL(8)};
 
+// 0x0836ff30
 const struct Rect Rect_ARRAY_0836ff30[2] = {
-    {0x0000, 0x0900, 0x1600, 0x4000},
-    {0x0000, 0x0A00, 0x1600, 0x1A00},
+    {PIXEL(0), PIXEL(9), PIXEL(22), PIXEL(64)},
+    {PIXEL(0), PIXEL(10), PIXEL(22), PIXEL(26)},
 };

@@ -205,7 +205,7 @@ _080E2286:
 	.align 2, 0
 _080E228C: .4byte gZeroRanges
 _080E2290: .4byte 0x00000147
-_080E2294: .4byte 0x08371CA0
+_080E2294: .4byte sElf1Updates
 _080E2298: .4byte gSineTable
 
 	thumb_func_start Elf1_Die

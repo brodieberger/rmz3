@@ -152,7 +152,7 @@ _08013A60:
 	cmp r0, #0
 	beq _08013A7E
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08013A7E:
 	ldr r1, _08013A90 @ =gBlendRegBuffer
 	ldr r0, _08013A94 @ =0x00000C04
@@ -265,7 +265,7 @@ _08013B4E:
 	cmp r0, #0
 	beq _08013B62
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08013B62:
 	pop {r4}
 	pop {r0}
@@ -490,7 +490,7 @@ _08013D04:
 	cmp r0, #0
 	beq _08013D20
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08013D20:
 	ldr r1, _08013D30 @ =gBlendRegBuffer
 	ldr r0, _08013D34 @ =0x00000C04
@@ -625,7 +625,7 @@ _08013E16:
 	cmp r0, #0
 	beq _08013E32
 	adds r0, r4, #0
-	bl stopSound
+	bl StopSound
 _08013E32:
 	pop {r4, r5, r6}
 	pop {r0}

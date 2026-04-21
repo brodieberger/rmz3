@@ -16,11 +16,11 @@ void InitPaletteManager(void);
 void InitSound(void);
 void InitTextPrinter(u32*);
 void InitScheduler(bool32 ok);
-void GameLoop(void);
+void RunScheduler(void);
 void usrHBlankCallback(void);
 void usrVBlankCallback(void);
 
-WIP void AgbMain(void) {
+NON_MATCH void AgbMain(void) {
 #if MODERN
   ClearMemory();
   InitIntrHandlers();
@@ -37,7 +37,7 @@ WIP void AgbMain(void) {
   ResetWindow();
   ClearMOSAIC();
   InitSound();
-  MaskBg0(gGameState.bg0, SCREEN_BASE(0), 1408, 0x3C0);
+  EnableBG0(gGameState.bg0, SCREEN_BASE_16(0), 1408, RGB(0, 30, 0));
   InitTextPrinter(gGameState.bg0);
   PALETTE16(0) = RGB_WHITE;
   gIntrManager.slowGameRatio = 1;
@@ -52,7 +52,7 @@ WIP void AgbMain(void) {
   ResetProcess(0, Process_SoftReset);  // Process_SoftReset -> Process_Intro -> Process_Game
   ResetProcess(2, Process_System);
 
-  GameLoop();
+  RunScheduler();
 #else
   INCCODE("asm/wip/AgbMain.inc");
 #endif

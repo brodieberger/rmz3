@@ -3,30 +3,40 @@
 
 // サイバーエルフが出すキラキラ
 
+struct CyberelfParticle {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u8 rng;
+  u8 theta;
+  u8 unk_2;
+  u8 unk_3;
+  s32 x;
+  u8 unk_8[8];
+};
+static_assert(sizeof(struct CyberelfParticle) == sizeof(struct VFX));
+
 static void ElfParticle_Init(struct VFX* vfx);
 static void ElfParticle_Update(struct VFX* vfx);
-static void ElfParticle_Die(struct VFX* vfx);
+static void ElfParticle_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gElfParticleRoutine = {
-    [ENTITY_INIT] =      ElfParticle_Init,
-    [ENTITY_UPDATE] =    ElfParticle_Update,
-    [ENTITY_DIE] =       ElfParticle_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ElfParticle_Init,
+    [ENTITY_UPDATE] =    (void*)ElfParticle_Update,
+    [ENTITY_DIE] =       (void*)ElfParticle_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* FUN_080bfc94(struct Coord* c, u8 r1) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bfc94(struct Coord* c, u8 r1) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
+    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_ELF_PARTICLE);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).coord = *c;
-    (p->s).work[0] = 0;
-    (p->s).work[1] = r1;
+    p->tileNum = 0, p->palID = 0;
+    p->coord = *c;
+    p->work[0] = 0, p->work[1] = r1;
   }
   return p;
 }
@@ -270,12 +280,12 @@ _080BFEAC: .4byte 0x00269EC3\n\
 
 // --------------------------------------------
 
-static void FUN_080c0160(struct VFX* vfx);
-void FUN_080c019c(struct VFX* vfx);
+static void FUN_080c0160(struct CyberelfParticle* p);
+static void FUN_080c019c(struct CyberelfParticle* p);
 
 static const VFXFunc sInitializers[2] = {
-    FUN_080c0160,
-    FUN_080c019c,
+    (void*)FUN_080c0160,
+    (void*)FUN_080c019c,
 };
 
 NAKED static void ElfParticle_Init(struct VFX* vfx) {
@@ -615,21 +625,34 @@ _080C013C: .4byte gVFXFnTable\n\
 
 // --------------------------------------------
 
-static void ElfParticle_Die(struct VFX* vfx) {
-  (vfx->s).flags &= ~DISPLAY;
-  SET_VFX_ROUTINE(vfx, ENTITY_EXIT);
+static void ElfParticle_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void FUN_080c0160(struct VFX* vfx) {
-  (vfx->s).d.x = 0;
-  (vfx->s).d.y = 0;
-  (vfx->s).unk_coord.x = 0;
-  (vfx->s).unk_coord.y = 4;
-  (vfx->props).ep.x = (vfx->s).coord.x;
+static void FUN_080c0160(struct CyberelfParticle* p) {
+  (p->s).d.x = 0;
+  (p->s).d.y = 0;
+  (p->s).unk_coord.x = 0;
+  (p->s).unk_coord.y = 4;
+  p->x = (p->s).coord.x;
   RNG_0202f388 = LCG(RNG_0202f388);
-  (vfx->props).ep.unk_0[0] = ((RNG_0202f388 >> 16) & 1) * 32;
+  p->rng = ((RNG_0202f388 >> 16) & 1) * 32;
+}
+
+static void FUN_080c019c(struct CyberelfParticle* p) {
+  if (p->unk_3 != 0) {
+    (p->s).work[3] = (p->s).work[2] = 6;
+    (p->s).d.x = COSX(p->theta, 3) >> 2;
+    (p->s).d.y = SINX(p->theta, 3) >> 2;
+  } else {
+    (p->s).d.x = (s16)COSX(p->theta, 1) >> 2;
+    (p->s).d.y = (s16)SINX(p->theta, 1) >> 2;
+  }
+  (p->s).unk_coord.x = 0;
+  (p->s).unk_coord.y = 1;
 }
 
 INCASM("asm/vfx/elf_particle.inc");

@@ -15,7 +15,7 @@ const VFXRoutine gCyberSpaceElfRoutine = {
     [ENTITY_INIT] =      CyberSpaceElf_Init,
     [ENTITY_UPDATE] =    CyberSpaceElf_Update,
     [ENTITY_DIE] =       CyberSpaceElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

@@ -13,7 +13,7 @@ const EnemyRoutine gShotloidRoutine = {
     [ENTITY_INIT] =      Shotloid_Init,
     [ENTITY_UPDATE] =    Shotloid_Update,
     [ENTITY_DIE] =       Shotloid_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

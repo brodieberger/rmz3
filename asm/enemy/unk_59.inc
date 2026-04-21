@@ -80,7 +80,7 @@ FUN_0809130c: @ 0x0809130C
 	lsls r1, r1, #0x18
 	lsrs r6, r1, #0x18
 	adds r7, r6, #0
-	ldr r0, _080913B8 @ =gZakoHeaderPtr
+	ldr r0, _080913B8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -162,7 +162,7 @@ _080913B2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080913B8: .4byte gZakoHeaderPtr
+_080913B8: .4byte gEnemyHeaderPtr
 _080913BC: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_080913c0
@@ -171,7 +171,7 @@ FUN_080913c0: @ 0x080913C0
 	adds r4, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r5, r1, #0x18
-	ldr r0, _08091424 @ =gZakoHeaderPtr
+	ldr r0, _08091424 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -219,7 +219,7 @@ _0809141E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08091424: .4byte gZakoHeaderPtr
+_08091424: .4byte gEnemyHeaderPtr
 _08091428: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809142c
@@ -228,7 +228,7 @@ FUN_0809142c: @ 0x0809142C
 	adds r4, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r5, r1, #0x18
-	ldr r0, _0809148C @ =gZakoHeaderPtr
+	ldr r0, _0809148C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -272,7 +272,7 @@ _08091484:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809148C: .4byte gZakoHeaderPtr
+_0809148C: .4byte gEnemyHeaderPtr
 _08091490: .4byte gEnemyFnTable
 _08091494: .4byte 0xFFFFF600
 

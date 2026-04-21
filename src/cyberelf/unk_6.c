@@ -1,6 +1,16 @@
 #include "cyberelf.h"
 #include "global.h"
 
+struct Zero;
+
+struct CyberElf6 {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct Zero* player;  // 0xB4
+  u8 unk_b8[12];        // 0xB8
+};
+static_assert(sizeof(struct CyberElf6) == sizeof(struct Elf));
+
 static const u16 u16_ARRAY_08371d5c[7];
 static const u8 sFusionPenalties[7];
 
@@ -18,18 +28,18 @@ const ElfRoutine gElf6Routine = {
 };
 // clang-format on
 
-struct Elf* CreateElf6(struct Zero* z, u8 breed, u8 availability, u8 _) {
-  struct Elf* p = (struct Elf*)AllocEntityFirst(gElfHeaderPtr);
+struct Entity* CreateElf6(struct Zero* z, u8 breed, u8 availability, u8 _) {
+  struct CyberElf6* p = (struct CyberElf6*)AllocEntityFirst(gElfHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 6);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
-    *(struct Zero**)(&(p->props.raw[0])) = z;
+    p->player = z;
     (p->s).work[0] = breed;
     (p->s).work[1] = availability;
   }
-  return p;
+  return (struct Entity*)p;
 }
 
 NAKED static void Elf6_Init(struct Elf* e) {

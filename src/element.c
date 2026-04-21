@@ -3,6 +3,7 @@
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
+#include "vfx/element_effect.h"
 
 void FUN_080250b8(void) {
   wElement.unk_0 = 0;
@@ -43,7 +44,7 @@ void FUN_080251a8(void) {
 }
 
 // おそらく引数のEntityに属性攻撃のエフェクト(氷や電撃)をつける関数
-NAKED struct VFX *ApplyElementEffect(u8 idx, struct Entity *p, const struct Coord *c) {
+NAKED struct VFX* ApplyElementEffect(u8 idx, struct Entity* p, const struct Coord* c) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -516,7 +517,7 @@ _080255FC:\n\
  .syntax divided\n");
 }
 
-bool32 isKilled(struct Entity *p) {
+bool32 isKilled(struct Entity* p) {
   if (p != NULL) {
     return 1 < p->mode[0];
   }

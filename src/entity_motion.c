@@ -104,7 +104,7 @@ NON_MATCH void SetMotion(struct Entity* p, motion_t m) {
       (p->motion).cmds = *(const struct MotionCmd***)((void*)gStaticMotionCmdTable + ((u32)id << 2));         // = gStaticMotionCmdTable[id]
       (p->spr).sprites = *(struct MetaspriteHeader**)((void*)gStaticMotionMetaspriteTable + ((u32)id << 2));  // = gStaticMotionMetaspriteTable[id];
     }
-    p->motionID = id;
+    p->motionID = id;  // ここら辺のレジスタの割り当てがあわない
   }
 
   if ((p->flags2 & DYNAMIC) == 0) {
@@ -131,7 +131,7 @@ void GotoMotion(struct Entity* p, motion_t motion, u16 cmdIdx, u16 r3) {
   (p->motion).duration = r3;
 }
 
-WIP void UpdateMotionGraphic(struct Entity* p) {
+NON_MATCH void UpdateMotionGraphic(struct Entity* p) {
 #if MODERN
   UpdateMotionState(&p->motion);
   (p->spr).spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
@@ -149,10 +149,10 @@ WIP void UpdateMotionGraphic(struct Entity* p) {
       tileNum = wDynamicGraphicTilenums[p->motionID] + p->tileNum;
       palID = wDynamicMotionPalIDs[p->motionID] + p->palID;
       if (p->motionID < 144) {
-        struct Graphic* g = &((struct Graphic*)OFFSET_TABLE(gDynamicMotionGraphicOffsets, p->motionID))[step];
+        struct Graphic* g = (struct Graphic*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + step;
         RequestGraphicTransfer(g, (void*)((tileNum - g->ofs) * 32 + 0x10000));
       } else {
-        struct ColorGraphic* g = &((struct ColorGraphic*)OFFSET_TABLE(gDynamicMotionGraphicOffsets, p->motionID))[step];
+        struct ColorGraphic* g = (struct ColorGraphic*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + step;
         RequestGraphicTransfer(&g->g, (void*)((tileNum - (g->g).ofs) * 32 + 0x10000));
         LoadPalette(&g->pal, (palID - (g->pal).dst) * 32 + 512);
       }
@@ -168,7 +168,7 @@ WIP void UpdateMotionGraphic(struct Entity* p) {
 #endif
 }
 
-WIP void FUN_0801779c(struct Entity* p) {
+NON_MATCH void FUN_0801779c(struct Entity* p) {
 #if MODERN
   UpdateMotionState(&p->motion);
   (p->spr).spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
@@ -243,7 +243,7 @@ NON_MATCH void InitMotionLocation(void) {
     wStaticMotionPalIDs[i] = gStaticMotionGraphics[i].pal.dst;
   }
   for (i = 0; i < DYNAMIC_MOTION_COUNT; i++) {
-    struct ColorGraphic* g = (struct ColorGraphic*)OFFSET_TABLE(gDynamicMotionGraphicOffsets, i);
+    struct ColorGraphic* g = (struct ColorGraphic*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[i]);
     wDynamicGraphicTilenums[i] = (g->g).ofs;
     if (i < 144) {
       wDynamicMotionPalIDs[i] = 0;

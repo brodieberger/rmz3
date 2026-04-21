@@ -1,22 +1,22 @@
 #include "global.h"
 #include "vfx.h"
 
-void Ghost73_Init(struct VFX *p);
-void Ghost73_Update(struct VFX *p);
-void Ghost73_Die(struct VFX *p);
+void Ghost73_Init(struct VFX* p);
+void Ghost73_Update(struct VFX* p);
+void Ghost73_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost73Routine = {
     [ENTITY_INIT] =      Ghost73_Init,
     [ENTITY_UPDATE] =    Ghost73_Update,
     [ENTITY_DIE] =       Ghost73_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-struct VFX *FUN_080c6e24(struct Entity *e) {
-  struct VFX *p = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c6e24(struct Entity* e) {
+  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_073);
@@ -32,8 +32,8 @@ INCASM("asm/vfx/unk_73.inc");
 
 // --------------------------------------------
 
-void FUN_080c6f60(struct VFX *p);
-void FUN_080c7120(struct VFX *p);
+void FUN_080c6f60(struct VFX* p);
+void FUN_080c7120(struct VFX* p);
 
 static const VFXFunc sInitializers[2] = {
     FUN_080c6f60,
@@ -42,8 +42,8 @@ static const VFXFunc sInitializers[2] = {
 
 // --------------------------------------------
 
-void FUN_080c705c(struct VFX *p);
-void FUN_080c7250(struct VFX *p);
+void FUN_080c705c(struct VFX* p);
+void FUN_080c7250(struct VFX* p);
 
 static const VFXFunc sUpdates[2] = {
     FUN_080c705c,

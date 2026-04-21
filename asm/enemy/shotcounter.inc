@@ -130,7 +130,7 @@ _080666C4:
 	strb r0, [r1]
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806671C @ =0x08365D64
+	ldr r1, _0806671C @ =sCollisions
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -163,7 +163,7 @@ _080666F8:
 	lsls r0, r0, #5
 	b _08066728
 	.align 2, 0
-_0806671C: .4byte 0x08365D64
+_0806671C: .4byte sCollisions
 _08066720:
 	ldr r0, [r4, #0x64]
 	ldr r1, [r4, #0x5c]
@@ -324,7 +324,7 @@ _08066858:
 	.align 2, 0
 _08066860: .4byte 0x00000401
 _08066864: .4byte 0x00000103
-_08066868: .4byte 0x08365E0C
+_08066868: .4byte sCollisions+(24*7)
 _0806686C:
 	ldr r1, _080668B0 @ =0x00000402
 	adds r0, r5, #0
@@ -443,7 +443,7 @@ _0806693C:
 	strb r0, [r1]
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _08066974 @ =0x08365D64
+	ldr r1, _08066974 @ =sCollisions
 	bl SetDDP
 	strb r6, [r5, #0xd]
 	strb r4, [r5, #0xe]
@@ -455,7 +455,7 @@ _08066964:
 	.align 2, 0
 _0806696C: .4byte 0x00000403
 _08066970: .4byte 0x00000103
-_08066974: .4byte 0x08365D64
+_08066974: .4byte sCollisions
 
 	thumb_func_start nop_08066978
 nop_08066978: @ 0x08066978
@@ -557,7 +557,7 @@ _08066A10:
 	strb r0, [r4, #0xe]
 	b _08066AC8
 	.align 2, 0
-_08066A30: .4byte 0x08365DDC
+_08066A30: .4byte sCollisions+(24*5)
 _08066A34:
 	ldr r1, _08066A70 @ =0x00000405
 	adds r0, r4, #0
@@ -693,8 +693,8 @@ _08066B20:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08066B28: .4byte 0x08365E24
-_08066B2C: .4byte 0x08365E0C
+_08066B28: .4byte sCollisions+(24*8)
+_08066B2C: .4byte sCollisions+(24*7)
 
 	thumb_func_start FUN_08066b30
 FUN_08066b30: @ 0x08066B30
@@ -759,7 +759,7 @@ _08066B6E:
 	ldr r1, _08066B9C @ =0xFFFFF000
 	b _08066BA4
 	.align 2, 0
-_08066B98: .4byte 0x08365E24
+_08066B98: .4byte sCollisions+(24*8)
 _08066B9C: .4byte 0xFFFFF000
 _08066BA0:
 	ldr r0, [r5, #0x58]
@@ -792,7 +792,7 @@ _08066BD2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08066BD8: .4byte 0x08365E0C
+_08066BD8: .4byte sCollisions+(24*7)
 
 	thumb_func_start FUN_08066bdc
 FUN_08066bdc: @ 0x08066BDC
@@ -969,7 +969,7 @@ _08066CFC:
 	movs r0, #5
 	b _08066D6A
 	.align 2, 0
-_08066D2C: .4byte 0x08365E54
+_08066D2C: .4byte sCollisions+(24*10)
 _08066D30: .4byte pZero2
 _08066D34: .4byte 0xFFFFF000
 _08066D38:
@@ -1073,7 +1073,7 @@ shotcounter_08066da0: @ 0x08066DA0
 	movs r0, #5
 	b _08066DFE
 	.align 2, 0
-_08066DEC: .4byte 0x08365E84
+_08066DEC: .4byte Coord_08365e84
 _08066DF0:
 	cmp r1, #0x30
 	bne _08066E2A
@@ -1172,7 +1172,7 @@ _08066E76:
 	cmp r0, #0
 	beq _08066EAC
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08066EAC
 	adds r1, r4, #0

@@ -1153,7 +1153,7 @@ _08006ADC: .4byte 0x000001FF\n\
 
 // bgmap.c　の処理を知るためにとりあえずCにしたもの、多分ロジックおかしなっとる
 WIP void FUN_08006ae0(struct LayerGraphic* l, struct Coord* c, u32* bgmap, u16* tilemap) {
-#if MODERN
+#ifdef ALWAYS_FALSE
   s16 i;
   s32 x = c->x >> 4;
   s32 y = c->y >> 4;

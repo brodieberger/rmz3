@@ -100,7 +100,7 @@ void LoadCameraTemplate(struct Camera* camera, const struct CameraTemplate* t) {
 }
 
 // .viewport を .target に近づける
-WIP static void focus(struct Camera* camera, u8 chaseMode) {
+NON_MATCH static void focus(struct Camera* camera, u8 chaseMode) {
 #if MODERN
   switch (chaseMode) {
     case 0: {
@@ -247,7 +247,7 @@ static void CameraMode2Callback(struct Camera* camera) {
   focus(camera, camera->chaseMode);
 }
 
-WIP static void CameraMode3Callback(struct Camera* camera) {
+NON_MATCH static void CameraMode3Callback(struct Camera* camera) {
 #if MODERN
   s32 zx, zy, tmp;
   struct Coord c, d, target;

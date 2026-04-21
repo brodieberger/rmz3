@@ -38,7 +38,7 @@ void HandlePlayerInput_Ground(struct Zero* z) {
     - etc
   と色々な処理への分岐を担う
 */
-WIP static void inIdle(struct Zero* z) {
+NON_MATCH static void inIdle(struct Zero* z) {
 #if MODERN
   u32 status;
   zero_input_t key;
@@ -54,7 +54,7 @@ WIP static void inIdle(struct Zero* z) {
   if ((z->restriction).move) return;
 
   status = (z->body).status;
-  key = z->zeroInput;
+  key = (z->input).val;
   if ((status & BODY_STATUS_DOOR) && ((key & (DPAD_RIGHT | DPAD_LEFT | ZERO_INPUT_PRESS_DPAD_UP)) == ZERO_INPUT_PRESS_DPAD_UP)) {
     (z->s).mode[1] = ZERO_DOOR_3D;
     (z->s).mode[3] = (z->s).mode[2] = 0;
@@ -132,7 +132,7 @@ WIP static void inIdle(struct Zero* z) {
   - (梯子とかの)床に立っている時に下ボタンが押されたら、すり抜ける処理(空中モード)
   - エリア移動フラグが立っていたら、2Dドアモードにする
 */
-WIP static void inWalk(struct Zero* z) {
+NON_MATCH static void inWalk(struct Zero* z) {
 #if MODERN
   zero_input_t key;
   struct Zero_b4* b4 = &(z->unk_b4);
@@ -146,7 +146,7 @@ WIP static void inWalk(struct Zero* z) {
 
   if ((z->restriction).move) return;
 
-  key = z->zeroInput;
+  key = (z->input).val;
   if (key & ZERO_INPUT_PRESS_JUMP) {
     if ((key & DPAD_DOWN) && (IsOnSoftPlatform(z, &gZeroRanges[0], 0) != 0)) {
       z->unk_b4.softPlatform = TRUE;
@@ -196,7 +196,7 @@ static void inDash(struct Zero* z) {
 
   if ((z->restriction).move) return;
 
-  key = z->zeroInput;
+  key = (z->input).val;
   if (key & ZERO_INPUT_PRESS_JUMP) {
     if ((key & ZERO_INPUT_DPAD_DOWN) && (IsOnSoftPlatform(z, &gZeroRanges[1], 0) != 0)) {
       z->unk_b4.softPlatform = TRUE;
@@ -229,7 +229,7 @@ static void inDash(struct Zero* z) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-WIP void HandlePlayerInput_Air(struct Zero* z) {
+NON_MATCH void HandlePlayerInput_Air(struct Zero* z) {
 #if MODERN
   u8 foot;
   u32 val;
@@ -248,8 +248,8 @@ WIP void HandlePlayerInput_Air(struct Zero* z) {
     return;
   }
 
-  ok = z->zeroInput & ZERO_INPUT_PRESS_JUMP;
-  key = &z->zeroInput;
+  ok = (z->input).val & ZERO_INPUT_PRESS_JUMP;
+  key = &(z->input).val;
   if (ok) {
     if ((z->s).mode[3] < 3) {
       val = zero_08026970(z, &gZeroRanges[z->posture], FALSE);
@@ -275,7 +275,7 @@ WIP void HandlePlayerInput_Air(struct Zero* z) {
         (z->s).mode[1] = ZERO_AIR;
         (z->s).mode[2] = 0;
         (z->s).mode[3] = 0;
-      } else if (foot = ((&(z->unk_b4))->status).foot, ((z->last & INPUT_DISABLED) == 0) && ((foot == FOOT_CHIP_DOUBLE) || (foot == FOOT_CHIP_ULTIMA)) && !z->airJumpped) {
+      } else if (foot = ((&(z->unk_b4))->status).foot, (((z->input).raw & INPUT_DISABLED) == 0) && ((foot == FOOT_CHIP_DOUBLE) || (foot == FOOT_CHIP_ULTIMA)) && !z->airJumpped) {
         z->airJumpped = TRUE;
         (z->s).mode[1] = ZERO_AIR;
         (z->s).mode[2] = 0;
@@ -319,7 +319,7 @@ DONE:
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-WIP void HandlePlayerInput_Wall(struct Zero* z) {
+NON_MATCH void HandlePlayerInput_Wall(struct Zero* z) {
 #if MODERN
   motion_t m;
   u8 state;
@@ -331,7 +331,7 @@ WIP void HandlePlayerInput_Wall(struct Zero* z) {
     return;
   }
 
-  if (z->zeroInput & ZERO_INPUT_PRESS_JUMP) {
+  if ((z->input).val & ZERO_INPUT_PRESS_JUMP) {
     PushoutWallX(z, &gZeroRanges[z->posture], 0);
     (z->s).mode[1] = ZERO_AIR;
     (z->s).mode[2] = 0;
@@ -383,7 +383,7 @@ _DONE:
 void HandlePlayerInput_Ladder(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  const zero_input_t key = z->zeroInput;
+  const zero_input_t key = (z->input).val;
   if ((key & (ZERO_INPUT_PRESS_JUMP | ZERO_INPUT_DPAD_UP)) == ZERO_INPUT_PRESS_JUMP) {
     if (((z->s).mode[2] == 1) && ((z->s).mode[3] < 2)) {
       b4->softPlatform = TRUE;

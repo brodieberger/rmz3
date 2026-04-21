@@ -10,7 +10,7 @@ CreateShelluno: @ 0x080789A0
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _080789F4 @ =gZakoHeaderPtr
+	ldr r0, _080789F4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -49,7 +49,7 @@ _080789EC:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080789F4: .4byte gZakoHeaderPtr
+_080789F4: .4byte gEnemyHeaderPtr
 _080789F8: .4byte gEnemyFnTable
 
 	thumb_func_start Shelluno_Init
@@ -189,7 +189,7 @@ _08078ABE:
 	strb r5, [r6, #0xe]
 	strb r5, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078B24
 	movs r1, #0xd4
@@ -257,7 +257,7 @@ _08078B7C:
 	cmp r0, #4
 	beq _08078BB4
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078BB4
 	ldrb r1, [r4, #0xd]

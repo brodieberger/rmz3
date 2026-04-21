@@ -11,28 +11,26 @@ static void Ghost83_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost83Routine = {
-    [ENTITY_INIT] =      Ghost83_Init,
-    [ENTITY_UPDATE] =    Ghost83_Update,
-    [ENTITY_DIE] =       Ghost83_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost83_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost83_Update,
+    [ENTITY_DIE] =       (void*)Ghost83_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
-struct VFX* CreateGhost83(struct Entity* p) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_083);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).work[0] = 0;
-    (g->s).work[1] = 0;
-    (g->s).unk_28 = p;
+struct Entity* CreateGhost83(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_083);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 0, p->work[1] = 0;
+    p->unk_28 = e;
   }
-  return g;
+  return p;
 }
 
 // --------------------------------------------

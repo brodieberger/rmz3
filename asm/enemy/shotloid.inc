@@ -11,7 +11,7 @@ FUN_08093930: @ 0x08093930
 	adds r6, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _0809398C @ =gZakoHeaderPtr
+	ldr r0, _0809398C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -53,14 +53,14 @@ _08093984:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809398C: .4byte gZakoHeaderPtr
+_0809398C: .4byte gEnemyHeaderPtr
 _08093990: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08093994
 FUN_08093994: @ 0x08093994
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _080939E0 @ =gZakoHeaderPtr
+	ldr r0, _080939E0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -97,7 +97,7 @@ _080939DA:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080939E0: .4byte gZakoHeaderPtr
+_080939E0: .4byte gEnemyHeaderPtr
 _080939E4: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_080939e8
@@ -327,7 +327,7 @@ FUN_08093b50: @ 0x08093B50
 	b _08093BD6
 _08093B70:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08093BD6
 	ldr r1, _08093BAC @ =0x08369E18
@@ -357,7 +357,7 @@ _08093BAC: .4byte 0x08369E18
 _08093BB0: .4byte 0x08369E3C
 _08093BB4:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08093BD4
 	adds r0, r4, #0
@@ -688,7 +688,7 @@ _08093E1A:
 	ldr r1, _08093E58 @ =0x08369E6C
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _08093E3A
@@ -746,7 +746,7 @@ _08093E70:
 	strb r0, [r4, #0xe]
 _08093E98:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _08093ED0
@@ -1446,7 +1446,7 @@ _080943BC:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080943D4
 	b _080944F4

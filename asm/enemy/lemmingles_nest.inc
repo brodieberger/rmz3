@@ -4,116 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_0806df3c
-FUN_0806df3c: @ 0x0806DF3C
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _0806DF90 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0806DF9C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _0806DF94 @ =gEnemyFnTable
-	movs r0, #0xc
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x30]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-	ldrb r0, [r4, #0x10]
-	cmp r0, #0
-	bne _0806DF98
-	movs r0, #2
-	b _0806DF9A
-	.align 2, 0
-_0806DF90: .4byte gZakoHeaderPtr
-_0806DF94: .4byte gEnemyFnTable
-_0806DF98:
-	movs r0, #3
-_0806DF9A:
-	strb r0, [r3, #0x10]
-_0806DF9C:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-
-	thumb_func_start FUN_0806dfa4
-FUN_0806dfa4: @ 0x0806DFA4
-	push {r4, lr}
-	adds r4, r0, #0
-	ldrb r0, [r4, #0xf]
-	cmp r0, #0
-	beq _0806DFB4
-	cmp r0, #1
-	beq _0806DFF8
-	b _0806E008
-_0806DFB4:
-	adds r0, r4, #0
-	bl isFrozen
-	cmp r0, #0
-	beq _0806E008
-	ldr r1, _0806DFF0 @ =0x083667A4
-	ldrb r0, [r4, #0xd]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	ldr r1, _0806DFF4 @ =0x083667B4
-	ldrb r0, [r4, #0xd]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	ldrb r0, [r4, #0xf]
-	adds r0, #1
-	strb r0, [r4, #0xf]
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-	movs r0, #1
-	b _0806E00A
-	.align 2, 0
-_0806DFF0: .4byte 0x083667A4
-_0806DFF4: .4byte 0x083667B4
-_0806DFF8:
-	adds r0, r4, #0
-	bl isFrozen
-	cmp r0, #0
-	beq _0806E006
-	movs r0, #1
-	b _0806E00A
-_0806E006:
-	strb r0, [r4, #0xf]
-_0806E008:
-	movs r0, #0
-_0806E00A:
-	pop {r4}
-	pop {r1}
-	bx r1
-
 	thumb_func_start LemminglesNest_Init
 LemminglesNest_Init: @ 0x0806E010
 	push {r4, r5, r6, lr}
@@ -127,7 +17,7 @@ LemminglesNest_Init: @ 0x0806E010
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	str r0, [r5, #0x14]
-	ldr r1, _0806E0BC @ =0x0836680C
+	ldr r1, _0806E0BC @ =sInitModes
 	ldrb r0, [r5, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -163,7 +53,7 @@ _0806E066:
 	strb r0, [r5, #0xa]
 	adds r4, r5, #0
 	adds r4, #0x74
-	ldr r1, _0806E0C0 @ =0x083667C4
+	ldr r1, _0806E0C0 @ =sCollisions
 	adds r2, r5, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -199,8 +89,8 @@ _0806E0AC:
 	bx r0
 	.align 2, 0
 _0806E0B8: .4byte gEnemyFnTable
-_0806E0BC: .4byte 0x0836680C
-_0806E0C0: .4byte 0x083667C4
+_0806E0BC: .4byte sInitModes
+_0806E0C0: .4byte sCollisions
 _0806E0C4: .4byte 0xFFFFFEFF
 _0806E0C8: .4byte 0xFFFFFDFF
 _0806E0CC: .4byte 0xFFFFFBFF
@@ -775,71 +665,5 @@ FUN_0806e4bc: @ 0x0806E4BC
 	strb r0, [r3, #0x12]
 _0806E512:
 	pop {r4, r5}
-	pop {r0}
-	bx r0
-
-	thumb_func_start FUN_0806e518
-FUN_0806e518: @ 0x0806E518
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	ldr r1, [r4, #0x28]
-	ldrb r0, [r4, #0xe]
-	cmp r0, #0
-	beq _0806E52A
-	cmp r0, #1
-	beq _0806E584
-	b _0806E58A
-_0806E52A:
-	ldrb r0, [r4, #0xb]
-	movs r6, #0x10
-	movs r5, #0
-	orrs r0, r6
-	strb r0, [r4, #0xb]
-	ldrb r0, [r1, #0x1c]
-	strb r0, [r4, #0x1d]
-	ldr r1, _0806E558 @ =0x00001E15
-	adds r0, r4, #0
-	bl SetMotion
-	movs r1, #0
-	ldrb r0, [r4, #0x10]
-	cmp r0, #3
-	bne _0806E54A
-	movs r1, #1
-_0806E54A:
-	adds r2, r1, #0
-	cmp r2, #0
-	beq _0806E55C
-	ldrb r0, [r4, #0xa]
-	orrs r0, r6
-	b _0806E562
-	.align 2, 0
-_0806E558: .4byte 0x00001E15
-_0806E55C:
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-_0806E562:
-	strb r0, [r4, #0xa]
-	adds r1, r2, #0
-	adds r0, r4, #0
-	adds r0, #0x4c
-	strb r1, [r0]
-	adds r3, r4, #0
-	adds r3, #0x4a
-	lsls r1, r1, #4
-	ldrb r2, [r3]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r2
-	orrs r0, r1
-	strb r0, [r3]
-	ldrb r0, [r4, #0xe]
-	adds r0, #1
-	strb r0, [r4, #0xe]
-_0806E584:
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-_0806E58A:
-	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

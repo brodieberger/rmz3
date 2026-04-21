@@ -17,7 +17,7 @@ const SolidRoutine gSolid33Routine = {
     [ENTITY_INIT] =      Solid33_Init,
     [ENTITY_UPDATE] =    Solid33_Update,
     [ENTITY_DIE] =       Solid33_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

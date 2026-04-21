@@ -18,6 +18,7 @@ static void initSpaceCraft(struct Coord* _ UNUSED) {
   }
 }
 
+// 0x0800b27c
 static void updateSpaceCraft(struct Coord* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_SPACE_CRAFT) && (TILESET_IDX(0) == 0)) {
     if ((gOverworld.work.spacecraft.unk_00e & (1 << 0)) == 0) {
@@ -738,7 +739,7 @@ _0800B99C: .4byte 0x06000800\n\
 }
 
 // オメガ(BG3)のスクロールとかを調整してオメガが正しい位置に来るようにする
-WIP static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const struct Stage* _ UNUSED) {
+NON_MATCH static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const struct Stage* _ UNUSED) {
 #if MODERN
   u16 dispcnt, n;
   struct Boss* omega;

@@ -1,6 +1,8 @@
 #include "global.h"
 #include "overworld.h"
 
+extern s32 gConveyor;
+
 // Hazard領域内かチェックしてそうだとしたら, Hazard領域のmetatile_attr_tを返す
 NAKED metatile_attr_t GetHazardMetatileAttr(s32 x, s32 y) {
   asm(".syntax unified\n\
@@ -60,7 +62,7 @@ _0800AC4C:\n\
 	adds r0, r6, r1\n\
 	ldr r0, [r0]\n\
 	subs r0, r4, r0\n\
-	ldr r2, _0800AC9C @ =s32_ARRAY_02000028\n\
+	ldr r2, _0800AC9C @ =gConveyor\n\
 	str r0, [r2]\n\
 	movs r7, #0xeb\n\
 	lsls r7, r7, #1\n\
@@ -70,7 +72,7 @@ _0800AC4C:\n\
 	.align 2, 0\n\
 _0800AC94: .4byte gOverworld\n\
 _0800AC98: .4byte gOverworld+484\n\
-_0800AC9C: .4byte s32_ARRAY_02000028\n\
+_0800AC9C: .4byte gConveyor\n\
 _0800ACA0:\n\
 	movs r0, #0x18\n\
 	add ip, r0\n\

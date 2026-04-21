@@ -13,7 +13,7 @@ const EnemyRoutine gSharksealXRoutine = {
     [ENTITY_INIT] =      SharksealX_Init,
     [ENTITY_UPDATE] =    SharksealX_Update,
     [ENTITY_DIE] =       SharksealX_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

@@ -642,7 +642,7 @@ _0800FF4E:
 	cmp r1, #0
 	bne _0800FF84
 	movs r0, #0xc6
-	bl stopSound
+	bl StopSound
 _0800FF80:
 	movs r0, #1
 _0800FF82:

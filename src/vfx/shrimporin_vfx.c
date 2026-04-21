@@ -4,22 +4,22 @@
 
 static const u8 sInitModes[3];
 
-static void VFX24_Init(struct VFX *vfx);
-static void VFX24_Update(struct VFX *vfx);
-static void VFX24_Die(struct VFX *vfx);
+static void VFX24_Init(struct VFX* vfx);
+static void VFX24_Update(struct VFX* vfx);
+static void VFX24_Die(struct VFX* vfx);
 
 // clang-format off
 const VFXRoutine gShrimporinVFXRoutine = {
     [ENTITY_INIT] =      VFX24_Init,
     [ENTITY_UPDATE] =    VFX24_Update,
     [ENTITY_DIE] =       VFX24_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
 void createShrimporinIce(s32 x, s32 y, u8 frame) {
-  struct VFX *vfx = (struct VFX *)AllocEntityLast(gVFXHeaderPtr);
+  struct VFX* vfx = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (vfx != NULL) {
     (vfx->s).taskCol = 1;
     INIT_VFX_ROUTINE(vfx, VFX_SHRIMPORIN);
@@ -35,7 +35,7 @@ void createShrimporinIce(s32 x, s32 y, u8 frame) {
 void shrimporinIceCrash(s32 x, s32 y, u8 frame) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct VFX *vfx = (struct VFX *)AllocEntityLast(gVFXHeaderPtr);
+    struct VFX* vfx = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
     if (vfx != NULL) {
       (vfx->s).taskCol = 1;
       INIT_VFX_ROUTINE(vfx, VFX_SHRIMPORIN);
@@ -62,7 +62,7 @@ void shrimporinIceCrash(s32 x, s32 y, u8 frame) {
 }
 
 void FUN_080b8f68(s32 x, s32 y, u8 frame) {
-  struct VFX *vfx = (struct VFX *)AllocEntityLast(gVFXHeaderPtr);
+  struct VFX* vfx = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (vfx != NULL) {
     (vfx->s).taskCol = 1;
     INIT_VFX_ROUTINE(vfx, VFX_SHRIMPORIN);
@@ -77,7 +77,7 @@ void FUN_080b8f68(s32 x, s32 y, u8 frame) {
 
 // --------------------------------------------
 
-static void VFX24_Init(struct VFX *vfx) {
+static void VFX24_Init(struct VFX* vfx) {
   SET_VFX_ROUTINE(vfx, ENTITY_UPDATE);
   (vfx->s).mode[1] = sInitModes[(vfx->s).work[0]];
   (vfx->s).flags |= FLIPABLE;
@@ -89,11 +89,11 @@ static void VFX24_Init(struct VFX *vfx) {
 
 // --------------------------------------------
 
-void FUN_080b9070(struct VFX *vfx);
-void FUN_080b90bc(struct VFX *vfx);
-void FUN_080b9134(struct VFX *vfx);
+void FUN_080b9070(struct VFX* vfx);
+void FUN_080b90bc(struct VFX* vfx);
+void FUN_080b9134(struct VFX* vfx);
 
-static void VFX24_Update(struct VFX *vfx) {
+static void VFX24_Update(struct VFX* vfx) {
   static const VFXFunc sUpdates[3] = {
       FUN_080b9070,
       FUN_080b90bc,
@@ -111,7 +111,7 @@ static void VFX24_Update(struct VFX *vfx) {
 
 // --------------------------------------------
 
-static void VFX24_Die(struct VFX *vfx) {
+static void VFX24_Die(struct VFX* vfx) {
   SET_VFX_ROUTINE(vfx, ENTITY_EXIT);
   return;
 }

@@ -14,7 +14,7 @@ const SolidRoutine gChildreShipRoutine = {
     [ENTITY_INIT] =      ChildreShip_Init,
     [ENTITY_UPDATE] =    ChildreShip_Update,
     [ENTITY_DIE] =       ChildreShip_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

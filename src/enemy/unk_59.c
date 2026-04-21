@@ -1,6 +1,7 @@
 #include "collision.h"
 #include "enemy.h"
 #include "global.h"
+#include "vfx.h"
 
 INCASM("asm/enemy/unk_59.inc");
 
@@ -13,7 +14,7 @@ const EnemyRoutine gEnemy59Routine = {
     [ENTITY_INIT] =      Enemy59_Init,
     [ENTITY_UPDATE] =    Enemy59_Update,
     [ENTITY_DIE] =       Enemy59_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

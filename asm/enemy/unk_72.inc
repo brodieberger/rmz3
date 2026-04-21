@@ -15,7 +15,7 @@ FUN_0809c3b4: @ 0x0809C3B4
 	lsrs r7, r2, #0x10
 	lsls r3, r3, #0x18
 	lsrs r5, r3, #0x18
-	ldr r0, _0809C428 @ =gZakoHeaderPtr
+	ldr r0, _0809C428 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -64,7 +64,7 @@ _0809C41A:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809C428: .4byte gZakoHeaderPtr
+_0809C428: .4byte gEnemyHeaderPtr
 _0809C42C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809c430
@@ -72,7 +72,7 @@ FUN_0809c430: @ 0x0809C430
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
 	adds r5, r1, #0
-	ldr r0, _0809C48C @ =gZakoHeaderPtr
+	ldr r0, _0809C48C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -116,7 +116,7 @@ _0809C484:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0809C48C: .4byte gZakoHeaderPtr
+_0809C48C: .4byte gEnemyHeaderPtr
 _0809C490: .4byte gEnemyFnTable
 
 	thumb_func_start Enemy72_Init

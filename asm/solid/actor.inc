@@ -818,7 +818,7 @@ _080D1DE2:
 	ldr r1, _080D1F00 @ =0xFFFFE800
 	adds r0, r0, r1
 	str r0, [sp, #4]
-	ldr r4, _080D1F04 @ =SlashedEnemy_08370ae8
+	ldr r4, _080D1F04 @ =sProloguePantheons
 	ldrb r0, [r7, #0xa]
 	movs r5, #0x10
 	adds r3, r5, #0
@@ -951,7 +951,7 @@ _080D1EF2:
 	bx r0
 	.align 2, 0
 _080D1F00: .4byte 0xFFFFE800
-_080D1F04: .4byte SlashedEnemy_08370ae8
+_080D1F04: .4byte sProloguePantheons
 _080D1F08: .4byte 0xFFFFF000
 _080D1F0C: .4byte RNG_0202f388
 _080D1F10: .4byte 0x000343FD
@@ -995,7 +995,7 @@ _080D1F58:
 	lsls r2, r2, #9
 	adds r1, r1, r2
 	bl LoadGraphic
-	ldr r0, _080D200C @ =0x085D79B8
+	ldr r0, _080D200C @ =gStaticMotionGraphics+((20*9)+12)
 	ldr r1, _080D2010 @ =wStaticMotionPalIDs
 	ldrh r1, [r1, #0x12]
 	ldrb r2, [r0, #7]
@@ -1066,9 +1066,9 @@ _080D1FF4:
 	str r0, [r6, #0x54]
 	b _080D21E2
 	.align 2, 0
-_080D2004: .4byte 0x085D79AC
+_080D2004: .4byte gStaticMotionGraphics+(20*9)
 _080D2008: .4byte wStaticGraphicTilenums
-_080D200C: .4byte 0x085D79B8
+_080D200C: .4byte gStaticMotionGraphics+(20*9)+12
 _080D2010: .4byte wStaticMotionPalIDs
 _080D2014: .4byte 0x00000902
 _080D2018: .4byte gStageRun+232
@@ -1132,7 +1132,7 @@ _080D2072:
 	lsls r2, r2, #9
 	adds r1, r1, r2
 	bl LoadGraphic
-	ldr r0, _080D215C @ =0x085D79B8
+	ldr r0, _080D215C @ =gStaticMotionGraphics+((20*9)+12)
 	ldr r1, _080D2160 @ =wStaticMotionPalIDs
 	ldrh r1, [r1, #0x12]
 	ldrb r2, [r0, #7]
@@ -1170,7 +1170,7 @@ _080D2072:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080D2168 @ =Collision_ARRAY_08370b58
+	ldr r1, _080D2168 @ =sCollisions_08370B58
 	adds r2, #0xa
 	adds r0, r4, #0
 	movs r3, #1
@@ -1224,12 +1224,12 @@ _080D2114:
 	strb r0, [r6, #0x12]
 	b _080D21E2
 	.align 2, 0
-_080D2154: .4byte 0x085D79AC
+_080D2154: .4byte gStaticMotionGraphics+(20*9)
 _080D2158: .4byte wStaticGraphicTilenums
-_080D215C: .4byte 0x085D79B8
+_080D215C: .4byte gStaticMotionGraphics+((20*9)+12)
 _080D2160: .4byte wStaticMotionPalIDs
 _080D2164: .4byte 0x00000902
-_080D2168: .4byte Collision_ARRAY_08370b58
+_080D2168: .4byte sCollisions_08370B58
 _080D216C: .4byte gStageRun+232
 _080D2170: .4byte 0x000097FF
 _080D2174: .4byte 0x00001FFF
@@ -1362,7 +1362,7 @@ _080D2234:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080D22E8 @ =0x08370B70
+	ldr r1, _080D22E8 @ =sCollisions_08370B58+(24*1)
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -1408,7 +1408,7 @@ _080D22B4:
 _080D22DC: .4byte wDynamicGraphicTilenums
 _080D22E0: .4byte wDynamicMotionPalIDs
 _080D22E4: .4byte 0x0000BD10
-_080D22E8: .4byte 0x08370B70
+_080D22E8: .4byte sCollisions_08370B58+(24*1)
 _080D22EC: .4byte gStageRun+232
 _080D22F0: .4byte 0x000087FF
 _080D22F4: .4byte 0xFFFFF800
@@ -1579,7 +1579,7 @@ _080D2420:
 	strb r0, [r7, #0xa]
 	adds r4, r7, #0
 	adds r4, #0x74
-	ldr r1, _080D24DC @ =0x08370B70
+	ldr r1, _080D24DC @ =sCollisions_08370B58+(24*1)
 	adds r2, r7, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -1630,7 +1630,7 @@ _080D24CC: .4byte wDynamicGraphicTilenums
 _080D24D0: .4byte 0x0000034D
 _080D24D4: .4byte wDynamicMotionPalIDs
 _080D24D8: .4byte 0x0000A114
-_080D24DC: .4byte 0x08370B70
+_080D24DC: .4byte sCollisions_08370B58+(24*1)
 _080D24E0: .4byte gStageRun+232
 _080D24E4: .4byte 0x000087FF
 _080D24E8: .4byte 0xFFFFFD00
@@ -2342,7 +2342,7 @@ _080D2A0C:
 	lsls r1, r0, #1
 	adds r1, r1, r0
 	lsls r1, r1, #3
-	ldr r0, _080D2AF0 @ =0x08370B88
+	ldr r0, _080D2AF0 @ =sCollisions_08370B58+(24*2)
 	adds r1, r1, r0
 	adds r2, r6, #0
 	adds r2, #0x54
@@ -2384,7 +2384,7 @@ _080D2AE0: .4byte 0x00001270
 _080D2AE4: .4byte gStaticMotionGraphics
 _080D2AE8: .4byte gStaticMotionGraphics+12
 _080D2AEC: .4byte 0x0000EC01
-_080D2AF0: .4byte 0x08370B88
+_080D2AF0: .4byte sCollisions_08370B58+(24*2)
 _080D2AF4: .4byte 0xFFFFB000
 _080D2AF8: .4byte gBlendRegBuffer
 _080D2AFC: .4byte 0x00001010
@@ -3210,7 +3210,7 @@ initActor23: @ 0x080D3174
 	movs r3, #0
 	orrs r1, r2
 	strb r1, [r0, #0xb]
-	ldr r1, _080D31A4 @ =0x08370C60
+	ldr r1, _080D31A4 @ =Rect_08370c60
 	str r1, [r0, #0x30]
 	ldr r1, _080D31A8 @ =0x00002001
 	strh r1, [r0, #0x26]
@@ -3228,7 +3228,7 @@ initActor23: @ 0x080D3174
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080D31A4: .4byte 0x08370C60
+_080D31A4: .4byte Rect_08370c60
 _080D31A8: .4byte 0x00002001
 _080D31AC: .4byte gSolidFnTable
 
@@ -3530,7 +3530,7 @@ _080D3412:
 _080D3428:
 	ldr r0, [r7, #0x54]
 	str r0, [r7, #0x64]
-	ldr r5, _080D34A0 @ =0x08370DE8
+	ldr r5, _080D34A0 @ =s32_ARRAY_08370de8
 	ldrb r0, [r7, #0x11]
 	lsls r0, r0, #2
 	adds r0, r0, r5
@@ -3586,7 +3586,7 @@ _080D3478:
 	ldr r0, [r7, #0x5c]
 	b _080D34EA
 	.align 2, 0
-_080D34A0: .4byte 0x08370DE8
+_080D34A0: .4byte s32_ARRAY_08370de8
 _080D34A4: .4byte gSineTable
 _080D34A8:
 	cmp r0, #0x20
@@ -3632,7 +3632,7 @@ _080D34EA:
 _080D34F0: .4byte gSineTable
 _080D34F4:
 	movs r4, #0
-	ldr r5, _080D3568 @ =0x08370DE8
+	ldr r5, _080D3568 @ =s32_ARRAY_08370de8
 _080D34F8:
 	lsls r1, r4, #0x18
 	lsrs r1, r1, #0x18
@@ -3688,7 +3688,7 @@ _080D3556:
 	str r0, [r2, #0x78]
 	b _080D358C
 	.align 2, 0
-_080D3568: .4byte 0x08370DE8
+_080D3568: .4byte s32_ARRAY_08370de8
 _080D356C:
 	ldrb r0, [r7, #0x11]
 	adds r0, #0xfb
@@ -4384,8 +4384,8 @@ _080D3AF8: .4byte 0xFFFF1000
 _080D3AFC: .4byte wStaticGraphicTilenums
 _080D3B00: .4byte 0x000003CE
 _080D3B04: .4byte wStaticMotionPalIDs
-_080D3B08: .4byte 0x085D790C
-_080D3B0C: .4byte 0x085D7918
+_080D3B08: .4byte gStaticMotionGraphics+(20*1)
+_080D3B0C: .4byte gStaticMotionGraphics+(20*1)+12
 _080D3B10: .4byte 0xFFFFC000
 _080D3B14: .4byte RNG_0202f388
 _080D3B18: .4byte 0x000343FD
@@ -5959,7 +5959,7 @@ _080D47CE:
 	strb r0, [r7, #0xa]
 	adds r4, r7, #0
 	adds r4, #0x74
-	ldr r1, _080D4818 @ =0x08370C68
+	ldr r1, _080D4818 @ =sCollisions_08370C68
 	adds r5, r7, #0
 	adds r5, #0x54
 	adds r0, r4, #0
@@ -5986,7 +5986,7 @@ _080D47CE:
 	strb r0, [r7, #0x12]
 	b _080D4970
 	.align 2, 0
-_080D4818: .4byte 0x08370C68
+_080D4818: .4byte sCollisions_08370C68
 _080D481C:
 	adds r0, r7, #0
 	bl UpdateMotionGraphic
@@ -6343,7 +6343,7 @@ _080D4AEC:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080D4B54 @ =0x08370C80
+	ldr r1, _080D4B54 @ =sCollisions_08370C68+(24*1)
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -6378,7 +6378,7 @@ _080D4AEC:
 	b _080D4EF4
 	.align 2, 0
 _080D4B50: .4byte 0xFFFFF400
-_080D4B54: .4byte 0x08370C80
+_080D4B54: .4byte sCollisions_08370C68+(24*1)
 _080D4B58:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -6571,7 +6571,7 @@ _080D4CAA:
 	bl SetMotion
 	b _080D4CDE
 	.align 2, 0
-_080D4CD0: .4byte 0x08370C98
+_080D4CD0: .4byte sCollisions_08370C68+(24*2)
 _080D4CD4:
 	movs r1, #0xc8
 	lsls r1, r1, #6
@@ -6602,7 +6602,7 @@ _080D4CF2:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080D4D5C @ =0x08370C80
+	ldr r1, _080D4D5C @ =sCollisions_08370C68+(24*1)
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -6638,7 +6638,7 @@ _080D4CF2:
 	.align 2, 0
 _080D4D54: .4byte 0x0000013B
 _080D4D58: .4byte 0xFFFFF400
-_080D4D5C: .4byte 0x08370C80
+_080D4D5C: .4byte sCollisions_08370C68+(24*1)
 _080D4D60:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -6744,7 +6744,7 @@ _080D4DF6:
 	movs r0, #0xb
 	b _080D4EF8
 	.align 2, 0
-_080D4E30: .4byte 0x08370C98
+_080D4E30: .4byte sCollisions_08370C68+(24*2)
 _080D4E34:
 	ldrb r0, [r6, #0xa]
 	movs r1, #4
@@ -6766,7 +6766,7 @@ _080D4E34:
 	bl SetMotion
 	b _080D4EF4
 	.align 2, 0
-_080D4E60: .4byte 0x08370CB0
+_080D4E60: .4byte sCollisions_08370C68+(24*3)
 _080D4E64:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -6820,7 +6820,7 @@ _080D4EC2:
 	.align 2, 0
 _080D4ED0: .4byte gStageRun
 _080D4ED4: .4byte 0x0000FFFE
-_080D4ED8: .4byte 0x08370E08
+_080D4ED8: .4byte Coord_08370e08
 _080D4EDC:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -7291,7 +7291,7 @@ _080D52A0:
 	strb r6, [r5, #0x12]
 	b _080D53F8
 	.align 2, 0
-_080D52B4: .4byte 0x08370CC8
+_080D52B4: .4byte sCollisions_08370C68+(24*4)
 _080D52B8: .4byte 0x0000BE17
 _080D52BC:
 	adds r0, r5, #0
@@ -7334,7 +7334,7 @@ _080D52FC:
 	strb r6, [r5, #0x12]
 	b _080D53F8
 	.align 2, 0
-_080D5310: .4byte 0x08370CE0
+_080D5310: .4byte sCollisions_08370C68+(24*5)
 _080D5314: .4byte 0x0000BE18
 _080D5318:
 	adds r0, r5, #0
@@ -7383,8 +7383,8 @@ _080D534C:
 	str r6, [r4, #0x24]
 	b _080D53F8
 	.align 2, 0
-_080D5378: .4byte 0x08370CF8
-_080D537C: .4byte 0x08370D10
+_080D5378: .4byte sCollisions_08370C68+(24*6)
+_080D537C: .4byte sCollisions_08370C68+(24*7)
 _080D5380:
 	adds r0, r5, #0
 	bl UpdateMotionGraphic
@@ -7768,7 +7768,7 @@ _080D569C:
 	bx r0
 	.align 2, 0
 _080D56A4: .4byte 0xFFFFE200
-_080D56A8: .4byte 0x08370D28
+_080D56A8: .4byte sCollisions_08370C68+(24*8)
 _080D56AC: .4byte gSolidFnTable
 
 	thumb_func_start ActorLastLeviathan_Update
@@ -7850,7 +7850,7 @@ _080D5750:
 	.align 2, 0
 _080D5760: .4byte wDynamicGraphicTilenums
 _080D5764: .4byte wDynamicMotionPalIDs
-_080D5768: .4byte 0x08370E10
+_080D5768: .4byte Rect_08370e10
 _080D576C: .4byte 0x0000BD05
 _080D5770:
 	adds r0, r6, #0
@@ -7888,7 +7888,7 @@ _080D5786:
 	b _080D59BE
 	.align 2, 0
 _080D57B8: .4byte 0x0000BD09
-_080D57BC: .4byte 0x08370D70
+_080D57BC: .4byte sCollisions_08370C68+(24*11)
 _080D57C0:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -7925,7 +7925,7 @@ _080D57D6:
 	b _080D59BE
 	.align 2, 0
 _080D5808: .4byte 0x0000BD0B
-_080D580C: .4byte 0x08370D88
+_080D580C: .4byte sCollisions_08370C68+(24*12)
 _080D5810:
 	adds r0, r6, #0
 	bl UpdateMotionGraphic
@@ -7995,7 +7995,7 @@ _080D5876:
 	str r0, [r4, #0x24]
 	b _080D59BE
 	.align 2, 0
-_080D58A0: .4byte 0x08370DA0
+_080D58A0: .4byte sCollisions_08370C68+(24*13)
 _080D58A4:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -8037,7 +8037,7 @@ _080D58CA:
 	str r0, [r6, #0x60]
 	b _080D59BE
 	.align 2, 0
-_080D58F8: .4byte 0x08370DB8
+_080D58F8: .4byte sCollisions_08370C68+(24*14)
 _080D58FC: .4byte 0x0000BD10
 _080D5900: .4byte 0xFFFFFEC0
 _080D5904:
@@ -9575,7 +9575,7 @@ _080D654C:
 	ldr r4, _080D65E8 @ =wStaticMotionPalIDs
 	movs r0, #5
 	strh r0, [r4, #0x12]
-	ldr r0, _080D65EC @ =0x085D79AC
+	ldr r0, _080D65EC @ =gStaticMotionGraphics+(20*9)
 	ldrh r1, [r1, #0x12]
 	ldrh r2, [r0, #6]
 	lsrs r2, r2, #6
@@ -9585,7 +9585,7 @@ _080D654C:
 	lsls r2, r2, #9
 	adds r1, r1, r2
 	bl LoadGraphic
-	ldr r0, _080D65F0 @ =0x085D79B8
+	ldr r0, _080D65F0 @ =gStaticMotionGraphics+((20*9)+12)
 	ldrh r1, [r4, #0x12]
 	ldrb r2, [r0, #7]
 	subs r1, r1, r2
@@ -9643,8 +9643,8 @@ _080D65DC:
 _080D65E0: .4byte wStaticGraphicTilenums
 _080D65E4: .4byte 0x0000023A
 _080D65E8: .4byte wStaticMotionPalIDs
-_080D65EC: .4byte 0x085D79AC
-_080D65F0: .4byte 0x085D79B8
+_080D65EC: .4byte gStaticMotionGraphics+(20*9)
+_080D65F0: .4byte gStaticMotionGraphics+((20*9)+12)
 _080D65F4: .4byte 0x00000901
 _080D65F8: .4byte gSineTable
 _080D65FC: .4byte 0xFFFFC800
@@ -10638,7 +10638,7 @@ _080D6E00:
 _080D6E14:
 	movs r0, #0x92
 	lsls r0, r0, #1
-	bl stopSound
+	bl StopSound
 	ldr r1, _080D6E28 @ =0x0000BE13
 	adds r0, r6, #0
 	bl SetMotion
@@ -10677,7 +10677,7 @@ _080D6E3E:
 	strb r5, [r6, #0x13]
 	b _080D6F58
 	.align 2, 0
-_080D6E6C: .4byte 0x08370DD0
+_080D6E6C: .4byte sCollisions_08370C68+(24*15)
 _080D6E70: .4byte 0x0000BE03
 _080D6E74:
 	adds r0, r6, #0
@@ -11029,7 +11029,7 @@ _080D7148:
 	cmp r0, #0
 	beq _080D71F0
 	ldr r0, _080D71A4 @ =0x0000013D
-	bl stopSound
+	bl StopSound
 	ldr r1, _080D71A8 @ =gPaletteManager
 	ldr r0, _080D71AC @ =0x00000404
 	adds r2, r1, r0
@@ -12378,7 +12378,7 @@ _080D7C5C:
 	cmp r0, #0
 	beq _080D7D04
 	ldr r0, _080D7CB8 @ =0x0000013D
-	bl stopSound
+	bl StopSound
 	ldr r1, _080D7CBC @ =gPaletteManager
 	ldr r0, _080D7CC0 @ =0x00000404
 	adds r2, r1, r0

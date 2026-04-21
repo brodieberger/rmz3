@@ -15,7 +15,7 @@ const SolidRoutine gCielMinigameObjRoutine = {
     [ENTITY_INIT] =      CielMinigameObj_Init,
     [ENTITY_UPDATE] =    CielMinigameObj_Update,
     [ENTITY_DIE] =       CielMinigameObj_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

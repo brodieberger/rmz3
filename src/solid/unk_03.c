@@ -20,7 +20,7 @@ const SolidRoutine gSolid3Routine = {
     [ENTITY_INIT] =      Solid3_Init,
     [ENTITY_UPDATE] =    Solid3_Update,
     [ENTITY_DIE] =       Solid3_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

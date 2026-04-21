@@ -5,7 +5,7 @@
 
 bool8 shotcounter_08066da0(struct Enemy* p);
 
-static const struct Collision sCollisions[12];
+static const struct Collision sCollisions[];
 
 static void Shotcounter_Init(struct Enemy* p);
 static void Shotcounter_Update(struct Enemy* p);
@@ -13,29 +13,29 @@ static void Shotcounter_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gShotcounterRoutine = {
-    [ENTITY_INIT] =      Shotcounter_Init,
-    [ENTITY_UPDATE] =    Shotcounter_Update,
-    [ENTITY_DIE] =       Shotcounter_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Shotcounter_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Shotcounter_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Shotcounter_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 // Unused
-static struct Enemy* CreateShotcounter(struct Coord* c, u8 r1) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+static struct Entity* CreateShotcounter(struct Coord* c, u8 r1) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     s32 x, y;
-    (p->s).taskCol = 0x18;
-    INIT_ZAKO_ROUTINE(p, 3);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = r1;
+    p->taskCol = 0x18;
+    INIT_ENEMY_ROUTINE(p, ENEMY_SHOTCOUNTER);
+    p->tileNum = 0;
+    p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->coord = *c;
+    p->work[0] = r1;
   }
-  return p;
+  return (void*)p;
 }
 
 NAKED static void Shotcounter_Init(struct Enemy* p) {
@@ -134,7 +134,7 @@ _0806608E:\n\
 	subs r0, #5\n\
 	str r5, [r0]\n\
 	adds r0, r6, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08066112\n\
 	movs r1, #0x80\n\
@@ -219,8 +219,8 @@ _08066144: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
-static bool8 FUN_080665e0(struct Enemy* p);
-static bool8 FUN_080665e8(struct Enemy* p);
+static bool8 FUN_080665e0(void* _ UNUSED);
+static bool8 FUN_080665e8(void* _ UNUSED);
 void FUN_080667b8(struct Enemy* p);
 void nop_08066978(struct Enemy* p);
 void FUN_08066ad0(struct Enemy* p);
@@ -229,7 +229,7 @@ void FUN_08066b30(struct Enemy* p);
 void FUN_08066b38(struct Enemy* p);
 void FUN_08066bdc(struct Enemy* p);
 
-static void FUN_080665e4(struct Enemy* p);
+static void FUN_080665e4(void* _ UNUSED);
 void FUN_080665ec(struct Enemy* p);
 void shotcounter_080667bc(struct Enemy* p);
 void shotcounter_0806697c(struct Enemy* p);
@@ -244,39 +244,39 @@ static void Shotcounter_Update(struct Enemy* p) {
   static const EnemyFunc sUpdates1[9] = {
       (EnemyFunc)FUN_080665e0,
       (EnemyFunc)FUN_080665e8,
-      FUN_080667b8,
-      nop_08066978,
-      FUN_08066ad0,
-      FUN_08066ad8,
-      FUN_08066b30,
-      FUN_08066b38,
-      FUN_08066bdc,
+      (EnemyFunc)FUN_080667b8,
+      (EnemyFunc)nop_08066978,
+      (EnemyFunc)FUN_08066ad0,
+      (EnemyFunc)FUN_08066ad8,
+      (EnemyFunc)FUN_08066b30,
+      (EnemyFunc)FUN_08066b38,
+      (EnemyFunc)FUN_08066bdc,
   };
   // clang-format on
 
   // clang-format off
   static const EnemyFunc sUpdates2[9] = {
-      FUN_080665e4,
-      FUN_080665ec,
-      shotcounter_080667bc,
-      shotcounter_0806697c,
-      FUN_08066ad4,
-      FUN_08066adc,
-      FUN_08066b34,
-      FUN_08066b3c,
-      shotcounter_08066be0,
+      (EnemyFunc)FUN_080665e4,
+      (EnemyFunc)FUN_080665ec,
+      (EnemyFunc)shotcounter_080667bc,
+      (EnemyFunc)shotcounter_0806697c,
+      (EnemyFunc)FUN_08066ad4,
+      (EnemyFunc)FUN_08066adc,
+      (EnemyFunc)FUN_08066b34,
+      (EnemyFunc)FUN_08066b3c,
+      (EnemyFunc)shotcounter_08066be0,
   };
   // clang-format on
 
-  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || isFrozen(p))) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || IsFrozen((void*)p))) {
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     Shotcounter_Die(p);
     return;
   }
-  (sUpdates1[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
   shotcounter_08066da0(p);
-  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !isFrozen(p)) {
-    (sUpdates2[(p->s).mode[1]])(p);
+  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !IsFrozen((void*)p)) {
+    (sUpdates2[(p->s).mode[1]])((void*)p);
   }
 }
 
@@ -763,14 +763,15 @@ _080665DC: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
-static bool8 FUN_080665e0(struct Enemy* p) { return TRUE; }
+static bool8 FUN_080665e0(void* _) { return TRUE; }
 
-static void FUN_080665e4(struct Enemy* p) { return; }
+static void FUN_080665e4(void* _) { return; }
 
-static bool8 FUN_080665e8(struct Enemy* p) { return TRUE; }
+static bool8 FUN_080665e8(void* _) { return TRUE; }
 
 INCASM("asm/enemy/shotcounter.inc");
 
+// 0x08365D64
 static const struct Collision sCollisions[12] = {
     [0] = {
       kind : DDP,
@@ -778,36 +779,36 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 4,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [1] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 3,
-      range : {-0x0C00, 0x0000, 0x0800, 0x1E00},
+      range : {-PIXEL(12), PIXEL(0), PIXEL(8), PIXEL(30)},
     },
     [2] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 2,
       layer : 0xFFFFFFFF,
-      range : {-0x0600, 0x0C00, 0x0C00, 0x0800},
+      range : {-PIXEL(6), PIXEL(12), PIXEL(12), PIXEL(8)},
     },
     [3] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 1,
       layer : 0xFFFFFFFF,
-      range : {-0x0600, -0x0C00, 0x0C00, 0x0800},
+      range : {-PIXEL(6), -PIXEL(12), PIXEL(12), PIXEL(8)},
     },
     [4] = {
       kind : DRP,
@@ -815,7 +816,7 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0E00, 0x0000, 0x0800, 0x1600},
+      range : {PIXEL(14), PIXEL(0), PIXEL(8), PIXEL(22)},
     },
     [5] = {
       kind : DDP,
@@ -823,7 +824,7 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x0C00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(12), PIXEL(26)},
     },
     [6] = {
       kind : DRP,
@@ -832,8 +833,8 @@ static const struct Collision sCollisions[12] = {
       hitzone : 1,
       hardness : METAL,
       remaining : 0,
-      layer : 0xFFFFFFFF,
-      range : {0x0000, 0x0000, 0x0C00, 0x1A00},
+      priorityLayer : 0xFFFFFFFF,
+      range : {PIXEL(0), PIXEL(0), PIXEL(12), PIXEL(26)},
     },
     [7] = {
       kind : DDP,
@@ -841,7 +842,7 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 2,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [8] = {
       kind : DRP,
@@ -849,7 +850,7 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 1,
-      range : {-0x0A00, 0x0000, 0x0800, 0x1200},
+      range : {-PIXEL(10), PIXEL(0), PIXEL(8), PIXEL(18)},
     },
     [9] = {
       kind : DRP,
@@ -857,25 +858,23 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0E00, 0x0000, 0x0800, 0x1600},
+      range : {PIXEL(14), PIXEL(0), PIXEL(8), PIXEL(22)},
     },
     [10] = {
       kind : DDP,
       faction : FACTION_NEUTRAL,
-      special : 0,
       damage : 2,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [11] = {
       kind : DRP,
       faction : FACTION_NEUTRAL,
-      damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
 };
 

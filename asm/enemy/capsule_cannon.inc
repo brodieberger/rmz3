@@ -107,7 +107,7 @@ _080856A0:
 	strb r0, [r6, #0xe]
 	strb r0, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08085744
 	ldr r0, _08085700 @ =gSystemSavedataManager
@@ -270,7 +270,7 @@ _080857EC:
 	cmp r1, #0
 	bne _0808581E
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08085868
 	ldr r0, [r5]

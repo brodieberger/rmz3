@@ -20,7 +20,7 @@ const VFXRoutine gNecroRoutine = {
     [ENTITY_INIT] =      Necro_Init,
     [ENTITY_UPDATE] =    Necro_Update,
     [ENTITY_DIE] =       Necro_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on

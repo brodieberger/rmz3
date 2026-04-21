@@ -133,7 +133,7 @@ void ClearStageRun(struct TaskManager* tm) {
   ClearVM(&gStageRun.vm, id);
 }
 
-WIP bool32 OverworldUpdate(bool8 paused) {
+NON_MATCH bool32 OverworldUpdate(bool8 paused) {
 #if MODERN
   if (paused) {
     return FALSE;
@@ -276,8 +276,8 @@ void ApplyGiantElf(struct StageRun* p) {
       TurnUpBGM();
       gTimeElfTimer = 0;
     }
-    stopSound(SE_TIME_ELF);
-    stopSound(SE_TIME_ELF_HURRY);
+    StopSound(SE_TIME_ELF);
+    StopSound(SE_TIME_ELF_HURRY);
 
     if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1) && FLAG(gCurStory.s.gameflags, GIANT_ELF_ENABLED)) {
       if ((boss->s).kind == ENTITY_BOSS) {

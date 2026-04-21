@@ -47,7 +47,7 @@ const SolidRoutine gDoor3DRoutine = {
     [ENTITY_INIT] =      Door3D_Init,
     [ENTITY_UPDATE] =    Door3D_Update,
     [ENTITY_DIE] =       Door3D_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -338,10 +338,7 @@ static void Door3D_Update(struct Solid* p) {
 // --------------------------------------------
 
 static void Door3D_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }

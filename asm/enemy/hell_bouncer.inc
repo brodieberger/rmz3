@@ -13,7 +13,7 @@ createHellBouncer: @ 0x0807E27C
 	lsrs r5, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r4, r3, #0x18
-	ldr r0, _0807E2DC @ =gZakoHeaderPtr
+	ldr r0, _0807E2DC @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -55,7 +55,7 @@ _0807E2D4:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0807E2DC: .4byte gZakoHeaderPtr
+_0807E2DC: .4byte gEnemyHeaderPtr
 _0807E2E0: .4byte gEnemyFnTable
 
 	thumb_func_start HellBouncer_Init
@@ -181,7 +181,7 @@ _0807E3CE:
 	strb r2, [r6, #0xe]
 	strb r2, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807E3EA
 	ldr r1, _0807E3FC @ =0x0000AB1B
@@ -208,7 +208,7 @@ HellBouncer_Update: @ 0x0807E400
 	adds r1, #0xbb
 	movs r0, #0
 	strb r0, [r1]
-	ldr r3, _0807E434 @ =0x0202F360
+	ldr r3, _0807E434 @ =gWhitePaintFlags
 	ldr r0, [r6, #0x28]
 	ldrb r1, [r0, #0x1d]
 	lsrs r2, r1, #5
@@ -226,7 +226,7 @@ HellBouncer_Update: @ 0x0807E400
 	bl PaintEntityWhite
 	b _0807E43E
 	.align 2, 0
-_0807E434: .4byte 0x0202F360
+_0807E434: .4byte gWhitePaintFlags
 _0807E438:
 	adds r0, r6, #0
 	bl UpdateEntityPaletteID
@@ -369,7 +369,7 @@ _0807E554:
 	adds r0, r6, #0
 	bl _call_via_r1
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807E57C
 	ldrb r1, [r6, #0xd]

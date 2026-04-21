@@ -275,7 +275,7 @@ _0803F00C:
 _0803F028:
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F054 @ =0x08361C80
+	ldr r1, _0803F054 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r1, #0
 	str r1, [r6, #0x60]
@@ -293,7 +293,7 @@ _0803F028:
 	b _0803F05C
 	.align 2, 0
 _0803F050: .4byte 0xFFFFA200
-_0803F054: .4byte 0x08361C80
+_0803F054: .4byte gBlazinCollisions+(24*1)
 _0803F058:
 	movs r0, #0x24
 	strb r0, [r6, #0x13]
@@ -660,7 +660,7 @@ _0803F33C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F398 @ =0x08361CB0
+	ldr r1, _0803F398 @ =gBlazinCollisions+(24*3)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -692,7 +692,7 @@ _0803F38E:
 	b _0803F3E6
 	.align 2, 0
 _0803F394: .4byte 0xFFFFA200
-_0803F398: .4byte 0x08361CB0
+_0803F398: .4byte gBlazinCollisions+(24*3)
 _0803F39C:
 	adds r0, r4, #0
 	adds r0, #0xc8
@@ -707,7 +707,7 @@ _0803F39C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F3F4 @ =0x08361C80
+	ldr r1, _0803F3F4 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
@@ -736,7 +736,7 @@ _0803F3E8:
 	bx r0
 	.align 2, 0
 _0803F3F0: .4byte 0xFFFFA200
-_0803F3F4: .4byte 0x08361C80
+_0803F3F4: .4byte gBlazinCollisions+(24*1)
 _0803F3F8: .4byte 0xFFFFF000
 
 	thumb_func_start FUN_0803f3fc
@@ -781,7 +781,7 @@ _0803F434:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F47C @ =0x08361C80
+	ldr r1, _0803F47C @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r0, #0
 	strb r0, [r4, #0x13]
@@ -801,11 +801,11 @@ _0803F460:
 	b _0803F52A
 	.align 2, 0
 _0803F478: .4byte 0xFFFFA200
-_0803F47C: .4byte 0x08361C80
+_0803F47C: .4byte gBlazinCollisions+(24*1)
 _0803F480:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F4F0 @ =0x08361CE0
+	ldr r1, _0803F4F0 @ =gBlazinCollisions+(24*5)
 	bl SetDDP
 	adds r0, r4, #0
 	bl blazin_080402a4
@@ -856,7 +856,7 @@ _0803F4D2:
 	adds r0, #1
 	b _0803F52A
 	.align 2, 0
-_0803F4F0: .4byte 0x08361CE0
+_0803F4F0: .4byte gBlazinCollisions+(24*5)
 _0803F4F4: .4byte 0xFFFFA200
 _0803F4F8:
 	adds r0, r4, #0
@@ -936,7 +936,7 @@ _0803F578:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _0803F5C0 @ =0x08361C80
+	ldr r1, _0803F5C0 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
@@ -957,7 +957,7 @@ _0803F5B2:
 	b _0803F708
 	.align 2, 0
 _0803F5BC: .4byte 0xFFFFA200
-_0803F5C0: .4byte 0x08361C80
+_0803F5C0: .4byte gBlazinCollisions+(24*1)
 _0803F5C4:
 	adds r0, r5, #0
 	adds r0, #0x74
@@ -1109,7 +1109,7 @@ _0803F6EC: .4byte 0x080FED64
 _0803F6F0: .4byte 0xFFFFA200
 _0803F6F4:
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
 	strb r0, [r5, #0xe]
@@ -1193,7 +1193,7 @@ _0803F78A:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F7DC @ =0x08361C80
+	ldr r1, _0803F7DC @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r0, #3
 	strb r0, [r6, #0x13]
@@ -1220,7 +1220,7 @@ _0803F7D4:
 	b _0803F95C
 	.align 2, 0
 _0803F7D8: .4byte 0xFFFFA200
-_0803F7DC: .4byte 0x08361C80
+_0803F7DC: .4byte gBlazinCollisions+(24*1)
 _0803F7E0:
 	adds r0, r6, #0
 	adds r0, #0xc4
@@ -1242,7 +1242,7 @@ _0803F7EC:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F85C @ =0x08361D40
+	ldr r1, _0803F85C @ =gBlazinCollisions+(24*9)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1284,7 +1284,7 @@ _0803F84C:
 	b _0803F95A
 	.align 2, 0
 _0803F858: .4byte 0xFFFFA200
-_0803F85C: .4byte 0x08361D40
+_0803F85C: .4byte gBlazinCollisions+(24*9)
 _0803F860:
 	adds r0, r6, #0
 	adds r0, #0xc4
@@ -1361,7 +1361,7 @@ _0803F8D0:
 	bl PlaySound
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F914 @ =0x08361C80
+	ldr r1, _0803F914 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1377,7 +1377,7 @@ _0803F8FE:
 	b _0803F95C
 	.align 2, 0
 _0803F910: .4byte 0xFFFFA200
-_0803F914: .4byte 0x08361C80
+_0803F914: .4byte gBlazinCollisions+(24*1)
 _0803F918:
 	adds r0, r6, #0
 	adds r0, #0xc8
@@ -1396,7 +1396,7 @@ _0803F918:
 	strb r0, [r1]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F968 @ =0x08361D40
+	ldr r1, _0803F968 @ =gBlazinCollisions+(24*9)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1419,7 +1419,7 @@ _0803F95C:
 	b _0803F9A2
 	.align 2, 0
 _0803F964: .4byte 0xFFFFA200
-_0803F968: .4byte 0x08361D40
+_0803F968: .4byte gBlazinCollisions+(24*9)
 _0803F96C:
 	ldrb r0, [r6, #0x12]
 	cmp r0, #0
@@ -1572,7 +1572,7 @@ _0803FA7A:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FAEC @ =0x08361CB0
+	ldr r1, _0803FAEC @ =gBlazinCollisions+(24*3)
 	bl SetDDP
 	movs r0, #0
 	strb r0, [r6, #0x13]
@@ -1616,7 +1616,7 @@ _0803FAE2:
 	b _0803FC62
 	.align 2, 0
 _0803FAE8: .4byte 0xFFFFA200
-_0803FAEC: .4byte 0x08361CB0
+_0803FAEC: .4byte gBlazinCollisions+(24*3)
 _0803FAF0:
 	movs r0, #0x72
 	bl PlaySound
@@ -1633,7 +1633,7 @@ _0803FAF0:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FB48 @ =0x08361C80
+	ldr r1, _0803FB48 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldr r0, [r6, #0x54]
 	ldr r1, [r6, #0x58]
@@ -1659,7 +1659,7 @@ _0803FB3E:
 	b _0803FC62
 	.align 2, 0
 _0803FB44: .4byte 0xFFFFA200
-_0803FB48: .4byte 0x08361C80
+_0803FB48: .4byte gBlazinCollisions+(24*1)
 _0803FB4C: .4byte 0xFFFFF000
 _0803FB50:
 	adds r0, r6, #0
@@ -1675,7 +1675,7 @@ _0803FB50:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FBB8 @ =0x08361D10
+	ldr r1, _0803FBB8 @ =gBlazinCollisions+(24*7)
 	bl SetDDP
 	movs r1, #0
 	movs r0, #0xf0
@@ -1709,7 +1709,7 @@ _0803FB82:
 	b _0803FC62
 	.align 2, 0
 _0803FBB4: .4byte 0xFFFFA200
-_0803FBB8: .4byte 0x08361D10
+_0803FBB8: .4byte gBlazinCollisions+(24*7)
 _0803FBBC:
 	ldrb r1, [r6, #0xf]
 	movs r0, #0xf
@@ -1760,7 +1760,7 @@ _0803FC1C:
 	b _0803FC62
 _0803FC22:
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 	adds r0, r6, #0
 	adds r0, #0xc8
 	ldrh r1, [r0]
@@ -1836,14 +1836,14 @@ _0803FCA6:
 	cmp r0, #0
 	beq _0803FCB6
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 _0803FCB6:
 	movs r0, #0x72
 	bl isSoundPlaying
 	cmp r0, #0
 	beq _0803FCC6
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 _0803FCC6:
 	strb r6, [r5, #0x13]
 	movs r0, #0x74
@@ -1977,14 +1977,14 @@ _0803FDB6:
 	cmp r0, #0
 	beq _0803FDC6
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 _0803FDC6:
 	movs r0, #0x72
 	bl isSoundPlaying
 	cmp r0, #0
 	beq _0803FDD6
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 _0803FDD6:
 	ldr r0, _0803FDEC @ =pZero2
 	ldr r0, [r0]
@@ -2133,7 +2133,7 @@ blazin_0803fed8: @ 0x0803FED8
 	ands r0, r1
 	cmp r0, #0
 	beq _0803FF1E
-	ldr r2, _0803FF18 @ =0x08361DD0
+	ldr r2, _0803FF18 @ =gBlazinCoords
 	movs r0, #9
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -2152,7 +2152,7 @@ blazin_0803fed8: @ 0x0803FED8
 	strb r6, [r4, #0xe]
 	b _0803FF1E
 	.align 2, 0
-_0803FF18: .4byte 0x08361DD0
+_0803FF18: .4byte gBlazinCoords
 _0803FF1C:
 	str r6, [r5]
 _0803FF1E:
@@ -2793,57 +2793,3 @@ _080403BC:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start setBlazinDirection
-setBlazinDirection: @ 0x080403C4
-	push {lr}
-	adds r2, r0, #0
-	ldr r0, _080403F8 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r2, #0x54]
-	cmp r1, r0
-	ble _080403FC
-	ldrb r1, [r2, #0xa]
-	movs r3, #0x10
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	bne _08040422
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #1
-	strb r0, [r1]
-	subs r1, #2
-	ldrb r0, [r1]
-	orrs r0, r3
-	strb r0, [r1]
-	ldrb r0, [r2, #0xa]
-	orrs r0, r3
-	b _08040420
-	.align 2, 0
-_080403F8: .4byte pZero2
-_080403FC:
-	ldrb r1, [r2, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	beq _08040422
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #0
-	strb r0, [r1]
-	adds r3, r2, #0
-	adds r3, #0x4a
-	ldrb r1, [r3]
-	subs r0, #0x11
-	ands r0, r1
-	strb r0, [r3]
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-_08040420:
-	strb r0, [r2, #0xa]
-_08040422:
-	pop {r0}
-	bx r0
-	.align 2, 0

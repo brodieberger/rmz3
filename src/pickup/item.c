@@ -1,3 +1,4 @@
+#include "collision.h"
 #include "entity.h"
 #include "global.h"
 #include "pickup.h"
@@ -7,19 +8,19 @@ static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord
 
 static void MapItem_Init(struct Pickup* p);
 static void MapItem_Update(struct Pickup* p);
-static void MapItem_Die(struct Pickup* p);
+static void MapItem_Die(struct Entity* p);
 
 // clang-format off
 const PickupRoutine gPickupItemRoutine = {
-    [ENTITY_INIT] =      MapItem_Init,
-    [ENTITY_UPDATE] =    MapItem_Update,
-    [ENTITY_DIE] =       MapItem_Die,
-    [ENTITY_DISAPPEAR] = DeletePickup,
+    [ENTITY_INIT] =      (PickupFunc)MapItem_Init,
+    [ENTITY_UPDATE] =    (PickupFunc)MapItem_Update,
+    [ENTITY_DIE] =       (PickupFunc)MapItem_Die,
+    [ENTITY_DISAPPEAR] = (PickupFunc)DeletePickup,
     [ENTITY_EXIT] =      (PickupFunc)DeleteEntity,
 };
 // clang-format on
 
-NAKED struct Pickup* CreatePickupItem(u8 itemID, struct Coord* c, u8 param_3) {
+NAKED struct Entity* CreatePickupItem(u8 itemID, struct Coord* c, u8 param_3) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -714,8 +715,8 @@ _080E0F14: .4byte 0xFFFFFC00\n\
  .syntax divided\n");
 }
 
-static void MapItem_Die(struct Pickup* p) {
-  (p->s).flags &= ~DISPLAY;
+static void MapItem_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_ITEM_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -747,7 +748,6 @@ static const struct Collision sCollision = {
   kind : DDP,
   faction : FACTION_ENEMY,
   damage : 255,
-  remaining : 0,
   layer : 0x00000001,
   range : {PIXEL(0), -PIXEL(6), PIXEL(12), PIXEL(12)},
 };

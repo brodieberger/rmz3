@@ -2,6 +2,16 @@
 #include "enemy.h"
 #include "global.h"
 
+struct Volcaire {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[4];
+  u8 unk_b8;
+  u8 unk_b9[3];
+  u8 unk_bc[8];
+};
+static_assert(sizeof(struct Volcaire) == sizeof(struct Enemy));
+
 void Volcaire_Init(struct Enemy* p);
 void Volcaire_Update(struct Enemy* p);
 void Volcaire_Die(struct Enemy* p);
@@ -11,7 +21,7 @@ const EnemyRoutine gVolcaireRoutine = {
     [ENTITY_INIT] =      Volcaire_Init,
     [ENTITY_UPDATE] =    Volcaire_Update,
     [ENTITY_DIE] =       Volcaire_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -39,46 +49,42 @@ s32 FUN_08077110(struct Enemy* p, s32 x) {
   return 0;
 }
 
-void FUN_08077174(struct Enemy* e) {
-  struct Enemy* p = (struct Enemy*)AllocEntityLast(gZakoHeaderPtr);
+void FUN_08077174(struct Entity* e) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_VOLCAIRE);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = 1;
-    (p->s).coord.x = (e->s).coord.x;
-    (p->s).coord.y = (e->s).coord.y;
-    (p->s).unk_28 = &e->s;
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_VOLCAIRE);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 1;
+    (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
+    p->unk_28 = e;
   }
 }
 
-void FUN_080771cc(struct Enemy* e, s32 x, s32 y, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+void FUN_080771cc(struct Volcaire* e, s32 x, s32 y, u8 n) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_VOLCAIRE);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = 2;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_VOLCAIRE);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 2;
+    p->coord.x = x, p->coord.y = y;
     if (n == 0) {
-      (p->s).coord.x = x - PIXEL(2);
-      (p->s).coord.y = y + PIXEL(8);
+      p->coord.x = x - PIXEL(2);
+      p->coord.y = y + PIXEL(8);
     } else {
-      (p->s).coord.x = x + PIXEL(2);
-      (p->s).coord.y = y + PIXEL(7);
+      p->coord.x = x + PIXEL(2);
+      p->coord.y = y + PIXEL(7);
     }
-    (p->s).work[2] = n;
+    p->work[2] = n;
     if (e != NULL) {
-      e->props.raw[4]++;
+      e->unk_b8++;
     }
-    (p->s).unk_28 = &e->s;
+    p->unk_28 = (void*)e;
   }
 }
 

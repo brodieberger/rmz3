@@ -177,7 +177,7 @@ _08042598:
 	cmp r0, #1
 	bne _080425D4
 _080425A6:
-	ldr r1, _080425D0 @ =0x083620F8
+	ldr r1, _080425D0 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x50
 	bl ResetBossBody
@@ -190,9 +190,9 @@ _080425C0: .4byte wStaticMotionPalIDs
 _080425C4: .4byte gStaticMotionGraphics
 _080425C8: .4byte gStaticMotionGraphics+12
 _080425CC: .4byte gSystemSavedataManager
-_080425D0: .4byte 0x083620F8
+_080425D0: .4byte sCollisions
 _080425D4:
-	ldr r1, _08042640 @ =0x083620F8
+	ldr r1, _08042640 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -244,7 +244,7 @@ _080425DE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08042640: .4byte 0x083620F8
+_08042640: .4byte sCollisions
 _08042644: .4byte nop_080423e0
 
 	thumb_func_start Wormer_Update
@@ -580,7 +580,7 @@ FUN_080428c4: @ 0x080428C4
 _080428D4:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08042910 @ =0x083620F8
+	ldr r1, _08042910 @ =sCollisions
 	bl SetDDP
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
@@ -610,7 +610,7 @@ _0804290A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08042910: .4byte 0x083620F8
+_08042910: .4byte sCollisions
 
 	thumb_func_start FUN_08042914
 FUN_08042914: @ 0x08042914
@@ -881,7 +881,7 @@ _08042AF6:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08042B44 @ =0x083620F8
+	ldr r2, _08042B44 @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r5, #0
@@ -901,7 +901,7 @@ _08042B36:
 	.align 2, 0
 _08042B3C: .4byte 0x00002B01
 _08042B40: .4byte 0x0836226C
-_08042B44: .4byte 0x083620F8
+_08042B44: .4byte sCollisions
 
 	thumb_func_start FUN_08042b48
 FUN_08042b48: @ 0x08042B48
@@ -1338,7 +1338,7 @@ _08042E80:
 	lsls r1, r2, #1
 	adds r1, r1, r2
 	lsls r1, r1, #3
-	ldr r2, _08042ECC @ =0x083620F8
+	ldr r2, _08042ECC @ =sCollisions
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r4, #0
@@ -1355,7 +1355,7 @@ _08042E80:
 	.align 2, 0
 _08042EC4: .4byte 0x00002B02
 _08042EC8: .4byte 0x08362290
-_08042ECC: .4byte 0x083620F8
+_08042ECC: .4byte sCollisions
 _08042ED0:
 	ldrb r0, [r4, #0x10]
 	cmp r0, #1

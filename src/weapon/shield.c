@@ -21,17 +21,14 @@ void MenuExit_ShieldGuard(struct Weapon* w) {
   if (((PROP).z)->unk_136 & (1 << 3)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }
 
 struct Weapon* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
   struct Weapon* w;
-  struct Weapon_b4* b4;
+  struct WeaponProps* b4;
   u8 element;
 
   KillAllWeapons(DeleteSaber);
@@ -54,7 +51,7 @@ struct Weapon* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
     }
-    b4 = (struct Weapon_b4*)(&PROP);
+    b4 = (struct WeaponProps*)(&PROP);
     b4->z = z;
     (w->s).work[0] = n;
     (w->s).work[1] = 0;
@@ -63,7 +60,7 @@ struct Weapon* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
 }
 
 static void ShieldGuard_Init(struct Weapon* w) {
-  struct Weapon_b4* b4 = &(PROP);
+  struct WeaponProps* b4 = &(PROP);
   struct Zero* z = b4->z;
   SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
@@ -392,7 +389,7 @@ static void onCollision(struct Body* body, struct Coord* c1 UNUSED, struct Coord
   if (body->hitboxFlags & BODY_STATUS_B6) {
     struct Entity* enemy;
     if ((enemy = (struct Entity*)body->enemy->parent, enemy->kind == ENTITY_PROJECTILE) && (enemy->id == PROJECTILE_LEMON)) {
-      struct Weapon_b4* b4;
+      struct WeaponProps* b4;
       struct Weapon* shield = (struct Weapon*)body->parent;
       (shield->s).unk_coord = enemy->coord;
       b4 = &shield->props.common;

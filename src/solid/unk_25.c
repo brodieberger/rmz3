@@ -12,7 +12,7 @@ const SolidRoutine gSolid25Routine = {
     [ENTITY_INIT] =      Solid25_Init,
     [ENTITY_UPDATE] =    Solid25_Update,
     [ENTITY_DIE] =       Solid25_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

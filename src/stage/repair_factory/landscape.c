@@ -90,7 +90,7 @@ static void repairFactory_0800d6b4(struct Coord* c) {
     SetStageNoiseVolume(SE_UNK_10b);
   } else {
     if (isSoundPlaying(SE_UNK_10b)) {
-      stopSound(SE_UNK_10b);
+      StopSound(SE_UNK_10b);
     }
   }
 }
@@ -118,7 +118,7 @@ static void exitRepairFactory(struct Coord* _ UNUSED) {
   ClearBlink(47);
   ClearBlink(48);
   if (isSoundPlaying(SE_UNK_10b)) {
-    stopSound(SE_UNK_10b);
+    StopSound(SE_UNK_10b);
   }
 }
 

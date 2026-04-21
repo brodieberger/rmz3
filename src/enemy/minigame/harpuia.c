@@ -13,7 +13,7 @@ const EnemyRoutine gHarpuiaMinigameEnemyRoutine = {
     [ENTITY_INIT] =      HarpuiaMinigameEnemy_Init,
     [ENTITY_UPDATE] =    HarpuiaMinigameEnemy_Update,
     [ENTITY_DIE] =       HarpuiaMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

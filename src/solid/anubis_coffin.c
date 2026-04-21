@@ -13,7 +13,7 @@ const SolidRoutine gAnubisCoffinRoutine = {
     [ENTITY_INIT] =      AnubisCoffin_Init,
     [ENTITY_UPDATE] =    AnubisCoffin_Update,
     [ENTITY_DIE] =       AnubisCoffin_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

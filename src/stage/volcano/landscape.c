@@ -181,20 +181,14 @@ static void volcano_0800be3c(struct Coord* c) {
     if (p = STAGE.coffins[0], p != NULL) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
       STAGE.coffins[0] = NULL;
     }
     if (p = STAGE.coffins[1], p != NULL) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
       STAGE.coffins[1] = NULL;
     }
@@ -347,7 +341,7 @@ static void LayerUpdate_Volcano_4(struct StageLayer* l, const struct Stage* stag
 
 struct Enemy* CreateVolcanoBomb(s32 x, s32 y);
 
-WIP static void LayerUpdate_VolcanoEruption(struct StageLayer* l, const struct Stage* stage) {
+NON_MATCH static void LayerUpdate_VolcanoEruption(struct StageLayer* l, const struct Stage* stage) {
 #if MODERN
   u16 i;
   u16 dispcnt;

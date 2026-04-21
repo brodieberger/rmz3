@@ -3,10 +3,31 @@
 #include "global.h"
 #include "task.h"
 
+// リンクされる場所的に カプコン か インティクリエイツ で使いまわしてるライブラリの可能性がある (= ビルドフラグとか色々違う可能性がある)
+
 extern const u8* const sSpriteSize[2];
 extern const u8* const sAffineSpriteSize[2];
 
-WIP void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
+struct OamDataNoAffine {
+  u32 y : 8;
+  u32 affineMode : 2;  // 0x1, 0x2 = 0x3
+  u32 objMode : 2;     // 0x4, 0x8 = 0xC
+  u32 mosaic : 1;      // 0x10
+  u32 bpp : 1;         // 0x20
+  u32 shape : 2;       // 0x40, 0x80
+  u32 x : 9;
+  u32 unused : 3;
+  u32 xflip : 1;
+  u32 yflip : 1;
+  u32 size : 2;
+
+  u16 tileNum : 10;
+  u16 priority : 2;
+  u16 paletteNum : 4;
+  u16 _;
+};
+
+NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
 #if MODERN
   struct Coord* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
@@ -54,7 +75,7 @@ WIP void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
 #endif
 }
 
-WIP void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc) {
+NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc) {
 #if MODERN
   struct Coord* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
@@ -119,7 +140,7 @@ WIP void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc) {
 #endif
 }
 
-WIP void RotateSprite(struct Sprite* s, s32 angle) {
+NON_MATCH void RotateSprite(struct Sprite* s, s32 angle) {
 #if MODERN
   struct OamData* oam = &gOamManager.buf[s->oam.matrixNum * 4];
   s->angle = angle;
@@ -145,7 +166,7 @@ WIP void RotateSprite(struct Sprite* s, s32 angle) {
 #endif
 }
 
-WIP void ScalerotSprite(struct Sprite* s, s32 angle) {
+NON_MATCH void ScalerotSprite(struct Sprite* s, s32 angle) {
 #if MODERN
   u8 angle1, angle2;
   struct OamData* oam = &gOamManager.buf[s->oam.matrixNum * 4];

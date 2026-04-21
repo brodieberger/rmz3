@@ -1,7 +1,7 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write
+#!/usr/bin/env -S deno run --allow-read
 
 import { Command } from '@cliffy/command';
-import { join } from 'https://deno.land/std/path/mod.ts';
+import { join } from '@std/path';
 
 /**
  * sprite.json から anim.s を生成するスクリプト
@@ -24,9 +24,7 @@ const main = async () => {
   const { args } = await new Command()
     .name('animation.ts')
     .version('1.0.0')
-    .description(
-      'Create gDynamicMotionMetaspriteTable and gDynamicMotionCmdTable as Asm pointer table',
-    )
+    .description('Create gDynamicMotionMetaspriteTable and gDynamicMotionCmdTable as Asm pointer table')
     .arguments('<json:string>')
     .parse(Deno.args);
 

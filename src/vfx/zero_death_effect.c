@@ -1,6 +1,6 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 /*
   ゼロ死亡時のティウンティウンエフェクト(花火)
@@ -14,11 +14,11 @@ static void ZeroDeathEffect_Die(struct VFX* p);
 
 // xx nn nn nn
 const VFXRoutine gZeroDeathEffectRoutine = {
-    [ENTITY_INIT] =      ZeroDeathEffect_Init,
-    [ENTITY_UPDATE] =    ZeroDeathEffect_Update,
-    [ENTITY_DIE] =       ZeroDeathEffect_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)ZeroDeathEffect_Init,
+    [ENTITY_UPDATE] =    (void*)ZeroDeathEffect_Update,
+    [ENTITY_DIE] =       (void*)ZeroDeathEffect_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 

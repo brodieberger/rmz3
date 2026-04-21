@@ -4,6 +4,7 @@
 #include "global.h"
 #include "overworld.h"
 #include "sound.h"
+#include "zero.h"
 
 static const BossFunc sUpdates1[12];
 static const BossFunc sUpdates2[12];
@@ -14,25 +15,24 @@ static void Blazin_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gBlazinRoutine = {
-    [ENTITY_INIT] =      Blazin_Init,
-    [ENTITY_UPDATE] =    Blazin_Update,
-    [ENTITY_DIE] =       Blazin_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Blazin_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Blazin_Update,
+    [ENTITY_DIE] =       (BossFunc)Blazin_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateBlazin(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateBlazin(struct Coord* c, u8 n) {
+  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
+    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_BLAZIN);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->coord = *c;
+    p->work[0] = n;
   }
   return p;
 }
@@ -65,7 +65,7 @@ NAKED static void Blazin_Init(struct Boss* p) {
 	movs r0, #0xef\n\
 	ands r0, r1\n\
 	strb r0, [r5, #0xa]\n\
-	ldr r1, _0803E9A4 @ =0x08361C68\n\
+	ldr r1, _0803E9A4 @ =gBlazinCollisions\n\
 	adds r0, r5, #0\n\
 	movs r2, #0x40\n\
 	bl ResetBossBody\n\
@@ -152,7 +152,7 @@ NAKED static void Blazin_Init(struct Boss* p) {
 	strb r7, [r5, #0xd]\n\
 	b _0803E9CA\n\
 	.align 2, 0\n\
-_0803E9A4: .4byte 0x08361C68\n\
+_0803E9A4: .4byte gBlazinCollisions\n\
 _0803E9A8: .4byte FUN_0803ff28\n\
 _0803E9AC: .4byte 0xFFFFC000\n\
 _0803E9B0: .4byte gBossFnTable\n\
@@ -371,16 +371,9 @@ static void blazinDeath0(struct Boss* p) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
-      if (isSoundPlaying(SE_COPYX_FIRESHOT)) {
-        stopSound(SE_COPYX_FIRESHOT);
-      }
-      if (isSoundPlaying(SE_BLAZIN_EX)) {
-        stopSound(SE_BLAZIN_EX);
-      }
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      if (isSoundPlaying(SE_COPYX_FIRESHOT)) StopSound(SE_COPYX_FIRESHOT);
+      if (isSoundPlaying(SE_BLAZIN_EX)) StopSound(SE_BLAZIN_EX);
+      EXIT_BODY(p);
       velocity = &(p->s).d;
       velocity->x = velocity->y = 0;
       (p->s).work[2] = 1;
@@ -746,6 +739,27 @@ static bool8 nop_0803ee2c(struct Boss* _) { return TRUE; }
 
 INCASM("asm/boss/blazin.inc");
 
+// 0x080403c4
+NON_MATCH static void setBlazinDirection(struct Entity* p) {
+#if MODERN
+  struct Entity* z = (struct Entity*)pZero2;
+  if ((z->coord).x > (p->coord).x) {
+    if (!(p->flags & X_FLIP)) {
+      SET_XFLIP(p, TRUE);
+    }
+  } else {
+    if (p->flags & X_FLIP) {
+      SET_XFLIP(p, FALSE);
+    }
+  }
+#else
+  INCCODE("asm/wip/setBlazinDirection.inc");
+#endif
+}
+
+// --------------------------------------------
+
+// 0x08361c68
 const struct Collision gBlazinCollisions[15] = {
     {
       kind : DRP,
@@ -910,6 +924,7 @@ const struct Collision gBlazinCollisions[15] = {
     },
 };
 
+// 0x08361dd0
 const struct Coord gBlazinCoords[5] = {
-    {0x0000, -0x2000}, {0x0C00, -0x2000}, {0x0C00, -0x2000}, {0x1200, -0x2000}, {0x1200, -0x2000},
+    {PIXEL(0), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)},
 };

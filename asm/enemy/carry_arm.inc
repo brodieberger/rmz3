@@ -16,7 +16,7 @@ FUN_08071470: @ 0x08071470
 	ldr r0, [sp, #0x18]
 	lsls r0, r0, #0x18
 	lsrs r5, r0, #0x18
-	ldr r0, _080714E0 @ =gZakoHeaderPtr
+	ldr r0, _080714E0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r2, r0, #0
@@ -61,7 +61,7 @@ FUN_08071470: @ 0x08071470
 	strb r0, [r1]
 	b _080714F2
 	.align 2, 0
-_080714E0: .4byte gZakoHeaderPtr
+_080714E0: .4byte gEnemyHeaderPtr
 _080714E4: .4byte gEnemyFnTable
 _080714E8:
 	str r4, [r2, #0x2c]
@@ -89,7 +89,7 @@ FUN_08071508: @ 0x08071508
 	adds r6, r0, #0
 	adds r4, r1, #0
 	adds r5, r2, #0
-	ldr r0, _08071560 @ =gZakoHeaderPtr
+	ldr r0, _08071560 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -130,7 +130,7 @@ _08071558:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08071560: .4byte gZakoHeaderPtr
+_08071560: .4byte gEnemyHeaderPtr
 _08071564: .4byte gEnemyFnTable
 
 	thumb_func_start nop_08071568

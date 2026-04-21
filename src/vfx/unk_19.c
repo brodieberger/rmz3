@@ -1,31 +1,34 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
+
+// メガミルパが死んで崩れ落ちるときのエフェクト
 
 static const u8 u8_ARRAY_0836e8a8[2];
 
-static void Ghost19_Init(struct VFX *p);
-static void Ghost19_Update(struct VFX *p);
-static void Ghost19_Die(struct VFX *p);
+static void Ghost19_Init(struct VFX* p);
+static void Ghost19_Update(struct VFX* p);
+static void Ghost19_Die(struct VFX* p);
 
 // clang-format off
-const VFXRoutine gGhost19Routine = {
-    [ENTITY_INIT] =      Ghost19_Init,
-    [ENTITY_UPDATE] =    Ghost19_Update,
-    [ENTITY_DIE] =       Ghost19_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+const VFXRoutine gMegamilpaDeadRoutine = {
+    [ENTITY_INIT] =      (VFXFunc)Ghost19_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)Ghost19_Update,
+    [ENTITY_DIE] =       (VFXFunc)Ghost19_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct VFX *CreateGhost19_1(struct Coord *c, struct Coord *d) {
+// 0x080b6e84
+struct VFX* CreateGhost19_1(struct Coord* c, struct Coord* d) {
   s32 x, y, dx, dy;
-  struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (g != NULL) {
     (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_019);
+    INIT_VFX_ROUTINE(g, VFX_MEGAMILPA_DEAD);
     (g->s).tileNum = 0;
     (g->s).palID = 0;
 
@@ -39,21 +42,21 @@ struct VFX *CreateGhost19_1(struct Coord *c, struct Coord *d) {
     (g->s).d.x = dx;
     (g->s).d.y = dy;
 
-    (g->s).work[0] = 0;
+    (g->s).work[0] = 0;  // メガミルパが死ぬ時に発生する石
   }
   return g;
 }
 
-void CreateGhost19_2(struct Entity *p, struct Coord *c) {
+void CreateGhost19_2(struct Entity* p, struct Coord* c) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+    struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
     if (g != NULL) {
       (g->s).taskCol = 1;
-      INIT_VFX_ROUTINE(g, VFX_UNK_019);
+      INIT_VFX_ROUTINE(g, VFX_MEGAMILPA_DEAD);
       (g->s).tileNum = 0;
       (g->s).palID = 0;
-      (g->s).work[0] = 1;
+      (g->s).work[0] = 1;  // メガミルパ本体
       (g->s).work[1] = i;
       (g->s).unk_28 = p;
       (g->s).coord.x = c->x;
@@ -64,7 +67,7 @@ void CreateGhost19_2(struct Entity *p, struct Coord *c) {
 
 // --------------------------------------------
 
-static void Ghost19_Init(struct VFX *p) {
+static void Ghost19_Init(struct VFX* p) {
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = u8_ARRAY_0836e8a8[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
@@ -78,10 +81,10 @@ static void Ghost19_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080b6fc8(struct VFX *p);
-static void FUN_080b705c(struct VFX *p);
+static void FUN_080b6fc8(struct VFX* p);
+static void FUN_080b705c(struct VFX* p);
 
-static void Ghost19_Update(struct VFX *p) {
+static void Ghost19_Update(struct VFX* p) {
   static VFXFunc const sUpdates[] = {
       FUN_080b6fc8,
       FUN_080b705c,
@@ -91,11 +94,11 @@ static void Ghost19_Update(struct VFX *p) {
 
 // --------------------------------------------
 
-static void Ghost19_Die(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void Ghost19_Die(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
 
-NAKED static void FUN_080b6fc8(struct VFX *p) {
+NAKED static void FUN_080b6fc8(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -170,7 +173,7 @@ _080B7058: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080b705c(struct VFX *p) {
+NAKED static void FUN_080b705c(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r7, r0, #0\n\
@@ -367,8 +370,8 @@ static const motion_t motion_t_ARRAY_0836e8aa[3] = {
 };
 
 static const motion_t motion_t_ARRAY_0836e8b0[4] = {
-    MOTION(0xA0, 0x11),
-    MOTION(0xA0, 0x12),
-    MOTION(0xA0, 0x13),
-    MOTION(0xA0, 0x14),
+    MOTION(DM160_MEGAMILPA, 17),
+    MOTION(DM160_MEGAMILPA, 18),
+    MOTION(DM160_MEGAMILPA, 19),
+    MOTION(DM160_MEGAMILPA, 20),
 };

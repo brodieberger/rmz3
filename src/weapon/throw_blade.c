@@ -2,7 +2,15 @@
 #include "global.h"
 #include "weapon.h"
 
-#define PROP (w->props.throw_blade)
+// ザンエイダン
+
+// props (56bytes, offset: 0xB4..)
+struct ThrowBladeProps {
+  struct Weapon* saber;
+  u8 unk_b8[8];
+  u8 element;
+  u8 unk_c1[43];
+};
 
 static const struct Collision sNormalCollisions[2] = {
     {
@@ -62,23 +70,21 @@ void ThrowBlade_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gThrowBladeRoutine = {
-    [ENTITY_INIT] =      ThrowBlade_Init,
-    [ENTITY_UPDATE] =    ThrowBlade_Update,
-    [ENTITY_DIE] =       ThrowBlade_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
+    [ENTITY_INIT] =      (WeaponFunc)ThrowBlade_Init,
+    [ENTITY_UPDATE] =    (WeaponFunc)ThrowBlade_Update,
+    [ENTITY_DIE] =       (WeaponFunc)ThrowBlade_Die,
+    [ENTITY_DISAPPEAR] = (WeaponFunc)DeleteWeapon,
     [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
 };
 // clang-format on
 
 void MenuExit_ThrowBlade(struct Weapon* w) {
   struct Zero* z = (struct Zero*)(w->s).unk_28;
-  if (((&PROP)->element != ((&z->unk_b4)->status).element)) {
+  struct ThrowBladeProps* s = (struct ThrowBladeProps*)w->props.raw;
+  if ((s->element != ((&z->unk_b4)->status).element)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }
@@ -86,6 +92,8 @@ void MenuExit_ThrowBlade(struct Weapon* w) {
 struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIce) {
   struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
   if (w != NULL) {
+    struct ThrowBladeProps* s;
+
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_ZANEIDAN);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
@@ -108,8 +116,9 @@ struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIc
       }
     }
     (w->s).unk_28 = &z->s;
-    (&PROP)->saber = saber;
-    (&PROP)->element = ((&z->unk_b4)->status).element;
+    s = (struct ThrowBladeProps*)w->props.raw;
+    s->saber = saber;
+    s->element = ((&z->unk_b4)->status).element;
     (w->s).work[0] = isIce;
     (w->s).work[1] = 0;
   }
@@ -117,5 +126,3 @@ struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIc
 }
 
 INCASM("asm/weapon/throw_blade.inc");
-
-#undef PROP

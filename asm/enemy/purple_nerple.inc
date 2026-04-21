@@ -113,7 +113,7 @@ FUN_08075b74: @ 0x08075B74
 	adds r5, r0, #0
 	lsls r1, r1, #0x18
 	lsrs r4, r1, #0x18
-	ldr r0, _08075BC8 @ =gZakoHeaderPtr
+	ldr r0, _08075BC8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -152,7 +152,7 @@ _08075BC2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08075BC8: .4byte gZakoHeaderPtr
+_08075BC8: .4byte gEnemyHeaderPtr
 _08075BCC: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08075bd0
@@ -165,7 +165,7 @@ FUN_08075bd0: @ 0x08075BD0
 	movs r6, #0
 	ldr r7, _08075C38 @ =gEnemyFnTable
 _08075BDE:
-	ldr r0, _08075C3C @ =gZakoHeaderPtr
+	ldr r0, _08075C3C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r2, r0, #0
@@ -211,7 +211,7 @@ _08075C26:
 	bx r0
 	.align 2, 0
 _08075C38: .4byte gEnemyFnTable
-_08075C3C: .4byte gZakoHeaderPtr
+_08075C3C: .4byte gEnemyHeaderPtr
 
 	thumb_func_start FUN_08075c40
 FUN_08075c40: @ 0x08075C40
@@ -220,7 +220,7 @@ FUN_08075c40: @ 0x08075C40
 	adds r5, r1, #0
 	adds r6, r2, #0
 	adds r7, r3, #0
-	ldr r0, _08075CB8 @ =gZakoHeaderPtr
+	ldr r0, _08075CB8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -275,7 +275,7 @@ _08075CB0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08075CB8: .4byte gZakoHeaderPtr
+_08075CB8: .4byte gEnemyHeaderPtr
 _08075CBC: .4byte gEnemyFnTable
 _08075CC0: .4byte RNG_0202f388
 _08075CC4: .4byte 0x000343FD
@@ -286,7 +286,7 @@ summonPurpleNerple: @ 0x08075CCC
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r0, _08075D2C @ =gZakoHeaderPtr
+	ldr r0, _08075D2C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityLast
 	adds r3, r0, #0
@@ -332,7 +332,7 @@ _08075D26:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08075D2C: .4byte gZakoHeaderPtr
+_08075D2C: .4byte gEnemyHeaderPtr
 _08075D30: .4byte gEnemyFnTable
 _08075D34: .4byte gStageRun+232
 _08075D38: .4byte 0xFFFF9000
@@ -442,7 +442,7 @@ _08075DE8:
 	cmp r0, #1
 	beq _08075E82
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08075E82
 	ldr r1, _08075E28 @ =0x083670D0
@@ -491,7 +491,7 @@ _08075E3A:
 	bl UpdateMotionGraphic
 _08075E58:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08075E80
 	adds r0, r4, #0
@@ -963,7 +963,7 @@ _080761CE:
 	ldr r1, _080761F4 @ =0x08367150
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08076200
 	adds r0, r4, #0
@@ -1061,7 +1061,7 @@ _08076290:
 	bl FUN_08075aa8
 _08076296:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _080762D4

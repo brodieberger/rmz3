@@ -1,22 +1,22 @@
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
-static void Ghost30_Init(struct VFX *p);
-static void Ghost30_Update(struct VFX *p);
-static void Ghost30_Die(struct VFX *p);
+static void Ghost30_Init(struct VFX* p);
+static void Ghost30_Update(struct VFX* p);
+static void Ghost30_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost30Routine = {
     [ENTITY_INIT] =      Ghost30_Init,
     [ENTITY_UPDATE] =    Ghost30_Update,
     [ENTITY_DIE] =       Ghost30_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-struct VFX *CreateGhost30(struct Entity *e, struct Coord *c, u8 n, u32 m) {
-  struct VFX *p = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* CreateGhost30(struct Entity* e, struct Coord* c, u8 n, u32 m) {
+  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, 30);
@@ -31,7 +31,7 @@ struct VFX *CreateGhost30(struct Entity *e, struct Coord *c, u8 n, u32 m) {
   return p;
 }
 
-NAKED static void Ghost30_Init(struct VFX *p) {
+NAKED static void Ghost30_Init(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -120,10 +120,10 @@ _080BA408: .4byte gVFXFnTable\n\
 
 // --------------------------------------------
 
-static void nop_080ba444(struct VFX *p);
-static void FUN_080ba448(struct VFX *p);
+static void nop_080ba444(struct VFX* p);
+static void FUN_080ba448(struct VFX* p);
 
-static void Ghost30_Update(struct VFX *p) {
+static void Ghost30_Update(struct VFX* p) {
   static const VFXFunc sUpdates[2] = {
       nop_080ba444,
       FUN_080ba448,
@@ -131,14 +131,14 @@ static void Ghost30_Update(struct VFX *p) {
   (sUpdates[(p->s).mode[1]])(p);
 }
 
-static void Ghost30_Die(struct VFX *p) {
+static void Ghost30_Die(struct VFX* p) {
   (p->s).flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
-static void nop_080ba444(struct VFX *p) { return; }
+static void nop_080ba444(struct VFX* p) { return; }
 
-NAKED static void FUN_080ba448(struct VFX *p) {
+NAKED static void FUN_080ba448(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\

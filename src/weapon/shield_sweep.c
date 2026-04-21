@@ -21,17 +21,14 @@ void MenuExit_ShieldSweep(struct Weapon* w) {
   if ((PROP.z)->unk_136 & (1 << 3)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }
 
 struct Weapon* CreateShieldSweep(struct Zero* z, struct Entity* p, u8 n) {
   struct Weapon* w;
-  struct Weapon_b4* b4;
+  struct WeaponProps* b4;
   u8 element;
 
   w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);

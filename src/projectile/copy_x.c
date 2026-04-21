@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/copy_x.inc");
+
 void CopyXProjectile_Init(struct Projectile* p);
 void CopyXProjectile_Update(struct Projectile* p);
 void CopyXProjectile_Die(struct Projectile* p);

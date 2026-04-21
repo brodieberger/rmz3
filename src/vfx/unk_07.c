@@ -3,24 +3,26 @@
 #include "motion.h"
 #include "vfx.h"
 
-struct Ghost7 {
+struct VFX7 {
   struct Entity s;
+  // props (16bytes, offset: 0x74..)
   struct Coord16 mag;
   u32 unk;
   u8* unk_7c;
   u8 work[4];
-};  // 132 bytes
+};
+static_assert(sizeof(struct VFX7) == sizeof(struct VFX));
 
-static void Ghost7_Init(struct VFX* p);
+static void Ghost7_Init(struct Entity* p);
 static void Ghost7_Update(struct VFX* p);
 static void Ghost7_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost7Routine = {
-    [ENTITY_INIT] =      Ghost7_Init,
-    [ENTITY_UPDATE] =    Ghost7_Update,
-    [ENTITY_DIE] =       Ghost7_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)Ghost7_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)Ghost7_Update,
+    [ENTITY_DIE] =       (VFXFunc)Ghost7_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
@@ -43,37 +45,37 @@ void CreateGhost7(s32 x, s32 y, u8 param_3) {
 
 // --------------------------------------------
 
-static void FUN_080b4504(struct VFX* p);
-static void FUN_080b455c(struct VFX* p);
-static void FUN_080b45c0(struct VFX* p);
-static void FUN_080b4624(struct VFX* p);
-static void FUN_080b4688(struct VFX* p);
-static void FUN_080b46e0(struct VFX* p);
-static void FUN_080b4744(struct VFX* p);
+static void FUN_080b4504(struct VFX7* p);
+static void FUN_080b455c(struct VFX7* p);
+static void FUN_080b45c0(struct VFX7* p);
+static void FUN_080b4624(struct VFX7* p);
+static void FUN_080b4688(struct VFX7* p);
+static void FUN_080b46e0(struct VFX7* p);
+static void FUN_080b4744(struct Entity* p);
 
-static void Ghost7_Init(struct VFX* p) {
+static void Ghost7_Init(struct Entity* p) {
   // clang-format off
   static VFXFunc const sInitializers[] = {
-      FUN_080b4504,
-      FUN_080b455c,
-      FUN_080b45c0,
-      FUN_080b4624,
-      FUN_080b45c0,
-      FUN_080b4624,
-      FUN_080b4688,
-      FUN_080b46e0,
-      FUN_080b4744,
-      FUN_080b4744,
-      FUN_080b4744,
+      (VFXFunc)FUN_080b4504,
+      (VFXFunc)FUN_080b455c,
+      (VFXFunc)FUN_080b45c0,
+      (VFXFunc)FUN_080b4624,
+      (VFXFunc)FUN_080b45c0,
+      (VFXFunc)FUN_080b4624,
+      (VFXFunc)FUN_080b4688,
+      (VFXFunc)FUN_080b46e0,
+      (VFXFunc)FUN_080b4744,
+      (VFXFunc)FUN_080b4744,
+      (VFXFunc)FUN_080b4744,
   };
   // clang-format on
-  (sInitializers[(p->s).work[0]])(p);
+  (sInitializers[p->work[0]])((void*)p);
 }
 
 // --------------------------------------------
 
-static void FUN_080b4788(struct Ghost7* p);
-static void FUN_080b4800(struct Ghost7* p);
+static void FUN_080b4788(struct VFX7* p);
+static void FUN_080b4800(struct VFX7* p);
 static void FUN_080b487c(struct VFX* p);
 
 static void Ghost7_Update(struct VFX* p) {
@@ -103,118 +105,118 @@ static void FUN_080b491c(struct VFX* p);
 static void Ghost7_Die(struct VFX* p) {
   // clang-format off
   static VFXFunc const sDeinitializers[] = {
-      deleteGhost7,
-      deleteGhost7,
-      deleteGhost7,
-      deleteGhost7,
-      FUN_080b491c,
-      FUN_080b491c,
-      deleteGhost7,
-      deleteGhost7,
-      deleteGhost7,
-      deleteGhost7,
-      deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)FUN_080b491c,
+      (VFXFunc)FUN_080b491c,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
+      (VFXFunc)deleteGhost7,
   };
   // clang-format on
-  (sDeinitializers[(p->s).work[0]])(p);
+  (sDeinitializers[(p->s).work[0]])((void*)p);
 }
 
 // --------------------------------------------
 
-static void FUN_080b4504(struct VFX* p) {
+static void FUN_080b4504(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x80;
   (p->s).spr.mag.y = 0x100;
-  (p->props).unk7.unk_0 = 0x100;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x100;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b455c(struct VFX* p) {
+static void FUN_080b455c(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x100;
   (p->s).spr.mag.y = 0x800;
-  (p->props).unk7.unk_0 = 0x100;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x100;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b45c0(struct VFX* p) {
+static void FUN_080b45c0(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x80;
   (p->s).spr.mag.y = 0x100;
   (p->s).angle = 0x20;
-  (p->props).unk7.unk_0 = 0x100;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x100;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b4624(struct VFX* p) {
+static void FUN_080b4624(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x100;
   (p->s).spr.mag.y = 0x80;
   (p->s).angle = 0x20;
-  (p->props).unk7.unk_0 = 0x100;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x100;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b4688(struct VFX* p) {
+static void FUN_080b4688(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x80;
   (p->s).spr.mag.y = 0x80;
   (p->s).work[2] = 0;
-  (p->props).unk7.unk_0 = 0x80;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x80;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b46e0(struct VFX* p) {
+static void FUN_080b46e0(struct VFX7* p) {
   InitScalerotMotion1(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
+  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 14));
   UpdateMotionGraphic(&p->s);
   (p->s).spr.mag.x = 0x80;
   (p->s).spr.mag.y = 0x80;
   (p->s).angle = 0x20;
   (p->s).work[2] = 0;
-  (p->props).unk7.unk_0 = 0x80;
-  (p->props).unk7.unk_2 = 0x80;
+  (p->mag).x = 0x80;
+  (p->mag).y = 0x80;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b4744(struct VFX* p) {
-  InitScalerotMotion1(&p->s);
-  (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(0x00, 0x0E));
-  UpdateMotionGraphic(&p->s);
-  (p->s).work[2] = 6;
+static void FUN_080b4744(struct Entity* p) {
+  InitScalerotMotion1(p);
+  p->flags |= DISPLAY;
+  SetMotion(p, MOTION(SM000_BATTLE_EFFECT, 14));
+  UpdateMotionGraphic(p);
+  p->work[2] = 6;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost7_Update(p);
+  Ghost7_Update((void*)p);
 }
 
-static void FUN_080b4788(struct Ghost7* p) {
+static void FUN_080b4788(struct VFX7* p) {
   if (((p->s).work[0] & 1) != 0) {
     (p->s).spr.mag.x = (p->mag).x;
     (p->s).spr.mag.y = (p->mag).y;
@@ -229,7 +231,7 @@ static void FUN_080b4788(struct Ghost7* p) {
   }
 }
 
-static void FUN_080b4800(struct Ghost7* p) {
+static void FUN_080b4800(struct VFX7* p) {
   if (((p->s).work[2]++ & 1) != 0) {
     (p->s).spr.mag.x = (p->mag).y;
     (p->s).spr.mag.y = (p->mag).x;

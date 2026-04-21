@@ -2,6 +2,11 @@ export * from './load.ts';
 export * from './parser.ts';
 export * from './types.ts';
 
+export const ROM_PATH = 'baserom.gba';
+export const VRAM = 0x0600_0000;
+export const BASE = 0x0800_0000;
+export const SEPARATOR = '@;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
+
 export const toHex = (val: number, maxLength: number, prefix = ''): string => {
   const abs = Math.abs(val);
   let s = abs.toString(16).toUpperCase().padStart(maxLength, '0');

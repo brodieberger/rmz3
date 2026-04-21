@@ -10,18 +10,18 @@ const EnemyRoutine gHanumachineNecroRoutine = {
     [ENTITY_INIT] =      HanumachineNecro_Init,
     [ENTITY_UPDATE] =    HanumachineNecro_Update,
     [ENTITY_DIE] =       HanumachineNecro_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 struct Enemy* CreateEnemy50(struct Boss* hanu) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     bool8 xflip;
 
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_HANUMACHINE_NECRO);
+    INIT_ENEMY_ROUTINE(p, ENEMY_HANUMACHINE_NECRO);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -67,7 +67,7 @@ static void HanumachineNecro_Init(struct Enemy* p) {
     (p->s).unk_coord.x = -1;
   }
   (p->s).work[2] = 0;
-  SET_ZAKO_ROUTINE(p, ENTITY_UPDATE);
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   HanumachineNecro_Update(p);
 }
 
@@ -88,11 +88,11 @@ static void HanumachineNecro_Update(struct Enemy* p) {
 
   hanu = (struct Entity*)(p->s).unk_28;
   if (hanu->mode[1] > 2) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+    SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
   }
 }
 
 static void HanumachineNecro_Die(struct Enemy* p) {
   (p->s).flags &= ~DISPLAY;
-  SET_ZAKO_ROUTINE(p, ENTITY_EXIT);
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

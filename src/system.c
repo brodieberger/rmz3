@@ -12,33 +12,69 @@
 #include "syssav.h"
 #include "text.h"
 
+/*
+処理内容:
+  1. r13 = StackFramePointer (0x02000000)
+  2. r4,r5,r6,r7,r8,r9,r10,r11 を pop (r13 が r0 なことに注意)
+  3. r3 (値: 08002253) を pop し lr　に格納して lr (08002253) にジャンプ
+*/
+void ReturnToScheduler(void* p);
+
+/*
+現在の実行状況を保存して、callProcess からリターンする関数
+次にこの Process が実行される際は、 lr (この関数の戻り先) から再開される
+
+1. r4,r5,r6,r7,r8,r9,r10,r11 を push
+2. *fn = lr, *sp = r13
+3. r13 = wStackPointer
+4. r4,r5,r6,r7,r8,r9,r10,r11 を pop (spが StackFramePointer になっていることに注意)
+5. r3(callProcessのlr) を pop し、callProcess の呼び出し元へリターン
+*/
+void returnCallProcess(u32* fn, u32* sp, void* lr);
+
 static void VBlankIntr(void);
-static void HBlankIntrDummy(void);
+static void IntrDummy(void);
 static void VCountIntr(void);
 static void runDMA0(void);
 static void transferByHand(void);
+static void _transferByHand(struct TransferReservation* t);
 void Timer3Intr(void);
 void SerialCB(void);
+
+void doGraphicTransferTasks(void);
+void FlushPalette(void);
 
 static void InterruptSystemProcess(struct Process* p, bool32 b);
 static void transferData(void);
 
+extern const VoidFunc gHBlankIntrs[];
+
+// Malloc(0x08001b14)で確保される汎用メモリ領域
+struct SystemBuffer {
+  u32 buf[2][576];  // フレームごとにダブルバッファリングされる
+  u16 ofs;          // 0x1200, buf[.idx]で空の領域の先頭を指す
+  u16 idx;          // 0x1202, buf0とbuf1のどっちを使っているか
+};
+IWRAM_DATA struct SystemBuffer gSystemBuffer = {};  // 0x03000380..
+
+IWRAM_DATA ALIGNED(16) struct InterruptManager gIntrManager = {};
+IWRAM_DATA ALIGNED(16) struct ProcessManager gProcessManager = {};
+
 // 0x080fec74
 static const VoidFunc gIntrTableTemplate[14] = {
-    VBlankIntr, HBlankIntrDummy, VCountIntr, HBlankIntrDummy, HBlankIntrDummy, HBlankIntrDummy, Timer3Intr, SerialCB, HBlankIntrDummy, HBlankIntrDummy, HBlankIntrDummy, HBlankIntrDummy, HBlankIntrDummy, HBlankIntrDummy,
+    VBlankIntr, IntrDummy, VCountIntr, IntrDummy, IntrDummy, IntrDummy, Timer3Intr, SerialCB, IntrDummy, IntrDummy, IntrDummy, IntrDummy, IntrDummy, IntrDummy,
 };
 
-WIP void Process_SoftReset(struct Process* _ UNUSED) {
-#if MODERN
+void Process_SoftReset(struct Process* _ UNUSED) {
   gIntrManager.slowGameRatio = 1;
   ResetVideoRegister();
-  MaskBg0(gGameState.bg0, SCREEN_BASE(0), 1408, 0x3C0);
+  EnableBG0(gGameState.bg0, SCREEN_BASE_16(0), 1408, 0x3C0);
   gJoypad[0].field6_0x14 = 24;
   gJoypad[0].field7_0x15 = 4;
   gJoypad[1].field6_0x14 = 24;
   gJoypad[1].field7_0x15 = 4;
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
+  gPaletteManager.post_process = NULL;
   ClearBlinkings();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
@@ -57,18 +93,18 @@ WIP void Process_SoftReset(struct Process* _ UNUSED) {
   }
   SwitchProcess(TRUE);
   exec(Process_Intro);
-#else
-  INCCODE("asm/wip/Process_SoftReset.inc");
-#endif
 }
 
-WIP NORETURN void Process_System(struct Process* p) {
+NON_MATCH NORETURN void Process_System(struct Process* p) {
 #if MODERN
+  struct SystemBuffer* heap = &gSystemBuffer;
+  u16* head = &heap->ofs;
   while (TRUE) {
     PrintAllStrings();
     ExecBlink();
-    gSystemBuffer.idx = (gSystemBuffer.idx == 0);
-    gSystemBuffer.ofs = 0;
+    // swap buffers
+    heap->idx = (heap->idx == 0);
+    *head = 0;
     UpdateSram();
     do {
       do {
@@ -77,14 +113,14 @@ WIP NORETURN void Process_System(struct Process* p) {
     gIntrManager.frame2 = 0;
     PollKeyInput();
     REG_DISPCNT &= ~DISPCNT_FORCED_BLANK;
-    FlashVideoRegister();
-    FlashOAM();
-    FlashBlendRegister();
-    FlashWinRegister();
-    FlashMOSAIC();
+    FlushVideoRegister();
+    FlushOAM();
+    FlushBlendRegister();
+    FlushWinRegister();
+    FlushMOSAIC();
     transferData();
     FUN_080e98ec();  // Fontデータ関連
-    flashPalette_08003b24();
+    FlushPalette();
     doGraphicTransferTasks();
     if (gSramState.unk_00 == 0) {
       if (gGameState.unk_00c != 0) {
@@ -115,16 +151,14 @@ void usrVBlankCallback(void) {
   FUN_080044a0();
 }
 
-// 0x0300_0000 ~ 0x0300_7e00 までを0クリア
 void ClearMemory(void) {
-  REG_WAITCNT = 0x45B7;
+  REG_WAITCNT = WAITCNT_PREFETCH_ENABLE | (WAITCNT_WS2_S_1 | WAITCNT_WS2_N_3) | (WAITCNT_WS1_S_1 | WAITCNT_WS1_N_3) | (WAITCNT_WS0_S_1 | WAITCNT_WS0_N_3) | WAITCNT_SRAM_8;
 #if MODERN
-  // TODO: ClearMemory
-  // スタックに戻り先を入れているがIWRAMがゼロクリアされるので戻り先も0クリアされクラッシュする
+  // Modern compilers are liberal with the stack on entry to AgbMain, so game crash if it resets IWRAM.
 #else
-  DmaFill32(3, 0, (void*)IWRAM, 0x7E00);
+  DmaFill32(3, 0, (void*)IWRAM, IWRAM_SIZE - 512);  // 0x0300_0000 ~ 0x0300_7e00 までを0クリア
 #endif
-  DmaFill32(3, 0, (void*)EWRAM, 0x40000);
+  DmaFill32(3, 0, (void*)EWRAM, EWRAM_SIZE);
   gSystemBuffer.idx = 0;
   gSystemBuffer.ofs = 0;
 }
@@ -282,7 +316,7 @@ _08001D04: .4byte gIntrManager+56\n\
 _08001D08: .4byte gIntrTableTemplate\n\
 _08001D0C: .4byte 0x040000D4\n\
 _08001D10: .4byte 0x84000048\n\
-_08001D14: .4byte 0x03007FFC\n\
+_08001D14: .4byte INTR_VECTOR\n\
 _08001D18: .4byte 0x04000208\n\
 _08001D1C: .4byte 0x04000200\n\
 _08001D20: .4byte 0x00002005\n\
@@ -328,7 +362,7 @@ static void transferData(void) {
   transferByHand();
 }
 
-static void HBlankIntrDummy(void) { return; }
+static void IntrDummy(void) { return; }
 
 // 頻繁に呼び出される関数なので gIntrManager にコピーされる
 static void VBlankIntr(void) {
@@ -465,102 +499,45 @@ _08001F7C: .4byte 0x040000B0\n\
 }
 
 // 転送予約されたデータを(DMAを使わずに)手動で転送する
-NAKED static void transferByHand(void) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	movs r5, #0\n\
-	ldr r4, _08001FA0 @ =gIntrManager+384\n\
-	ldr r1, [r4, #8]\n\
-	cmp r1, #0\n\
-	beq _08001FC0\n\
-	ldr r0, [r4]\n\
-	str r0, [r4, #0xc]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #0x11\n\
-	ands r1, r0\n\
-	cmp r1, #0\n\
-	beq _08001FA4\n\
-	strh r5, [r4, #0x1c]\n\
-	b _08001FA8\n\
-	.align 2, 0\n\
-_08001FA0: .4byte gIntrManager+384\n\
-_08001FA4:\n\
-	movs r0, #1\n\
-	strh r0, [r4, #0x1c]\n\
-_08001FA8:\n\
-	movs r0, #1\n\
-	strh r0, [r4, #0x1e]\n\
-	ldr r0, [r4, #8]\n\
-	strh r0, [r4, #0x20]\n\
-	adds r0, r4, #0\n\
-	bl _transferByHand\n\
-	lsls r0, r5, #0x10\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #9\n\
-	adds r0, r0, r1\n\
-	lsrs r5, r0, #0x10\n\
-_08001FC0:\n\
-	adds r4, #0x24\n\
-	ldr r1, [r4, #8]\n\
-	cmp r1, #0\n\
-	beq _08001FF6\n\
-	ldr r0, [r4]\n\
-	str r0, [r4, #0xc]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #0x11\n\
-	ands r1, r0\n\
-	cmp r1, #0\n\
-	beq _08001FDA\n\
-	movs r0, #0\n\
-	b _08001FDC\n\
-_08001FDA:\n\
-	movs r0, #1\n\
-_08001FDC:\n\
-	strh r0, [r4, #0x1c]\n\
-	movs r0, #1\n\
-	strh r0, [r4, #0x1e]\n\
-	ldr r0, [r4, #8]\n\
-	strh r0, [r4, #0x20]\n\
-	adds r0, r4, #0\n\
-	bl _transferByHand\n\
-	lsls r0, r5, #0x10\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #0xa\n\
-	adds r0, r0, r1\n\
-	lsrs r5, r0, #0x10\n\
-_08001FF6:\n\
-	lsls r0, r5, #0x10\n\
-	asrs r3, r0, #0x10\n\
-	cmp r3, #0\n\
-	beq _08002022\n\
-	ldr r2, _08002028 @ =0x04000004\n\
-	ldrh r0, [r2]\n\
-	movs r1, #0x10\n\
-	orrs r0, r1\n\
-	strh r0, [r2]\n\
-	ldrh r0, [r2]\n\
-	ldr r2, _0800202C @ =gIntrManager\n\
-	ldr r1, _08002030 @ =0x08338C90\n\
-	lsls r0, r3, #2\n\
-	adds r0, r0, r1\n\
-	ldr r0, [r0]\n\
-	str r0, [r2, #4]\n\
-	ldr r2, _08002034 @ =0x04000200\n\
-	ldrh r0, [r2]\n\
-	movs r1, #2\n\
-	orrs r0, r1\n\
-	strh r0, [r2]\n\
-	ldrh r0, [r2]\n\
-_08002022:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_08002028: .4byte 0x04000004\n\
-_0800202C: .4byte gIntrManager\n\
-_08002030: .4byte HBlankIntrs\n\
-_08002034: .4byte 0x04000200\n\
- .syntax divided\n");
+static void transferByHand(void) {
+  s16 i = 0;
+  struct TransferReservation* tr = &gIntrManager.tr[0];
+  if (tr->count) {
+    tr->src = tr->start;
+    if (tr->count & (DMA_SRC_FIXED << 16)) {
+      tr->delta_src = 0;
+    } else {
+      tr->delta_src = 1;
+    }
+    tr->delta_dst = 1;
+    tr->remaining = tr->count & 0xFFFF;
+    _transferByHand(tr);
+    i += 1;
+  }
+
+  tr = &tr[1];
+  if (tr->count) {
+    tr->src = tr->start;
+    if (tr->count & (DMA_SRC_FIXED << 16)) {
+      tr->delta_src = 0;
+    } else {
+      tr->delta_src = 1;
+    }
+    tr->delta_dst = 1;
+    tr->remaining = tr->count & 0xFFFF;
+    _transferByHand(tr);
+    i += 2;
+  }
+
+  if (i != 0) {
+    REG_DISPSTAT |= DISPSTAT_HBLANK_INTR;
+    REG_DISPSTAT;
+
+    gIntrManager.table[1] = gHBlankIntrs[i];
+
+    REG_IE |= INTR_FLAG_HBLANK;
+    REG_IE;
+  }
 }
 
 // HBlankIntr2との違いは SlowTR の代わりに FastTR を転送することのみ
@@ -570,7 +547,7 @@ void HBlankIntr1(void) {
     REG_DISPSTAT &= ~DISPSTAT_HBLANK_INTR;
     REG_DISPSTAT;
 
-    gIntrManager.table[1] = HBlankIntrDummy;
+    gIntrManager.table[1] = IntrDummy;
 
     REG_IE &= ~INTR_FLAG_HBLANK;
     REG_IE;
@@ -584,7 +561,7 @@ void HBlankIntr2(void) {
     REG_DISPSTAT &= ~DISPSTAT_HBLANK_INTR;
     REG_DISPSTAT;
 
-    gIntrManager.table[1] = HBlankIntrDummy;
+    gIntrManager.table[1] = IntrDummy;
 
     REG_IE &= ~INTR_FLAG_HBLANK;
     REG_IE;
@@ -602,14 +579,14 @@ void FUN_08002110(void) {
     if (y == DISPLAY_HEIGHT) {
       REG_DISPSTAT &= ~DISPSTAT_HBLANK_INTR;
       REG_DISPSTAT;
-      gIntrManager.table[1] = HBlankIntrDummy;
+      gIntrManager.table[1] = IntrDummy;
       REG_IE &= ~INTR_FLAG_HBLANK;
       REG_IE;
     }
   }
 }
 
-void _transferByHand(struct TransferReservation* t) {
+static void _transferByHand(struct TransferReservation* t) {
   u16 i;
   u16* src = t->src;
   u16* dst = t->dst;
@@ -626,6 +603,8 @@ void clear0x020014e0(void) {
   return;
 }
 
+// ------------------------------------------------------------
+
 void InitScheduler(bool32 ok) {
   s32 i;
   struct Process* proc = &gProcessManager.processes[0];
@@ -638,8 +617,9 @@ void InitScheduler(bool32 ok) {
 }
 
 /*
+  0x080021f4
   Returnされることはない
-  いわゆるスケジューラ的な役割
+  いわゆるUnixのスケジューラ的な役割
   Process を見ていって、実行可能なものがあったら、そっちに処理を渡す
   Process が自発的に Process を中断するとここに処理が戻る
 
@@ -651,8 +631,7 @@ void InitScheduler(bool32 ok) {
     -  c. PPU 関連の処理を実行
     - 3. 1に戻る (ly=0 まで待機とかはしないで、すぐに1に戻る)
 */
-WIP void GameLoop(void) {
-#if MODERN
+void RunScheduler(void) {
   struct Process* proc;
   do {
     gProcessManager.procID = 0;
@@ -677,13 +656,9 @@ WIP void GameLoop(void) {
 
     gProcessManager.masterFrame++;
   } while (gProcessManager.systemOK);
-#else
-  INCCODE("asm/wip/GameLoop.inc");
-#endif
 }
 
-#if MODERN == 0
-// Processes 全てに対して、GameLoop でスケジューリングされないようにする
+// Processes 全てに対して、 RunScheduler でスケジューリングされないようにする
 static void unused_DisableAllProcesses(void) {
   struct Process* proc = gProcessManager.processes;
   s32 i = 0;
@@ -695,7 +670,6 @@ static void unused_DisableAllProcesses(void) {
     proc = &proc[1];
   } while (i < 3);
 }
-#endif
 
 void ResetProcess(s32 i, void* fn) {
   struct Process* p = &gProcessManager.processes[i];
@@ -738,7 +712,7 @@ void ExitProcess(void) {
   returnCallProcess((u32*)&p->fn, (u32*)&p->sp, StackFramePointer);
 }
 
-// GameLoop で Process がスケジューリングされないようにする
+// RunScheduler で Process がスケジューリングされないようにする
 void disableProcess(s32 i) {
   struct Process* p = &gProcessManager.processes[i];
   if (p->status != PROCESS_DISABLED) {
@@ -754,7 +728,7 @@ void exec(void* fn) {
   struct Process* p = &gProcessManager.processes[gProcessManager.procID];
   p->doReset = TRUE;
   p->fn = fn;
-  ReturnToGameLoop(StackFramePointer);
+  ReturnToScheduler(StackFramePointer);
 }
 
 void FUN_080023e0(s32 i) {

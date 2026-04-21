@@ -4,191 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_08092444
-FUN_08092444: @ 0x08092444
-	push {r4, r5, r6, r7, lr}
-	adds r6, r0, #0
-	adds r7, r2, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080924A0 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08092498
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _080924A4 @ =gEnemyFnTable
-	movs r1, #0x3c
-	strb r1, [r4, #9]
-	adds r0, #0xf0
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	ldr r0, [r6]
-	ldr r1, [r6, #4]
-	str r0, [r4, #0x54]
-	str r1, [r4, #0x58]
-	strb r5, [r4, #0x10]
-	strb r2, [r4, #0x11]
-	str r7, [r4, #0x28]
-_08092498:
-	adds r0, r4, #0
-	pop {r4, r5, r6, r7}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080924A0: .4byte gZakoHeaderPtr
-_080924A4: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_080924a8
-FUN_080924a8: @ 0x080924A8
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r4, r1, #0x18
-	ldr r0, _080924FC @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080924F4
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08092500 @ =gEnemyFnTable
-	movs r1, #0x3c
-	strb r1, [r3, #9]
-	adds r0, #0xf0
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	strb r4, [r3, #0x10]
-	movs r0, #1
-	strb r0, [r3, #0x11]
-	str r5, [r3, #0x28]
-_080924F4:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080924FC: .4byte gZakoHeaderPtr
-_08092500: .4byte gEnemyFnTable
-
-	thumb_func_start Enemy60_Init
-Enemy60_Init: @ 0x08092504
-	push {r4, r5, r6, r7, lr}
-	adds r7, r0, #0
-	bl InitNonAffineMotion
-	adds r0, r7, #0
-	bl ResetDynamicMotion
-	movs r5, #0
-	ldrb r1, [r7, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-	strb r0, [r7, #0xa]
-	movs r6, #1
-	adds r0, r7, #0
-	adds r0, #0x4c
-	strb r5, [r0]
-	adds r2, r7, #0
-	adds r2, #0x4a
-	ldrb r1, [r2]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	strb r0, [r2]
-	ldrb r1, [r7, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	movs r1, #2
-	orrs r0, r1
-	movs r1, #4
-	orrs r0, r1
-	strb r0, [r7, #0xa]
-	adds r4, r7, #0
-	adds r4, #0x74
-	ldr r1, _080925A8 @ =0x08369A8C
-	adds r2, #0xa
-	adds r0, r4, #0
-	movs r3, #1
-	bl InitBody
-	str r7, [r4, #0x2c]
-	ldr r0, _080925AC @ =nop_08093578
-	str r0, [r4, #0x24]
-	adds r0, r7, #0
-	adds r0, #0x5c
-	str r5, [r0, #4]
-	str r5, [r7, #0x5c]
-	ldr r1, _080925B0 @ =gEnemyFnTable
-	ldrb r0, [r7, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	str r6, [r7, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r7, #0x14]
-	strb r5, [r7, #0xd]
-	strb r5, [r7, #0xe]
-	strb r5, [r7, #0xf]
-	adds r1, r7, #0
-	adds r1, #0xb4
-	str r5, [r1]
-	adds r0, r7, #0
-	adds r0, #0xb8
-	str r5, [r0]
-	ldr r2, [r7, #0x28]
-	ldr r0, [r2, #0x58]
-	str r0, [r7, #0x58]
-	ldr r0, [r1]
-	ldr r1, [r2, #0x54]
-	adds r0, r0, r1
-	str r0, [r7, #0x54]
-	ldrb r1, [r7, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r7, #0xb]
-	ldrb r0, [r2, #0x1c]
-	strb r0, [r7, #0x1d]
-	adds r0, r7, #0
-	bl Enemy60_Update
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080925A8: .4byte 0x08369A8C
-_080925AC: .4byte nop_08093578
-_080925B0: .4byte gEnemyFnTable
-
 	thumb_func_start Enemy60_Update
 Enemy60_Update: @ 0x080925B4
 	push {r4, r5, r6, lr}
@@ -1693,7 +1508,7 @@ _08093146:
 	ldr r2, _08093274 @ =0x08369A8C
 	adds r1, r1, r2
 	bl SetDDP
-	ldr r2, _08093278 @ =0x020302B0
+	ldr r2, _08093278 @ =u32_020302b0
 	ldr r1, [r4]
 	movs r0, #0x80
 	lsls r0, r0, #6
@@ -1746,7 +1561,7 @@ _08093146:
 	orrs r0, r1
 	strh r0, [r4, #0xa]
 _080931F6:
-	ldr r3, _08093284 @ =0x020302B4
+	ldr r3, _08093284 @ =u32_020302b4
 	ldr r0, [r5, #0x60]
 	ldr r1, [r5, #0x58]
 	adds r0, r0, r1
@@ -1758,7 +1573,7 @@ _080931F6:
 	subs r0, r0, r1
 	asrs r0, r0, #8
 	str r0, [r3]
-	ldr r3, _08093288 @ =0x020302AC
+	ldr r3, _08093288 @ =u32_020302ac
 	ldr r0, [r5, #0x5c]
 	ldr r1, [r5, #0x54]
 	adds r0, r0, r1
@@ -1804,11 +1619,11 @@ _08093268: .4byte gPaletteManager
 _0809326C: .4byte 0x0000FFFF
 _08093270: .4byte 0x00000135
 _08093274: .4byte 0x08369A8C
-_08093278: .4byte 0x020302B0
+_08093278: .4byte u32_020302b0
 _0809327C: .4byte gWindowRegBuffer
 _08093280: .4byte gStageRun+232
-_08093284: .4byte 0x020302B4
-_08093288: .4byte 0x020302AC
+_08093284: .4byte u32_020302b4
+_08093288: .4byte u32_020302ac
 _0809328C:
 	ldr r2, _080932CC @ =gWindowRegBuffer
 	ldrh r1, [r2]
@@ -1819,15 +1634,15 @@ _08093296:
 	ldr r1, [r5, #0x2c]
 	cmp r1, #0
 	beq _080932B2
-	ldr r0, _080932D4 @ =0x020302AC
+	ldr r0, _080932D4 @ =u32_020302ac
 	ldr r0, [r0]
 	str r0, [r1, #0x74]
 	ldr r1, [r5, #0x2c]
-	ldr r0, _080932D8 @ =0x020302B4
+	ldr r0, _080932D8 @ =u32_020302b4
 	ldr r0, [r0]
 	str r0, [r1, #0x78]
 	ldr r1, [r5, #0x2c]
-	ldr r0, _080932DC @ =0x020302B0
+	ldr r0, _080932DC @ =u32_020302b0
 	ldr r0, [r0]
 	str r0, [r1, #0x7c]
 _080932B2:
@@ -1848,9 +1663,9 @@ _080932C6:
 	.align 2, 0
 _080932CC: .4byte gWindowRegBuffer
 _080932D0: .4byte 0x0000BFFF
-_080932D4: .4byte 0x020302AC
-_080932D8: .4byte 0x020302B4
-_080932DC: .4byte 0x020302B0
+_080932D4: .4byte u32_020302ac
+_080932D8: .4byte u32_020302b4
+_080932DC: .4byte u32_020302b0
 _080932E0:
 	ldr r0, [r5, #0x64]
 	ldr r1, [r5, #0x54]
@@ -1889,7 +1704,7 @@ _080932E0:
 	movs r0, #1
 	ands r0, r1
 	str r4, [sp, #0x10]
-	ldr r2, _08093400 @ =0x020302B0
+	ldr r2, _08093400 @ =u32_020302b0
 	ldr r1, [r6]
 	movs r0, #0x80
 	lsls r0, r0, #6
@@ -1947,7 +1762,7 @@ _080932E0:
 	orrs r0, r2
 	strh r0, [r4, #0xa]
 _0809339E:
-	ldr r2, _08093410 @ =0x020302B4
+	ldr r2, _08093410 @ =u32_020302b4
 	ldr r1, [sp, #0x14]
 	adds r0, r6, r1
 	movs r3, #0xa0
@@ -1958,7 +1773,7 @@ _0809339E:
 	subs r0, r0, r1
 	asrs r0, r0, #8
 	str r0, [r2]
-	ldr r2, _08093414 @ =0x020302AC
+	ldr r2, _08093414 @ =u32_020302ac
 	mov r0, r8
 	add r0, sb
 	movs r1, #0xf0
@@ -1994,12 +1809,12 @@ _0809339E:
 	b _08093436
 	.align 2, 0
 _080933FC: .4byte 0x08369A8C
-_08093400: .4byte 0x020302B0
+_08093400: .4byte u32_020302b0
 _08093404: .4byte 0x0203700C
 _08093408: .4byte gStageRun+232
 _0809340C: .4byte gWindowRegBuffer
-_08093410: .4byte 0x020302B4
-_08093414: .4byte 0x020302AC
+_08093410: .4byte u32_020302b4
+_08093414: .4byte u32_020302ac
 _08093418: .4byte gPaletteManager
 _0809341C: .4byte 0x0000FFFF
 _08093420: .4byte 0x0000BFFF
@@ -2017,15 +1832,15 @@ _08093436:
 	ldr r1, [r5, #0x2c]
 	cmp r1, #0
 	beq _08093452
-	ldr r0, _08093484 @ =0x020302AC
+	ldr r0, _08093484 @ =u32_020302ac
 	ldr r0, [r0]
 	str r0, [r1, #0x74]
 	ldr r1, [r5, #0x2c]
-	ldr r0, _08093488 @ =0x020302B4
+	ldr r0, _08093488 @ =u32_020302b4
 	ldr r0, [r0]
 	str r0, [r1, #0x78]
 	ldr r1, [r5, #0x2c]
-	ldr r0, _0809348C @ =0x020302B0
+	ldr r0, _0809348C @ =u32_020302b0
 	ldr r0, [r0]
 	str r0, [r1, #0x7c]
 _08093452:
@@ -2054,9 +1869,9 @@ _0809345A:
 	b _0809355C
 	.align 2, 0
 _08093480: .4byte gWindowRegBuffer
-_08093484: .4byte 0x020302AC
-_08093488: .4byte 0x020302B4
-_0809348C: .4byte 0x020302B0
+_08093484: .4byte u32_020302ac
+_08093488: .4byte u32_020302b4
+_0809348C: .4byte u32_020302b0
 _08093490: .4byte 0x0000BFFF
 _08093494: .4byte 0x08369AA4
 _08093498:
@@ -2174,40 +1989,3 @@ _0809356C: .4byte gWindowRegBuffer
 _08093570: .4byte 0x0000BFFF
 _08093574: .4byte 0x0000B602
 
-	thumb_func_start nop_08093578
-nop_08093578: @ 0x08093578
-	bx lr
-	.align 2, 0
-
-	thumb_func_start FUN_0809357c
-FUN_0809357c: @ 0x0809357C
-	push {lr}
-	adds r3, r0, #0
-	ldrb r0, [r3, #0xe]
-	cmp r0, #0
-	beq _0809358C
-	cmp r0, #1
-	beq _08093590
-	b _080935B0
-_0809358C:
-	movs r0, #1
-	strb r0, [r3, #0xe]
-_08093590:
-	adds r0, r3, #0
-	adds r0, #0xb8
-	ldr r2, [r3, #0x28]
-	ldr r0, [r0]
-	ldr r1, [r2, #0x58]
-	adds r0, r0, r1
-	str r0, [r3, #0x58]
-	adds r0, r3, #0
-	adds r0, #0xb4
-	ldr r0, [r0]
-	ldr r1, [r2, #0x54]
-	adds r0, r0, r1
-	str r0, [r3, #0x54]
-	adds r0, r3, #0
-	bl UpdateMotionGraphic
-_080935B0:
-	pop {r0}
-	bx r0

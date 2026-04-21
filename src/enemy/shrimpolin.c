@@ -4,6 +4,14 @@
 #include "global.h"
 #include "story.h"
 
+struct ShrimporinObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct VFX* elementEffect;
+  u8 unk_004[12];
+};
+static_assert(sizeof(struct ShrimporinObject) == sizeof(struct Enemy));
+
 static const EnemyFunc sUpdates1[8];
 static const EnemyFunc sUpdates2[8];
 static const struct Collision sCollisions[6];
@@ -20,16 +28,16 @@ const EnemyRoutine gShrimporinRoutine = {
     [ENTITY_INIT] =      Shrimporin_Init,
     [ENTITY_UPDATE] =    Shrimporin_Update,
     [ENTITY_DIE] =       Shrimporin_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 void CreateShrimporin(s32 x, s32 y, u8 n, bool8 r3) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, 7);
+    INIT_ENEMY_ROUTINE(p, 7);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -49,7 +57,7 @@ void nop_08069874(struct Body* body, struct Coord* c1, struct Coord* c2) { retur
 
 static bool8 tryKillShrimporin(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     if ((p->s).work[0] == 2) {
       (p->s).mode[1] = 3;
     } else if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -90,7 +98,7 @@ NAKED static bool8 shrimporin_080698dc(struct Enemy* p) {
 	b _0806998A\n\
 _08069906:\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _0806998A\n\
 	ldr r1, _08069940 @ =sUpdates1\n\
@@ -136,7 +144,7 @@ _08069960:\n\
 	strb r0, [r4, #0x13]\n\
 _08069966:\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08069988\n\
 	adds r0, r4, #0\n\
@@ -162,14 +170,14 @@ _0806998C:\n\
  .syntax divided\n");
 }
 
-void shrimporin_08069994(struct Enemy* p) {
-  if ((p->props).shrimpolin.elementEffect == NULL && ((p->body).status & BODY_STATUS_WHITE)) {
+void shrimporin_08069994(struct ShrimporinObject* p) {
+  if (p->elementEffect == NULL && ((p->body).status & BODY_STATUS_WHITE)) {
     if (((p->body).status & BODY_STATUS_RECOILED)) {
       (p->s).mode[1] = 7;
       (p->s).mode[2] = 0;
     } else {
-      (p->props).shrimpolin.elementEffect = ApplyElementEffect(0, &p->s, &sElementCoord);
-      if ((p->props).shrimpolin.elementEffect != NULL) {
+      p->elementEffect = ApplyElementEffect(0, &p->s, &sElementCoord);
+      if (p->elementEffect != NULL) {
         (p->s).mode[1] = 0;
         (p->s).mode[2] = 0;
       }
@@ -324,18 +332,18 @@ _08069B08: .4byte nop_08069874\n\
 
 static void FUN_080699e0(struct Enemy* p);
 static void nop_08069c20(struct Enemy* p);
-static void shrimporin_08069c24(struct Enemy* p);
+static void shrimporin_08069c24(struct ShrimporinObject* p);
 
 // clang-format off
 static const EnemyFunc sUpdates1[8] = {
-    shrimporin_08069c24,
-    nop_08069c20,
-    nop_08069c20,
-    FUN_080699e0,
-    FUN_080699e0,
-    nop_08069c20,
-    FUN_080699e0,
-    nop_08069c20,
+    (EnemyFunc)shrimporin_08069c24,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)nop_08069c20,
 };
 // clang-format on
 
@@ -366,11 +374,8 @@ static void Shrimporin_Update(struct Enemy* p) {
     if (IS_METTAUR) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
-      SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+      EXIT_BODY(p);
+      SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
       return;
     }
     if (tryKillShrimporin(p)) {
@@ -380,14 +385,14 @@ static void Shrimporin_Update(struct Enemy* p) {
     if (tryKillShrimporin(p)) {
       return;
     }
-    shrimporin_08069994(p);
+    shrimporin_08069994((void*)p);
     if (shrimporin_080698dc(p)) {
       return;
     }
   }
 
-  (sUpdates1[(p->s).mode[1]])(p);
-  (sUpdates2[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
+  (sUpdates2[(p->s).mode[1]])((void*)p);
 }
 
 // --------------------------------------------
@@ -408,11 +413,8 @@ static void Shrimporin_Die(struct Enemy* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
-    SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+    EXIT_BODY(p);
+    SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
   (sDeads[(p->s).mode[1]])(p);
@@ -422,12 +424,12 @@ static void Shrimporin_Die(struct Enemy* p) {
 
 static void nop_08069c20(struct Enemy* p) { return; }
 
-static void shrimporin_08069c24(struct Enemy* p) {
-  struct VFX* elementEffect = (p->props).shrimpolin.elementEffect;
+static void shrimporin_08069c24(struct ShrimporinObject* p) {
+  struct VFX* elementEffect = p->elementEffect;
   if (elementEffect == NULL || isKilled(&elementEffect->s)) {
-    (p->props).shrimpolin.elementEffect = NULL;
+    p->elementEffect = NULL;
     SetDDP(&p->body, &sCollisions[1]);
-    if (!isFrozen(p)) {
+    if (!IsFrozen((void*)p)) {
       (p->s).mode[1] = 6;
       (p->s).mode[2] = 0;
     }

@@ -6,43 +6,40 @@
   ショットカウンターのミサイル破壊時の煙など
 */
 
-static const u8 sSmokeMotionIdx[8];
+static const motion_sub_id_t sMotionSubIDs[];
 
-static void Smoke_Init(struct VFX* p);
-static void Smoke_Update(struct VFX* p);
-static void Smoke_Die(struct VFX* p);
+static void Smoke_Init(struct Entity* p);
+static void Smoke_Update(struct Entity* p);
+static void Smoke_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gSmokeRoutine = {
-    [ENTITY_INIT] =      Smoke_Init,
-    [ENTITY_UPDATE] =    Smoke_Update,
-    [ENTITY_DIE] =       Smoke_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)Smoke_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)Smoke_Update,
+    [ENTITY_DIE] =       (VFXFunc)Smoke_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* CreateSmoke(u8 kind, struct Coord* c) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, 0);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    ((g->s).coord).x = c->x;
-    ((g->s).coord).y = c->y;
-    InitNonAffineMotion(&g->s);
-    SetMotion(&g->s, MOTION(0, sSmokeMotionIdx[kind]));
+struct Entity* CreateSmoke(u8 kind, struct Coord* c) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, 0);
+    p->tileNum = 0;
+    p->palID = 0;
+    (p->coord).x = c->x;
+    (p->coord).y = c->y;
+    InitNonAffineMotion(p);
+    SetMotion(p, MOTION(SM000_BATTLE_EFFECT, sMotionSubIDs[kind]));
   }
-
-  return g;
+  return p;
 }
 
-#if MODERN == 0
-NAKED static struct VFX* unused_080b2a68(u8 kind, struct Coord* c, bool8 xflip, bool8 yflip) { INCCODE("asm/unused/unused_080b2a68.inc"); }
-#endif
+NAKED static struct Entity* unused_080b2a68(u8 kind, struct Coord* c, bool8 xflip, bool8 yflip) { INCCODE("asm/unused/unused_080b2a68.inc"); }
 
-NAKED struct VFX* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool8 isDirRight) {
+NAKED struct Entity* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool16 isDirRight) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -82,7 +79,7 @@ NAKED struct VFX* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool8 isDirRigh
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
 	bl InitScalerotMotion1\n\
-	ldr r0, _080B2BC0 @ =sSmokeMotionIdx\n\
+	ldr r0, _080B2BC0 @ =sMotionSubIDs\n\
 	adds r0, r7, r0\n\
 	ldrb r1, [r0]\n\
 	adds r0, r4, #0\n\
@@ -104,7 +101,7 @@ NAKED struct VFX* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool8 isDirRigh
 	.align 2, 0\n\
 _080B2BB8: .4byte gVFXHeaderPtr\n\
 _080B2BBC: .4byte gVFXFnTable\n\
-_080B2BC0: .4byte sSmokeMotionIdx\n\
+_080B2BC0: .4byte sMotionSubIDs\n\
 _080B2BC4:\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0xef\n\
@@ -162,7 +159,7 @@ _080B2C1A:\n\
  .syntax divided\n");
 }
 
-NAKED struct VFX* FUN_080b2c28(motion_t m, struct Coord* c, bool8 xflip, bool8 yflip) {
+NAKED struct Entity* FUN_080b2c28(motion_t m, struct Coord* c, bool8 xflip, bool8 yflip) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -271,26 +268,28 @@ _080B2CEC:\n\
  .syntax divided\n");
 }
 
-static void Smoke_Init(struct VFX* p) {
-  (p->s).flags |= DISPLAY;
+// --------------------------------------------
+
+static void Smoke_Init(struct Entity* p) {
+  p->flags |= DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Smoke_Update(p);
 }
 
-static void Smoke_Update(struct VFX* p) {
-  UpdateMotionGraphic(&p->s);
-  if ((p->s).motion.state == MOTION_END) {
+static void Smoke_Update(struct Entity* p) {
+  UpdateMotionGraphic(p);
+  if ((p->motion).state == MOTION_END) {
     SET_VFX_ROUTINE(p, ENTITY_DIE);
   }
 }
 
-static void Smoke_Die(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void Smoke_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
-// ------------------------------------------------------------------------------------------------------------------------------------
+// --------------------------------------------
 
-static const u8 sSmokeMotionIdx[8] = {
+static const motion_sub_id_t sMotionSubIDs[8] = {
     0x00, 0x01, 0x02, 0x03, 0x09, 0x16, 0x17, 0x18,
-};
+};  // 0x0836da68

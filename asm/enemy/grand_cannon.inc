@@ -50,7 +50,7 @@ _08069450:
 	cmp r0, #0
 	bne _08069544
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08069544
 	ldr r1, [r4, #0x54]

@@ -41,7 +41,7 @@ PantheonAquaMod_Init: @ 0x08051330
 	ands r0, r1
 	cmp r0, #0
 	beq _08051394
-	ldr r1, _08051390 @ =0x0836364C
+	ldr r1, _08051390 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x50
 	bl ResetBossBody
@@ -50,9 +50,9 @@ PantheonAquaMod_Init: @ 0x08051330
 _08051384: .4byte gBossFnTable
 _08051388: .4byte 0x0836394C
 _0805138C: .4byte gSystemSavedataManager
-_08051390: .4byte 0x0836364C
+_08051390: .4byte sCollisions
 _08051394:
-	ldr r1, _0805158C @ =0x0836364C
+	ldr r1, _0805158C @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -292,7 +292,7 @@ _08051576:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805158C: .4byte 0x0836364C
+_0805158C: .4byte sCollisions
 _08051590: .4byte onCollision
 _08051594: .4byte gStaticMotionGraphics
 _08051598: .4byte wStaticGraphicTilenums
@@ -1670,7 +1670,7 @@ _08052172:
 	cmp r0, #6
 	bls _080521B2
 	ldr r0, _080521EC @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	ldr r0, [r5]
 	movs r1, #0x80
 	lsls r1, r1, #3
@@ -1808,7 +1808,7 @@ _080523D0:
 	b _0805259C
 _080523D6:
 	ldr r0, _08052550 @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	ldr r1, _08052554 @ =0x00004D12
 	adds r0, r7, #0
 	bl SetMotion

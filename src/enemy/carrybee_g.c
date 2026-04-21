@@ -18,10 +18,10 @@ const EnemyRoutine gCarrybeeGRoutine = {
 // clang-format on
 
 struct Enemy* FUN_0808a854(struct Coord* c) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CARRYBEE_G);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CARRYBEE_G);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -33,10 +33,10 @@ struct Enemy* FUN_0808a854(struct Coord* c) {
 }
 
 struct Enemy* FUN_0808a8b0(struct Entity* e) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CARRYBEE_G);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CARRYBEE_G);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;

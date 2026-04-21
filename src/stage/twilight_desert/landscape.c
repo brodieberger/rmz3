@@ -33,7 +33,7 @@ static void FUN_0800f8dc(struct Coord* c) {
     }
   }
   if (isSoundPlaying(SE_UNK_102)) {
-    stopSound(SE_UNK_102);
+    StopSound(SE_UNK_102);
   }
 
 _SKIP:
@@ -45,7 +45,7 @@ _SKIP:
       SetStageNoiseVolume(SE_UNK_c6);
     } else {
       if (isSoundPlaying(SE_UNK_c6)) {
-        stopSound(SE_UNK_c6);
+        StopSound(SE_UNK_c6);
       }
     }
   }

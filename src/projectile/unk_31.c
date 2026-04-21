@@ -4,7 +4,7 @@
 
 void Projectile31_Init(struct Projectile* p);
 void Projectile31_Update(struct Projectile* p);
-void Projectile31_Die(struct Projectile* p);
+static void Projectile31_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile31Routine = {
@@ -15,6 +15,15 @@ const ProjectileRoutine gProjectile31Routine = {
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
+
+// --------------------------------------------
+
+INCASM("asm/projectile/unk_31.inc");
+
+static void Projectile31_Die(struct Projectile* p) {
+  EXIT_BODY(p);
+  SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
+}
 
 // --------------------------------------------
 

@@ -15,7 +15,7 @@ const EnemyRoutine gChildreObjRoutine = {
     [ENTITY_INIT] =      ChildreObj_Init,
     [ENTITY_UPDATE] =    ChildreObj_Update,
     [ENTITY_DIE] =       ChildreObj_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -25,10 +25,10 @@ void CreateSplitMineBomb(s32 x, s32 y) {
   struct Enemy* p;
 
   CreateVFX31_1(x, y);
-  p = (struct Enemy*)AllocEntityLast(gZakoHeaderPtr);
+  p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CHILDRE_OBJ);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -54,7 +54,7 @@ NAKED void ExplodeSplitMine(s32 x, s32 y) {
 	lsls r6, r6, #0x18\n\
 	movs r5, #0\n\
 _080736CE:\n\
-	ldr r0, _08073770 @ =gZakoHeaderPtr\n\
+	ldr r0, _08073770 @ =gEnemyHeaderPtr\n\
 	ldr r0, [r0]\n\
 	bl AllocEntityLast\n\
 	adds r2, r0, #0\n\
@@ -137,7 +137,7 @@ _08073752:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_08073770: .4byte gZakoHeaderPtr\n\
+_08073770: .4byte gEnemyHeaderPtr\n\
 _08073774: .4byte gEnemyFnTable\n\
 _08073778: .4byte gSineTable\n\
  .syntax divided\n");
@@ -147,10 +147,10 @@ void CreateChildreScrewIce(s32 x, s32 y, u8 n) {
   struct Enemy* p;
 
   CreateVFX31_1(x, y);
-  p = (struct Enemy*)AllocEntityLast(gZakoHeaderPtr);
+  p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CHILDRE_OBJ);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -163,10 +163,10 @@ void CreateChildreScrewIce(s32 x, s32 y, u8 n) {
 }
 
 void CreateChildreMissile(s32 x, s32 y, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityLast(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CHILDRE_OBJ);
+    INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
     (p->s).tileNum = 0;
     (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
@@ -185,7 +185,7 @@ static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struc
 
 static bool8 FUN_0807383c(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = (p->s).work[0];
     ChildreObj_Die(p);
     return TRUE;

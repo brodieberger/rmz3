@@ -141,7 +141,7 @@ _080DFA10:
 	bx r0
 	.align 2, 0
 _080DFA18: .4byte gSolidFnTable
-_080DFA1C: .4byte 0x083718F0
+_080DFA1C: .4byte sCollision
 _080DFA20: .4byte 0xFFFFD000
 
 	thumb_func_start ModElf_Update

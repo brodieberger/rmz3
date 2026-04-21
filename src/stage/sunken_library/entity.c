@@ -36,8 +36,8 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             2,
             ENTITY_ITEM,
-            0,
-            4,
+            ITEM_GENERAL,
+            ITEM_EC_L,
             2,
             0,
             0,
@@ -47,8 +47,8 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             2,
             ENTITY_ITEM,
-            0,
-            5,
+            ITEM_GENERAL,
+            ITEM_EXLIFE,
             2,
             0,
             0,
@@ -58,7 +58,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            2,
+            SOLID_DOOR_2D_BLUE,
             0,
             0,
             0,
@@ -69,7 +69,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            2,
+            SOLID_DOOR_2D_BLUE,
             1,
             0,
             0,
@@ -80,7 +80,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            20,
+            SOLID_DOOR_2D_GRAY_V,
             0,
             0,
             0,
@@ -91,7 +91,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            20,
+            SOLID_DOOR_2D_GRAY_V,
             1,
             0,
             0,
@@ -102,7 +102,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            20,
+            SOLID_DOOR_2D_GRAY_V,
             2,
             0,
             0,
@@ -113,7 +113,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            9,
+            SOLID_DOOR_3D,
             2,
             0,
             0,
@@ -124,7 +124,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            9,
+            SOLID_DOOR_3D,
             2,
             1,
             0,
@@ -135,7 +135,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            23,
+            SOLID_TURTLOID_S,
             0,
             1,
             0,
@@ -223,7 +223,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             2,
             ENTITY_SOLID,
-            35,
+            SOLID_CONTAINER,
             0,
             94,
             0,
@@ -234,7 +234,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             2,
             ENTITY_SOLID,
-            35,
+            SOLID_CONTAINER,
             0,
             254,
             0,
@@ -245,7 +245,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             2,
             ENTITY_SOLID,
-            35,
+            SOLID_CONTAINER,
             0,
             255,
             0,
@@ -256,29 +256,21 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_SOLID,
-            31,
-            0,
-            0,
-            0,
-            0,
+            SOLID_CYBERSPACE_DOOR,
             0,
         },
     [24] =
         {
             1,
             ENTITY_SOLID,
-            31,
+            SOLID_CYBERSPACE_DOOR,
             1,
-            0,
-            0,
-            0,
-            0,
         },
     [25] =
         {
             1,
             ENTITY_ENEMY,
-            56,
+            ENEMY_CLAVEKER,
             0,
             0,
             1,
@@ -289,7 +281,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_ENEMY,
-            26,
+            ENEMY_SHELLUNO,
             0,
             0,
             1,
@@ -300,7 +292,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_ENEMY,
-            15,
+            ENEMY_SHARKSEAL_X,
             0,
             0,
             1,
@@ -311,7 +303,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             4,
             ENTITY_ENEMY,
-            12,
+            ENEMY_LEMMINGLES_NEST,
             0,
             0,
             1,
@@ -322,7 +314,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             4,
             ENTITY_ENEMY,
-            12,
+            ENEMY_LEMMINGLES_NEST,
             1,
             0,
             1,
@@ -333,7 +325,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             4,
             ENTITY_ENEMY,
-            12,
+            ENEMY_LEMMINGLES_NEST,
             4,
             0,
             1,
@@ -344,7 +336,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             4,
             ENTITY_ENEMY,
-            12,
+            ENEMY_LEMMINGLES_NEST,
             5,
             0,
             1,
@@ -355,7 +347,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
         {
             1,
             ENTITY_ENEMY,
-            66,
+            ENEMY_CANNON_HOPPER,
             1,
             0,
             1,
@@ -410,7 +402,7 @@ const struct EntityTemplate gSunkenLibraryEntity[37] = {
 
 const struct PreloadEntity gSunkenLibraryStatic[12] = {
     {
-        121,
+        SM121_TURTLOID_S,
         1,
         512,
         4,

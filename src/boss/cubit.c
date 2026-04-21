@@ -2,6 +2,8 @@
 #include "collision.h"
 #include "global.h"
 
+static const struct Collision sCollisions[];
+
 void Cubit_Init(struct Boss* p);
 void Cubit_Update(struct Boss* p);
 void Cubit_Die(struct Boss* p);
@@ -107,6 +109,7 @@ static const BossFunc sDeads[2] = {
 
 // --------------------------------------------
 
+// 0x083639d8
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -177,6 +180,7 @@ static const struct Coord sExplosionCoords[4] = {
     {PIXEL(10), -PIXEL(33)},
 };
 
+// 0x08363a98
 static const u16 u16_ARRAY_ARRAY_08363a98[2][4] = {
     {4, 6, 7, 9},
     {5, 6, 8, 0},

@@ -106,7 +106,7 @@ _080371FA:
 	strb r0, [r5, #0xa]
 	adds r6, r5, #0
 	adds r6, #0x74
-	ldr r7, _0803725C @ =0x0835EEA4
+	ldr r7, _0803725C @ =sCollisions
 	adds r2, r5, #0
 	adds r2, #0x54
 	adds r0, r6, #0
@@ -148,5 +148,5 @@ _08037230:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803725C: .4byte 0x0835EEA4
+_0803725C: .4byte sCollisions
 _08037260: .4byte 0x00FFFF00

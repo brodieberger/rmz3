@@ -2,10 +2,8 @@
 
 import { Command } from '@cliffy/command';
 import { Parser as _Parser } from '@binary-parser';
-import { Coord, toHex } from '../common/index.ts';
+import { BASE, Coord, ROM_PATH, toHex } from '../common/index.ts';
 
-const ROM_PATH = 'baserom.gba';
-const BASE = 0x0800_0000;
 const SIZE = 8;
 
 const SEPARATOR = '@;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
@@ -469,7 +467,7 @@ const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: numb
       }
 
       case 0x20: {
-        sequence.push(`cmd20 ${result.arg1}, ${result.arg2}, ${result.arg3}`);
+        sequence.push(`load_graphic_primitive`);
         break;
       }
 

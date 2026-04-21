@@ -117,7 +117,7 @@ _0806179C:
 	adds r1, r1, r2
 	adds r0, r4, #0
 	bl LoadPalette
-	ldr r1, _080618F0 @ =0x083656B0
+	ldr r1, _080618F0 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #1
 	bl ResetBossBody
@@ -187,7 +187,7 @@ _080618E0: .4byte wStaticGraphicTilenums
 _080618E4: .4byte gStaticMotionGraphics+12
 _080618E8: .4byte wStaticMotionPalIDs
 _080618EC: .4byte 0x0000053C
-_080618F0: .4byte 0x083656B0
+_080618F0: .4byte sCollisions
 _080618F4: .4byte 0xFFFFE800
 
 	thumb_func_start ReactorCore_Update
@@ -449,7 +449,7 @@ FUN_08061adc: @ 0x08061ADC
 	b _08061B58
 _08061AEC:
 	movs r0, #0xe0
-	bl stopSound
+	bl StopSound
 	ldrb r1, [r4, #0xb]
 	movs r0, #0xf7
 	ands r0, r1

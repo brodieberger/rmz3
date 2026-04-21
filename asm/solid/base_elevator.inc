@@ -360,7 +360,7 @@ _080D0200:
 	cmp r1, r0
 	beq _080D0218
 	adds r0, r1, #0
-	bl stopSound
+	bl StopSound
 	ldr r0, _080D0220 @ =0x0000FFFF
 	strh r0, [r4]
 _080D0218:

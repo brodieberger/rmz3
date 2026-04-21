@@ -10,10 +10,10 @@ void Deathlock_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gDeathlockRoutine = {
-    [ENTITY_INIT] =      Deathlock_Init,
-    [ENTITY_UPDATE] =    Deathlock_Update,
-    [ENTITY_DIE] =       Deathlock_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Deathlock_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Deathlock_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Deathlock_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -74,6 +74,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x08369198
 static const struct Collision sCollisions[15] = {
     {
       kind : DRP,

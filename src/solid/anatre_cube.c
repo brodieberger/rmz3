@@ -11,7 +11,7 @@ const SolidRoutine gAnatreCubeRoutine = {
     [ENTITY_INIT] =      Solid47_Init,
     [ENTITY_UPDATE] =    Solid47_Update,
     [ENTITY_DIE] =       Solid47_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

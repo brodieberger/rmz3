@@ -3,21 +3,21 @@
 #include "story.h"
 #include "vfx.h"
 
-static void Ghost27_Init(struct VFX *p);
-static void Ghost27_Update(struct VFX *p);
-static void Ghost27_Die(struct VFX *p);
+static void Ghost27_Init(struct VFX* p);
+static void Ghost27_Update(struct VFX* p);
+static void Ghost27_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost27Routine = {
     [ENTITY_INIT] =      Ghost27_Init,
     [ENTITY_UPDATE] =    Ghost27_Update,
     [ENTITY_DIE] =       Ghost27_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-NAKED void CreateGhost27(struct Coord *c, u8 r1, u8 r2) {
+NAKED void CreateGhost27(struct Coord* c, u8 r1, u8 r2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -93,10 +93,10 @@ _080B9ADE:\n\
 
 // --------------------------------------------
 
-void FUN_080b9b9c(struct VFX *p);
-void FUN_080b9c08(struct VFX *p);
+void FUN_080b9b9c(struct VFX* p);
+void FUN_080b9c08(struct VFX* p);
 
-static void Ghost27_Init(struct VFX *p) {
+static void Ghost27_Init(struct VFX* p) {
   static const VFXFunc sInitializers[] = {
       FUN_080b9b9c,
       FUN_080b9c08,
@@ -106,10 +106,10 @@ static void Ghost27_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-void FUN_080b9c50(struct VFX *p);
-void FUN_080b9ca4(struct VFX *p);
+void FUN_080b9c50(struct VFX* p);
+void FUN_080b9ca4(struct VFX* p);
 
-static void Ghost27_Update(struct VFX *p) {
+static void Ghost27_Update(struct VFX* p) {
   static const VFXFunc sUpdates[] = {
       FUN_080b9c50,
       FUN_080b9ca4,
@@ -125,10 +125,10 @@ static void Ghost27_Update(struct VFX *p) {
 
 // --------------------------------------------
 
-void FUN_080b9cf8(struct VFX *p);
-void FUN_080b9db0(struct VFX *p);
+void FUN_080b9cf8(struct VFX* p);
+void FUN_080b9db0(struct VFX* p);
 
-static void Ghost27_Die(struct VFX *p) {
+static void Ghost27_Die(struct VFX* p) {
   static const VFXFunc sDeinitializers[] = {
       FUN_080b9cf8,
       FUN_080b9db0,

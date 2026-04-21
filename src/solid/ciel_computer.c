@@ -1,153 +1,63 @@
 #include "collision.h"
+#include "gfx.h"
 #include "global.h"
 #include "solid.h"
 
-static const motion_t sMotions[5];
-static const struct Collision sCollisions[2];
-
 static void CielComputer_Init(struct Solid* p);
 static void CielComputer_Update(struct Solid* p);
-static void CielComputer_Die(struct Solid* p);
+static void CielComputer_Die(Object* p);
 
 // clang-format off
 const SolidRoutine gCielComputerRoutine = {
-    [ENTITY_INIT] =      CielComputer_Init,
-    [ENTITY_UPDATE] =    CielComputer_Update,
-    [ENTITY_DIE] =       CielComputer_Die,
-    [ENTITY_DISAPPEAR] = CielComputer_Die,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)CielComputer_Init,
+    [ENTITY_UPDATE] =    (void*)CielComputer_Update,
+    [ENTITY_DIE] =       (void*)CielComputer_Die,
+    [ENTITY_DISAPPEAR] = (void*)CielComputer_Die,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-NAKED static void CielComputer_Init(struct Solid* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6}\n\
-	adds r6, r0, #0\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #1\n\
-	orrs r0, r1\n\
-	movs r1, #2\n\
-	orrs r0, r1\n\
-	strb r0, [r6, #0xa]\n\
-	adds r0, r6, #0\n\
-	bl InitNonAffineMotion\n\
-	movs r0, #0\n\
-	mov r8, r0\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-	strb r0, [r6, #0xa]\n\
-	movs r1, #1\n\
-	mov sb, r1\n\
-	adds r0, r6, #0\n\
-	adds r0, #0x4c\n\
-	mov r2, r8\n\
-	strb r2, [r0]\n\
-	adds r2, r6, #0\n\
-	adds r2, #0x4a\n\
-	ldrb r1, [r2]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r1\n\
-	strb r0, [r2]\n\
-	ldr r5, _080DF25C @ =sMotions\n\
-	ldr r4, _080DF260 @ =gSystemSavedataManager\n\
-	adds r4, #0x48\n\
-	ldrb r0, [r4]\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r5\n\
-	ldrh r1, [r0]\n\
-	adds r0, r6, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r4]\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r5\n\
-	ldrh r4, [r0]\n\
-	lsrs r4, r4, #8\n\
-	lsls r5, r4, #2\n\
-	adds r5, r5, r4\n\
-	lsls r5, r5, #2\n\
-	ldr r1, _080DF264 @ =gStaticMotionGraphics\n\
-	adds r0, r5, r1\n\
-	ldr r1, _080DF268 @ =wStaticGraphicTilenums\n\
-	lsls r4, r4, #1\n\
-	adds r1, r4, r1\n\
-	ldrh r1, [r1]\n\
-	ldrh r2, [r0, #6]\n\
-	lsrs r2, r2, #6\n\
-	subs r1, r1, r2\n\
-	lsls r1, r1, #5\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #9\n\
-	adds r1, r1, r2\n\
-	bl LoadGraphic\n\
-	ldr r0, _080DF26C @ =gStaticMotionGraphics+12\n\
-	adds r5, r5, r0\n\
-	ldr r0, _080DF270 @ =wStaticMotionPalIDs\n\
-	adds r4, r4, r0\n\
-	ldrh r1, [r4]\n\
-	ldrb r0, [r5, #7]\n\
-	subs r1, r1, r0\n\
-	lsls r1, r1, #5\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #2\n\
-	adds r1, r1, r2\n\
-	adds r0, r5, #0\n\
-	bl LoadPalette\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #4\n\
-	orrs r0, r1\n\
-	strb r0, [r6, #0xa]\n\
-	adds r4, r6, #0\n\
-	adds r4, #0x74\n\
-	ldr r1, _080DF274 @ =sCollisions\n\
-	adds r2, r6, #0\n\
-	adds r2, #0x54\n\
-	adds r0, r4, #0\n\
-	movs r3, #0\n\
-	bl InitBody\n\
-	str r6, [r4, #0x2c]\n\
-	mov r0, r8\n\
-	str r0, [r4, #0x24]\n\
-	ldr r0, [r6, #0x54]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #4\n\
-	adds r0, r0, r1\n\
-	str r0, [r6, #0x54]\n\
-	ldr r1, [r6, #0x58]\n\
-	bl FUN_08009f6c\n\
-	adds r0, #1\n\
-	str r0, [r6, #0x58]\n\
-	ldr r1, _080DF278 @ =gSolidFnTable\n\
-	ldrb r0, [r6, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	mov r2, sb\n\
-	str r2, [r6, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r6, #0x14]\n\
-	adds r0, r6, #0\n\
-	bl CielComputer_Update\n\
-	pop {r3, r4}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080DF25C: .4byte sMotions\n\
-_080DF260: .4byte gSystemSavedataManager\n\
-_080DF264: .4byte gStaticMotionGraphics\n\
-_080DF268: .4byte wStaticGraphicTilenums\n\
-_080DF26C: .4byte gStaticMotionGraphics+12\n\
-_080DF270: .4byte wStaticMotionPalIDs\n\
-_080DF274: .4byte sCollisions\n\
-_080DF278: .4byte gSolidFnTable\n\
- .syntax divided\n");
+// --------------------------------------------
+
+// 0x08371838
+static const motion_t sMotions[5] = {
+    MOTION(SM144_CIEL_COMP_0, 0), MOTION(SM145_CIEL_COMP_1, 0), MOTION(SM146_CIEL_COMP_2, 0), MOTION(SM147_CIEL_COMP_3, 0), MOTION(SM148_CIEL_COMP_4, 0),
+};
+
+static void CielComputer_Init(struct Solid* p) {
+  static const struct Collision sCollisions[] = {
+      {
+        kind : DDP,
+        faction : FACTION_NEUTRAL,
+        special : CHATABLE,
+        damage : 0xFF,
+        layer : 0x00000001,
+        range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(1)},
+      },
+      {
+        kind : DRP,
+        faction : FACTION_NEUTRAL,
+        special : CHATABLE,
+        damage : 0xFF,
+        LAYER(0xFFFFFFFF),
+        remaining : 0,
+        range : {PIXEL(0), PIXEL(0), PIXEL(0), PIXEL(0)},
+      },
+  };  // 0x08371844
+
+  motion_id_t id;
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  InitNonAffineMotion(&p->s);
+  SET_XFLIP(p, FALSE);
+  SetMotion(&p->s, sMotions[gSystemSavedataManager.cielComputer]);
+  id = sMotions[gSystemSavedataManager.cielComputer] >> 8;
+  LOAD_STATIC_GRAPHIC(id);
+  INIT_BODY(p, sCollisions, 0, NULL);
+  (p->s).coord.x += PIXEL(8);
+  (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y) + 1;
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  CielComputer_Update((void*)p);
 }
 
 NAKED static void CielComputer_Update(struct Solid* p) {
@@ -340,39 +250,4 @@ _080DF410: .4byte gInChat\n\
  .syntax divided\n");
 }
 
-static void CielComputer_Die(struct Solid* p) {
-  DeleteSolid(p);
-  return;
-}
-
-// clang-format off
-static const motion_t sMotions[5] = {
-    MOTION(0x90, 0x00),
-    MOTION(0x91, 0x00),
-    MOTION(0x92, 0x00),
-    MOTION(0x93, 0x00),
-    MOTION(0x94, 0x00),
-};
-// clang-format on
-
-static const struct Collision sCollisions[2] = {
-    {
-      kind : DDP,
-      faction : FACTION_NEUTRAL,
-      special : CHATABLE,
-      damage : 0xFF,
-      remaining : 0,
-      layer : 0x00000001,
-      range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(1)},
-    },
-    {
-      kind : DRP,
-      faction : FACTION_NEUTRAL,
-      special : CHATABLE,
-      damage : 0xFF,
-      LAYER(0xFFFFFFFF),
-      hitzone : 0,
-      remaining : 0,
-      range : {PIXEL(0), PIXEL(0), PIXEL(0), PIXEL(0)},
-    },
-};
+static void CielComputer_Die(Object* p) { DeleteSolid((void*)p); }

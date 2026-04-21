@@ -16,7 +16,7 @@ const SolidRoutine gIronStarRoutine = {
     [ENTITY_INIT] =      initIronStar,
     [ENTITY_UPDATE] =    ironStarAI,
     [ENTITY_DIE] =       killIronStar,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

@@ -90,5 +90,5 @@ _0802711A:
 	.align 2, 0
 _08027128: .4byte 0xFFFFF100
 _0802712C: .4byte gOverworld
-_08027130: .4byte 0x020023DC
-_08027134: .4byte 0x020023E0
+_08027130: .4byte gOverworld+0x1DC
+_08027134: .4byte gOverworld+0x1E0

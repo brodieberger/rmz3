@@ -4,124 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateOzChargeSaberRock
-CreateOzChargeSaberRock: @ 0x0808B538
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r5, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r1, r1, #0x18
-	mov r8, r1
-	adds r7, r5, #0
-	ldr r0, _0808B5C4 @ =0xFFFFD000
-	adds r5, r5, r0
-	ldr r2, _0808B5C8 @ =RNG_0202f388
-	ldr r1, [r2]
-	ldr r0, _0808B5CC @ =0x000343FD
-	muls r0, r1, r0
-	ldr r1, _0808B5D0 @ =0x00269EC3
-	adds r0, r0, r1
-	lsls r0, r0, #1
-	lsrs r1, r0, #1
-	str r1, [r2]
-	lsrs r0, r0, #0x11
-	movs r1, #0xc0
-	lsls r1, r1, #7
-	bl __umodsi3
-	adds r5, r5, r0
-	ldr r0, _0808B5D4 @ =gStageRun+232
-	ldr r0, [r0, #0x3c]
-	ldr r1, _0808B5D8 @ =0xFFFF9000
-	adds r6, r0, r1
-	ldr r0, _0808B5DC @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _0808B5BA
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _0808B5E0 @ =gEnemyFnTable
-	movs r1, #0x34
-	strb r1, [r4, #9]
-	adds r0, #0xd0
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	strb r2, [r4, #0x10]
-	str r5, [r4, #0x54]
-	str r6, [r4, #0x58]
-	str r7, [r4, #0x64]
-	mov r0, r8
-	strb r0, [r4, #0x13]
-_0808B5BA:
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0808B5C4: .4byte 0xFFFFD000
-_0808B5C8: .4byte RNG_0202f388
-_0808B5CC: .4byte 0x000343FD
-_0808B5D0: .4byte 0x00269EC3
-_0808B5D4: .4byte gStageRun+232
-_0808B5D8: .4byte 0xFFFF9000
-_0808B5DC: .4byte gZakoHeaderPtr
-_0808B5E0: .4byte gEnemyFnTable
-
-	thumb_func_start nop_0808b5e4
-nop_0808b5e4: @ 0x0808B5E4
-	bx lr
-	.align 2, 0
-
-	thumb_func_start FUN_0808b5e8
-FUN_0808b5e8: @ 0x0808B5E8
-	push {lr}
-	adds r2, r0, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #2
-	ands r0, r1
-	cmp r0, #0
-	bne _0808B5FE
-	movs r0, #0
-	b _0808B618
-_0808B5FE:
-	ldr r1, _0808B61C @ =gEnemyFnTable
-	ldrb r0, [r2, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #2
-	str r1, [r2, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #8]
-	str r0, [r2, #0x14]
-	adds r0, r2, #0
-	bl OmegaZeroRock_Die
-	movs r0, #1
-_0808B618:
-	pop {r1}
-	bx r1
-	.align 2, 0
-_0808B61C: .4byte gEnemyFnTable
-
 	thumb_func_start OmegaZeroRock_Init
 OmegaZeroRock_Init: @ 0x0808B620
 	push {r4, r5, lr}
@@ -161,7 +43,7 @@ OmegaZeroRock_Init: @ 0x0808B620
 	movs r3, #5
 	bl InitBody
 	str r4, [r5, #0x2c]
-	ldr r0, _0808B68C @ =nop_0808b5e4
+	ldr r0, _0808B68C @ =onCollision
 	str r0, [r5, #0x24]
 	adds r0, r4, #0
 	bl OmegaZeroRock_Update
@@ -172,7 +54,7 @@ OmegaZeroRock_Init: @ 0x0808B620
 _0808B680: .4byte gEnemyFnTable
 _0808B684: .4byte 0x08368D78
 _0808B688: .4byte 0x08368D48
-_0808B68C: .4byte nop_0808b5e4
+_0808B68C: .4byte onCollision
 
 	thumb_func_start OmegaZeroRock_Update
 OmegaZeroRock_Update: @ 0x0808B690

@@ -87,6 +87,7 @@ static const BossFunc sDeads[1] = {
 
 // --------------------------------------------
 
+// 0x0836364c
 static const struct Collision sCollisions[32] = {
     [0] = {
       kind : DRP,
@@ -203,9 +204,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 1,
       layer : 0x00000001,
@@ -287,9 +286,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 2,
       layer : 0x00000001,
@@ -301,9 +298,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 1,
       layer : 0x00000001,

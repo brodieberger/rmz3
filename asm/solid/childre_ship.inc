@@ -473,14 +473,14 @@ _080E064E:
 	str r0, [r6, #4]
 	mov r0, sp
 	movs r1, #0
-	bl FUN_080b2794
+	bl CreateChildreShipSonicBoom
 	ldr r0, [r7, #0x58]
 	mov r2, r8
 	subs r0, r0, r2
 	str r0, [r6, #4]
 	mov r0, sp
 	movs r1, #1
-	bl FUN_080b2794
+	bl CreateChildreShipSonicBoom
 	movs r0, #1
 	mov sb, r0
 	mov r1, sb

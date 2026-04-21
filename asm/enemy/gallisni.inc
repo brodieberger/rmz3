@@ -11,7 +11,7 @@ CreateGallisni: @ 0x08086F90
 	adds r6, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _08086FE8 @ =gZakoHeaderPtr
+	ldr r0, _08086FE8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -50,7 +50,7 @@ _08086FE0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08086FE8: .4byte gZakoHeaderPtr
+_08086FE8: .4byte gEnemyHeaderPtr
 _08086FEC: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08086ff0
@@ -220,7 +220,7 @@ gallisni_08087118: @ 0x08087118
 	b _080871AA
 _08087138:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080871AA
 	ldrb r0, [r4, #0x10]
@@ -257,7 +257,7 @@ _08087180: .4byte 0x0836868C
 _08087184: .4byte 0x083686AC
 _08087188:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080871A8
 	adds r0, r4, #0
@@ -555,7 +555,7 @@ _080873B6:
 	ldr r1, _080873F4 @ =0x08368708
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _080873D6

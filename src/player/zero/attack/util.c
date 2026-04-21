@@ -1,6 +1,9 @@
 #include "global.h"
+#include "mod.h"
 #include "weapon.h"
 #include "zero.h"
+
+typedef bool8 (*WeaponOKFunc)(struct Zero*);
 
 static bool8 isBusterOK(struct Zero* z);
 static bool8 isSaberOK(struct Zero* z);
@@ -27,7 +30,7 @@ void FUN_08033ed4(struct Zero* z) {
   z->rodToggle = 0;
 }
 
-WIP bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
+NON_MATCH bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
 #if MODERN
   weapon_t mw, sw;
   struct Zero_b4* b4;
@@ -40,20 +43,20 @@ WIP bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
   b4 = &z->unk_b4;
   mw = (b4->status).mainWeapon;
   if (mw == WEAPON_SHIELD) {
-    if (z->zeroInput & ZERO_INPUT_PRESS_MAIN_WEAPON) {
+    if ((z->input).val & ZERO_INPUT_PRESS_MAIN_WEAPON) {
       if (w != NULL) {
         w[0] = WEAPON_SHIELD;
       }
       result = 1;
 
-    } else if ((z->zeroInput & ZERO_INPUT_MAIN_WEAPON) && (b4->status).charge[0]) {
+    } else if (((z->input).val & ZERO_INPUT_MAIN_WEAPON) && (b4->status).charge[0]) {
       if (w != NULL) {
         w[0] = WEAPON_SHIELD;
       }
       result = 2;
     }
 
-  } else if (z->zeroInput & ZERO_INPUT_PRESS_MAIN_WEAPON) {
+  } else if ((z->input).val & ZERO_INPUT_PRESS_MAIN_WEAPON) {
     if (w != NULL) {
       w[0] = mw;
     }
@@ -65,14 +68,14 @@ WIP bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
   sw = (b4->status).subWeapon;
   if (mw != sw) {
     if (sw == WEAPON_SHIELD) {
-      if (z->zeroInput & ZERO_INPUT_PRESS_SUB_WEAPON) {
+      if ((z->input).val & ZERO_INPUT_PRESS_SUB_WEAPON) {
         if (w != NULL) {
           w[0] = WEAPON_SHIELD;
         }
         if ((sWeaponOKTable[WEAPON_SHIELD])(z)) {
           return 1;
         }
-      } else if ((z->zeroInput & ZERO_INPUT_SUB_WEAPON) && (b4->status).charge[1]) {
+      } else if (((z->input).val & ZERO_INPUT_SUB_WEAPON) && (b4->status).charge[1]) {
         if (w != NULL) {
           w[0] = WEAPON_SHIELD;
         }
@@ -81,7 +84,7 @@ WIP bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
         }
       }
 
-    } else if (z->zeroInput & ZERO_INPUT_PRESS_SUB_WEAPON) {
+    } else if ((z->input).val & ZERO_INPUT_PRESS_SUB_WEAPON) {
       if (w != NULL) {
         w[0] = sw;
       }
@@ -137,7 +140,7 @@ static bool8 isShieldOK(struct Zero* z) {
     return FALSE;
   }
 
-  if (z->last & INPUT_DISABLED) {
+  if ((z->input).raw & INPUT_DISABLED) {
     return FALSE;
   }
   return TRUE;
@@ -383,7 +386,7 @@ void KeepMotion(struct Zero* z, motion_t m) {
 static const u8 sFullChargeBorder[3] = {2 * SECOND, SECOND + 30, SECOND};  // idx is ChargeSpeed
 static const u8 sSemiChargeBorder[3] = {40, 30, 20};                       // idx is ChargeSpeed
 
-WIP u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
+NON_MATCH u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
 #if MODERN
   u8 frame, speed;
   weapon_t w;
@@ -443,92 +446,56 @@ bool8 Is1000Slash(struct Zero* z) {
 
 u8 CalcBusterBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_BUSRAS) != 0;
-  if (gSystemSavedataManager.mods[9] & (1 << 4)) {
-    return bonus + 3;
-  }
-  if (gSystemSavedataManager.mods[4] & (1 << 5)) {
-    return bonus + 2;
-  }
-  if (gSystemSavedataManager.mods[4] & (1 << 2)) {
-    return bonus + 1;
-  }
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK3)) return bonus + 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK2)) return bonus + 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK1)) return bonus + 1;
   return bonus;
 }
 
 u8 CalcSaberBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_SABRAS) != 0;
-  if (gSystemSavedataManager.mods[12] & (1 << 1)) {
-    return bonus + 3;
-  }
-  if (gSystemSavedataManager.mods[11] & (1 << 1)) {
-    return bonus + 2;
-  }
-  if (gSystemSavedataManager.mods[1] & (1 << 2)) {
-    return bonus + 1;
-  }
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK3)) return bonus + 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK2)) return bonus + 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK1)) return bonus + 1;
   return bonus;
 }
 
 // エルフや改造カードなどでリコイルロッドの攻撃力がどれだけ上がっているかを求める
 u8 CalcRodBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_RODERAS) != 0;
-  if (gSystemSavedataManager.mods[10] & (1 << 5)) {
-    return bonus + 3;
-  }
-  if (gSystemSavedataManager.mods[6] & (1 << 7)) {
-    return bonus + 2;
-  }
-  if (gSystemSavedataManager.mods[3] & (1 << 1)) {
-    return bonus + 1;
-  }
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK3)) return bonus + 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK2)) return bonus + 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK1)) return bonus + 1;
   return bonus;
 }
 
 u8 CalcShieldBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_BOOMERAS) != 0;
-  if (gSystemSavedataManager.mods[8] & (1 << 3)) {
-    return bonus + 3;
-  }
-  if (gSystemSavedataManager.mods[6] & (1 << 2)) {
-    return bonus + 2;
-  }
-  if (gSystemSavedataManager.mods[3] & (1 << 6)) {
-    return bonus + 1;
-  }
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK3)) return bonus + 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK2)) return bonus + 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK1)) return bonus + 1;
   return bonus;
 }
 
-u8 FUN_08034520(void) {
-  if (gSystemSavedataManager.mods[8] & (1 << 7)) {
-    return 3;
-  }
-  if (gSystemSavedataManager.mods[6] & (1 << 0)) {
-    return 2;
-  }
-  if (gSystemSavedataManager.mods[3] & (1 << 7)) {
-    return 1;
-  }
+// 0x08034520
+u8 GetBeeAtkBoost(void) {
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK3)) return 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK2)) return 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK1)) return 1;
   return 0;
 }
 
-u8 FUN_0803455c(void) {
-  if (gSystemSavedataManager.mods[11] & (1 << 0)) {
-    return 4;
-  }
-  if (gSystemSavedataManager.mods[9] & (1 << 0)) {
-    return 3;
-  }
-  if (gSystemSavedataManager.mods[5] & (1 << 5)) {
-    return 2;
-  }
-  if (gSystemSavedataManager.mods[2] & (1 << 2)) {
-    return 1;
-  }
+// 0x0803455c
+u8 GetArchimAtkBoost(void) {
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK4)) return 4;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK3)) return 3;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK2)) return 2;
+  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK1)) return 1;
   return 0;
 }
 
 // ElfIDで指定したエルフの効力を受けているか IsElfUsed と同じ関数に見える
-WIP bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
+NON_MATCH bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
 #if MODERN
   return IsElfUsed(z, elfID);
 #else

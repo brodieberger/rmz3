@@ -8,7 +8,7 @@
 FUN_0808a0ec: @ 0x0808A0EC
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _0808A138 @ =gZakoHeaderPtr
+	ldr r0, _0808A138 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r4, r0, #0
@@ -45,7 +45,7 @@ _0808A130:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0808A138: .4byte gZakoHeaderPtr
+_0808A138: .4byte gEnemyHeaderPtr
 _0808A13C: .4byte gEnemyFnTable
 
 	thumb_func_start nop_0808a140
@@ -116,7 +116,7 @@ pBase_0808a194: @ 0x0808A194
 	b _0808A208
 _0808A1AE:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808A208
 	ldr r1, _0808A1E8 @ =0x0836896C
@@ -149,7 +149,7 @@ _0808A1F0:
 	ldr r0, [r1, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808A206
 	movs r0, #1
@@ -431,7 +431,7 @@ _0808A40E:
 	ldr r1, _0808A434 @ =0x08368984
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _0808A42E

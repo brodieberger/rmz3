@@ -54,7 +54,7 @@ struct Weapon* CreateWeaponShieldFly(struct Zero* z, u8 r1) {
 }
 
 static void ShieldFly_Init(struct Weapon* w) {
-  struct Weapon_b4* b4;
+  struct WeaponProps* b4;
   SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   ResetDynamicMotion(&w->s);
@@ -68,7 +68,7 @@ static void ShieldFly_Init(struct Weapon* w) {
 }
 
 static void ShieldFly_Update(struct Weapon* w) {
-  struct Weapon_b4* b4 = &PROP;
+  struct WeaponProps* b4 = &PROP;
   struct Zero* z = b4->z;
   if (z->elfMotion != 0) {
     SET_WEAPON_ROUTINE(w, ENTITY_DIE);

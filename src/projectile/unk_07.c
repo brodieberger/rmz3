@@ -52,10 +52,7 @@ static void Projectile7_Update(struct Projectile* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
@@ -64,20 +61,14 @@ static void Projectile7_Update(struct Projectile* p) {
   (p->s).coord.y += (p->s).d.y;
   UpdateMotionGraphic(&p->s);
   if ((p->s).motion.state == MOTION_END) {
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
   }
 }
 
 static void Projectile7_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

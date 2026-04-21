@@ -20,7 +20,7 @@ const SolidRoutine gContainerRoutine = {
     [ENTITY_INIT] =      Container_Init,
     [ENTITY_UPDATE] =    Solid35_Update,
     [ENTITY_DIE] =       Solid35_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -83,10 +83,7 @@ static void Solid35_Die(struct Solid* p) {
     } else {
       (p->s).mode[1] = 0;
     }
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     (p->s).flags2 &= ~ENTITY_HAZARD;
   }
   (sDeads[(p->s).mode[1]])(p);

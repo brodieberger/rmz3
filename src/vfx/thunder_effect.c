@@ -1,44 +1,42 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/element_effect.h"
 
-static void Ghost9_Init(struct VFX* p);
+static void Ghost9_Init(struct Entity* p);
 static void Ghost9_Update(struct VFX* p);
-static void Ghost9_Die(struct VFX* p);
+static void Ghost9_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gThunderEffectRoutine = {
-    [ENTITY_INIT] =      Ghost9_Init,
-    [ENTITY_UPDATE] =    Ghost9_Update,
-    [ENTITY_DIE] =       Ghost9_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost9_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost9_Update,
+    [ENTITY_DIE] =       (void*)Ghost9_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* CreateThunderEffect(struct Entity* friend, struct Coord* c, u8 r2) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, 9);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).unk_28 = friend;
-    (g->props).ee.c.x = c->x;
-    (g->props).ee.c.y = c->y;
-    (g->s).work[2] = r2;
-    *(u8*)&(g->props).ee.c.y = r2;
+struct ElementEffect* CreateThunderEffect(struct Entity* e, struct Coord* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_THUNDER_EFFECT);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).unk_28 = e;
+    (p->c).x = c->x, (p->c).y = c->y;
+    (p->s).work[2] = r2;
+    *((u8*)&(p->c).y) = r2;
   }
-
-  return g;
+  return p;
 }
 
-static void Ghost9_Init(struct VFX* p) {
-  InitNonAffineMotion(&p->s);
-  SetMotion(&p->s, MOTION(SM026_THUNDER_EFFECT, 5));
-  (p->s).flags |= DISPLAY;
+static void Ghost9_Init(struct Entity* p) {
+  InitNonAffineMotion(p);
+  SetMotion(p, MOTION(SM026_THUNDER_EFFECT, 5));
+  p->flags |= DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost9_Update(p);
+  Ghost9_Update((void*)p);
 }
 
 NAKED static void Ghost9_Update(struct VFX* p) {
@@ -273,7 +271,7 @@ _080B4D2C: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void Ghost9_Die(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void Ghost9_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }

@@ -11,7 +11,7 @@ const SolidRoutine gGlacierleArmRoutine = {
     [ENTITY_INIT] =      GlacierleArm_Init,
     [ENTITY_UPDATE] =    GlacierleArm_Update,
     [ENTITY_DIE] =       GlacierleArm_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on

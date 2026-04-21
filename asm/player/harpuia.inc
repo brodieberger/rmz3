@@ -209,7 +209,7 @@ _080352A2:
 	ldr r0, [r4, #0x28]
 	movs r2, #0
 	strb r2, [r0, #0xc]
-	ldr r1, _080352E8 @ =gZeroFnTable
+	ldr r1, _080352E8 @ =gPlayerFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -231,7 +231,7 @@ _080352D8: .4byte 0x0835EAE4
 _080352DC: .4byte 0x00000137
 _080352E0: .4byte 0x00000287
 _080352E4: .4byte 0xFFFF9C00
-_080352E8: .4byte gZeroFnTable
+_080352E8: .4byte gPlayerFnTable
 
 	thumb_func_start Harpuia_Die
 Harpuia_Die: @ 0x080352EC
@@ -254,7 +254,7 @@ Harpuia_Die: @ 0x080352EC
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r3, #0xa]
-	ldr r1, _08035328 @ =gZeroFnTable
+	ldr r1, _08035328 @ =gPlayerFnTable
 	ldrb r0, [r3, #9]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -265,7 +265,7 @@ Harpuia_Die: @ 0x080352EC
 	str r0, [r3, #0x14]
 	bx lr
 	.align 2, 0
-_08035328: .4byte gZeroFnTable
+_08035328: .4byte gPlayerFnTable
 
 	thumb_func_start FUN_0803532c
 FUN_0803532c: @ 0x0803532C

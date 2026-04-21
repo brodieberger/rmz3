@@ -4,52 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateBlizzack
-CreateBlizzack: @ 0x08059A4C
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	ldr r0, _08059A9C @ =gBossHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08059A96
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _08059AA0 @ =gBossFnTable
-	movs r0, #0x11
-	strb r0, [r4, #9]
-	ldr r0, [r1, #0x44]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	ldr r0, [r5]
-	ldr r1, [r5, #4]
-	str r0, [r4, #0x54]
-	str r1, [r4, #0x58]
-	strb r2, [r4, #0x10]
-	strb r2, [r4, #0x11]
-_08059A96:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08059A9C: .4byte gBossHeaderPtr
-_08059AA0: .4byte gBossFnTable
-
 	thumb_func_start Blizzack_Init
 Blizzack_Init: @ 0x08059AA4
 	push {r4, r5, r6, r7, lr}
@@ -183,7 +137,7 @@ Blizzack_Init: @ 0x08059AA4
 	adds r1, #0xd0
 	movs r0, #0x40
 	strb r0, [r1]
-	ldr r1, _08059CAC @ =0x08364BB0
+	ldr r1, _08059CAC @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -247,7 +201,7 @@ Blizzack_Init: @ 0x08059AA4
 	adds r0, r7, #0
 	movs r1, #0
 	movs r2, #0
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	str r0, [r7, #0x2c]
 	movs r1, #1
 	strb r1, [r0, #0xe]
@@ -290,7 +244,7 @@ _08059C9C: .4byte wStaticGraphicTilenums
 _08059CA0: .4byte gStaticMotionGraphics+12
 _08059CA4: .4byte wStaticMotionPalIDs
 _08059CA8: .4byte 0x000007BC
-_08059CAC: .4byte 0x08364BB0
+_08059CAC: .4byte sCollisions
 _08059CB0: .4byte 0x0000FFFF
 
 	thumb_func_start Blizzack_Update
@@ -362,7 +316,7 @@ _08059D2C:
 	ldr r0, [r5]
 	cmp r0, #0
 	bne _08059D48
-	ldr r2, _08059D98 @ =0x08364C10
+	ldr r2, _08059D98 @ =sElementCoord
 	movs r0, #0x1a
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -410,8 +364,8 @@ _08059D8E:
 	bx r0
 	.align 2, 0
 _08059D94: .4byte pZero2
-_08059D98: .4byte 0x08364C10
-_08059D9C: .4byte 0x08364B50
+_08059D98: .4byte sElementCoord
+_08059D9C: .4byte sUpdates
 
 	thumb_func_start Blizzack_Die
 Blizzack_Die: @ 0x08059DA0
@@ -425,7 +379,7 @@ Blizzack_Die: @ 0x08059DA0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08059DB4: .4byte 0x08364BA4
+_08059DB4: .4byte sDeads
 
 	thumb_func_start blizzackMode0
 blizzackMode0: @ 0x08059DB8
@@ -1279,7 +1233,7 @@ _0805A40A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805A410: .4byte 0x08364BE0
+_0805A410: .4byte sCollisions+(24*2)
 
 	thumb_func_start blizzackMode8
 blizzackMode8: @ 0x0805A414
@@ -1337,7 +1291,7 @@ blizzackMode9: @ 0x0805A450
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805A4AC @ =0x08364BB0
+	ldr r1, _0805A4AC @ =sCollisions
 	bl SetDDP
 _0805A482:
 	adds r0, r4, #0
@@ -1360,7 +1314,7 @@ _0805A49E:
 	.align 2, 0
 _0805A4A4: .4byte 0x0000B408
 _0805A4A8: .4byte 0x00006408
-_0805A4AC: .4byte 0x08364BB0
+_0805A4AC: .4byte sCollisions
 
 	thumb_func_start blizzackStartBlizzard
 blizzackStartBlizzard: @ 0x0805A4B0
@@ -1404,7 +1358,7 @@ _0805A4F6:
 	.align 2, 0
 _0805A4FC: .4byte 0x0000B409
 _0805A500: .4byte 0x00006409
-_0805A504: .4byte 0x08364BE0
+_0805A504: .4byte sCollisions+(24*2)
 
 	thumb_func_start blizzackBlizzard
 blizzackBlizzard: @ 0x0805A508
@@ -1425,7 +1379,7 @@ blizzackBlizzard: @ 0x0805A508
 	ands r2, r0
 	adds r0, r4, #0
 	movs r1, #1
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	movs r0, #0x44
 	bl PlaySound
 	adds r1, r4, #0
@@ -1476,10 +1430,10 @@ blizzackEndBlizzard: @ 0x0805A560
 	adds r0, #0xc8
 	movs r1, #0
 	ldrsh r0, [r0, r1]
-	bl stopSound
+	bl StopSound
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805A5C8 @ =0x08364BB0
+	ldr r1, _0805A5C8 @ =sCollisions
 	bl SetDDP
 _0805A59E:
 	adds r0, r4, #0
@@ -1502,7 +1456,7 @@ _0805A5BA:
 	.align 2, 0
 _0805A5C0: .4byte 0x0000B408
 _0805A5C4: .4byte 0x00006408
-_0805A5C8: .4byte 0x08364BB0
+_0805A5C8: .4byte sCollisions
 
 	thumb_func_start blizzackBombJump
 blizzackBombJump: @ 0x0805A5CC
@@ -2250,7 +2204,7 @@ blizzackMode19: @ 0x0805AB5C
 _0805AB98:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805ABF4 @ =0x08364BB0
+	ldr r1, _0805ABF4 @ =sCollisions
 	bl SetDDP
 _0805ABA2:
 	adds r0, r4, #0
@@ -2290,7 +2244,7 @@ _0805ABBE:
 _0805ABE8: .4byte 0x0000B40B
 _0805ABEC: .4byte 0x0000640B
 _0805ABF0: .4byte 0xFFFFFD00
-_0805ABF4: .4byte 0x08364BB0
+_0805ABF4: .4byte sCollisions
 _0805ABF8:
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
@@ -2372,7 +2326,7 @@ _0805AC84:
 	adds r0, #0xc8
 	movs r1, #0
 	ldrsh r0, [r0, r1]
-	bl stopSound
+	bl StopSound
 	movs r0, #0
 	strb r0, [r4, #0xe]
 	strb r0, [r4, #0x12]
@@ -2614,7 +2568,7 @@ _0805AE4A:
 	ands r2, r0
 	adds r0, r5, #0
 	movs r1, #2
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	str r4, [r5, #0x2c]
 	movs r0, #0x2f
 	bl PlaySound

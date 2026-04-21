@@ -42,7 +42,7 @@ static const struct Stage* const gStageLandscape[STAGE_COUNT] = { // 0x0833a2e8
 */
 
 // ステージのロードに関係
-WIP void ResetLandscape(s32 stageID, struct Coord* viewport) {
+NON_MATCH void ResetLandscape(s32 stageID, struct Coord* viewport) {
 #if MODERN
   s16 i;
   const struct Stage* stage;
@@ -149,42 +149,53 @@ void SaveDispRegister(void) {
 }
 
 // メニューやイベントからOverworldに戻ってきたときに呼び出されてる
-WIP void RestoreBackground(void) {
+NON_MATCH void RestoreBackground(void) {
 #if MODERN
-  s32 i;
-  tileset_t t;
   struct ColorGraphic* g;
-  const u32* tilesets;
   gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON);
 
-  t = W_TERRAIN_V2.tilesets[0];
-  if (((t >> 8) != 0xFF) && (((u8)t) != 0xFF)) {
-    tilesets = &gStageTilesetOffsets[(t >> 8)];
-    g = (struct ColorGraphic*)((u32)(void*)tilesets + *tilesets) + (u8)t;
-    LoadGraphic(&g->g, (void*)0x4000);
-
-    tilesets = &gStageTilesetOffsets[(t >> 8)];
-    g = (struct ColorGraphic*)((u32)(void*)tilesets + *tilesets) + (u8)t;
-    LoadPalette(&g->pal, 0);
+  {
+    const tileset_t t = gOverworld.terrain.tilesets[0];
+    const u8 id = t >> 8;
+    if (id != 0xFF) {
+      const u8 subID = t;
+      if (subID != 0xFF) {
+        const u32* ptr = &gStageTilesetOffsets[id];
+        g = SELF_REL_PTR(ptr);
+        g += subID;
+        LoadGraphic((void*)g, (void*)0x4000);
+        g = SELF_REL_PTR(ptr);
+        g += subID;
+        LoadPalette(&g->pal, 0);
+      }
+    }
+  }
+  {
+    const tileset_t t = gOverworld.terrain.tilesets[1];
+    const u8 id = t >> 8;
+    if (id != 0xFF) {
+      const u8 subID = t;
+      if (subID != 0xFF) {
+        const u32* ptr = &gStageTilesetOffsets[id];
+        g = SELF_REL_PTR(ptr);
+        g += subID;
+        LoadGraphic((void*)g, (void*)0x4000);
+        g = SELF_REL_PTR(ptr);
+        g += subID;
+        LoadPalette(&g->pal, 0);
+      }
+    }
   }
 
-  t = W_TERRAIN_V2.tilesets[1];
-  if (((t >> 8) != 0xFF) && (((u8)t) != 0xFF)) {
-    tilesets = &gStageTilesetOffsets[(t >> 8)];
-    g = (struct ColorGraphic*)((u32)(void*)tilesets + *tilesets) + (u8)t;
-    LoadGraphic(&g->g, (void*)0x4000);
-
-    tilesets = &gStageTilesetOffsets[(t >> 8)];
-    g = (struct ColorGraphic*)((u32)(void*)tilesets + *tilesets) + (u8)t;
-    LoadPalette(&g->pal, 0);
-  }
-
-  for (i = 0; i < 3; i++) {
-    struct StageLayer* l = &gOverworld.layer[i];
-    l->prevViewportCenterPixel.x += 0x2000;
-    l->prevViewportCenterPixel.y += 0x2000;
-    l->scrollCopy.x += 0x2000;
-    l->scrollCopy.y += 0x2000;
+  {
+    s32 i;
+    for (i = 0; i < 3; i++) {
+      struct StageLayer* l = &gOverworld.layer[i];
+      l->prevViewportCenterPixel.x += 0x2000;
+      l->prevViewportCenterPixel.y += 0x2000;
+      l->scrollCopy.x += 0x2000;
+      l->scrollCopy.y += 0x2000;
+    }
   }
 
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
@@ -227,9 +238,7 @@ void ExitStageLandscape(void) {
   gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON);
 }
 
-#if MODERN == 0
 NAKED static u16 getMetatileID(s32 x, s32 y) { INCCODE("asm/unused/getMetatileID.inc"); }  // (x, y)のタイルブロックのIDを入手する
-#endif
 
 /*
   (x, y)のタイルブロックのBlockAttrを取得する
@@ -270,7 +279,7 @@ void FUN_08008eb8(s32 x, s32 y, struct Coord* c) {
 }
 
 // カメラの位置に関係
-WIP void CalcCameraDelta(struct Coord* c, struct Coord* d) {
+NON_MATCH void CalcCameraDelta(struct Coord* c, struct Coord* d) {
 #if MODERN
   u32 a, b;
   d->x = d->y = 0;
@@ -312,7 +321,7 @@ WIP void CalcCameraDelta(struct Coord* c, struct Coord* d) {
     r0 = 0x08347268
     r1 = 0x08346ab0
 */
-WIP static void loadStageLandscape(const struct Stage* p, const struct ChunkMap* layout) {
+NON_MATCH static void loadStageLandscape(const struct Stage* p, const struct ChunkMap* layout) {
 #if MODERN
   u16 x, y;
   u8* screenIdxs;
@@ -353,7 +362,7 @@ WIP static void loadStageLandscape(const struct Stage* p, const struct ChunkMap*
 }
 
 // (s.x, s.row+s.y) -> (x, s.row+y) にメタタイルをずらす
-WIP void ShiftMetatile(s32 x, s32 y, const struct MetatileShift* s) {
+NON_MATCH void ShiftMetatile(s32 x, s32 y, const struct MetatileShift* s) {
 #if MODERN
   s32 i;
   u8 id = W_TERRAIN_V2.id & 0x7F;
@@ -376,7 +385,7 @@ WIP void ShiftMetatile(s32 x, s32 y, const struct MetatileShift* s) {
 /*
   ステージのメタタイルマップ (x16, y16)から(x16+p.w, y16+p.h) の内容を変更する
 */
-WIP void PatchMetatileMap(u32 x16, u32 y16, struct MetatilePatch* p) {
+NON_MATCH void PatchMetatileMap(u32 x16, u32 y16, struct MetatilePatch* p) {
 #if MODERN
   s16 i;
   u8 id = W_TERRAIN_V2.id & 0x7F;
@@ -438,7 +447,7 @@ NON_MATCH void LoadScreenIntoMetatileMap(s32 chunkX, s32 chunkY, u16 chunkID) {
  * @param n このステージレイヤのタイプ(0: 地形データ, 1: 水面や草など(=前景?), 2: 雲などの背景)
  * @note 0x080092e0
  */
-WIP void ResetStageLayer(s32 n, const struct Stage* p) {
+NON_MATCH void ResetStageLayer(s32 n, const struct Stage* p) {
 #if MODERN
   const struct TerrainHeader* terrain;
   struct Coord* c;
@@ -542,7 +551,7 @@ static u8 FUN_080094f0(s32 x, s32 y) {
 /*
   引数のCoord(c)は画面左上の座標
 */
-WIP static const struct Stage* UpdateStageTileset(struct Coord* c) {
+NON_MATCH static const struct Stage* UpdateStageTileset(struct Coord* c) {
 #if MODERN
   tileset_ofs_t tileset;
   const struct ColorGraphic* g;
@@ -567,7 +576,7 @@ WIP static const struct Stage* UpdateStageTileset(struct Coord* c) {
   } else if (HI_NIBBLE(tileset) == 0xFF) {
     goto SKIP;
   }
-  g = &((const struct ColorGraphic*)OFFSET_TABLE(gStageTilesetOffsets, stageID))[HI_NIBBLE(tileset)];
+  g = (const struct ColorGraphic*)SELF_REL_PTR(&gStageTilesetOffsets[stageID]) + HI_NIBBLE(tileset);
   RequestGraphicTransfer(&g->g, (void*)0x4000);
   LoadPalette(&g->pal, 0);
   W_TERRAIN_V2.tilesets[0] = (((u16)stageID) << 8) | HI_NIBBLE(tileset);
@@ -581,7 +590,7 @@ SKIP:
   } else if (LO_NIBBLE(tileset) == 0xFF) {
     return stage;
   }
-  g = &((const struct ColorGraphic*)OFFSET_TABLE(gStageTilesetOffsets, stageID))[LO_NIBBLE(tileset)];
+  g = (const struct ColorGraphic*)SELF_REL_PTR(&gStageTilesetOffsets[stageID]) + LO_NIBBLE(tileset);
   RequestGraphicTransfer(&g->g, (void*)0x4000);
   LoadPalette(&g->pal, 0);
   W_TERRAIN_V2.tilesets[1] = (((u16)stageID) << 8) | LO_NIBBLE(tileset);
@@ -615,7 +624,7 @@ static void TaskCB_UpdateOwGraphic(struct Overworld* ow, struct DrawPivot* dp) {
   gOverworld.terrain.reload_graphic = FALSE;
 }
 
-WIP static void UpdateStageLayer(struct StageLayer* l, const struct Stage* s, struct Coord* c) {
+NON_MATCH static void UpdateStageLayer(struct StageLayer* l, const struct Stage* s, struct Coord* c) {
 #if MODERN
   u8 X, Y;
   (l->prevViewportCenterPixel).x = (l->viewportCenterPixel).x;

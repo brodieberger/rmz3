@@ -104,6 +104,7 @@ static const BossFunc sDeinitializers[2] = {
 
 // --------------------------------------------
 
+// 0x0836265c
 static const struct Collision sCollisions[5] = {
     [0] = {
       kind : DRP,

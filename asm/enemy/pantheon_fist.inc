@@ -11,7 +11,7 @@ createPantheonFistInElevator: @ 0x08094F40
 	adds r6, r1, #0
 	lsls r2, r2, #0x18
 	lsrs r4, r2, #0x18
-	ldr r0, _08094FA0 @ =gZakoHeaderPtr
+	ldr r0, _08094FA0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl AllocEntityFirst
 	adds r3, r0, #0
@@ -54,7 +54,7 @@ _08094F96:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08094FA0: .4byte gZakoHeaderPtr
+_08094FA0: .4byte gEnemyHeaderPtr
 _08094FA4: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08094fa8
@@ -292,7 +292,7 @@ FUN_08095124: @ 0x08095124
 	b _080951AA
 _08095144:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080951AA
 	ldr r1, _08095180 @ =0x08369F80
@@ -322,7 +322,7 @@ _08095180: .4byte 0x08369F80
 _08095184: .4byte 0x08369FA4
 _08095188:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _080951A8
 	adds r0, r4, #0
@@ -646,7 +646,7 @@ _080953E6:
 	ldr r1, _08095424 @ =0x08369FEC
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _08095406
@@ -697,7 +697,7 @@ _0809543C:
 	strb r0, [r4, #0xe]
 _08095456:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r5, r0, #0
 	cmp r5, #0
 	bne _0809548E

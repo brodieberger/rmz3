@@ -4,6 +4,7 @@
 #include "physics.h"
 #include "sound.h"
 #include "vfx.h"
+#include "vfx/after_image.h"
 #include "weapon.h"
 #include "zero.h"
 
@@ -57,7 +58,7 @@ void zeroNeutral2(struct Zero* z) {
       *idleFrame = 0;
     }
 
-    if ((z->last & INPUT_DISABLED) == 0) {
+    if (((z->input).raw & INPUT_DISABLED) == 0) {
       *idleFrame += 1;
     }
 
@@ -240,7 +241,7 @@ static void zeroStartWalk1(struct Zero* z) {
     (z->s).mode[3] = 2;
   }
 
-  if (z->zeroInput & ZERO_INPUT_DPAD_LEFT) {
+  if ((z->input).val & ZERO_INPUT_DPAD_LEFT) {
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
@@ -255,7 +256,7 @@ static void zeroStartWalk1(struct Zero* z) {
       (z->s).d.x = -CalcMaxWalkSpeed(z);
     }
 
-  } else if (z->zeroInput & ZERO_INPUT_DPAD_RIGHT) {
+  } else if ((z->input).val & ZERO_INPUT_DPAD_RIGHT) {
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
     (z->s).flags |= X_FLIP;
@@ -272,7 +273,7 @@ static void zeroStartWalk1(struct Zero* z) {
 
 static void zeroStartWalk2(struct Zero* z) {
   s8 cmdIdx;
-  if (z->zeroInput & DPAD_LEFT) {
+  if ((z->input).val & DPAD_LEFT) {
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
@@ -284,7 +285,7 @@ static void zeroStartWalk2(struct Zero* z) {
     } else {
       (z->s).d.x = -CalcDx(z);
     }
-  } else if (z->zeroInput & DPAD_RIGHT) {
+  } else if ((z->input).val & DPAD_RIGHT) {
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
     (z->s).flags |= X_FLIP;
@@ -319,7 +320,7 @@ static void zeroDash_0802a688(struct Zero* z) {
 
 static void zero_dash_step0(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
-  if (z->zeroInput & ZERO_INPUT_PRESS_DASH) {
+  if ((z->input).val & ZERO_INPUT_PRESS_DASH) {
     u8 foot;
 
     b4->dashTimer = 28;
@@ -328,11 +329,11 @@ static void zero_dash_step0(struct Zero* z) {
     CreateParticle(&(z->s).coord, 0, ((z->s).flags >> 4) & 1);
 
     if (b4->shadow == NULL) {
-      struct VFX* g = CreateAfterImages(&z->s);
-      b4->shadow = &g->s;
+      struct Entity* g = CreateAfterImages(&z->s);
+      b4->shadow = g;
     }
 
-    if (((z->last & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, foot == FOOT_CHIP_SHADOW || (foot == FOOT_CHIP_ULTIMA)))) {
+    if ((((z->input).raw & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, foot == FOOT_CHIP_SHADOW || (foot == FOOT_CHIP_ULTIMA)))) {
       const u8 color = GetZeroColor(z);
       LoadShadowDashPalette(z, color);
       z->posture = POSTURE_SHADOW;
@@ -345,7 +346,7 @@ static void zero_dash_step0(struct Zero* z) {
   zero_dash_step1(z);
 }
 
-WIP static void zero_dash_step1(struct Zero* z) {
+NON_MATCH static void zero_dash_step1(struct Zero* z) {
 #if MODERN
   bool8 xflip;
   if (z->posture != POSTURE_SHADOW) {
@@ -362,9 +363,9 @@ WIP static void zero_dash_step1(struct Zero* z) {
     return;
   }
 
-  if (z->zeroInput & DPAD_LEFT) {
+  if ((z->input).val & DPAD_LEFT) {
     xflip = FALSE;
-  } else if (z->zeroInput & DPAD_RIGHT) {
+  } else if ((z->input).val & DPAD_RIGHT) {
     xflip = TRUE;
   } else {
     xflip = ((z->s).flags >> 4) & 1;
@@ -399,7 +400,7 @@ WIP static void zero_dash_step1(struct Zero* z) {
   // Check dash end
   (z->unk_b4).dashTimer--;
   if ((z->unk_b4).dashTimer == 0xFF) {
-    if (z->zeroInput & (DPAD_RIGHT | DPAD_LEFT)) {
+    if ((z->input).val & (DPAD_RIGHT | DPAD_LEFT)) {
       (z->s).mode[2] = 1;
       (z->s).mode[3] = 0;
     } else {
@@ -435,7 +436,7 @@ void zeroAir2(struct Zero* z) {
   gZeroJumpSeq[(z->s).mode[2]](z);
 }
 
-WIP static void initZeroJump(struct Zero* z) {
+NON_MATCH static void initZeroJump(struct Zero* z) {
 #if MODERN
   zero_input_t* key;
   struct Zero_b4* b4;
@@ -468,7 +469,7 @@ WIP static void initZeroJump(struct Zero* z) {
 
     case WALL_JUMP: {
       FUN_080b388c(&(z->s).coord, ((z->s).flags >> 4) & 1);
-      key = &z->zeroInput;
+      key = &(z->input).val;
       if (*key & ZERO_INPUT_DASH) {
         SetMotion(&z->s, MOTION(DM006_ZERO_WALL_AIR, 1));
         if ((z->s).flags & X_FLIP) {
@@ -493,7 +494,7 @@ WIP static void initZeroJump(struct Zero* z) {
         (z->s).d.x = dx;
         b4 = &z->unk_b4;
         if (b4->shadow == NULL) {
-          b4->shadow = (struct Entity*)CreateAfterImages(&z->s);
+          b4->shadow = CreateAfterImages(&z->s);
         }
       } else {
         SetMotion(&z->s, MOTION(DM005_ZERO_WALL, 1));
@@ -520,7 +521,7 @@ WIP static void initZeroJump(struct Zero* z) {
         (z->s).d.x = CalcDx(z);
       }
       if ((abs((z->s).d.x) >= GetDashSpeed(z)) && (b4->shadow == NULL)) {
-        b4->shadow = (struct Entity*)CreateAfterImages(&z->s);
+        b4->shadow = CreateAfterImages(&z->s);
       }
       (z->unk_b4).dashable = 4;
       break;
@@ -586,12 +587,12 @@ NON_MATCH static void zeroNormalJumpRise(struct Zero* z) {
   dashable = &(z->unk_b4).dashable;
   if (*dashable > 0) {
     (*dashable)--;
-    if (z->zeroInput & ZERO_INPUT_PRESS_DASH) {
+    if ((z->input).val & ZERO_INPUT_PRESS_DASH) {
       PlaySound(SE_DASH_1);
       *dashable = 0;
       (z->s).d.x = GetDashSpeed(z);
       if ((&z->unk_b4)->shadow == NULL) {
-        (&z->unk_b4)->shadow = (struct Entity*)CreateAfterImages(&z->s);
+        (&z->unk_b4)->shadow = CreateAfterImages(&z->s);
       }
     }
   }
@@ -599,12 +600,12 @@ NON_MATCH static void zeroNormalJumpRise(struct Zero* z) {
   if ((&z->unk_b4)->blownSpeed != 0) {
     (z->s).coord.x += (&z->unk_b4)->blownSpeed;
   } else {
-    if (z->zeroInput & DPAD_RIGHT) {
+    if ((z->input).val & DPAD_RIGHT) {
       (z->s).coord.x += abs((z->s).d.x);
       (z->s).spr.xflip = TRUE;
       (z->s).spr.oam.xflip = TRUE;
       (z->s).flags |= X_FLIP;
-    } else if (z->zeroInput & DPAD_LEFT) {
+    } else if ((z->input).val & DPAD_LEFT) {
       (z->s).coord.x -= abs((z->s).d.x);
       (z->s).spr.xflip = FALSE;
       (z->s).spr.oam.xflip = FALSE;
@@ -649,13 +650,13 @@ static void zeroDoubleJumpRise(struct Zero* z) {
     GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0), 1, 4);
   }
 
-  if (z->zeroInput & ZERO_INPUT_DPAD_LEFT) {
+  if ((z->input).val & ZERO_INPUT_DPAD_LEFT) {
     dx = -abs((z->s).d.x);
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
 
-  } else if (z->zeroInput & ZERO_INPUT_DPAD_RIGHT) {
+  } else if ((z->input).val & ZERO_INPUT_DPAD_RIGHT) {
     dx = abs((z->s).d.x);
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
@@ -686,7 +687,7 @@ static void zeroDoubleJumpRise(struct Zero* z) {
   }
 }
 
-WIP static void zeroWallJumpRise(struct Zero* z) {
+NON_MATCH static void zeroWallJumpRise(struct Zero* z) {
 #if MODERN
   s16 dx;
   struct Zero_b4* b4;
@@ -694,7 +695,7 @@ WIP static void zeroWallJumpRise(struct Zero* z) {
 
   // Dash jump from wall
   motion_t m = MOTION_VALUE(z);
-  if ((m == MOTION(DM005_ZERO_WALL, 1)) && ((z->s).motion.cmdIdx == 0) && (z->zeroInput & ZERO_INPUT_DASH)) {
+  if ((m == MOTION(DM005_ZERO_WALL, 1)) && ((z->s).motion.cmdIdx == 0) && ((z->input).val & ZERO_INPUT_DASH)) {
     struct Zero_b4* b4;
     GotoMotion(&z->s, MOTION(DM006_ZERO_WALL_AIR, 1), 1, 4);
     if ((z->s).flags & X_FLIP) {
@@ -708,7 +709,7 @@ WIP static void zeroWallJumpRise(struct Zero* z) {
     }
     b4 = &(z->unk_b4);
     if (b4->shadow == NULL) {
-      b4->shadow = (struct Entity*)CreateAfterImages(&z->s);
+      b4->shadow = CreateAfterImages(&z->s);
     }
   }
 
@@ -718,13 +719,13 @@ WIP static void zeroWallJumpRise(struct Zero* z) {
   } else {
     u8 flags = (z->s).flags;
 
-    if (z->zeroInput & DPAD_LEFT) {
+    if ((z->input).val & DPAD_LEFT) {
       dx = -abs((z->s).d.x);
       (z->s).spr.xflip = FALSE;
       (z->s).spr.oam.xflip = FALSE;
       (z->s).flags &= ~X_FLIP;
 
-    } else if (z->zeroInput & DPAD_RIGHT) {
+    } else if ((z->input).val & DPAD_RIGHT) {
       dx = abs((z->s).d.x);
       (z->s).spr.xflip = TRUE;
       (z->s).spr.oam.xflip = TRUE;
@@ -775,13 +776,13 @@ static void zeroRecoilJumpRise(struct Zero* z) {
   if (b4->blownSpeed != 0) {
     dx = b4->blownSpeed;
 
-  } else if (z->zeroInput & DPAD_LEFT) {
+  } else if ((z->input).val & DPAD_LEFT) {
     dx = -abs((z->s).d.x);
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
 
-  } else if (z->zeroInput & DPAD_RIGHT) {
+  } else if ((z->input).val & DPAD_RIGHT) {
     dx = abs((z->s).d.x);
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
@@ -822,10 +823,10 @@ static void zeroRyuenjinJumpRise(struct Zero* z) {
   } else {
     zero_input_t key, mask;
     if ((b4->status).mainWeapon == WEAPON_SABER) {
-      key = z->zeroInput;
+      key = (z->input).val;
       mask = ZERO_INPUT_MAIN_WEAPON;
     } else {
-      key = z->zeroInput;
+      key = (z->input).val;
       mask = ZERO_INPUT_SUB_WEAPON;
     }
     if ((key & mask) == 0) {
@@ -888,13 +889,13 @@ static void zeroJumpFallStep1(struct Zero* z) {
   if ((&z->unk_b4)->blownSpeed != 0) {
     dx = (&z->unk_b4)->blownSpeed;
 
-  } else if (z->zeroInput & DPAD_LEFT) {
+  } else if ((z->input).val & DPAD_LEFT) {
     dx = -abs((z->s).d.x);
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
 
-  } else if (z->zeroInput & DPAD_RIGHT) {
+  } else if ((z->input).val & DPAD_RIGHT) {
     dx = abs((z->s).d.x);
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
@@ -990,7 +991,7 @@ static void zeroWallSeq0(struct Zero* z) {
 }
 
 // 壁ずり、壁ジャンプ関連
-WIP static void zeroWallSeq1(struct Zero* z) {
+NON_MATCH static void zeroWallSeq1(struct Zero* z) {
 #if MODERN
   metatile_attr_t attr;
 
@@ -1002,10 +1003,10 @@ WIP static void zeroWallSeq1(struct Zero* z) {
     return;
   }
 
-  if (z->zeroInput & DPAD_RIGHT) {
+  if ((z->input).val & DPAD_RIGHT) {
     (z->s).coord.x += PIXEL(1);
   }
-  if (z->zeroInput & DPAD_LEFT) {
+  if ((z->input).val & DPAD_LEFT) {
     (z->s).coord.x -= PIXEL(1);
   }
   PushoutWallX(z, &gZeroRanges[z->posture], FALSE);
@@ -1104,11 +1105,11 @@ static void zeroLadderUpStep1(struct Zero* z) {
       SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
     }
   } else if (!z->restriction.move) {
-    if (z->zeroInput & ZERO_INPUT_PRESS_DPAD_UP) {
+    if ((z->input).val & ZERO_INPUT_PRESS_DPAD_UP) {
       GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01), (z->s).motion.cmdIdx, 1);
     }
 
-    if (z->zeroInput & DPAD_UP) {
+    if ((z->input).val & DPAD_UP) {
       (z->s).coord.y += (z->s).d.y;
       if (PushoutByCeilingOnLadder(z, &gZeroRanges[z->posture], TRUE) != 0) {
         GotoMotion(&z->s, MOTION_VALUE(z), (z->s).motion.cmdIdx, (z->s).motion.duration + 1);
@@ -1217,11 +1218,11 @@ static void zeroLadderDownStep2(struct Zero* z) {
   }
   if ((z->restriction).move) return;
 
-  if (z->zeroInput & ZERO_INPUT_PRESS_DPAD_DOWN) {
+  if ((z->input).val & ZERO_INPUT_PRESS_DPAD_DOWN) {
     GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x04), (z->s).motion.cmdIdx, 1);
   }
 
-  if (z->zeroInput & ZERO_INPUT_DPAD_DOWN) {
+  if ((z->input).val & ZERO_INPUT_DPAD_DOWN) {
     u8 val;
 
     (z->s).coord.y += (z->s).d.y;
@@ -1365,7 +1366,7 @@ static void zeroKilled(struct Zero* z) {
   return;
 }
 
-WIP static void zeroInitKnockBack(struct Zero* z) {
+NON_MATCH static void zeroInitKnockBack(struct Zero* z) {
 #if MODERN
   struct Zero_b4* b4;
   bool8 xflip;
@@ -1500,10 +1501,7 @@ void FUN_0802c010(struct Zero* z) {
 
   gStageRun.missionStatus &= ~MISSION_STAY;
   gStageRun.missionStatus |= MISSION_FAIL;
-  (z->body).status = 0;
-  (z->body).prevStatus = 0;
-  (z->body).invincibleTime = 0;
-  (z->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(z);
   PlaySound(SE_ZERO_STUN);
 
   xflip = (((z->s).flags & X_FLIP) != 0);
@@ -1604,17 +1602,17 @@ static void door2D_1(struct Zero* z) {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 static void zero_door_0802c258(struct Zero* z);
-static void zero_door_0802c2a4(struct Zero* z);
+static void zero_door3d_0802c2a4(struct Zero* z);
 static void zero_door_0802c364(struct Zero* z);
 
 void zeroDoor3D(struct Zero* z) {
-  static ZeroFunc const gZeroDoor3DSeq[] = {
+  static ZeroFunc const sUpdates[] = {
       zero_door_0802c258,
-      zero_door_0802c2a4,
+      zero_door3d_0802c2a4,
       zero_door_0802c364,
-  };
+  };  // 0x0835e530
   z->posture = POSTURE_DOOR_3D;
-  (gZeroDoor3DSeq[(z->s).mode[2]])(z);
+  (sUpdates[(z->s).mode[2]])(z);
 }
 
 static void zero_door_0802c258(struct Zero* z) {
@@ -1626,47 +1624,49 @@ static void zero_door_0802c258(struct Zero* z) {
 
   z->unk_b4.attackMode[0] = 0;
   KillAllWeapons(DeleteSaber);
-  z->unk_238 = 0;
+  z->door3d_x = 0;
   gIsUsingDoor3D = TRUE;
   (z->s).mode[2] = 2;
   (z->s).mode[3] = 0;
   zero_door_0802c364(z);
 }
 
-WIP static void zero_door_0802c2a4(struct Zero* z) {
-#if MODERN
+// 0x0802c2a4, 使われてないかも？
+static void zero_door3d_0802c2a4(struct Zero* z) {
+  bool32 ok = FALSE;
   if ((z->s).mode[3] == 0) {
     SetMotion(&z->s, MOTION(DM002_ZERO_RUN, 0x00));
-    if (z->unk_238 < (z->s).coord.x) {
-      (z->s).spr.oam.xflip = (z->s).spr.xflip = FALSE;
+    if ((z->s).coord.x > z->door3d_x) {
+      (z->s).spr.xflip = FALSE;
+      (z->s).spr.oam.xflip = FALSE;
       (z->s).flags &= ~X_FLIP;
       (z->s).d.x = -PIXEL(2);
     } else {
-      (z->s).spr.oam.xflip = (z->s).spr.xflip = TRUE;
+      (z->s).spr.xflip = TRUE;
+      (z->s).spr.oam.xflip = TRUE;
       (z->s).flags |= X_FLIP;
       (z->s).d.x = PIXEL(2);
     }
     (z->s).mode[3]++;
-    return;
-  }
-
-  (z->s).coord.x += (z->s).d.x;
-  if ((z->s).flags & X_FLIP) {
-    if ((z->s).coord.x <= z->unk_238) {
-      return;
-    }
   } else {
-    if ((z->s).coord.x >= z->unk_238) {
-      return;
+    (z->s).coord.x += (z->s).d.x;
+    if ((z->s).flags & X_FLIP) {
+      if ((z->s).coord.x > z->door3d_x) {
+        (z->s).coord.x = z->door3d_x;
+        ok = TRUE;
+      }
+    } else {
+      if ((z->s).coord.x < z->door3d_x) {
+        (z->s).coord.x = z->door3d_x;
+        ok = TRUE;
+      }
     }
   }
-  (z->s).coord.x = z->unk_238;
-  SetMotion(&z->s, MOTION(DM054_ZERO_DOOR_3D, 0x00));
-  (z->s).mode[2] = 2;
-  (z->s).mode[3] = 0;
-#else
-  INCCODE("asm/wip/zero_door_0802c2a4.inc");
-#endif
+  if (ok) {
+    SetMotion(&z->s, MOTION(DM054_ZERO_DOOR_3D, 0x00));
+    (z->s).mode[2] = 2;
+    (z->s).mode[3] = 0;
+  }
 }
 
 static void zero_door_0802c364(struct Zero* z) {
@@ -2367,7 +2367,7 @@ static void zeroTalk0(struct Zero* z) {
   zeroTalk1(z);
 }
 
-WIP static void zeroTalk1(struct Zero* z) {
+NON_MATCH static void zeroTalk1(struct Zero* z) {
 #if MODERN
   struct Body* body = gCollisionManager.talkTo;  // 話し相手
   if ((body != NULL) && (body->parent != NULL)) {
@@ -2671,7 +2671,7 @@ static void zeroCyberDoor1(struct Zero* z) {
       }
       n = (s16)(z->unk_b4).sound;
       if (n != MUS_NONE) {
-        stopSound(n);
+        StopSound(n);
         (z->unk_b4).sound = MUS_NONE;
       }
       (z->s).flags &= ~DISPLAY;

@@ -1,7 +1,7 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 
 import { Command } from '@cliffy/command';
-import { join } from 'https://deno.land/std/path/mod.ts';
+import { join } from '@std/path';
 
 type SpriteMetadata = { id: number; name: string; path: string; noAnimation?: boolean };
 

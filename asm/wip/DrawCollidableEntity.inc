@@ -27,7 +27,7 @@ _080170B0:
 	ands r0, r1
 	cmp r0, #0
 	beq _08017184
-	ldr r0, _080170EC @ =0x0202F360
+	ldr r0, _080170EC @ =gWhitePaintFlags
 	ldrb r1, [r5, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -46,7 +46,7 @@ _080170B0:
 	movs r0, #0xd0
 	b _080170FE
 	.align 2, 0
-_080170EC: .4byte 0x0202F360
+_080170EC: .4byte gWhitePaintFlags
 _080170F0:
 	adds r0, r5, #0
 	adds r0, #0x23
