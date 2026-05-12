@@ -220,4 +220,4 @@ asm/string.o: asm/string.s $(STR_BINS)
 	$(AGBASM) $(AGBASM_FLAGS) -o $@ $<
 
 $(ASM_SCRIPTS:.s=.o): %.o: %.s
-	$(CPP) $(CPPFLAGS) $< | $(AS) $(ASFLAGS) -o $@ -
+		$(TOOL)/arm-none-eabi-gcc -x assembler-with-cpp $(ARCH) -I include -I tools/agbcc/include -c $< -o $@
