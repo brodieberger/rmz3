@@ -19,33 +19,29 @@ const VFXRoutine gGhost17Routine = {
 };
 // clang-format on
 
-struct VFX* CreateGhost17_1(struct Entity* p) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_017);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).work[0] = 0;
-    (g->s).unk_28 = p;
+struct Entity* CreateGhost17_1(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_017);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 0;
+    p->unk_28 = e;
   }
-  return g;
+  return p;
 }
 
-void CreateGhost17_2(struct Entity* p, struct Coord* c) {
+void CreateGhost17_2(struct Entity* e, struct Coord* c) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-    if (g != NULL) {
-      (g->s).taskCol = 1;
-      INIT_VFX_ROUTINE(g, VFX_UNK_017);
-      (g->s).tileNum = 0;
-      (g->s).palID = 0;
-      (g->s).work[0] = 1;
-      (g->s).work[1] = i;
-      (g->s).unk_28 = p;
-      (g->s).coord.x = c->x;
-      (g->s).coord.y = c->y;
+    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 1;
+      INIT_VFX_ROUTINE(p, VFX_UNK_017);
+      p->tileNum = 0, p->palID = 0;
+      p->work[0] = 1, p->work[1] = i;
+      p->unk_28 = e;
+      p->coord.x = c->x, p->coord.y = c->y;
     }
   }
 }
@@ -66,12 +62,12 @@ static void Ghost17_Init(struct VFX* p) {
 // --------------------------------------------
 
 static void FUN_080b6a38(struct VFX* p);
-static void FUN_080b6b8c(struct VFX* p);
+static void FUN_080b6b8c(struct Entity* p);
 
 static void Ghost17_Update(struct VFX* p) {
   static VFXFunc const sUpdates[] = {
-      FUN_080b6a38,
-      FUN_080b6b8c,
+      (void*)FUN_080b6a38,
+      (void*)FUN_080b6b8c,
   };
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
@@ -264,56 +260,20 @@ static void FUN_080b6a9c(struct VFX* p) {
   if (xflip) idx = 2 - idx;
   dx = (idx - 1) * PIXEL(1);
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.x = dx + ((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(1);
-
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.y = -((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(2);
+  (p->s).d.x = dx + (RANDOM(RNG_0202f388) & 0x1FF) - PIXEL(1);
+  (p->s).d.y = -(RANDOM(RNG_0202f388) & 0x1FF) - PIXEL(2);
 
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost17_Update((void*)p);
 }
 
-NAKED static void FUN_080b6b8c(struct VFX* p) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	ldr r0, [r4, #0x54]\n\
-	ldr r1, [r4, #0x5c]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x54]\n\
-	ldr r0, [r4, #0x58]\n\
-	ldr r1, [r4, #0x60]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x58]\n\
-	adds r1, #0x40\n\
-	str r1, [r4, #0x60]\n\
-	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
-	ldr r0, [r4, #0x54]\n\
-	ldr r1, [r4, #0x58]\n\
-	bl FUN_080098a4\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	beq _080B6BD4\n\
-	adds r1, r4, #0\n\
-	adds r1, #0x54\n\
-	movs r0, #3\n\
-	bl CreateSmoke\n\
-	ldr r1, _080B6BDC @ =gVFXFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #2\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #8]\n\
-	str r0, [r4, #0x14]\n\
-_080B6BD4:\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080B6BDC: .4byte gVFXFnTable\n\
- .syntax divided\n");
+static void FUN_080b6b8c(struct Entity* p) {
+  (p->coord).x += (p->d).x;
+  (p->coord).y += (p->d).y;
+  (p->d).y += PIXEL(1) / 4;
+  UpdateMotionGraphic(p);
+  if (FUN_080098a4((p->coord).x, (p->coord).y)) {
+    CreateSmoke(3, &p->coord);
+    SET_VFX_ROUTINE(p, ENTITY_DIE);
+  }
 }

@@ -13,13 +13,14 @@ const ProjectileRoutine gProjectile29Routine = {
     [ENTITY_INIT] =      Projectile29_Init,
     [ENTITY_UPDATE] =    Projectile29_Update,
     [ENTITY_DIE] =       Projectile29_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
+// 0x0836C2A0
 static const struct Collision sCollisions[2] = {
     {
       kind : DDP,

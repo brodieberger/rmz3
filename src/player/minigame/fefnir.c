@@ -14,23 +14,22 @@ static void Fefnir_Die(struct Zero* z);
 
 // clang-format off
 const ZeroRoutine gFefnirRoutine = {
-  [ENTITY_INIT] =       Fefnir_Init,
-  [ENTITY_UPDATE] =     Fefnir_Update,
-  [ENTITY_DIE]  =       Fefnir_Die,
-  [ENTITY_DISAPPEAR] =  RemovePlayer,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)Fefnir_Init,
+  [ENTITY_UPDATE] =     (void*)Fefnir_Update,
+  [ENTITY_DIE]  =       (void*)Fefnir_Die,
+  [ENTITY_DISAPPEAR] =  (void*)RemovePlayer,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreatePlayerFefnir(struct MinigameState* p, s32 x, s32 y) {
+void CreatePlayerFefnir(struct MinigameState* q, s32 x, s32 y) {
   struct Zero* z = AllocPlayer();
   if (z != NULL) {
     (z->s).taskCol = 16;
     INIT_PLAYER_ROUTINE(z, 1);
     (z->s).work[0] = 0;
-    (z->s).coord.x = x;
-    (z->s).coord.y = y;
-    (z->s).unk_28 = (void*)p;
+    (z->s).coord.x = x, (z->s).coord.y = y;
+    (z->s).unk_28 = (void*)q;
   }
 }
 

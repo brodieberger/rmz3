@@ -13,6 +13,7 @@ struct Collision;
     body->fn = fn;                                    \
   }
 
+typedef void (*BossFunc)(struct Boss*);
 typedef BossFunc BossRoutine[5];
 extern const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT];
 
@@ -21,7 +22,7 @@ extern const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT];
 
 // --------------------------------------------
 
-void DeleteBoss(struct Boss* p);
+void DeleteBoss(struct Entity* p);
 void ResetBossBody(struct Boss* p, const struct Collision* collisions, s16 hp);
 
 #endif  // GUARD_RMZ3_BOSS_H

@@ -1,21 +1,144 @@
 #include "global.h"
 #include "vfx.h"
 
-INCASM("asm/vfx/unk_64.inc");
-
-void Ghost64_Init(struct VFX* p);
-void Ghost64_Update(struct VFX* p);
-void Ghost64_Die(struct VFX* p);
+static void Ghost64_Init(struct Entity* p);
+static void Ghost64_Update(struct Entity* p);
+static void Ghost64_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gGhost64Routine = {
-    [ENTITY_INIT] =      Ghost64_Init,
-    [ENTITY_UPDATE] =    Ghost64_Update,
-    [ENTITY_DIE] =       Ghost64_Die,
+    [ENTITY_INIT] =      (void*)Ghost64_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost64_Update,
+    [ENTITY_DIE] =       (void*)Ghost64_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void oz_080c39a0(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->unk_28 = (void*)e;
+    p->work[0] = 0;
+  }
+}
+
+void FUN_080c39e8(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->unk_28 = (void*)e;
+    p->work[0] = 1;
+
+    // (p->coord).x = (e->coord).x + ((e->flags & X_FLIP) ? -PIXEL(12) : PIXEL(12));
+    {
+      s32 ex = (e->coord).x;
+      s32 x = (p->coord).x = ex + PIXEL(12);
+      if ((e->flags & X_FLIP) != 0) {
+        x = ex - PIXEL(12);
+      }
+      (p->coord).x = x;
+    }
+    (p->coord).y = (e->coord).y - PIXEL(32);
+  }
+}
+
+void oz_Rekkoha_080c3a5c(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->unk_28 = (void*)e;
+    p->work[0] = 3;
+
+    // (p->coord).x = (e->coord).x + ((e->flags & X_FLIP) ? -PIXEL(12) : PIXEL(12));
+    {
+      s32 ex = (e->coord).x;
+      s32 x = (p->coord).x = ex + PIXEL(12);
+      if ((e->flags & X_FLIP) != 0) {
+        x = ex - PIXEL(12);
+      }
+      (p->coord).x = x;
+    }
+    (p->coord).y = (e->coord).y - PIXEL(32);
+  }
+}
+
+// 0x080c3ad4
+void ozMessenkou2(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 2;
+
+    // (p->coord).x = (e->coord).x + ((e->flags & X_FLIP) ? PIXEL(5) : -PIXEL(5));
+    {
+      s32 ex = (e->coord).x;
+      s32 x = (p->coord).x = ex - PIXEL(5);
+      if ((e->flags & X_FLIP) != 0) {
+        x = ex + PIXEL(5);
+      }
+      (p->coord).x = x;
+    }
+    (p->coord).y = (e->coord).y + PIXEL(1);
+  }
+}
+
+void oz_080c3b44(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 4;
+    (p->coord).x = (e->coord).x;
+    (p->coord).y = (e->coord).y - PIXEL(22);
+  }
+}
+
+void oz_080c3b9c(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 5;
+    (p->coord).x = (e->coord).x;
+    (p->coord).y = (e->coord).y - PIXEL(22);
+  }
+}
+
+void FUN_080c3bf4(s32 x, s32 y) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_064);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 6;
+    (p->coord).x = x, (p->coord).y = y;
+  }
+}
+
+// --------------------------------------------
+
+static const u8 sInitModes[];
+
+static void Ghost64_Init(struct Entity* p) {
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  p->mode[1] = sInitModes[p->work[0]];
+  p->flags |= FLIPABLE;
+  p->flags |= DISPLAY;
+  InitNonAffineMotion(p);
+  Ghost64_Update(p);
+}
 
 void FUN_080c3cbc(struct VFX* p);
 void FUN_080c3d84(struct VFX* p);
@@ -27,18 +150,27 @@ void FUN_080c4074(struct VFX* p);
 void FUN_080c40ec(struct VFX* p);
 void FUN_080c4144(struct VFX* p);
 
-// clang-format off
-static const VFXFunc sUpdates[9] = {
-    FUN_080c3cbc,
-    FUN_080c3d84,
-    FUN_080c3e98,
-    FUN_080c3f1c,
-    FUN_080c3f74,
-    FUN_080c3ffc,
-    FUN_080c4074,
-    FUN_080c40ec,
-    FUN_080c4144,
-};
-// clang-format on
+static void Ghost64_Update(struct Entity* p) {
+  // clang-format off
+  static const VFXFunc sUpdates[9] = {
+      (void*)FUN_080c3cbc,
+      (void*)FUN_080c3d84,
+      (void*)FUN_080c3e98,
+      (void*)FUN_080c3f1c,
+      (void*)FUN_080c3f74,
+      (void*)FUN_080c3ffc,
+      (void*)FUN_080c4074,
+      (void*)FUN_080c40ec,
+      (void*)FUN_080c4144,
+  };
+  // clang-format on
+  (sUpdates[(p->mode)[1]])((void*)p);
+}
+
+static void Ghost64_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+
+// --------------------------------------------
+
+INCASM("asm/vfx/unk_64.inc");
 
 static const u8 sInitModes[7] = {8, 2, 3, 4, 5, 6, 7};

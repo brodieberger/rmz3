@@ -56,6 +56,32 @@ static void FUN_0807cc50(s32 x, s32 y) {
   }
 }
 
+static const struct Coord16 Coord16_ARRAY_08367c24[4];
+
+static void FUN_0807cce0(s32 x, s32 y) {
+  s32 i;
+  const struct Coord16* c = Coord16_ARRAY_08367c24;
+
+  for (i = 0; i < (s32)ARRAY_COUNT(Coord16_ARRAY_08367c24); i++) {
+    struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 24;
+      INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
+      p->tileNum = 0, p->palID = 0;
+      p->flags2 |= WHITE_PAINTABLE;
+      p->invincibleID = p->uniqueID;
+      p->work[0] = 3, p->work[1] = i;
+      (p->coord).x = x;
+      (p->coord).x += c[i].x;
+      (p->coord).y = y;
+      (p->coord).y += c[i].y;
+    }
+  }
+}
+
+// 0x0807cd70
+static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+
 INCASM("asm/enemy/crossbyne.inc");
 
 // --------------------------------------------
@@ -107,6 +133,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x08367b9c
 static const struct Collision sCollisions[5] = {
     {
       kind : DRP,
@@ -153,6 +180,7 @@ static const struct Collision sCollisions[5] = {
     },
 };
 
+// 0x08367c14
 static const struct Coord16 Coord16_ARRAY_08367c14[4] = {
     {-PIXEL(14), PIXEL(0)},
     {PIXEL(14), PIXEL(0)},
@@ -167,10 +195,14 @@ static const struct Coord16 Coord16_ARRAY_08367c24[4] = {
     {PIXEL(9), PIXEL(9)},
 };
 
+// 0x08367C34
 static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+
+// 0x08367C3C
 static const u8 sInitModes[4] = {1, 1, 5, 6};
 
 // clang-format off
+// 0x08367c40
 static const motion_t sMotions[19] = {
     MOTION(SM067_CROSSBYNE, 0x00),
     MOTION(SM067_CROSSBYNE, 0x01),

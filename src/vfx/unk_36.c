@@ -24,12 +24,9 @@ struct Entity* FUN_080bc058(struct Entity* e, struct Coord* c, u8 kind) {
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_036);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->work[0] = kind;
-    p->work[1] = 0;
-    p->coord.x = c->x;
-    p->coord.y = c->y;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = kind, p->work[1] = 0;
+    p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = e;
   }
   return p;
@@ -40,12 +37,9 @@ struct Entity* volteel_080bc0b0(struct Entity* e, struct Coord* c, u8 kind) {
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_036);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->work[0] = kind;
-    p->work[1] = 1;
-    p->coord.x = c->x;
-    p->coord.y = c->y;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = kind, p->work[1] = 1;
+    p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = e;
   }
   return p;
@@ -70,15 +64,11 @@ static void VFX36_Init(struct Entity* p) {
   if (p->work[1] == 0) {
     p->work[2] = 0xFF;
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-    p->mode[1] = 1;
-    p->mode[2] = 0;
-    p->mode[3] = 0;
+    p->mode[1] = 1, p->mode[2] = 0, p->mode[3] = 0;
   } else {
     p->work[2] = 0xFF;
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-    p->mode[1] = 0;
-    p->mode[2] = 0;
-    p->mode[3] = 0;
+    p->mode[1] = 0, p->mode[2] = 0, p->mode[3] = 0;
   }
   VFX36_Update((void*)p);
 }

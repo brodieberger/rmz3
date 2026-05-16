@@ -23,11 +23,9 @@ static const u8 sStageEnemyDiskDrops[STAGE_COUNT];
 
 u32 TryDropItem(u32 table, struct Coord* c) {
   u16 n;
-  u8 rng;
   const u16* tbl;
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  rng = (u8)((RNG_0202f388 >> 16));
+  u8 rng = (u8)RANDOM(RNG_0202f388);
 
   // Secret Disk
   if (table >= ITEM_COUNT) {
@@ -44,12 +42,8 @@ u32 TryDropItem(u32 table, struct Coord* c) {
     return TRUE;
   }
 
-  if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
-    table = 8;
-  }
-  if (FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED)) {
-    table = 5;
-  }
+  if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) table = 8;
+  if (FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED)) table = 5;
 
   for (n = 0; n < 6; n++) {
     if (rng < sItemDropRates[table][n]) {

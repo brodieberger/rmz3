@@ -33,7 +33,7 @@
 #define VFX_UNK_029 29
 #define VFX_UNK_030 30
 #define VFX_UNK_031 31
-#define VFX_UNK_032 32
+#define VFX_P_AQUA 32
 #define VFX_UNK_033 33
 #define VFX_BALLCHAIN 34
 #define VFX_ORWORMER_DUST_CLOUD 35  // OrWormer の出す土埃のエフェクト
@@ -45,7 +45,7 @@
 #define VFX_UNK_041 41
 #define VFX_EXLIFE_INDICATOR 42
 #define VFX_UNK_043 43
-#define VFX_UNK_044 44
+#define VFX_UNK_MMBN4_044 44
 #define VFX_ICEBALL_PARTICLE 45
 #define VFX_UNK_046 46
 #define VFX_UNK_047 47

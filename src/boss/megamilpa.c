@@ -15,7 +15,7 @@ const BossRoutine gMegamilpaRoutine = {
     [ENTITY_INIT] =      Megamilpa_Init,
     [ENTITY_UPDATE] =    Megamilpa_Update,
     [ENTITY_DIE] =       Megamilpa_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -152,9 +152,9 @@ _0803D2A0:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _0803D2AC: .4byte gMegamilpaCoreHitbox\n\
-_0803D2B0: .4byte 0x085D795C\n\
+_0803D2B0: .4byte gStaticMotionGraphics+(5*20)\n\
 _0803D2B4: .4byte wStaticGraphicTilenums\n\
-_0803D2B8: .4byte 0x085D7968\n\
+_0803D2B8: .4byte gStaticMotionGraphics+(5*20)+12\n\
 _0803D2BC: .4byte wStaticMotionPalIDs\n\
  .syntax divided\n");
 }

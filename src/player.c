@@ -5,7 +5,7 @@
 #include "sound.h"
 #include "zero.h"
 
-static void appendHazardID(struct Zero* z, u16 target);
+static void _AppendHazardID(struct Zero* z, u16 target);
 static s32 hazard_08028114(struct Zero* z, s32 x, s32 y);
 static metatile_attr_t AppendHazardID(struct Zero* z, s32 x, s32 y);
 static metatile_attr_t AppendHazardID_2(struct Zero* z, s32 x, s32 y);
@@ -67,10 +67,7 @@ struct Zero* AllocPlayer2(void) {
   return z;
 }
 
-void RemovePlayer(struct Zero* z) {
-  SET_PLAYER_ROUTINE(z, ENTITY_EXIT);
-  return;
-}
+void RemovePlayer(struct Entity* p) { SET_PLAYER_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
 
@@ -161,7 +158,7 @@ bool8 IsDoubleHP(struct Zero* z) {
   if (ELF_AVABILITY(0) & ELF_AVABILITY_UNLOCKED) {
     if (ELF_AVABILITY(0) & ELF_AVABILITY_USED) return TRUE;
 
-    satelites = (z->unk_b4).status.asset.satelites;
+    satelites = (z->unk_b4).status.satelites;
     if (z->inCyberSpace) return TRUE;
 
     if ((satelites[0] == ELF_MARTINA) || (satelites[1] == ELF_MARTINA)) {
@@ -188,7 +185,7 @@ NON_MATCH u8 GetMaxHP(struct Zero* z) {
         continue;
       }
 
-      satelites = ((&z->unk_b4)->status).asset.satelites;
+      satelites = ((&z->unk_b4)->status).satelites;
       if (z->inCyberSpace) {  // ここへのアクセスのアセンブリが合わない
         hp += 4;
         continue;
@@ -229,18 +226,15 @@ u8 getMaxHP1x(struct Zero* z) {
  * @return TRUE: success, FALSE: fail
  */
 bool8 AddECrystal(struct Zero* z, u16 amount) {
-  struct ZeroAsset* a = &((z->unk_b4).status.asset);
-
-  u16 ec = a->EC;
-  if (ec < 10000) {
-    a->EC = a->EC + amount;
+  struct ZeroAsset* a = (struct ZeroAsset*)&((z->unk_b4).status);
+  if (a->EC < 10000) {
+    a->EC += amount;
     PlaySound(SE_GAIN_ECRYSTAL);
     if (a->EC < 10000) {
       return TRUE;
     }
     a->EC = 9999;
   }
-
   return FALSE;
 }
 
@@ -255,7 +249,7 @@ bool8 incrementSubtankHP(struct Zero* z) {
 
   u32 i;
   for (i = 0; i < 4; i++) {
-    tanks = (z->unk_b4.status).asset.subtankHP;
+    tanks = (z->unk_b4.status).subtankHP;
     tank = &tanks[i];
     hp = *tank;
     if (hp < 32) {
@@ -354,19 +348,19 @@ NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, u8 
       attr = AppendHazardID(z, x, y[i]);
       if ((!(attr & METATILE_SOFT_PLATFORM)) || (((attr & 0xF) == 0) || ((attr & 0xF) == 0xF))) {
         if (attr != 0) {
-          struct Coord c;
+          struct Coord d;  // delta
           if ((z->s).mode[1] == ZERO_WALL) {
-            retval = _pushoutHazardX1(z, x, y[i], &c);
+            retval = _pushoutHazardX1(z, x, y[i], &d);
           } else if (i == 0) {
-            retval = _pushoutHazardX1(z, x, y[i], &c);
+            retval = _pushoutHazardX1(z, x, y[i], &d);
           } else {
-            retval = _pushoutHazardX2(z, x, y[i], &c);
+            retval = _pushoutHazardX2(z, x, y[i], &d);
           }
           if (retval != 0) {
-            x += c.x;
-            y[0] += c.y;
-            y[1] += c.y;
-            y[2] += c.y;
+            x += d.x;
+            y[0] += d.y;
+            y[1] += d.y;
+            y[2] += d.y;
           }
         }
       }
@@ -2345,12 +2339,12 @@ NON_MATCH void CheckZeroHazard(struct Zero* z) {
   s32 x = (z->s).coord.x;
   s32 y = (z->s).coord.y;
   z->hazardCount = 0;
-  for (i = 0; i < W_TERRAIN_V2.objectLen; i++) {
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
     struct Hazard* hz = HAZARD(i);
-    const u32 w = (u32)((u16)hz->w) + PIXEL(31);
-    const u32 h = (u32)((u16)hz->h) + PIXEL(31);
-    if ((u32)(x - hz->start.x) + w < (u32)(w * 2)) {
-      if ((u32)(y - PIXEL(15) - hz->start.y) + h < (u32)(h * 2)) {
+    const u32 w = (u32)((u16)hz->hw) + PIXEL(31);
+    const u32 h = (u32)((u16)hz->hh) + PIXEL(31);
+    if ((u32)(x - hz->center.x) + w < (u32)(w * 2)) {
+      if ((u32)(y - PIXEL(15) - hz->center.y) + h < (u32)(h * 2)) {
         z->hazard[z->hazardCount] = i;
         z->hazardCount++;
       }
@@ -2450,7 +2444,7 @@ _08027A12:\n\
 	ldrh r1, [r0]\n\
 	adds r0, r6, #0\n\
 	str r3, [sp, #0x10]\n\
-	bl appendHazardID\n\
+	bl _AppendHazardID\n\
 	ldr r2, _08027A58 @ =gOverworld\n\
 	adds r7, #0xa\n\
 	adds r0, r2, r7\n\
@@ -2960,31 +2954,31 @@ _08027DF8: .4byte 0x0000018F\n\
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 // Hazardによる横方向への押し出し処理っぽい
-static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coord* c) {
+static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coord* delta) {
   u8 i;
   metatile_attr_t attr = 0;
-  c->x = c->y = 0;
+  delta->x = delta->y = 0;
 
   for (i = 0; i < z->hazardCount; i++) {
     u8 n = z->hazard[i];
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[n].start).x);
-    const u32 w = W_TERRAIN_V2.objects[n].w;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[n].center).x);
+    const u32 w = gOverworld.terrain.objects[n].hw;
     if ((_x + w) < (w << 1)) {
-      const u32 _y = (y - (W_TERRAIN_V2.objects[n].start).y);
-      const u32 h = W_TERRAIN_V2.objects[n].h;
-      if ((_y + h) < (h << 1)) {
-        s32 start_x;
-        appendHazardID(z, W_TERRAIN_V2.objects[n].id);
-        start_x = (W_TERRAIN_V2.objects[n].start).x;
-        if (start_x < (z->s).coord.x) {
-          c->x = (start_x + W_TERRAIN_V2.objects[n].w) - x;
+      const u32 _y = (y - (gOverworld.terrain.objects[n].center).y);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((_y + hh) < (hh << 1)) {
+        s32 center_x;
+        _AppendHazardID(z, gOverworld.terrain.objects[n].id);
+        center_x = (gOverworld.terrain.objects[n].center).x;
+        if (center_x < (z->s).coord.x) {
+          delta->x = (center_x + gOverworld.terrain.objects[n].hw) - x;
         } else {
-          c->x = (start_x - W_TERRAIN_V2.objects[n].w) - x - 1;
+          delta->x = (center_x - gOverworld.terrain.objects[n].hw) - x - 1;
         }
-        if (c->x != 0) {
-          attr = W_TERRAIN_V2.objects[n].attr;
-          (z->s).coord.x += c->x;
-          x += c->x;
+        if (delta->x != 0) {
+          attr = gOverworld.terrain.objects[n].attr;
+          (z->s).coord.x += delta->x;
+          x += delta->x;
           z->pushedOut = TRUE;
         }
       }
@@ -2995,36 +2989,36 @@ static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coo
 
 // 0x08027f0c
 // Hazardによる縦方向への押し出し処理っぽい
-metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, struct Coord* c) {
+metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, struct Coord* delta) {
   u8 i;
   metatile_attr_t attr = 0;
-  c->x = c->y = 0;
+  delta->x = delta->y = 0;
 
   for (i = 0; i < z->hazardCount; i++) {
     u8 n = z->hazard[i];
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[n].start).x);
-    const u32 w = W_TERRAIN_V2.objects[n].w;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[n].center).x);
+    const u32 w = gOverworld.terrain.objects[n].hw;
     if ((_x + w) < (w << 1)) {
-      const u32 _y = (y - (W_TERRAIN_V2.objects[n].start).y);
-      const u32 h = W_TERRAIN_V2.objects[n].h;
-      if ((_y + h) < (h << 1)) {
-        s32 start_y;
-        appendHazardID(z, W_TERRAIN_V2.objects[n].id);
-        start_y = (W_TERRAIN_V2.objects[n].start).y;
-        if (start_y < y) {
+      const u32 _y = (y - (gOverworld.terrain.objects[n].center).y);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((_y + hh) < (hh << 1)) {
+        s32 center;
+        _AppendHazardID(z, gOverworld.terrain.objects[n].id);
+        center = (gOverworld.terrain.objects[n].center).y;
+        if (center < y) {
           if (y == (z->s).coord.y) {
-            c->y = (start_y - W_TERRAIN_V2.objects[n].h) - y - 1;
+            delta->y = (center - gOverworld.terrain.objects[n].hh) - y - 1;
           } else {
-            c->y = (start_y + W_TERRAIN_V2.objects[n].h) - y;
+            delta->y = (center + gOverworld.terrain.objects[n].hh) - y;
           }
         } else {
-          c->y = (start_y - W_TERRAIN_V2.objects[n].h) - y - 1;
+          delta->y = (center - gOverworld.terrain.objects[n].hh) - y - 1;
         }
 
-        if (c->y != 0) {
-          attr = W_TERRAIN_V2.objects[n].attr;
-          (z->s).coord.y += c->y;
-          y += c->y;
+        if (delta->y != 0) {
+          attr = gOverworld.terrain.objects[n].attr;
+          (z->s).coord.y += delta->y;
+          y += delta->y;
           z->pushedOut = TRUE;
         }
       }
@@ -3099,7 +3093,7 @@ _08028054:\n\
 	adds r0, r3, r1\n\
 	ldrh r1, [r0]\n\
 	adds r0, r6, #0\n\
-	bl appendHazardID\n\
+	bl _AppendHazardID\n\
 	ldr r1, [r5]\n\
 	ldr r0, [r6, #0x54]\n\
 	cmp r1, r0\n\
@@ -3225,7 +3219,7 @@ _0802813C:\n\
 	adds r0, r3, r1\n\
 	ldrh r1, [r0]\n\
 	adds r0, r7, #0\n\
-	bl appendHazardID\n\
+	bl _AppendHazardID\n\
 	ldr r1, [r5]\n\
 	cmp r1, r6\n\
 	bge _080281AC\n\
@@ -3274,18 +3268,19 @@ _080281D6:\n\
  .syntax divided\n");
 }
 
+// 0x080281E8
 static metatile_attr_t AppendHazardID(struct Zero* z, s32 x, s32 y) {
   u8 i;
   for (i = 0; i < z->hazardCount; i++) {
     u8 n = z->hazard[i];
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[n].start).x);
-    const u32 w = W_TERRAIN_V2.objects[n].w;
-    if ((_x + w) < (w << 1)) {
-      const u32 _y = (y - (W_TERRAIN_V2.objects[n].start).y);
-      const u32 h = W_TERRAIN_V2.objects[n].h;
-      if ((_y + h) < (h << 1)) {
-        appendHazardID(z, W_TERRAIN_V2.objects[n].id);
-        return W_TERRAIN_V2.objects[n].attr;
+    const u32 ofs_x = (u32)(x - (gOverworld.terrain.objects[n].center).x);
+    const u32 hw = gOverworld.terrain.objects[n].hw;
+    if ((ofs_x + hw) < (hw << 1)) {  // (x > (center_x - hw)) && (x < (center_x + hw))
+      const u32 ofs_y = (y - (gOverworld.terrain.objects[n].center).y);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((ofs_y + hh) < (hh << 1)) {
+        _AppendHazardID(z, gOverworld.terrain.objects[n].id);
+        return gOverworld.terrain.objects[n].attr;
       }
     }
   }
@@ -3296,124 +3291,62 @@ static metatile_attr_t AppendHazardID_2(struct Zero* z, s32 x, s32 y) {
   u8 i;
   for (i = 0; i < z->hazardCount; i++) {
     u8 n = z->hazard[i];
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[n].unk_10).x);
-    const u32 w = W_TERRAIN_V2.objects[n].w;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[n].unk_10).x);
+    const u32 w = gOverworld.terrain.objects[n].hw;
     if ((_x + w) < (w << 1)) {
-      const u32 _y = (y - (W_TERRAIN_V2.objects[n].unk_10).y);
-      const u32 h = W_TERRAIN_V2.objects[n].h;
-      if ((_y + h) < (h << 1)) {
-        appendHazardID(z, W_TERRAIN_V2.objects[n].id);
-        return W_TERRAIN_V2.objects[n].attr;
+      const u32 _y = (y - (gOverworld.terrain.objects[n].unk_10).y);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((_y + hh) < (hh << 1)) {
+        _AppendHazardID(z, gOverworld.terrain.objects[n].id);
+        return gOverworld.terrain.objects[n].attr;
       }
     }
   }
   return 0;
 }
 
-NAKED static bool16 hazard_08028338(struct Zero* z, s32 x, s32 y) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sl\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6, r7}\n\
-	adds r7, r0, #0\n\
-	mov sl, r1\n\
-	mov sb, r2\n\
-	movs r5, #0\n\
-	movs r1, #0xc6\n\
-	lsls r1, r1, #1\n\
-	adds r0, r7, r1\n\
-	ldrb r0, [r0]\n\
-	cmp r5, r0\n\
-	bhs _080283DA\n\
-	ldr r6, _080283BC @ =gOverworld\n\
-	mov r8, r0\n\
-_0802835A:\n\
-	movs r1, #0xae\n\
-	lsls r1, r1, #1\n\
-	adds r0, r7, r1\n\
-	adds r0, r0, r5\n\
-	ldrb r1, [r0]\n\
-	lsls r0, r1, #1\n\
-	adds r0, r0, r1\n\
-	lsls r3, r0, #3\n\
-	ldr r1, _080283C0 @ =0x020023DC\n\
-	adds r0, r3, r1\n\
-	ldr r4, [r0]\n\
-	mov r0, sl\n\
-	subs r1, r0, r4\n\
-	adds r0, r3, r6\n\
-	mov ip, r0\n\
-	movs r0, #0xec\n\
-	lsls r0, r0, #1\n\
-	add r0, ip\n\
-	ldrh r0, [r0]\n\
-	adds r1, r1, r0\n\
-	lsls r0, r0, #1\n\
-	cmp r1, r0\n\
-	bhs _080283D0\n\
-	ldr r1, _080283C4 @ =0x020023E0\n\
-	adds r0, r3, r1\n\
-	ldr r2, [r0]\n\
-	mov r0, sb\n\
-	subs r1, r0, r2\n\
-	movs r0, #0xed\n\
-	lsls r0, r0, #1\n\
-	add r0, ip\n\
-	ldrh r0, [r0]\n\
-	adds r1, r1, r0\n\
-	lsls r0, r0, #1\n\
-	cmp r1, r0\n\
-	bhs _080283D0\n\
-	ldr r1, _080283C8 @ =gOverworld+484\n\
-	adds r0, r3, r1\n\
-	ldr r0, [r0]\n\
-	cmp r4, r0\n\
-	bne _080283D0\n\
-	ldr r1, _080283CC @ =gOverworld+488\n\
-	adds r0, r3, r1\n\
-	ldr r0, [r0]\n\
-	cmp r2, r0\n\
-	beq _080283D0\n\
-	movs r0, #1\n\
-	b _080283DC\n\
-	.align 2, 0\n\
-_080283BC: .4byte gOverworld\n\
-_080283C0: .4byte gOverworld+0x1DC\n\
-_080283C4: .4byte gOverworld+0x1E0\n\
-_080283C8: .4byte gOverworld+484\n\
-_080283CC: .4byte gOverworld+488\n\
-_080283D0:\n\
-	adds r0, r5, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r5, r0, #0x18\n\
-	cmp r5, r8\n\
-	blo _0802835A\n\
-_080283DA:\n\
-	movs r0, #0\n\
-_080283DC:\n\
-	pop {r3, r4, r5}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	mov sl, r5\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
-}
-
-// ゼロが Hazard の中にいる(めり込んでいる)場合は、そのMetatileAttr、そうでないなら0を返す
-NON_MATCH static metatile_attr_t IsInHazard(struct Zero* z, s32 x, s32 y) {
+// 0x08028338
+NON_MATCH static bool16 hazard_08028338(struct Zero* p, s32 x, s32 y) {
 #if MODERN
   u8 i;
-  for (i = 0; i < z->hazardCount; i++) {
-    struct Hazard* b = HAZARD(z->hazard[i]);
-    const u32 w = (u32)((u16)b->w);
-    if ((u32)(x - (b->start).x) + w < (w << 1)) {
-      const u32 h = (u32)((u16)b->h);
-      if ((u32)(y - (b->start).y) + h < (h << 1)) {
-        return b->attr;
+  for (i = 0; i < p->hazardCount; i++) {
+    const u8 n = p->hazard[i];
+    const s32 cx = (gOverworld.terrain.objects[n].center).x;
+    const u32 ofs_x = (u32)(x - cx);
+    const u32 hw = gOverworld.terrain.objects[n].hw;
+    if ((ofs_x + hw) < (hw << 1)) {  // (x > (cx - hw)) && (x < (cx + hw))
+      const s32 cy = (gOverworld.terrain.objects[n].center).y;
+      const u32 ofs_y = (u32)(y - cy);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((ofs_y + hh) < (hh << 1)) {
+        if (cx == (gOverworld.terrain.objects[n].unk_10).x) {
+          if (cy != (gOverworld.terrain.objects[n].unk_10).y) {  // NOTE: ここは !=
+            return TRUE;
+          }
+        }
+      }
+    }
+  }
+  return FALSE;
+#else
+  INCCODE("asm/wip/hazard_08028338.inc");
+#endif
+}
+
+// 0x080283ec
+// ゼロが Hazard の中にいる(めり込んでいる)場合は、そのMetatileAttr、そうでないなら0を返す
+NON_MATCH static metatile_attr_t IsInHazard(struct Zero* p, s32 x, s32 y) {
+#if MODERN
+  u8 i;
+  for (i = 0; i < p->hazardCount; i++) {
+    u8 n = p->hazard[i];
+    const u32 ofs_x = (u32)(x - (gOverworld.terrain.objects[n].center).x);
+    const u32 hw = gOverworld.terrain.objects[n].hw;
+    if ((ofs_x + hw) < (hw << 1)) {  // (x > (center_x - hw)) && (x < (center_x + hw))
+      const u32 ofs_y = (y - (gOverworld.terrain.objects[n].center).y);
+      const u32 hh = gOverworld.terrain.objects[n].hh;
+      if ((ofs_y + hh) < (hh << 1)) {
+        return gOverworld.terrain.objects[n].attr;
       }
     }
   }
@@ -3429,17 +3362,17 @@ NON_MATCH static bool8 IsAgainstHazard(struct Zero* z, s32 x, s32 y) {
   u8 i;
   for (i = 0; i < z->hazardCount; i++) {
     struct Hazard* b = HAZARD(z->hazard[i]);
-    const u32 w = (u32)((u16)b->w);
-    if ((u32)(x - (b->start).x) + w < (w << 1)) {
-      const u32 h = (u32)((u16)b->h);
-      if ((u32)(y - b->start.y) + h < (h << 1)) {
+    const u32 w = (u32)((u16)b->hw);
+    if ((u32)(x - (b->center).x) + w < (w << 1)) {
+      const u32 h = (u32)((u16)b->hh);
+      if ((u32)(y - b->center.y) + h < (h << 1)) {
         if ((b->attr & 0x880F) == 1) {
           if ((z->s).flags & X_FLIP) {
-            if ((s32)((b->start).x + (w >> 1) - x) < PIXEL(1)) {
+            if ((s32)((b->center).x + (w >> 1) - x) < PIXEL(1)) {
               return TRUE;
             }
           } else {
-            if ((s32)((b->start).x - (w >> 1) - x) > -PIXEL(1)) {
+            if ((s32)((b->center).x - (w >> 1) - x) > -PIXEL(1)) {
               return TRUE;
             }
           }
@@ -3562,7 +3495,7 @@ _0802861C:\n\
 }
 
 // 0x0802862c
-static void appendHazardID(struct Zero* z, u16 id) {
+static void _AppendHazardID(struct Zero* z, u16 id) {
   s32 i;
   for (i = 0; i < ARRAY_COUNT(z->hazardIDs); i++) {
     if (z->hazardIDs[i] == 0xFFFF) {

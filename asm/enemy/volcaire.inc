@@ -27,14 +27,14 @@ _08077318:
 	bl IsFrozen
 	cmp r0, #0
 	beq _0807737E
-	ldr r1, _08077354 @ =0x0836726C
+	ldr r1, _08077354 @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _08077358 @ =0x0836728C
+	ldr r1, _08077358 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -50,8 +50,8 @@ _0807734E:
 	movs r0, #1
 	b _08077380
 	.align 2, 0
-_08077354: .4byte 0x0836726C
-_08077358: .4byte 0x0836728C
+_08077354: .4byte sUpdates1
+_08077358: .4byte sUpdates2
 _0807735C:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -107,7 +107,7 @@ FUN_08077388: @ 0x08077388
 	strb r2, [r4, #0xe]
 	b _080773D0
 _080773BC:
-	ldr r2, _080773D8 @ =0x083673F0
+	ldr r2, _080773D8 @ =sElementCoord
 	movs r0, #0
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -121,7 +121,7 @@ _080773D0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080773D8: .4byte 0x083673F0
+_080773D8: .4byte sElementCoord
 
 	thumb_func_start Volcaire_Init
 Volcaire_Init: @ 0x080773DC
@@ -136,7 +136,7 @@ Volcaire_Init: @ 0x080773DC
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	str r0, [r6, #0x14]
-	ldr r1, _08077430 @ =0x083673F8
+	ldr r1, _08077430 @ =sInitModes
 	ldrb r0, [r6, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -166,7 +166,7 @@ Volcaire_Init: @ 0x080773DC
 	b _080774BC
 	.align 2, 0
 _0807742C: .4byte gEnemyFnTable
-_08077430: .4byte 0x083673F8
+_08077430: .4byte sInitModes
 _08077434:
 	cmp r0, #0
 	blt _080774BC
@@ -210,7 +210,7 @@ _08077434:
 	.align 2, 0
 _08077484: .4byte gSystemSavedataManager
 _08077488: .4byte gCurStory
-_0807748C: .4byte 0x083672B8
+_0807748C: .4byte sCollisions
 _08077490:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -241,7 +241,7 @@ _080774BC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080774C8: .4byte 0x083672B8
+_080774C8: .4byte sCollisions
 _080774CC: .4byte onCollision
 
 	thumb_func_start Volcaire_Update
@@ -325,14 +325,14 @@ _08077554:
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _08077592
-	ldr r1, _08077598 @ =0x0836726C
+	ldr r1, _08077598 @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _0807759C @ =0x0836728C
+	ldr r1, _0807759C @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -344,8 +344,8 @@ _08077592:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08077598: .4byte 0x0836726C
-_0807759C: .4byte 0x0836728C
+_08077598: .4byte sUpdates1
+_0807759C: .4byte sUpdates2
 
 	thumb_func_start Volcaire_Die
 Volcaire_Die: @ 0x080775A0
@@ -389,7 +389,7 @@ Volcaire_Die: @ 0x080775A0
 _080775E8: .4byte gCurStory
 _080775EC: .4byte gEnemyFnTable
 _080775F0:
-	ldr r0, _08077604 @ =0x083672AC
+	ldr r0, _08077604 @ =sDeads
 	ldrb r1, [r3, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r0
@@ -400,7 +400,7 @@ _08077600:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08077604: .4byte 0x083672AC
+_08077604: .4byte sDeads
 
 	thumb_func_start nop_08077608
 nop_08077608: @ 0x08077608
@@ -451,7 +451,7 @@ _08077642:
 	bl SetDDP
 	b _08077666
 	.align 2, 0
-_08077658: .4byte 0x083672D0
+_08077658: .4byte sCollisions+(1*24)
 _0807765C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -471,7 +471,7 @@ _08077666:
 	strb r0, [r4, #0xe]
 	b _0807768A
 	.align 2, 0
-_08077680: .4byte 0x08367360
+_08077680: .4byte sCollisions+(7*24)
 _08077684:
 	movs r0, #3
 	strb r0, [r4, #0xd]
@@ -519,7 +519,7 @@ _080776BC:
 	bl SetMotion
 	b _080776F2
 	.align 2, 0
-_080776D8: .4byte 0x083672E8
+_080776D8: .4byte sCollisions+(2*24)
 _080776DC:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -578,7 +578,7 @@ _08077716:
 	str r0, [r4, #0x58]
 	b _080777B8
 	.align 2, 0
-_08077750: .4byte 0x08367378
+_08077750: .4byte sCollisions+(8*24)
 _08077754: .4byte 0x00002E05
 _08077758:
 	ldr r0, _080777C4 @ =gStageRun+232
@@ -752,7 +752,7 @@ _08077886:
 	bl UpdateMotionGraphic
 	b _08077902
 	.align 2, 0
-_08077890: .4byte 0x083672D0
+_08077890: .4byte sCollisions+(1*24)
 _08077894: .4byte 0xFFFFF800
 _08077898:
 	ldr r1, _08077908 @ =0x00002E01
@@ -851,7 +851,7 @@ _08077944:
 	b _0807797A
 	.align 2, 0
 _08077960: .4byte 0x00002E02
-_08077964: .4byte 0x08367300
+_08077964: .4byte sCollisions+(3*24)
 _08077968:
 	ldr r1, _0807799C @ =0x00002E03
 	adds r0, r4, #0
@@ -880,7 +880,7 @@ _08077990:
 	b _080779F8
 	.align 2, 0
 _0807799C: .4byte 0x00002E03
-_080779A0: .4byte 0x08367330
+_080779A0: .4byte sCollisions+(5*24)
 _080779A4: .4byte 0xFFFFC000
 _080779A8:
 	movs r0, #8
@@ -900,7 +900,7 @@ _080779A8:
 	orrs r0, r1
 	b _080779DA
 	.align 2, 0
-_080779CC: .4byte 0x08367360
+_080779CC: .4byte sCollisions+(7*24)
 _080779D0: .4byte 0x00002E04
 _080779D4:
 	ldrb r1, [r4, #0xa]
@@ -1143,7 +1143,7 @@ _08077B78:
 	strb r1, [r4, #0xe]
 	b _08077C3A
 	.align 2, 0
-_08077BA0: .4byte 0x08367390
+_08077BA0: .4byte sCollisions+(9*24)
 _08077BA4: .4byte 0x00002E06
 _08077BA8: .4byte 0xFFFFFE80
 _08077BAC:
@@ -1452,7 +1452,7 @@ _08077DE0:
 	bl SetMotion
 	b _08077E16
 	.align 2, 0
-_08077DFC: .4byte 0x083673C0
+_08077DFC: .4byte sCollisions+(11*24)
 _08077E00:
 	adds r0, r5, #0
 	adds r0, #0x74
@@ -1510,7 +1510,7 @@ _08077E16:
 	str r1, [r5, #0x60]
 	b _08077E90
 	.align 2, 0
-_08077E78: .4byte 0x083673D8
+_08077E78: .4byte sCollisions+(12*24)
 _08077E7C: .4byte 0x00002E05
 _08077E80: .4byte pZero2
 _08077E84: .4byte 0xFFFFE800
@@ -1614,7 +1614,7 @@ MaybeKillVolcaire: @ 0x08077F0C
 	bl CreateSmoke
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _08077F94 @ =0x083673FC
+	ldr r2, _08077F94 @ =sMotions
 	adds r0, r4, #0
 	mov r1, sp
 	movs r3, #3
@@ -1650,7 +1650,7 @@ _08077F6C:
 	bx r0
 	.align 2, 0
 _08077F90: .4byte 0xFFFFF000
-_08077F94: .4byte 0x083673FC
+_08077F94: .4byte sMotions
 _08077F98: .4byte gMission
 _08077F9C: .4byte 0x0000270E
 _08077FA0: .4byte gEnemyFnTable
@@ -1800,4 +1800,5 @@ _080780B4:
 	bx r0
 	.align 2, 0
 _080780BC: .4byte 0x00002E07
-_080780C0: .4byte 0x08367402
+_080780C0: .4byte sMotions+(2*3)
+

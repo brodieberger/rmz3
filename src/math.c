@@ -74,15 +74,10 @@ _080E9678:\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
 NAKED static void unused_080e9680(void* param_1, void* param_2, void* param_3, void* param_4, void* param_5, void* param_6) { INCCODE("asm/unused/unused_080e9680.inc"); }
-#endif
 
-#if MODERN == 0
 NAKED static void unused_080e9698(void* param_1, void* param_2, u32 param_3, u32 param_4) { INCCODE("asm/unused/unused_080e9698.inc"); }
-#endif
 
-#if MODERN == 0
 static s32 unused_080e96c8(s32 a, s32 b) {
   register s32 c asm("r2") = 0x100 - a;
   b += c;
@@ -91,4 +86,3 @@ static s32 unused_080e96c8(s32 a, s32 b) {
   c -= 0x80;
   return c;
 }
-#endif

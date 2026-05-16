@@ -15,7 +15,7 @@ const ProjectileRoutine gBlazinTailRoutine = {
     [ENTITY_INIT] =      BlazinTail_Init,
     [ENTITY_UPDATE] =    BlazinTail_Update,
     [ENTITY_DIE] =       BlazinTail_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

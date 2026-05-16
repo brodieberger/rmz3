@@ -1,6 +1,13 @@
 #include "sound.h"
 
+#include "gba/m4a.h"
 #include "global.h"
+#include "sound_wave.h"
+
+extern SoundID SoundID1;
+extern SoundID SoundID2;
+extern u32 gSongCount;
+extern struct MusicPlayerTrack gMPlayTracks[21];
 
 EWRAM_DATA struct SoundInfo gSoundInfo = {};
 EWRAM_DATA MPlayFunc gMPlayJumpTable[36] = {};
@@ -28,7 +35,7 @@ EWRAM_DATA struct MusicPlayerInfo gMPlayInfo_14 = {};
 NON_MATCH void InitSound(void) {
 #if MODERN
   m4aSoundInit();
-  gSongCount = ARRAY_COUNT(gSongTable);
+  gSongCount = SONG_COUNT;
   SoundID1 = MUS_DUMMY;
   SoundID2 = MUS_DUMMY;
 #else
@@ -84,12 +91,12 @@ NON_MATCH void TurnUpBGM(void) {
 #endif
 }
 
-void playBGM(SoundID n) {
+void PlayBGM(SoundID n) {
   m4aSongNumStart(n);
   return;
 }
 
-void fadeoutBGM(SoundID n) {
+void FadeOutBGM(SoundID n) {
   bool32 playing = _isSoundPlaying(n);
   if (playing) {
     m4aMPlayFadeOut(gMPlayTable[gSongTable[n].ms].info, 6);
@@ -133,7 +140,7 @@ void StopSound(s16 n) {
   }
 }
 
-NAKED void fadeoutSound(s16 r0, u16 r1) {
+NAKED void FadeOutSound(s16 r0, u16 r1) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	lsls r4, r1, #0x10\n\

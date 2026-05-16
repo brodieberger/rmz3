@@ -1,4 +1,5 @@
 #include "boss.h"
+#include "boss/omega1.h"
 #include "collision.h"
 #include "global.h"
 
@@ -129,22 +130,22 @@ u16 FUN_0805b8ac(struct Boss* _, u32 old) {
 // 0x0805b8e0
 static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
   {
-    struct Boss* self = (struct Boss*)body->parent;
-    struct Entity* fx = (struct Entity*)(self->s).unk_2c;
+    struct Boss* p = (struct Boss*)body->parent;
+    struct Entity* fx = (struct Entity*)(p->s).unk_2c;
     if (fx != NULL) {
       if (fx->mode[0] >= ENTITY_DIE) {
-        (self->s).unk_2c = NULL;
+        (p->s).unk_2c = NULL;
       } else {
         fx->flags &= ~DISPLAY;
       }
     }
   }
   {
-    struct Boss* self = (struct Boss*)body->parent;
-    struct Entity* fx = (self->props).omegaWhite.unk_bc;
+    struct Omega1* p = (struct Omega1*)body->parent;
+    struct Entity* fx = p->unk_bc;
     if (fx != NULL) {
       if (fx->mode[0] >= ENTITY_DIE) {
-        (self->props).omegaWhite.unk_bc = NULL;
+        p->unk_bc = NULL;
       } else {
         fx->flags &= ~DISPLAY;
       }
@@ -154,9 +155,9 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 
 // 0x0805B924
 // オメガが縦にふわふわする処理
-static void floatGoldOmega1(struct Boss* p) {
-  u16 val = ((p->props.omegaWhite).unk_c0 + 1) & 0xFF;
-  (p->props.omegaWhite).unk_c0 = val;
+static void floatGoldOmega1(struct Omega1* p) {
+  u16 val = (p->unk_c0 + 1) & 0xFF;
+  p->unk_c0 = val;
   (p->s).coord.y = (p->s).unk_coord.y + (gSineTable[val] << 3);
 }
 

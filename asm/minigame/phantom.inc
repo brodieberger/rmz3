@@ -102,7 +102,7 @@ _080FBED2:
 	movs r2, #1
 	movs r3, #0xa0
 	lsls r3, r3, #2
-	bl createPhantomIcon
+	bl CreatePhantomIcon
 	adds r1, r7, #0
 	adds r1, #0xa4
 	adds r1, r1, r4
@@ -269,7 +269,7 @@ _080FBED2:
 	movs r3, #0
 	bl FUN_080d91b4
 	movs r0, #0xa8
-	bl playBGM
+	bl PlayBGM
 	pop {r3, r4, r5}
 	mov r8, r3
 	mov sb, r4
@@ -712,7 +712,7 @@ _080FC3B4: @ jump table
 	.4byte _080FC412 @ case 5
 _080FC3CC:
 	movs r0, #0xa8
-	bl fadeoutBGM
+	bl FadeOutBGM
 	movs r0, #0x3c
 	str r0, [r4, #0x40]
 	ldrb r0, [r4, #1]

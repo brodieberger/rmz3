@@ -65,13 +65,10 @@ static void _VFX35_Update(struct Entity* p) {
     case 0: {
       s32 dy;
       p->palID = p->work[2];
-
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->d).x = ((RNG_0202f388 >> 16) & 0x3FF) - PIXEL(2);
+      (p->d).x = (RANDOM(RNG_0202f388) & 0x3FF) - PIXEL(2);
 
       (p->d).y = -PIXEL(1);
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->d).y -= ((RNG_0202f388 >> 16) & 0x1FF);
+      (p->d).y -= (RANDOM(RNG_0202f388) & 0x1FF);
 
       SetMotion(p, MOTION(SM044_WORMER_ROCK_DRONE, 0));
       p->mode[2]++;

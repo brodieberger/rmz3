@@ -13,7 +13,7 @@ const ProjectileRoutine gCubitProjectileRoutine = {
     [ENTITY_INIT] =      CubitProjectile_Init,
     [ENTITY_UPDATE] =    CubitProjectile_Update,
     [ENTITY_DIE] =       CubitProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
@@ -47,6 +47,7 @@ static const ProjectileFunc* const sUpdates[4] = {
 
 // --------------------------------------------
 
+// 0x0836BBA4
 static const struct Collision sCollisions[16] = {
     {
       kind : DDP,
@@ -220,6 +221,7 @@ static const struct Collision sCollisions[16] = {
 };
 
 // clang-format off
+// 0x0836bd24
 static const struct Coord sCoords[30] = {
     {PIXEL(0), PIXEL(0)},
     {-PIXEL(13), -PIXEL(9)},

@@ -2,7 +2,7 @@
 #include "global.h"
 #include "text.h"
 
-void OverworldLoop_080f1fe4(struct GameState *g) {
+void OverworldLoop_080f1fe4(struct GameState* g) {
   switch (g->mode[3]) {
     default: {
       OverworldLoop_ManageSaveData(g);
@@ -10,7 +10,7 @@ void OverworldLoop_080f1fe4(struct GameState *g) {
     }
 
     case 0: {
-      PrintOptionMessage2(0x1301);
+      PrintOptionMessage2(0x1301);  // シミュレーションのケッカが出るまでまだ時間がかかるみたい…
       g->mode[3]++;
       FALLTHROUGH;
     }
@@ -18,7 +18,7 @@ void OverworldLoop_080f1fe4(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage1(0x1302);
+      PrintOptionMessage1(0x1302);  // 今までのことをキロクしておくわね… はい/いいえ
       g->mode[3]++;
       FALLTHROUGH;
     }
@@ -61,7 +61,7 @@ void OverworldLoop_080f1fe4(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage2(0x1303);
+      PrintOptionMessage2(0x1303);  // データのカンリは、いつものようにわたしがするわね
       g->mode[3] = 3;
       break;
     }
@@ -70,7 +70,7 @@ void OverworldLoop_080f1fe4(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage2(0x1304);
+      PrintOptionMessage2(0x1304);  // やすまなくてヘイキ？ 無理はしないでね
       g->mode[3] = 3;
       break;
     }

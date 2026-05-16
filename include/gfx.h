@@ -119,6 +119,11 @@ struct ColorGraphic {
   struct Palette pal;
 };
 
+struct ColorGraphicV2 {
+  struct GraphicV2 g;
+  struct Palette pal;
+};
+
 // --------------------------------------------
 
 /*

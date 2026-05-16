@@ -1,5 +1,6 @@
 #include "cyberelf.h"
 #include "global.h"
+#include "spawn.h"
 
 struct Zero;
 
@@ -23,7 +24,7 @@ const ElfRoutine gElf6Routine = {
     [ENTITY_INIT] =      Elf6_Init,
     [ENTITY_UPDATE] =    Elf6_Update,
     [ENTITY_DIE] =       Elf6_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
 // clang-format on

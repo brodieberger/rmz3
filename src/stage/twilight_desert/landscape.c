@@ -83,7 +83,7 @@ static void LayerUpdate_TwilightDesert_5(struct StageLayer* l, const struct Stag
     const u16 n = l->bgIdx;
     (l->scrollPower).x = 0xE0;
     (l->scroll).x = 0x3C0;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     l->phase++;
   }
 }

@@ -57,7 +57,7 @@ extern const SolidRoutine gMainNPCRoutine;
 extern const SolidRoutine gCyberSpaceDoorRoutine;
 extern const SolidRoutine gLightSwitchRoutine;
 extern const SolidRoutine gSolid33Routine;
-extern const SolidRoutine gSolid34Routine;
+extern const SolidRoutine gToggleSwitchRedRoutine;
 extern const SolidRoutine gContainerRoutine;
 extern const SolidRoutine gSolid36Routine;
 extern const SolidRoutine gSolid37Routine;
@@ -75,7 +75,7 @@ extern const SolidRoutine gCielComputerRoutine;
 extern const SolidRoutine gGraffitiRoutine;
 extern const SolidRoutine gStructuralSteelRoutine;
 extern const SolidRoutine gModElfRoutine;
-extern const SolidRoutine gSolid52Routine;
+extern const SolidRoutine gToggleSwitchYellowRoutine;
 extern const SolidRoutine gOceanRodWallRoutine;
 extern const SolidRoutine gSeaLevelButtonRoutine;
 extern const SolidRoutine gChildreShipRoutine;
@@ -99,7 +99,7 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_LOCOMOIF_PLATFORM] =      &gLocomoIFPlatformRoutine,
     [SOLID_GLACIERLE_ARM] =          &gGlacierleArmRoutine,
     [SOLID_UNK_016] =                &gSolid16Routine,
-    [SOLID_SUBARCADIA_PLATFORM] =    &gSubArcadiaPlatformRoutine,
+    [SOLID_PLATFORM_SUBARCADIA] =    &gSubArcadiaPlatformRoutine,
     [SOLID_SNOWBOARD] =              &gSnowboardRoutine,
     [SOLID_BASE_ELEVATOR] =          &gBaseElevatorRoutine,
     [SOLID_DOOR_2D_GRAY_V] =         &gDoor2DGrayVRoutine,
@@ -115,10 +115,10 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_MAIN_NPC] =               &gMainNPCRoutine,
     [SOLID_CYBERSPACE_DOOR] =        &gCyberSpaceDoorRoutine,
     [SOLID_LIGHT_SWITCH] =           &gLightSwitchRoutine,
-    [SOLID_UNK_033] =                &gSolid33Routine,
-    [SOLID_UNK_034] =                &gSolid34Routine,
+    [SOLID_PLATFORM_WEILLABO] =      &gSolid33Routine,
+    [SOLID_TOGGLE_SWITCH_RED] =      &gToggleSwitchRedRoutine,
     [SOLID_CONTAINER] =              &gContainerRoutine,
-    [SOLID_UNK_036] =                &gSolid36Routine,
+    [SOLID_PLATFORM_MISSILE] =       &gSolid36Routine,
     [SOLID_UNK_037] =                &gSolid37Routine,
     [SOLID_SEAGULLS] =               &gSeagullsRoutine,
     [SOLID_CAT] =                    &gCatRoutine,
@@ -134,7 +134,7 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_GRAFFITI] =               &gGraffitiRoutine,
     [SOLID_STRUCTURAL_STEEL] =       &gStructuralSteelRoutine,
     [SOLID_MOD_ELF] =                &gModElfRoutine,
-    [SOLID_UNK_052] =                &gSolid52Routine,
+    [SOLID_TOGGLE_SWITCH_YELLOW] =   &gToggleSwitchYellowRoutine,
     [SOLID_OCEAN_ROD_WALL] =         &gOceanRodWallRoutine,
     [SOLID_SEA_LV_BTN] =             &gSeaLevelButtonRoutine,
     [SOLID_CHILDRE_SHIP] =           &gChildreShipRoutine,

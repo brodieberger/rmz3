@@ -70,13 +70,13 @@ void InitBossHeader(struct EntityHeader* h, struct Boss* p, s16 len) {
   gBossHeaderPtr = h;
 }
 
-void DeleteBoss(struct Boss* p) {
-  (p->s).flags &= ~DISPLAY;
+void DeleteBoss(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_BOSS_ROUTINE(p, ENTITY_EXIT);
 }
 
-static struct Weapon* unused_0803d120(struct Entity* p) {
-  struct Weapon* w = (struct Weapon*)GetNearestEntity(gWeaponHeaderPtr, &p->coord);
+static struct Entity* unused_0803d120(struct Entity* p) {
+  struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w == NULL) return NULL;
   return w;
 }

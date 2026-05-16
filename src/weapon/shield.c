@@ -7,8 +7,6 @@
 #include "weapon.h"
 #include "zero.h"
 
-#define PROP (w->props.common)
-
 static const u8 sElements[4];
 static const motion_t gShieldGuardMotions[5];
 static const struct Collision sShieldGuardCollisions[2][5];
@@ -17,80 +15,74 @@ static const s16 sCoords[11][2];
 static void onCollision(struct Body* body, struct Coord* r1, struct Coord* r2);
 static void ShieldGuard_Update(struct Weapon* w);
 
-void MenuExit_ShieldGuard(struct Weapon* w) {
-  if (((PROP).z)->unk_136 & (1 << 3)) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+void MenuExit_ShieldGuard(struct WeaponCommon* p) {
+  if (((p->props).z)->unk_136 & (1 << 3)) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
   }
 }
 
-struct Weapon* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
-  struct Weapon* w;
-  struct WeaponProps* b4;
+struct Entity* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
+  struct WeaponCommon* p;
   u8 element;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
+  p = (struct WeaponCommon*)AllocEntityFirst(gWeaponHeaderPtr);
+  if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SHIELD) {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SHIELD_GUARD);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = gWeaponPalIDs[0];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_GUARD);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(0, element);
     } else {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SHIELD_GUARD);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = gWeaponPalIDs[1];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_GUARD);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
     }
-    b4 = (struct WeaponProps*)(&PROP);
-    b4->z = z;
-    (w->s).work[0] = n;
-    (w->s).work[1] = 0;
+    (p->props).z = z;
+    (p->s).work[0] = n, (p->s).work[1] = 0;
   }
-  return w;
+  return (void*)p;
 }
 
-static void ShieldGuard_Init(struct Weapon* w) {
-  struct WeaponProps* b4 = &(PROP);
-  struct Zero* z = b4->z;
-  SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, gShieldGuardMotions[(w->s).work[0]]);
+static void ShieldGuard_Init(struct WeaponCommon* p) {
+  struct Zero* z = (p->props).z;
+  SET_WEAPON_ROUTINE(p, ENTITY_UPDATE);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetMotion(&p->s, gShieldGuardMotions[(p->s).work[0]]);
 
   if (isElfUsed_2(z, ELF_ENETHAS)) {
-    (b4->props)[1][0] = 1;
+    ((&p->props)->props)[1][0] = 1;
   } else {
-    (b4->props)[1][0] = 0;
+    ((&p->props)->props)[1][0] = 0;
   }
 
-  ((&PROP)->props)[1][1] = 0;
-  ((&PROP)->props)[1][2] = 0;
-  INIT_BODY(w, &sShieldGuardCollisions[((&PROP)->props)[1][0]][(w->s).work[0]], 1, onCollision);
-  ShieldGuard_Update(w);
+  ((&p->props)->props)[1][1] = 0;
+  ((&p->props)->props)[1][2] = 0;
+  INIT_BODY(p, &sShieldGuardCollisions[((&p->props)->props)[1][0]][(p->s).work[0]], 1, onCollision);
+  ShieldGuard_Update((void*)p);
 }
 
-static void FUN_08039358(struct Weapon* w);
-static void FUN_08039368(struct Weapon* w);
+static void FUN_08039358(struct WeaponCommon* p);
+static void FUN_08039368(struct WeaponCommon* p);
 
 // clang-format off
 static const WeaponFunc sUpdates[5] = {
-    FUN_08039358,
-    FUN_08039368,
-    FUN_08039358,
-    FUN_08039358,
-    FUN_08039358,
+    (void*)FUN_08039358,
+    (void*)FUN_08039368,
+    (void*)FUN_08039358,
+    (void*)FUN_08039358,
+    (void*)FUN_08039358,
 };
 // clang-format on
 
@@ -387,31 +379,29 @@ static void ShieldGuard_Die(struct Weapon* w) {
 
 static void onCollision(struct Body* body, struct Coord* c1 UNUSED, struct Coord* c2 UNUSED) {
   if (body->hitboxFlags & BODY_STATUS_B6) {
-    struct Entity* enemy;
-    if ((enemy = (struct Entity*)body->enemy->parent, enemy->kind == ENTITY_PROJECTILE) && (enemy->id == PROJECTILE_LEMON)) {
-      struct WeaponProps* b4;
-      struct Weapon* shield = (struct Weapon*)body->parent;
-      (shield->s).unk_coord = enemy->coord;
-      b4 = &shield->props.common;
-      b4->props[1][1]++;
+    struct Entity* q;
+    if ((q = (struct Entity*)body->enemy->parent, q->kind == ENTITY_PROJECTILE) && (q->id == PROJECTILE_LEMON)) {
+      struct WeaponCommon* p = (struct WeaponCommon*)body->parent;
+      (p->s).unk_coord = q->coord;
+      (&p->props)->props[1][1]++;
     }
   }
 }
 
-static void FUN_08039358(struct Weapon* w) {
-  struct Zero* z = PROP.z;
-  (w->s).coord.x = (z->s).coord.x;
-  (w->s).coord.y = (z->s).coord.y;
+static void FUN_08039358(struct WeaponCommon* p) {
+  struct Zero* z = (p->props).z;
+  (p->s).coord.x = (z->s).coord.x;
+  (p->s).coord.y = (z->s).coord.y;
 }
 
-static void FUN_08039368(struct Weapon* w) {
-  struct Zero* z = PROP.z;
-  if ((w->s).flags & X_FLIP) {
-    (w->s).coord.x = (z->s).coord.x + sCoords[(z->s).motion.cmdIdx][0];
+static void FUN_08039368(struct WeaponCommon* p) {
+  struct Zero* z = (p->props).z;
+  if ((p->s).flags & X_FLIP) {
+    (p->s).coord.x = (z->s).coord.x + sCoords[(z->s).motion.cmdIdx][0];
   } else {
-    (w->s).coord.x = (z->s).coord.x - sCoords[(z->s).motion.cmdIdx][0];
+    (p->s).coord.x = (z->s).coord.x - sCoords[(z->s).motion.cmdIdx][0];
   }
-  (w->s).coord.y = (z->s).coord.y + sCoords[(z->s).motion.cmdIdx][1];
+  (p->s).coord.y = (z->s).coord.y + sCoords[(z->s).motion.cmdIdx][1];
 }
 
 // --------------------------------------------
@@ -568,12 +558,10 @@ static const s16 sCoords[11][2] = {
 
 // clang-format off
 const WeaponRoutine gShieldGuardRoutine = {
-    [ENTITY_INIT] =      ShieldGuard_Init,
-    [ENTITY_UPDATE] =    ShieldGuard_Update,
-    [ENTITY_DIE] =       ShieldGuard_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)ShieldGuard_Init,
+    [ENTITY_UPDATE] =    (void*)ShieldGuard_Update,
+    [ENTITY_DIE] =       (void*)ShieldGuard_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
-
-#undef PROP

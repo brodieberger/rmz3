@@ -4,105 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080a83e4
-FUN_080a83e4: @ 0x080A83E4
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	lsls r2, r2, #0x18
-	lsrs r5, r2, #0x18
-	ldr r0, _080A8434 @ =gProjectileHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080A842C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #8
-	strb r0, [r1]
-	ldr r1, _080A8438 @ =gProjectileFnTable
-	movs r0, #0x19
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x64]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r6, [r3, #0x10]
-	strb r5, [r3, #0x11]
-	str r4, [r3, #0x28]
-	ldr r0, [r4, #0x54]
-	ldr r1, [r4, #0x58]
-	str r0, [r3, #0x54]
-	str r1, [r3, #0x58]
-_080A842C:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080A8434: .4byte gProjectileHeaderPtr
-_080A8438: .4byte gProjectileFnTable
-
-	thumb_func_start Projectile25_Init
-Projectile25_Init: @ 0x080A843C
-	push {lr}
-	ldr r2, _080A8450 @ =0x0836BF68
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080A8450: .4byte 0x0836BF68
-
-	thumb_func_start Projectile25_Update
-Projectile25_Update: @ 0x080A8454
-	push {r4, lr}
-	adds r4, r0, #0
-	bl UpdateMotionGraphic
-	ldr r0, [r4, #0x54]
-	ldr r1, [r4, #0x5c]
-	adds r0, r0, r1
-	str r0, [r4, #0x54]
-	ldr r1, [r4, #0x58]
-	ldr r2, [r4, #0x60]
-	adds r1, r1, r2
-	str r1, [r4, #0x58]
-	bl FUN_080098a4
-	lsls r0, r0, #0x10
-	cmp r0, #0
-	beq _080A8488
-	ldr r1, _080A8490 @ =gProjectileFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #2
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #8]
-	str r0, [r4, #0x14]
-_080A8488:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080A8490: .4byte gProjectileFnTable
-
-	thumb_func_start Projectile25_Die
-Projectile25_Die:
-	.byte 0x02, 0x1C, 0x8C, 0x30, 0x00, 0x21, 0x01, 0x60, 0x04, 0x30, 0x01, 0x60
-	.byte 0x04, 0x30, 0x01, 0x70, 0x91, 0x7A, 0xFB, 0x20, 0x08, 0x40, 0x90, 0x72, 0x04, 0x49, 0x50, 0x7A
-	.byte 0x80, 0x00, 0x40, 0x18, 0x04, 0x21, 0xD1, 0x60, 0x00, 0x68, 0x00, 0x69, 0x50, 0x61, 0x70, 0x47
-	.byte 0x0C, 0xA9, 0x36, 0x08
-
 	thumb_func_start FUN_080a84c4
 FUN_080a84c4: @ 0x080A84C4
 	push {r4, r5, r6, r7, lr}
@@ -193,7 +94,7 @@ _080A8556:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080A859C @ =0x0836BF78
+	ldr r1, _080A859C @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -210,7 +111,7 @@ _080A8556:
 _080A8590: .4byte 0xFFFFF000
 _080A8594: .4byte 0xFFFFFC00
 _080A8598: .4byte 0xFFFFE800
-_080A859C: .4byte 0x0836BF78
+_080A859C: .4byte sCollisions
 
 	thumb_func_start FUN_080a85a0
 FUN_080a85a0: @ 0x080A85A0
@@ -321,7 +222,7 @@ _080A863A:
 _080A8674: .4byte 0xFFFFF000
 _080A8678: .4byte 0xFFFFFC00
 _080A867C: .4byte 0xFFFFE800
-_080A8680: .4byte 0x0836BFA8
+_080A8680: .4byte sCollisions+(2*24)
 
 	thumb_func_start FUN_080a8684
 FUN_080a8684: @ 0x080A8684
@@ -454,7 +355,7 @@ _080A873E:
 _080A8784: .4byte 0xFFFFF000
 _080A8788: .4byte gSineTable
 _080A878C: .4byte 0xFFFFEE00
-_080A8790: .4byte 0x0836BFD8
+_080A8790: .4byte sCollisions+(4*24)
 
 	thumb_func_start FUN_080a8794
 FUN_080a8794: @ 0x080A8794
@@ -587,4 +488,4 @@ _080A884E:
 _080A8894: .4byte 0xFFFFF000
 _080A8898: .4byte gSineTable
 _080A889C: .4byte 0xFFFFEE00
-_080A88A0: .4byte 0x0836BFA8
+_080A88A0: .4byte sCollisions+(2*24)

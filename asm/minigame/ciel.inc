@@ -568,7 +568,7 @@ _080F9D5C: @ jump table
 _080F9D74:
 	movs r0, #0x9b
 	lsls r0, r0, #1
-	bl playBGM
+	bl PlayBGM
 	ldr r0, _080F9D90 @ =0x00000DCC
 	adds r2, r6, r0
 	ldr r3, _080F9D94 @ =0x00000E15
@@ -642,7 +642,7 @@ _080F9DF8:
 	bl CreateMissionAlert
 	movs r0, #0x9b
 	lsls r0, r0, #1
-	bl fadeoutBGM
+	bl FadeOutBGM
 	ldr r2, _080F9E2C @ =0x00000E15
 	adds r1, r6, r2
 	movs r0, #0

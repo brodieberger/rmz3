@@ -81,8 +81,7 @@ static void updateResistanceBase(struct Coord* c) {
     if (((c->y < PIXEL(800)) && (PIXEL(480) <= c->x)) && (c->x <= PIXEL(2160))) {
       if ((gOverworld.work.resistanceBase.unk_002 & 0xF) == 0) {
         struct Coord c;
-        RNG_0202f388 = LCG(RNG_0202f388);
-        c.x = PIXEL((RNG_0202f388 >> 16) % 960) + PIXEL(1200);
+        c.x = PIXEL(RANDOM(RNG_0202f388) % 960) + PIXEL(1200);
         c.y = PIXEL(160);
         CreateSnow(&c, 0x380);
       }
@@ -90,16 +89,14 @@ static void updateResistanceBase(struct Coord* c) {
     } else if (c->y < PIXEL(1120)) {
       if ((gOverworld.work.resistanceBase.unk_002 & 0x3F) == 0) {
         struct Coord c;
-        RNG_0202f388 = LCG(RNG_0202f388);
-        c.x = PIXEL((RNG_0202f388 >> 16) % 240) + PIXEL(720);
+        c.x = PIXEL(RANDOM(RNG_0202f388) % 240) + PIXEL(720);
         c.y = PIXEL(800);
         CreateSnow(&c, 0x140);
       }
 
     } else if ((gOverworld.work.resistanceBase.unk_002 & 0x1F) == 0) {
       struct Coord c;
-      RNG_0202f388 = LCG(RNG_0202f388);
-      c.x = PIXEL((RNG_0202f388 >> 16) % 480) + PIXEL(2160);
+      c.x = PIXEL(RANDOM(RNG_0202f388) % 480) + PIXEL(2160);
       c.y = PIXEL(1280);
       CreateSnow(&c, 0x140);
     }
@@ -393,7 +390,7 @@ void rbase_0801660c(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
 static void rbase_0801666c(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
-    BGCNT16(l->bgIdx >> 4) = (BGCNT16(l->bgIdx >> 4) & 0xFFFC) | 3;
+    BGCNT16(l->bgIdx >> 4) = (BGCNT16(l->bgIdx >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     (l->prevViewportCenterPixel).y = 0;
     (l->prevViewportCenterPixel).x = 0;
     (l->scrollPower).x = 0x20;

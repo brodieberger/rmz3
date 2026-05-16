@@ -9,11 +9,11 @@ void SeaOtterElf_Die(struct Elf* p);
 
 // clang-format off
 const ElfRoutine gSeaOtterElfRoutine = {
-    [ENTITY_INIT] =      (ElfFunc)SeaOtterElf_Init,
-    [ENTITY_UPDATE] =    (ElfFunc)SeaOtterElf_Update,
-    [ENTITY_DIE] =       (ElfFunc)SeaOtterElf_Die,
-    [ENTITY_DISAPPEAR] = (ElfFunc)DeleteElf,
-    [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)SeaOtterElf_Init,
+    [ENTITY_UPDATE] =    (void*)SeaOtterElf_Update,
+    [ENTITY_DIE] =       (void*)SeaOtterElf_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 

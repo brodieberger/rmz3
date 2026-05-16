@@ -1,6 +1,6 @@
 #include "gfx.h"
 #include "global.h"
-#include "task.h"
+#include "renderer.h"
 #include "vfx.h"
 
 // Z x (残機数) の表示
@@ -22,15 +22,14 @@ const VFXRoutine gExlifeIndicatorRoutine = {
 // clang-format on
 
 struct VFX* CreateExlifeIndicator(u8 extraLife) {
-  struct VFX* vfx = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (vfx != NULL) {
-    (vfx->s).taskCol = 1;
-    INIT_VFX_ROUTINE(vfx, VFX_EXLIFE_INDICATOR);
-    (vfx->s).tileNum = 0;
-    (vfx->s).palID = 0;
-    (vfx->s).work[0] = extraLife;
+  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_EXLIFE_INDICATOR);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).work[0] = extraLife;
   }
-  return vfx;
+  return p;
 }
 
 static void ExlifeIndicator_Init(struct Entity* p) {

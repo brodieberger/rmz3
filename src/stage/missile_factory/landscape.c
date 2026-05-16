@@ -303,7 +303,7 @@ static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
 static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->prio | l->screenBase | 0x4044;
+    BGCNT16(n >> 4) = l->prio | l->screenBase | (BGCNT_CHARBASE(1) | BGCNT_MOSAIC | BGCNT_AFF256x256);
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
     CpuFastCopy(BGMAP(81), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
     CpuFastCopy(BGMAP(82), (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4)), 2048);

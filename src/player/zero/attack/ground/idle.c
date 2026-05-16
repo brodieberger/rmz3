@@ -18,11 +18,11 @@ void ZeroAttackGround_Idle(struct Zero* z) {
       nop_0802d094,
       zeroAttack,
   };
-  (gZeroAttackRoutine[(z->unk_b4).attackMode[0]])(z);
+  (gZeroAttackRoutine[(z->unk_b4).attackState8[0]])(z);
 }
 
 static void zeroTryAttack(struct Zero* z) {
-  (z->unk_b4).attackMode[0] = 1;
+  (z->unk_b4).attackState8[0] = 1;
   _zeroTryAttack(z);
 }
 
@@ -37,8 +37,8 @@ NON_MATCH static void _zeroTryAttack(struct Zero* z) {
     }
     z->usingWeapon = z->forceWeapon;
   }
-  (z->unk_b4).attackMode[0] = 3;
-  (z->unk_b4).attackMode[1] = 0;
+  (z->unk_b4).attackState8[0] = 3;
+  (z->unk_b4).attackState8[1] = 0;
   zeroAttack(z);
 #else
   INCCODE("asm/wip/TryAttackGroundIdle.inc");
@@ -73,14 +73,14 @@ static void onBuster(struct Zero* z) {
       buster_2,
       buster_3,
   };
-  (seq[(z->unk_b4).attackMode[1]])(z);
+  (seq[(z->unk_b4).attackState8[1]])(z);
   return;
 }
 
 static void buster_0(struct Zero* z) {
   struct Weapon* w = CreateBuster(z, -PIXEL(30), -PIXEL(21), ((z->s).flags >> 4) & 1);
   if (w == NULL) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
   } else {
     if ((z->unk_b4).prevMode == 1) {
       SetMotion(&z->s, MOTION(DM011_ZERO_BUSTER_AIR, 0x03));
@@ -89,7 +89,7 @@ static void buster_0(struct Zero* z) {
       SetMotion(&z->s, MOTION(DM008_ZERO_BUSTER, 0x01));
     }
 
-    (z->unk_b4).attackMode[1] = 1;
+    (z->unk_b4).attackState8[1] = 1;
     buster_1(z);
   }
 }
@@ -98,7 +98,7 @@ static void buster_1(struct Zero* z) {
   motion_t m;
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((b4->status).mainWeapon == WEAPON_BUSTER) {
+  if ((b4->status).weapons[0] == WEAPON_BUSTER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
@@ -109,7 +109,7 @@ static void buster_1(struct Zero* z) {
     z->atkCooltime--;
 
     if (z->atkCooltime == 0xFF) {
-      (z->unk_b4).attackMode[1] = 2;
+      (z->unk_b4).attackState8[1] = 2;
       z->atkCooltime = 4;
       GotoMotion(&z->s, MOTION(DM008_ZERO_BUSTER, 0x01), 1, 4);
     }
@@ -123,7 +123,7 @@ static void buster_1(struct Zero* z) {
     z->atkCooltime = (z->s).motion.duration;
     if ((z->s).motion.duration < 2) {
       GotoMotion(&z->s, MOTION(DM008_ZERO_BUSTER, 0x01), 1, 4);
-      (z->unk_b4).attackMode[1] = 2;
+      (z->unk_b4).attackState8[1] = 2;
     }
   }
 }
@@ -132,7 +132,7 @@ static void buster_2(struct Zero* z) {
   motion_t m;
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((b4->status).mainWeapon == WEAPON_BUSTER) {
+  if ((b4->status).weapons[0] == WEAPON_BUSTER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
@@ -143,7 +143,7 @@ static void buster_2(struct Zero* z) {
     z->atkCooltime--;
 
     if (z->atkCooltime == 0xFF) {
-      (z->unk_b4).attackMode[1] = 3;
+      (z->unk_b4).attackState8[1] = 3;
       z->atkCooltime = 16;
       GotoMotion(&z->s, MOTION(DM008_ZERO_BUSTER, 0x01), 2, 16);
     }
@@ -160,7 +160,7 @@ static void buster_2(struct Zero* z) {
     if ((z->s).motion.duration < 2) {
       GotoMotion(&z->s, MOTION(DM008_ZERO_BUSTER, 0x01), 2, 16);
       z->atkCooltime = 16;
-      (z->unk_b4).attackMode[1] = 3;
+      (z->unk_b4).attackState8[1] = 3;
     }
   }
 }
@@ -179,14 +179,14 @@ static void buster_3(struct Zero* z) {
 
   z->atkCooltime--;
   if (z->atkCooltime == 0xFF) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 
   ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {
-    (z->unk_b4).attackMode[0] = 3;
-    (z->unk_b4).attackMode[1] = 0;
+    (z->unk_b4).attackState8[0] = 3;
+    (z->unk_b4).attackState8[1] = 0;
     zeroAttack(z);
   }
 }
@@ -221,17 +221,17 @@ void onSaber_GroundIdle(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
 
   if ((z->restriction).b6) {
-    (z->unk_b4).attackMode[1] = 4;
+    (z->unk_b4).attackState8[1] = 4;
   }
 
   (z->restriction).move = TRUE;
   (z->restriction).shield = TRUE;
-  if ((b4->status).mainWeapon == WEAPON_SABER) {
+  if ((b4->status).weapons[0] == WEAPON_SABER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
   }
-  (sRoutines[(z->unk_b4).attackMode[1]])(z);
+  (sRoutines[(z->unk_b4).attackState8[1]])(z);
 }
 
 // 0x0802d3d0
@@ -242,7 +242,7 @@ NON_MATCH static void handle_saber_input(struct Zero* z) {
 
   z->tripleSlashCounter = 0;
 
-  if ((b4->status).mainWeapon == WEAPON_SABER) {
+  if ((b4->status).weapons[0] == WEAPON_SABER) {
     charge = GetWeaponCharge(z, FALSE);
   } else {
     charge = GetWeaponCharge(z, TRUE);
@@ -253,28 +253,28 @@ NON_MATCH static void handle_saber_input(struct Zero* z) {
   }
 
   if (charge == FULL_CHARGE) {
-    (z->unk_b4).attackMode[1] = 4;
-    (z->unk_b4).attackMode[2] = 0;
+    (z->unk_b4).attackState8[1] = 4;
+    (z->unk_b4).attackState8[2] = 0;
     charge_saber_ground(z);
     return;
   }
 
-  if (((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT)) && ((z->input).val & DPAD_UP)) {
-    (z->unk_b4).attackMode[1] = 7;
-    (z->unk_b4).attackMode[2] = 0;
+  if (((b4->status).exSkill & (1 << EXSKILL_ID_SPLIT)) && ((z->input).val & ZERO_INPUT_DPAD_UP)) {
+    (z->unk_b4).attackState8[1] = 7;
+    (z->unk_b4).attackState8[2] = 0;
     split_heavens(z);
     return;
   }
 
-  if (((b4->status).exSkill & (1 << EXSKILL_ID_THROW)) && ((z->input).val & DPAD_DOWN)) {
-    (z->unk_b4).attackMode[1] = 6;
-    (z->unk_b4).attackMode[2] = 0;
+  if (((b4->status).exSkill & (1 << EXSKILL_ID_THROW)) && ((z->input).val & ZERO_INPUT_DPAD_DOWN)) {
+    (z->unk_b4).attackState8[1] = 6;
+    (z->unk_b4).attackState8[2] = 0;
     throw_blade(z);
     return;
   }
 
-  (z->unk_b4).attackMode[1] = 1;
-  (z->unk_b4).attackMode[2] = 0;
+  (z->unk_b4).attackState8[1] = 1;
+  (z->unk_b4).attackState8[2] = 0;
   triple_slash_1st(z);
 #else
   INCCODE("asm/wip/handle_saber_input_idle.inc");
@@ -286,16 +286,16 @@ static void triple_slash_1st(struct Zero* z) {
   weapon_t w[4];
   struct Zero_b4* b4;
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM014_ZERO_SABER_TRIPLE1, 0x00));
     z->tripleSlashCounter = 0;
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   } else {
-    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+    if (((z->unk_b4).attackState8[2] == 1) && ((z->s).motion.duration < 2)) {
       CreateWeaponSaber(z, 0);
-      (z->unk_b4).attackMode[2]++;
+      (z->unk_b4).attackState8[2]++;
     }
-    if ((z->unk_b4).attackMode[2] > 1) {
+    if ((z->unk_b4).attackState8[2] > 1) {
       (z->restriction).move = TRUE;
     }
     if ((IsAttackOK(z, w)) && (w[0] == WEAPON_SABER)) {
@@ -306,70 +306,59 @@ static void triple_slash_1st(struct Zero* z) {
 
   b4 = &(z->unk_b4);
   if ((((b4->status).menuZeroColor != MZC_HARD) && ((z->s).motion.cmdIdx >= 4)) && (z->tripleSlashCounter > 0)) {
-    (z->unk_b4).attackMode[1] = 2;
-    (z->unk_b4).attackMode[2] = 0;
+    (z->unk_b4).attackState8[1] = 2;
+    (z->unk_b4).attackState8[2] = 0;
     triple_slash_2nd(z);
     return;
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
 
 // 0x0802d59c
-NON_MATCH static void triple_slash_2nd(struct Zero* z) {
-#if MODERN
-  weapon_t w[4];
-
-  if ((z->unk_b4).attackMode[2] == 0) {
+static void triple_slash_2nd(struct Zero* z) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM015_ZERO_SABER_TRIPLE2, 0));
     CreateWeaponSaber(z, SABER_TRIPLE_2);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   } else {
-    if (IsAttackOK(z, w) && (w[0] == WEAPON_SABER)) {
-      z->tripleSlashCounter++;
-    }
+    weapon_t w[4];
+    if (IsAttackOK(z, w) && (w[0] == WEAPON_SABER)) z->tripleSlashCounter++;
     KeepMotion(z, MOTION(DM015_ZERO_SABER_TRIPLE2, 0));
   }
 
   if (((z->s).motion.cmdIdx >= 4) && (z->tripleSlashCounter > 1)) {
-    zero_input_t* input = &(z->input).val;
-    if ((*input & DPAD_UP) && isElfUsed_2(z, ELF_LIZETUS)) {
-      (z->unk_b4).attackMode[1] = 5;
-      (z->unk_b4).attackMode[2] = 0;
+    if (((&z->input)->val & ZERO_INPUT_DPAD_UP) && isElfUsed_2(z, ELF_LIZETUS)) {
+      (z->unk_b4).attackState8[1] = 5;
+      (z->unk_b4).attackState8[2] = 0;
       slash_up(z);
-
-    } else if ((*input & DPAD_DOWN) && isElfUsed_2(z, ELF_COTTUS)) {
-      (z->unk_b4).attackMode[1] = 6;
-      (z->unk_b4).attackMode[2] = 0;
+    } else if (((&z->input)->val & ZERO_INPUT_DPAD_DOWN) && isElfUsed_2(z, ELF_COTTUS)) {
+      (z->unk_b4).attackState8[1] = 6;
+      (z->unk_b4).attackState8[2] = 0;
       throw_blade(z);
-
     } else {
-      (z->unk_b4).attackMode[1] = 3;
-      (z->unk_b4).attackMode[2] = 0;
+      (z->unk_b4).attackState8[1] = 3;
+      (z->unk_b4).attackState8[2] = 0;
       triple_slash_3rd(z);
     }
   }
-
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
-#else
-  INCCODE("asm/wip/idle_saber_2.inc");
-#endif
 }
 
 // 0x0802d6b4
 static void triple_slash_3rd(struct Zero* z) {
   weapon_t w[4];
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM016_ZERO_SABER_TRIPLE3, 0));
     CreateWeaponSaber(z, SABER_TRIPLE_3);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   } else {
     if (IsAttackOK(z, w) && (w[0] == WEAPON_SABER)) {
       z->tripleSlashCounter++;
@@ -385,25 +374,25 @@ static void triple_slash_3rd(struct Zero* z) {
           (z->s).mode[1] = ZERO_AIR;
           (z->s).mode[2] = 0;
           (z->s).mode[3] = 4;
-          (z->unk_b4).attackMode[1] = 5;
-          (z->unk_b4).attackMode[2] = 0;
+          (z->unk_b4).attackState8[1] = 5;
+          (z->unk_b4).attackState8[2] = 0;
           return;
         }
       }
     }
   }
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
 
 // 0x0802d798
 void charge_saber_ground(struct Zero* z) {
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM020_ZERO_SABER_CHARGE, 0));
     CreateWeaponSaber(z, SABER_CHARGE);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
 
   } else {
     if ((z->restriction).b6) {
@@ -414,7 +403,7 @@ void charge_saber_ground(struct Zero* z) {
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
     return;
   }
@@ -424,38 +413,38 @@ void charge_saber_ground(struct Zero* z) {
 
 // 0x0802d834
 static void slash_up(struct Zero* z) {
-  if (((&z->unk_b4)->attackMode)[2] == 0) {
+  if (((&z->unk_b4)->attackState8)[2] == 0) {
     SetMotion(&z->s, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
-    ((&z->unk_b4)->attackMode)[2]++;
+    ((&z->unk_b4)->attackState8)[2]++;
   } else {
     KeepMotion(z, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
-    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+    if (((z->unk_b4).attackState8[2] == 1) && ((z->s).motion.duration < 2)) {
       CreateWeaponSaber(z, SABER_SLASH_UP);
-      (z->unk_b4).attackMode[2]++;
+      (z->unk_b4).attackState8[2]++;
     }
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    ((&z->unk_b4)->attackMode)[0] = 0;
+    ((&z->unk_b4)->attackState8)[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
 
 // 0x0802d8a4
 static void throw_blade(struct Zero* z) {
-  if (((&z->unk_b4)->attackMode)[2] == 0) {
+  if (((&z->unk_b4)->attackState8)[2] == 0) {
     SetMotion(&z->s, MOTION(DM019_ZERO_SABER_ZANEIDAN, 0));
-    ((&z->unk_b4)->attackMode)[2]++;
+    ((&z->unk_b4)->attackState8)[2]++;
   } else {
     KeepMotion(z, MOTION(DM019_ZERO_SABER_ZANEIDAN, 0));
-    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+    if (((z->unk_b4).attackState8[2] == 1) && ((z->s).motion.duration < 2)) {
       CreateWeaponSaber(z, SABER_ZANEIDAN);
-      (z->unk_b4).attackMode[2]++;
+      (z->unk_b4).attackState8[2]++;
     }
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    ((&z->unk_b4)->attackMode)[0] = 0;
+    ((&z->unk_b4)->attackState8)[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
@@ -463,19 +452,19 @@ static void throw_blade(struct Zero* z) {
 static void split_heavens(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 0));
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
 
   } else {
     KeepMotion(z, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 0));
-    if (((z->unk_b4).attackMode[2] == 1) && ((z->s).motion.duration < 2)) {
+    if (((z->unk_b4).attackState8[2] == 1) && ((z->s).motion.duration < 2)) {
       if ((b4->status).element == ELEMENT_FLAME) {
         CreateWeaponSaber(z, SABER_TENRETUJIN_FIRE);
       } else {
         CreateWeaponSaber(z, SABER_TENRETUJIN);
       }
-      (z->unk_b4).attackMode[2]++;
+      (z->unk_b4).attackState8[2]++;
     }
   }
 
@@ -483,16 +472,16 @@ static void split_heavens(struct Zero* z) {
     (z->s).mode[1] = ZERO_AIR;
     (z->s).mode[2] = 0;
     (z->s).mode[3] = 4;
-    (z->unk_b4).attackMode[1] = 5;
-    (z->unk_b4).attackMode[2] = 0;
+    (z->unk_b4).attackState8[1] = 5;
+    (z->unk_b4).attackState8[2] = 0;
   }
 }
 
 static void saber_8(struct Zero* z) {
   motion_t m;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM027_ZERO_SABER_SMASH, 1));
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   }
 
   KeepMotion(z, MOTION(DM027_ZERO_SABER_SMASH, 1));
@@ -502,7 +491,7 @@ static void saber_8(struct Zero* z) {
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
@@ -547,12 +536,12 @@ void recoilAttack(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
 
   (z->restriction).move = TRUE;
-  if ((b4->status).mainWeapon == WEAPON_ROD) {
+  if ((b4->status).weapons[0] == WEAPON_ROD) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
   }
-  (sRoutines[(z->unk_b4).attackMode[1]])(z);
+  (sRoutines[(z->unk_b4).attackState8[1]])(z);
 }
 
 // 0x0802da64
@@ -786,7 +775,7 @@ _0802DC1A:\n\
 
 static void rod_horizontal0(struct Zero* z) {
   if (z->rodToggle != 0) {
-    (z->unk_b4).attackMode[1] = 2;
+    (z->unk_b4).attackState8[1] = 2;
     rod_horizontal1(z);
     return;
   }
@@ -801,7 +790,7 @@ static void rod_horizontal1(struct Zero* z) {
 
 static void rod_up0(struct Zero* z) {
   if (z->rodToggle != 0) {
-    (z->unk_b4).attackMode[1] = 4;
+    (z->unk_b4).attackState8[1] = 4;
     rod_up1(z);
     return;
   }
@@ -841,8 +830,8 @@ static void rod_charge_horizontal(struct Zero* z) {
     (z->s).mode[1] = 1;
     (z->s).mode[2] = 0;
     (z->s).mode[3] = 3;
-    (z->unk_b4).attackMode[1] = 10;
-    (z->unk_b4).attackMode[2] = 0;
+    (z->unk_b4).attackState8[1] = 10;
+    (z->unk_b4).attackState8[2] = 0;
   }
 }
 
@@ -856,11 +845,11 @@ NON_MATCH static void rod_1000slash(struct Zero* z) {
   z->rodID = 21;
   (z->restriction).shield = TRUE;
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM030_ZERO_ROD, 2));
     z->unk_rod_133 = 0;
     CreateWeaponRod(z);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
     return;
   }
 
@@ -872,11 +861,11 @@ NON_MATCH static void rod_1000slash(struct Zero* z) {
 
   if ((z->s).motion.state == MOTION_END) {
     if ((z->unk_rod_133 != 0) && (z->unk_rod_133 > 2)) {
-      (z->unk_b4).attackMode[2] = 0;
+      (z->unk_b4).attackState8[2] = 0;
       return;
     }
 
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
     z->rodID = 0xFF;
     return;
@@ -909,14 +898,14 @@ void shieldAttack(struct Zero* z) {
   // clang-format on
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if (((b4->status).mainWeapon != WEAPON_SHIELD) && ((b4->status).subWeapon != WEAPON_SHIELD)) {
-    (z->unk_b4).attackMode[0] = 0;
+  if (((b4->status).weapons[0] != WEAPON_SHIELD) && ((b4->status).weapons[1] != WEAPON_SHIELD)) {
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
     return;
   }
 
   (z->restriction).dash = TRUE;
-  (gZeroShieldRoutine[(z->unk_b4).attackMode[1]])(z);
+  (gZeroShieldRoutine[(z->unk_b4).attackState8[1]])(z);
 }
 
 NAKED static void shield_0(struct Zero* z) {
@@ -1094,40 +1083,40 @@ static void shield_1(struct Zero* z) {
   }
 
   z->unk_12e = 0;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     CreateWeaponShieldGuard(z, 0);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   } else {
     u8 ok = IsAttackOK(z, &z->usingWeapon);
     if (ok == 1) {
-      (z->unk_b4).attackMode[0] = 3;
-      (z->unk_b4).attackMode[1] = 0;
+      (z->unk_b4).attackState8[0] = 3;
+      (z->unk_b4).attackState8[1] = 0;
       zeroAttack(z);
     } else if (ok != 2) {
-      (z->unk_b4).attackMode[1] = 2;
-      (z->unk_b4).attackMode[2] = 0;
+      (z->unk_b4).attackState8[1] = 2;
+      (z->unk_b4).attackState8[2] = 0;
       shield_2(z);
     }
   }
 }
 
 static void shield_2(struct Zero* z) {
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM040_ZERO_SHIELD_GUARD, 0x02));
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   }
 
   (z->restriction).shield = TRUE;
 
   if (IsAttackOK(z, &z->usingWeapon)) {
-    (z->unk_b4).attackMode[0] = 3;
-    (z->unk_b4).attackMode[1] = 0;
+    (z->unk_b4).attackState8[0] = 3;
+    (z->unk_b4).attackState8[1] = 0;
     zeroAttack(z);
     return;
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
@@ -1136,10 +1125,10 @@ void shield_throw(struct Zero* z) {
   motion_t m;
 
   z->unk_127 = 0;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM041_ZERO_SHIELD_THROW, 0x00));
     CreateWeaponShieldFly(z, 0);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   }
 
   (z->restriction).move = TRUE;
@@ -1153,7 +1142,7 @@ void shield_throw(struct Zero* z) {
 
   if ((z->s).motion.state == MOTION_END) {
     z->unk_127 = 0xFF;
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
@@ -1162,10 +1151,10 @@ void shield_0802e1c8(struct Zero* z) {
   motion_t m;
 
   z->unk_127 = 0;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM041_ZERO_SHIELD_THROW, 0x01));
     CreateWeaponShieldFly(z, 1);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   }
 
   (z->restriction).move = TRUE;
@@ -1179,7 +1168,7 @@ void shield_0802e1c8(struct Zero* z) {
 
   if ((z->s).motion.state == MOTION_END) {
     z->unk_127 = 0xFF;
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }
@@ -1188,10 +1177,10 @@ void zero_shield_0802e268(struct Zero* z) {
   motion_t m;
 
   z->unk_127 = 0;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, MOTION(DM041_ZERO_SHIELD_THROW, 0x01));
     CreateWeaponShieldFly(z, 2);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
   }
 
   (z->restriction).move = TRUE;
@@ -1205,7 +1194,7 @@ void zero_shield_0802e268(struct Zero* z) {
 
   if ((z->s).motion.state == MOTION_END) {
     z->unk_127 = 0xFF;
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
   }
 }

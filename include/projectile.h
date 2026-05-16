@@ -15,7 +15,7 @@ extern const ProjectileRoutine* const gProjectileFnTable[PROJECTILE_ENTITY_COUNT
 // --------------------------------------------
 
 void UpdateProjectiles(void);
-void DeleteProjectile(struct Projectile* p);
+void DeleteProjectile(struct Entity* p);
 
 struct Projectile* CreateLemon(struct Coord* c, s32 r1, u8 r2);
 

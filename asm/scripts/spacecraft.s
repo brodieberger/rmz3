@@ -718,7 +718,7 @@ Script_PreOmegaWhiteBattle:
   cmd06 116, 3, 0
   normal_screen
   wait_screeneffect
-  play_bgm 165
+  play_bgm BGM_OMEGA
   wait 15
   cmd06 116, 4, 0
   wait 15
@@ -768,7 +768,7 @@ Script_PreOmegaWhiteBattle:
   adjust_camera 12, 0, 1071104
   stop_bgm
   wait 120
-  play_se 231
+  play_se SE_OMEGA1_GROWL
   wait 180
   message 1, 0, 0x0320
   wait_msgbox_end
@@ -780,7 +780,7 @@ Script_PreOmegaWhiteBattle:
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 187
+  play_bgm BGM_OMEGA_BATTLE
   resume 1
   end
 
@@ -825,12 +825,12 @@ Script_0834e5a0:
   wait 1
   gimmick 1, 2, 4
   wait_screeneffect
-  play_se 231
+  play_se SE_OMEGA1_GROWL
   wait 120
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 187
+  play_bgm BGM_OMEGA_BATTLE
   resume 1
   end
 

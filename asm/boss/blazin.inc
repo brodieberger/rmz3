@@ -414,7 +414,7 @@ _0803F104:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F180 @ =0x080FED27
+	ldr r5, _0803F180 @ =BlazinEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -440,7 +440,7 @@ _0803F170: .4byte gMission
 _0803F174: .4byte RNG_0202f388
 _0803F178: .4byte 0x000343FD
 _0803F17C: .4byte 0x00269EC3
-_0803F180: .4byte 0x080FED27
+_0803F180: .4byte BlazinEXModes
 _0803F184:
 	adds r0, r6, #0
 	bl howFarBlazin
@@ -455,7 +455,7 @@ _0803F184:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F1DC @ =0x080FECF4
+	ldr r5, _0803F1DC @ =BlazinModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -480,7 +480,7 @@ _0803F184:
 _0803F1D0: .4byte RNG_0202f388
 _0803F1D4: .4byte 0x000343FD
 _0803F1D8: .4byte 0x00269EC3
-_0803F1DC: .4byte 0x080FECF4
+_0803F1DC: .4byte BlazinModes
 _0803F1E0:
 	ldr r0, _0803F20C @ =gMission
 	ldr r0, [r0]
@@ -500,14 +500,14 @@ _0803F1E0:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F21C @ =0x080FED27
+	ldr r5, _0803F21C @ =BlazinEXModes
 	b _0803F23E
 	.align 2, 0
 _0803F20C: .4byte gMission
 _0803F210: .4byte RNG_0202f388
 _0803F214: .4byte 0x000343FD
 _0803F218: .4byte 0x00269EC3
-_0803F21C: .4byte 0x080FED27
+_0803F21C: .4byte BlazinEXModes
 _0803F220:
 	adds r0, r6, #0
 	bl howFarBlazin
@@ -522,7 +522,7 @@ _0803F220:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F27C @ =0x080FECF4
+	ldr r5, _0803F27C @ =BlazinModes
 _0803F23E:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -553,7 +553,7 @@ _0803F262:
 _0803F270: .4byte RNG_0202f388
 _0803F274: .4byte 0x000343FD
 _0803F278: .4byte 0x00269EC3
-_0803F27C: .4byte 0x080FECF4
+_0803F27C: .4byte BlazinModes
 
 	thumb_func_start nop_0803f280
 nop_0803f280: @ 0x0803F280
@@ -1007,14 +1007,14 @@ _0803F610:
 	ldr r4, _0803F628 @ =0x080FED98
 	b _0803F6B6
 	.align 2, 0
-_0803F624: .4byte 0x08361D70
-_0803F628: .4byte 0x080FED98
+_0803F624: .4byte gBlazinCollisions+(11*24)
+_0803F628: .4byte u16_ARRAY_080fed66+(25*2)
 _0803F62C: .4byte 0xFFFFA200
 _0803F630:
 	movs r0, #0
 	strb r0, [r5, #0xf]
 	strb r0, [r5, #0x13]
-	ldr r4, _0803F6AC @ =0x080FED64
+	ldr r4, _0803F6AC @ =u16_080fed64
 	adds r0, r5, #0
 	adds r0, #0xc8
 	ldrh r1, [r0]
@@ -1074,10 +1074,10 @@ _0803F6A2:
 	strb r0, [r5, #0xe]
 	b _0803F6E2
 	.align 2, 0
-_0803F6AC: .4byte 0x080FED64
+_0803F6AC: .4byte u16_080fed64
 _0803F6B0: .4byte 0xFFFFA200
 _0803F6B4:
-	ldr r4, _0803F6EC @ =0x080FED64
+	ldr r4, _0803F6EC @ =u16_080fed64
 _0803F6B6:
 	ldrb r0, [r5, #0x13]
 	lsls r0, r0, #2
@@ -1105,7 +1105,7 @@ _0803F6E2:
 	bl UpdateMotionGraphic
 	b _0803F708
 	.align 2, 0
-_0803F6EC: .4byte 0x080FED64
+_0803F6EC: .4byte u16_080fed64
 _0803F6F0: .4byte 0xFFFFA200
 _0803F6F4:
 	movs r0, #0x48
@@ -2280,7 +2280,7 @@ blazin_0803ffdc: @ 0x0803FFDC
 	ands r0, r1
 	cmp r0, #0
 	bne _08040010
-	ldr r0, _0804000C @ =0x080FEE20
+	ldr r0, _0804000C @ =s32_ARRAY_080fee20
 	lsls r1, r2, #2
 	adds r1, r1, r0
 	ldr r0, [r1]
@@ -2288,9 +2288,9 @@ blazin_0803ffdc: @ 0x0803FFDC
 	b _08040018
 	.align 2, 0
 _08040008: .4byte 0xFFFFD800
-_0804000C: .4byte 0x080FEE20
+_0804000C: .4byte s32_ARRAY_080fee20
 _08040010:
-	ldr r0, _08040040 @ =0x080FEE20
+	ldr r0, _08040040 @ =s32_ARRAY_080fee20
 	lsls r1, r2, #2
 	adds r1, r1, r0
 	ldr r0, [r1]
@@ -2314,7 +2314,7 @@ _08040018:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08040040: .4byte 0x080FEE20
+_08040040: .4byte s32_ARRAY_080fee20
 
 	thumb_func_start blazin_08040044
 blazin_08040044: @ 0x08040044
@@ -2335,7 +2335,7 @@ blazin_08040044: @ 0x08040044
 	ands r0, r1
 	cmp r0, #0
 	bne _0804009C
-	ldr r0, _08040080 @ =0x080FEDA8
+	ldr r0, _08040080 @ =u8_ARRAY_080feda8
 	adds r0, r3, r0
 	ldrb r0, [r0]
 	lsls r0, r0, #0x18
@@ -2348,13 +2348,13 @@ blazin_08040044: @ 0x08040044
 	adds r0, r4, r5
 	b _08040086
 	.align 2, 0
-_08040080: .4byte 0x080FEDA8
+_08040080: .4byte u8_ARRAY_080feda8
 _08040084:
 	subs r0, r4, r5
 _08040086:
 	lsls r0, r0, #0x18
 	lsrs r4, r0, #0x18
-	ldr r2, _08040098 @ =0x080FEDB8
+	ldr r2, _08040098 @ =Coord_ARRAY_080fedb8
 	lsls r3, r3, #3
 	adds r0, r3, r2
 	ldr r0, [r0]
@@ -2362,9 +2362,9 @@ _08040086:
 	adds r0, r0, r1
 	b _080400CA
 	.align 2, 0
-_08040098: .4byte 0x080FEDB8
+_08040098: .4byte Coord_ARRAY_080fedb8
 _0804009C:
-	ldr r0, _080400B4 @ =0x080FEDA8
+	ldr r0, _080400B4 @ =u8_ARRAY_080feda8
 	adds r0, r3, r0
 	ldrb r1, [r0]
 	movs r0, #0x40
@@ -2376,13 +2376,13 @@ _0804009C:
 	subs r0, r4, r5
 	b _080400BA
 	.align 2, 0
-_080400B4: .4byte 0x080FEDA8
+_080400B4: .4byte u8_ARRAY_080feda8
 _080400B8:
 	adds r0, r4, r7
 _080400BA:
 	lsls r0, r0, #0x18
 	lsrs r4, r0, #0x18
-	ldr r2, _08040108 @ =0x080FEDB8
+	ldr r2, _08040108 @ =Coord_ARRAY_080fedb8
 	lsls r3, r3, #3
 	adds r0, r3, r2
 	ldr r1, [r0]
@@ -2420,7 +2420,7 @@ _080400CA:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08040108: .4byte 0x080FEDB8
+_08040108: .4byte Coord_ARRAY_080fedb8
 _0804010C: .4byte gSineTable
 
 	thumb_func_start createBlazinEXFireBall
@@ -2438,7 +2438,7 @@ createBlazinEXFireBall: @ 0x08040110
 	ands r0, r1
 	cmp r0, #0
 	bne _08040140
-	ldr r0, _0804013C @ =0x080FEE2C
+	ldr r0, _0804013C @ =BlazinFireballAngles
 	adds r0, r3, r0
 	movs r1, #0xd
 	muls r1, r2, r1
@@ -2448,9 +2448,9 @@ createBlazinEXFireBall: @ 0x08040110
 	lsrs r3, r1, #0x18
 	b _08040150
 	.align 2, 0
-_0804013C: .4byte 0x080FEE2C
+_0804013C: .4byte BlazinFireballAngles
 _08040140:
-	ldr r0, _080401C8 @ =0x080FEE2C
+	ldr r0, _080401C8 @ =BlazinFireballAngles
 	adds r0, r3, r0
 	movs r1, #0xd
 	muls r1, r2, r1
@@ -2520,7 +2520,7 @@ _080401BE:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080401C8: .4byte 0x080FEE2C
+_080401C8: .4byte BlazinFireballAngles
 _080401CC: .4byte gSineTable
 _080401D0: .4byte 0xFFFFE400
 
@@ -2548,7 +2548,7 @@ FUN_080401d4: @ 0x080401D4
 	ldr r0, _08040294 @ =gSineTable
 	mov r8, r0
 _080401FE:
-	ldr r0, _08040298 @ =0x080FEE2C
+	ldr r0, _08040298 @ =BlazinFireballAngles
 	adds r0, r2, r0
 	ldrb r0, [r0]
 	ldr r1, [sp]
@@ -2623,7 +2623,7 @@ _08040276:
 	.align 2, 0
 _08040290: .4byte 0x7FFFFFFF
 _08040294: .4byte gSineTable
-_08040298: .4byte 0x080FEE2C
+_08040298: .4byte BlazinFireballAngles
 _0804029C: .4byte 0xFFFFE400
 _080402A0: .4byte pZero2
 
@@ -2680,7 +2680,7 @@ blazin_080402fc: @ 0x080402FC
 	cmp r2, #1
 	bne _0804032A
 	movs r2, #0
-	ldr r5, _0804031C @ =0x080FED5A
+	ldr r5, _0804031C @ =UnkBlaizinModes_080fed5a
 	adds r3, r5, #0
 _0804030A:
 	ldrh r1, [r3]
@@ -2692,7 +2692,7 @@ _0804030A:
 	ble _0804030A
 	b _0804035C
 	.align 2, 0
-_0804031C: .4byte 0x080FED5A
+_0804031C: .4byte UnkBlaizinModes_080fed5a
 _08040320:
 	adds r0, r2, #1
 	movs r1, #5
@@ -2700,7 +2700,7 @@ _08040320:
 	b _08040346
 _0804032A:
 	movs r2, #0
-	ldr r5, _08040350 @ =0x080FED5A
+	ldr r5, _08040350 @ =UnkBlaizinModes_080fed5a
 	adds r3, r5, #0
 _08040330:
 	ldrh r1, [r3]
@@ -2721,7 +2721,7 @@ _08040346:
 	ldrh r0, [r0]
 	b _0804035C
 	.align 2, 0
-_08040350: .4byte 0x080FED5A
+_08040350: .4byte UnkBlaizinModes_080fed5a
 _08040354:
 	adds r3, #2
 	adds r2, #1

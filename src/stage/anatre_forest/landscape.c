@@ -28,7 +28,7 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
     gOverworld.work.anatreForest.leaf = CreateLeafBurn(1);
   }
 
-  if ((W_TERRAIN_V2.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((W_TERRAIN_V2.tilesets[0] & 0xFF) == 0)) {
+  if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 0)) {
     if ((gOverworld.work.anatreForest.unk_00c & 1) == 0) {
       gOverworld.work.anatreForest.unk_00c |= 1;
       LoadBlink(218, 0);
@@ -46,7 +46,7 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
     ClearBlink(220);
   }
 
-  if ((W_TERRAIN_V2.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((W_TERRAIN_V2.tilesets[1] & 0xFF) == 1)) {
+  if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 1)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 1)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 1);
       LoadBlink(221, 0);
@@ -58,7 +58,7 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
     ClearBlink(221);
   }
 
-  if ((W_TERRAIN_V2.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((W_TERRAIN_V2.tilesets[0] & 0xFF) == 2)) {
+  if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 2)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 2)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 2);
       LoadBlink(222, 0);
@@ -86,7 +86,7 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
     ClearBlink(226);
   }
 
-  if ((W_TERRAIN_V2.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((W_TERRAIN_V2.tilesets[1] & 0xFF) == 3)) {
+  if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 3)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 3)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 3);
       LoadBlink(227, 0);
@@ -213,7 +213,7 @@ static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) &= 0xFFFC;
-    BGCNT16(n >> 4) |= 1;
+    BGCNT16(n >> 4) |= BGCNT_PRIORITY(1);
     l->phase++;
   }
 }

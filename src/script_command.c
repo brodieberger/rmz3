@@ -9,14 +9,19 @@
 #include "mission.h"
 #include "overworld.h"
 #include "result.h"
-#include "sound.h"
+#include "spawn.h"
 #include "sprite.h"
 #include "story.h"
 #include "text.h"
 #include "vfx.h"
 #include "zero.h"
 
-void FUN_080251a8(void);
+extern const TextID CielGoodluckTextIDs[];
+
+void ReloadElementEffectGraphic(void);
+
+struct ScriptEntityTemplate;
+void CreateScriptEntity(u8 t, struct ScriptEntityTemplate* arg);
 
 static bool32 Cmd_goto(struct VM* vm);
 static bool32 Cmd_wait(struct VM* vm);
@@ -449,7 +454,6 @@ static bool32 Cmd_entity(struct VM* vm) {
         (e->coord).y = ((struct Coord*)c->work)->y;
         break;
       }
-
       case 1: {
         struct Entity* target = vm->entities[c->work].entity;
         if (target != NULL) {
@@ -458,7 +462,6 @@ static bool32 Cmd_entity(struct VM* vm) {
         }
         break;
       }
-
       case 2: {
         if (c->work) {
           e->flags |= X_FLIP;
@@ -474,7 +477,6 @@ static bool32 Cmd_entity(struct VM* vm) {
         }
         break;
       }
-
       case 3: {
         if (c->work) {
           e->flags |= Y_FLIP;
@@ -490,22 +492,18 @@ static bool32 Cmd_entity(struct VM* vm) {
         }
         break;
       }
-
       case 4: {
         e->flags &= ~DISPLAY;
         break;
       }
-
       case 5: {
         e->flags |= DISPLAY;
         break;
       }
-
       case 6: {
         DeleteScriptEntity(c->status);
         break;
       }
-
       case 7: {
         se->entity = NULL;
         break;
@@ -516,23 +514,30 @@ static bool32 Cmd_entity(struct VM* vm) {
   return FALSE;
 }
 
+struct Command0D {
+  u8 cmd;        // 0x0, コマンドID, .cmd = 0x0D
+  u8 entityIdx;  // 0x1
+  s16 val;       // 0x2
+  u32 flags;     // 0x4
+};
+
 NON_MATCH static bool32 Cmd_flag(struct VM* vm) {
 #if MODERN
   struct Command0D* c = (struct Command0D*)vm->pc;
   if (c->flags & (1 << 1)) {
     // gameflag
     if (c->flags & (1 << 0)) {
-      SET_FLAG(gCurStory.s.gameflags, c->val.idx);
+      SET_FLAG(gCurStory.s.gameflags, c->val);
     } else {
-      CLEAR_FLAG(gCurStory.s.gameflags, c->val.idx);
+      CLEAR_FLAG(gCurStory.s.gameflags, c->val);
     }
   } else {
     // entityflag
     if (vm->entities[c->entityIdx].entity != NULL) {
       if (c->flags) {
-        vm->entities[c->entityIdx].flags |= c->val.mask;
+        vm->entities[c->entityIdx].flags |= c->val;
       } else {
-        vm->entities[c->entityIdx].flags &= ~c->val.mask;
+        vm->entities[c->entityIdx].flags &= ~c->val;
       }
     }
   }
@@ -593,6 +598,15 @@ static bool32 Cmd_quake(struct VM* vm) {
   }
   return FALSE;
 }
+
+// For emotion layout
+struct Command12 {
+  u8 cmd;  // コマンドID
+  u8 idx;
+  s16 x;
+  u16 kind;
+  s16 y;
+};
 
 // びっくりマークなどの吹き出し(Emotion Bubble)を出す
 static bool32 Cmd_emotion(struct VM* vm) {
@@ -1006,16 +1020,16 @@ static bool32 Cmd_bgm(struct VM* vm) {
   switch (pc->status) {
     case 0: {
       if (vm->bgm != MUS_NONE) {
-        fadeoutBGM(vm->bgm & 0xFFFF);
+        FadeOutBGM(vm->bgm & 0xFFFF);
       }
-      playBGM(*(u16*)&vm->pc->work);
+      PlayBGM(*(u16*)&vm->pc->work);
       vm->bgm = vm->pc->work;
       break;
     }
 
     case 1: {
       if (vm->bgm != MUS_NONE) {
-        fadeoutBGM(vm->bgm & 0xFFFF);
+        FadeOutBGM(vm->bgm & 0xFFFF);
         vm->bgm = MUS_NONE;
       }
       break;
@@ -1052,7 +1066,7 @@ static bool32 Cmd_se(struct VM* vm) {
       break;
     }
     case 2: {
-      fadeoutSound(pc->work, pc->val2);
+      FadeOutSound(pc->work, pc->val2);
       break;
     }
     default: {
@@ -1084,8 +1098,8 @@ static bool32 Cmd_force(struct VM* vm) {
   struct Command* pc;
   struct Zero* z = (struct Zero*)vm->entities[0].entity;
   if ((vm->pc)->status == 12) {
-    (&gGameState.save.status)->mainWeapon = WEAPON_SABER;
-    (&gGameState.save.status)->subWeapon = WEAPON_SABER;
+    (&gGameState.save.status)->weapons[0] = WEAPON_SABER;
+    (&gGameState.save.status)->weapons[1] = WEAPON_SABER;
   }
   if (z != NULL) {
     switch ((vm->pc)->status) {
@@ -1170,8 +1184,8 @@ static bool32 Cmd_force(struct VM* vm) {
         break;
       }
       case 12: {
-        ((&z->unk_b4)->status).mainWeapon = WEAPON_SABER;
-        ((&z->unk_b4)->status).subWeapon = WEAPON_SABER;
+        ((&z->unk_b4)->status).weapons[0] = WEAPON_SABER;
+        ((&z->unk_b4)->status).weapons[1] = WEAPON_SABER;
         break;
       }
       case 13: {
@@ -1189,10 +1203,9 @@ static bool32 Cmd_gimmick(struct VM* vm) {
   switch (pc->status) {
     case 0: {
       ExitStageLandscape();
-      ResetLandscape(vm->pc->val2, &W_TERRAIN_V2.viewport);
+      ResetLandscape(vm->pc->val2, &gOverworld.terrain.viewport);
       break;
     }
-
     case 1: {
       gOverworld.state[pc->val2] = (u8)pc->work;
       break;
@@ -1206,19 +1219,19 @@ static bool32 Cmd_cmd1c(struct VM* vm) {
   const struct Command* pc = vm->pc;
   switch (pc->status) {
     case 0: {
-      gStageEntityManager.unk_20e |= (1 << 0);
+      gSpawnManager.spawnDisabled |= (1 << 0);
       break;
     }
     case 1: {
-      gStageEntityManager.unk_20e &= ~(1 << 0);
+      gSpawnManager.spawnDisabled &= ~(1 << 0);
       break;
     }
     case 2: {
-      FUN_080186c8(pc->work, gStageEntityManager.dynamicEntityRange[1]);
+      ClipSpawnRange(pc->work, gSpawnManager.borderY[1]);
       break;
     }
     case 3: {
-      FUN_080186c8(gStageEntityManager.dynamicEntityRange[0], pc->work);
+      ClipSpawnRange(gSpawnManager.borderY[0], pc->work);
       break;
     }
   }
@@ -1300,7 +1313,7 @@ static bool32 Cmd_load_graphic_primitive(struct VM* vm) {
   LOAD_STATIC_GRAPHIC(SM000_BATTLE_EFFECT);
   LOAD_STATIC_GRAPHIC(SM003_EMOTION_BUBBLE);
   LOAD_STATIC_GRAPHIC(SM209_NUMBER);
-  FUN_080251a8();  // Load element graphics
+  ReloadElementEffectGraphic();
   return FALSE;
 }
 

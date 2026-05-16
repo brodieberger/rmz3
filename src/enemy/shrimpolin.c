@@ -176,7 +176,7 @@ void shrimporin_08069994(struct ShrimporinObject* p) {
       (p->s).mode[1] = 7;
       (p->s).mode[2] = 0;
     } else {
-      p->elementEffect = ApplyElementEffect(0, &p->s, &sElementCoord);
+      p->elementEffect = ApplyElementEffect(0, (Object*)p, &sElementCoord);
       if (p->elementEffect != NULL) {
         (p->s).mode[1] = 0;
         (p->s).mode[2] = 0;

@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/unk_common.h"
 
 // Mellnet の残骸
 // VFX75 のほぼコピペ
@@ -32,18 +33,18 @@ static struct Entity* CreateGhost82_1(struct Coord* c, u8 n) {
   return p;
 }
 
-struct VFX* CreateGhost82_2(struct Coord* c, u8 n, u16 r2, s32 y) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateGhost82_2(struct Coord* c, u8 n, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_082);
     (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = n, (p->s).work[1] = 1;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
-    (p->props).unk28.unk_0 = r2;
-    (p->props).unk28.unk_4 = y;
+    p->m_74 = m;
+    p->unk_78 = val;
   }
-  return p;
+  return (void*)p;
 }
 
 // --------------------------------------------
@@ -77,8 +78,7 @@ static void Ghost82_Init(struct Entity* p) {
     } else {
       p->work[1] = 0, p->palID = 0;
     }
-    RNG_0202f388 = LCG(RNG_0202f388);
-    p->work[2] = 0x7F + ((RNG_0202f388 >> 16) & 7);
+    p->work[2] = 0x7F + (RANDOM(RNG_0202f388) & 7);
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     p->mode[1] = 2, p->mode[2] = 0, p->mode[3] = 0;
   }

@@ -20,18 +20,18 @@ static void FollowerElf_Die(struct FollowerCyberElf* e);
 
 // clang-format off
 const ElfRoutine gFollowerElfRoutine = {
-    [ENTITY_INIT] =      (ElfFunc)FollowerElf_Init,
-    [ENTITY_UPDATE] =    (ElfFunc)FollowerElf_Update,
-    [ENTITY_DIE] =       (ElfFunc)FollowerElf_Die,
-    [ENTITY_DISAPPEAR] = (ElfFunc)DeleteElf,
-    [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)FollowerElf_Init,
+    [ENTITY_UPDATE] =    (void*)FollowerElf_Update,
+    [ENTITY_DIE] =       (void*)FollowerElf_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 void MenuExit_FollowerElf(struct FollowerCyberElf* e) {
   struct Zero* player = e->player;
   if (e->isSatelite1 == 0) {
-    if (e->id == ((&player->unk_b4)->status).asset.satelites[0]) {
+    if (e->id == ((&player->unk_b4)->status).satelites[0]) {
       return;
     }
     if (player->unk_121 == ELF_BYSE) {
@@ -41,7 +41,7 @@ void MenuExit_FollowerElf(struct FollowerCyberElf* e) {
     (e->s).flags &= ~FLIPABLE;
     EXIT_BODY(e);
   } else {
-    if (e->id == ((&player->unk_b4)->status).asset.satelites[1]) {
+    if (e->id == ((&player->unk_b4)->status).satelites[1]) {
       return;
     }
     if (player->unk_121 == ELF_BYSE) {
@@ -66,9 +66,9 @@ struct Elf* CreateFollowerElf(struct Zero* p, u8 breed, u8 availability, bool8 i
     (e->s).work[1] = availability;
     e->isSatelite1 = isSatelite1;
     if (isSatelite1 == 0) {
-      e->id = ((&p->unk_b4)->status).asset.satelites[0];
+      e->id = ((&p->unk_b4)->status).satelites[0];
     } else {
-      e->id = ((&p->unk_b4)->status).asset.satelites[1];
+      e->id = ((&p->unk_b4)->status).satelites[1];
     }
   }
   return (void*)e;

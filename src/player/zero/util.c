@@ -9,11 +9,10 @@
 #define PUTITED_DAMAGE 8
 
 void ClearZeroStatus(struct ZeroStatus* p) {
-  p->mainWeapon = WEAPON_BUSTER;
-  p->subWeapon = WEAPON_SABER;
+  p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  (p->asset).satelites[0] = ELF_NONE;
-  (p->asset).satelites[1] = ELF_NONE;
+  p->satelites[0] = ELF_NONE;
+  p->satelites[1] = ELF_NONE;
   p->head = HEAD_CHIP_NONE;
   p->body = BODY_CHIP_NONE;
   p->foot = FOOT_CHIP_NONE;
@@ -30,25 +29,20 @@ void ClearZeroStatus(struct ZeroStatus* p) {
   (p->keyMap).btnMode = 0;
   (p->keyMap).attackMode = 0;
   (p->keyMap).unk_a = 0;
-  p->charge[0] = 0;
-  p->charge[1] = 0;
-  (p->asset).EC = 0;
-  (p->asset).subtankHP[0] = 0xFF;
-  (p->asset).subtankHP[1] = 0xFF;
-  (p->asset).subtankHP[2] = 0xFF;
-  (p->asset).subtankHP[3] = 0xFF;
-  (p->asset).fusions = 0;
+  p->charge[0] = 0, p->charge[1] = 0;
+  p->EC = 0;
+  p->subtankHP[0] = 0xFF, p->subtankHP[1] = 0xFF, p->subtankHP[2] = 0xFF, p->subtankHP[3] = 0xFF;
+  p->fusions = 0;
   p->maxHP = 64;
   p->dying = FALSE;
   p->menuZeroColor = MZC_NORMAL;
 }
 
 void ClearZeroStatusHard(struct ZeroStatus* p) {
-  p->mainWeapon = WEAPON_BUSTER;
-  p->subWeapon = WEAPON_SABER;
+  p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  (p->asset).satelites[0] = ELF_NONE;
-  (p->asset).satelites[1] = ELF_NONE;
+  p->satelites[0] = ELF_NONE;
+  p->satelites[1] = ELF_NONE;
   p->head = HEAD_CHIP_NONE;
   p->body = BODY_CHIP_NONE;
   p->foot = FOOT_CHIP_NONE;
@@ -65,25 +59,20 @@ void ClearZeroStatusHard(struct ZeroStatus* p) {
   (p->keyMap).btnMode = 0;
   (p->keyMap).attackMode = 0;
   (p->keyMap).unk_a = 0;
-  p->charge[0] = 0;
-  p->charge[1] = 0;
-  (p->asset).EC = 0;
-  (p->asset).subtankHP[0] = 0xFF;
-  (p->asset).subtankHP[1] = 0xFF;
-  (p->asset).subtankHP[2] = 0xFF;
-  (p->asset).subtankHP[3] = 0xFF;
-  (p->asset).fusions = 0;
+  p->charge[0] = 0, p->charge[1] = 0;
+  p->EC = 0;
+  p->subtankHP[0] = 0xFF, p->subtankHP[1] = 0xFF, p->subtankHP[2] = 0xFF, p->subtankHP[3] = 0xFF;
+  p->fusions = 0;
   p->maxHP = 64;
   p->dying = FALSE;
   p->menuZeroColor = MZC_HARD;
 }
 
 void ClearZeroStatusUltimate(struct ZeroStatus* p) {
-  p->mainWeapon = WEAPON_BUSTER;
-  p->subWeapon = WEAPON_SABER;
+  p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  (p->asset).satelites[0] = ELF_NONE;
-  (p->asset).satelites[1] = ELF_NONE;
+  p->satelites[0] = ELF_NONE;
+  p->satelites[1] = ELF_NONE;
   p->head = HEAD_CHIP_NONE;
   p->body = BODY_CHIP_NONE;
   p->foot = FOOT_CHIP_NONE;
@@ -100,14 +89,11 @@ void ClearZeroStatusUltimate(struct ZeroStatus* p) {
   (p->keyMap).btnMode = 0;
   (p->keyMap).attackMode = 0;
   (p->keyMap).unk_a = 0;
-  p->charge[0] = 0;
-  p->charge[1] = 0;
-  (p->asset).EC = 0;
-  (p->asset).subtankHP[0] = 0xFF;
-  (p->asset).subtankHP[1] = 0xFF;
-  (p->asset).subtankHP[2] = 0;
-  (p->asset).subtankHP[3] = 0;
-  (p->asset).fusions = 0;
+  p->charge[0] = 0, p->charge[1] = 0;
+  p->EC = 0;
+  p->subtankHP[0] = 0xFF, p->subtankHP[1] = 0xFF;
+  p->subtankHP[2] = 0, p->subtankHP[3] = 0;
+  p->fusions = 0;
   p->maxHP = 64;
   p->dying = FALSE;
   p->menuZeroColor = MZC_ULTIMATE;
@@ -115,25 +101,23 @@ void ClearZeroStatusUltimate(struct ZeroStatus* p) {
 
 void FUN_080321d4(struct ZeroStatus* p) {
   u8 i;
-  p->mainWeapon = WEAPON_BUSTER;
-  p->subWeapon = WEAPON_SABER;
+  p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  (p->asset).satelites[0] = ELF_NONE;
-  (p->asset).satelites[1] = ELF_NONE;
+  p->satelites[0] = ELF_NONE;
+  p->satelites[1] = ELF_NONE;
   p->head = HEAD_CHIP_NONE;
   p->body = BODY_CHIP_NONE;
   p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
   (p->keyMap).unk_a = 0;
-  p->charge[0] = 0;
-  p->charge[1] = 0;
+  p->charge[0] = 0, p->charge[1] = 0;
   for (i = 0; i < 4; i++) {
-    if ((p->asset).subtankHP[i] != 0xFF) {
-      (p->asset).subtankHP[i] = 0;
+    if (p->subtankHP[i] != 0xFF) {
+      p->subtankHP[i] = 0;
     }
   }
-  (p->asset).fusions = 0;
+  p->fusions = 0;
   p->maxHP = 64;
   p->dying = FALSE;
 }
@@ -168,10 +152,10 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
   motion_t zm;
   weapon_t w[4];
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, m);
     CreateWeaponRod(z);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
     return;
   }
 
@@ -189,8 +173,8 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
       } else {
         z->rodToggle = 0x0;
       }
-      (z->unk_b4).attackMode[1] = 11;
-      (z->unk_b4).attackMode[2] = 0;
+      (z->unk_b4).attackState8[1] = 11;
+      (z->unk_b4).attackState8[2] = 0;
       return;
     }
     if (z->unk_rod_133 != 0) {
@@ -204,16 +188,16 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
       if (*input & DPAD_RIGHT) SET_XFLIP(z, TRUE);
       if (*input & DPAD_LEFT) SET_XFLIP(z, FALSE);
       if (*input & DPAD_UP) {
-        (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[1][r2];
+        (z->unk_b4).attackState8[1] = u8_ARRAY_0835e84c[1][r2];
       } else {
         if (*input & DPAD_DOWN) {
-          (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[2][r2];
+          (z->unk_b4).attackState8[1] = u8_ARRAY_0835e84c[2][r2];
         } else {
-          (z->unk_b4).attackMode[1] = u8_ARRAY_0835e84c[0][r2];
+          (z->unk_b4).attackState8[1] = u8_ARRAY_0835e84c[0][r2];
         }
       }
 
-      (z->unk_b4).attackMode[2] = 0;
+      (z->unk_b4).attackState8[2] = 0;
       z->unk_rod_133 = 0;
       return;
     }
@@ -224,8 +208,8 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
       } else {
         z->rodToggle = 0x0;
       }
-      (z->unk_b4).attackMode[0] = 3;
-      (z->unk_b4).attackMode[1] = 0;
+      (z->unk_b4).attackState8[0] = 3;
+      (z->unk_b4).attackState8[1] = 0;
       zeroAttack(z);
       return;
     }
@@ -237,7 +221,7 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
     } else {
       z->rodToggle = 0x0;
     }
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
     z->rodID = 0xFF;
     return;
@@ -257,10 +241,10 @@ void FUN_08032504(struct Zero* z, motion_t m) {
   motion_t zm;
 
   z->rodToggle = 0x10;
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, m);
     CreateWeaponRod(z);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
     return;
   }
 
@@ -271,8 +255,8 @@ void FUN_08032504(struct Zero* z, motion_t m) {
   }
 
   if (((z->s).motion.cmdIdx > 5) && IsAttackOK(z, &z->usingWeapon)) {
-    (z->unk_b4).attackMode[0] = 3;
-    (z->unk_b4).attackMode[1] = 0;
+    (z->unk_b4).attackState8[0] = 3;
+    (z->unk_b4).attackState8[1] = 0;
     zeroAirAtk(z);
     return;
   }
@@ -283,7 +267,7 @@ void FUN_08032504(struct Zero* z, motion_t m) {
     } else {
       GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x04), 2, 1);
     }
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     z->rodID = 0xFF;
   }
 }
@@ -291,11 +275,11 @@ void FUN_08032504(struct Zero* z, motion_t m) {
 void FUN_080325e8(struct Zero* z, motion_t m) {
   motion_t zm;
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, m);
     z->unk_135 = 0;
     CreateWeaponRod(z);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
     return;
   }
 
@@ -306,7 +290,7 @@ void FUN_080325e8(struct Zero* z, motion_t m) {
   }
 
   if ((z->s).motion.state == MOTION_END) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     SetMotion(&z->s, GetDefaultMotion(z));
     z->rodID = 0xFF;
   }
@@ -315,11 +299,11 @@ void FUN_080325e8(struct Zero* z, motion_t m) {
 void FUN_0803267c(struct Zero* z, motion_t m) {
   motion_t zm;
 
-  if ((z->unk_b4).attackMode[2] == 0) {
+  if ((z->unk_b4).attackState8[2] == 0) {
     SetMotion(&z->s, m);
     z->unk_135 = 0;
     CreateWeaponRod(z);
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
     return;
   }
 
@@ -335,18 +319,18 @@ void FUN_0803267c(struct Zero* z, motion_t m) {
     } else {
       GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x04), 2, 1);
     }
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
     z->rodID = 0xFF;
   }
 }
 
 void zero_08032724(struct Zero* z) {
-  if ((z->unk_b4).attackMode[0] == 3) {
+  if ((z->unk_b4).attackState8[0] == 3) {
     if (z->usingWeapon == WEAPON_SABER) {
       if ((z->s).mode[1] == ZERO_AIR) {
-        if ((z->unk_b4).attackMode[1] == 2) {
+        if ((z->unk_b4).attackState8[1] == 2) {
           z->saberAction = 0xFF;
-          (z->unk_b4).attackMode[0] = 0;
+          (z->unk_b4).attackState8[0] = 0;
         }
       }
     }
@@ -381,7 +365,7 @@ NON_MATCH void setStageElfFlags(struct Zero* z) {
 #endif
 }
 
-u8 FUN_08032880(struct Zero* z, u8 r1) {
+u8 FUN_08032880(void* _, u8 r1) {
   static const cyberelf_t sSatelitableElfIDs[23] = {
       ELF_MARTINA, ELF_MILVY, ELF_ELPHY, ELF_SYLPHY, ELF_RILPHY, ELF_PUTITE, ELF_BALETTE, ELF_MAYA, ELF_KWAPPA, ELF_GAMBUL, ELF_BYSE, ELF_DYLPHINA, ELF_LIZETUS, ELF_COTTUS, ELF_SHUTHAS, ELF_MALTHAS, ELF_ILETHAS, ELF_ENETHAS, ELF_BUSRAS, ELF_SABRAS, ELF_RODERAS, ELF_BOOMERAS, ELF_CLOKKLE,
   };
@@ -405,12 +389,8 @@ u8 FUN_08032880(struct Zero* z, u8 r1) {
     u8 id = sSatelitableElfIDs[i];
     if ((ELF_AVABILITY(id) & (ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED)) == ELF_AVABILITY_UNLOCKED) {
       if (ctr == r1) {
-        if (sSatelitableElfIDs[i] <= ELF_SLOPPE) {
-          return 0;
-        }
-        if (sSatelitableElfIDs[i] <= ELF_ARCHIL) {
-          return 1;
-        }
+        if (sSatelitableElfIDs[i] <= ELF_SLOPPE) return 0;
+        if (sSatelitableElfIDs[i] <= ELF_ARCHIL) return 1;
         return 2;
       }
       ctr++;
@@ -428,9 +408,9 @@ s16 getFallAcceleration(struct Zero* z) {
 
 s16 calcMaxFallSpeed(struct Zero* z) {
   if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > SEA) {
-    return 0x380;
+    return PIXEL(7) / 2;
   }
-  return 0x700;
+  return PIXEL(7);
 }
 
 s16 getWallFallSpeed(struct Zero* z) {
@@ -555,7 +535,7 @@ bool8 IsElfUsed(struct Zero* z, cyberelf_t id) {
       return TRUE;
     }
     b4 = &z->unk_b4;
-    satelites = (b4->status).asset.satelites;
+    satelites = (b4->status).satelites;
     if ((z->inCyberSpace) || ((satelites[0] == id) || (satelites[1] == id))) {
       return TRUE;
     }
@@ -589,9 +569,8 @@ void InstantlyKilling(struct Zero* z) {
       } else {
         (z->body).hp = 0;
       }
-      z->isRightDir = ((z->s).flags >> 4) & 1;
-      (z->s).mode[1] = ZERO_DAMAGED;
-      (z->s).mode[2] = 0;
+      z->isRightDir = ((z->s).flags & X_FLIP) != 0;
+      (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
     }
   }
 }

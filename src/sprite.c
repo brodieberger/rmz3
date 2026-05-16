@@ -3,8 +3,8 @@
 #include "entity.h"
 #include "global.h"
 #include "overworld.h"
+#include "renderer.h"
 #include "story.h"
-#include "task.h"
 
 void ResetPivot(struct Pivot* pivot, struct Coord* c, u32 _, void* nullVal) {
   static const struct Coord offset = {0x0, 0x0};
@@ -22,20 +22,17 @@ static const s16 s16_ARRAY_08338cec[36] = {
 };
 
 static void unused_080046ac(u16* param_1) {
-  s16 val1;
-  s16 val2;
-  param_1[0] = 0;
-  param_1[1] = 0;
+  s16 val1, val2;
+  param_1[0] = 0, param_1[1] = 0;
 
   val1 = 0x280;
   param_1[2] = val1;
   val2 = 0x1c0;
   param_1[3] = val2;
-  param_1[4] = (val1 >> 1);
-  param_1[5] = (val2 >> 1);
+  param_1[4] = (val1 >> 1), param_1[5] = (val2 >> 1);
 }
 
-NAKED static void unused_080046c8(void) { INCCODE("asm/unused/unused_080046c8.inc"); }
+static void unused_080046c8(u16* p, u32 x, u32 y) { p[4] = x, p[5] = y; }
 
 void CreateDrawPivot(struct DrawPivot* dp, struct Pivot* p, void* _ UNUSED) {
   if (p != NULL) {
@@ -55,35 +52,21 @@ void CreateDrawPivot(struct DrawPivot* dp, struct Pivot* p, void* _ UNUSED) {
   (dp->offset).x = (dp->offset).y = 0;
 }
 
-void SetTaskCallback(struct Task* t, void* cb) {
-  t->fn = cb;
-  return;
-}
+void SetTaskCallback(struct Task* t, void* cb) { t->fn = cb; }
 
-// Unused
-static void clearTaskCallback(struct Sprite* s) {
-  s->fn = NULL;
-  return;
-}
+static void unused_ClearTaskCallback(struct Sprite* s) { s->fn = NULL; }
 
-void FUN_08004730(struct Sprite* s) {
-  s->p = NULL;
-  return;
-}
+void FUN_08004730(struct Sprite* s) { s->p = NULL; }
 
-#if MODERN == 0
 static void unused_08004738(u32* a, u32* b) {
   *b = *a;
   *a = (u32)b;
 }
-#endif
 
-#if MODERN == 0
 void unused_08004740(u32* a, u32 b, u32* c) {
   *c = *a;
   *a = b;
 }
-#endif
 
 void InitNonAffineSprite(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c) {
   // Clear 8..32 bytes
@@ -132,10 +115,7 @@ void InitScalerotSprite1(struct Sprite* s, struct MetaspriteHeader* sprites, str
 }
 
 void InitScalerotSprite2(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c) {
-  CpuFastFill(0, s, 32);
-  {
-    vu8 _;
-  }
+  _CpuFastFill(0, s, 32);
   SetTaskCallback((struct Task*)s, TaskCB_SetMetaspriteTileNum2);
   (s->oam).mosaic = 1;
   (s->oam).priority = 2;
@@ -645,16 +625,3 @@ _08004CC8: .4byte 0x000001FF\n\
 _08004CCC: .4byte 0x000003FF\n\
  .syntax divided\n");
 }
-
-/**
- * @brief Create phantom face icon for Minigame HP
- * @param s ChipIcon sprite (0: 0x2031970, 1: 0x2031990, 2: 0x20319B0)
- * @param sprites 0x20319D0
- * @param r2 0x0000001
- * @param tilenum Tile Number for Chip icon
- * @note Called on Phantom minigame only in Zero3
- */
-NAKED void createPhantomIcon(struct Sprite* s, struct MetaspriteHeader* sprites, u32 r2, u16 tilenum) { INCCODE("asm/todo/createPhantomIcon.inc"); }
-
-// Only used in Phantom minigame
-NAKED void phantom_minigame_08004d80(struct Sprite* s, s32 param_2) { INCCODE("asm/todo/phantom_minigame_08004d80.inc"); }

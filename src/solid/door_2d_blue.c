@@ -24,43 +24,35 @@ const SolidRoutine gDoor2DBlueRoutine = {
 
 NON_MATCH static void Door2DBlue_Init(struct Solid* p) {
 #if MODERN
-  bool8 xflip;
-
   InitNonAffineMotion(&p->s);
   if ((p->s).work[1] == 0) {
-    struct Solid* otherside = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
-    if (otherside == NULL) {
+    // Otherside
+    struct Entity* q = AllocEntityFirst(gSolidHeaderPtr);
+    if (q == NULL) {
       return;
     }
     (p->s).coord.x += PIXEL(8);
     (p->s).coord.y += PIXEL(9);
-    (otherside->s).taskCol = 30;
-    INIT_SOLID_ROUTINE(otherside, SOLID_DOOR_2D_BLUE);
-    (otherside->s).tileNum = 0;
-    (otherside->s).palID = 0;
-    (otherside->s).flags2 |= WHITE_PAINTABLE;
-    (otherside->s).invincibleID = (otherside->s).uniqueID;
-    (otherside->s).work[1] = 1;
-    (otherside->s).unk_28 = &p->s;
-    (otherside->s).coord.x = (p->s).coord.x - PIXEL(1);
-    (otherside->s).coord.y = (p->s).coord.y;
-    if ((W_TERRAIN_V2.id & 0x7F) == STAGE_OCEAN) {
-      wStaticMotionPalIDs[SM018_DOOR_2D_BLUE] = 10;
-    }
+    q->taskCol = 30;
+    INIT_SOLID_ROUTINE(q, SOLID_DOOR_2D_BLUE);
+    q->tileNum = 0, q->palID = 0;
+    q->flags2 |= WHITE_PAINTABLE;
+    q->invincibleID = q->uniqueID;
+    q->work[1] = 1;
+    q->unk_28 = (void*)p;
+    (q->coord).x = (p->s).coord.x - PIXEL(1);
+    (q->coord).y = (p->s).coord.y;
+    if ((gOverworld.terrain.id & 0x7F) == STAGE_OCEAN) wStaticMotionPalIDs[SM018_DOOR_2D_BLUE] = 10;
     LOAD_STATIC_GRAPHIC(SM018_DOOR_2D_BLUE);
   } else {
     SetMotion(&p->s, MOTION(SM018_DOOR_2D_BLUE, 0));
-    xflip = TRUE;
-    (p->s).flags |= X_FLIP;
-    (p->s).spr.xflip = xflip;
-    (p->s).spr.oam.xflip |= TRUE;
+    SET_XFLIP(p, TRUE);
   }
 
   (p->s).spr.oam.priority = 1;
   (p->s).flags |= DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 0;
-  (p->s).mode[2] = 0;
+  (p->s).mode[1] = 0, (p->s).mode[2] = 0;
   Door2DBlue_Update(p);
 #else
   INCCODE("asm/wip/Door2DBlue_Init.inc");

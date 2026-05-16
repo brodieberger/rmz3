@@ -2,6 +2,7 @@
 #include "element.h"
 #include "entity.h"
 #include "game.h"
+#include "gba/m4a.h"
 #include "gfx.h"
 #include "global.h"
 #include "hud.h"
@@ -13,6 +14,8 @@
 #include "motion.h"
 #include "overworld.h"
 #include "pickup.h"
+#include "sound.h"
+#include "spawn.h"
 #include "sram.h"
 #include "story.h"
 #include "syssav.h"
@@ -130,7 +133,7 @@ EWRAM_DATA u16 wStaticMotionPalIDs[STATIC_MOTION_COUNT + 2] = {};     // 085d78f
 EWRAM_DATA u16 wStaticGraphicTilenums[STATIC_MOTION_COUNT + 2] = {};  // 085d78f8 からの Graphic (.ofs / 64) が入っている (08017aa8 参照)
 EWRAM_DATA u16 wDynamicGraphicTilenums[DYNAMIC_MOTION_COUNT + 56] = {};
 
-EWRAM_DATA struct StageEntityManager gStageEntityManager = {};
+EWRAM_DATA struct SpawnManager gSpawnManager = {};
 EWRAM_DATA struct Story96 gCurStory = {};
 EWRAM_DATA struct Mission gMission = {};
 EWRAM_DATA struct Unused_0202fe50 gUnk_0202fe50 = {};
@@ -139,7 +142,7 @@ EWRAM_DATA u8 sSunkenLibDiskRoomIdxs[8] = {};  // 0834cdb8 のidx
 EWRAM_DATA u8 sunken_0202fffc[16] = {};
 EWRAM_DATA u8 Unk_0203000c[228] = {};
 EWRAM_DATA struct QuakeManager gQuakeManager = {};
-EWRAM_DATA struct UnkElement wElement = {};  // 02030299のコピー？
+EWRAM_DATA struct ElFxManager gElFxManager = {};  // 02030299のコピー？
 
 EWRAM_DATA struct EntityHeader* gZeroHeaderPtr = NULL;
 EWRAM_DATA struct EntityHeader* gWeaponHeaderPtr = NULL;

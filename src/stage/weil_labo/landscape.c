@@ -203,7 +203,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) &= 0xFFFC;
-    BGCNT16(n >> 4) |= 1;
+    BGCNT16(n >> 4) |= BGCNT_PRIORITY(1);
     gBlendRegBuffer.bldclt = 0x3B44;
     gBlendRegBuffer.bldalpha = 0xC04;
     SEA = PIXEL(832);

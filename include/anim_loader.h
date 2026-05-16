@@ -12,16 +12,16 @@
 #define gStaticGraphic(ofs) ((const struct Graphic*)(STATIC_GRAPHICS + ofs))
 #define gStaticPalette(ofs) ((const struct Palette*)(STATIC_PALETTES + ofs))
 
-#define STATIC_GRAPHIC_LOADER(fn, n)                                            \
-  {                                                                             \
-    const struct Graphic* g;                                                    \
-    const struct Palette* pal;                                                  \
-    u32 ofs;                                                                    \
-    ofs = (sizeof(struct ColorGraphic) * n);                                    \
-    g = gStaticGraphic(ofs);                                                    \
-    fn((void*)g, (void*)((wStaticGraphicTilenums[n] - g->ofs) * 32 + 0x10000)); \
-    pal = gStaticPalette(ofs);                                                  \
-    LoadPalette(pal, (wStaticMotionPalIDs[n] - pal->dst) * 32 + PLTT_SIZE / 2); \
+#define STATIC_GRAPHIC_LOADER(fn, n)                                              \
+  {                                                                               \
+    const struct Graphic* g;                                                      \
+    const struct Palette* pal;                                                    \
+    u32 ofs;                                                                      \
+    ofs = (sizeof(struct ColorGraphic) * (n));                                    \
+    g = gStaticGraphic(ofs);                                                      \
+    fn((void*)g, (void*)((wStaticGraphicTilenums[(n)] - g->ofs) * 32 + 0x10000)); \
+    pal = gStaticPalette(ofs);                                                    \
+    LoadPalette(pal, (wStaticMotionPalIDs[(n)] - pal->dst) * 32 + PLTT_SIZE / 2); \
   }
 
 #define LOAD_STATIC_GRAPHIC(n) STATIC_GRAPHIC_LOADER(LoadGraphic, n)

@@ -279,7 +279,7 @@ Mellnet_Init: @ 0x0807D85C
 	.align 2, 0
 _0807D8C4: .4byte gEnemyFnTable
 _0807D8C8: .4byte 0x08367D44
-_0807D8CC: .4byte 0x08367CDC
+_0807D8CC: .4byte sCollisions
 _0807D8D0: .4byte FUN_0807d720
 
 	thumb_func_start Mellnet_Update
@@ -445,7 +445,7 @@ _0807DA00:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807DA08: .4byte 0x08367CF4
+_0807DA08: .4byte sCollisions+(1*24)
 _0807DA0C: .4byte 0x00020001
 
 	thumb_func_start FUN_0807da10
@@ -467,7 +467,7 @@ _0807DA2A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807DA30: .4byte 0x08367D0C
+_0807DA30: .4byte sCollisions+(2*24)
 
 	thumb_func_start FUN_0807da34
 FUN_0807da34: @ 0x0807DA34
@@ -522,8 +522,8 @@ _0807DA90:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807DA98: .4byte 0x08367CF4
-_0807DA9C: .4byte 0x08367D46
+_0807DA98: .4byte sCollisions+(1*24)
+_0807DA9C: .4byte sMotions
 
 	thumb_func_start FUN_0807daa0
 FUN_0807daa0: @ 0x0807DAA0
@@ -625,8 +625,8 @@ _0807DB52:
 	b _0807DB94
 	.align 2, 0
 _0807DB5C: .4byte 0xFFFFFD00
-_0807DB60: .4byte 0x08367CF4
-_0807DB64: .4byte 0x08367D4A
+_0807DB60: .4byte sCollisions+(1*24)
+_0807DB64: .4byte sMotions+(2*2)
 _0807DB68:
 	movs r0, #0x10
 	strb r0, [r4, #0x12]
@@ -730,7 +730,7 @@ _0807DD72:
 	orrs r0, r1
 	b _0807DD8E
 	.align 2, 0
-_0807DD80: .4byte 0x08367CF4
+_0807DD80: .4byte sCollisions+(1*24)
 _0807DD84: .4byte pZero2
 _0807DD88:
 	ldrb r1, [r6, #0xa]
@@ -812,7 +812,7 @@ _0807DD8E:
 	.align 2, 0
 _0807DE28: .4byte pZero2
 _0807DE2C: .4byte 0xFFFFE800
-_0807DE30: .4byte 0x08367D4E
+_0807DE30: .4byte sMotions+(4*2)
 _0807DE34:
 	adds r0, r6, #0
 	adds r0, #0x71
@@ -856,7 +856,7 @@ _0807DE6C:
 	strb r0, [r6, #0xe]
 	b _0807DEDE
 	.align 2, 0
-_0807DE88: .4byte 0x08367D4E
+_0807DE88: .4byte sMotions+(4*2)
 _0807DE8C:
 	adds r0, r6, #0
 	adds r0, #0x71
@@ -903,7 +903,7 @@ _0807DEDE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807DEE4: .4byte 0x08367D4E
+_0807DEE4: .4byte sMotions+(4*2)
 
 	thumb_func_start FUN_0807dee8
 FUN_0807dee8: @ 0x0807DEE8
@@ -995,7 +995,7 @@ _0807DF90:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807DF98: .4byte 0x08367D5A
+_0807DF98: .4byte sMotions+(10*2)
 _0807DF9C: .4byte gStageRun+232
 _0807DFA0: .4byte gEnemyFnTable
 
@@ -1036,7 +1036,7 @@ FUN_0807dfa4: @ 0x0807DFA4
 	bl FUN_080b7f70
 	b _0807E000
 	.align 2, 0
-_0807DFF0: .4byte 0x08367D5E
+_0807DFF0: .4byte sMotions+(12*2)
 _0807DFF4:
 	ldr r2, _0807E014 @ =0x08367D5E
 	adds r0, r5, #0
@@ -1054,7 +1054,7 @@ _0807E000:
 	bl TryDropItem
 	b _0807E024
 	.align 2, 0
-_0807E014: .4byte 0x08367D5E
+_0807E014: .4byte sMotions+(12*2)
 _0807E018:
 	adds r4, r5, #0
 	adds r4, #0x54
@@ -1164,7 +1164,7 @@ _0807E084:
 	.align 2, 0
 _0807E0EC: .4byte pZero2
 _0807E0F0: .4byte 0x00004705
-_0807E0F4: .4byte 0x08367D64
+_0807E0F4: .4byte sMotions+(15*2)
 _0807E0F8:
 	adds r1, r4, #0
 	adds r1, #0x54
@@ -1230,7 +1230,7 @@ _0807E16C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807E174: .4byte 0x08367D64
+_0807E174: .4byte sMotions+(15*2)
 
 	thumb_func_start FUN_0807e178
 FUN_0807e178: @ 0x0807E178
@@ -1309,8 +1309,8 @@ _0807E188:
 	str r1, [r5, #0x60]
 	b _0807E230
 	.align 2, 0
-_0807E218: .4byte 0x08367D24
-_0807E21C: .4byte 0x08367D66
+_0807E218: .4byte sCollisions+(3*24)
+_0807E21C: .4byte sMotions+(16*2)
 _0807E220: .4byte pZero2
 _0807E224: .4byte 0xFFFFE800
 _0807E228:

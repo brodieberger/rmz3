@@ -1,8 +1,12 @@
 #include "game.h"
 
 #include "global.h"
-#include "menu.h"
 #include "system.h"
+
+void MainLoop_Game(struct GameState* g);
+void MainLoop_Menu(struct GameState* g);
+void MainLoop_Disk(struct GameState* g);
+void MainLoop_Minigame(struct GameState* g);
 
 void Process_Game(struct Process* p) {
   static const GameLoopFunc scenes[4] = {

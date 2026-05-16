@@ -25,7 +25,7 @@ extern struct QuakeManager gQuakeManager;
 
 void ClearQuakeManager(void);
 void AppendQuake(u8 power, struct Coord* c);
-void CalcQuake(struct Coord* c, struct Coord* ofs);
+void CalcQuake(struct Coord* _, struct Coord* ofs);
 s32 quake_0801acdc(struct Coord* _);
 
 #endif  // GUARD_RMZ3_OW_QUAKE_H

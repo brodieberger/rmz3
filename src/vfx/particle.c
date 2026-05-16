@@ -41,10 +41,8 @@ void CreateParticle(struct Coord* c, u8 kind, bool8 isRight) {
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_PARTICLE);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->work[0] = kind;
-    p->work[1] = 0;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = kind, p->work[1] = 0;
     p->coord = *c;
     SET_XFLIP(p, isRight);
   }
@@ -216,8 +214,7 @@ static void FUN_080b3a3c(struct VFX* p) {
     }
   }
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).coord.x += PIXEL(((RNG_0202f388 >> 16) & 4) - 2);
+  (p->s).coord.x += PIXEL((RANDOM(RNG_0202f388) & 4) - 2);
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
@@ -250,15 +247,11 @@ static void FUN_080b3b8c(struct VFX* p) {
   SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 15));
 
   if ((p->s).flags & X_FLIP) {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).d.x = (RNG_0202f388 >> 16) & 0x1FF;
+    (p->s).d.x = RANDOM(RNG_0202f388) & 0x1FF;
   } else {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).d.x = -((RNG_0202f388 >> 16) & 0x1FF);
+    (p->s).d.x = -(RANDOM(RNG_0202f388) & 0x1FF);
   }
-
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.y = (((RNG_0202f388 >> 16) & 0xF) + 0xD) * -0x40;
+  (p->s).d.y = ((RANDOM(RNG_0202f388) & 0xF) + 0xD) * -0x40;
 
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
@@ -271,15 +264,11 @@ static void FUN_080b3c40(struct VFX* p) {
   SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 16));
 
   if ((p->s).flags & X_FLIP) {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).d.x = (RNG_0202f388 >> 16) & 0x1FF;
+    (p->s).d.x = RANDOM(RNG_0202f388) & 0x1FF;
   } else {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).d.x = -((RNG_0202f388 >> 16) & 0x1FF);
+    (p->s).d.x = -(RANDOM(RNG_0202f388) & 0x1FF);
   }
-
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.y = (((RNG_0202f388 >> 16) & 0xF) + 0xA) * -0x40;
+  (p->s).d.y = ((RANDOM(RNG_0202f388) & 0xF) + 0xA) * -0x40;
 
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
@@ -299,16 +288,14 @@ static void initWallDust(struct VFX* p) {
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
 
-  RNG_0202f388 = LCG(RNG_0202f388);
+  RANDOM(RNG_0202f388);
   SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 27));
-  RNG_0202f388 = LCG(RNG_0202f388);
+  RANDOM(RNG_0202f388);
 
   SET_YFLIP(p, FALSE);
   {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).coord.x += PIXEL(((RNG_0202f388 >> 16) & 3) - 2);
-    RNG_0202f388 = LCG(RNG_0202f388);
-    (p->s).coord.y += PIXEL(((RNG_0202f388 >> 16) & 7) - 4);
+    (p->s).coord.x += PIXEL((RANDOM(RNG_0202f388) & 3) - 2);
+    (p->s).coord.y += PIXEL((RANDOM(RNG_0202f388) & 7) - 4);
   }
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
@@ -330,12 +317,9 @@ static void FUN_080b3e4c(struct VFX* p) {
   (p->s).flags |= FLIPABLE;
   SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 13));
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).work[2] = 60 + ((RNG_0202f388 >> 16) & 7);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).coord.x += PIXEL(((RNG_0202f388 >> 16) & 3) - 2);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.y = ((PIXEL(1) * 3) / 4) + ((RNG_0202f388 >> 16) & 0x3F);
+  (p->s).work[2] = 60 + (RANDOM(RNG_0202f388) & 7);
+  (p->s).coord.x += PIXEL((RANDOM(RNG_0202f388) & 3) - 2);
+  (p->s).d.y = ((PIXEL(1) * 3) / 4) + (RANDOM(RNG_0202f388) & 0x3F);
 
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
@@ -362,12 +346,9 @@ static void FUN_080b3ee0(struct Entity* p) {
     }
   }
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  p->work[2] = 60 + ((RNG_0202f388 >> 16) & 7);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->coord).x += PIXEL(((RNG_0202f388 >> 16) & 3) - 2);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->d).y = ((PIXEL(1) * 3) / 4) + ((RNG_0202f388 >> 16) & 0x3F);
+  p->work[2] = 60 + (RANDOM(RNG_0202f388) & 7);
+  (p->coord).x += PIXEL((RANDOM(RNG_0202f388) & 3) - 2);
+  (p->d).y = ((PIXEL(1) * 3) / 4) + (RANDOM(RNG_0202f388) & 0x3F);
 
   InitNonAffineMotion(p);
   p->flags |= DISPLAY;

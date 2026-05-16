@@ -291,7 +291,7 @@ _080FA4A8:\n\
 	str r0, [r7, #0x24]\n\
 	strh r4, [r7, #0xe]\n\
 	movs r0, #0xb3\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	ldr r0, [sp, #0xc]\n\
 	strh r4, [r0, #4]\n\
 	add sp, #0x10\n\

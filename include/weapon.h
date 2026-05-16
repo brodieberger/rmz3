@@ -7,36 +7,12 @@
 #include "gba/gba.h"
 #include "zero.h"
 
+typedef void (*WeaponFunc)(struct Weapon*);
 typedef WeaponFunc WeaponRoutine[5];
 extern const WeaponRoutine* const gWeaponFnTable[WEAPON_MOVE_COUNT];
 
 #define INIT_WEAPON_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gWeaponFnTable, entity, entityID)
 #define SET_WEAPON_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gWeaponFnTable, entity, modeID)
-
-enum WeaponCharge {
-  NO_CHARGE,
-  SEMI_CHARGE,
-  FULL_CHARGE,
-};
-
-extern const WeaponRoutine gBusterRoutine;
-extern const WeaponRoutine gSaberRoutine;
-extern const WeaponRoutine gShieldGuardRoutine;
-extern const WeaponRoutine gRodRoutine;
-extern const WeaponRoutine gShieldFlyRoutine;
-extern const WeaponRoutine gSaberWaveRoutine;
-extern const WeaponRoutine gWeapon6Routine;
-extern const WeaponRoutine gReflectLaserRoutine;
-extern const WeaponRoutine gSoulLauncherRoutine;
-extern const WeaponRoutine gBurstShotRoutine;
-extern const WeaponRoutine gBlizzardArrowRoutine;
-extern const WeaponRoutine gThrowBladeRoutine;
-extern const WeaponRoutine gShieldSweepRoutine;
-extern const WeaponRoutine gWeapon13Routine;
-// ...
-extern const WeaponRoutine gSmashElecRoutine;
-extern const WeaponRoutine gElecShieldSweepRoutine;
-extern const WeaponRoutine gMinigameRodRoutine;
 
 extern const struct Collision gSaberGeneralCollisions[2];
 extern const struct Collision* const* const gSaberCollisions[25];
@@ -47,8 +23,7 @@ extern u16 gWeaponElements[WEAPON_KINDS];
 extern const u16 gWeaponTileNum[WEAPON_KINDS];
 extern const u8 gWeaponPalIDs[WEAPON_KINDS];
 
-void DrawWeapon(struct TaskManager* p);
-void DeleteWeapon(struct Weapon* w);
+void DeleteWeapon(struct Entity* p);
 void SetWeaponElement(u16 n, u16 val);
 void KillAllWeapons(WeaponFunc fn);
 u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon);
@@ -56,16 +31,17 @@ u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon);
 struct Weapon* CreateBlizzardArrow(struct Zero* z, struct Coord* c, u8 n, bool8 xflip);
 
 void DeleteSaber(struct Weapon* w);
+void DeleteFlyingShield(Object* p);
 
 struct Weapon* CreateWeaponBuster(struct Zero* z, struct Coord* c, u8 n, bool8 xflip, bool8 yflip);
 struct Weapon* CreateWeaponSaber(struct Zero* z, u8 r1);
 struct Weapon* CreateBuster(struct Zero* z, s32 x, s32 y, bool8 isDirRight);
-struct Weapon* CreateWeaponShieldGuard(struct Zero* z, u8 n);
+struct Entity* CreateWeaponShieldGuard(struct Zero* z, u8 n);
 struct Weapon* CreateWeaponRod(struct Zero* z);
-struct Weapon* CreateWeaponShieldFly(struct Zero* z, u8 n);
-struct Weapon* CreateSmashElec(struct Zero* z, struct Coord* c, u8 leftOrRight);
+struct Entity* CreateWeaponShieldFly(struct Zero* z, u8 n);
+struct Entity* CreateSmashElec(struct Zero* z, struct Coord* c, u8 leftOrRight);
 struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* w, bool8 isIce);
-struct Weapon* CreateSaberWave(struct Zero* z, struct Weapon* w, bool8 r2);
+struct Entity* CreateSaberWave(struct Zero* z, struct Weapon* w, bool8 r2);
 void CreateWeapon6(s32 x, s32 y);
 
 u8 CalcBusterBonus(struct Zero* z);
@@ -73,17 +49,20 @@ u8 CalcSaberBonus(struct Zero* z);
 u8 CalcRodBonus(struct Zero* z);
 u8 CalcShieldBonus(struct Zero* z);
 
-void MenuExit_Buster(struct Weapon* w);
-void MenuExit_ShieldGuard(struct Weapon* w);
-void MenuExit_ShieldFly(struct Weapon* w);
-void MenuExit_ReflectLaser(struct Weapon* w);
-void MenuExit_SoulLauncher(struct Weapon* w);
-void MenuExit_BurstShot(struct Weapon* w);
-void MenuExit_BlizzardArrow(struct Weapon* w);
-void MenuExit_ThrowBlade(struct Weapon* w);
-void MenuExit_ShieldSweep(struct Weapon* w);
-void MenuExit_Weapon13(struct Weapon* w);
-void MenuExit_SaberSmash(struct Weapon* w);
-void MenuExit_ShieldSweepElec(struct Weapon* w);
+struct WeaponCommon {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct WeaponCommonProps {
+    struct Zero* z;
+    /*
+      props[n][0]: 属性？
+      props[n][1]: 攻撃力？
+      props[n][2]: bit6: イレタスの効果が乗っているか
+    */
+    u8 props[2][8];
+    u8 unk_c8[36];
+  } props;
+};
+static_assert(sizeof(struct WeaponCommon) == sizeof(struct Weapon));
 
 #endif  // GUARD_RMZ3_WEAPON_H

@@ -164,7 +164,7 @@ Anubis_Init: @ 0x08050194
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	str r0, [r7, #0x14]
-	ldr r1, _080502F0 @ =0x083635B4
+	ldr r1, _080502F0 @ =sInitModes
 	ldrb r0, [r7, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -313,7 +313,7 @@ _080502D6:
 	bx r0
 	.align 2, 0
 _080502EC: .4byte gBossFnTable
-_080502F0: .4byte 0x083635B4
+_080502F0: .4byte sInitModes
 _080502F4: .4byte sCollisions
 _080502F8: .4byte FUN_080500c8
 _080502FC: .4byte 0x000005B4
@@ -345,7 +345,7 @@ _0805032E:
 	ands r0, r1
 	cmp r0, #0
 	beq _08050348
-	ldr r2, _08050358 @ =0x083635B8
+	ldr r2, _08050358 @ =sElementCoord
 	movs r0, #0x14
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -360,7 +360,7 @@ _08050348:
 	subs r0, #1
 	b _0805036E
 	.align 2, 0
-_08050358: .4byte 0x083635B8
+_08050358: .4byte sElementCoord
 _0805035C:
 	ldr r0, _080503A4 @ =pZero2
 	ldr r0, [r0]
@@ -399,13 +399,13 @@ _0805039C:
 	bx r0
 	.align 2, 0
 _080503A4: .4byte pZero2
-_080503A8: .4byte 0x0836350C
-_080503AC: .4byte 0x08363538
+_080503A8: .4byte sUpdates1
+_080503AC: .4byte sUpdates2
 
 	thumb_func_start Anubis_Die
 Anubis_Die: @ 0x080503B0
 	push {lr}
-	ldr r2, _080503C4 @ =0x08363564
+	ldr r2, _080503C4 @ =sDeads
 	ldrb r1, [r0, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -414,7 +414,7 @@ Anubis_Die: @ 0x080503B0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080503C4: .4byte 0x08363564
+_080503C4: .4byte sDeads
 
 	thumb_func_start nop_080503c8
 nop_080503c8: @ 0x080503C8
@@ -669,7 +669,7 @@ _080505BE:
 	bne _080505E0
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _080505F4 @ =0x08363584
+	ldr r1, _080505F4 @ =sCollisions+(1*24)
 	bl SetDDP
 	strb r4, [r5, #0xd]
 	strb r4, [r5, #0xe]
@@ -683,7 +683,7 @@ _080505E6:
 	.align 2, 0
 _080505EC: .4byte 0x0000AF01
 _080505F0: .4byte gStageRun
-_080505F4: .4byte 0x08363584
+_080505F4: .4byte sCollisions+(1*24)
 
 	thumb_func_start anubisNeutral
 anubisNeutral: @ 0x080505F8
@@ -706,7 +706,7 @@ _08050610:
 _08050616:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _08050668 @ =0x08363584
+	ldr r1, _08050668 @ =sCollisions+(1*24)
 	bl SetDDP
 	ldr r1, _0805066C @ =0x0000AF01
 	adds r0, r4, #0
@@ -745,7 +745,7 @@ _08050638:
 	strb r0, [r4, #0xe]
 	b _08050676
 	.align 2, 0
-_08050668: .4byte 0x08363584
+_08050668: .4byte sCollisions+(1*24)
 _0805066C: .4byte 0x0000AF01
 _08050670:
 	movs r0, #5
@@ -793,7 +793,7 @@ _080506B8:
 	ldrb r0, [r0]
 	cmp r0, #2
 	bls _0805073C
-	ldr r7, _080506D0 @ =0x083635C0
+	ldr r7, _080506D0 @ =u8_ARRAY_083635c0
 	ldr r0, _080506D4 @ =gMission
 	mov r8, r0
 	ldr r6, _080506D8 @ =RNG_0202f388
@@ -801,7 +801,7 @@ _080506B8:
 	adds r5, #0xcf
 	b _080506E4
 	.align 2, 0
-_080506D0: .4byte 0x083635C0
+_080506D0: .4byte u8_ARRAY_083635c0
 _080506D4: .4byte gMission
 _080506D8: .4byte RNG_0202f388
 _080506DC:
@@ -858,12 +858,12 @@ _0805073C:
 	ldr r6, _08050750 @ =RNG_0202f388
 	adds r5, r4, #0
 	adds r5, #0xcf
-	ldr r7, _08050754 @ =0x083635C4
+	ldr r7, _08050754 @ =u8_ARRAY_083635c0+4
 	b _08050760
 	.align 2, 0
 _0805074C: .4byte gMission
 _08050750: .4byte RNG_0202f388
-_08050754: .4byte 0x083635C4
+_08050754: .4byte u8_ARRAY_083635c0+4
 _08050758:
 	adds r0, r1, r7
 	ldrb r0, [r0]
@@ -1447,7 +1447,7 @@ _08050B84:
 	adds r1, r1, r2
 	adds r0, r4, #0
 	bl LoadPalette
-	ldr r3, _08050C38 @ =0x083635C9
+	ldr r3, _08050C38 @ =u8_ARRAY_083635c9
 	ldr r2, _08050C3C @ =RNG_0202f388
 	ldr r1, [r2]
 	ldr r0, _08050C40 @ =0x000343FD
@@ -1502,7 +1502,7 @@ _08050C28: .4byte gStaticMotionGraphics
 _08050C2C: .4byte wStaticGraphicTilenums
 _08050C30: .4byte gStaticMotionGraphics+12
 _08050C34: .4byte wStaticMotionPalIDs
-_08050C38: .4byte 0x083635C9
+_08050C38: .4byte u8_ARRAY_083635c9
 _08050C3C: .4byte RNG_0202f388
 _08050C40: .4byte 0x000343FD
 _08050C44: .4byte 0x00269EC3
@@ -2107,7 +2107,7 @@ _080510E0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080510E8: .4byte 0x083635DC
+_080510E8: .4byte sExplosionCoords
 _080510EC: .4byte gStageRun
 
 	thumb_func_start anubis_080510f0
@@ -2319,5 +2319,5 @@ _08051286:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08051290: .4byte 0x083635E4
+_08051290: .4byte sExplosionCoords+8
 _08051294: .4byte gStageRun

@@ -4,6 +4,7 @@
 #include "gba/gba.h"
 #include "types.h"
 
+// gTextWindow.text.textType
 #define TW_NORMAL 0
 #define TW_OPTION 1
 
@@ -23,7 +24,7 @@ struct TextWindowText {
     bit2: ユーザーが選ぶ必要あり
   */
   u16 mode;
-  u8 mugshot;
+  u8 mugshot;          // =1 のときに 顔アイコンなしのメッセージウィンドウなのは確定
   u8 y;                // 大きくするとメッセージウィンドウの位置が下がる(後ろの黒部分は固定)
   bool8 mugshotRight;  // 顔アイコンがウィンドウの右側か
   u8 optionID;
@@ -34,12 +35,8 @@ struct TextWindowText {
   */
   u32 textType;
 
-  /*
-    1: 顔つきメッセージ
-    2: 画面下メッセージ(inline)
-  */
   struct {
-    u8 kind;
+    u8 kind;  // 0: 現在メッセージなし, 1: 顔つきメッセージ, 2: 画面下メッセージ(inline), 3: ???
     u8 phase;
     bool8 prompt;
     u8 _;
@@ -56,16 +53,14 @@ struct TextWindowText {
 
 // ウィンドウ付きテキスト 0x020308d0
 struct TextWindow {
-  u32 frame;  // 詳細不明
-  tile_id_t* bg0Mask;
+  u32 frame;
+  void* buffer;  // (BG0の)BGマップのバッファ
   struct TextWindowText text;
 };
 
-typedef void (*TextFunc)(struct TextWindowText*);
-
 extern struct TextWindow gTextWindow;
 
-void ClearTextWindow(void* bg0);
+void ClearTextWindow(void* bgmap);
 void UpdateTextWindow(void);
 void PrintNormalMessage(TextID n);
 void PrintTextWindow(TextID n, u16 kind);

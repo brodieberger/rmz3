@@ -623,7 +623,7 @@ initLeviathanMinigame: @ 0x080FB81C
 	adds r0, r7, r1
 	strb r2, [r0]
 	movs r0, #0xb6
-	bl playBGM
+	bl PlayBGM
 	movs r0, #0x32
 	bl PlaySound
 	pop {r3, r4, r5}
@@ -943,7 +943,7 @@ _080FBD2C: @ jump table
 	.4byte _080FBD9A @ case 5
 _080FBD44:
 	movs r0, #0xb6
-	bl fadeoutBGM
+	bl FadeOutBGM
 	movs r0, #0xf6
 	bl PlaySound
 	adds r1, r4, #0

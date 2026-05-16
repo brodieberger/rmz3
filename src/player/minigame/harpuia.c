@@ -14,22 +14,22 @@ void Harpuia_Die(struct Zero* z);
 
 // clang-format off
 const ZeroRoutine gHarpuiaRoutine = {
-  [ENTITY_INIT] =       Harpuia_Init,
-  [ENTITY_UPDATE] =     Harpuia_Update,
-  [ENTITY_DIE]  =       Harpuia_Die,
-  [ENTITY_DISAPPEAR] =  RemovePlayer,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)Harpuia_Init,
+  [ENTITY_UPDATE] =     (void*)Harpuia_Update,
+  [ENTITY_DIE]  =       (void*)Harpuia_Die,
+  [ENTITY_DISAPPEAR] =  (void*)RemovePlayer,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Zero* CreatePlayerHarpuia(void* p, struct Coord* c, u8 n) {
+struct Zero* CreatePlayerHarpuia(void* q, struct Coord* c, u8 n) {
   struct Zero* z = AllocPlayer();
   if (z != NULL) {
     (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, 3);
+    INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_HARPUIA);
     (z->s).coord = *c;
     (z->s).work[0] = n;
-    (z->s).unk_28 = p;
+    (z->s).unk_28 = q;
   }
   return z;
 }

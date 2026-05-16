@@ -104,13 +104,11 @@ void InitWeaponBody(struct Body* o, const struct Collision* hitbox, s16 atk, s16
   o->forceFlags = (u8)forceFlags;
 }
 
-#if MODERN == 0
 static void SetDDP_Unused(struct Body* o, const struct Collision* hitbox, u8 r2) {
   o->collisions = hitbox;
   o->hardness = r2;
   o->forceFlags = 0;
 }
-#endif
 
 // 毎フレーム呼び出されて、gCollisionManager に body が持つ Collisionのリンクリストを1つずつ登録していく
 NON_MATCH void ResisterNonAffineHitbox(struct Body* body) {

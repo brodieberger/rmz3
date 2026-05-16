@@ -208,7 +208,7 @@ static void LayerExit_2(struct StageLayer* l UNUSED, const struct Stage* _ UNUSE
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->prio | l->screenBase | 0x44;
+    BGCNT16(n >> 4) = l->prio | l->screenBase | (BGCNT_CHARBASE(1) | BGCNT_MOSAIC);
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
     CpuFastCopy(BGMAP(66), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
     l->unk_10 = 0;
@@ -429,7 +429,7 @@ static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
   switch (l->phase) {
     case 0: {
       BGCNT16(n >> 4) &= 0xFFFC;
-      BGCNT16(n >> 4) |= 3;
+      BGCNT16(n >> 4) |= BGCNT_PRIORITY(3);
       l->phase++;
       FALLTHROUGH;
     }

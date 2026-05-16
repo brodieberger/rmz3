@@ -11,10 +11,10 @@ static void Tretista_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gTretistaRoutine = {
-    [ENTITY_INIT] =      Tretista_Init,
-    [ENTITY_UPDATE] =    Tretista_Update,
-    [ENTITY_DIE] =       Tretista_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Tretista_Init,
+    [ENTITY_UPDATE] =    (void*)Tretista_Update,
+    [ENTITY_DIE] =       (void*)Tretista_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on

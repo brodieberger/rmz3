@@ -195,7 +195,7 @@ initFefnirMinigame: @ 0x080FB05C
 	mov r0, sb
 	strb r1, [r0]
 	movs r0, #0xbd
-	bl playBGM
+	bl PlayBGM
 	pop {r3, r4, r5}
 	mov r8, r3
 	mov sb, r4
@@ -547,7 +547,7 @@ _080FB4B0: @ jump table
 	.4byte _080FB50E @ case 5
 _080FB4C8:
 	movs r0, #0xbd
-	bl fadeoutBGM
+	bl FadeOutBGM
 	movs r0, #0x3c
 	str r0, [r4, #0x1c]
 	ldrb r0, [r4, #1]

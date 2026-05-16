@@ -3,20 +3,35 @@
 #include "global.h"
 #include "stagerun.h"
 
+struct Childre {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  struct Entity* unk_b4;
+  u32 unk_b8;
+  struct Coord unk_bc;
+  u8 unk_c4;
+  u8 unk_c5;
+  bool8 shouldTurnRight;
+  u8 unk_c7;
+  struct Coord unk_c8;
+  u8 unk_d0[20];
+};
+static_assert(sizeof(struct Childre) == sizeof(struct Boss));
+
 static const u8 sInitModes[4];
 static const struct Collision sCollisions[];
 
-static void Childre_Init(struct Boss* p);
-static void Childre_Update(struct Boss* p);
+static void Childre_Init(struct Childre* p);
+static void Childre_Update(struct Childre* p);
 static void Childre_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gChildreRoutine = {
-    [ENTITY_INIT] =      Childre_Init,
-    [ENTITY_UPDATE] =    Childre_Update,
-    [ENTITY_DIE] =       Childre_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Childre_Init,
+    [ENTITY_UPDATE] =    (void*)Childre_Update,
+    [ENTITY_DIE] =       (void*)Childre_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -124,12 +139,12 @@ _080404D8:\n\
 
 static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
   struct Zero* z = (struct Zero*)body->enemy->parent;
-  struct Boss* boss = (struct Boss*)body->parent;
+  struct Childre* p = (struct Childre*)body->parent;
 
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    (boss->props.childre).unk_c8.x = (z->s).coord.x;
-    (boss->props.childre).unk_c8.y = (z->s).coord.y;
-    (boss->props.childre).shouldTurnRight = (boss->s).coord.x < (z->s).coord.x;
+    (p->unk_c8).x = (z->s).coord.x;
+    (p->unk_c8).y = (z->s).coord.y;
+    p->shouldTurnRight = (p->s).coord.x < (z->s).coord.x;
   }
 }
 
@@ -151,7 +166,7 @@ static bool8 tryKillChildre(struct Boss* p) {
 
 // --------------------------------------------
 
-static void Childre_Init(struct Boss* p) {
+static void Childre_Init(struct Childre* p) {
   struct Body* body;
   s32 y;
   void* fn;
@@ -170,7 +185,7 @@ static void Childre_Init(struct Boss* p) {
   InitNonAffineMotion(&p->s);
   ResetDynamicMotion(&p->s);
 
-  ResetBossBody(p, &sCollisions[0], 64);
+  ResetBossBody((void*)p, &sCollisions[0], 64);
   fn = onCollision;
   body = &p->body;
   body->fn = fn;
@@ -179,26 +194,26 @@ static void Childre_Init(struct Boss* p) {
     LOAD_STATIC_GRAPHIC(SM036_UNK);
     LOAD_STATIC_GRAPHIC(SM037_EAR_SHOT);
     LOAD_STATIC_GRAPHIC(SM038_UNK);
-    ((p->props).childre).unk_b4 = NULL;
+    p->unk_b4 = NULL;
 
     y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
     (p->s).coord.y = y;
-    ((p->props).childre).unk_bc.y = y;
+    p->unk_bc.y = y;
 
-    ((p->props).childre).unk_bc.x = (((p->s).coord.x / PIXEL(240)) * PIXEL(240)) + PIXEL(120);
+    p->unk_bc.x = (((p->s).coord.x / PIXEL(240)) * PIXEL(240)) + PIXEL(120);
 
 #if MODERN
-    ((p->props).childre).unk_c4 = 0xFF;
+    p->unk_c4 = 0xFF;
 #else
-    r2 = &((p->props).childre).unk_c4;
+    r2 = &p->unk_c4;
     r0 = *r2;
     r1 = 0xFF;
     r0 |= r1;
     *r2 = r0;
 #endif
-    ((p->props).childre).unk_c5 = 0;
+    p->unk_c5 = 0;
   }
-  Childre_Update(p);
+  Childre_Update((void*)p);
 }
 
 // --------------------------------------------
@@ -226,66 +241,66 @@ void childreMode16(struct Boss* p);
 void childreStun(struct Boss* p);
 void childreMode18(struct Boss* p);
 
-static void Childre_Update(struct Boss* p) {
+static void Childre_Update(struct Childre* p) {
   // clang-format off
   static const BossFunc sUpdates1[19] = {
-      childreNeutral,
-      nop_08040788,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      childreNeutral,
-      nop_08040788,
-      nop_08040788,
-      nop_08040788,
+      (void*)childreNeutral,
+      (void*)nop_08040788,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)childreNeutral,
+      (void*)nop_08040788,
+      (void*)nop_08040788,
+      (void*)nop_08040788,
   };
   // clang-format on
 
   // clang-format off
   static const BossFunc sUpdates2[19] = {
-      childreMode0,
-      childreMode1,
-      childreMode2,
-      childreMode3,
-      childreStartRising,
-      childreRising,
-      childreMode6,
-      childreMode7,
-      childreMode8,
-      childreStartScrewIce,
-      childreMaybeMiddleScrewIce,
-      childreScrewIce,
-      childreMissile,
-      childreStartEarShot,
-      childreEarShot,
-      childreEndEarShot,
-      childreMode16,
-      childreStun,
-      childreMode18,
+      (void*)childreMode0,
+      (void*)childreMode1,
+      (void*)childreMode2,
+      (void*)childreMode3,
+      (void*)childreStartRising,
+      (void*)childreRising,
+      (void*)childreMode6,
+      (void*)childreMode7,
+      (void*)childreMode8,
+      (void*)childreStartScrewIce,
+      (void*)childreMaybeMiddleScrewIce,
+      (void*)childreScrewIce,
+      (void*)childreMissile,
+      (void*)childreStartEarShot,
+      (void*)childreEarShot,
+      (void*)childreEndEarShot,
+      (void*)childreMode16,
+      (void*)childreStun,
+      (void*)childreMode18,
   };
   // clang-format on
 
   bool8 killed;
 
-  struct Entity* e = ((p->props).childre).unk_b4;
+  struct Entity* e = p->unk_b4;
   if ((e != NULL) && isKilled(e)) {
-    ((p->props).childre).unk_b4 = NULL;
+    p->unk_b4 = NULL;
   }
 
-  killed = tryKillChildre(p);
+  killed = tryKillChildre((void*)p);
   if (!killed) {
-    (sUpdates1[(p->s).mode[1]])(p);
-    (sUpdates2[(p->s).mode[1]])(p);
+    (sUpdates1[(p->s).mode[1]])((void*)p);
+    (sUpdates2[(p->s).mode[1]])((void*)p);
   }
 }
 

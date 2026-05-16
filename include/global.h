@@ -1,12 +1,13 @@
 #ifndef GUARD_RMZ3_GLOBAL_H
 #define GUARD_RMZ3_GLOBAL_H
 
-#include "binary_literal.h"
 #include "common.h"
 #include "constants/constants.h"
 #include "definition.h"
 #include "gba/gba.h"
 #include "incbin.h"
+#include "random.h"
+#include "sound.h"
 #include "syssav.h"
 #include "trig.h"
 #include "types.h"
@@ -75,7 +76,6 @@
 #define FREE_STAGE_COUNT 15  // フリーランできるステージの数
 #define STAGE_COUNT 18       // Stage0 + ベース含む
 
-#define LCG(s) (((s * 0x343FD + 0x269EC3) << 1) >> 1)
 #define HIHALF(n) (((n) & 0xFFFF0000) >> 16)
 #define LOHALF(n) ((n) & 0xFFFF)
 #define HI_NIBBLE(byte) (((u8)byte) >> 4)
@@ -85,7 +85,7 @@
 #define SELF_REL_PTR(ptr32) ((void*)((char*)ptr32 + *((u32*)ptr32)))
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
-#define max(a, b) ((a) >= (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
 static inline s32 abs(s32 n) {
   s32 val = n;
@@ -94,7 +94,5 @@ static inline s32 abs(s32 n) {
   }
   return val;
 }
-
-extern u32 RNG_0202f388;
 
 #endif  // GUARD_RMZ3_GLOBAL_H

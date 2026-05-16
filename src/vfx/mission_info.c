@@ -21,11 +21,11 @@ static void Ghost71_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost71Routine = {
-    [ENTITY_INIT] =      Ghost71_Init,
-    [ENTITY_UPDATE] =    Ghost71_Update,
-    [ENTITY_DIE] =       Ghost71_Die,
+    [ENTITY_INIT] =      (void*)Ghost71_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost71_Update,
+    [ENTITY_DIE] =       (void*)Ghost71_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -326,16 +326,16 @@ static void FUN_080c6018(struct VFX* p);
 static void updateBossMugshot(struct VFX* p);
 static void FUN_080c647c(struct VFX* p);
 static void updateMissionPoint(struct VFX* p);
-static void nop_080c687c(struct VFX* p);
+static void nop_080c687c(void* _ UNUSED);
 
 void Ghost71_Update(struct VFX* p) {
   // clang-format off
   static const VFXFunc sUpdates[] = {
-      FUN_080c6018,
-      updateBossMugshot,
-      FUN_080c647c,
-      updateMissionPoint,
-      nop_080c687c,
+    (void*)FUN_080c6018,
+    (void*)updateBossMugshot,
+    (void*)FUN_080c647c,
+    (void*)updateMissionPoint,
+    (void*)nop_080c687c,
   };
   // clang-format on
   (sUpdates[(p->s).work[0]])(p);
@@ -1442,7 +1442,7 @@ _080C6878: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void nop_080c687c(struct VFX* p) { return; }
+static void nop_080c687c(void* _) { return; }
 
 // --------------------------------------------
 

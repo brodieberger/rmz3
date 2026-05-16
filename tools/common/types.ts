@@ -15,3 +15,5 @@ export type GraphicHeader = {
 };
 
 export type Nullable<T> = T | null | undefined;
+
+export type BitField = Record<number, string>;

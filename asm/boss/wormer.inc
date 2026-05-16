@@ -850,7 +850,7 @@ _08042AC8:
 	bl UpdateMotionGraphic
 	b _08042B36
 	.align 2, 0
-_08042AD0: .4byte 0x08362110
+_08042AD0: .4byte sCollisions+(1*24)
 _08042AD4: .4byte 0xFFFFFEB0
 _08042AD8: .4byte RNG_0202f388
 _08042ADC: .4byte 0x000343FD
@@ -959,7 +959,7 @@ _08042B94:
 	bl SetMotion
 	b _08042BD8
 	.align 2, 0
-_08042BBC: .4byte 0x08362170
+_08042BBC: .4byte sCollisions+(5*24)
 _08042BC0: .4byte RNG_0202f388
 _08042BC4: .4byte 0x000343FD
 _08042BC8: .4byte 0x00269EC3
@@ -1143,7 +1143,7 @@ _08042CFE:
 	strb r1, [r6, #0xe]
 	b _08042D40
 	.align 2, 0
-_08042D20: .4byte 0x08362170
+_08042D20: .4byte sCollisions+(5*24)
 _08042D24: .4byte 0x00002B06
 _08042D28: .4byte 0xFFFFDA00
 _08042D2C: .4byte 0xFFFFB800
@@ -1203,7 +1203,7 @@ _08042D94:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08042D9C: .4byte 0x08362170
+_08042D9C: .4byte sCollisions+(5*24)
 _08042DA0: .4byte 0x00002B07
 
 	thumb_func_start FUN_08042da4
@@ -1279,7 +1279,7 @@ _08042E0A:
 	strb r1, [r5, #0xe]
 	b _08042E48
 	.align 2, 0
-_08042E30: .4byte 0x08362170
+_08042E30: .4byte sCollisions+(5*24)
 _08042E34: .4byte 0x00002B06
 _08042E38: .4byte 0xFFFFDA00
 _08042E3C: .4byte 0xFFFFC000
@@ -1449,7 +1449,7 @@ _08042F82:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08042F88: .4byte 0x08362110
+_08042F88: .4byte sCollisions+(1*24)
 _08042F8C: .4byte RNG_0202f388
 _08042F90: .4byte 0x000343FD
 _08042F94: .4byte 0x00269EC3
@@ -1501,7 +1501,7 @@ _08042FEA:
 	bx r0
 	.align 2, 0
 _08042FF0: .4byte 0x00002B03
-_08042FF4: .4byte 0x083621A0
+_08042FF4: .4byte sCollisions+(7*24)
 
 	thumb_func_start FUN_08042ff8
 FUN_08042ff8: @ 0x08042FF8
@@ -1858,3 +1858,4 @@ _080432C4:
 	pop {r0}
 	bx r0
 	.align 2, 0
+

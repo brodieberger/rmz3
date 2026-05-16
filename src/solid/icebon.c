@@ -38,7 +38,7 @@ void nop_080c9e90(struct Body* _ UNUSED) { return; }
 static void CreateElementEffect(struct IcebonObject* p) {
   if ((p->fx == NULL) && ((p->body).status & BODY_STATUS_WHITE)) {
     if ((((p->s).coord.y - PIXEL(15)) <= gOverworld.sea) || ((p->body).elemented != ELEMENT_FLAME)) {
-      p->fx = ApplyElementEffect(0, (struct Entity*)p, &Coord_0836fc80);
+      p->fx = ApplyElementEffect(0, (Object*)p, &Coord_0836fc80);
       if (p->fx != NULL) {
         (p->s).mode[1] = 0;
         (p->s).mode[2] = 0;

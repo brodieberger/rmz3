@@ -52,7 +52,7 @@ struct SystemSavedataManager {
   u8 unlockedMinigames[7];
   u8 pad_21[3];
   u32 minigameHiscores[7];
-  u32 mmbn4;  // ロックマンエグゼ4との通信で変化
+  u32 mmbn4;  // 0x020021f0, ロックマンエグゼ4との通信で変化
 
   // 0: Default
   u8 msgbox;        // 1..8

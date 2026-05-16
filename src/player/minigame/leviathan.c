@@ -1,36 +1,33 @@
 #include "collision.h"
 #include "entity.h"
 #include "global.h"
+#include "minigame.h"
 #include "zero.h"
 
 static const struct Collision sCollisions[3];
 static const u8 sInitModes[4];
 
-static void Leviathan_Init(struct Zero* z);
-void Leviathan_Update(struct Zero* z);
-void Leviathan_Die(struct Zero* z);
+static void Leviathan_Init(Player* p);
+static void Leviathan_Update(Player* p);
+static void Leviathan_Die(struct Entity* p);
 
 // clang-format off
 const ZeroRoutine gLeviathanRoutine = {
-  [ENTITY_INIT] =       Leviathan_Init,
-  [ENTITY_UPDATE] =     Leviathan_Update,
-  [ENTITY_DIE]  =       Leviathan_Die,
-  [ENTITY_DISAPPEAR] =  RemovePlayer,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)Leviathan_Init,
+  [ENTITY_UPDATE] =     (void*)Leviathan_Update,
+  [ENTITY_DIE]  =       (void*)Leviathan_Die,
+  [ENTITY_DISAPPEAR] =  (void*)RemovePlayer,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 
 bool8 FUN_08035e48(struct Entity* p) {
   if ((p->d).x >= 1) {
     (p->d).x -= 4;
-    if ((p->d).x < 0) {
-      return TRUE;
-    }
+    if ((p->d).x < 0) return TRUE;
   } else {
     (p->d).x += 4;
-    if ((p->d).x > 0) {
-      return TRUE;
-    }
+    if ((p->d).x > 0) return TRUE;
   }
   return FALSE;
 }
@@ -51,64 +48,104 @@ void FUN_08035e6c(struct Zero* p) {
   }
 }
 
-struct Zero* CreatePlayerLeviathan(void* p, s32 x, s32 y) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, 5);
-    (z->s).work[0] = 0;
-    (z->s).coord.x = x;
-    (z->s).coord.y = y;
-    (z->s).unk_28 = p;
+struct Zero* CreatePlayerLeviathan(void* q, s32 x, s32 y) {
+  Player* p = AllocPlayer();
+  if (p != NULL) {
+    (p->s).taskCol = 16;
+    INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_LEVIATHAN);
+    (p->s).work[0] = 0;
+    (p->s).coord.x = x, (p->s).coord.y = y;
+    (p->s).unk_28 = q;
   }
-  return z;
+  return p;
 }
 
 static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
 
-static void Leviathan_Init(struct Zero* z) {
-  SET_PLAYER_ROUTINE(z, ENTITY_UPDATE);
-  (z->s).mode[1] = sInitModes[(z->s).work[0]];
+static void Leviathan_Init(Player* p) {
+  SET_PLAYER_ROUTINE(p, ENTITY_UPDATE);
+  (p->s).mode[1] = sInitModes[(p->s).work[0]];
 
-  (z->s).flags |= FLIPABLE;
-  (z->s).flags |= DISPLAY;
-  InitNonAffineMotion(&z->s);
-  ResetDynamicMotion(&z->s);
-  (z->s).spr.xflip = TRUE;
-  (z->s).spr.oam.xflip = TRUE;
-  (z->s).flags |= X_FLIP;
-  INIT_BODY(z, &sCollisions[0], 6, onCollision);
-  (z->mg).leviathan.x = (z->s).coord.x;
-  (z->s).unk_coord.y = (z->s).coord.y;
-  (z->s).work[3] = 0;
-  (z->s).d.x = 0;
-  (z->s).d.y = 0;
-  Leviathan_Update(z);
+  (p->s).flags |= FLIPABLE;
+  (p->s).flags |= DISPLAY;
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+  (p->s).spr.xflip = TRUE;
+  (p->s).spr.oam.xflip = TRUE;
+  (p->s).flags |= X_FLIP;
+  INIT_BODY(p, &sCollisions[0], 6, onCollision);
+  (p->mg).leviathan.x = (p->s).coord.x;
+  (p->s).unk_coord.y = (p->s).coord.y;
+  (p->s).work[3] = 0;
+  (p->s).d.x = 0, (p->s).d.y = 0;
+  Leviathan_Update(p);
 }
 
-INCASM("asm/player/leviathan.inc");
-
-// --------------------------------------------
-
-void leviathanMode0Pre(struct Zero* z);
-void leviathanMode1Pre(struct Zero* z);
-void nop_08036044(struct Zero* z);
-
-const ZeroFunc sLeviathanUpdates1[3] = {
-    leviathanMode0Pre,
-    leviathanMode1Pre,
-    nop_08036044,
-};
+static void leviathanMode0Pre(struct Entity* p);
+static void leviathanMode1Pre(struct Entity* p);
+static void nop_08036044(void* _ UNUSED);
 
 void leviathanMode0(struct Zero* z);
 void leviathanMode1(struct Zero* z);
 void leviathanMode2(struct Zero* z);
 
-const ZeroFunc sLeviathanUpdates2[3] = {
-    leviathanMode0,
-    leviathanMode1,
-    leviathanMode2,
-};
+static void Leviathan_Update(Player* p) {
+  static const ZeroFunc sUpdates1[3] = {
+      (void*)leviathanMode0Pre,
+      (void*)leviathanMode1Pre,
+      (void*)nop_08036044,
+  };  // 0x0835ec00
+  static const ZeroFunc sUpdates2[3] = {
+      (void*)leviathanMode0,
+      (void*)leviathanMode1,
+      (void*)leviathanMode2,
+  };  // 0x0835ec0c
+
+  struct MinigameState* s = (struct MinigameState*)(p->s).unk_28;
+  if (s->unk_31 == 0) {
+    (sUpdates1[(p->s).mode[1]])(p);
+    (sUpdates2[(p->s).mode[1]])(p);
+  }
+
+  {
+    s32 min_x, max_x;
+    min_x = (p->mg).leviathan.x - PIXEL(108);
+    if ((p->s).coord.x <= min_x) {
+      (p->s).coord.x = min_x, (p->s).d.x = 0;
+    }
+    max_x = (p->mg).leviathan.x + PIXEL(108);
+    if ((p->s).coord.x >= max_x) {
+      (p->s).coord.x = max_x, (p->s).d.x = 0;
+    }
+  }
+}
+
+static void Leviathan_Die(struct Entity* p) { SET_PLAYER_ROUTINE(p, ENTITY_EXIT); }
+
+// --------------------------------------------
+
+// 0x08035FF8
+static void leviathanMode0Pre(struct Entity* p) {
+  struct MinigameState* s = (struct MinigameState*)p->unk_28;
+  if (s->unk_10 & 0x30) {
+    p->mode[1] = 1, p->mode[2] = 0;
+  }
+  if (s->unk_12 & (1 << 1)) {
+    p->mode[1] = 2, p->mode[2] = 0;
+  }
+}
+
+// 0x08036028
+static void leviathanMode1Pre(struct Entity* p) {
+  struct MinigameState* s = (struct MinigameState*)p->unk_28;
+  if (s->unk_12 & (1 << 1)) {
+    p->mode[1] = 2, p->mode[2] = 0;
+  }
+}
+
+static void nop_08036044(void* _) {}
+
+INCASM("asm/player/leviathan.inc");
 
 // --------------------------------------------
 

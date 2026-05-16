@@ -15,7 +15,7 @@ const ProjectileRoutine gProjectile45Routine = {
     [ENTITY_INIT] =      FUN_080b1a48,
     [ENTITY_UPDATE] =    FUN_080b1b28,
     [ENTITY_DIE] =       FUN_080b1b40,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

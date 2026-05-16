@@ -14,7 +14,7 @@ FUN_080c7a28: @ 0x080C7A28
 	strb r2, [r4, #0x12]
 	strb r0, [r4, #0x13]
 	strb r0, [r4, #0x11]
-	ldr r1, _080C7A58 @ =wElement
+	ldr r1, _080C7A58 @ =gElFxManager
 	movs r0, #4
 	strb r0, [r1, #2]
 	ldr r0, [r3, #0x54]
@@ -30,7 +30,7 @@ FUN_080c7a28: @ 0x080C7A28
 	subs r0, r0, r1
 	b _080C7A62
 	.align 2, 0
-_080C7A58: .4byte wElement
+_080C7A58: .4byte gElFxManager
 _080C7A5C:
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]

@@ -992,7 +992,7 @@ _080F0E7C:
 	beq _080F0E98
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
-	bl fadeoutBGM
+	bl FadeOutBGM
 	str r4, [r5]
 _080F0E98:
 	ldr r2, _080F0F08 @ =gTextWindow+8
@@ -1228,7 +1228,7 @@ _080F106A:
 	beq _080F1086
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
-	bl fadeoutBGM
+	bl FadeOutBGM
 	str r4, [r5]
 _080F1086:
 	ldr r2, _080F10B4 @ =gTextWindow+8

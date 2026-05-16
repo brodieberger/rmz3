@@ -10,11 +10,11 @@ void Anubis_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gAnubisRoutine = {
-    [ENTITY_INIT] =      Anubis_Init,
-    [ENTITY_UPDATE] =    Anubis_Update,
-    [ENTITY_DIE] =       Anubis_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Anubis_Init,
+    [ENTITY_UPDATE] =    (void*)Anubis_Update,
+    [ENTITY_DIE] =       (void*)Anubis_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -113,13 +113,17 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
+// 0x083635b4
 static const u8 sInitModes[4] = {0, 9, 0, 0};
+
+// 0x083635b8
 static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
 
 static const u8 u8_ARRAY_083635c0[9] = {5, 2, 10, 4, 5, 8, 2, 10, 4};
 static const u8 u8_ARRAY_083635c9[8] = {2, 2, 2, 2, 3, 3, 3, 3};
 static const u8 u8_ARRAY_083635d1[8] = {2, 2, 3, 3, 3, 4, 4, 4};
 
+// 0x083635dc
 static const struct Coord sExplosionCoords[2] = {
     {PIXEL(2), -PIXEL(8)},
     {PIXEL(4), -PIXEL(6)},

@@ -32,10 +32,10 @@ struct TextPrinter {
   str_t strings[MAX_STRING_COUNT];  // 文字列の内容 e.g. 0x08374142, 0x0837c6da, 0x08377b60, 0x08376be6
   u8 x[MAX_STRING_COUNT];           // 1文字目のX
   u8 y[MAX_STRING_COUNT];           // 1文字目のY
-  s16 progress[MAX_STRING_COUNT];   // 描画をどれくらい終えたか(文字数単位)
+  u16 progress[MAX_STRING_COUNT];   // 描画をどれくらい終えたか(文字数単位)
   struct CharTile tilelist[80];
-  struct CharTile* cur;   // 次に描画する文字
-  struct CharTile* used;  // 一度curとして使われたもの
+  struct CharTile* cur;   // 0x588, 次に描画する文字
+  struct CharTile* used;  // 0x58C, 一度curとして使われたもの
   struct CharTile* freelist;
   char_t* variable;  // 文字コードF9で挿入されるテキスト
   u8 startX;

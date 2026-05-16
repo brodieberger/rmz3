@@ -213,7 +213,7 @@ _0808FFE6:
 	b _08090024
 	.align 2, 0
 _0809000C: .4byte gEnemyFnTable
-_08090010: .4byte 0x08369608
+_08090010: .4byte sCollisions
 _08090014:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -240,7 +240,7 @@ _08090024:
 	bl SetMotion
 	b _08090054
 	.align 2, 0
-_08090048: .4byte 0x08369638
+_08090048: .4byte sCollisions+(2*24)
 _0809004C:
 	ldr r1, _0809005C @ =0x00007E06
 	adds r0, r6, #0
@@ -264,7 +264,7 @@ _08090060:
 	ldr r1, _08090078 @ =0x08369608
 	b _0809008A
 	.align 2, 0
-_08090078: .4byte 0x08369608
+_08090078: .4byte sCollisions
 _0809007C:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -288,7 +288,7 @@ _0809009A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080900A8: .4byte 0x08369638
+_080900A8: .4byte sCollisions+(2*24)
 
 	thumb_func_start Petatria_Update
 Petatria_Update: @ 0x080900AC
@@ -646,7 +646,7 @@ _0809039A:
 	movs r0, #2
 	b _080903AA
 	.align 2, 0
-_080903A4: .4byte 0x08369608
+_080903A4: .4byte sCollisions
 _080903A8:
 	movs r0, #0x14
 _080903AA:
@@ -758,8 +758,8 @@ _08090472:
 	b _08090604
 	.align 2, 0
 _08090478: .4byte 0x0836978C
-_0809047C: .4byte 0x08369768
-_08090480: .4byte 0x08369728
+_0809047C: .4byte sMotions1
+_08090480: .4byte s32_ARRAY_08369728
 _08090484: .4byte RNG_0202f388
 _08090488: .4byte 0x000343FD
 _0809048C: .4byte 0x00269EC3
@@ -963,8 +963,8 @@ _08090604:
 	b _080906E0
 	.align 2, 0
 _0809060C: .4byte 0x08369774
-_08090610: .4byte 0x08369768
-_08090614: .4byte 0x08369728
+_08090610: .4byte sMotions1
+_08090614: .4byte s32_ARRAY_08369728
 _08090618: .4byte RNG_0202f388
 _0809061C: .4byte 0x000343FD
 _08090620: .4byte 0x00269EC3
@@ -1020,7 +1020,7 @@ _08090680:
 	bl UpdateMotionGraphic
 	b _080906E0
 	.align 2, 0
-_08090688: .4byte 0x08369768
+_08090688: .4byte sMotions1
 _0809068C:
 	movs r2, #1
 	ldrb r1, [r5, #0xa]
@@ -1215,7 +1215,7 @@ _08090B7C:
 	adds r0, #1
 	b _08090C52
 	.align 2, 0
-_08090B98: .4byte 0x08369668
+_08090B98: .4byte sCollisions+(4*24)
 _08090B9C: .4byte 0x00007E0E
 _08090BA0:
 	adds r0, r4, #0
@@ -1367,7 +1367,7 @@ _08090CBC:
 	strb r0, [r4, #0x12]
 	b _08090D30
 	.align 2, 0
-_08090CD4: .4byte 0x083696B0
+_08090CD4: .4byte sCollisions+(7*24)
 _08090CD8: .4byte 0x00007E12
 _08090CDC:
 	ldr r1, _08090CF8 @ =0x00007E13
@@ -1520,7 +1520,7 @@ _08090DF8:
 	adds r0, #1
 	b _08090ECE
 	.align 2, 0
-_08090E0C: .4byte 0x08369710
+_08090E0C: .4byte sCollisions+(11*24)
 _08090E10:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -1552,7 +1552,7 @@ _08090E2C:
 	adds r0, #1
 	b _08090ECE
 	.align 2, 0
-_08090E50: .4byte 0x083696F8
+_08090E50: .4byte sCollisions+(10*24)
 _08090E54: .4byte 0x00007E16
 _08090E58:
 	ldr r1, _08090E9C @ =0x00007E18
@@ -1671,7 +1671,7 @@ _08090F42:
 	adds r0, #1
 	b _0809105A
 	.align 2, 0
-_08090F48: .4byte 0x08369710
+_08090F48: .4byte sCollisions+(11*24)
 _08090F4C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -1691,7 +1691,7 @@ _08090F4C:
 	rsbs r0, r0, #0
 	b _08090F7E
 	.align 2, 0
-_08090F74: .4byte 0x083696F8
+_08090F74: .4byte sCollisions+(10*24)
 _08090F78: .4byte 0x00007E17
 _08090F7C:
 	movs r0, #0xcc

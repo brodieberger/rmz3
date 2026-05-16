@@ -8,27 +8,25 @@ void GlacierleArm_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gGlacierleArmRoutine = {
-    [ENTITY_INIT] =      GlacierleArm_Init,
-    [ENTITY_UPDATE] =    GlacierleArm_Update,
-    [ENTITY_DIE] =       GlacierleArm_Die,
+    [ENTITY_INIT] =      (void*)GlacierleArm_Init,
+    [ENTITY_UPDATE] =    (void*)GlacierleArm_Update,
+    [ENTITY_DIE] =       (void*)GlacierleArm_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreateSolidGlacierleArm(struct Boss* glacierle, s32 x, s32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
+void CreateSolidGlacierleArm(struct Entity* e, s32 x, s32 y) {
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
+    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_GLACIERLE_ARM);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = 0;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
-    (p->s).unk_28 = &glacierle->s;
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 0;
+    p->coord.x = x, p->coord.y = y;
+    p->unk_28 = (void*)e;
   }
 }
 

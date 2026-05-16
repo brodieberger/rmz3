@@ -8,138 +8,128 @@
 
 static const struct Collision sCollision;
 
-static void CopyXMini_Init(struct Zero* z);
-static void CopyXMini_Update(struct Zero* z);
-static void CopyXMini_Die(struct Zero* z);
+static void CopyXMini_Init(struct Zero* p);
+static void CopyXMini_Update(struct Zero* p);
+static void CopyXMini_Die(void* _ UNUSED);
 
 // clang-format off
 const ZeroRoutine gCopyXMiniRoutine = {
-  [ENTITY_INIT] =       CopyXMini_Init,
-  [ENTITY_UPDATE] =     CopyXMini_Update,
-  [ENTITY_DIE]  =       CopyXMini_Die,
-  [ENTITY_DISAPPEAR] =  RemovePlayer,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)CopyXMini_Init,
+  [ENTITY_UPDATE] =     (void*)CopyXMini_Update,
+  [ENTITY_DIE]  =       (void*)CopyXMini_Die,
+  [ENTITY_DISAPPEAR] =  (void*)RemovePlayer,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Zero* CreatePlayerCopyX(struct MinigameState* p, struct Coord* c, u8 n) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_COPY_X);
-    (z->s).coord = *c;
-    (z->s).work[0] = n;
-    (z->s).unk_28 = (struct Entity*)p;
+struct Zero* CreatePlayerCopyX(struct MinigameState* q, struct Coord* c, u8 n) {
+  struct Zero* p = AllocPlayer();
+  if (p != NULL) {
+    (p->s).taskCol = 16;
+    INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_COPY_X);
+    (p->s).coord = *c;
+    (p->s).work[0] = n;
+    (p->s).unk_28 = (struct Entity*)q;
   }
-  return z;
+  return p;
 }
 
-static void CopyXMini_Init(struct Zero* z) {
+static void CopyXMini_Init(struct Zero* p) {
   struct Coord c;
 
-  InitNonAffineMotion(&z->s);
-  ResetDynamicMotion(&z->s);
-  (z->s).flags |= DISPLAY;
-  (z->s).flags |= FLIPABLE;
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
 
-  (z->s).spr.xflip = TRUE;
-  (z->s).spr.oam.xflip = TRUE;
-  (z->s).flags |= X_FLIP;
-  INIT_BODY(z, &sCollision, 32, NULL);
-  (z->s).coord.y = FUN_0800a05c((z->s).coord.x, (z->s).coord.y);
-  SET_PLAYER_ROUTINE(z, ENTITY_UPDATE);
-  (z->s).mode[1] = 0;
-  (z->s).mode[2] = 0;
-  (z->s).mode[3] = 0;
+  (p->s).spr.xflip = TRUE;
+  (p->s).spr.oam.xflip = TRUE;
+  (p->s).flags |= X_FLIP;
+  INIT_BODY(p, &sCollision, 32, NULL);
+  (p->s).coord.y = FUN_0800a05c((p->s).coord.x, (p->s).coord.y);
+  SET_PLAYER_ROUTINE(p, ENTITY_UPDATE);
+  (p->s).mode[1] = 0, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
 
-  c = (z->s).coord;
-  (z->mg).copyx.unk_280[1] = (struct Entity*)CreateCopyXIcon(z, &c, 0);
-  (z->mg).copyx.unk_280[0] = (struct Entity*)CreateCopyXIcon(z, &c, 1);
-  (z->mg).copyx.unk_280[2] = (struct Entity*)CreateCopyXIcon(z, &c, 2);
-  (z->mg).copyx.life = 3;
-  CopyXMini_Update(z);
+  c = (p->s).coord;
+  (p->mg).copyx.unk_280[1] = (struct Entity*)CreateCopyXIcon(p, &c, 0);
+  (p->mg).copyx.unk_280[0] = (struct Entity*)CreateCopyXIcon(p, &c, 1);
+  (p->mg).copyx.unk_280[2] = (struct Entity*)CreateCopyXIcon(p, &c, 2);
+  (p->mg).copyx.life = 3;
+  CopyXMini_Update(p);
 }
 
-// --------------------------------------------
+static bool32 Update1_0(void* _);
+static bool32 Update1_1(struct Zero* p);
+static bool32 Update1_2(struct Entity* p);
+static bool32 Update1_3(struct Entity* p);
 
-static bool32 Update1_0(struct Zero* z);
-static bool32 Update1_1(struct Zero* z);
-static bool32 Update1_2(struct Zero* z);
-static bool32 Update1_3(struct Zero* z);
+static void Update2_0(struct Zero* p);
+static void Update2_1(struct Zero* p);
+static void Update2_2(struct Zero* p);
+static void Update2_3(struct Zero* p);
 
-static void Update2_0(struct Zero* z);
-static void Update2_1(struct Zero* z);
-static void Update2_2(struct Zero* z);
-static void Update2_3(struct Zero* z);
-
-#define STATE ((struct MinigameState*)(z->s).unk_28)
+#define STATE ((struct MinigameState*)(p->s).unk_28)
 
 // 0x080359a8
-static void CopyXMini_Update(struct Zero* z) {
+static void CopyXMini_Update(struct Zero* p) {
   static const ZeroFunc sUpdates1[4] = {
-      (ZeroFunc)Update1_0,
-      (ZeroFunc)Update1_1,
-      (ZeroFunc)Update1_2,
-      (ZeroFunc)Update1_3,
+      (void*)Update1_0,
+      (void*)Update1_1,
+      (void*)Update1_2,
+      (void*)Update1_3,
   };
   static const ZeroFunc sUpdates2[4] = {
-      Update2_0,
-      Update2_1,
-      Update2_2,
-      Update2_3,
+      (void*)Update2_0,
+      (void*)Update2_1,
+      (void*)Update2_2,
+      (void*)Update2_3,
   };
 
   if (STATE->unk_04 != 2) {
-    (sUpdates1[(z->s).mode[1]])(z);
-    (sUpdates2[(z->s).mode[1]])(z);
+    (sUpdates1[(p->s).mode[1]])(p);
+    (sUpdates2[(p->s).mode[1]])(p);
   }
 
-  if ((z->mg).copyx.life != STATE->unk_0c) {
-    (z->mg).copyx.life = STATE->unk_0c;
-    if ((z->mg).copyx.life == 2) {
+  if ((p->mg).copyx.life != STATE->unk_0c) {
+    (p->mg).copyx.life = STATE->unk_0c;
+    if ((p->mg).copyx.life == 2) {
       PlaySound(SE_NOT_ALLOWED);
-    } else if ((z->mg).copyx.life == 1) {
+    } else if ((p->mg).copyx.life == 1) {
       PlaySound(SE_COPYX_RECOVER_VOICE);  // ﾓｳﾕﾙｻﾝ!
-    } else if ((z->mg).copyx.life == 0) {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 19));
-      UpdateMotionGraphic(&z->s);
+    } else if ((p->mg).copyx.life == 0) {
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 19));
+      UpdateMotionGraphic(&p->s);
       PlaySound(SE_COPYX_STUN);
     }
-  } else if ((z->mg).copyx.life == 0) {
-    UpdateMotionGraphic(&z->s);
+  } else if ((p->mg).copyx.life == 0) {
+    UpdateMotionGraphic(&p->s);
   }
 }
 
 #undef STATE
 
-// --------------------------------------------
-
-static void CopyXMini_Die(struct Zero* z) {
-  // nop
-  return;
-}
+static void CopyXMini_Die(void* _) {}
 
 // --------------------------------------------
 
 // 0x08035a40
-static bool32 Update1_0(struct Zero* z) { return TRUE; }
+static bool32 Update1_0(void* _) { return TRUE; }
 
 // 0x08035a44
-static void Update2_0(struct Zero* z) {
-  switch ((z->s).mode[2]) {
+static void Update2_0(struct Zero* p) {
+  switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 0));
-      z->mg.copyx.element = 0;  // flame
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
+      (p->mg).copyx.element = 0;  // flame
       LoadBlink(93, 640);
-      (z->s).work[2] = 60;
-      (z->s).mode[2]++;
+      (p->s).work[2] = 60;
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
-      if ((z->s).work[2] == 0 || (--(z->s).work[2] == 0)) {
-        (z->s).mode[1] = 1;
-        (z->s).mode[2] = 0;
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).work[2] == 0 || (--(p->s).work[2] == 0)) {
+        (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -149,36 +139,35 @@ static void Update2_0(struct Zero* z) {
 // ----------------------------------------------
 
 // 0x08035a9c
-static bool32 Update1_1(struct Zero* z) {
-  struct MinigameState* s = (struct MinigameState*)(z->s).unk_28;
+static bool32 Update1_1(struct Zero* p) {
+  struct MinigameState* s = (struct MinigameState*)(p->s).unk_28;
   if (s->unk_04 == 1) {
     if (gJoypad[0].pressed & (R_BUTTON | L_BUTTON)) {
-      (z->s).mode[1] = 2;
-      (z->s).mode[2] = 0;
+      (p->s).mode[1] = 2;
+      (p->s).mode[2] = 0;
       if (gJoypad[0].pressed & L_BUTTON) {
-        (z->s).mode[3] = 0;
+        (p->s).mode[3] = 0;
       } else {
-        (z->s).mode[3] = 1;
+        (p->s).mode[3] = 1;
       }
     }
     if (gJoypad[0].pressed & B_BUTTON) {
-      (z->s).mode[1] = 3;
-      (z->s).mode[2] = 0;
+      (p->s).mode[1] = 3, (p->s).mode[2] = 0;
     }
   }
   return TRUE;
 }
 
 // 0x08035af0
-static void Update2_1(struct Zero* z) {
-  switch ((z->s).mode[2]) {
+static void Update2_1(struct Zero* p) {
+  switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 0));
-      (z->s).mode[2]++;
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
+      UpdateMotionGraphic(&p->s);
       break;
     }
   }
@@ -187,16 +176,15 @@ static void Update2_1(struct Zero* z) {
 // ----------------------------------------------
 
 // 0x08035b1c
-static bool32 Update1_2(struct Zero* z) {
-  if (((z->s).mode[2] >= 2) && (gJoypad[0].pressed & B_BUTTON)) {
-    (z->s).mode[1] = 3;
-    (z->s).mode[2] = 0;
+static bool32 Update1_2(struct Entity* p) {
+  if ((p->mode[2] >= 2) && (gJoypad[0].pressed & B_BUTTON)) {
+    p->mode[1] = 3, p->mode[2] = 0;
   }
   return TRUE;
 }
 
 // 0x08035b44
-NAKED static void Update2_2(struct Zero* z) {
+NAKED static void Update2_2(struct Zero* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -404,20 +392,19 @@ _08035CD0:\n\
 // ----------------------------------------------
 
 // 0x08035cd8
-static bool32 Update1_3(struct Zero* z) {
-  if ((z->s).mode[2] >= 5) {
+static bool32 Update1_3(struct Entity* p) {
+  if (p->mode[2] >= 5) {
     if (gJoypad[0].pressed & (R_BUTTON | L_BUTTON)) {
-      (z->s).mode[1] = 2;
-      (z->s).mode[2] = 0;
+      p->mode[1] = 2;
+      p->mode[2] = 0;
       if (gJoypad[0].pressed & L_BUTTON) {
-        (z->s).mode[3] = 0;
+        p->mode[3] = 0;
       } else {
-        (z->s).mode[3] = 1;
+        p->mode[3] = 1;
       }
     }
     if (gJoypad[0].pressed & B_BUTTON) {
-      (z->s).mode[1] = 3;
-      (z->s).mode[2] = 2;
+      p->mode[1] = 3, p->mode[2] = 2;
     }
   }
   return TRUE;
@@ -426,68 +413,67 @@ static bool32 Update1_3(struct Zero* z) {
 void* FUN_080b18d4(struct Coord* c1, struct Coord* c2, u8 kind);
 
 // 0x08035d2c
-static void Update2_3(struct Zero* z) {
-  switch ((z->s).mode[2]) {
+static void Update2_3(struct Zero* p) {
+  switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 1));
-      (z->s).mode[2]++;
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 1));
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
-      if ((z->s).motion.state == MOTION_END) {
-        (z->s).mode[2]++;
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).motion.state == MOTION_END) {
+        (p->s).mode[2]++;
       }
       break;
     }
     case 2: {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 2));
-      (z->s).mode[2]++;
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 2));
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(&z->s);
-      if ((z->s).motion.state == MOTION_END) {
-        (z->s).mode[2]++;
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).motion.state == MOTION_END) {
+        (p->s).mode[2]++;
       }
       break;
     }
     case 4: {
       struct Coord coords;
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 3));
-      if ((z->mg).copyx.element == 0) {
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 3));
+      if ((p->mg).copyx.element == 0) {
         PlaySound(SE_HANU_TAILFIRE_SE);
-      } else if ((z->mg).copyx.element == 1) {
+      } else if ((p->mg).copyx.element == 1) {
         PlaySound(SE_COPYX_ELECSHOT);
-      } else if ((z->mg).copyx.element == 2) {
+      } else if ((p->mg).copyx.element == 2) {
         PlaySound(SE_ICE_40);
       } else {
         PlaySound(SE_HANU_TAILFIRE_SE);
       }
-      *(&coords) = *(&(z->s).coord);
+      *(&coords) = *(&(p->s).coord);
       coords.x += PIXEL(22);
       coords.y -= PIXEL(22);
-      FUN_080b18d4(&coords, &(z->s).coord, (z->mg).copyx.element);
-      (z->s).mode[2]++;
+      FUN_080b18d4(&coords, &(p->s).coord, (p->mg).copyx.element);
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 5: {
-      UpdateMotionGraphic(&z->s);
-      if ((z->s).motion.state == MOTION_END) {
-        (z->s).mode[2]++;
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).motion.state == MOTION_END) {
+        (p->s).mode[2]++;
       }
       break;
     }
     case 6: {
-      SetMotion(&z->s, MOTION(DM179_COPY_X, 4));
-      (z->s).mode[2]++;
+      SetMotion(&p->s, MOTION(DM179_COPY_X, 4));
+      (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 7: {
-      UpdateMotionGraphic(&z->s);
-      if ((z->s).motion.state == MOTION_END) {
-        (z->s).mode[1] = 1;
-        (z->s).mode[2] = 0;
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).motion.state == MOTION_END) {
+        (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
       break;
     }

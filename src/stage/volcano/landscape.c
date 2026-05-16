@@ -5,6 +5,8 @@
 #include "overworld.h"
 #include "solid.h"
 
+void CreateLavaRiverPlatform(u32 x, u32 y);
+
 #define STAGE (gOverworld.work.volcano)
 
 static const struct Coord sLavaRiverPlatformCoords[2][6];
@@ -326,11 +328,11 @@ static void LayerUpdate_Volcano_3(struct StageLayer* l, const struct Stage* stag
 
 static void LayerUpdate_Volcano_4(struct StageLayer* l, const struct Stage* stage) {
   if (l->phase == 0) {
-    BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | 3;
+    BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | BGCNT_PRIORITY(3);
     (l->scrollPower).x = 0x40;
     (l->scrollPower).y = 0x40;
     (l->scroll).x = 0xcc;
-    if (!((gMission.unk_00)->missionDones & MISSILE_FACTORY)) {
+    if (!((gMission.unk_00)->missionDones & (1 << STAGE_MISSILE_FACTORY))) {
       (l->scroll).y = 0x168;
     } else {
       (l->scroll).y = 0x348;
@@ -347,7 +349,7 @@ NON_MATCH static void LayerUpdate_VolcanoEruption(struct StageLayer* l, const st
   u16 dispcnt;
   switch (l->phase) {
     case 0: {
-      BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | 2;
+      BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | BGCNT_PRIORITY(2);
       (l->scrollPower).x = 0xc0;
       (l->scrollPower).y = 0xc0;
       (l->scroll).x = 0x168;
@@ -374,11 +376,9 @@ NON_MATCH static void LayerUpdate_VolcanoEruption(struct StageLayer* l, const st
           arr[i] = i;
         }
         for (j = 0; j < 16; j++) {
-          u8 a, b, temp;
-          RNG_0202f388 = LCG(RNG_0202f388);
-          a = (RNG_0202f388 >> 16) % 7;
-          RNG_0202f388 = LCG(RNG_0202f388);
-          b = (RNG_0202f388 >> 16) % 7;
+          u8 temp;
+          u8 a = RANDOM(RNG_0202f388) % 7;
+          u8 b = RANDOM(RNG_0202f388) % 7;
           SWAP(arr[a], arr[b], temp);
         }
         for (i = 0; i < 3; i++) {
@@ -425,21 +425,16 @@ static void LayerUpdate_Volcano_6(struct StageLayer* l, const struct Stage* stag
   if (l->phase == 0) {
     u32 FILL_VALUE;
     void* dst;
-    BGCNT16(n >> 4) = l->screenBase | 0x8047;
+    BGCNT16(n >> 4) = l->screenBase | BGCNT_PRIORITY(3) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC | BGCNT_AFF512x512;
 
     FILL_VALUE = 0x40404040;
     dst = (void*)(VRAM + SCREEN_BASE_16(n >> 4));
-    CpuFastFill(FILL_VALUE, dst, 4096);
-
+    _CpuFastFill(FILL_VALUE, dst, 4096);
     l->unk_10 = 0;
     l->phase++;
   }
   if (++l->unk_10 == 48) {
     l->unk_10 = 0;
-  }
-
-  {
-    vu32 _;
   }
 }
 

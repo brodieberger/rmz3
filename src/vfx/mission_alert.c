@@ -2,7 +2,7 @@
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
-#include "task.h"
+#include "renderer.h"
 #include "vfx.h"
 
 // work[0]
@@ -23,45 +23,43 @@ static void MissionAlert_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gMissionAlertRoutine = {
-    [ENTITY_INIT] =      MissionAlert_Init,
-    [ENTITY_UPDATE] =    MissionAlert_Update,
-    [ENTITY_DIE] =       MissionAlert_Die,
+    [ENTITY_INIT] =      (void*)MissionAlert_Init,
+    [ENTITY_UPDATE] =    (void*)MissionAlert_Update,
+    [ENTITY_DIE] =       (void*)MissionAlert_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct VFX* CreateMissionAlert(u8 kind) {
-  struct VFX* vfx = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (vfx != NULL) {
-    (vfx->s).taskCol = 1;
-    INIT_VFX_ROUTINE(vfx, VFX_MISSION_ALERT);
-    (vfx->s).tileNum = 0;
-    (vfx->s).palID = 0;
-    (vfx->s).work[0] = kind;
-    (vfx->s).work[1] = 0;
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_MISSION_ALERT);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = kind, p->work[1] = 0;
   } else {
     return NULL;
   }
-  return vfx;
+  return (void*)p;
 }
 
 // --------------------------------------------
 
 static void initMissionXXX(struct VFX* p);
-static void initWarning(struct VFX* p);
+static void initWarning(struct Entity* p);
 static void initGameOver(struct VFX* p);
 
 static void MissionAlert_Init(struct VFX* p) {
   // clang-format off
   static VFXFunc const sInitializers[] = {
-      [MISSION_START] =     initMissionXXX,
-      [MISSION_FAILED] =    initMissionXXX,
-      [MISSION_COMPLETED] = initMissionXXX,
-      [WARNING] =           initWarning,
-      [GAME_OVER] =         initGameOver,
+      [MISSION_START] =     (void*)initMissionXXX,
+      [MISSION_FAILED] =    (void*)initMissionXXX,
+      [MISSION_COMPLETED] = (void*)initMissionXXX,
+      [WARNING] =           (void*)initWarning,
+      [GAME_OVER] =         (void*)initGameOver,
   };
   // clang-format on
 
@@ -440,17 +438,17 @@ _080B5ABC: .4byte gVideoRegBuffer+12\n\
 
 static void TaskCB_Unk080b5b90(struct Sprite* p, struct DrawPivot* _ UNUSED);
 
-static void initWarning(struct VFX* vfx) {
-  SetTaskCallback((struct Task*)&(vfx->s).spr, TaskCB_Unk080b5b90);
-  (vfx->s).spr.sprites = (struct MetaspriteHeader*)vfx;
-  (vfx->s).flags &= ~OAM_PRIO;
-  (vfx->s).flags |= DISPLAY;
-  (vfx->s).flags |= FLIPABLE;
-  (vfx->s).work[2] = 0;
-  (vfx->s).d.y = 0;
-  SET_VFX_ROUTINE(vfx, ENTITY_UPDATE);
-  (vfx->s).mode[2] = 0;
-  MissionAlert_Update(vfx);
+static void initWarning(struct Entity* p) {
+  SetTaskCallback((struct Task*)&p->spr, TaskCB_Unk080b5b90);
+  p->spr.sprites = (struct MetaspriteHeader*)p;
+  p->flags &= ~OAM_PRIO;
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
+  p->work[2] = 0;
+  p->d.y = 0;
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  p->mode[2] = 0;
+  MissionAlert_Update((void*)p);
 }
 
 static void updateWarning(struct VFX* p) {

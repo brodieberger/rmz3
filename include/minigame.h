@@ -13,7 +13,8 @@ struct MinigameState {
   u8 unk_0d;
   u8 unk_0e;
   u8 unk_0f;
-  u8 unk_10[4];
+  u16 unk_10;  // u16 in leviathanMode0Pre
+  u16 unk_12;  // u16 in leviathanMode0Pre
   s32 unk_14;  // used by Phantom
   u16 unk_18;  // ?16 in fefnir_080347f0
   u8 unk_1a;
@@ -27,7 +28,9 @@ struct MinigameState {
 
   // unk_2f が Fefnir だと u8 っぽくアクセスしてる(Fefnir_Update) ので、ここらへんは union?
   s32 unk_2c;  // Leviathan Hiscore
-  u8 unk_30[4];
+  u8 unk_30;
+  u8 unk_31;  // Leviathan で u8
+  u8 unk_32[2];
   s32 unk_34;  // Phantom score
   u8 unk_38[4];
   s32 unk_3c;  // Phantom Hiscore

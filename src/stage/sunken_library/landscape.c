@@ -60,13 +60,11 @@ NON_MATCH static void updateSunkenLib(struct Coord* _ UNUSED) {
 
   if (STAGE.unk_001 == 0) {
     if (STAGE.unk_002 == 0) {
-      STAGE.rng = LCG(STAGE.rng);
-      STAGE.unk_002 = ((STAGE.rng >> 16) & 1) + 1;
+      STAGE.unk_002 = (RANDOM(STAGE.rng) & 1) + 1;
       STAGE.unk_001 = 8;
     } else {
       STAGE.unk_002 = 0;
-      STAGE.rng = LCG(STAGE.rng);
-      STAGE.unk_001 = (((STAGE.rng >> 16) % 58) & 0xF8) + 7;
+      STAGE.unk_001 = ((RANDOM(STAGE.rng) % 58) & 0xF8) + 7;
     }
   }
 
@@ -154,13 +152,13 @@ static const StageLayerRoutine sLayerRoutine[6] = {
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->prio | l->screenBase | 0x8044;
+    BGCNT16(n >> 4) = l->prio | l->screenBase | BGCNT_CHARBASE(1) | BGCNT_MOSAIC | BGCNT_AFF512x512;
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
     CpuFastCopy(BGMAP(67), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
     CpuFastCopy(BGMAP(68), (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4)), 2048);
     gBlendRegBuffer.bldclt = 0x3B44;
     gBlendRegBuffer.bldalpha = 0xC04;
-    gWindowRegBuffer.dispcnt |= 0x4000;
+    gWindowRegBuffer.dispcnt |= DISPCNT_WIN1_ON;
     gWindowRegBuffer.winin[1] = 0xF3;
     gWindowRegBuffer.winin[2] |= 0xE;
     *((u16*)&gWindowRegBuffer.winH + 1) = 0xFF;
@@ -190,7 +188,7 @@ static void FUN_08013898(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
 static void FUN_08013908(struct StageLayer* l UNUSED, const struct Stage* _ UNUSED) {
   gBlendRegBuffer.bldclt = 0;
-  gWindowRegBuffer.dispcnt &= 0xBFFF;
+  gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN1_ON;
   gWindowRegBuffer.winin[2] |= 0xE;
 }
 

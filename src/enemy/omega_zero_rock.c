@@ -24,8 +24,7 @@ void CreateOzChargeSaberRock(s32 x, u8 r1) {
   s32 prev_x = x;
 
   x -= PIXEL(48);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  x += ((RNG_0202f388 >> 16) % PIXEL(96));
+  x += (RANDOM(RNG_0202f388) % PIXEL(96));
 
   y = ((&gStageRun.vm.camera)->viewport).y - PIXEL(112);
 

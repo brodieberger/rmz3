@@ -2,7 +2,17 @@
 #include "global.h"
 #include "projectile.h"
 
-INCASM("asm/projectile/unk_34.inc");
+// オメガ第一形態に関係
+
+struct Projectile34 {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[4];  // 0xB4
+  u32 unk_b8;    // 0xB8
+  u32 unk_bc;    // 0xBC
+  u8 pad_c0[4];  // 0xC0
+};
+static_assert(sizeof(struct Projectile34) == sizeof(struct Projectile));
 
 void Projectile34_Init(struct Projectile* p);
 void Projectile34_Update(struct Projectile* p);
@@ -10,13 +20,29 @@ void Projectile34_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile34Routine = {
-    [ENTITY_INIT] =      Projectile34_Init,
-    [ENTITY_UPDATE] =    Projectile34_Update,
-    [ENTITY_DIE] =       Projectile34_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile34_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile34_Update,
+    [ENTITY_DIE] =       (void*)Projectile34_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+struct Entity* FUN_080ac818(struct Coord* c, s32 val1, s32 val2, struct Entity* e) {
+  struct Projectile34* p = (struct Projectile34*)AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 34);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).coord = *c;
+    (p->s).work[0] = 0, (p->s).work[1] = 0;
+    p->unk_b8 = val1, p->unk_bc = val2;
+    (p->s).unk_28 = (void*)e;
+  }
+  return (void*)p;
+}
+
+INCASM("asm/projectile/unk_34.inc");
 
 // --------------------------------------------
 

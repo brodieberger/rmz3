@@ -35,7 +35,7 @@ void AppendQuake(u8 power, struct Coord* c) {
 }
 
 // 画面を揺らす量を計算して第二引数のCoordにセットする
-void CalcQuake(struct Coord* c, struct Coord* ofs) {
+void CalcQuake(struct Coord* _, struct Coord* ofs) {
   struct Quake* q = &gQuakeManager.quakes[0];
   s32 power = gQuakeManager.power;
 
@@ -55,13 +55,11 @@ void CalcQuake(struct Coord* c, struct Coord* ofs) {
     mag = val >> 8;
 
     ofs->x = mag >> 4;
-    gQuakeManager.rng = LCG(gQuakeManager.rng);
-    ofs->x = (s32)(ofs->x * (((gQuakeManager.rng >> 16) & 0xFF) - 0x7F)) >> 7;
+    ofs->x = (s32)(ofs->x * ((RANDOM(gQuakeManager.rng) & 0xFF) - 0x7F)) >> 7;
 
     ofs->y = mag;
     mag -= 3;
-    gQuakeManager.rng = LCG(gQuakeManager.rng);
-    ofs->y = (s32)(mag + ((gQuakeManager.rng >> 16) & 0x7)) >> 1;
+    ofs->y = (s32)(mag + (RANDOM(gQuakeManager.rng) & 0x7)) >> 1;
   } else {
     ofs->x = ofs->y = 0;
   }

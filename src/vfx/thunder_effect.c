@@ -57,7 +57,7 @@ _080B4BA8:\n\
 	ldrb r0, [r4, #0x12]\n\
 	subs r2, r0, #1\n\
 	strb r2, [r4, #0x12]\n\
-	ldr r0, _080B4BEC @ =wElement\n\
+	ldr r0, _080B4BEC @ =gElFxManager\n\
 	ldr r1, [r0]\n\
 	ldr r0, _080B4BF0 @ =0x00FF00FF\n\
 	ands r1, r0\n\
@@ -91,7 +91,7 @@ _080B4BE2:\n\
 	strb r0, [r4, #0xa]\n\
 	b _080B4C20\n\
 	.align 2, 0\n\
-_080B4BEC: .4byte wElement\n\
+_080B4BEC: .4byte gElFxManager\n\
 _080B4BF0: .4byte 0x00FF00FF\n\
 _080B4BF4:\n\
 	ldrb r1, [r4, #0xa]\n\

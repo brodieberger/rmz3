@@ -156,7 +156,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* stage) {
   s32 x;
 
   if (l->phase == 0) {
-    BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | 2;
+    BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | BGCNT_PRIORITY(2);
     (l->scrollPower).x = 0xC0;
     (l->scrollPower).y = 0xC0;
     l->phase++;

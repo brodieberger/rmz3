@@ -27,8 +27,7 @@ void FUN_080bf390(struct Entity* e) {
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_047);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 1;
     p->unk_28 = (void*)e;
     p->unk_2c = q;
@@ -43,8 +42,7 @@ void FUN_080bf3d8(struct Entity* e) {
     if (p != NULL) {
       p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0;
-      p->palID = 0;
+      p->tileNum = 0, p->palID = 0;
       p->work[0] = 0;
       p->work[2] = i;
       p->unk_28 = (void*)e;
@@ -54,17 +52,14 @@ void FUN_080bf3d8(struct Entity* e) {
   }
 }
 
-void FUN_080bf438(s32 x, s32 y, u8 param_3) {
+void FUN_080bf438(s32 x, s32 y, u8 kind) {
   struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_047);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->work[0] = 2;
-    p->work[2] = param_3;
-    (p->coord).x = x;
-    (p->coord).y = y;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 2, p->work[2] = kind;
+    (p->coord).x = x, (p->coord).y = y;
   }
 }
 
@@ -75,14 +70,12 @@ void FUN_080bf48c(s32 x, s32 y, u8 n) {
     if (p != NULL) {
       p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0;
-      p->palID = 0;
+      p->tileNum = 0, p->palID = 0;
       p->work[0] = 3;
       p->work[2] = i;
       p->work[3] = n;
       (p->coord).x = x - PIXEL(8);
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->coord).x += (RNG_0202f388 >> 16) & 0xFFF;
+      (p->coord).x += RANDOM(RNG_0202f388) & 0xFFF;
       (p->coord).y = y;
     }
   }
@@ -95,13 +88,11 @@ void FUN_080bf52c(s32 x, s32 y, u8 n) {
     if (p != NULL) {
       p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0;
-      p->palID = 0;
+      p->tileNum = 0, p->palID = 0;
       p->work[0] = 4;
       p->work[2] = i;
       (p->coord).x = x - PIXEL(8);
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->coord).x += (RNG_0202f388 >> 16) & 0xFFF;
+      (p->coord).x += RANDOM(RNG_0202f388) & 0xFFF;
       (p->coord).y = y;
     }
   }

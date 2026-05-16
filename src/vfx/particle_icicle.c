@@ -23,11 +23,9 @@ void CreateIcicleParticle(s32 x, s32 y, s32 dy) {
   if (p != NULL) {
     p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_ICICLE_PARTICLE);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
-    p->coord.x = x;
-    p->coord.y = y;
+    p->coord.x = x, p->coord.y = y;
     p->d.y = dy;
   }
 }

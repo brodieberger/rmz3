@@ -6,6 +6,8 @@
 
 // ファントムのミニゲームに出てくるでかい手裏剣
 
+struct MenuState;
+
 static const u8 sInitModes[4];
 
 static void MgNinjaStar_Init(struct Solid* p);

@@ -141,7 +141,7 @@ static bool8 FUN_08069098(struct GrandCannon* p) {
 static void FUN_0806910c(struct GrandCannon* p) {
   if ((p->props).elementEffect == NULL) {
     if ((p->body).status & BODY_STATUS_WHITE) {
-      (p->props).elementEffect = ApplyElementEffect(0, &p->s, &sElementCoord);
+      (p->props).elementEffect = ApplyElementEffect(0, (Object*)p, &sElementCoord);
       if ((p->props).elementEffect != NULL) {
         (p->s).mode[1] = 3;
         (p->s).mode[2] = 0;

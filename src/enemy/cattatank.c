@@ -74,6 +74,7 @@ static const EnemyFunc sUpdates2[10] = {
 
 // --------------------------------------------
 
+// 0x0836A4C0
 static const struct Collision sCollisions[18] = {
     {
       kind : DRP,
@@ -227,6 +228,7 @@ static const struct Collision sCollisions[18] = {
     },
 };
 
+// 0x0836a670
 static const struct Coord sElementCoords[1] = {
     {PIXEL(0), -PIXEL(18)},
 };

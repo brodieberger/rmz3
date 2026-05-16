@@ -76,6 +76,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x08369fd4
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -134,6 +135,7 @@ static const struct Collision sCollisions[6] = {
 static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
 static const u8 sInitModes[2] = {2, 0};
 
+// 0x0836a06e
 static const motion_t sMotions[4] = {
     MOTION(SM212_PANTHEON_FIST, 9),
     MOTION(SM212_PANTHEON_FIST, 10),

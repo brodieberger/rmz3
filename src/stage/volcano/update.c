@@ -539,7 +539,7 @@ _0801B6C6:\n\
 	beq _0801B6F2\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 _0801B6F2:\n\
 	movs r1, #0xc0\n\
@@ -673,7 +673,7 @@ _0801B7C4:\n\
 	beq _0801B822\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5, #0x24]\n\
 	b _0801B822\n\
 	.align 2, 0\n\
@@ -715,11 +715,11 @@ _0801B82E:\n\
 	beq _0801B858\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801B858:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801B862:\n\
@@ -900,7 +900,7 @@ _0801B9CE:\n\
 	beq _0801B9EA\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r7]\n\
 _0801B9EA:\n\
 	movs r1, #0xaa\n\

@@ -1,107 +1,111 @@
 #include "collision.h"
 #include "global.h"
 #include "mission.h"
+#include "sound.h"
 #include "weapon.h"
-
-#define PROP (w->props.common)
 
 static const u8 sElements[4];
 static const motion_t sShieldFlyMotions[3][4];
 static const WeaponFunc sShieldFlyUpdates[5];
 
-bool32 shield_0803a5fc(struct Weapon* w);
+bool32 shield_0803a5fc(struct WeaponCommon* w);
 static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
 
-static void ShieldFly_Init(struct Weapon* w);
-static void ShieldFly_Update(struct Weapon* w);
-static void ShieldFly_Die(struct Weapon* w);
+static void ShieldFly_Init(struct WeaponCommon* p);
+static void ShieldFly_Update(struct WeaponCommon* p);
+static void ShieldFly_Die(struct Entity* p);
+
+// 0x080399fc
+void DeleteFlyingShield(Object* p) {
+  if ((p->s).id == WEAPON_MOVE_SHIELD_FLY) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
+  }
+}
 
 NAKED void MenuExit_ShieldFly(struct Weapon* w) { INCCODE("asm/todo/MenuExit_ShieldFly.inc"); }
 
-struct Weapon* CreateWeaponShieldFly(struct Zero* z, u8 r1) {
-  struct Weapon* w;
+struct Entity* CreateWeaponShieldFly(struct Zero* z, u8 r1) {
+  struct WeaponCommon* p;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
+  p = (struct WeaponCommon*)AllocEntityFirst(gWeaponHeaderPtr);
+  if (p != NULL) {
     u8 element;
 
     if ((z->unk_b4).mainCopy == WEAPON_SHIELD) {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SHIELD_FLY);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = gWeaponPalIDs[0];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_FLY);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(0, element);
 
     } else {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SHIELD_FLY);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = gWeaponPalIDs[1];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_FLY);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
     }
 
-    (&PROP)->z = z;
-    (w->s).work[0] = z->unk_127;
-    (w->s).work[1] = r1;
-    (&PROP)->props[1][1] = ((&z->unk_b4)->status).element;
+    (p->props).z = z;
+    (p->s).work[0] = z->unk_127, (p->s).work[1] = r1;
+    (&p->props)->props[1][1] = ((&z->unk_b4)->status).element;
   }
-  return w;
+  return (void*)p;
 }
 
-static void ShieldFly_Init(struct Weapon* w) {
-  struct WeaponProps* b4;
-  SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sShieldFlyMotions[(w->s).work[1]][(w->s).work[0]]);
+static void ShieldFly_Init(struct WeaponCommon* p) {
+  SET_WEAPON_ROUTINE(p, ENTITY_UPDATE);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetMotion(&p->s, sShieldFlyMotions[(p->s).work[1]][(p->s).work[0]]);
   PlaySound(SE_CHARGE_SHIELD_VOICE);
-  b4 = &PROP;
-  b4->props[1][2] = 1;
-  ShieldFly_Update(w);
+  (&p->props)->props[1][2] = 1;
+  ShieldFly_Update(p);
 }
 
-static void ShieldFly_Update(struct Weapon* w) {
-  struct WeaponProps* b4 = &PROP;
-  struct Zero* z = b4->z;
+static void ShieldFly_Update(struct WeaponCommon* p) {
+  struct WeaponCommonProps* b4 = &p->props;
+  struct Zero* z = (p->props).z;
   if (z->elfMotion != 0) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
     return;
   }
   if (((z->body).status & BODY_STATUS_DEAD) || ((z->body).hp == 0)) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
     return;
   }
-  if ((b4->props[1][2] != 0) && ((w->body).status & BODY_STATUS_BLOCKED)) {
+  if ((b4->props[1][2] != 0) && ((p->body).status & BODY_STATUS_BLOCKED)) {
     PlaySound(SE_BLOCKED);
     b4->props[1][2] = 0;
   }
 
   {
     struct Zero_b4* b4 = &z->unk_b4;
-    if ((b4->status).mainWeapon == WEAPON_SHIELD) {
+    if ((b4->status).weapons[0] == WEAPON_SHIELD) {
       (z->restriction).mainCharge = TRUE;
     } else {
       (z->restriction).subCharge = TRUE;
     }
   }
-  (sShieldFlyUpdates[(w->s).mode[1]])(w);
-  UpdateMotionGraphic(&w->s);
+  (sShieldFlyUpdates[(p->s).mode[1]])((void*)p);
+  UpdateMotionGraphic(&p->s);
 
-  if (((w->s).mode[1] == 2) && shield_0803a5fc(w)) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  if (((p->s).mode[1] == 2) && shield_0803a5fc(p)) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
 }
 
-static void ShieldFly_Die(struct Weapon* w) {
-  (w->s).flags &= ~DISPLAY;
-  SET_WEAPON_ROUTINE(w, ENTITY_EXIT);
+static void ShieldFly_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
 static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
@@ -216,14 +220,12 @@ static const WeaponFunc sShieldFlyUpdates[5] = {
 
 // clang-format off
 const WeaponRoutine gShieldFlyRoutine = {
-    [ENTITY_INIT] =      ShieldFly_Init,
-    [ENTITY_UPDATE] =    ShieldFly_Update,
-    [ENTITY_DIE] =       ShieldFly_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)ShieldFly_Init,
+    [ENTITY_UPDATE] =    (void*)ShieldFly_Update,
+    [ENTITY_DIE] =       (void*)ShieldFly_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
 const u8 u8_ARRAY_08361334[4] = {1, 3, 4, 0};
-
-#undef PROP

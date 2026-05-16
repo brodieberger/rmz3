@@ -142,10 +142,6 @@ void InitWidgetHeader(struct EntityHeader* h, struct Widget* p, s16 len);
 void UpdateVFXs(void);
 void UpdateProjectiles(void);
 
-void MainLoop_Game(struct GameState* p);
-void MainLoop_Disk(struct GameState* p);
-void MainLoop_Minigame(struct GameState* p);
-
 void RunOverworldLoop(struct GameState* g);
 void OverworldLoop_ManageSaveData(struct GameState* g);
 void OverworldLoop_CmdRoomTalk(struct GameState* g);
@@ -153,6 +149,8 @@ u16 handleWrapTwoChoice(struct GameState* g);
 
 void DrawHUD(struct GameState* _);
 void CheckItemGain(struct GameState* p);
+
+void ClearPlayInfo(struct PlayInfo* p);
 
 typedef void (*GameLoopFunc)(struct GameState*);
 

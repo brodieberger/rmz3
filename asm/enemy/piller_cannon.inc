@@ -46,7 +46,7 @@ PillerCannon_Init: @ 0x0806832C
 	.align 2, 0
 _08068378: .4byte gSystemSavedataManager
 _0806837C: .4byte gCurStory
-_08068380: .4byte 0x0836609C
+_08068380: .4byte sCollisions
 _08068384:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -106,7 +106,7 @@ _0806839C:
 	strb r1, [r6, #0xd]
 	b _0806841A
 	.align 2, 0
-_080683F8: .4byte 0x0836609C
+_080683F8: .4byte sCollisions
 _080683FC: .4byte FUN_08068f68
 _08068400: .4byte gEnemyFnTable
 _08068404:
@@ -209,7 +209,7 @@ _080684B0:
 	bl SetDDP
 	b _08068508
 	.align 2, 0
-_080684D0: .4byte 0x083661BC
+_080684D0: .4byte sCollisions+(12*24)
 _080684D4:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -227,7 +227,7 @@ _080684E2:
 	strb r0, [r1]
 	b _08068508
 	.align 2, 0
-_080684F4: .4byte 0x083661A4
+_080684F4: .4byte sCollisions+(11*24)
 _080684F8:
 	ldr r0, _08068510 @ =0x08366078
 	ldrb r1, [r4, #0xd]
@@ -459,7 +459,7 @@ _0806869E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080686A4: .4byte 0x0836609C
+_080686A4: .4byte sCollisions
 _080686A8: .4byte gVFXFnTable
 _080686AC: .4byte pZero2
 
@@ -544,7 +544,7 @@ _0806871E:
 	strb r0, [r5, #0xe]
 	b _08068776
 	.align 2, 0
-_08068744: .4byte 0x0836609C
+_08068744: .4byte sCollisions
 _08068748: .4byte gVFXFnTable
 _0806874C: .4byte pZero2
 _08068750:
@@ -757,9 +757,9 @@ _080688B4:
 	strb r0, [r4, #0x12]
 	b _08068A50
 	.align 2, 0
-_080688F0: .4byte 0x083661F4
+_080688F0: .4byte sMotions
 _080688F4: .4byte 0x08366204
-_080688F8: .4byte 0x0836609C
+_080688F8: .4byte sCollisions
 _080688FC:
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
@@ -831,9 +831,9 @@ _08068976:
 	bgt _08068A16
 	b _08068A3C
 	.align 2, 0
-_08068984: .4byte 0x083661F4
+_08068984: .4byte sMotions
 _08068988: .4byte 0x08366204
-_0806898C: .4byte 0x0836609C
+_0806898C: .4byte sCollisions
 _08068990: .4byte pZero2
 _08068994:
 	ldrb r0, [r4, #0x12]
@@ -915,9 +915,9 @@ _08068A16:
 	strb r1, [r4, #0xe]
 	b _08068A50
 	.align 2, 0
-_08068A2C: .4byte 0x083661F4
+_08068A2C: .4byte sMotions
 _08068A30: .4byte 0x08366204
-_08068A34: .4byte 0x0836609C
+_08068A34: .4byte sCollisions
 _08068A38: .4byte pZero2
 _08068A3C:
 	ldrb r3, [r4, #0x13]
@@ -995,7 +995,7 @@ _08068AC8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068AD0: .4byte 0x0836609C
+_08068AD0: .4byte sCollisions
 _08068AD4: .4byte gVFXFnTable
 
 	thumb_func_start FUN_08068ad8
@@ -1076,7 +1076,7 @@ _08068B62:
 	.align 2, 0
 _08068B78: .4byte 0x00000103
 _08068B7C: .4byte 0x00000805
-_08068B80: .4byte 0x083661A4
+_08068B80: .4byte sCollisions+(11*24)
 _08068B84:
 	ldr r1, _08068BCC @ =0x00000806
 	adds r0, r5, #0
@@ -1203,7 +1203,7 @@ _08068C70:
 	.align 2, 0
 _08068C78: .4byte 0x00000103
 _08068C7C: .4byte 0x00000807
-_08068C80: .4byte 0x08366144
+_08068C80: .4byte sCollisions+(7*24)
 
 	thumb_func_start FUN_08068c84
 FUN_08068c84: @ 0x08068C84
@@ -1270,7 +1270,7 @@ _08068CF4:
 	strb r0, [r4, #0x12]
 	b _08068DCC
 	.align 2, 0
-_08068D0C: .4byte 0x083661F4
+_08068D0C: .4byte sMotions
 _08068D10:
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
@@ -1373,9 +1373,9 @@ _08068DCC:
 	bl UpdateMotionGraphic
 	b _08068E50
 	.align 2, 0
-_08068DD4: .4byte 0x083661F4
+_08068DD4: .4byte sMotions
 _08068DD8: .4byte 0x08366204
-_08068DDC: .4byte 0x0836609C
+_08068DDC: .4byte sCollisions
 _08068DE0:
 	movs r1, #0x80
 	lsls r1, r1, #4
@@ -1437,7 +1437,7 @@ _08068E50:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068E58: .4byte 0x0836609C
+_08068E58: .4byte sCollisions
 _08068E5C: .4byte gVFXFnTable
 
 	thumb_func_start FUN_08068e60
@@ -1480,8 +1480,8 @@ _08068EA0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068EA8: .4byte 0x083661BC
-_08068EAC: .4byte 0x083661A4
+_08068EA8: .4byte sCollisions+(12*24)
+_08068EAC: .4byte sCollisions+(11*24)
 
 	thumb_func_start FUN_08068eb0
 FUN_08068eb0: @ 0x08068EB0
@@ -1533,8 +1533,8 @@ _08068EF8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068F00: .4byte 0x083661BC
-_08068F04: .4byte 0x083661A4
+_08068F00: .4byte sCollisions+(12*24)
+_08068F04: .4byte sCollisions+(11*24)
 
 	thumb_func_start FUN_08068f08
 FUN_08068f08: @ 0x08068F08

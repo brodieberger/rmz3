@@ -34,14 +34,14 @@
 #define FLAG_BOSS_RUSH_6 30
 #define FLAG_BOSS_RUSH_7 31
 #define PUTITE_ENABLED 32     // 一撃死予防
-#define ARMOR_ELF_ENABLED 33  // キーナイト系
-#define GIANT_ELF_ENABLED 34  // ハンマーガ系
-#define TIME_ELF_ENABLED 35   // ストパーラ系
+#define ARMOR_ELF_ENABLED 33  // キーナイト系 (ステージの雑魚敵を消す)
+#define GIANT_ELF_ENABLED 34  // ハンマーガ系 (ボスの体力を減らす)
+#define TIME_ELF_ENABLED 35   // ストパーラ系 (雑魚敵を停止させる)
 #define ELF_B4_ENABLED 36
-#define DYLPHINA_ENABLED 37
+#define DYLPHINA_ENABLED 37  // デルピーナ(ドロップ率100%)
 #define METTAUR_ENABLED 38
-#define BYSE_ENABLED 39
-#define FLAG_RANK_ELF 40  // ランクAにするエルフ
+#define BYSE_ENABLED 39   // バイッス(ドロップ量2倍)
+#define FLAG_RANK_ELF 40  // ランクAにするエルフ (エイーナ系)
 #define FLAG_OCEAN_BTN_1 41
 #define FLAG_OCEAN_BTN_2 42
 #define FLAG_OCEAN_BTN_3 43

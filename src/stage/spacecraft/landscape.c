@@ -85,7 +85,7 @@ static void exitSpaceCraft(struct Coord* _ UNUSED) {
 static void LayerUpdate_SpaceCraft_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = (l->bgIdx << 16) >> 20;
-    BGCNT16(n) = (l->prio | l->screenBase) | 0x44;
+    BGCNT16(n) = (l->prio | l->screenBase) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC;
     *(u32*)gVideoRegBuffer.bgofs[n] = 0;
     (l->work).spacecraft.frameCounter = 0;
     CpuFastCopy(BGMAP(40), (void*)(VRAM + SCREEN_BASE_16(n)), 2048);
@@ -741,34 +741,35 @@ _0800B99C: .4byte 0x06000800\n\
 // オメガ(BG3)のスクロールとかを調整してオメガが正しい位置に来るようにする
 NON_MATCH static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const struct Stage* _ UNUSED) {
 #if MODERN
-  u16 dispcnt, n;
-  struct Boss* omega;
-
-  dispcnt = l->bgIdx;
+  const u16 n = l->bgIdx;
   if (gOverworld.state[1] != 0) {
-    gVideoRegBuffer.dispcnt |= (dispcnt << 8);
+    gVideoRegBuffer.dispcnt |= (n << 8);
   } else {
-    gVideoRegBuffer.dispcnt &= ~(dispcnt << 8);
+    gVideoRegBuffer.dispcnt &= ~(n << 8);
   }
-  n = dispcnt >> 4;
-  if (gOverworld.terrain.reload_graphic) {
-    vu32 _;
-    CpuFastCopy(BGMAP(42), (void*)(VRAM + SCREEN_BASE_16(n)), 2048);
-    CpuFastFill(0, (void*)(VRAM + 0x800 + SCREEN_BASE_16(n)), 2048);
-  }
-  if (omega = gOverworld.work.spacecraft.omega, omega != NULL) {
-    u8 id;
-    gOverworld.work.spacecraft.omegaCoord.x = (omega->s).coord.x;
-    gOverworld.work.spacecraft.omegaCoord.y = (omega->s).coord.y;
 
-    id = (omega->s).invincibleID;
+  if (gOverworld.terrain.reload_graphic) {
+    CpuFastCopy(BGMAP(42), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
+    {
+      u32 val = 0;
+      void* dst = (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4));
+      u32 bytesize = 2048;
+      _CpuFastFill(val, dst, bytesize);
+    }
+  }
+  if (gOverworld.work.spacecraft.omega != NULL) {
+    u8 id;
+    gOverworld.work.spacecraft.omegaCoord.x = (gOverworld.work.spacecraft.omega->s).coord.x;
+    gOverworld.work.spacecraft.omegaCoord.y = (gOverworld.work.spacecraft.omega->s).coord.y;
+
+    id = (gOverworld.work.spacecraft.omega->s).invincibleID;
     if (gWhitePaintFlags[id >> 5] & (1 << (id & 0x1F))) {
       gPaletteManager.unk_404 = 0x180;
       gPaletteManager.unk_406 = 0x20;
     }
   }
-  gVideoRegBuffer.bgofs[n][0] = (l->viewportCenterPixel).x - (gOverworld.work.spacecraft.omegaCoord.x >> 8) + 48 + ((l->drawPivotOffset).x >> 8);
-  gVideoRegBuffer.bgofs[n][1] = (l->viewportCenterPixel).y - (gOverworld.work.spacecraft.omegaCoord.y >> 8) + 144 + ((l->drawPivotOffset).y >> 8);
+  BGOFS(n >> 4)->x = (l->viewportCenterPixel).x - (gOverworld.work.spacecraft.omegaCoord.x >> 8) + 48 + ((l->drawPivotOffset).x >> 8);
+  gVideoRegBuffer.bgofs[n >> 4][1] = (l->viewportCenterPixel).y - (gOverworld.work.spacecraft.omegaCoord.y >> 8) + 144 + ((l->drawPivotOffset).y >> 8);
 #else
   INCCODE("asm/wip/fixOmegaWhiteCoord.inc");
 #endif
@@ -788,7 +789,7 @@ static void LayerUpdate_SnowFall(struct StageLayer* l, const struct Stage* _ UNU
   //   0 : 雪を降らせる(BG2を透明にしない)
   //   1 : 雪を降らせない(BG2を透明にする)
   if (l->phase == 0) {
-    BGCNT16(n >> 4) = l->screenBase | 0x45;
+    BGCNT16(n >> 4) = l->screenBase | BGCNT_PRIORITY(1) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC;
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
     RequestBgMapTransfer(BGMAP(41), (void*)SCREEN_BASE_16(n >> 4), 2048);
     gBlendRegBuffer.bldclt = ((BLDCNT_TGT1_BG2) | (BLDCNT_TGT2_BD | BLDCNT_TGT2_OBJ | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG0)) | BLDCNT_EFFECT_BLEND;

@@ -746,7 +746,7 @@ CannonHopper_Init: @ 0x0809751C
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	str r0, [r5, #0x14]
-	ldr r1, _080975AC @ =0x0836A418
+	ldr r1, _080975AC @ =sInitModes
 	ldrb r0, [r5, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -804,9 +804,9 @@ _0809759C:
 	b _080975C2
 	.align 2, 0
 _080975A8: .4byte gEnemyFnTable
-_080975AC: .4byte 0x0836A418
-_080975B0: .4byte 0x0836A288
-_080975B4: .4byte 0x080978C9
+_080975AC: .4byte sInitModes
+_080975B0: .4byte sCollisions
+_080975B4: .4byte FUN_080978c8
 _080975B8: .4byte pZero2
 _080975BC:
 	ldrb r1, [r5, #0xa]
@@ -1051,11 +1051,11 @@ _08097770:
 	bl _call_via_r1
 	b _08097844
 	.align 2, 0
-_08097794: .4byte 0x0836A41C
-_08097798: .4byte 0x0836A378
+_08097794: .4byte sElementCoord
+_08097798: .4byte sCollisions+(10*24)
 _0809779C: .4byte 0x00020001
-_080977A0: .4byte 0x0836A3D8
-_080977A4: .4byte 0x0836A3F0
+_080977A0: .4byte sUpdates1
+_080977A4: .4byte sUpdates2
 _080977A8:
 	ldr r0, [r7]
 	cmp r0, #0
@@ -1141,7 +1141,7 @@ _08097844:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08097850: .4byte 0x0836A288
+_08097850: .4byte sCollisions
 _08097854: .4byte 0xFFFFF900
 _08097858: .4byte 0xFFFFFF00
 _0809785C: .4byte 0x00020001
@@ -1188,7 +1188,7 @@ CannonHopper_Die: @ 0x08097860
 _080978A8: .4byte gCurStory
 _080978AC: .4byte gEnemyFnTable
 _080978B0:
-	ldr r0, _080978C4 @ =0x0836A408
+	ldr r0, _080978C4 @ =sDeads
 	ldrb r1, [r3, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r0
@@ -1199,7 +1199,7 @@ _080978C0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080978C4: .4byte 0x0836A408
+_080978C4: .4byte sDeads
 
 	thumb_func_start FUN_080978c8
 FUN_080978c8:
@@ -1290,7 +1290,7 @@ _08097934:
 	bgt _08097982
 	b _080979E2
 	.align 2, 0
-_08097974: .4byte 0x0836A288
+_08097974: .4byte sCollisions
 _08097978:
 	subs r1, r1, r0
 	movs r0, #0x80
@@ -1439,7 +1439,7 @@ _08097A60:
 _08097A7C: .4byte 0x0000DC01
 _08097A80: .4byte 0xFFFFFE00
 _08097A84: .4byte 0xFFFFFC00
-_08097A88: .4byte 0x0836A2B8
+_08097A88: .4byte sCollisions+(2*24)
 _08097A8C:
 	ldr r1, [r4, #0x5c]
 	ldr r2, [r4, #0x60]
@@ -1539,7 +1539,7 @@ _08097B20:
 	b _08097B72
 	.align 2, 0
 _08097B40: .4byte 0x0000DC02
-_08097B44: .4byte 0x0836A348
+_08097B44: .4byte sCollisions+(8*24)
 _08097B48:
 	adds r5, r6, #0
 	adds r5, #0x74
@@ -1594,8 +1594,8 @@ _08097B98:
 	orrs r0, r2
 	b _08097BBC
 	.align 2, 0
-_08097BB0: .4byte 0x0836A424
-_08097BB4: .4byte 0x0836A288
+_08097BB0: .4byte u8_ARRAY_0836a424
+_08097BB4: .4byte sCollisions
 _08097BB8:
 	movs r0, #0xef
 	ands r0, r2
@@ -1685,7 +1685,7 @@ _08097C28:
 	bl UpdateMotionGraphic
 	b _08097CBC
 	.align 2, 0
-_08097C60: .4byte 0x0836A288
+_08097C60: .4byte sCollisions
 _08097C64:
 	ldrb r1, [r6, #0xa]
 	movs r0, #0x20
@@ -1959,9 +1959,9 @@ _08097E52:
 	b _08097E7E
 	.align 2, 0
 _08097E6C: .4byte 0x0000DC14
-_08097E70: .4byte 0x0836A42D
-_08097E74: .4byte 0x0836A434
-_08097E78: .4byte 0x0836A448
+_08097E70: .4byte u8_ARRAY_0836a424+(9*1)
+_08097E74: .4byte s32_ARRAY_0836a434
+_08097E78: .4byte s32_ARRAY_0836a434+(5*4)
 _08097E7C:
 	movs r0, #1
 _08097E7E:
@@ -3153,7 +3153,7 @@ _080986D4:
 	str r1, [r5, #0x60]
 	b _0809876C
 	.align 2, 0
-_08098758: .4byte 0x0836A3A8
+_08098758: .4byte sCollisions+(12*24)
 _0809875C: .4byte pZero2
 _08098760: .4byte 0xFFFFE800
 _08098764:

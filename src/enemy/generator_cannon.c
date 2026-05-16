@@ -88,6 +88,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x08368f58
 static const struct Collision sCollisions[18] = {
     {
       kind : DRP,
@@ -294,6 +295,7 @@ static const u8 sCollisionIdxs1[4] = {3, 7, 11, 11};
 static const u8 sCollisionIdxs2[4] = {11, 7, 3, 0};
 
 // clang-format off
+// 0x08369124
 static const motion_t sMotions[7] = {
     MOTION(SM113_GENERATOR_CANNON, 3),
     MOTION(SM113_GENERATOR_CANNON, 4),

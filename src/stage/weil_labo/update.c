@@ -1,5 +1,6 @@
 #include "global.h"
 #include "overworld.h"
+#include "spawn.h"
 
 NAKED s16 WeilLabo_MissionUpdate(struct StageRun* p) {
   asm(".syntax unified\n\
@@ -297,7 +298,7 @@ _080208C8:\n\
 	movs r0, #4\n\
 	orrs r0, r1\n\
 	strh r0, [r4, #8]\n\
-	ldr r1, _08020908 @ =gStageEntityManager\n\
+	ldr r1, _08020908 @ =gSpawnManager\n\
 	ldr r3, _0802090C @ =0x0000020E\n\
 	adds r1, r1, r3\n\
 	ldrh r2, [r1]\n\
@@ -320,7 +321,7 @@ _080208C8:\n\
 	strb r0, [r1]\n\
 	bl _0802153A\n\
 	.align 2, 0\n\
-_08020908: .4byte gStageEntityManager\n\
+_08020908: .4byte gSpawnManager\n\
 _0802090C: .4byte 0x0000020E\n\
 _08020910: .4byte gStageScriptList\n\
 _08020914:\n\
@@ -1278,7 +1279,7 @@ _080210F0:\n\
 	beq _08021120\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 _08021120:\n\
 	ldr r1, [r7, #0x54]\n\
@@ -1305,11 +1306,11 @@ _0802112A:\n\
 	beq _08021154\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _08021154:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0802115E:\n\
@@ -1691,7 +1692,7 @@ _0802147C:\n\
 	ldrb r0, [r4]\n\
 	cmp r0, #0x16\n\
 	bne _080214C0\n\
-	ldr r1, _080214B0 @ =gStageEntityManager\n\
+	ldr r1, _080214B0 @ =gSpawnManager\n\
 	ldr r0, _080214B4 @ =0x0000020E\n\
 	adds r1, r1, r0\n\
 	ldrh r2, [r1]\n\
@@ -1709,7 +1710,7 @@ _0802147C:\n\
 	movs r0, #0x17\n\
 	b _08021538\n\
 	.align 2, 0\n\
-_080214B0: .4byte gStageEntityManager\n\
+_080214B0: .4byte gSpawnManager\n\
 _080214B4: .4byte 0x0000020E\n\
 _080214B8: .4byte gStageRun+16\n\
 _080214BC: .4byte gStageScriptList\n\

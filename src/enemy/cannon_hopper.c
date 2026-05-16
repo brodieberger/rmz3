@@ -18,6 +18,7 @@ const EnemyRoutine gCannonHopperRoutine = {
 };
 // clang-format on
 
+// 0x0836A288
 static const struct Collision sCollisions[14] = {
     {
       kind : DDP,
@@ -193,13 +194,16 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x0836A418
 static const u8 sInitModes[4] = {0, 0, 0, 0};
 static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(19)};
 
+// 0x0836A424
 static const u8 u8_ARRAY_0836a424[14] = {
     0x01, 0x01, 0x01, 0x02, 0x02, 0x02, 0x03, 0x03, 0x03, 0x16, 0x2B, 0x40, 0x55, 0x6A,
 };
 
+// 0x0836A434
 static const s32 s32_ARRAY_0836a434[10] = {
     -PIXEL(8), -PIXEL(6), PIXEL(0), PIXEL(6), PIXEL(8), -PIXEL(18), -PIXEL(18), -PIXEL(20), -PIXEL(18), -PIXEL(18),
 };

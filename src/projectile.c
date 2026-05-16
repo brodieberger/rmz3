@@ -34,14 +34,14 @@ void UpdateProjectiles(void) {
   }
 }
 
-void DeleteProjectile(struct Projectile* p) {
-  (p->s).flags &= ~DISPLAY;
+void DeleteProjectile(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 
-static struct Coord* unused_0809c978(struct Projectile* p) {
-  struct Weapon* w = (struct Weapon*)GetNearestEntity(gWeaponHeaderPtr, &(p->s).coord);
-  if (w != NULL) return &(w->s).coord;
+static struct Coord* unused_0809c978(struct Entity* p) {
+  struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
+  if (w != NULL) return &w->coord;
   return NULL;
 }
 

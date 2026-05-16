@@ -31,6 +31,8 @@ struct Enemy* CreateBeetank(struct Coord* c, u8 n) {
   return p;
 }
 
+// --------------------------------------------
+
 INCASM("asm/enemy/beetank.inc");
 
 void nop_0807bc8c(struct Enemy* p);
@@ -67,15 +69,13 @@ static const EnemyFunc sUpdates2[5] = {
 
 // --------------------------------------------
 
+// 0x083679ec
 static const struct Collision sCollisions[2] = {
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 2,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       remaining : 1,
       layer : 0x00000001,
       range : {PIXEL(0), -PIXEL(10), PIXEL(24), PIXEL(24)},
@@ -90,4 +90,5 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
+// 0x08367a1c
 static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};

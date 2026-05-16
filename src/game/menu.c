@@ -16,6 +16,7 @@ void EachMenuLoop_KeyConfig(struct GameState* p);
 void EachMenuLoop_Elf(struct GameState* p);
 
 // idx is BYTE[0x02031978]
+// 0x083862A4
 static const MenuLoopFunc sEachMenuLoops[4] = {
     EachMenuLoop_MainMenu,
     EachMenuLoop_ExSkill,
@@ -49,19 +50,19 @@ static void MenuLoop_InitMenu(struct GameState* g) {
 
   z = g->z2;
   g->frames = 0;
-  MENU->unk_40[6] = ((&z->unk_b4)->status).mainWeapon;
-  MENU->unk_40[7] = ((&z->unk_b4)->status).subWeapon;
+  MENU->unk_40[6] = ((&z->unk_b4)->status).weapons[0];
+  MENU->unk_40[7] = ((&z->unk_b4)->status).weapons[1];
   MENU->unk_4a = ((&z->unk_b4)->status).element;
-  MENU->unk_4e[4] = ((&z->unk_b4)->status).keyMap.attackMode;
-  MENU->satelites[0] = ((&z->unk_b4)->status).asset.satelites[0];
-  MENU->satelites[1] = ((&z->unk_b4)->status).asset.satelites[1];
-  MENU->unk_4e[2] = 0xFF;
+  MENU->attackMode = ((&z->unk_b4)->status).keyMap.attackMode;
+  MENU->satelites[0] = ((&z->unk_b4)->status).satelites[0];
+  MENU->satelites[1] = ((&z->unk_b4)->status).satelites[1];
+  MENU->unk_50 = 0xFF;
   MENU->unk_4c = 0;
   menu_080f394c(g);
-  gVideoRegBuffer.dispcnt &= 0xFFF8;
-  gVideoRegBuffer.dispcnt &= 0xF0FF;
-  gVideoRegBuffer.dispcnt |= 0x1300;
-  BGCNT16(1) = 0x4206;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
+  gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON | DISPCNT_BG1_ON | DISPCNT_OBJ_ON;
+  BGCNT16(1) = BGCNT_PRIORITY(2) | BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(2) | BGCNT_AFF256x256;
   *(u32*)gVideoRegBuffer.bgofs[1] = 0;
   (sEachMenuLoops[MENU->unk_4c])(g);
   g->mode[1] = g->mode[2] = 1;
@@ -69,162 +70,37 @@ static void MenuLoop_InitMenu(struct GameState* g) {
 }
 
 // 01 01 xx xx
-NAKED static void MenuLoop_OpenMenu(struct GameState* m) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	ldrh r0, [r4, #4]\n\
-	adds r0, #1\n\
-	adds r1, r0, #0\n\
-	strh r0, [r4, #4]\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x10\n\
-	cmp r0, #0xf\n\
-	ble _080F36FC\n\
-	ldr r1, _080F36F0 @ =gPaletteManager\n\
-	ldr r2, _080F36F4 @ =0x00000402\n\
-	adds r0, r1, r2\n\
-	movs r2, #0x20\n\
-	strb r2, [r0]\n\
-	ldr r3, _080F36F8 @ =0x00000401\n\
-	adds r0, r1, r3\n\
-	strb r2, [r0]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #3\n\
-	adds r1, r1, r0\n\
-	strb r2, [r1]\n\
-	movs r0, #2\n\
-	strb r0, [r4, #1]\n\
-	adds r0, r4, #0\n\
-	bl MenuLoop_Update\n\
-	b _080F3716\n\
-	.align 2, 0\n\
-_080F36F0: .4byte gPaletteManager\n\
-_080F36F4: .4byte 0x00000402\n\
-_080F36F8: .4byte 0x00000401\n\
-_080F36FC:\n\
-	ldr r2, _080F3724 @ =gPaletteManager\n\
-	ldr r3, _080F3728 @ =0x00000402\n\
-	adds r0, r2, r3\n\
-	strb r1, [r0]\n\
-	movs r0, #0xff\n\
-	ands r0, r1\n\
-	subs r3, #1\n\
-	adds r1, r2, r3\n\
-	strb r0, [r1]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #3\n\
-	adds r2, r2, r1\n\
-	strb r0, [r2]\n\
-_080F3716:\n\
-	adds r0, r4, #0\n\
-	bl menu_080f39a8\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F3724: .4byte gPaletteManager\n\
-_080F3728: .4byte 0x00000402\n\
- .syntax divided\n");
+static void MenuLoop_OpenMenu(struct GameState* g) {
+  g->frames++;
+  if (g->frames >= 16) {
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+    g->mode[1] = 2;
+    MenuLoop_Update(g);
+  } else {
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames;
+  }
+  menu_080f39a8(g);
 }
 
 // 01 02 xx xx
-NAKED static void MenuLoop_Update(struct GameState* m) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r5, r0, #0\n\
-	ldr r0, _080F376C @ =0x00000E1D\n\
-	adds r4, r5, r0\n\
-	movs r0, #0\n\
-	strb r0, [r4]\n\
-	ldr r1, _080F3770 @ =sEachMenuLoops\n\
-	ldr r2, _080F3774 @ =0x00000E18\n\
-	adds r0, r5, r2\n\
-	ldrb r0, [r0]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	ldr r1, [r0]\n\
-	adds r0, r5, #0\n\
-	bl _call_via_r1\n\
-	ldrb r0, [r4]\n\
-	cmp r0, #0\n\
-	bne _080F3764\n\
-	ldr r0, _080F3778 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F3764\n\
-	movs r0, #3\n\
-	strb r0, [r5, #1]\n\
-	strb r0, [r5, #2]\n\
-_080F3764:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F376C: .4byte 0x00000E1D\n\
-_080F3770: .4byte sEachMenuLoops\n\
-_080F3774: .4byte 0x00000E18\n\
-_080F3778: .4byte gJoypad\n\
- .syntax divided\n");
+static void MenuLoop_Update(struct GameState* g) {
+  MENU->unk_51 = 0;
+  (sEachMenuLoops[MENU->unk_4c])(g);
+  if ((MENU->unk_51 == 0) && (gJoypad[0].pressed & START_BUTTON)) {
+    g->mode[1] = 3, g->mode[2] = 3;
+  }
 }
 
 // 01 03 xx xx
-NAKED static void MenuLoop_BlackOut(struct GameState* m) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r2, r0, #0\n\
-	ldrh r0, [r2, #4]\n\
-	subs r0, #1\n\
-	movs r3, #0\n\
-	adds r1, r0, #0\n\
-	strh r0, [r2, #4]\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	bne _080F37BC\n\
-	ldr r0, _080F37B4 @ =gPaletteManager\n\
-	ldr r4, _080F37B8 @ =0x00000402\n\
-	adds r1, r0, r4\n\
-	strb r3, [r1]\n\
-	subs r4, #1\n\
-	adds r1, r0, r4\n\
-	strb r3, [r1]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #3\n\
-	adds r0, r0, r1\n\
-	strb r3, [r0]\n\
-	movs r0, #4\n\
-	strb r0, [r2, #1]\n\
-	adds r0, r2, #0\n\
-	bl MenuLoop_ExitMenu\n\
-	b _080F37D6\n\
-	.align 2, 0\n\
-_080F37B4: .4byte gPaletteManager\n\
-_080F37B8: .4byte 0x00000402\n\
-_080F37BC:\n\
-	ldr r2, _080F37DC @ =gPaletteManager\n\
-	ldr r3, _080F37E0 @ =0x00000402\n\
-	adds r0, r2, r3\n\
-	strb r1, [r0]\n\
-	movs r0, #0xff\n\
-	ands r0, r1\n\
-	ldr r4, _080F37E4 @ =0x00000401\n\
-	adds r1, r2, r4\n\
-	strb r0, [r1]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #3\n\
-	adds r2, r2, r1\n\
-	strb r0, [r2]\n\
-_080F37D6:\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F37DC: .4byte gPaletteManager\n\
-_080F37E0: .4byte 0x00000402\n\
-_080F37E4: .4byte 0x00000401\n\
- .syntax divided\n");
+static void MenuLoop_BlackOut(struct GameState* g) {
+  g->frames--;
+  if (g->frames == 0) {
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x0;
+    g->mode[1] = 4;
+    MenuLoop_ExitMenu(g);
+  } else {
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames;
+  }
 }
 
 // --------------------------------------------
@@ -294,7 +170,7 @@ _080F3822:\n\
 	cmp r0, r1\n\
 	beq _080F383A\n\
 	ldrb r0, [r4, #0xe]\n\
-	bl setWramElement\n\
+	bl RequestElementEffectGraphic\n\
 _080F383A:\n\
 	movs r5, #0\n\
 	ldr r2, _080F3870 @ =0x00000E1C\n\
@@ -715,86 +591,26 @@ _080F3BE8:\n\
 /**
  * @return TRUE: B,L,Rのいずれかが押されてメニューが遷移, FALSE: 何もなし
  */
-NAKED bool8 TrySlideMenu(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r3, r0, #0\n\
-	ldr r0, _080F3C14 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r0, #2\n\
-	ands r0, r1\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r2, r0, #0x10\n\
-	cmp r2, #0\n\
-	beq _080F3C18\n\
-	movs r0, #3\n\
-	strb r0, [r3, #1]\n\
-	strb r0, [r3, #2]\n\
-	b _080F3C7C\n\
-	.align 2, 0\n\
-_080F3C14: .4byte gJoypad\n\
-_080F3C18:\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #2\n\
-	ands r0, r1\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r4, r0, #0x10\n\
-	cmp r4, #0\n\
-	beq _080F3C44\n\
-	ldr r1, _080F3C3C @ =0x00000E18\n\
-	adds r0, r3, r1\n\
-	ldrb r0, [r0]\n\
-	adds r0, #3\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	ldr r4, _080F3C40 @ =0x00000E19\n\
-	adds r1, r3, r4\n\
-	strb r0, [r1]\n\
-	strb r2, [r3, #2]\n\
-	b _080F3C66\n\
-	.align 2, 0\n\
-_080F3C3C: .4byte 0x00000E18\n\
-_080F3C40: .4byte 0x00000E19\n\
-_080F3C44:\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #1\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _080F3C52\n\
-	movs r0, #0\n\
-	b _080F3C7E\n\
-_080F3C52:\n\
-	ldr r1, _080F3C84 @ =0x00000E18\n\
-	adds r0, r3, r1\n\
-	ldrb r0, [r0]\n\
-	adds r0, #1\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	ldr r2, _080F3C88 @ =0x00000E19\n\
-	adds r1, r3, r2\n\
-	strb r0, [r1]\n\
-	strb r4, [r3, #2]\n\
-_080F3C66:\n\
-	ldr r2, _080F3C8C @ =sEachMenuLoops\n\
-	ldrb r0, [r1]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r2\n\
-	ldr r1, [r0]\n\
-	adds r0, r3, #0\n\
-	bl _call_via_r1\n\
-	movs r0, #0x33\n\
-	bl PlaySound\n\
-_080F3C7C:\n\
-	movs r0, #1\n\
-_080F3C7E:\n\
-	pop {r4}\n\
-	pop {r1}\n\
-	bx r1\n\
-	.align 2, 0\n\
-_080F3C84: .4byte 0x00000E18\n\
-_080F3C88: .4byte 0x00000E19\n\
-_080F3C8C: .4byte sEachMenuLoops\n\
- .syntax divided\n");
+bool8 TrySlideMenu(struct GameState* g) {
+  if (gJoypad[0].pressed & B_BUTTON) {
+    g->mode[1] = 3, g->mode[2] = 3;
+    return TRUE;
+  }
+  if (gJoypad[0].pressed & L_BUTTON) {
+    MENU->unk_4d = (MENU->unk_4c + 3) & 3;
+    g->mode[2] = 0;
+    (sEachMenuLoops[MENU->unk_4d])(g);
+    PlaySound(SE_MENU_SLIDE);
+    return TRUE;
+  }
+  if (gJoypad[0].pressed & R_BUTTON) {
+    MENU->unk_4d = (MENU->unk_4c + 1) & 3;
+    g->mode[2] = 0;
+    (sEachMenuLoops[MENU->unk_4d])(g);
+    PlaySound(SE_MENU_SLIDE);
+    return TRUE;
+  }
+  return FALSE;
 }
 
 /**
@@ -865,26 +681,43 @@ void PrintNumber(u16 n, u8 x, u8 y) {
   }
 }
 
+// --------------------------------------------
+
+struct SoulLauncher;
+
+void MenuExit_Buster(struct Weapon* p);
+void MenuExit_ShieldGuard(struct WeaponCommon* p);
+void MenuExit_ShieldFly(struct Weapon* p);
+void MenuExit_ReflectLaser(struct Weapon* p);
+void MenuExit_SoulLauncher(struct SoulLauncher* p);
+void MenuExit_BurstShot(struct Weapon* p);
+void MenuExit_BlizzardArrow(struct Weapon* p);
+void MenuExit_ThrowBlade(struct Weapon* p);
+void MenuExit_ShieldSweep(struct WeaponCommon* p);
+void MenuExit_Weapon13(struct WeaponCommon* p);
+void MenuExit_SaberSmash(struct Weapon* p);
+void MenuExit_ShieldSweepElec(struct Weapon* p);
+
 void FUN_080f3d44(struct Weapon* w) {
   // clang-format off
   static const WeaponFunc PTR_ARRAY_08386300[WEAPON_MOVE_COUNT] = {
-    [WEAPON_MOVE_Z_BUSTER]     =      MenuExit_Buster, 
-    [WEAPON_MOVE_Z_SABER]      =      NULL, 
-    [WEAPON_MOVE_SHIELD_GUARD] =      MenuExit_ShieldGuard, 
-    [WEAPON_MOVE_RECOIL_ROD]   =      NULL, 
-    [WEAPON_MOVE_SHIELD_FLY]   =      MenuExit_ShieldFly, 
-    [WEAPON_MOVE_SABER_WAVE] =        NULL, 
-    [WEAPON_MOVE_06] =                NULL, 
-    [WEAPON_MOVE_REFLECT_LASER] =     MenuExit_ReflectLaser, 
-    [WEAPON_MOVE_SOUL_LANCHER] =      MenuExit_SoulLauncher, 
-    [WEAPON_MOVE_BURST_SHOT] =        MenuExit_BurstShot, 
-    [WEAPON_MOVE_BLIZZARD_ARROW] =    MenuExit_BlizzardArrow, 
-    [WEAPON_MOVE_ZANEIDAN] =          MenuExit_ThrowBlade, 
-    [WEAPON_MOVE_SHIELD_SWEEP] =      MenuExit_ShieldSweep, 
-    [WEAPON_MOVE_13] =                MenuExit_Weapon13, 
-    [WEAPON_MOVE_RAKUSAIGA] =         MenuExit_SaberSmash, 
-    [WEAPON_MOVE_SHIELD_SWEEP_ELEC] = MenuExit_ShieldSweepElec, 
-    [WEAPON_MOVE_MINIGAME_ROD] =      NULL,
+    [WEAPON_MOVE_Z_BUSTER]     =      (void*)MenuExit_Buster, 
+    [WEAPON_MOVE_Z_SABER]      =      (void*)NULL, 
+    [WEAPON_MOVE_SHIELD_GUARD] =      (void*)MenuExit_ShieldGuard, 
+    [WEAPON_MOVE_RECOIL_ROD]   =      (void*)NULL, 
+    [WEAPON_MOVE_SHIELD_FLY]   =      (void*)MenuExit_ShieldFly, 
+    [WEAPON_MOVE_SABER_WAVE] =        (void*)NULL, 
+    [WEAPON_MOVE_06] =                (void*)NULL, 
+    [WEAPON_MOVE_REFLECT_LASER] =     (void*)MenuExit_ReflectLaser, 
+    [WEAPON_MOVE_SOUL_LANCHER] =      (void*)MenuExit_SoulLauncher, 
+    [WEAPON_MOVE_BURST_SHOT] =        (void*)MenuExit_BurstShot, 
+    [WEAPON_MOVE_BLIZZARD_ARROW] =    (void*)MenuExit_BlizzardArrow, 
+    [WEAPON_MOVE_ZANEIDAN] =          (void*)MenuExit_ThrowBlade, 
+    [WEAPON_MOVE_SHIELD_SWEEP] =      (void*)MenuExit_ShieldSweep, 
+    [WEAPON_MOVE_13] =                (void*)MenuExit_Weapon13, 
+    [WEAPON_MOVE_RAKUSAIGA] =         (void*)MenuExit_SaberSmash, 
+    [WEAPON_MOVE_SHIELD_SWEEP_ELEC] = (void*)MenuExit_ShieldSweepElec, 
+    [WEAPON_MOVE_MINIGAME_ROD] =      (void*)NULL,
   };
   // clang-format on
   if (PTR_ARRAY_08386300[(w->s).id] != NULL) {

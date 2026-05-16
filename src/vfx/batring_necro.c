@@ -1,16 +1,7 @@
 #include "global.h"
 #include "story.h"
 #include "vfx.h"
-
-struct VFX21 {
-  struct Entity s;
-  // props (16bytes, offset: 0x74..)
-  u16 unk_0;
-  u16 unk_2;
-  s32 unk_4;
-  u8 unk_8[8];
-};
-static_assert(sizeof(struct VFX21) == sizeof(struct VFX));
+#include "vfx/unk_common.h"
 
 static const s32* const PTR_s32_ARRAY_0836e9c4[3];
 
@@ -29,31 +20,27 @@ const VFXRoutine gBatringNecroRoutine = {
 // clang-format on
 
 struct VFX* FUN_080b7680(struct Coord* c, u8 param_2) {
-  struct VFX* vfx = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (vfx != NULL) {
-    (vfx->s).taskCol = 1;
-    INIT_VFX_ROUTINE(vfx, VFX_BATRING_NECRO);
-    (vfx->s).tileNum = 0;
-    (vfx->s).palID = 0;
-    (vfx->s).work[0] = param_2;
-    (vfx->s).work[1] = 0;
-    (vfx->s).coord.x = c->x;
-    (vfx->s).coord.y = c->y;
+  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_BATRING_NECRO);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).work[0] = param_2, (p->s).work[1] = 0;
+    (p->s).coord.x = c->x, (p->s).coord.y = c->y;
   }
-  return vfx;
+  return p;
 }
 
 struct Entity* FUN_080b76d4(struct Coord* c, u8 r1, u16 r2, s32 r3) {
-  struct VFX21* p = (struct VFX21*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_BATRING_NECRO);
     (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = r1, (p->s).work[1] = 1;
-    (p->s).coord.x = c->x;
-    (p->s).coord.y = c->y;
-    p->unk_0 = r2;
-    p->unk_4 = r3;
+    (p->s).coord.x = c->x, (p->s).coord.y = c->y;
+    p->m_74 = r2;
+    p->unk_78 = r3;
   }
   return (struct Entity*)p;
 }

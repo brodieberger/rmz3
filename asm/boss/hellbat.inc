@@ -36,7 +36,7 @@ _0804B6D8:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0804B73C @ =0x08362F68
+	ldr r1, _0804B73C @ =sCollisions+(1*24)
 	bl SetDDP
 	str r4, [r6, #0x60]
 	str r4, [r6, #0x5c]
@@ -71,7 +71,7 @@ _0804B70A:
 	b _0804B8E2
 	.align 2, 0
 _0804B738: .4byte 0x0000A804
-_0804B73C: .4byte 0x08362F68
+_0804B73C: .4byte sCollisions+(1*24)
 _0804B740: .4byte 0xFFFFB800
 _0804B744: .4byte 0x000003FF
 _0804B748:
@@ -135,7 +135,7 @@ _0804B782:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804B800 @ =0x080FEEBA
+	ldr r5, _0804B800 @ =HellbatFarModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -161,7 +161,7 @@ _0804B7F0: .4byte gMission
 _0804B7F4: .4byte RNG_0202f388
 _0804B7F8: .4byte 0x000343FD
 _0804B7FC: .4byte 0x00269EC3
-_0804B800: .4byte 0x080FEEBA
+_0804B800: .4byte HellbatFarModes
 _0804B804:
 	adds r0, r6, #0
 	bl isHellbatFarAway
@@ -176,7 +176,7 @@ _0804B804:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804B85C @ =0x080FEE98
+	ldr r5, _0804B85C @ =HellbatNearModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -201,7 +201,7 @@ _0804B804:
 _0804B850: .4byte RNG_0202f388
 _0804B854: .4byte 0x000343FD
 _0804B858: .4byte 0x00269EC3
-_0804B85C: .4byte 0x080FEE98
+_0804B85C: .4byte HellbatNearModes
 _0804B860:
 	ldr r0, _0804B88C @ =gMission
 	ldr r0, [r0]
@@ -221,14 +221,14 @@ _0804B860:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804B89C @ =0x080FEEBA
+	ldr r5, _0804B89C @ =HellbatFarModes
 	b _0804B8BE
 	.align 2, 0
 _0804B88C: .4byte gMission
 _0804B890: .4byte RNG_0202f388
 _0804B894: .4byte 0x000343FD
 _0804B898: .4byte 0x00269EC3
-_0804B89C: .4byte 0x080FEEBA
+_0804B89C: .4byte HellbatFarModes
 _0804B8A0:
 	adds r0, r6, #0
 	bl isHellbatFarAway
@@ -243,7 +243,7 @@ _0804B8A0:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804B8FC @ =0x080FEE98
+	ldr r5, _0804B8FC @ =HellbatNearModes
 _0804B8BE:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -274,7 +274,7 @@ _0804B8E2:
 _0804B8F0: .4byte RNG_0202f388
 _0804B8F4: .4byte 0x000343FD
 _0804B8F8: .4byte 0x00269EC3
-_0804B8FC: .4byte 0x080FEE98
+_0804B8FC: .4byte HellbatNearModes
 
 	thumb_func_start FUN_0804b900
 FUN_0804b900: @ 0x0804B900
@@ -513,7 +513,7 @@ _0804BABA:
 	b _0804BADE
 	.align 2, 0
 _0804BAD0: .4byte 0x0000A80F
-_0804BAD4: .4byte 0x08363148
+_0804BAD4: .4byte sCollisions+(21*24)
 _0804BAD8:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
@@ -766,7 +766,7 @@ _0804BCA6:
 _0804BCBE:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804BCD4 @ =0x08362F68
+	ldr r1, _0804BCD4 @ =sCollisions+(1*24)
 	bl SetDDP
 	ldr r0, [r4, #0x64]
 	str r0, [r4, #0x54]
@@ -774,7 +774,7 @@ _0804BCBE:
 	adds r0, #1
 	b _0804BCEC
 	.align 2, 0
-_0804BCD4: .4byte 0x08362F68
+_0804BCD4: .4byte sCollisions+(1*24)
 _0804BCD8:
 	adds r0, r4, #0
 	bl UpdateMotionGraphic
@@ -825,7 +825,7 @@ _0804BD14: @ jump table
 _0804BD30:
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0804BD78 @ =0x08362F68
+	ldr r1, _0804BD78 @ =sCollisions+(1*24)
 	bl SetDDP
 	movs r1, #0
 	movs r0, #0x28
@@ -861,7 +861,7 @@ _0804BD72:
 	adds r0, #1
 	b _0804BECC
 	.align 2, 0
-_0804BD78: .4byte 0x08362F68
+_0804BD78: .4byte sCollisions+(1*24)
 _0804BD7C:
 	movs r0, #0x85
 	bl PlaySound
@@ -925,7 +925,7 @@ _0804BDE6:
 	b _0804BECC
 	.align 2, 0
 _0804BDF4: .4byte 0x0000A811
-_0804BDF8: .4byte 0x08362FE0
+_0804BDF8: .4byte sCollisions+(6*24)
 _0804BDFC:
 	ldr r0, [r6, #0x68]
 	ldr r1, [r6, #0x58]
@@ -1012,7 +1012,7 @@ _0804BEA0:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0804BEDC @ =0x08362F68
+	ldr r1, _0804BEDC @ =sCollisions+(1*24)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1036,7 +1036,7 @@ _0804BECE:
 	bx r0
 	.align 2, 0
 _0804BED8: .4byte 0x0000A812
-_0804BEDC: .4byte 0x08362F68
+_0804BEDC: .4byte sCollisions+(1*24)
 
 	thumb_func_start FUN_0804bee0
 FUN_0804bee0: @ 0x0804BEE0
@@ -1114,7 +1114,7 @@ _0804BF6E:
 	b _0804BF92
 	.align 2, 0
 _0804BF84: .4byte 0x0000A80F
-_0804BF88: .4byte 0x08363148
+_0804BF88: .4byte sCollisions+(21*24)
 _0804BF8C:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
@@ -1220,7 +1220,7 @@ _0804C03C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C0A0 @ =0x08362F68
+	ldr r1, _0804C0A0 @ =sCollisions+(1*24)
 	bl SetDDP
 	adds r1, r4, #0
 	adds r1, #0xd0
@@ -1262,7 +1262,7 @@ _0804C08E:
 	b _0804C0C0
 	.align 2, 0
 _0804C09C: .4byte 0x0000A810
-_0804C0A0: .4byte 0x08362F68
+_0804C0A0: .4byte sCollisions+(1*24)
 _0804C0A4: .4byte pZero2
 _0804C0A8: .4byte 0xFFFF9000
 _0804C0AC: .4byte 0xFFFF5000
@@ -1393,12 +1393,12 @@ _0804C17E:
 	strb r0, [r4, #0x13]
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C1AC @ =0x08363088
+	ldr r1, _0804C1AC @ =sCollisions+(13*24)
 	bl SetDDP
 	b _0804C1F4
 	.align 2, 0
 _0804C1A8: .4byte 0x0000A809
-_0804C1AC: .4byte 0x08363088
+_0804C1AC: .4byte sCollisions+(13*24)
 _0804C1B0:
 	movs r5, #0
 	add r6, sp, #0xc
@@ -1505,7 +1505,7 @@ _0804C27C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C2DC @ =0x08362F68
+	ldr r1, _0804C2DC @ =sCollisions+(1*24)
 	bl SetDDP
 	movs r0, #0
 	str r0, [r4, #0x60]
@@ -1546,7 +1546,7 @@ _0804C2CE:
 	b _0804C542
 	.align 2, 0
 _0804C2D8: .4byte 0x0000A802
-_0804C2DC: .4byte 0x08362F68
+_0804C2DC: .4byte sCollisions+(1*24)
 _0804C2E0:
 	ldr r1, _0804C30C @ =0x0000A803
 	adds r0, r4, #0
@@ -1651,7 +1651,7 @@ _0804C362:
 	b _0804C404
 	.align 2, 0
 _0804C3A8: .4byte 0x0000A813
-_0804C3AC: .4byte 0x08362FE0
+_0804C3AC: .4byte sCollisions+(6*24)
 _0804C3B0: .4byte RNG_0202f388
 _0804C3B4: .4byte 0x000343FD
 _0804C3B8: .4byte 0x00269EC3
@@ -1720,7 +1720,7 @@ _0804C422:
 _0804C43A:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C458 @ =0x08362F68
+	ldr r1, _0804C458 @ =sCollisions+(1*24)
 	bl SetDDP
 	ldrb r0, [r4, #0x13]
 	subs r0, #1
@@ -1732,7 +1732,7 @@ _0804C43A:
 	adds r0, #1
 	b _0804C540
 	.align 2, 0
-_0804C458: .4byte 0x08362F68
+_0804C458: .4byte sCollisions+(1*24)
 _0804C45C:
 	movs r0, #5
 	b _0804C540
@@ -1742,7 +1742,7 @@ _0804C460:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C4A8 @ =0x08362F68
+	ldr r1, _0804C4A8 @ =sCollisions+(1*24)
 	bl SetDDP
 	movs r0, #0x10
 	strb r0, [r4, #0x12]
@@ -1771,14 +1771,14 @@ _0804C49C:
 	b _0804C540
 	.align 2, 0
 _0804C4A4: .4byte 0x0000A814
-_0804C4A8: .4byte 0x08362F68
+_0804C4A8: .4byte sCollisions+(1*24)
 _0804C4AC:
 	ldr r1, _0804C4F0 @ =0x0000A801
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C4F4 @ =0x08362F68
+	ldr r1, _0804C4F4 @ =sCollisions+(1*24)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -1807,7 +1807,7 @@ _0804C4C4:
 	b _0804C542
 	.align 2, 0
 _0804C4F0: .4byte 0x0000A801
-_0804C4F4: .4byte 0x08362F68
+_0804C4F4: .4byte sCollisions+(1*24)
 _0804C4F8: .4byte 0xFFFFB800
 _0804C4FC: .4byte 0x000003FF
 _0804C500:
@@ -1827,7 +1827,7 @@ _0804C514:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0804C550 @ =0x08362F68
+	ldr r1, _0804C550 @ =sCollisions+(1*24)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -1851,7 +1851,7 @@ _0804C542:
 	bx r0
 	.align 2, 0
 _0804C54C: .4byte 0x0000A802
-_0804C550: .4byte 0x08362F68
+_0804C550: .4byte sCollisions+(1*24)
 
 	thumb_func_start FUN_0804c554
 FUN_0804c554: @ 0x0804C554
@@ -1939,7 +1939,7 @@ _0804C60E:
 	b _0804C632
 	.align 2, 0
 _0804C624: .4byte 0x0000A80F
-_0804C628: .4byte 0x08363148
+_0804C628: .4byte sCollisions+(21*24)
 _0804C62C:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xfe
@@ -2221,14 +2221,14 @@ _0804C830:
 	bl createHellbatElectricBeam
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _0804C85C @ =0x083631A8
+	ldr r1, _0804C85C @ =sCollisions+(25*24)
 	bl SetDDP
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
 	strb r0, [r5, #0xe]
 	b _0804C9A4
 	.align 2, 0
-_0804C85C: .4byte 0x083631A8
+_0804C85C: .4byte sCollisions+(25*24)
 _0804C860:
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #0xc]
@@ -2715,7 +2715,7 @@ hellbat_0804cbe4: @ 0x0804CBE4
 	ands r0, r1
 	cmp r0, #0
 	beq _0804CC2E
-	ldr r2, _0804CC28 @ =0x08363208
+	ldr r2, _0804CC28 @ =sElementCoord
 	movs r0, #0x11
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -2734,7 +2734,7 @@ hellbat_0804cbe4: @ 0x0804CBE4
 	bl PlaySound
 	b _0804CC2E
 	.align 2, 0
-_0804CC28: .4byte 0x08363208
+_0804CC28: .4byte sElementCoord
 _0804CC2C:
 	str r6, [r5]
 _0804CC2E:
@@ -2825,179 +2825,3 @@ _0804CCC2:
 	bx r0
 	.align 2, 0
 _0804CCC8: .4byte 0x000200FF
-
-	thumb_func_start FUN_0804cccc
-FUN_0804cccc: @ 0x0804CCCC
-	push {r4, r5, lr}
-	adds r4, r1, #0
-	cmp r2, #1
-	bne _0804CD06
-	movs r2, #0
-	ldr r5, _0804CCEC @ =0x080FEEDC
-	adds r3, r5, #0
-_0804CCDA:
-	ldrh r1, [r3]
-	cmp r1, r4
-	beq _0804CCF0
-	adds r3, #2
-	adds r2, #1
-	cmp r2, #5
-	ble _0804CCDA
-	b _0804CD1A
-	.align 2, 0
-_0804CCEC: .4byte 0x080FEEDC
-_0804CCF0:
-	adds r0, r2, #1
-	movs r1, #6
-	b _0804CCFA
-_0804CCF6:
-	adds r0, r2, #1
-	movs r1, #5
-_0804CCFA:
-	bl __modsi3
-	lsls r0, r0, #1
-	adds r0, r0, r5
-	ldrh r0, [r0]
-	b _0804CD1A
-_0804CD06:
-	movs r2, #0
-	ldr r5, _0804CD20 @ =0x080FEEDC
-	adds r3, r5, #0
-_0804CD0C:
-	ldrh r1, [r3]
-	cmp r1, r4
-	beq _0804CCF6
-	adds r3, #2
-	adds r2, #1
-	cmp r2, #4
-	ble _0804CD0C
-_0804CD1A:
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_0804CD20: .4byte 0x080FEEDC
-
-	thumb_func_start isHellbatFarAway
-isHellbatFarAway: @ 0x0804CD24
-	push {lr}
-	ldr r1, _0804CD3C @ =pZero2
-	ldr r1, [r1]
-	ldr r3, [r1, #0x54]
-	ldr r1, [r0, #0x54]
-	subs r2, r3, r1
-	cmp r2, #0
-	ble _0804CD44
-	ldr r0, _0804CD40 @ =0x00004FFF
-	cmp r2, r0
-	ble _0804CD4C
-	b _0804CD54
-	.align 2, 0
-_0804CD3C: .4byte pZero2
-_0804CD40: .4byte 0x00004FFF
-_0804CD44:
-	subs r1, r1, r3
-	ldr r0, _0804CD50 @ =0x00004FFF
-	cmp r1, r0
-	bgt _0804CD54
-_0804CD4C:
-	movs r0, #0
-	b _0804CD56
-	.align 2, 0
-_0804CD50: .4byte 0x00004FFF
-_0804CD54:
-	movs r0, #1
-_0804CD56:
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start hellbat_0804cd5c
-hellbat_0804cd5c: @ 0x0804CD5C
-	push {lr}
-	adds r2, r0, #0
-	ldrb r0, [r2, #0x1e]
-	lsls r0, r0, #8
-	adds r1, r2, #0
-	adds r1, #0x70
-	ldrb r1, [r1]
-	orrs r0, r1
-	ldr r3, _0804CDA0 @ =0x0000A80E
-	cmp r0, r3
-	bne _0804CDCC
-	adds r0, r2, #0
-	adds r0, #0x73
-	ldrb r0, [r0]
-	cmp r0, #3
-	bne _0804CE02
-	ldrb r1, [r2, #0xa]
-	movs r3, #0x10
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	bne _0804CDA4
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #1
-	strb r0, [r1]
-	subs r1, #2
-	ldrb r0, [r1]
-	orrs r0, r3
-	strb r0, [r1]
-	ldrb r0, [r2, #0xa]
-	orrs r0, r3
-	b _0804CDBE
-	.align 2, 0
-_0804CDA0: .4byte 0x0000A80E
-_0804CDA4:
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #0
-	strb r0, [r1]
-	adds r3, r2, #0
-	adds r3, #0x4a
-	ldrb r1, [r3]
-	subs r0, #0x11
-	ands r0, r1
-	strb r0, [r3]
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-_0804CDBE:
-	strb r0, [r2, #0xa]
-	movs r1, #0xa8
-	lsls r1, r1, #8
-	adds r0, r2, #0
-	bl SetMotion
-	b _0804CE02
-_0804CDCC:
-	ldr r0, _0804CDEC @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r2, #0x54]
-	cmp r1, r0
-	ble _0804CDF0
-	ldrb r1, [r2, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	bne _0804CE02
-	adds r0, r2, #0
-	adds r1, r3, #0
-	bl SetMotion
-	b _0804CE02
-	.align 2, 0
-_0804CDEC: .4byte pZero2
-_0804CDF0:
-	ldrb r1, [r2, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	beq _0804CE02
-	adds r0, r2, #0
-	adds r1, r3, #0
-	bl SetMotion
-_0804CE02:
-	pop {r0}
-	bx r0
-	.align 2, 0

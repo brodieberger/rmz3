@@ -114,7 +114,7 @@ Cattatank_Init: @ 0x0809889C
 	adds r3, r2, #0
 	b _0809893A
 	.align 2, 0
-_08098910: .4byte 0x0836A4D8
+_08098910: .4byte sCollisions+(1*24)
 _08098914: .4byte FUN_08099eb4
 _08098918:
 	ldrb r1, [r6, #0xa]
@@ -366,8 +366,8 @@ _08098B10:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08098B18: .4byte 0x0836A470
-_08098B1C: .4byte 0x0836A498
+_08098B18: .4byte sUpdates1
+_08098B1C: .4byte sUpdates2
 
 	thumb_func_start Cattatank_Die
 Cattatank_Die: @ 0x08098B20
@@ -1135,7 +1135,7 @@ _0809910C:
 	b _08099194
 	.align 2, 0
 _0809915C: .4byte 0x0000D503
-_08099160: .4byte 0x0836A4D8
+_08099160: .4byte sCollisions+(1*24)
 _08099164: .4byte pZero2
 _08099168:
 	movs r3, #1
@@ -1320,7 +1320,7 @@ _080992B4:
 	b _080992E6
 	.align 2, 0
 _080992DC: .4byte 0x0000D501
-_080992E0: .4byte 0x0836A4D8
+_080992E0: .4byte sCollisions+(1*24)
 _080992E4:
 	movs r0, #0xc0
 _080992E6:
@@ -1648,7 +1648,7 @@ _0809954A:
 	b _08099576
 	.align 2, 0
 _0809956C: .4byte 0x0000D502
-_08099570: .4byte 0x0836A4D8
+_08099570: .4byte sCollisions+(1*24)
 _08099574:
 	ldr r0, _080995B0 @ =0xFFFFFF00
 _08099576:
@@ -1936,7 +1936,7 @@ _08099794:
 	b _080998E6
 	.align 2, 0
 _0809979C: .4byte 0x0000D507
-_080997A0: .4byte 0x0836A4D8
+_080997A0: .4byte sCollisions+(1*24)
 _080997A4:
 	ldr r1, _08099844 @ =0x0000D508
 	adds r0, r4, #0
@@ -2017,10 +2017,10 @@ _08099828:
 	b _080998D8
 	.align 2, 0
 _08099844: .4byte 0x0000D508
-_08099848: .4byte 0x0836A520
-_0809984C: .4byte 0x0836A568
-_08099850: .4byte 0x0836A5B0
-_08099854: .4byte 0x0836A5F8
+_08099848: .4byte sCollisions+(4*24)
+_0809984C: .4byte sCollisions+(7*24)
+_08099850: .4byte sCollisions+(10*24)
+_08099854: .4byte sCollisions+(13*24)
 _08099858:
 	ldr r1, _080998FC @ =0x0000D509
 	adds r0, r4, #0
@@ -2105,9 +2105,9 @@ _080998E6:
 	b _08099948
 	.align 2, 0
 _080998FC: .4byte 0x0000D509
-_08099900: .4byte 0x0836A5B0
-_08099904: .4byte 0x0836A568
-_08099908: .4byte 0x0836A520
+_08099900: .4byte sCollisions+(10*24)
+_08099904: .4byte sCollisions+(7*24)
+_08099908: .4byte sCollisions+(4*24)
 _0809990C:
 	ldr r0, _08099924 @ =pZero2
 	ldr r0, [r0]
@@ -2181,7 +2181,7 @@ _08099964:
 	b _0809999C
 	.align 2, 0
 _0809998C: .4byte 0x0000D50C
-_08099990: .4byte 0x0836A4D8
+_08099990: .4byte sCollisions+(1*24)
 _08099994: .4byte pZero2
 _08099998:
 	movs r0, #0x60
@@ -2363,7 +2363,7 @@ _08099AB8:
 	b _08099AF8
 	.align 2, 0
 _08099AE0: .4byte 0x0000D50A
-_08099AE4: .4byte 0x0836A640
+_08099AE4: .4byte sCollisions+(16*24)
 _08099AE8: .4byte pZero2
 _08099AEC: .4byte 0xFFFFFA00
 _08099AF0:
@@ -2714,7 +2714,7 @@ _08099D6C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08099D74: .4byte 0x0836A550
+_08099D74: .4byte sCollisions+(6*24)
 _08099D78: .4byte 0xFFFFF600
 
 	thumb_func_start nop_08099d7c
@@ -2808,7 +2808,7 @@ _08099E10:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08099E18: .4byte 0x0836A550
+_08099E18: .4byte sCollisions+(6*24)
 _08099E1C: .4byte 0xFFFFF600
 
 	thumb_func_start cattatank_08099e20
@@ -2850,7 +2850,7 @@ cattatank_08099e20: @ 0x08099E20
 	movs r0, #7
 	b _08099E7E
 	.align 2, 0
-_08099E6C: .4byte 0x0836A670
+_08099E6C: .4byte sElementCoords
 _08099E70:
 	cmp r1, #0x30
 	bne _08099EAA

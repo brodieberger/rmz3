@@ -53,8 +53,9 @@ static const VFXFunc sUpdates[5] = {
 
 // --------------------------------------------
 
+// 0x0836f998
 const motion_t motion_t_ARRAY_0836f998[3] = {
-    MOTION(0x0E, 0x08),
-    MOTION(0x0E, 0x07),
-    MOTION(0x0E, 0x09),
+    MOTION(SM014_CHIPICON, 8),
+    MOTION(SM014_CHIPICON, 7),
+    MOTION(SM014_CHIPICON, 9),
 };

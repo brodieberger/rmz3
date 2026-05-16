@@ -2,7 +2,7 @@
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
-#include "task.h"
+#include "renderer.h"
 
 extern s32 gConveyor;
 
@@ -1010,32 +1010,32 @@ NAKED s32 isStageBlocking(s32 start, s32 x, s32 y) { INCCODE("asm/todo/isStageBl
 
 NON_MATCH void AppendHazard(u16 id, u16 attr, const struct Coord* c, const struct Rect* size) {
 #if MODERN
-  s32 len = W_TERRAIN_V2.objectLen;
+  s32 len = gOverworld.terrain.objectLen;
   if (len + 1 < 32) {
     s32 i;
-    W_TERRAIN_V2.objectLen = len + 1;
+    gOverworld.terrain.objectLen = len + 1;
 
-    W_TERRAIN_V2.objects[len].id = id;
-    W_TERRAIN_V2.objects[len].attr = attr;
-    W_TERRAIN_V2.objects[len].start.x = c->x + size->x;
-    W_TERRAIN_V2.objects[len].start.y = c->y + size->y;
+    gOverworld.terrain.objects[len].id = id;
+    gOverworld.terrain.objects[len].attr = attr;
+    gOverworld.terrain.objects[len].center.x = c->x + size->x;
+    gOverworld.terrain.objects[len].center.y = c->y + size->y;
 
-    for (i = 0; i < W_TERRAIN_V2.objectLenPrev; i++) {
-      if (W_TERRAIN_V2.objectsPrev[i].id == id) {
+    for (i = 0; i < gOverworld.terrain.objectLenPrev; i++) {
+      if (gOverworld.terrain.objectsPrev[i].id == id) {
         break;
       }
     }
 
-    if (i < W_TERRAIN_V2.objectLenPrev) {
-      W_TERRAIN_V2.objects[len].unk_10.x = W_TERRAIN_V2.objectsPrev[i].start.x;
-      W_TERRAIN_V2.objects[len].unk_10.y = W_TERRAIN_V2.objectsPrev[i].start.y;
+    if (i < gOverworld.terrain.objectLenPrev) {
+      gOverworld.terrain.objects[len].unk_10.x = gOverworld.terrain.objectsPrev[i].center.x;
+      gOverworld.terrain.objects[len].unk_10.y = gOverworld.terrain.objectsPrev[i].center.y;
     } else {
-      W_TERRAIN_V2.objects[len].unk_10.x = W_TERRAIN_V2.objects[len].start.x;
-      W_TERRAIN_V2.objects[len].unk_10.y = W_TERRAIN_V2.objects[len].start.y;
+      gOverworld.terrain.objects[len].unk_10.x = gOverworld.terrain.objects[len].center.x;
+      gOverworld.terrain.objects[len].unk_10.y = gOverworld.terrain.objects[len].center.y;
     }
 
-    W_TERRAIN_V2.objects[len].w = ((u16)size->w) >> 1;
-    W_TERRAIN_V2.objects[len].h = ((u16)size->h) >> 1;
+    gOverworld.terrain.objects[len].hw = ((u16)size->w) >> 1;
+    gOverworld.terrain.objects[len].hh = ((u16)size->h) >> 1;
   }
 #else
   INCCODE("asm/wip/AppendHazard.inc");

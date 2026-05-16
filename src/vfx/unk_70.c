@@ -2,17 +2,17 @@
 #include "global.h"
 #include "vfx.h"
 
-static void Ghost70_Init(struct VFX* p);
-void Ghost70_Update(struct VFX* p);
-void Ghost70_Die(struct VFX* p);
+static void VFX70_Init(struct Entity* p);
+static void VFX70_Update(struct Entity* p);
+static void VFX70_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gGhost70Routine = {
-    [ENTITY_INIT] =      Ghost70_Init,
-    [ENTITY_UPDATE] =    Ghost70_Update,
-    [ENTITY_DIE] =       Ghost70_Die,
+    [ENTITY_INIT] =      (void*)VFX70_Init,
+    [ENTITY_UPDATE] =    (void*)VFX70_Update,
+    [ENTITY_DIE] =       (void*)VFX70_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -21,14 +21,10 @@ struct VFX* FUN_080c5628(u8 r0, u8 r1, s32 x, s32 y) {
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_070);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = r0;
-    (p->s).work[1] = r1;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
-    (p->s).d.x = 0;
-    (p->s).d.y = 0;
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).work[0] = r0, (p->s).work[1] = r1;
+    (p->s).coord.x = x, (p->s).coord.y = y;
+    (p->s).d.x = 0, (p->s).d.y = 0;
   }
   return p;
 }
@@ -38,69 +34,90 @@ struct VFX* FUN_080c5684(u8 r0, u8 r1, s32 x, s32 y, s32 dx, s32 dy) {
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_070);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = r0;
-    (p->s).work[1] = r1;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
-    (p->s).d.x = dx;
-    (p->s).d.y = dy;
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).work[0] = r0, (p->s).work[1] = r1;
+    (p->s).coord.x = x, (p->s).coord.y = y;
+    (p->s).d.x = dx, (p->s).d.y = dy;
   }
   return p;
 }
 
 // --------------------------------------------
 
-void FUN_080c572c(struct VFX* p);
+static void _VFX70_Init(struct Entity* p);
 
-static void Ghost70_Init(struct VFX* p) {
+static void VFX70_Init(struct Entity* p) {
   // clang-format off
-  static VFXFunc const sInitializers[] = {
-      FUN_080c572c,
-      FUN_080c572c,
-      FUN_080c572c,
-      FUN_080c572c,
-      FUN_080c572c,
-      FUN_080c572c,
+  static EntityFunc const sInitializers[] = {
+      _VFX70_Init,
+      _VFX70_Init,
+      _VFX70_Init,
+      _VFX70_Init,
+      _VFX70_Init,
+      _VFX70_Init,
   };
   // clang-format on
-  (sInitializers[(p->s).work[0]])(p);
+  (sInitializers[p->work[0]])(p);
 }
 
-INCASM("asm/vfx/unk_70.inc");
-
-// --------------------------------------------
-
-void FUN_080c5764(struct VFX* p);
+static void FUN_080c5764(struct Entity* p);
 void FUN_080c57a4(struct VFX* p);
 void FUN_080c5860(struct VFX* p);
 void FUN_080c598c(struct VFX* p);
 void FUN_080c5b30(struct VFX* p);
 void FUN_080c5c64(struct VFX* p);
 
-// clang-format off
-const VFXFunc sGhost70Updates[6] = {
-  FUN_080c5764,
-  FUN_080c57a4,
-  FUN_080c5860,
-  FUN_080c598c,
-  FUN_080c5b30,
-  FUN_080c5c64,
-};
-// clang-format on
+static void VFX70_Update(struct Entity* p) {
+  // clang-format off
+  static const VFXFunc sUpdates[6] = {
+    (void*)FUN_080c5764,
+    (void*)FUN_080c57a4,
+    (void*)FUN_080c5860,
+    (void*)FUN_080c598c,
+    (void*)FUN_080c5b30,
+    (void*)FUN_080c5c64,
+  }; // 0x0836f73c
+  // clang-format on
+  (sUpdates[p->work[0]])((void*)p);
+}
+
+static void _VFX70_Die(struct Entity* p);
+
+static void VFX70_Die(struct Entity* p) {
+  // clang-format off
+  static const EntityFunc sDeinitializers[] = {
+    _VFX70_Die,
+    _VFX70_Die,
+    _VFX70_Die,
+    _VFX70_Die,
+    _VFX70_Die,
+    _VFX70_Die,
+  };
+  // clang-format on
+  (sDeinitializers[p->work[0]])(p);
+}
 
 // --------------------------------------------
 
-void FUN_080c5784(struct VFX* p);
+// 0x080c572c
+static void _VFX70_Init(struct Entity* p) {
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
+  InitNonAffineMotion(p);
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  VFX70_Update(p);
+}
 
-// clang-format off
-const VFXFunc sGhost70Deinitializers[6] = {
-  FUN_080c5784,
-  FUN_080c5784,
-  FUN_080c5784,
-  FUN_080c5784,
-  FUN_080c5784,
-  FUN_080c5784,
-};
-// clang-format on
+// 0x080c5764
+static void FUN_080c5764(struct Entity* p) {
+  SET_VFX_ROUTINE(p, ENTITY_DIE);
+  VFX70_Die(p);
+}
+
+// 0x080c5784
+static void _VFX70_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_EXIT);
+}
+
+INCASM("asm/vfx/unk_70.inc");

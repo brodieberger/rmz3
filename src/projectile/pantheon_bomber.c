@@ -13,7 +13,7 @@ const ProjectileRoutine gPantheonBombProjectileRoutine = {
     [ENTITY_INIT] =      PantheonBombProjectile_Init,
     [ENTITY_UPDATE] =    PantheonBombProjectile_Update,
     [ENTITY_DIE] =       PantheonBombProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

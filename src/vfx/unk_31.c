@@ -19,31 +19,26 @@ const VFXRoutine gGhost31Routine = {
 // clang-format on
 
 void CreateVFX31_1(s32 x, s32 y) {
-  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
+    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, 31);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = 0;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 0;
+    p->coord.x = x, p->coord.y = y;
   }
 }
 
 void CreateVFX31_2(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      (p->s).taskCol = 1;
+      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, 31);
-      (p->s).tileNum = 0;
-      (p->s).palID = 0;
-      (p->s).work[0] = 1;
-      (p->s).work[1] = i;
-      (p->s).coord.x = x;
-      (p->s).coord.y = y;
+      p->tileNum = 0, p->palID = 0;
+      p->work[0] = 1, p->work[1] = i;
+      p->coord.x = x, p->coord.y = y;
     }
   }
 }

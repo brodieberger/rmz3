@@ -11,7 +11,7 @@ const ProjectileRoutine gOmegaZXProjectileRoutine = {
     [ENTITY_INIT] =      OmegaZXProjectile_Init,
     [ENTITY_UPDATE] =    OmegaZXProjectile_Update,
     [ENTITY_DIE] =       OmegaZXProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

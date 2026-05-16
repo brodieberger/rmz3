@@ -140,7 +140,7 @@ Script_08354a48:
 
 Script_08354aa0:
   spawn 0, Entity_083548b8
-  cmd1c 3, 0, 122880
+  cmd1c 3, 0, 480*PX
   reset_camera Camera_08354840
   lock
   screeneffect 9
@@ -219,7 +219,7 @@ Script_08354c00:
   end
 
 Script_08354cf0:
-  cmd1c 3, 0, 122880
+  cmd1c 3, 0, 480*PX
   spawn 0, Entity_083548c8
   spawn 1, Entity_083548d8
   reset_camera Camera_0835486c

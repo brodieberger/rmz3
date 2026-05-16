@@ -1,18 +1,19 @@
 #include "collision.h"
 #include "global.h"
+#include "overworld.h"
 #include "projectile.h"
 
 static void OmegaZeroProjectile_Init(struct Projectile* p);
 static void OmegaZeroProjectile_Update(struct Projectile* p);
-static void OmegaZeroProjectile_Die(struct Projectile* p);
+static void OmegaZeroProjectile_Die(Object* p);
 
 // clang-format off
 const ProjectileRoutine gOmegaZeroProjectileRoutine = {
-    [ENTITY_INIT] =      OmegaZeroProjectile_Init,
-    [ENTITY_UPDATE] =    OmegaZeroProjectile_Update,
-    [ENTITY_DIE] =       OmegaZeroProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)OmegaZeroProjectile_Init,
+    [ENTITY_UPDATE] =    (void*)OmegaZeroProjectile_Update,
+    [ENTITY_DIE] =       (void*)OmegaZeroProjectile_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -23,11 +24,9 @@ void CreateOzArcBlade(struct Entity* e, u8 n) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 2;
-    (p->coord).x = (e->coord).x;
-    (p->coord).y = (e->coord).y;
+    (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
     p->work[2] = n;
     p->work[3] = (e->flags >> 4) & 1;
   }
@@ -40,11 +39,9 @@ void CreateMessenkou(struct Entity* e) {
     if (p != NULL) {
       p->taskCol = 8;
       INIT_PROJECTILE_ROUTINE(p, 38);
-      p->tileNum = 0;
-      p->palID = 0;
+      p->tileNum = 0, p->palID = 0;
       p->work[0] = 1;
-      (p->coord).x = (e->coord).x;
-      (p->coord).y = (e->coord).y;
+      (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
       p->work[2] = i;
     }
   }
@@ -55,10 +52,8 @@ struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->work[0] = 0;
-    p->work[1] = kind;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 0, p->work[1] = kind;
     p->unk_28 = e;
   }
   return (struct Projectile*)p;
@@ -70,8 +65,7 @@ void CreateRekkoha(struct Entity* e, u8 n) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 3;
     p->work[2] = n * 51;
     p->unk_28 = e;
@@ -85,8 +79,7 @@ void CreateDoubleChargeWave1(struct Entity* e) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 4;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -108,8 +101,7 @@ void CreateDoubleChargeWave2(struct Entity* e) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 5;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -131,8 +123,7 @@ void CreateDoubleChargeWave3(struct Entity* e) {
   if (p != NULL) {
     p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0;
-    p->palID = 0;
+    p->tileNum = 0, p->palID = 0;
     p->work[0] = 6;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -168,56 +159,53 @@ static void OmegaZeroProjectile_Init(struct Projectile* p) {
 
 // --------------------------------------------
 
-static void nop_080ae5b4(struct Projectile* _);
+static void nop_080ae5b4(void* _ UNUSED);
 static void OmegaZeroSaber_Update(struct Projectile* p);
 static void Messenkou_Update(struct Projectile* p);
 static void ArcBlade_Update(struct Projectile* p);
 static void Rekkoha_Update(struct Projectile* p);
-static void DoubleChargeWave1_Update(struct Projectile* p);
+static void DoubleChargeWave1_Update(Object* p);
 static void DoubleChargeWave2_Update(struct Projectile* p);
-static void DoubleChargeWave3_Update(struct Projectile* p);
+static void DoubleChargeWave3_Update(Object* p);
 
 static void OmegaZeroProjectile_Update(struct Projectile* p) {
   // clang-format off
-  static const ProjectileFunc sUpdates1[7] = {
-      nop_080ae5b4,
-      nop_080ae5b4,
-      nop_080ae5b4,
-      nop_080ae5b4,
-      nop_080ae5b4,
-      nop_080ae5b4,
-      nop_080ae5b4,
+  static const EntityFunc sUpdates1[7] = {
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
+      (void*)nop_080ae5b4,
   };
   // clang-format on
   // clang-format off
   static const ProjectileFunc sUpdates2[7] = {
-      OmegaZeroSaber_Update, // All Saber Attack
-      Messenkou_Update,
-      ArcBlade_Update,
-      Rekkoha_Update,
-      DoubleChargeWave1_Update, // 1st shot
-      DoubleChargeWave2_Update, // 2nd shot
-      DoubleChargeWave3_Update, // O-Saber wave
+      (void*)OmegaZeroSaber_Update, // All Saber Attack
+      (void*)Messenkou_Update,
+      (void*)ArcBlade_Update,
+      (void*)Rekkoha_Update,
+      (void*)DoubleChargeWave1_Update, // 1st shot
+      (void*)DoubleChargeWave2_Update, // 2nd shot
+      (void*)DoubleChargeWave3_Update, // O-Saber wave
   };
   // clang-format on
-  (sUpdates1[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
   (sUpdates2[(p->s).mode[1]])(p);
 }
 
 // --------------------------------------------
 
-static void OmegaZeroProjectile_Die(struct Projectile* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~(COLLIDABLE);
+static void OmegaZeroProjectile_Die(Object* p) {
+  EXIT_BODY(p);
   (p->s).flags &= ~(DISPLAY);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void nop_080ae5b4(struct Projectile* _) { return; }
+static void nop_080ae5b4(void* _) {}
 
 // 01 00 xx --
 NAKED static void OmegaZeroSaber_Update(struct Projectile* p) {
@@ -825,134 +813,32 @@ _080AEA48: .4byte gProjectileFnTable\n\
 }
 
 // 01 04 xx --
-NAKED static void DoubleChargeWave1_Update(struct Projectile* p) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	ldrb r0, [r4, #0xe]\n\
-	cmp r0, #0\n\
-	beq _080AEA5C\n\
-	cmp r0, #1\n\
-	beq _080AEABC\n\
-	b _080AEB30\n\
-_080AEA5C:\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x74\n\
-	ldr r1, _080AEA74 @ =0x0836CA38\n\
-	bl SetDDP\n\
-	ldrb r2, [r4, #0x12]\n\
-	cmp r2, #0\n\
-	beq _080AEA78\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0x10\n\
-	orrs r0, r1\n\
-	b _080AEA7E\n\
-	.align 2, 0\n\
-_080AEA74: .4byte 0x0836CA38\n\
-_080AEA78:\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-_080AEA7E:\n\
-	strb r0, [r4, #0xa]\n\
-	movs r1, #1\n\
-	ands r1, r2\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	adds r3, r4, #0\n\
-	adds r3, #0x4a\n\
-	lsls r1, r1, #4\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	strb r0, [r3]\n\
-	ldrb r1, [r4, #0x12]\n\
-	lsls r0, r1, #3\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #8\n\
-	ldr r1, _080AEB38 @ =0xFFFFFB80\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x5c]\n\
-	movs r0, #0x80\n\
-	strb r0, [r4, #0x12]\n\
-	ldr r1, _080AEB3C @ =0x00008007\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r4, #0xe]\n\
-	adds r0, #1\n\
-	strb r0, [r4, #0xe]\n\
-_080AEABC:\n\
-	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x71\n\
-	ldrb r0, [r0]\n\
-	lsls r0, r0, #0x18\n\
-	asrs r0, r0, #0x18\n\
-	cmp r0, #2\n\
-	ble _080AEAD8\n\
-	ldr r0, [r4, #0x54]\n\
-	ldr r1, [r4, #0x5c]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x54]\n\
-_080AEAD8:\n\
-	ldrb r0, [r4, #0x12]\n\
-	cmp r0, #0\n\
-	beq _080AEAE8\n\
-	subs r0, #1\n\
-	strb r0, [r4, #0x12]\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	bne _080AEB30\n\
-_080AEAE8:\n\
-	ldr r0, _080AEB40 @ =gStageRun+232\n\
-	adds r1, r4, #0\n\
-	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #7\n\
-	cmp r0, r1\n\
-	bls _080AEB30\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xfe\n\
-	ands r0, r1\n\
-	movs r2, #0\n\
-	movs r1, #0xfd\n\
-	ands r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x8c\n\
-	str r2, [r0]\n\
-	adds r0, #4\n\
-	str r2, [r0]\n\
-	adds r0, #4\n\
-	strb r2, [r0]\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xfb\n\
-	ands r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	ldr r1, _080AEB44 @ =gProjectileFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #3\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #0xc]\n\
-	str r0, [r4, #0x14]\n\
-_080AEB30:\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080AEB38: .4byte 0xFFFFFB80\n\
-_080AEB3C: .4byte 0x00008007\n\
-_080AEB40: .4byte gStageRun+232\n\
-_080AEB44: .4byte gProjectileFnTable\n\
- .syntax divided\n");
+static void DoubleChargeWave1_Update(Object* p) {
+  switch ((p->s).mode[2]) {
+    case 0: {
+      SetDDP(&p->body, &gOmegaZeroProjectileCollisions_0836c9c0[5]);
+      SET_XFLIP(p, (p->s).work[2]);
+      (p->s).d.x = (p->s).work[2] * PIXEL(9) - PIXEL(9) / 2;
+      (p->s).work[2] = 128;  // lifetime
+      SetMotion(&p->s, MOTION(SM128_UNK, 7));
+      (p->s).mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateMotionGraphic(&p->s);
+      if ((p->s).motion.cmdIdx > 2) (p->s).coord.x += (p->s).d.x;
+      // 128フレーム経過 or 画面外に出たら消える
+      if ((p->s).work[2] == 0 || (--(p->s).work[2] == 0)) {
+        if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
+          (p->s).flags &= ~DISPLAY;
+          (p->s).flags &= ~FLIPABLE;
+          EXIT_BODY(p);
+          SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
+        }
+      }
+      break;
+    }
+  }
 }
 
 // 01 05 xx --
@@ -1125,131 +1011,36 @@ _080AEC94: .4byte gProjectileFnTable\n\
 }
 
 // 01 06 xx --
-NAKED static void DoubleChargeWave3_Update(struct Projectile* p) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	ldrb r0, [r4, #0xe]\n\
-	cmp r0, #0\n\
-	beq _080AECA8\n\
-	cmp r0, #1\n\
-	beq _080AED10\n\
-	b _080AED74\n\
-_080AECA8:\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x74\n\
-	ldr r1, _080AECC0 @ =0x0836CA68\n\
-	bl SetDDP\n\
-	ldrb r2, [r4, #0x12]\n\
-	cmp r2, #0\n\
-	beq _080AECC4\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0x10\n\
-	orrs r0, r1\n\
-	b _080AECCA\n\
-	.align 2, 0\n\
-_080AECC0: .4byte 0x0836CA68\n\
-_080AECC4:\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-_080AECCA:\n\
-	strb r0, [r4, #0xa]\n\
-	movs r1, #1\n\
-	ands r1, r2\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x4c\n\
-	movs r3, #0\n\
-	strb r1, [r0]\n\
-	movs r0, #0x4a\n\
-	adds r0, r0, r4\n\
-	mov ip, r0\n\
-	lsls r1, r1, #4\n\
-	ldrb r2, [r0]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	mov r1, ip\n\
-	strb r0, [r1]\n\
-	ldrb r1, [r4, #0x12]\n\
-	lsls r0, r1, #3\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #8\n\
-	ldr r1, _080AED7C @ =0xFFFFFB80\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x5c]\n\
-	movs r0, #0x80\n\
-	str r0, [r4, #0x64]\n\
-	strb r3, [r4, #0x13]\n\
-	ldr r1, _080AED80 @ =0x00008005\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r4, #0xe]\n\
-	adds r0, #1\n\
-	strb r0, [r4, #0xe]\n\
-_080AED10:\n\
-	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
-	ldr r0, [r4, #0x54]\n\
-	ldr r1, [r4, #0x5c]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x54]\n\
-	ldr r0, [r4, #0x64]\n\
-	cmp r0, #0\n\
-	beq _080AED2C\n\
-	subs r0, #1\n\
-	str r0, [r4, #0x64]\n\
-	cmp r0, #0\n\
-	bne _080AED74\n\
-_080AED2C:\n\
-	ldr r0, _080AED84 @ =gStageRun+232\n\
-	adds r1, r4, #0\n\
-	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #7\n\
-	cmp r0, r1\n\
-	bls _080AED74\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xfe\n\
-	ands r0, r1\n\
-	movs r2, #0\n\
-	movs r1, #0xfd\n\
-	ands r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x8c\n\
-	str r2, [r0]\n\
-	adds r0, #4\n\
-	str r2, [r0]\n\
-	adds r0, #4\n\
-	strb r2, [r0]\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #0xfb\n\
-	ands r0, r1\n\
-	strb r0, [r4, #0xa]\n\
-	ldr r1, _080AED88 @ =gProjectileFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #3\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #0xc]\n\
-	str r0, [r4, #0x14]\n\
-_080AED74:\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080AED7C: .4byte 0xFFFFFB80\n\
-_080AED80: .4byte 0x00008005\n\
-_080AED84: .4byte gStageRun+232\n\
-_080AED88: .4byte gProjectileFnTable\n\
- .syntax divided\n");
+static void DoubleChargeWave3_Update(Object* p) {
+  switch ((p->s).mode[2]) {
+    case 0: {
+      SetDDP(&p->body, &gOmegaZeroProjectileCollisions_0836c9c0[7]);
+      SET_XFLIP(p, (p->s).work[2]);
+      (p->s).d.x = (p->s).work[2] * PIXEL(9) - PIXEL(9) / 2;
+      (p->s).unk_coord.x = 128;  // lifetime
+      (p->s).work[3] = 0;
+      SetMotion(&p->s, MOTION(SM128_UNK, 5));
+      (p->s).mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateMotionGraphic(&p->s);
+      (p->s).coord.x += (p->s).d.x;
+      // 128フレーム経過 or 画面外に出たら消える
+      if ((p->s).unk_coord.x == 0 || (--(p->s).unk_coord.x == 0)) {
+        if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
+          (p->s).flags &= ~DISPLAY;
+          (p->s).flags &= ~FLIPABLE;
+          EXIT_BODY(p);
+          SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
+        }
+      }
+      break;
+    }
+  }
 }
 
+// 0x0836c9c0
 static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41] = {
     {
       kind : DDP,

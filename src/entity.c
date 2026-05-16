@@ -4,7 +4,7 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
-#include "task.h"
+#include "renderer.h"
 
 // 0x08016db4
 void ResetEntityEnvironment(void) {
@@ -30,14 +30,10 @@ void UpdateEntities(struct EntityHeader* h) {
   struct Entity* p;
 
   setCurProcessedEntityHeader(h);
-
-  // h->last->prev -> h->last->prev->prev -> h->last->prev->prev->prev -> ...
-  p = h->last->prev;
-  h->last = p;
-  while (p != (struct Entity*)&h->next) {
+  p = h->last = h->last->prev;  // h->last->prev -> h->last->prev->prev -> h->last->prev->prev->prev -> ...
+  while (p != ((void*)&h->next)) {
     ((EntityFunc)p->onUpdate)(p);
-    p = h->last->prev;
-    h->last = p;
+    p = h->last = h->last->prev;
   }
 }
 
@@ -89,53 +85,50 @@ void RegisterHitboxes(struct EntityHeader* h) {
  */
 NON_MATCH void RunDamageEffect(struct EntityHeader* h) {
 #if MODERN
-  struct CollidableEntity* p;
+  Object* p;
 
   setCurProcessedEntityHeader(h);
   h->last = h->last->prev;
-  p = (struct CollidableEntity*)h->last;
-  while (p != (struct CollidableEntity*)&h->next) {
+  p = (void*)h->last;
+
+  while (p != ((void*)&h->next)) {
     if (((p->s).flags & COLLIDABLE) && ((p->s).flags2 & WHITE_PAINTABLE)) {
       if (((p->body).status & BODY_STATUS_WHITE) || ((p->body).prevStatus & 1) || ((p->body).invincibleTime & 2)) {
         gWhitePaintFlags[(p->s).invincibleID >> 5] |= (1 << ((p->s).invincibleID & 0x1F));
       }
-
-      if ((wPauseFrame == 0) && ((p->body).status & BODY_STATUS_WHITE) && (((p->body).collisions)->faction != FACTION_ALLY)) {
-        gIsPlayDamageSE = TRUE;
+      if (wPauseFrame == 0) {
+        if (((p->body).status & BODY_STATUS_WHITE) && (((p->body).collisions)->faction != FACTION_ALLY)) {
+          gIsPlayDamageSE = TRUE;
+        }
       }
     }
-
     h->last = h->last->prev;
-    p = (struct CollidableEntity*)h->last;
+    p = (void*)h->last;
   }
 #else
   INCCODE("asm/wip/RunDamageEffect.inc");
 #endif
 }
 
-NON_MATCH void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
-#if MODERN
+void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
   struct Entity* p;
 
   setCurProcessedEntityHeader(h);
-  p = h->last->prev;
-  h->last = p;
+  p = h->last = h->last->prev;
 
-  while (p != (struct Entity*)&h->next) {
+  while (p != ((void*)&h->next)) {
     if (p->flags & DISPLAY) {
       struct Sprite* spr = &p->spr;
 
       if (p->flags & AFFINE) {
         (spr->oam).matrixNum = gMatrixCount;
-        if (gMatrixCount < 31) {
-          gMatrixCount++;
-        }
+        if (gMatrixCount < 31) gMatrixCount++;
 
         if (p->flags2 & SCALEROT) {
           if (p->flags2 & ENTITY_FLAG2_B1) {
             ScalerotSprite(spr, p->angle);
           } else {
-            ScalerotSprite(spr, p->angle);
+            ScalerotSprite2(spr, p->angle);
           }
         } else {
           RotateSprite(spr, p->angle);
@@ -147,24 +140,18 @@ NON_MATCH void DrawEntity(struct EntityHeader* h, struct TaskManager* tm) {
         AppendTask(tm, (struct Task*)spr, 0, p->taskCol);
       }
     }
-    p = h->last->prev;
-    h->last = p;
+    p = h->last = h->last->prev;
   }
-#else
-  INCCODE("asm/wip/DrawEntity.inc");
-#endif
 }
 
 // gWhitePaintFlags を見て白塗りにするか以外は DrawEntity と同じ
-NON_MATCH void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* tm) {
-#if MODERN
+void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* tm) {
   struct Entity* p;
 
   setCurProcessedEntityHeader(h);
-  p = h->last->prev;
-  h->last = p;
+  p = h->last = h->last->prev;
 
-  while (p != (struct Entity*)&h->next) {
+  while (p != ((void*)&h->next)) {
     if (p->flags & DISPLAY) {
       struct Sprite* spr = &p->spr;
 
@@ -177,14 +164,13 @@ NON_MATCH void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* 
 
         if (p->flags & AFFINE) {
           (spr->oam).matrixNum = gMatrixCount;
-          if (gMatrixCount < 31) {
-            gMatrixCount++;
-          }
+          if (gMatrixCount < 31) gMatrixCount++;
+
           if (p->flags2 & SCALEROT) {
             if (p->flags2 & ENTITY_FLAG2_B1) {
               ScalerotSprite(spr, p->angle);
             } else {
-              ScalerotSprite(spr, p->angle);
+              ScalerotSprite2(spr, p->angle);
             }
           } else {
             RotateSprite(spr, p->angle);
@@ -195,13 +181,8 @@ NON_MATCH void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* 
         AppendTask(tm, (struct Task*)spr, 0, p->taskCol);
       }
     }
-
-    p = h->last->prev;
-    h->last = p;
+    p = h->last = h->last->prev;
   }
-#else
-  INCCODE("asm/wip/DrawCollidableEntity.inc");
-#endif
 }
 
 struct Entity* GetNearestEntity(struct EntityHeader* h, struct Coord* c) {
@@ -237,14 +218,12 @@ u16 countSpecificEntities1(struct EntityHeader* h, u8 id) {
 
   last = h->last;
   ignoreEntityFn(h);
-  p = h->last->prev;
-  h->last = p;
+  p = h->last = h->last->prev;
   while (p != (struct Entity*)&h->next) {
     if (p->id == id) {
       val++;
     }
-    p = h->last->prev;
-    h->last = p;
+    p = h->last = h->last->prev;
   }
   h->last = last;
   return val;
@@ -259,15 +238,10 @@ u16 countSpecificEntities2(struct EntityHeader* h, u8 id, u8 r2, u8 r3) {
   last = h->last;
   ignoreEntityFn(h);
 
-  h->last = h->last->prev;
-  p = h->last;
-
+  p = h->last = h->last->prev;
   while (p != (struct Entity*)&h->next) {
-    if (((p->id == id) && (p->work[0] == r2)) && (p->work[1] == r3)) {
-      val++;
-    }
-    h->last = h->last->prev;
-    p = h->last;
+    if (((p->id == id) && (p->work[0] == r2)) && (p->work[1] == r3)) val++;
+    p = h->last = h->last->prev;
   }
   h->last = last;
   return val;

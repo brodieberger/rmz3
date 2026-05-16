@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/unk_common.h"
 
 // Cattatank の残骸?
 
@@ -30,18 +31,18 @@ struct Entity* FUN_080c7518(struct Coord* c, u8 n) {
   return p;
 }
 
-struct VFX* FUN_080c7570(struct Coord* c, u8 n, u16 r2, s32 y) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c7570(struct Coord* c, u8 n, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_075);
     (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = n, (p->s).work[1] = 1;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
-    (p->props).unk28.unk_0 = r2;
-    (p->props).unk28.unk_4 = y;
+    p->m_74 = m;
+    p->unk_78 = val;
   }
-  return p;
+  return (void*)p;
 }
 
 // --------------------------------------------
@@ -68,8 +69,7 @@ static void Ghost75_Init(struct Entity* p) {
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     p->mode[1] = 1, p->mode[2] = 0, p->mode[3] = 0;
   } else {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    p->work[2] = 96 + ((RNG_0202f388 >> 16) & 7);
+    p->work[2] = 96 + (RANDOM(RNG_0202f388) & 7);
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     p->mode[1] = 2, p->mode[2] = 0, p->mode[3] = 0;
   }

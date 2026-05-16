@@ -49,7 +49,7 @@
 #define ENEMY_HANUMACHINE_OBJ 45
 #define ENEMY_GALLISNI 46
 #define ENEMY_MOTHJIRO 47
-#define ENEMY_METTAUR_SWIM 48
+#define ENEMY_METTAUR 48  // メットールRW, スイムメットールRW, ヘリメットールRW
 #define ENEMY_P_BASE 49
 #define ENEMY_HANUMACHINE_NECRO 50
 #define ENEMY_CARRYBEE_G 51
@@ -61,7 +61,7 @@
 #define ENEMY_SEIMERAN 57
 #define ENEMY_PETATRIA 58
 #define ENEMY_59 59
-#define ENEMY_60 60
+#define ENEMY_OMEGA_ZX_X 60
 #define ENEMY_61 61
 #define ENEMY_SHOTLOID 62
 #define ENEMY_63 63

@@ -2,21 +2,45 @@
 #include "global.h"
 #include "projectile.h"
 
-INCASM("asm/projectile/unk_27.inc");
+void CreateVFX53(struct Entity* e, u8 n);
 
-void Projectile27_Init(struct Projectile* p);
-void Projectile27_Update(struct Projectile* p);
-void Projectile27_Die(struct Projectile* p);
+static void Projectile27_Init(struct Entity* p);
+static void Projectile27_Update(struct Entity* p);
+static void Projectile27_Die(Object* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile27Routine = {
-    [ENTITY_INIT] =      Projectile27_Init,
-    [ENTITY_UPDATE] =    Projectile27_Update,
-    [ENTITY_DIE] =       Projectile27_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile27_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile27_Update,
+    [ENTITY_DIE] =       (void*)Projectile27_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void FUN_080a9048(struct Entity* e, u8 param_2, u8 param_3) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 27);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = param_2, p->work[1] = param_3;
+    p->unk_28 = (void*)e;
+    (p->coord) = e->coord;
+  }
+}
+
+void FUN_080a90a0(struct Entity* e, u8 param_2, u8 param_3) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 27);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = param_2, p->work[1] = param_3;
+    p->unk_28 = (void*)e;
+    (p->coord) = e->coord;
+  }
+}
 
 // --------------------------------------------
 
@@ -28,40 +52,58 @@ void FUN_080a96f8(struct Projectile* p);
 void FUN_080a9920(struct Projectile* p);
 void FUN_080a9a30(struct Projectile* p);
 
-// clang-format off
-static const ProjectileFunc PTR_ARRAY_0836c0d0[7] = {
-    FUN_080a9158,
-    FUN_080a9250,
-    FUN_080a946c,
-    FUN_080a9604,
-    FUN_080a96f8,
-    FUN_080a9920,
-    FUN_080a9a30,
-};
-// clang-format on
-
-// --------------------------------------------
+static void Projectile27_Init(struct Entity* p) {
+  // clang-format off
+  static const ProjectileFunc sInitializers[7] = {
+      (void*)FUN_080a9158,
+      (void*)FUN_080a9250,
+      (void*)FUN_080a946c,
+      (void*)FUN_080a9604,
+      (void*)FUN_080a96f8,
+      (void*)FUN_080a9920,
+      (void*)FUN_080a9a30,
+  }; // 0x0836c0d0
+  // clang-format on
+  (sInitializers[p->work[0]])((void*)p);
+}
 
 void FUN_080a9358(struct Projectile* p);
 void FUN_080a953c(struct Projectile* p);
 void FUN_080a9810(struct Projectile* p);
 void FUN_080a99d4(struct Projectile* p);
-void FUN_080a9a74(struct Projectile* p);
+static void FUN_080a9a74(struct Entity* p);
 
-// clang-format off
-static const ProjectileFunc PTR_ARRAY_0836c0ec[7] = {
-    FUN_080a9358,
-    FUN_080a9358,
-    FUN_080a953c,
-    FUN_080a9810,
-    FUN_080a9810,
-    FUN_080a99d4,
-    FUN_080a9a74,
-};
-// clang-format on
+static void Projectile27_Update(struct Entity* p) {
+  // clang-format off
+  static const ProjectileFunc sUpdates[7] = {
+      (void*)FUN_080a9358,
+      (void*)FUN_080a9358,
+      (void*)FUN_080a953c,
+      (void*)FUN_080a9810,
+      (void*)FUN_080a9810,
+      (void*)FUN_080a99d4,
+      (void*)FUN_080a9a74,
+  }; // 0x0836c0ec
+  // clang-format on
+  (sUpdates[p->work[0]])((void*)p);
+}
+
+static void Projectile27_Die(Object* p) {
+  EXIT_BODY(p);
+  SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
+}
+
+INCASM("asm/projectile/unk_27.inc");
+
+static void FUN_080a9a74(struct Entity* p) {
+  UpdateMotionGraphic(p);
+  CreateVFX53(p, p->work[1]);
+  SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
+}
 
 // --------------------------------------------
 
+// 0x0836C108
 static const struct Collision sCollisions[10] = {
     {
       kind : DDP,

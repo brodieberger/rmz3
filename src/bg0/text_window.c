@@ -4,28 +4,27 @@
 #include "system.h"
 #include "text.h"
 
-static const u16* const gTextOffsetTable[20];
-static const char_t* const gTextTable[20];
-static const u32 sVramOffsets[2];
+enum TextBank {
+  TB_SYSTEM = 0,
+  TB_OPEN_DISK = 1,
+};
 
-extern const struct ColorGraphic gDialogGraphics[];
+static const u16* const gTextOffsetTable[20];
 
 static void resetTextWindow(struct TextWindowText* t);
 static void setupTextWindow(struct TextWindowText* t);
 static void _UpdateTextWindow(struct TextWindowText* t);
 static bool32 isMugshotChanged(struct TextWindowText* t);
 
-void ClearTextWindow(void* bg0) {
-  struct TextWindowText* t;
+void ClearTextWindow(void* bgmap) {
   gTextPrinter.startX = 0;
   gTextPrinter.endX = 30;
   gTextPrinter.startY = 0;
   gTextPrinter.endY = 22;
   gTextWindow.frame = 0;
-  gTextWindow.bg0Mask = bg0;
-  *(u32*)&gTextWindow.text.props = 0;
-  t = &gTextWindow.text;
-  t->mode = 0;
+  gTextWindow.buffer = bgmap;
+  *((u32*)&gTextWindow.text.props) = 0;
+  (&gTextWindow.text)->mode = 0;
 }
 
 void UpdateTextWindow(void) {
@@ -47,156 +46,77 @@ void PrintNormalMessage(TextID n) {
   return;
 }
 
-NAKED void PrintTextWindow(TextID t, u16 kind) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r3, r0, #0x10\n\
-	lsls r1, r1, #0x10\n\
-	lsrs r6, r1, #0x10\n\
-	ldr r4, _080EA6EC @ =gTextWindow+8\n\
-	ldr r2, _080EA6F0 @ =gTextTable\n\
-	lsrs r0, r0, #0x18\n\
-	lsls r0, r0, #2\n\
-	adds r2, r0, r2\n\
-	ldr r1, _080EA6F4 @ =gTextOffsetTable\n\
-	adds r0, r0, r1\n\
-	movs r1, #0xff\n\
-	ands r1, r3\n\
-	ldr r0, [r0]\n\
-	lsls r1, r1, #1\n\
-	adds r1, r1, r0\n\
-	ldrh r1, [r1]\n\
-	ldr r0, [r2]\n\
-	adds r5, r0, r1\n\
-	movs r1, #0xff\n\
-	lsls r1, r1, #8\n\
-	ands r1, r3\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #1\n\
-	cmp r1, r0\n\
-	bne _080EA6FE\n\
-	cmp r3, r1\n\
-	bne _080EA6F8\n\
-	movs r0, #0x24\n\
-	bl PlaySound\n\
-	b _080EA6FE\n\
-	.align 2, 0\n\
-_080EA6EC: .4byte gTextWindow+8\n\
-_080EA6F0: .4byte gTextTable\n\
-_080EA6F4: .4byte gTextOffsetTable\n\
-_080EA6F8:\n\
-	movs r0, #6\n\
-	bl PlaySound\n\
-_080EA6FE:\n\
-	str r5, [r4, #0x18]\n\
-	str r6, [r4, #8]\n\
-	adds r0, r4, #0\n\
-	bl resetTextWindow\n\
-	adds r0, r4, #0\n\
-	bl setupTextWindow\n\
-	ldrb r0, [r4, #4]\n\
-	cmp r0, #0\n\
-	beq _080EA718\n\
-	movs r0, #1\n\
-	b _080EA71A\n\
-_080EA718:\n\
-	movs r0, #2\n\
-_080EA71A:\n\
-	str r0, [r4, #0xc]\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+static const char_t* const gTextTable[20];
+
+// gTextTable[t>>8] + gTextOffsetTable[t>>8][t&0xFF]
+static inline char_t* GetText(TextID t) {
+  char_t** _table = (char_t**)gTextTable;
+  char_t** table = &_table[t >> 8];
+  const u16 ofs = (gTextOffsetTable[t >> 8])[t & 0xFF];
+  return &((*table)[ofs]);
 }
 
-NAKED void PrintOptionMessage1(TextID t) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	lsls r0, r0, #0x10\n\
-	ldr r4, _080EA760 @ =gTextWindow+8\n\
-	ldr r3, _080EA764 @ =gTextTable\n\
-	lsrs r2, r0, #0x18\n\
-	lsls r2, r2, #2\n\
-	adds r3, r2, r3\n\
-	ldr r1, _080EA768 @ =gTextOffsetTable\n\
-	adds r2, r2, r1\n\
-	movs r1, #0xff\n\
-	lsls r1, r1, #0x10\n\
-	ands r1, r0\n\
-	ldr r0, [r2]\n\
-	lsrs r1, r1, #0xf\n\
-	adds r1, r1, r0\n\
-	ldrh r1, [r1]\n\
-	ldr r0, [r3]\n\
-	adds r1, r0, r1\n\
-	str r1, [r4, #0x18]\n\
-	movs r5, #1\n\
-	str r5, [r4, #8]\n\
-	ldrb r0, [r4, #0xc]\n\
-	cmp r0, #1\n\
-	bne _080EA76C\n\
-	str r1, [r4, #0x20]\n\
-	strh r5, [r4, #2]\n\
-	movs r0, #5\n\
-	strb r0, [r4, #0xd]\n\
-	b _080EA786\n\
-	.align 2, 0\n\
-_080EA760: .4byte gTextWindow+8\n\
-_080EA764: .4byte gTextTable\n\
-_080EA768: .4byte gTextOffsetTable\n\
-_080EA76C:\n\
-	adds r0, r4, #0\n\
-	bl resetTextWindow\n\
-	adds r0, r4, #0\n\
-	bl setupTextWindow\n\
-	ldrb r0, [r4, #4]\n\
-	cmp r0, #0\n\
-	beq _080EA782\n\
-	str r5, [r4, #0xc]\n\
-	b _080EA786\n\
-_080EA782:\n\
-	movs r0, #2\n\
-	str r0, [r4, #0xc]\n\
-_080EA786:\n\
-	movs r0, #1\n\
-	strh r0, [r4]\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+void PrintTextWindow(TextID t, u16 kind) {
+  struct TextWindowText* w = &gTextWindow.text;
+
+  char_t* s = GetText(t);
+  if ((t & 0xFF00) == (TB_OPEN_DISK << 8)) {
+    if (t == 0x100) {
+      PlaySound(SE_GAIN_DISK);
+    } else {
+      PlaySound(SE_NOTIFICATION);
+    }
+  }
+  w->start = s;
+  w->textType = kind;
+  resetTextWindow(w);
+  setupTextWindow(w);
+  if (w->mugshot != 0) {
+    *((u32*)&w->props) = 1;
+  } else {
+    *((u32*)&w->props) = 2;
+  }
+}
+
+void PrintOptionMessage1(TextID t) {
+  struct TextWindowText* w = &gTextWindow.text;
+  w->start = GetText(t);
+  w->textType = TW_OPTION;
+  if ((w->props).kind == 1) {
+    w->next = w->start;
+    w->mode = 1;
+    (w->props).phase = 5;
+  } else {
+    resetTextWindow(w);
+    setupTextWindow(w);
+    if (w->mugshot != 0) {
+      *((u32*)&w->props) = 1;
+    } else {
+      *((u32*)&w->props) = 2;
+    }
+  }
+  w->flag = 1;
 }
 
 void PrintOptionMessage2(TextID n) {
-  struct TextWindowText* t;
   PrintOptionMessage1(n);
-  t = &gTextWindow.text;
-  t->textType = 0;
+  (&gTextWindow.text)->textType = 0;
 }
 
 void PrintResultInline(TextID t, bool16 ng) {
-  // const char_t* table = gTextTable[t >> 8];
-  // const u16 ofs = gTextOffsetTable[t >> 8][t & 0xFF];
-  // const char_t* s = &table[ofs];
-  u16 ofs;
-  char_t* s;
-  struct TextWindowText* tw = &gTextWindow.text;
-  char_t** table = (char_t**)gTextTable;
-  table = &table[t >> 8];
-  ofs = gTextOffsetTable[t >> 8][t & 0xFF];
-  s = &((*table)[ofs]);
+  struct TextWindowText* w = &gTextWindow.text;
 
+  char_t* s = GetText(t);
   if (!ng) {
     PlaySound(SE_NOTIFICATION);
   } else {
     PlaySound(SE_NOT_ALLOWED);
   }
-
-  tw->start = (char_t*)s;
-  tw->textType = 0;
-  resetTextWindow(tw);
-  setupTextWindow(tw);
-  *((u32*)&tw->props) = 3;
+  w->start = (char_t*)s;
+  w->textType = 0;
+  resetTextWindow(w);
+  setupTextWindow(w);
+  *((u32*)&w->props) = 3;
 }
 
 static void resetTextWindow(struct TextWindowText* t) {
@@ -337,6 +257,8 @@ _080EA8E2:\n\
 
 // --------------------------------------------
 
+typedef void (*TextFunc)(struct TextWindowText*);
+
 static void doNoTextWindow(struct TextWindowText* t);
 static void mugshotMessage(struct TextWindowText* t);
 static void inlineMessage(struct TextWindowText* t);
@@ -367,103 +289,36 @@ static bool32 isMugshotChanged(struct TextWindowText* t) {
   return result;
 }
 
+static const u32 sVramOffsets[2];
+extern const struct ColorGraphicV2 gDialogGraphics[];
+
+#if MODERN
+#define DIALOG_GRAPHIC(base, n) ((void*)&gDialogGraphics[base + n])
+#define DIALOG_PALETTE(base, n) ((void*)(&gDialogGraphics[base + n].pal))
+#else
+#define DIALOG_GRAPHIC(base, n) ((void*)((const struct GraphicV2*)((void*)(0x085a7ec4 + ((base) * (sizeof(struct ColorGraphicV2)))) + ((n) * (sizeof(struct ColorGraphicV2))))))
+#define DIALOG_PALETTE(base, n) ((const struct Palette*)((void*)(0x085a7ec4 + ((base) * (sizeof(struct ColorGraphicV2))) + (sizeof(struct GraphicV2))) + ((n) * (sizeof(struct ColorGraphicV2)))))
+#endif
+
 // 0x080ea930
-NAKED static void loadMugshot(struct TextWindowText* t, u8 mugshot) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	lsls r1, r1, #0x18\n\
-	lsrs r5, r1, #0x18\n\
-	ldr r0, _080EA95C @ =gSystemSavedataManager\n\
-	adds r4, r0, #0\n\
-	adds r4, #0x44\n\
-	ldrb r0, [r4]\n\
-	cmp r0, #0\n\
-	bne _080EA96C\n\
-	ldr r0, _080EA960 @ =gDialogGraphics\n\
-	ldr r1, _080EA964 @ =gVideoRegBuffer+4\n\
-	ldrh r2, [r1]\n\
-	movs r1, #0xc\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA968 @ =sVramOffsets\n\
-	ldr r2, [r2, #4]\n\
-	adds r1, r1, r2\n\
-	bl RequestGraphicTransfer\n\
-	b _080EA99E\n\
-	.align 2, 0\n\
-_080EA95C: .4byte gSystemSavedataManager\n\
-_080EA960: .4byte gDialogGraphics\n\
-_080EA964: .4byte gVideoRegBuffer+4\n\
-_080EA968: .4byte sVramOffsets\n\
-_080EA96C:\n\
-	ldrb r1, [r4]\n\
-	lsls r0, r1, #2\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #2\n\
-	ldr r1, _080EA9D8 @ =0x085A8338\n\
-	adds r0, r0, r1\n\
-	ldr r1, _080EA9DC @ =gVideoRegBuffer+4\n\
-	ldrh r2, [r1]\n\
-	movs r1, #0xc\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA9E0 @ =sVramOffsets\n\
-	ldr r2, [r2, #4]\n\
-	adds r1, r1, r2\n\
-	bl RequestGraphicTransfer\n\
-	ldrb r1, [r4]\n\
-	lsls r0, r1, #2\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #2\n\
-	ldr r1, _080EA9E4 @ =0x085A8344\n\
-	adds r0, r0, r1\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-_080EA99E:\n\
-	ldrb r0, [r6, #4]\n\
-	cmp r0, #1\n\
-	beq _080EA9D2\n\
-	cmp r5, #0\n\
-	beq _080EA9D2\n\
-	lsls r4, r5, #2\n\
-	adds r4, r4, r5\n\
-	lsls r4, r4, #2\n\
-	ldr r1, _080EA9E8 @ =gDialogGraphics\n\
-	adds r0, r4, r1\n\
-	ldr r1, _080EA9DC @ =gVideoRegBuffer+4\n\
-	ldrh r2, [r1]\n\
-	movs r1, #0xc\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	ldr r2, _080EA9E0 @ =sVramOffsets\n\
-	ldr r2, [r2]\n\
-	adds r1, r1, r2\n\
-	bl RequestGraphicTransfer\n\
-	ldr r0, _080EA9EC @ =0x085A7ED0\n\
-	adds r4, r4, r0\n\
-	adds r0, r4, #0\n\
-	movs r1, #0x20\n\
-	bl LoadPalette\n\
-_080EA9D2:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080EA9D8: .4byte gDialogGraphics+(57*20)\n\
-_080EA9DC: .4byte gVideoRegBuffer+4\n\
-_080EA9E0: .4byte sVramOffsets\n\
-_080EA9E4: .4byte gDialogGraphics+(57*20)+12\n\
-_080EA9E8: .4byte gDialogGraphics\n\
-_080EA9EC: .4byte gDialogGraphics+12\n\
- .syntax divided\n");
+static void loadMugshot(struct TextWindowText* t, u8 mugshot) {
+  if (gSystemSavedataManager.msgbox == 0) {
+    RequestGraphicTransfer(DIALOG_GRAPHIC(0, 0), (void*)CHAR_BASE(0) + sVramOffsets[1]);
+  } else {
+    RequestGraphicTransfer(DIALOG_GRAPHIC(57, gSystemSavedataManager.msgbox), (void*)CHAR_BASE(0) + sVramOffsets[1]);
+    LoadPalette(DIALOG_PALETTE(57, gSystemSavedataManager.msgbox), 0);
+  }
+  if ((t->mugshot != NO_MUGSHOT) && (mugshot != 0)) {
+    RequestGraphicTransfer(DIALOG_GRAPHIC(0, mugshot), (void*)CHAR_BASE(0) + sVramOffsets[0]);
+    LoadPalette(DIALOG_PALETTE(0, mugshot), 32);
+  }
 }
 
 NAKED void transferMugshotTileMap(struct TextWindowText* t) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r1, r0, #0\n\
-	ldr r0, _080EAA3C @ =0x020308D0\n\
+	ldr r0, _080EAA3C @ =gTextWindow\n\
 	ldr r5, [r0, #4]\n\
 	ldrb r0, [r0, #0x14]\n\
 	cmp r0, #1\n\
@@ -499,7 +354,7 @@ _080EAA14:\n\
 	ble _080EAA14\n\
 	b _080EAA72\n\
 	.align 2, 0\n\
-_080EAA3C: .4byte 0x020308D0\n\
+_080EAA3C: .4byte gTextWindow\n\
 _080EAA40: .4byte MugshotLeftTileMasks\n\
 _080EAA44:\n\
 	ldrb r0, [r1, #5]\n\
@@ -547,7 +402,7 @@ NAKED void text_080eaa7c(struct TextWindowText* t, u16 r1) {
 	lsrs r2, r1, #0x10\n\
 	ldrb r0, [r0, #5]\n\
 	str r0, [sp, #8]\n\
-	ldr r0, _080EAAC8 @ =0x020308D0\n\
+	ldr r0, _080EAAC8 @ =gTextWindow\n\
 	ldr r7, [r0, #4]\n\
 	mov r1, sl\n\
 	ldrb r0, [r1, #4]\n\
@@ -576,7 +431,7 @@ _080EAAA0:\n\
 	lsls r0, r1, #0x10\n\
 	b _080EAAE2\n\
 	.align 2, 0\n\
-_080EAAC8: .4byte 0x020308D0\n\
+_080EAAC8: .4byte gTextWindow\n\
 _080EAACC: .4byte gSineTable\n\
 _080EAAD0:\n\
 	movs r0, #0x1d\n\
@@ -1080,28 +935,26 @@ _080EAEF8: .4byte 0x0000059B\n\
  .syntax divided\n");
 }
 
-void text_080eaefc(struct TextWindowText* t, u32 len) {
-  tile_id_t* bgmap;
-  s32 size;
-  struct WramWindowRegister* win;
+// 0x080eaefc
+// インラインメッセージウィンドウの描画 (テキスト自体は描画しない)
+static void DrawInlineMessageWindow(struct TextWindowText* t, u32 len) {
   s32 sin = ((gSineTable[(u8)len] * 7) >> 3) + 7;
-  bgmap = gTextWindow.bg0Mask;
+  u16* bgmap = gTextWindow.buffer;
 
-  win = &gWindowRegBuffer;
-  size = sin >> 3;
-  *(u16*)&win->winH.word = 0x400 | (((size << 3) + 12) & 0xFF);
-  if (size != 0) {
-    FillMemory(709, &bgmap[513], size << 1);
-    FillMemory(710, &bgmap[609], size << 1);
+  struct WramWindowRegister* w = &gWindowRegBuffer;
+  s32 x8 = sin >> 3;                                      // ウィンドウの幅(8ドット単位)
+  (w->winH).half[0] = 0x400 | (((x8 << 3) + 12) & 0xFF);  // x1 = 4, x2 = 4 + ((x8+1) * 8)
+
+  // ウィンドウの内側
+  if (x8 != 0) {
+    FillMemory(0x2C5, &bgmap[512 + 1], x8 << 1);
+    FillMemory(0x2C6, &bgmap[512 + (3 * 32) + 1], x8 << 1);
   }
-  bgmap[512] = 0x2c1;
-  bgmap[544] = 0x2c2;
-  bgmap[576] = 0x2c3;
-  bgmap[608] = 0x2c4;
-  bgmap[513 + size] = 0x6c1;
-  bgmap[545 + size] = 0x6c2;
-  bgmap[577 + size] = 0x6c3;
-  bgmap[609 + size] = 0x6c4;
+
+  // ウィンドウの左端
+  bgmap[512] = 0x2C1, bgmap[512 + (1 * 32)] = 0x2C2, bgmap[512 + (2 * 32)] = 0x2C3, bgmap[512 + (3 * 32)] = 0x2C4;
+  // ウィンドウの右端
+  bgmap[512 + (1 + x8)] = 0x6C1, bgmap[512 + (1 * 32) + (1 + x8)] = 0x6C2, bgmap[512 + (2 * 32) + (1 + x8)] = 0x6C3, bgmap[512 + (3 * 32) + (1 + x8)] = 0x6C4;
 }
 
 static void doNoTextWindow(struct TextWindowText* t) {
@@ -1767,7 +1620,7 @@ _080EB4AC:\n\
 _080EB4F6:\n\
 	ldrh r1, [r6, #0x10]\n\
 	adds r0, r6, #0\n\
-	bl text_080eaefc\n\
+	bl DrawInlineMessageWindow\n\
 	ldrh r0, [r6, #0x10]\n\
 	adds r0, #4\n\
 	strh r0, [r6, #0x10]\n\
@@ -1801,7 +1654,7 @@ _080EB51C:\n\
 _080EB538:\n\
 	adds r0, r6, #0\n\
 	movs r1, #0x40\n\
-	bl text_080eaefc\n\
+	bl DrawInlineMessageWindow\n\
 	ldr r0, [r6, #8]\n\
 	cmp r0, #0\n\
 	beq _080EB550\n\
@@ -1888,7 +1741,7 @@ _080EB5DC:\n\
 _080EB5E6:\n\
 	adds r0, r6, #0\n\
 	movs r1, #0x40\n\
-	bl text_080eaefc\n\
+	bl DrawInlineMessageWindow\n\
 	ldr r0, [r6, #0x1c]\n\
 	movs r1, #1\n\
 	movs r2, #0x11\n\
@@ -1940,7 +1793,7 @@ _080EB64C: .4byte gTextWindow+8\n\
 _080EB650:\n\
 	adds r0, r6, #0\n\
 	movs r1, #0x40\n\
-	bl text_080eaefc\n\
+	bl DrawInlineMessageWindow\n\
 	ldrh r1, [r6]\n\
 	movs r0, #2\n\
 	ands r0, r1\n\
@@ -2009,7 +1862,7 @@ _080EB6D4: .4byte 0x0000DFFF\n\
 _080EB6D8:\n\
 	ldrh r1, [r6, #0x10]\n\
 	adds r0, r6, #0\n\
-	bl text_080eaefc\n\
+	bl DrawInlineMessageWindow\n\
 _080EB6E0:\n\
 	pop {r4, r5, r6}\n\
 	pop {r0}\n\
@@ -2258,7 +2111,7 @@ _080EB8B2:\n\
 // --------------------------------------------
 
 extern const u16 TextOfs_System[];
-extern const u16 TextOfs_083789ac[];
+extern const u16 TextOffsets_OpenSecretDisk[];
 extern const u16 TextOfs_CielChats[];
 extern const u16 TextOfs_SpaceCraft[];
 extern const u16 TextOfs_Volcano[];
@@ -2282,7 +2135,7 @@ extern const u16 TextOfs_Others[];
 // 0x083767b8
 static const u16* const gTextOffsetTable[20] = {
   TextOfs_System,
-  TextOfs_083789ac,
+  TextOffsets_OpenSecretDisk,
   TextOfs_CielChats,
   TextOfs_SpaceCraft,
   TextOfs_Volcano,
@@ -2305,7 +2158,7 @@ static const u16* const gTextOffsetTable[20] = {
 // clang-format on
 
 extern const char_t Text_System[];
-extern const char_t Text_ResultNotifications[];
+extern const char_t Texts_OpenSecretDisk[];
 extern const char_t Text_CielChats[];
 extern const char_t Text_SpaceCraft[];
 extern const char_t Text_Volcano[];
@@ -2328,8 +2181,8 @@ extern const char_t Text_Others[];
 // clang-format off
 // 0x08376808
 static const char_t* const gTextTable[20] = {
-    Text_System,
-    Text_ResultNotifications,
+  [TB_SYSTEM] =    Text_System,
+  [TB_OPEN_DISK] = Texts_OpenSecretDisk,
     Text_CielChats,
     Text_SpaceCraft,
     Text_Volcano,

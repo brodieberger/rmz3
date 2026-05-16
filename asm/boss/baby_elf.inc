@@ -79,12 +79,12 @@ _08045BE2:
 	ldr r6, _08045BFC @ =RNG_0202f388
 	mov r5, ip
 	adds r5, #0xcc
-	ldr r0, _08045C00 @ =0x083626D4
+	ldr r0, _08045C00 @ =u8_ARRAY_083626d4
 	mov r8, r0
 	b _08045C0A
 	.align 2, 0
 _08045BFC: .4byte RNG_0202f388
-_08045C00: .4byte 0x083626D4
+_08045C00: .4byte u8_ARRAY_083626d4
 _08045C04:
 	ldrb r0, [r4]
 	cmp r0, #1
@@ -414,7 +414,7 @@ _08045E52:
 	ldr r0, [r0]
 	ldr r0, [r0, #4]
 	str r0, [r6, #0x14]
-	ldr r1, _080460C0 @ =0x08362714
+	ldr r1, _080460C0 @ =sInitModes
 	ldrb r0, [r6, #0x10]
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -705,7 +705,7 @@ _080460A8:
 	bx r0
 	.align 2, 0
 _080460BC: .4byte gBossFnTable
-_080460C0: .4byte 0x08362714
+_080460C0: .4byte sInitModes
 _080460C4: .4byte sCollisions
 _080460C8: .4byte FUN_08045d28
 _080460CC: .4byte 0xFFFFF800
@@ -726,14 +726,14 @@ BabyElf_Update: @ 0x080460E8
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _0804611C
-	ldr r1, _08046124 @ =0x083625BC
+	ldr r1, _08046124 @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _08046128 @ =0x08362608
+	ldr r1, _08046128 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -745,15 +745,15 @@ _0804611C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08046124: .4byte 0x083625BC
-_08046128: .4byte 0x08362608
+_08046124: .4byte sUpdates1
+_08046128: .4byte sUpdates2
 
 	thumb_func_start BabyElf_Die
 BabyElf_Die: @ 0x0804612C
 	push {r4, lr}
 	adds r4, r0, #0
 	bl FUN_08045b68
-	ldr r1, _0804614C @ =0x08362654
+	ldr r1, _0804614C @ =sDeinitializers
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -764,7 +764,7 @@ BabyElf_Die: @ 0x0804612C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0804614C: .4byte 0x08362654
+_0804614C: .4byte sDeinitializers
 
 	thumb_func_start nop_08046150
 nop_08046150: @ 0x08046150
@@ -1466,7 +1466,7 @@ _080466B8:
 _080466C4:
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _080467A4 @ =0x08362674
+	ldr r1, _080467A4 @ =sCollisions+(1*24)
 	bl SetDDP
 	adds r2, r6, #0
 	adds r2, #0xc4
@@ -1574,7 +1574,7 @@ _0804679A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080467A4: .4byte 0x08362674
+_080467A4: .4byte sCollisions+(1*24)
 _080467A8: .4byte 0x0000FFFD
 _080467AC: .4byte pZero2
 _080467B0: .4byte 0x0000FDFF
@@ -3098,7 +3098,7 @@ _08047924:
 _0804792C:
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _080479CC @ =0x08362674
+	ldr r1, _080479CC @ =sCollisions+(1*24)
 	bl SetDDP
 	adds r0, r6, #0
 	adds r0, #0x22
@@ -3171,7 +3171,7 @@ _080479C4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080479CC: .4byte 0x08362674
+_080479CC: .4byte sCollisions+(1*24)
 _080479D0: .4byte 0x0000330A
 
 	thumb_func_start babyelf_080479d4
@@ -3204,7 +3204,7 @@ _080479FC:
 	bl PlaySound
 	mov r0, r8
 	adds r0, #0x74
-	ldr r1, _08047A4C @ =0x08362674
+	ldr r1, _08047A4C @ =sCollisions+(1*24)
 	bl SetDDP
 	mov r1, r8
 	ldrb r0, [r1, #0x10]
@@ -3235,7 +3235,7 @@ _080479FC:
 	b _08047A70
 	.align 2, 0
 _08047A48: .4byte 0x00000117
-_08047A4C: .4byte 0x08362674
+_08047A4C: .4byte sCollisions+(1*24)
 _08047A50:
 	mov r0, r8
 	bl GetEntityPalID

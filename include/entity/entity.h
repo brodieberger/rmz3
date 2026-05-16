@@ -52,26 +52,26 @@ struct EntityOamData {
   /*    */ u8 yflip : 1;
   /*    */ u8 size : 2;
   /*    */ u8 : 8;
-};
+};  // 8 bytes
 
 // Entityを表す複数のスプライトが集まったメタスプライト(モーションによっては複数のメタスプライトを持つ時もある)
 // TODO: この構造は間違い (Task関係の構造体っぽい)
 struct Sprite {
-  struct Sprite* p;
-  void (*fn)(struct Sprite*, struct DrawPivot*);  // 関数 0x08004eb0 で呼び出し
+  struct Sprite* p;                               // 0x00
+  void (*fn)(struct Sprite*, struct DrawPivot*);  // 0x04, 関数 0x08004eb0 で呼び出し
 
-  struct MetaspriteHeader* sprites;  // メタスプライト(のヘッダ)の配列 (VFX* が入る時も)
-  struct Coord* c;
-  struct EntityOamData oam;
-  bool8 xflip;
-  bool8 yflip;
-  u8 spriteIdx;  // .sprites の idx (どのメタスプライトを表示するか)
-  u8 angle;
+  struct MetaspriteHeader* sprites;  // 0x08, メタスプライト(のヘッダ)の配列 (VFX* が入る時も)
+  struct Coord* c;                   // 0x0C
+  struct EntityOamData oam;          // 0x10
+  bool8 xflip;                       // 0x18
+  bool8 yflip;                       // 0x19
+  u8 spriteIdx;                      // 0x1A, .sprites の idx (どのメタスプライトを表示するか)
+  u8 angle;                          // 0x1B
   struct {
     u16 x;
     u16 y;
   } mag;  // size magnification (x, y)
-};
+};  // 32 bytes
 
 struct Entity {
   struct Entity* next;
@@ -134,6 +134,48 @@ typedef struct CollidableEntity {
 #define OBJECT_HDR \
   struct Entity s; \
   struct Body body;
+
+// --------------------------------------------
+
+// サイズが同じものは、用途によっては同じ構造体にしていいかもしれない(要検討)
+
+// Entity.kind = 1, ゼロの武器
+struct Weapon {
+  OBJECT_HDR;
+  u8 buffer[56];  // 0xB4
+};  // 236 bytes
+
+// Entity.kind = 2
+struct Boss {
+  OBJECT_HDR;
+  u8 buffer[48];  // 0xB4
+};  // 228 bytes
+
+// Entity.kind = 3
+struct Enemy {
+  OBJECT_HDR;
+  u8 buffer[16];  // 0xB4
+};  // 196 bytes
+
+// Entity.kind = 5, VFX: プレイヤーと干渉しない、グラフィックエフェクト的な存在 (Visual Effect -> VFX)
+//   例: ダッシュの残像, パーティクル, ミッションアラート, ハンマー振り子のボールチェーン, エネミーが死んで飛び散った残骸, etc...
+//   NOTE: Ghost から VFX にリネームしたけど、まだ変数名や関数名に Ghost が残っているものがある
+struct VFX {
+  struct Entity s;
+  u8 buffer[16];  // 0x74
+};  // 132 bytes
+
+// Entity.kind = 6
+struct Solid {
+  OBJECT_HDR;
+  u8 buffer[16];  // 0xB4
+};  // 196 bytes
+
+// Entity.kind = 8, サイバーエルフ
+struct Elf {
+  OBJECT_HDR;
+  u8 buffer[16];  // 0xB4
+};  // 196 bytes
 
 // --------------------------------------------
 

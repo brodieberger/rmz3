@@ -1,6 +1,6 @@
 #include "entity.h"
 #include "global.h"
-#include "task.h"
+#include "renderer.h"
 #include "vfx.h"
 
 static void Ghost84_Init(struct VFX* p);

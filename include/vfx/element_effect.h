@@ -10,6 +10,6 @@ struct ElementEffect {
   struct Coord c;
   u8 unk_8[8];
 };  // 132 bytes
-static_assert(sizeof(struct ElementEffect) == sizeof(struct Entity) + 16);
+static_assert(sizeof(struct ElementEffect) == sizeof(struct VFX));
 
 #endif  // __INCLUDE_VFX_ELEMENT_EFFECT_H__

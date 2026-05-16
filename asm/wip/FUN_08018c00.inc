@@ -34,7 +34,7 @@ _08018C2E:
 	ands r0, r1
 	cmp r0, #0
 	beq _08018CF0
-	ldr r0, _08018C68 @ =gStageEntityManager
+	ldr r0, _08018C68 @ =gSpawnManager
 	ldr r1, _08018C6C @ =0x00000229
 	adds r0, r0, r1
 	ldrb r0, [r0]
@@ -48,7 +48,7 @@ _08018C58: .4byte sStagePreloadEntities
 _08018C5C: .4byte 0x0202FDBA
 _08018C60: .4byte wStaticGraphicTilenums
 _08018C64: .4byte wStaticMotionPalIDs
-_08018C68: .4byte gStageEntityManager
+_08018C68: .4byte gSpawnManager
 _08018C6C: .4byte 0x00000229
 _08018C70:
 	ldrb r1, [r6, #6]

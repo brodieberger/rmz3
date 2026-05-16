@@ -15,7 +15,7 @@ const ProjectileRoutine gGrandCannonBombRoutine = {
     [ENTITY_INIT] =      GrandCannonBomb_Init,
     [ENTITY_UPDATE] =    GrandCannonBomb_Update,
     [ENTITY_DIE] =       GrandCannonBomb_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

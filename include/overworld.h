@@ -7,10 +7,9 @@
 #include "overworld_terrain.h"
 #include "quake.h"
 #include "script.h"
-#include "stage.h"
 #include "stagerun.h"
 
-#define TILESET_ID(n) (W_TERRAIN_V2.tilesets[n] >> 8)
-#define TILESET_IDX(n) ((W_TERRAIN_V2.tilesets[n] & 0xFF))
+#define TILESET_ID(n) (gOverworld.terrain.tilesets[n] >> 8)
+#define TILESET_IDX(n) ((gOverworld.terrain.tilesets[n] & 0xFF))
 
 #endif  // GUARD_RMZ3_OW_H

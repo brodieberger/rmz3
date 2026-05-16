@@ -8,25 +8,22 @@ void Ghost66_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost66Routine = {
-    [ENTITY_INIT] =      Ghost66_Init,
-    [ENTITY_UPDATE] =    Ghost66_Update,
-    [ENTITY_DIE] =       Ghost66_Die,
+    [ENTITY_INIT] =      (void*)Ghost66_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost66_Update,
+    [ENTITY_DIE] =       (void*)Ghost66_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* FUN_080c4450(struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c4450(struct Coord* c, u8 n) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
+    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_066);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 0;
-    (p->s).coord.x = c->x;
-    (p->s).coord.y = c->y;
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = n, p->work[1] = 0;
+    p->coord.x = c->x, p->coord.y = c->y;
   }
   return p;
 }

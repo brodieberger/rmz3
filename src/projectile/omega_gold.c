@@ -13,7 +13,7 @@ const ProjectileRoutine gOmegaGoldProjectileRoutine = {
     [ENTITY_INIT] =      OmegaGoldProjectile_Init,
     [ENTITY_UPDATE] =    OmegaGoldProjectile_Update,
     [ENTITY_DIE] =       OmegaGoldProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

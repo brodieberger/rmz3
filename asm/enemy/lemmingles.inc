@@ -91,14 +91,14 @@ _0806E694:
 	bl IsFrozen
 	cmp r0, #0
 	beq _0806E6FA
-	ldr r1, _0806E6D0 @ =0x08366828
+	ldr r1, _0806E6D0 @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _0806E6D4 @ =0x08366844
+	ldr r1, _0806E6D4 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -114,8 +114,8 @@ _0806E6CA:
 	movs r0, #1
 	b _0806E6FC
 	.align 2, 0
-_0806E6D0: .4byte 0x08366828
-_0806E6D4: .4byte 0x08366844
+_0806E6D0: .4byte sUpdates1
+_0806E6D4: .4byte sUpdates2
 _0806E6D8:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -181,7 +181,7 @@ _0806E744:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806E74C: .4byte 0x08366914
+_0806E74C: .4byte sElementCoord
 
 	thumb_func_start Lemmingles_Init
 Lemmingles_Init: @ 0x0806E750
@@ -246,10 +246,10 @@ _0806E7BC:
 	b _0806E804
 	.align 2, 0
 _0806E7C8: .4byte gEnemyFnTable
-_0806E7CC: .4byte 0x0836691C
+_0806E7CC: .4byte sInitModes
 _0806E7D0: .4byte gSystemSavedataManager
 _0806E7D4: .4byte gCurStory
-_0806E7D8: .4byte 0x0836686C
+_0806E7D8: .4byte sCollisions
 _0806E7DC:
 	ldrb r0, [r5, #0xa]
 	movs r1, #4
@@ -287,7 +287,7 @@ _0806E804:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806E824: .4byte 0x0836686C
+_0806E824: .4byte sCollisions
 _0806E828: .4byte onCollision
 
 	thumb_func_start Lemmingles_Update
@@ -374,14 +374,14 @@ _0806E8B8:
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _0806E8F6
-	ldr r1, _0806E8FC @ =0x08366828
+	ldr r1, _0806E8FC @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _0806E900 @ =0x08366844
+	ldr r1, _0806E900 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -393,8 +393,8 @@ _0806E8F6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806E8FC: .4byte 0x08366828
-_0806E900: .4byte 0x08366844
+_0806E8FC: .4byte sUpdates1
+_0806E900: .4byte sUpdates2
 
 	thumb_func_start Lemmingles_Die
 Lemmingles_Die: @ 0x0806E904
@@ -449,7 +449,7 @@ _0806E964:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806E968: .4byte 0x08366860
+_0806E968: .4byte sDeads
 
 	thumb_func_start nop_0806e96c
 nop_0806e96c: @ 0x0806E96C
@@ -529,7 +529,7 @@ _0806E9EC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806E9F4: .4byte 0x08366884
+_0806E9F4: .4byte sCollisions+(1*24)
 _0806E9F8: .4byte 0x00020001
 
 	thumb_func_start FUN_0806e9fc
@@ -585,7 +585,7 @@ _0806EA58:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806EA60: .4byte 0x0836689C
+_0806EA60: .4byte sCollisions+(2*24)
 
 	thumb_func_start FUN_0806ea64
 FUN_0806ea64: @ 0x0806EA64
@@ -705,9 +705,9 @@ _0806EB32:
 	beq _0806EB7E
 	b _0806EB50
 	.align 2, 0
-_0806EB40: .4byte 0x08366884
+_0806EB40: .4byte sCollisions+(1*24)
 _0806EB44: .4byte 0xFFFFFDC0
-_0806EB48: .4byte 0x08366920
+_0806EB48: .4byte sMotions
 _0806EB4C:
 	cmp r1, #0
 	bne _0806EB7E
@@ -1498,8 +1498,8 @@ _0806F0AE:
 	str r1, [r6, #0x60]
 	b _0806F13C
 	.align 2, 0
-_0806F124: .4byte 0x083668E4
-_0806F128: .4byte 0x08366928
+_0806F124: .4byte sCollisions+(5*24)
+_0806F128: .4byte sMotions+(4*2)
 _0806F12C: .4byte pZero2
 _0806F130: .4byte 0xFFFFE800
 _0806F134:
@@ -1655,7 +1655,7 @@ _0806F23C:
 	bx r0
 	.align 2, 0
 _0806F260: .4byte 0xFFFFF000
-_0806F264: .4byte 0x08366930
+_0806F264: .4byte sMotions+(8*2)
 _0806F268: .4byte gMission
 _0806F26C: .4byte 0x0000270E
 _0806F270: .4byte gEnemyFnTable
@@ -1757,7 +1757,7 @@ _0806F2EC:
 _0806F328: .4byte pZero2
 _0806F32C: .4byte 0x00001D12
 _0806F330: .4byte 0x000003FF
-_0806F334: .4byte 0x08366936
+_0806F334: .4byte sMotions+(11*2)
 _0806F338:
 	str r5, [r4, #0x68]
 	adds r1, r4, #0
@@ -1830,4 +1830,4 @@ _0806F3BC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806F3C4: .4byte 0x08366936
+_0806F3C4: .4byte sMotions+(11*2)

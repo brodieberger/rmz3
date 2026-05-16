@@ -654,27 +654,27 @@ _0803ED94:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _0803EDAC\n\
-	ldr r1, _0803EDA8 @ =0x08361DE8\n\
+	ldr r1, _0803EDA8 @ =gBlazinCoords+(8*3)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDA8: .4byte 0x08361DE8\n\
+_0803EDA8: .4byte gBlazinCoords+(3*8)\n\
 _0803EDAC:\n\
-	ldr r1, _0803EDB0 @ =0x08361DF0\n\
+	ldr r1, _0803EDB0 @ =gBlazinCoords+(4*8)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDB0: .4byte 0x08361DF0\n\
+_0803EDB0: .4byte gBlazinCoords+(4*8)\n\
 _0803EDB4:\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _0803EDC8\n\
-	ldr r1, _0803EDC4 @ =0x08361DD8\n\
+	ldr r1, _0803EDC4 @ =gBlazinCoords+(1*8)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDC4: .4byte 0x08361DD8\n\
+_0803EDC4: .4byte gBlazinCoords+(1*8)\n\
 _0803EDC8:\n\
-	ldr r1, _0803EDF0 @ =0x08361DE0\n\
+	ldr r1, _0803EDF0 @ =gBlazinCoords+(2*8)\n\
 _0803EDCA:\n\
 	adds r0, r4, #0\n\
 	bl CreateBossExplosion\n\
@@ -697,7 +697,7 @@ _0803EDE8:\n\
 	strb r0, [r4, #0xe]\n\
 	b _0803EE20\n\
 	.align 2, 0\n\
-_0803EDF0: .4byte 0x08361DE0\n\
+_0803EDF0: .4byte gBlazinCoords+(2*8)\n\
 _0803EDF4:\n\
 	movs r0, #0x30\n\
 	strb r0, [r4, #0x12]\n\

@@ -19,7 +19,7 @@ const ElfRoutine gElf7Routine = {
     [ENTITY_INIT] =      Elf7_Init,
     [ENTITY_UPDATE] =    Elf7_Update,
     [ENTITY_DIE] =       Elf7_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
 // clang-format on

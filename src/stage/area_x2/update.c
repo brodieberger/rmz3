@@ -1,5 +1,6 @@
 #include "global.h"
 #include "overworld.h"
+#include "spawn.h"
 #include "story.h"
 
 s16 AreaX2_MissionUpdate(struct StageRun* p) {
@@ -60,11 +61,11 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
     if ((z->s).coord.x >= PIXEL(3824)) {
       if (IS_MISSION) {
         if (gStageRun.vm.bgm != MUS_NONE) {
-          fadeoutBGM(gStageRun.vm.bgm);
+          FadeOutBGM(gStageRun.vm.bgm);
           gStageRun.vm.bgm = MUS_NONE;
         }
       } else {
-        FUN_080186c8(gStageEntityManager.dynamicEntityRange[0], PIXEL(480));
+        ClipSpawnRange(gSpawnManager.borderY[0], PIXEL(480));
         gCollisionManager.sweep |= (1 << FACTION_ENEMY);
         p->stageEventPhase = 4;
       }
@@ -72,14 +73,14 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
 
     // Leave Boss door (= into Guarder room)
     if ((z->s).coord.x >= PIXEL(3856)) {
-      FUN_080186c8(gStageEntityManager.dynamicEntityRange[0], PIXEL(480));
+      ClipSpawnRange(gSpawnManager.borderY[0], PIXEL(480));
       gCollisionManager.sweep |= (1 << FACTION_ENEMY);
       if (gStageRun.vm.bgm != BGM_GUARDER_ROOM) {
         if (gStageRun.vm.bgm != MUS_NONE) {
-          fadeoutBGM(gStageRun.vm.bgm);
+          FadeOutBGM(gStageRun.vm.bgm);
           gStageRun.vm.bgm = MUS_NONE;
         }
-        playBGM(BGM_GUARDER_ROOM);
+        PlayBGM(BGM_GUARDER_ROOM);
         gStageRun.vm.bgm = BGM_GUARDER_ROOM;
       }
       p->stageEventPhase = 4;

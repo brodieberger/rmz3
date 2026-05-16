@@ -133,32 +133,36 @@ void GotoMotion(struct Entity* p, motion_t motion, u16 cmdIdx, u16 r3) {
 
 NON_MATCH void UpdateMotionGraphic(struct Entity* p) {
 #if MODERN
+  u8 spriteIdx;
+  struct Sprite* spr = &p->spr;
   UpdateMotionState(&p->motion);
-  (p->spr).spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
+  spr->spriteIdx = spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
   if (p->flags2 & DYNAMIC) {
-    u8 step;
+    u8 subID;
     struct MetaspriteHeader* metaspriteTable = gDynamicMotionMetaspriteTable[p->motionID];
-    if ((p->spr).sprites != metaspriteTable) {
+    if (spr->sprites != metaspriteTable) {
       (p->spr).sprites = metaspriteTable;
     }
 
-    step = metaspriteTable[(p->spr).spriteIdx].step;
-    if (step != p->motionSubID) {
+    subID = metaspriteTable[spriteIdx].step;
+    if (subID != p->motionSubID) {
       u16 tileNum, palID;
-      p->motionSubID = step;
-      tileNum = wDynamicGraphicTilenums[p->motionID] + p->tileNum;
-      palID = wDynamicMotionPalIDs[p->motionID] + p->palID;
+
+      p->motionSubID = subID;
+
+      tileNum = p->tileNum + wDynamicGraphicTilenums[p->motionID];
+      palID = p->palID + wDynamicMotionPalIDs[p->motionID];
       if (p->motionID < 144) {
-        struct Graphic* g = (struct Graphic*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + step;
-        RequestGraphicTransfer(g, (void*)((tileNum - g->ofs) * 32 + 0x10000));
+        struct GraphicV2* g = (struct GraphicV2*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + subID;
+        RequestGraphicTransfer((void*)g, (void*)((tileNum - g->tileId) * 32 + 0x10000));
       } else {
-        struct ColorGraphic* g = (struct ColorGraphic*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + step;
-        RequestGraphicTransfer(&g->g, (void*)((tileNum - (g->g).ofs) * 32 + 0x10000));
+        struct ColorGraphicV2* g = (struct ColorGraphicV2*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + subID;
+        RequestGraphicTransfer((void*)g, (void*)((tileNum - (g->g).tileId) * 32 + 0x10000));
         LoadPalette(&g->pal, (palID - (g->pal).dst) * 32 + 512);
       }
-      (p->spr).oam.tileNum = tileNum;
+      (spr->oam).tileNum = tileNum;
       if (!(p->flags2 & PALETTE_FORCED)) {
-        (p->spr).oam.paletteNum = palID;
+        (spr->oam).paletteNum = palID;
         p->savedPalID = palID;
       }
     }

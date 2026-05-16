@@ -14,7 +14,7 @@ const ProjectileRoutine gEarShotRoutine = {
     [ENTITY_INIT] =      EarShot_Init,
     [ENTITY_UPDATE] =    EarShot_Update,
     [ENTITY_DIE] =       EarShot_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

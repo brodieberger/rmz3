@@ -38,6 +38,7 @@ static const EnemyFunc sUpdates2[3] = {
     FUN_0807f648,
 };
 
+// 0x08367D98
 static const struct Collision sCollisions[9] = {
     {
       kind : DRP,

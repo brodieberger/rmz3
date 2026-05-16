@@ -2,8 +2,6 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/pantheon_aqua_mod_obj.inc");
-
 void PantheonAquaModObj_Init(struct Enemy* p);
 void PantheonAquaModObj_Update(struct Enemy* p);
 void PantheonAquaModObj_Die(struct Enemy* p);
@@ -17,6 +15,104 @@ const EnemyRoutine gPantheonAquaModObjRoutine = {
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
+
+void createPAquaModRubble(s32 x) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 8;
+    (p->coord).x = x;
+  }
+}
+
+void FUN_08080858(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 6;
+    (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
+    p->unk_28 = (void*)e;
+  }
+}
+
+void FUN_080808b4(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 3;
+    p->unk_28 = (void*)e;
+  }
+}
+
+void FUN_08080908(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 0;
+    (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
+    p->unk_28 = (void*)e;
+  }
+}
+
+void FUN_08080964(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 1;
+    (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
+    p->unk_28 = (void*)e;
+  }
+}
+
+void createLaserSign2(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 2, p->work[1] = 1;
+    (p->coord).x = e->coord.x, (p->coord).y = e->coord.y - PIXEL(12);
+    p->unk_28 = (void*)e;
+  }
+}
+
+void createSweepLaserSign(struct Entity* e) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 24;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->work[0] = 2, p->work[1] = 1;
+    (p->coord).x = e->coord.x, (p->coord).y = e->coord.y - PIXEL(12);
+    p->unk_28 = (void*)e;
+  }
+}
+
+INCASM("asm/enemy/pantheon_aqua_mod_obj.inc");
 
 void FUN_08080fe8(struct Enemy* p);
 
@@ -63,6 +159,7 @@ static const EnemyFunc sUpdates2[10] = {
 
 // --------------------------------------------
 
+// 0x08368000
 static const struct Collision sCollisions[10] = {
     {
       kind : DRP,

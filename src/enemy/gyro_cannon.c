@@ -8,10 +8,10 @@ struct GyroCannon {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
   struct {
-    struct VFX* elementEffect;  // 0xB4
-    u8 unk_b8[4];               // 0xB8
-    bool8 is_right;             // 0xBC
-    u32 unk_c0;                 // 0xC0
+    struct VFX* elfx;  // 0xB4
+    u8 unk_b8[4];      // 0xB8
+    bool8 is_right;    // 0xBC
+    u32 unk_c0;        // 0xC0
   } props;
 };
 static_assert(sizeof(struct GyroCannon) == sizeof(struct Enemy));
@@ -32,7 +32,7 @@ const EnemyRoutine gGyroCannonRoutine = {
 };
 // clang-format on
 
-static struct Entity* CreateGyroCannon(struct Entity* e, u8 n, u8 r2) {
+static struct Entity* CreateGyroCannon(struct Entity* e, bool8 isPropeller, u8 r2) {
   struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
     p->taskCol = 24;
@@ -41,25 +41,25 @@ static struct Entity* CreateGyroCannon(struct Entity* e, u8 n, u8 r2) {
     p->flags2 |= WHITE_PAINTABLE;
     p->invincibleID = p->uniqueID;
     p->unk_28 = e;
-    p->work[0] = n, p->work[1] = r2;
+    p->work[0] = isPropeller, p->work[1] = r2;
   }
   return p;
 }
 
 // --------------------------------------------
 
-static void initGyroCannonWithPropeller(struct Enemy* p);
-static void initGyroCannonWithoutPropeller(struct GyroCannon* p);
+static void initGyroCannonMainBody(struct Enemy* p);
+static void initGyroCannonPropeller(struct GyroCannon* p);
 
 static void GyroCannon_Init(struct Enemy* p) {
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  if ((p->s).work[0] != 0) {
-    initGyroCannonWithoutPropeller((void*)p);
+  if ((p->s).work[0] != 0) {  // propeller
+    initGyroCannonPropeller((void*)p);
   } else {
-    initGyroCannonWithPropeller(p);
+    initGyroCannonMainBody(p);
   }
   GyroCannon_Update(p);
 }
@@ -79,7 +79,7 @@ static void GyroCannon_Update(struct Enemy* p) {
   }
 
   if ((p->s).work[0] != 0) {
-    gyrocannon_0806d32c(p);
+    gyrocannon_0806d32c(p);  // propeller
   } else {
     gyrocannon_0806d1b4(p);
   }
@@ -100,7 +100,7 @@ static void GyroCannon_Die(struct Enemy* p) {
   }
 
   if ((p->s).work[0] != 0) {
-    FUN_0806d524(p);
+    FUN_0806d524(p);  // propeller
   } else {
     FUN_0806d470(p);
   }
@@ -108,7 +108,7 @@ static void GyroCannon_Die(struct Enemy* p) {
 
 // --------------------------------------------
 
-NAKED static void initGyroCannonWithPropeller(struct Enemy* p) {
+NAKED static void initGyroCannonMainBody(struct Enemy* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r6, r0, #0\n\
@@ -193,16 +193,13 @@ _0806D150: .4byte FUN_0806df10\n\
  .syntax divided\n");
 }
 
-static void initGyroCannonWithoutPropeller(struct GyroCannon* p) {
+static void initGyroCannonPropeller(struct GyroCannon* p) {
   SetMotion(&p->s, MOTION(SM023_GYRO_CANNON, 6));
   UpdateMotionGraphic(&p->s);
   INIT_BODY(p, &sCollisions[2], 6, NULL);
-
   (p->s).flags &= ~X_FLIP;
-  (p->s).spr.xflip = FALSE;
-  (p->s).spr.oam.xflip = FALSE;
-
-  (p->props).elementEffect = NULL;
+  (p->s).spr.xflip = FALSE, (p->s).spr.oam.xflip = FALSE;
+  (p->props).elfx = NULL;
 }
 
 static const struct Coord sElementCoord;

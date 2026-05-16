@@ -133,11 +133,11 @@ static void ElfMenuLoop_Update(struct GameState* g) {
         LoadGraphic(BG_GRAPHIC(BG_UNK_39), (void*)CHAR_BASE(1));
         LoadPalette(BG_PALETTE(BG_UNK_39), 0);
       }
-      if ((ELF_MENU->mode == 0) && (SATELITE_1 != ELF_NONE)) {
-        PrintString(STRING(100 + SATELITE_1), 21, 1);
+      if ((ELF_MENU->mode == 0) && (((&z->unk_b4)->status).satelites[0] != ELF_NONE)) {
+        PrintString(STRING(100 + ((&z->unk_b4)->status).satelites[0]), 21, 1);
       }
-      if ((ELF_MENU->mode == 1) && (SATELITE_2 != ELF_NONE)) {
-        PrintString(STRING(100 + SATELITE_2), 21, 1);
+      if ((ELF_MENU->mode == 1) && (((&z->unk_b4)->status).satelites[1] != ELF_NONE)) {
+        PrintString(STRING(100 + ((&z->unk_b4)->status).satelites[1]), 21, 1);
       }
     }
 

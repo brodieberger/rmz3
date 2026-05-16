@@ -308,7 +308,7 @@ static void OmegaZX_Disappear(struct Boss* p) {
   ClearBlink(168);
   ClearBlink(169);
   ClearBlink(170);
-  DeleteBoss(p);
+  DeleteBoss((void*)p);
 }
 
 // --------------------------------------------

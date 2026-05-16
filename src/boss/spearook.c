@@ -10,10 +10,10 @@ void Spearook_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gSpearookRoutine = {
-    [ENTITY_INIT] =      Spearook_Init,
-    [ENTITY_UPDATE] =    Spearook_Update,
-    [ENTITY_DIE] =       Spearook_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Spearook_Init,
+    [ENTITY_UPDATE] =    (void*)Spearook_Update,
+    [ENTITY_DIE] =       (void*)Spearook_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on

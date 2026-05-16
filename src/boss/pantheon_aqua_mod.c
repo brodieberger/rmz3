@@ -3,17 +3,27 @@
 #include "global.h"
 #include "overworld.h"
 
+struct PAquaMod {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  u8 unk_b4[6];
+  u16 x;
+  s32 y;
+  u8 unk_c0[36];
+};
+static_assert(sizeof(struct PAquaMod) == sizeof(struct Boss));
+
 void PantheonAquaMod_Init(struct Boss* p);
 void PantheonAquaMod_Update(struct Boss* p);
 void PantheonAquaMod_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gPantheonAquaModRoutine = {
-    [ENTITY_INIT] =      PantheonAquaMod_Init,
-    [ENTITY_UPDATE] =    PantheonAquaMod_Update,
-    [ENTITY_DIE] =       PantheonAquaMod_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)PantheonAquaMod_Init,
+    [ENTITY_UPDATE] =    (void*)PantheonAquaMod_Update,
+    [ENTITY_DIE] =       (void*)PantheonAquaMod_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -29,10 +39,10 @@ bool8 tryKillPantheonAquaMod(struct Boss* p) {
   return FALSE;
 }
 
-static void paquam_080512f8(struct Boss* p) {
-  (p->props.paquam).x += PIXEL(1);
-  (p->s).coord.y = (p->props.paquam).y;
-  (p->s).coord.y += gSineTable[COORD_TO_PIXEL((p->props.paquam).x)] << 2;
+static void paquam_080512f8(struct PAquaMod* p) {
+  p->x += PIXEL(1);
+  (p->s).coord.y = p->y;
+  (p->s).coord.y += gSineTable[COORD_TO_PIXEL(p->x)] << 2;
 }
 
 INCASM("asm/boss/pantheon_aqua_mod.inc");

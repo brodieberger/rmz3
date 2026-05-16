@@ -7,9 +7,8 @@
 
 // 飛び道具だと思ってたけど、特定のエンティティに従属しているエンティティのことを指すかも？
 struct Projectile {
-  struct Entity s;
-  struct Body body;
-  // 0xB4 ..
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
   u8 work[4];  // general purpose buffer
   struct Coord prevCoord;
   u32 unk_c0;

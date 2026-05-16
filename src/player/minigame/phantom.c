@@ -7,36 +7,35 @@
 static const struct Collision sCollisions[2];
 static const u8 sInitModes[4];
 
-static void PhantomMini_Init(struct Zero* z);
-static void PhantomMini_Update(struct Zero* z);
-static void PhantomMini_Die(struct Zero* z);
+static void PhantomMini_Init(Player* p);
+static void PhantomMini_Update(struct Entity* p);
+static void PhantomMini_Die(struct Entity* p);
 
 // clang-format off
 const ZeroRoutine gPhantomMiniRoutine = {
-  [ENTITY_INIT] =       PhantomMini_Init,
-  [ENTITY_UPDATE] =     PhantomMini_Update,
-  [ENTITY_DIE]  =       PhantomMini_Die,
-  [ENTITY_DISAPPEAR] =  RemovePlayer,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)PhantomMini_Init,
+  [ENTITY_UPDATE] =     (void*)PhantomMini_Update,
+  [ENTITY_DIE]  =       (void*)PhantomMini_Die,
+  [ENTITY_DISAPPEAR] =  (void*)RemovePlayer,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 
-s32 FUN_080349a8(struct Zero* z) {
-  if ((z->s).coord.x - 0x96000U >= 0x1E001) {
+s32 FUN_080349a8(struct Entity* p) {
+  if ((p->coord).x < PIXEL(2400) || (p->coord).x > PIXEL(2880)) {
     return PIXEL(1760);
   }
-  return FUN_08009f6c((z->s).coord.x, (z->s).coord.y);
+  return FUN_08009f6c((p->coord).x, (p->coord).y);
 }
 
-struct Zero* CreatePlayerPhantom(void* p, s32 x, s32 y) {
+struct Zero* CreatePlayerPhantom(void* q, s32 x, s32 y) {
   struct Zero* z = AllocPlayer();
   if (z != NULL) {
     (z->s).taskCol = 16;
     INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_PHANTOM);
     (z->s).work[0] = 0;
-    (z->s).coord.x = x;
-    (z->s).coord.y = y;
-    (z->s).unk_28 = p;
+    (z->s).coord.x = x, (z->s).coord.y = y;
+    (z->s).unk_28 = q;
   }
   return z;
 }
@@ -49,14 +48,12 @@ static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord
     PlaySound(SE_PHANTOM_DAMAGE);
 
     s = (struct MinigameState*)(z->s).unk_28;
-    if (s->unk_d5 != 0) {
-      s->unk_d5--;
-    }
+    if (s->unk_d5 != 0) s->unk_d5--;
     PlaySound(SE_ZERO_STUN);
   }
 }
 
-static void PhantomMini_Init(struct Zero* z) {
+static void PhantomMini_Init(Player* z) {
   SET_PLAYER_ROUTINE(z, ENTITY_UPDATE);
   (z->s).mode[1] = sInitModes[(z->s).work[0]];
 
@@ -67,59 +64,55 @@ static void PhantomMini_Init(struct Zero* z) {
   INIT_BODY(z, &sCollisions[0], 6, onCollision);
   (z->s).unk_coord.y = (z->s).coord.y;
   (z->s).work[3] = 0;
-  PhantomMini_Update(z);
+  PhantomMini_Update((void*)z);
 }
 
 // --------------------------------------------
 
-static void FUN_08034b28(struct Zero* z);
-static void nop_08034b24(struct Zero* z);
+static void FUN_08034b28(struct Entity* p);
+static void nop_08034b24(void* _ UNUSED);
 
 void phantom_08034b4c(struct Zero* z);
 void FUN_08034d40(struct Zero* z);
 void phantom_08034dc0(struct Zero* z);
 void FUN_08034e50(struct Zero* z);
 
-static void PhantomMini_Update(struct Zero* z) {
+static void PhantomMini_Update(struct Entity* p) {
   s32 max_y;
   static const ZeroFunc sUpdates1[4] = {
-      FUN_08034b28,
-      nop_08034b24,
-      nop_08034b24,
-      nop_08034b24,
+      (void*)FUN_08034b28,
+      (void*)nop_08034b24,
+      (void*)nop_08034b24,
+      (void*)nop_08034b24,
   };
   static const ZeroFunc sUpdates2[4] = {
-      phantom_08034b4c,
-      FUN_08034d40,
-      phantom_08034dc0,
-      FUN_08034e50,
+      (void*)phantom_08034b4c,
+      (void*)FUN_08034d40,
+      (void*)phantom_08034dc0,
+      (void*)FUN_08034e50,
   };
 
-  struct MinigameState* s = (struct MinigameState*)(z->s).unk_28;
-  (z->s).coord.x += s->unk_14;
-  (sUpdates1[(z->s).mode[1]])(z);
-  (sUpdates2[(z->s).mode[1]])(z);
+  struct MinigameState* q = (struct MinigameState*)p->unk_28;
+  p->coord.x += q->unk_14;
+  (sUpdates1[p->mode[1]])((void*)p);
+  (sUpdates2[p->mode[1]])((void*)p);
 
-  max_y = (z->s).unk_coord.y + PIXEL(240);
-  if ((z->s).coord.y > max_y) {
-    (z->s).coord.y = max_y;
+  max_y = p->unk_coord.y + PIXEL(240);
+  if (p->coord.y > max_y) {
+    p->coord.y = max_y;
   }
 }
 
-static void PhantomMini_Die(struct Zero* z) {
-  SET_PLAYER_ROUTINE(z, ENTITY_EXIT);
-  return;
-}
+static void PhantomMini_Die(struct Entity* p) { SET_PLAYER_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
 
-static void nop_08034b24(struct Zero* z) { return; }
+static void nop_08034b24(void* _) {}
 
-static void FUN_08034b28(struct Zero* z) {
-  struct MinigameState* s = (struct MinigameState*)(z->s).unk_28;
-  if ((s->unk_d6 != 0) && (s->unk_00[1] != 3)) {
-    (z->s).mode[1] = 3;
-    (z->s).mode[2] = 0;
+static void FUN_08034b28(struct Entity* p) {
+  struct MinigameState* q = (struct MinigameState*)p->unk_28;
+  if ((q->unk_d6 != 0) && (q->unk_00[1] != 3)) {
+    p->mode[1] = 3, p->mode[2] = 0;
   }
 }
 

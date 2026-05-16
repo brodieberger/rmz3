@@ -684,7 +684,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) &= 0xFFFC;
-    BGCNT16(n >> 4) |= 3;
+    BGCNT16(n >> 4) |= BGCNT_PRIORITY(3);
     (l->scrollPower).x = 0xC0;
     l->phase++;
   }
@@ -699,7 +699,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->screenBase | 0x47;
+    BGCNT16(n >> 4) = l->screenBase | (BGCNT_PRIORITY(3) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC);
     LoadBgMap(n, gBgMapOffsets, 79, 0, 0);
     l->phase++;
   }
@@ -803,7 +803,7 @@ static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->screenBase | 0x44;
+    BGCNT16(n >> 4) = l->screenBase | (BGCNT_CHARBASE(1) | BGCNT_MOSAIC);
     LoadBgMap(n, gBgMapOffsets, 80, 0, 0);
     gBlendRegBuffer.bldclt = 0x3B44;
     l->unk_10 = 64;

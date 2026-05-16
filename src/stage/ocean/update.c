@@ -490,7 +490,7 @@ _0801BE80:\n\
 	beq _0801BEB6\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r6]\n\
 _0801BEB6:\n\
 	ldr r1, [r5, #0x54]\n\
@@ -517,11 +517,11 @@ _0801BEC0:\n\
 	beq _0801BEEA\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801BEEA:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801BEF4:\n\
@@ -746,7 +746,7 @@ _0801C0A6:\n\
 	beq _0801C0C2\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r7]\n\
 _0801C0C2:\n\
 	movs r1, #0xaa\n\

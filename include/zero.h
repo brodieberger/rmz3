@@ -7,6 +7,22 @@
 #include "gba/gba.h"
 #include "types.h"
 
+// Zero.mode[1]
+enum {
+  ZERO_GROUND = 0,     // 地上(棒立ち、歩き、ダッシュ、Zセイバー、etc...)
+  ZERO_AIR = 1,        // 空中
+  ZERO_WALL = 2,       // 壁ずり
+  ZERO_LADDER = 3,     // はしご
+  ZERO_DAMAGED = 4,    // 被ダメ
+  ZERO_DOOR_2D = 5,    // ドア(2D, ボス部屋とか)
+  ZERO_DOOR_3D = 6,    // ドア(3D, ベースのドアとか)
+  ZERO_BINDED = 7,     // (レバガチャが必要な)拘束状態
+  ZERO_FLOAT = 8,      // floated by Birleaf or Biraid
+  ZERO_TALK = 9,       // 仁王立ち(会話時)
+  ZERO_TELEPORT = 10,  // 転送
+  ZERO_CYBER = 11,     // サイバー空間のドア
+};
+
 // Zero.posture (gZeroCollisions's idx)
 enum ZeroPosture {
   POSTURE_IDLE = 0,
@@ -16,6 +32,19 @@ enum ZeroPosture {
   POSTURE_DOOR_2D = 4,
   POSTURE_DOOR_3D = 5,
   POSTURE_COUNT,
+};
+
+// ZeroStatus.menuZeroColor
+enum MenuZeroColor {
+  MZC_NORMAL,
+  MZC_HARD,
+  MZC_ULTIMATE,
+};
+
+enum WeaponCharge {
+  NO_CHARGE,
+  SEMI_CHARGE,
+  FULL_CHARGE,
 };
 
 typedef ZeroFunc ZeroRoutine[5];
@@ -33,9 +62,9 @@ enum ZeroGround {
 #define HEAD ((z->unk_b4).status.head)
 #define BODY(z) (((&z->unk_b4)->status).body)
 #define FOOT ((z->unk_b4).status.foot)
-#define SATELITES (((&z->unk_b4)->status).asset.satelites)
-#define SATELITE_1 (((&z->unk_b4)->status).asset.satelites[0])
-#define SATELITE_2 (((&z->unk_b4)->status).asset.satelites[1])
+#define SATELITES (((&z->unk_b4)->status).satelites)
+#define SATELITE_1 (((&z->unk_b4)->status).satelites[0])
+#define SATELITE_2 (((&z->unk_b4)->status).satelites[1])
 
 extern struct Zero* pZero;
 extern struct Zero* pZero2;
@@ -57,7 +86,7 @@ u16 FUN_080101a8(void);
 void InitPlayerHeader(struct EntityHeader* h, struct Zero* p, s16 len);
 struct Zero* AllocPlayer(void);
 struct Zero* AllocPlayer2(void);
-void RemovePlayer(struct Zero* p);
+void RemovePlayer(struct Entity* p);
 void LoadZeroPalette(struct Entity* _, u32 color);
 void LoadShadowDashPalette(struct Zero* _, u32 color);
 bool8 UseSubtank(struct Zero* z);

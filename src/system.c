@@ -7,7 +7,6 @@
 #include "gpu_regs.h"
 #include "input.h"
 #include "intro.h"
-#include "sound.h"
 #include "sram.h"
 #include "syssav.h"
 #include "text.h"
@@ -84,7 +83,7 @@ void Process_SoftReset(struct Process* _ UNUSED) {
   StopAllMusics();
   LoadAsciiBold();
   LoadKatakanaBold();
-  gVideoRegBuffer.dispcnt &= BG_MODE_0;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   *(u32*)gVideoRegBuffer.bgofs[0] = 0;

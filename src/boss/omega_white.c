@@ -1,11 +1,11 @@
 #include "blink.h"
 #include "boss.h"
+#include "boss/omega1.h"
 #include "collision.h"
 #include "enemy.h"
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
-#include "sound.h"
 #include "vfx.h"
 
 struct Entity* omegaWhite_080b91d4(struct Coord* c, u8 n, struct Entity* omega);
@@ -16,22 +16,22 @@ struct Entity* CreateOmegaWhiteHand(struct Coord* c, bool8 isLeftHand, struct En
 
 static const struct Collision sCollisions[8];
 
-static void OmegaWhite_Init(struct Boss* p);
+static void OmegaWhite_Init(struct Omega1* p);
 static void OmegaWhite_Update(struct Boss* p);
 static void OmegaWhite_Die(struct Boss* p);
 static void OmegaWhite_Disappear(struct Boss* p);
 
 // clang-format off
 const BossRoutine gOmegaWhiteRoutine = {
-    [ENTITY_INIT] =      OmegaWhite_Init,
-    [ENTITY_UPDATE] =    OmegaWhite_Update,
-    [ENTITY_DIE] =       OmegaWhite_Die,
-    [ENTITY_DISAPPEAR] = OmegaWhite_Disappear,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)OmegaWhite_Init,
+    [ENTITY_UPDATE] =    (void*)OmegaWhite_Update,
+    [ENTITY_DIE] =       (void*)OmegaWhite_Die,
+    [ENTITY_DISAPPEAR] = (void*)OmegaWhite_Disappear,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-static void floatOmegaWhite(struct Boss* p);
+static void floatOmegaWhite(struct Omega1* p);
 
 struct Entity* CreateOmegaWhite(struct Coord* c, u8 n) {
   struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
@@ -47,33 +47,33 @@ struct Entity* CreateOmegaWhite(struct Coord* c, u8 n) {
   return p;
 }
 
-static void OmegaWhite_Init(struct Boss* p) {
+static void OmegaWhite_Init(struct Omega1* p) {
   s32 y;
   struct Coord c;
   struct Body* body;
   void* fn;
 
-  omegaWhite_0800bd24(p);
+  omegaWhite_0800bd24((void*)p);
   gOverworld.state[1] = 0;
   LOAD_STATIC_GRAPHIC(SM009_OMEGA_HAND);
   LOAD_STATIC_GRAPHIC(SM010_OMEGA_RING);
   LOAD_STATIC_GRAPHIC(SM011_OMEGA_RECOVER);
   LOAD_STATIC_GRAPHIC(SM012_OMEGA_RUBBLE);
 
-  ResetBossBody(p, &sCollisions[0], 64);
+  ResetBossBody((void*)p, &sCollisions[0], 64);
   SET_BOSS_COLLISION_HANDLER(p, onCollision);
 
-  (p->props).omegaWhite.unk_b4[0] = 0;
-  (p->props).omegaWhite.unk_b4[1] = 0xFF;
-  (p->props).omegaWhite.unk_b4[2] = 0xFF;
-  (p->props).omegaWhite.unk_bc = NULL;
-  (p->props).omegaWhite.unk_b4[3] = 0;
-  (p->props).omegaWhite.unk_c0 = 0;
-  (p->props).omegaWhite.unk_d4 = 0;
+  p->unk_b4[0] = 0;
+  p->unk_b4[1] = 0xFF;
+  p->unk_b4[2] = 0xFF;
+  p->unk_bc = NULL;
+  p->unk_b4[3] = 0;
+  p->unk_c0 = 0;
+  p->unk_d4 = 0;
 
   y = (p->s).coord.y - PIXEL(80);
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, y);
-  (p->s).unk_coord.y = (p->props).omegaWhite.unk_y = (p->s).coord.y;
+  (p->s).unk_coord.y = p->unk_y = (p->s).coord.y;
 
   if ((p->s).work[0] == 0) {
     SET_BOSS_ROUTINE(p, ENTITY_UPDATE);
@@ -91,12 +91,12 @@ static void OmegaWhite_Init(struct Boss* p) {
 
 // --------------------------------------------
 
-static void omegaWhite_0803e244(struct Boss* p);
+static void omegaWhite_0803e244(struct Omega1* p);
 static void omegaWhiteIntoMode2(struct Boss* p);
 static void omegaWhiteNeutral(struct Boss* p);
 static void omegaWhiteLaser(struct Boss* p);
 static void omegaWhite_0803e2a0(struct Boss* p);
-static bool8 changeOmegaWhiteMode(struct Boss* p);
+static bool8 changeOmegaWhiteMode(struct Omega1* p);
 static bool8 nop_0803e240(void* _);
 static bool8 nop_0803e278(void* _);
 static bool8 nop_0803e29c(void* _);
@@ -120,13 +120,13 @@ static void OmegaWhite_Update(struct Boss* p) {
   // clang-format on
   // clang-format off
   static const BossFunc sUpdates2[7] = {
-      omegaWhite_0803e244,
-      omegaWhiteIntoMode2,
-      omegaWhite_0803e2a0,
-      omegaWhiteNeutral,
-      omegaWhiteLaser,
-      omegaWhite_0803e520,
-      omegaWhite_0803e5ec,
+      (void*)omegaWhite_0803e244,
+      (void*)omegaWhiteIntoMode2,
+      (void*)omegaWhite_0803e2a0,
+      (void*)omegaWhiteNeutral,
+      (void*)omegaWhiteLaser,
+      (void*)omegaWhite_0803e520,
+      (void*)omegaWhite_0803e5ec,
   };
   // clang-format on
 
@@ -161,7 +161,7 @@ static void OmegaWhite_Disappear(struct Boss* p) {
   EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   gOverworld.state[1] = 0;
-  DeleteBoss(p);
+  DeleteBoss((void*)p);
 }
 
 static void omegaWhite_0803e148(struct Boss* p) {
@@ -218,12 +218,12 @@ static void omegaWhite_0803e1f8(struct Boss* p) {
 
 static bool8 nop_0803e240(void* _) { return TRUE; }
 
-static void omegaWhite_0803e244(struct Boss* p) {
+static void omegaWhite_0803e244(struct Omega1* p) {
   if ((p->s).mode[2] == 0) {
     gOverworld.state[1] = 1;
     (p->s).mode[1] = 1;
     (p->s).mode[2] = 0;
-    (p->props).omegaWhite.unk_d4 |= (1 << 0);
+    p->unk_d4 |= (1 << 0);
     (p->s).mode[2]++;
   }
 }
@@ -263,7 +263,7 @@ static void omegaWhite_0803e2a0(struct Boss* p) {
 
 // クールタイム終了後のオメガのモードをランダムに4か5にする
 // 0x0803e2d0
-static bool8 changeOmegaWhiteMode(struct Boss* p) {
+static bool8 changeOmegaWhiteMode(struct Omega1* p) {
   if ((p->s).mode[2] == 0) {
     return TRUE;
   }
@@ -274,15 +274,14 @@ static bool8 changeOmegaWhiteMode(struct Boss* p) {
     return TRUE;
   }
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  if (((RNG_0202f388 >> 16) & 0xF) < 8) {
-    if (((p->props).omegaWhite.unk_b4[1] != 0) || ((p->props).omegaWhite.unk_b4[2] != 0)) {
+  if ((RANDOM(RNG_0202f388) & 0xF) < 8) {
+    if ((p->unk_b4[1] != 0) || (p->unk_b4[2] != 0)) {
       (p->s).mode[1] = 4, (p->s).mode[2] = 0;
     } else {
       (p->s).mode[1] = 5, (p->s).mode[2] = 0;
     }
   } else {
-    if (((p->props).omegaWhite.unk_b4[1] == 1) && ((p->props).omegaWhite.unk_b4[2] == 1)) {
+    if ((p->unk_b4[1] == 1) && (p->unk_b4[2] == 1)) {
       (p->s).mode[1] = 4, (p->s).mode[2] = 0;
     } else {
       (p->s).mode[1] = 5, (p->s).mode[2] = 0;
@@ -302,7 +301,7 @@ static void omegaWhiteNeutral(struct Boss* p) {
       (p->s).mode[2]++;
     }
     case 1: {
-      floatOmegaWhite(p);
+      floatOmegaWhite((void*)p);
     }
   }
 }
@@ -890,22 +889,22 @@ _0803E7E6:\n\
 // 0x0803e7ec
 static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
   {
-    struct Boss* self = (struct Boss*)body->parent;
-    struct Entity* fx = (struct Entity*)(self->s).unk_2c;
+    struct Boss* p = (struct Boss*)body->parent;
+    struct Entity* fx = (struct Entity*)(p->s).unk_2c;
     if (fx != NULL) {
       if (fx->mode[0] >= ENTITY_DIE) {
-        (self->s).unk_2c = NULL;
+        (p->s).unk_2c = NULL;
       } else {
         fx->flags &= ~DISPLAY;
       }
     }
   }
   {
-    struct Boss* self = (struct Boss*)body->parent;
-    struct Entity* fx = (self->props).omegaWhite.unk_bc;
+    struct Omega1* p = (struct Omega1*)body->parent;
+    struct Entity* fx = p->unk_bc;
     if (fx != NULL) {
       if (fx->mode[0] >= ENTITY_DIE) {
-        (self->props).omegaWhite.unk_bc = NULL;
+        p->unk_bc = NULL;
       } else {
         fx->flags &= ~DISPLAY;
       }
@@ -914,9 +913,9 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 }
 
 // オメガが縦にふわふわする処理
-static void floatOmegaWhite(struct Boss* p) {
-  u16 val = ((p->props.omegaWhite).unk_c0 + 1) & 0xFF;
-  (p->props.omegaWhite).unk_c0 = val;
+static void floatOmegaWhite(struct Omega1* p) {
+  u16 val = (p->unk_c0 + 1) & 0xFF;
+  p->unk_c0 = val;
   (p->s).coord.y = (p->s).unk_coord.y + (gSineTable[val] << 3);
 }
 

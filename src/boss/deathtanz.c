@@ -3,21 +3,40 @@
 #include "global.h"
 #include "overworld.h"
 
+struct Deathtanz {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  struct Coord unk_b4;
+  u8 unk_bc;
+  u8 unk_bd;
+  u8 unk_be;
+  u8 unk_bf;
+  u8 unk_c0;
+  u8 unk_c1;
+  bool8 shouldTurnRight;
+  u8 unk_c3;
+  u8 unk_c4;
+  u8 unk_c5[3];
+  struct Coord unk_c8;
+  u8 unk_d0[20];
+};
+static_assert(sizeof(struct Deathtanz) == sizeof(struct Boss));
+
 static const u8 sDeathtanzModes[32];
 static const struct Collision sCollisions[];
 static const u8 sInitModes[2];
 
-static void Deathtanz_Init(struct Boss* p);
+static void Deathtanz_Init(struct Deathtanz* p);
 static void Deathtanz_Update(struct Boss* p);
 static void Deathtanz_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gDeathtanzRoutine = {
-    [ENTITY_INIT] =      (BossFunc)Deathtanz_Init,
-    [ENTITY_UPDATE] =    (BossFunc)Deathtanz_Update,
-    [ENTITY_DIE] =       (BossFunc)Deathtanz_Die,
-    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Deathtanz_Init,
+    [ENTITY_UPDATE] =    (void*)Deathtanz_Update,
+    [ENTITY_DIE] =       (void*)Deathtanz_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -123,12 +142,12 @@ _08048E08:\n\
 
 static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
   struct Zero* z = (struct Zero*)body->enemy->parent;
-  struct Boss* boss = (struct Boss*)body->parent;
+  struct Deathtanz* p = (struct Deathtanz*)body->parent;
 
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    (boss->props.deathtanz).unk_c8.x = (z->s).coord.x;
-    (boss->props.deathtanz).unk_c8.y = (z->s).coord.y;
-    (boss->props.deathtanz).shouldTurnRight = (boss->s).coord.x < (z->s).coord.x;
+    (p->unk_c8).x = (z->s).coord.x;
+    (p->unk_c8).y = (z->s).coord.y;
+    p->shouldTurnRight = (p->s).coord.x < (z->s).coord.x;
   }
 }
 
@@ -148,7 +167,7 @@ static bool8 tryKillDeathtanz(struct Boss* p) {
   return FALSE;
 }
 
-static void Deathtanz_Init(struct Boss* p) {
+static void Deathtanz_Init(struct Deathtanz* p) {
   struct Body* body;
   s32 y;
   void* fn;
@@ -167,7 +186,7 @@ static void Deathtanz_Init(struct Boss* p) {
   InitNonAffineMotion(&p->s);
   ResetDynamicMotion(&p->s);
 
-  ResetBossBody(p, &sCollisions[0], 64);
+  ResetBossBody((void*)p, &sCollisions[0], 64);
   SET_BOSS_COLLISION_HANDLER(p, onCollision);
 
   if ((p->s).work[0] == 0) {
@@ -175,23 +194,23 @@ static void Deathtanz_Init(struct Boss* p) {
     LOAD_STATIC_GRAPHIC(SM055_DEATHTANZ_PROJECTILE);
 
     (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
-    ((p->props).deathtanz).unk_b4.x = (p->s).coord.x >> 8;
-    ((p->props).deathtanz).unk_b4.x = ((((p->props).deathtanz).unk_b4.x / 240) * PIXEL(240)) + PIXEL(120);
-    ((p->props).deathtanz).unk_b4.y = (p->s).coord.y;
-    ((p->props).deathtanz).unk_bd = 0;
-    ((p->props).deathtanz).unk_c1 = 3;
+    p->unk_b4.x = (p->s).coord.x >> 8;
+    p->unk_b4.x = ((p->unk_b4.x / 240) * PIXEL(240)) + PIXEL(120);
+    p->unk_b4.y = (p->s).coord.y;
+    p->unk_bd = 0;
+    p->unk_c1 = 3;
 #if MODERN
-    ((p->props).deathtanz).unk_c3 = 0xFF;
+    p->unk_c3 = 0xFF;
 #else
-    r2 = &((p->props).deathtanz).unk_c3;
+    r2 = &p->unk_c3;
     r0 = *r2;
     r1 = 0xFF;
     r0 |= r1;
     *r2 = r0;
 #endif
-    ((p->props).deathtanz).unk_c4 = 0;
+    p->unk_c4 = 0;
   }
-  Deathtanz_Update(p);
+  Deathtanz_Update((void*)p);
 }
 
 // --------------------------------------------

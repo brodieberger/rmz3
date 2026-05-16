@@ -32,17 +32,8 @@ static void Container_Init(struct Solid* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 0x00));
-  {
-    bool8 xflip = FALSE;
-    if (xflip) {
-      (p->s).flags |= X_FLIP;
-    } else {
-      (p->s).flags &= ~X_FLIP;
-    }
-    (p->s).spr.xflip = xflip & 1;
-    (p->s).spr.oam.xflip = xflip;
-  }
+  SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 0));
+  SET_XFLIP(p, FALSE);
   INIT_BODY(p, &sCollision, 6, NULL);
   (p->s).flags2 |= ENTITY_HAZARD;
   (p->s).size = &sSize;

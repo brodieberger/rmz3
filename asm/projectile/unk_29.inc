@@ -146,7 +146,7 @@ _080AA2F2:
 	lsls r0, r0, #3
 	b _080AA372
 	.align 2, 0
-_080AA364: .4byte 0x0836C2A0
+_080AA364: .4byte sCollisions
 _080AA368:
 	ldr r0, [r6, #0x54]
 	ldr r2, _080AA380 @ =0xFFFFEB00

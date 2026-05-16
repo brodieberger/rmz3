@@ -651,11 +651,9 @@ _08005580: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
 NAKED static void unused_08005584(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005584.inc"); }
 NAKED static void unused_080055e8(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_080055e8.inc"); }
 NAKED static void unused_08005674(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005674.inc"); }
-#endif
 
 NAKED void FUN_08005a70(struct LayerGraphic* l, struct Coord* c, u32 mapAddr) {
   asm(".syntax unified\n\
@@ -1032,13 +1030,11 @@ _08005D30: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
 NAKED static void unused_08005d34(void) { INCCODE("asm/unused/unused_08005d34.inc"); }
 NAKED static void unused_080061a4(void) { INCCODE("asm/unused/unused_080061a4.inc"); }
 NAKED static void unused_08006474(void) { INCCODE("asm/unused/unused_08006474.inc"); }
 NAKED static void unused_08006738(void) { INCCODE("asm/unused/unused_08006738.inc"); }
 NAKED static void unused_080069e0(void) { INCCODE("asm/unused/unused_080069e0.inc"); }
-#endif
 
 NAKED void FUN_08006a10(struct LayerGraphic* l, struct Coord* c, u32* bgmap, MetatileMap* mm) {
   asm(".syntax unified\n\
@@ -1396,12 +1392,7 @@ _08006D40: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-static void unused_Clear2KB(u32* dst) {  // dstから2048バイトを0クリア
-  CpuFastFill(0, dst, 2048);
-  {
-    vu32 _;
-  }
-}
+static void unused_Clear2KB(u32* dst) { _CpuFastFill(0, dst, 2048); }
 
 static void unused_FastCopy(void* dst, const void* src, u32 bytesize) {  // CpuFastSetとCpuSetを組み合わせて細かい単位でも高速にコピー
   u32 n = (bytesize & 0xFFFFFFE0);

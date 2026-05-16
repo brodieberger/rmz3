@@ -6,9 +6,9 @@
 
 // props (56bytes, offset: 0xB4..)
 struct ThrowBladeProps {
-  struct Weapon* saber;
-  u8 unk_b8[8];
-  u8 element;
+  struct Weapon* saber;  // 0xB4
+  u8 unk_b8[8];          // 0xB8
+  u8 element;            // 0xC0
   u8 unk_c1[43];
 };
 
@@ -80,7 +80,7 @@ const WeaponRoutine gThrowBladeRoutine = {
 
 void MenuExit_ThrowBlade(struct Weapon* w) {
   struct Zero* z = (struct Zero*)(w->s).unk_28;
-  struct ThrowBladeProps* s = (struct ThrowBladeProps*)w->props.raw;
+  struct ThrowBladeProps* s = (struct ThrowBladeProps*)w->buffer;
   if ((s->element != ((&z->unk_b4)->status).element)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
@@ -116,7 +116,7 @@ struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIc
       }
     }
     (w->s).unk_28 = &z->s;
-    s = (struct ThrowBladeProps*)w->props.raw;
+    s = (struct ThrowBladeProps*)w->buffer;
     s->saber = saber;
     s->element = ((&z->unk_b4)->status).element;
     (w->s).work[0] = isIce;

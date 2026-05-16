@@ -90,7 +90,7 @@ static const StageLayerRoutine sLayerRoutine[8] = {
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     l->phase++;
   }
 }
@@ -98,7 +98,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     (l->scrollPower).x = 0x60;
     (l->scrollPower).y = 0x60;
     (l->scroll).x = 0x96;

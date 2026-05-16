@@ -4,54 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateSwordy
-CreateSwordy: @ 0x0807BEA8
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r4, r1, #0x18
-	ldr r0, _0807BEFC @ =gEnemyHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0807BEF4
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _0807BF00 @ =gEnemyFnTable
-	movs r0, #0x1f
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x7c]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	ldr r0, [r5]
-	ldr r1, [r5, #4]
-	str r0, [r3, #0x54]
-	str r1, [r3, #0x58]
-	strb r4, [r3, #0x10]
-_0807BEF4:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_0807BEFC: .4byte gEnemyHeaderPtr
-_0807BF00: .4byte gEnemyFnTable
-
 	thumb_func_start Swordy_Init
 Swordy_Init: @ 0x0807BF04
 	push {r4, r5, r6, r7, lr}
@@ -83,7 +35,7 @@ Swordy_Init: @ 0x0807BF04
 	strb r0, [r7, #0xa]
 	adds r4, r7, #0
 	adds r4, #0x74
-	ldr r1, _0807BFA0 @ =0x08367A58
+	ldr r1, _0807BFA0 @ =sCollisions
 	adds r2, #0xa
 	adds r0, r4, #0
 	movs r3, #4
@@ -128,7 +80,7 @@ _0807BF94:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807BFA0: .4byte 0x08367A58
+_0807BFA0: .4byte sCollisions
 _0807BFA4: .4byte gEnemyFnTable
 
 	thumb_func_start Swordy_Update
@@ -157,7 +109,7 @@ Swordy_Update: @ 0x0807BFA8
 	.align 2, 0
 _0807BFD4: .4byte gEnemyFnTable
 _0807BFD8:
-	ldr r1, _0807C01C @ =0x08367A38
+	ldr r1, _0807C01C @ =PTR_ARRAY_08367a38
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -188,9 +140,9 @@ _0807BFD8:
 	str r5, [r6]
 	b _0807C030
 	.align 2, 0
-_0807C01C: .4byte 0x08367A38
+_0807C01C: .4byte PTR_ARRAY_08367a38
 _0807C020:
-	ldr r0, _0807C038 @ =0x08367A48
+	ldr r0, _0807C038 @ =PTR_ARRAY_08367a48
 	ldrb r1, [r4, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r0
@@ -202,7 +154,7 @@ _0807C030:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807C038: .4byte 0x08367A48
+_0807C038: .4byte PTR_ARRAY_08367a48
 
 	thumb_func_start Swordy_Die
 Swordy_Die: @ 0x0807C03C
@@ -486,7 +438,7 @@ _0807C268:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0807C290 @ =0x08367A58
+	ldr r1, _0807C290 @ =sCollisions
 	bl SetDDP
 	ldr r0, _0807C294 @ =pZero2
 	ldr r0, [r0]
@@ -499,7 +451,7 @@ _0807C268:
 	movs r0, #0
 	b _0807C29E
 	.align 2, 0
-_0807C290: .4byte 0x08367A58
+_0807C290: .4byte sCollisions
 _0807C294: .4byte pZero2
 _0807C298: .4byte 0xFFFFF800
 _0807C29C:
@@ -753,7 +705,7 @@ _0807C46E:
 	bx r0
 	.align 2, 0
 _0807C474: .4byte 0x00003F01
-_0807C478: .4byte 0x08367A88
+_0807C478: .4byte sCollisions+(2*24)
 
 	thumb_func_start FUN_0807c47c
 FUN_0807c47c: @ 0x0807C47C
@@ -883,7 +835,7 @@ FUN_0807c530: @ 0x0807C530
 	ands r0, r7
 	cmp r0, #0
 	beq _0807C57A
-	ldr r2, _0807C56C @ =0x08367AD0
+	ldr r2, _0807C56C @ =sElementCoord
 	movs r0, #0
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -900,7 +852,7 @@ FUN_0807c530: @ 0x0807C530
 	strb r7, [r4, #0xd]
 	b _0807C578
 	.align 2, 0
-_0807C56C: .4byte 0x08367AD0
+_0807C56C: .4byte sElementCoord
 _0807C570:
 	cmp r1, #0x30
 	bne _0807C57A

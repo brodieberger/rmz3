@@ -446,7 +446,7 @@ _080A623C:
 	movs r3, #0x40
 	b _080A6316
 	.align 2, 0
-_080A625C: .4byte 0x0836BCAC
+_080A625C: .4byte sCollisions+(11*24)
 _080A6260:
 	cmp r2, #1
 	bne _080A627C
@@ -492,7 +492,7 @@ _080A627C:
 	strb r5, [r6, #0xd]
 	b _080A6332
 	.align 2, 0
-_080A62B8: .4byte 0x0836BBA4
+_080A62B8: .4byte sCollisions
 _080A62BC: .4byte gProjectileFnTable
 _080A62C0:
 	cmp r2, #2
@@ -524,7 +524,7 @@ _080A62E0:
 	ldr r1, _080A62F8 @ =0x0836BCF4
 	b _080A630E
 	.align 2, 0
-_080A62F8: .4byte 0x0836BCF4
+_080A62F8: .4byte sCollisions+(14*24)
 _080A62FC:
 	cmp r2, #3
 	bne _080A6336
@@ -566,7 +566,7 @@ _080A6336:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A6348: .4byte 0x0836BCC4
+_080A6348: .4byte sCollisions+(12*24)
 _080A634C: .4byte gProjectileFnTable
 
 	thumb_func_start CubitProjectile_Update
@@ -585,7 +585,7 @@ CubitProjectile_Update: @ 0x080A6350
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A636C: .4byte 0x0836BB94
+_080A636C: .4byte sUpdates
 
 	thumb_func_start CubitProjectile_Die
 CubitProjectile_Die: @ 0x080A6370
@@ -700,7 +700,7 @@ _080A6420:
 	orrs r0, r1
 	b _080A646A
 	.align 2, 0
-_080A645C: .4byte 0x0836BC1C
+_080A645C: .4byte sCollisions+(5*24)
 _080A6460: .4byte 0x0000B103
 _080A6464:
 	ldrb r1, [r6, #0xa]
@@ -834,8 +834,8 @@ _080A655C:
 	strb r0, [r6, #0x13]
 	b _080A6640
 	.align 2, 0
-_080A6564: .4byte 0x0836BC1C
-_080A6568: .4byte 0x0836BD24
+_080A6564: .4byte sCollisions+(5*24)
+_080A6568: .4byte sCoords
 _080A656C:
 	ldrb r0, [r6, #0x13]
 	adds r4, r6, #0
@@ -953,7 +953,7 @@ _080A6640:
 	b _080A6702
 	.align 2, 0
 _080A6648: .4byte 0x0000B103
-_080A664C: .4byte 0x0836BC1C
+_080A664C: .4byte sCollisions+(5*24)
 _080A6650:
 	ldr r1, _080A66C4 @ =0x0000B105
 	adds r0, r6, #0
@@ -1013,7 +1013,7 @@ _080A6690:
 	b _080A66CE
 	.align 2, 0
 _080A66C4: .4byte 0x0000B105
-_080A66C8: .4byte 0x0836BC1C
+_080A66C8: .4byte sCollisions+(5*24)
 _080A66CC:
 	movs r0, #0
 _080A66CE:
@@ -1207,9 +1207,9 @@ _080A6852:
 	movs r0, #2
 	b _080A6896
 	.align 2, 0
-_080A686C: .4byte 0x0836BCAC
+_080A686C: .4byte sCollisions+(11*24)
 _080A6870: .4byte 0xFFFF8400
-_080A6874: .4byte 0x0836BD4C
+_080A6874: .4byte sCoords+(5*8)
 _080A6878: .4byte 0x0000B108
 _080A687C:
 	ldr r1, _080A6888 @ =0x0000B107
@@ -1696,7 +1696,7 @@ _080A6BF2:
 	b _080A6C32
 	.align 2, 0
 _080A6C0C: .4byte 0xFFFF8400
-_080A6C10: .4byte 0x0836BD4C
+_080A6C10: .4byte sCoords+(5*8)
 _080A6C14: .4byte 0x0000B108
 _080A6C18:
 	ldr r1, _080A6C24 @ =0x0000B107
@@ -1943,7 +1943,7 @@ _080A6DC8:
 	ldr r0, [r2]
 	b _080A6E12
 	.align 2, 0
-_080A6DF8: .4byte 0x0836BD74
+_080A6DF8: .4byte sCoords+(10*8)
 _080A6DFC:
 	ldr r2, _080A6E38 @ =0x0836BD74
 	movs r1, #8
@@ -1975,7 +1975,7 @@ _080A6E12:
 	subs r0, #1
 	b _080A6E8A
 	.align 2, 0
-_080A6E38: .4byte 0x0836BD74
+_080A6E38: .4byte sCoords+(10*8)
 _080A6E3C:
 	movs r0, #0xc
 	strb r0, [r5, #0x12]
@@ -2286,8 +2286,8 @@ _080A70A2:
 	b _080A70C4
 	.align 2, 0
 _080A70B0: .4byte 0x0000B10C
-_080A70B4: .4byte 0x0836BBBC
-_080A70B8: .4byte 0x0836BDBC
+_080A70B4: .4byte sCollisions+(1*24)
+_080A70B8: .4byte sCoords+(19*8)
 _080A70BC: .4byte pZero2
 _080A70C0:
 	movs r0, #0x80
@@ -2387,7 +2387,7 @@ _080A7158:
 	b _080A7180
 	.align 2, 0
 _080A7174: .4byte 0x0000B10F
-_080A7178: .4byte 0x0836BBEC
+_080A7178: .4byte sCollisions+(3*24)
 _080A717C:
 	movs r0, #0xb5
 	rsbs r0, r0, #0
@@ -2619,7 +2619,7 @@ _080A7304:
 	ldr r0, [r2]
 	b _080A7354
 	.align 2, 0
-_080A7338: .4byte 0x0836BDCC
+_080A7338: .4byte sCoords+(21*8)
 _080A733C:
 	ldr r2, _080A73D8 @ =0x0836BDCC
 	movs r1, #8
@@ -2700,7 +2700,7 @@ _080A73C0:
 	subs r0, #0x1a
 	b _080A73E8
 	.align 2, 0
-_080A73D8: .4byte 0x0836BDCC
+_080A73D8: .4byte sCoords+(21*8)
 _080A73DC: .4byte gSineTable
 _080A73E0: .4byte 0xFFFFE800
 _080A73E4:
@@ -2934,7 +2934,7 @@ _080A75AA:
 	b _080A790C
 	.align 2, 0
 _080A75AC: .4byte 0x0000B101
-_080A75B0: .4byte 0x0836BE14
+_080A75B0: .4byte s32_ARRAY_0836be14
 _080A75B4:
 	ldr r1, _080A75D8 @ =0x0000B114
 	adds r0, r6, #0
@@ -3009,7 +3009,7 @@ _080A75DC:
 	b _080A7668
 	.align 2, 0
 _080A764C: .4byte 0x0000B115
-_080A7650: .4byte 0x0836BD0C
+_080A7650: .4byte sCollisions+(15*24)
 _080A7654: .4byte 0xFFFFA200
 _080A7658:
 	adds r1, r6, #0
@@ -3748,7 +3748,7 @@ _080A7BE8:
 _080A7BF0: .4byte 0x0000B110
 _080A7BF4: .4byte 0x00013880
 _080A7BF8: .4byte 0x0000B111
-_080A7BFC: .4byte 0x0836BCDC
+_080A7BFC: .4byte sCollisions+(13*24)
 _080A7C00: .4byte 0x0000B112
 _080A7C04:
 	adds r0, r7, #0

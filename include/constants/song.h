@@ -342,6 +342,6 @@
 
 #define MUS_NONE (~0)
 
-#define SONG_COUNT SOUND_UNK_14f + 1
+#define SONG_COUNT SE_UNK_14f + 1
 
 #endif  // GUARD_RMZ3_CONST_SONG_H

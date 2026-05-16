@@ -66,6 +66,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x08367cdc
 static const struct Collision sCollisions[4] = {
     {
       kind : DRP,

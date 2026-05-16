@@ -758,7 +758,7 @@ Script_0835d1a8:
   end
 
 Script_0835d208:
-  cmd1c 3, 0, 40960
+  cmd1c 3, 0, 160*PX
   gameflag FLAG_BRAIN_CONTROL, TRUE
   destroy 0
   eventflag 0, 44, 0
@@ -804,7 +804,7 @@ Script_0835d208:
   wait 15
   blackout_screen
   wait_screeneffect
-  cmd1c 3, 0, 2621440
+  cmd1c 3, 0, 10240*PX
   destroy 3
   destroy 4
   destroy 5

@@ -4,7 +4,7 @@
 @ Need tools/preproc
 @ preproc: treat "label::" as ".global label ; label:"
 
-TextOfs_083789ac:: @ 0x083789AC
+TextOffsets_OpenSecretDisk:: @ 0x083789AC
 	.2byte (Text0-Start), (Text1-Start), (Text2-Start), (Text3-Start), (Text4-Start), (Text5-Start), (Text6-Start), (Text7-Start)
 	.2byte (Text8-Start), (Text9-Start), (Text10-Start), (Text11-Start), (Text12-Start), (Text13-Start), (Text14-Start), (Text15-Start)
 	.2byte (Text16-Start), (Text17-Start), (Text18-Start), (Text19-Start), (Text20-Start), (Text21-Start), (Text22-Start), (Text23-Start)
@@ -23,7 +23,7 @@ TextOfs_083789ac:: @ 0x083789AC
 	.2byte (Text120-Start), (Text121-Start), (Text122-Start), (Text123-Start), (Text124-Start), (Text125-Start), (Text126-Start), (Text127-Start)
 	.2byte (Text128-Start)
 
-Text_ResultNotifications:: @ 0x08378AAE
+Texts_OpenSecretDisk:: @ 0x08378AAE
 Start:
 
 Text0: @ 0x08378AAE

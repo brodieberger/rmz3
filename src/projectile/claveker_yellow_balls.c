@@ -14,7 +14,7 @@ const ProjectileRoutine gClavekerYellowBallsRoutine = {
     [ENTITY_INIT] =      ClavekerYellowBalls_Init,
     [ENTITY_UPDATE] =    ClavekerYellowBalls_Update,
     [ENTITY_DIE] =       ClavekerYellowBalls_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

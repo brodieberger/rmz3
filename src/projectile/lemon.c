@@ -14,7 +14,7 @@ const ProjectileRoutine gLemonRoutine = {
     [ENTITY_INIT] =      Lemon_Init,
     [ENTITY_UPDATE] =    Lemon_Update,
     [ENTITY_DIE] =       Lemon_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
@@ -101,9 +101,7 @@ _0809CA30: .4byte gSineTable\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
 NAKED static struct Projectile* unused_0809ca34(struct Coord* c, s32 r1, u8 r2) { INCCODE("asm/unused/unused_0809ca34.inc"); }
-#endif
 
 static void Lemon_Init(struct Projectile* p) {
   InitNonAffineMotion(&p->s);

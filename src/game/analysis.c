@@ -640,7 +640,7 @@ static void DiskLoop_BlackOut(struct GameState* g) {
 static void DiskLoop_Exit(struct GameState* g) {
   u8* s;
   ClearBlink(64);
-  gWindowRegBuffer.dispcnt &= 0xDFFF;
+  gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
   PALETTE16(0) = 0;
   s = (u8*)&(g->sceneState).menu;
   s[13] = 1;

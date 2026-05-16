@@ -5,6 +5,7 @@
 #include "entity.h"
 #include "types.h"
 
+typedef void (*EnemyFunc)(struct Enemy*);
 typedef EnemyFunc EnemyRoutine[5];
 extern const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT];
 

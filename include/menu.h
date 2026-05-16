@@ -73,10 +73,14 @@ struct MenuState {
   u8 unk_4b;
   u8 unk_4c;
   u8 unk_4d;
-  u8 unk_4e[178];
+  u8 unk_4e;
+  u8 unk_4f;
+  u8 unk_50;
+  u8 unk_51;
+  u8 attackMode;  // 0x52
+  u8 unk_53[173];
 };
 
-void MainLoop_Menu(struct GameState* p);
 bool8 TrySlideMenu(struct GameState* g);
 
 struct BgMapHeader;

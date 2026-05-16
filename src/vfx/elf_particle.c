@@ -638,8 +638,7 @@ static void FUN_080c0160(struct CyberelfParticle* p) {
   (p->s).unk_coord.x = 0;
   (p->s).unk_coord.y = 4;
   p->x = (p->s).coord.x;
-  RNG_0202f388 = LCG(RNG_0202f388);
-  p->rng = ((RNG_0202f388 >> 16) & 1) * 32;
+  p->rng = (RANDOM(RNG_0202f388) & 1) * 32;
 }
 
 static void FUN_080c019c(struct CyberelfParticle* p) {

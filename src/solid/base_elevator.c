@@ -11,7 +11,7 @@ enum ElevatorSkin {
 
 struct ElevatorObject {
   OBJECT_HDR;
-  // props
+  // props (16bytes, offset: 0xB4..)
   struct Coord c;
   u8 unk_bc;
   u8 skin;  // 1: Wood, 2: MMX

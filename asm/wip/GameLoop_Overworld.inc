@@ -191,7 +191,7 @@ _080EE9F6:
 	adds r0, r1, #1
 	str r0, [r2, #0xc]
 _080EEA04:
-	bl FUN_0802511c
+	bl UpdateElFxManager
 	mov r1, sl
 	cmp r1, #0
 	bne _080EEA42

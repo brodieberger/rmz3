@@ -6,13 +6,13 @@
 #include "motion.h"
 
 void ResetVideoRegister(void) {
-  gVideoRegBuffer.dispcnt &= BG_MODE_0;
-  gVideoRegBuffer.dispcnt &= 0xB0FF;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
+  gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG_ALL_ON | DISPCNT_WIN1_ON);
   DmaFill32(3, 0, gVideoRegBuffer.bgcnt, 56);
-  *(u16*)(&gVideoRegBuffer.bgcnt[0]) = 0xc008;
-  *(u16*)(&gVideoRegBuffer.bgcnt[1]) = 0x4205;
-  *(u16*)(&gVideoRegBuffer.bgcnt[2]) = 0x4406;
-  *(u16*)(&gVideoRegBuffer.bgcnt[3]) = 0x4807;
+  *(u16*)(&gVideoRegBuffer.bgcnt[0]) = BGCNT_PRIORITY(0) | BGCNT_CHARBASE(2) | BGCNT_SCREENBASE(0) | BGCNT_TXT512x512;
+  *(u16*)(&gVideoRegBuffer.bgcnt[1]) = BGCNT_PRIORITY(1) | BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(2) | BGCNT_TXT512x256;
+  *(u16*)(&gVideoRegBuffer.bgcnt[2]) = BGCNT_PRIORITY(2) | BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(4) | BGCNT_TXT512x256;
+  *(u16*)(&gVideoRegBuffer.bgcnt[3]) = BGCNT_PRIORITY(3) | BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(8) | BGCNT_TXT512x256;
   FlushVideoRegister();
 }
 
@@ -120,7 +120,7 @@ _080042AC: .4byte 0x001FFFFF\n\
  * @note 0x080042b0
  */
 void ResetOAM(void) {
-  gOamManager.dispcnt = 0x1040;
+  gOamManager.dispcnt = DISPCNT_OBJ_1D_MAP | DISPCNT_OBJ_ON;
   gOamManager.p = gOamManager.buf;
   DmaFill32(3, 0x200, gOamManager.buf, 1024);
   FlushOAM();

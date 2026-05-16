@@ -2,33 +2,46 @@
 #include "global.h"
 #include "projectile.h"
 
-INCASM("asm/projectile/unk_14.inc");
-
 void Projectile14_Init(struct Projectile* p);
 void Projectile14_Update(struct Projectile* p);
 void Projectile14_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile14Routine = {
-    [ENTITY_INIT] =      Projectile14_Init,
-    [ENTITY_UPDATE] =    Projectile14_Update,
-    [ENTITY_DIE] =       Projectile14_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile14_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile14_Update,
+    [ENTITY_DIE] =       (void*)Projectile14_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void FUN_080a0888(s32 x, s32 y, u8 kind1, u8 kind2) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 14);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = 4;
+    (p->coord).x = x, (p->coord).y = y;
+    p->work[2] = kind1, p->work[3] = kind2;
+  }
+}
+
+INCASM("asm/projectile/unk_14.inc");
 
 // --------------------------------------------
 
 void nop_080a0b6c(struct Projectile* p);
 
 // clang-format off
+// 0x0836b0f4
 static const ProjectileFunc sUpdates1[5] = {
-    nop_080a0b6c,
-    nop_080a0b6c,
-    nop_080a0b6c,
-    nop_080a0b6c,
-    nop_080a0b6c,
+    (void*)nop_080a0b6c,
+    (void*)nop_080a0b6c,
+    (void*)nop_080a0b6c,
+    (void*)nop_080a0b6c,
+    (void*)nop_080a0b6c,
 };
 // clang-format on
 
@@ -41,17 +54,19 @@ void FUN_080a1280(struct Projectile* p);
 void FUN_080a133c(struct Projectile* p);
 
 // clang-format off
+// 0x0836b108
 static const ProjectileFunc sUpdates2[5] = {
-    FUN_080a0b70,
-    FUN_080a0dc0,
-    FUN_080a0fa8,
-    FUN_080a1280,
-    FUN_080a133c,
+    (void*)FUN_080a0b70,
+    (void*)FUN_080a0dc0,
+    (void*)FUN_080a0fa8,
+    (void*)FUN_080a1280,
+    (void*)FUN_080a133c,
 };
 // clang-format on
 
 // --------------------------------------------
 
+// 0x0836b11c
 static const struct Collision sCollisions[10] = {
     {
       kind : DDP,
@@ -160,5 +175,8 @@ static const struct Collision sCollisions[10] = {
     },
 };
 
+// 0x0836b20c
 static const u8 u8_ARRAY_0836b20c[5] = {0, 1, 2, 3, 4};
+
+// 0x0836b211
 static const u8 u8_ARRAY_0836b211[2] = {6, 8};

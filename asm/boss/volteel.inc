@@ -720,7 +720,7 @@ _08043A76:
 	b _08043AE6
 	.align 2, 0
 _08043AB8: .4byte 0x0000A501
-_08043ABC: .4byte 0x08362378
+_08043ABC: .4byte sCollisions+(3*24)
 _08043AC0: .4byte pZero2
 _08043AC4:
 	adds r0, r6, #0
@@ -920,7 +920,7 @@ _08043C0C:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08043C98 @ =0x080FEE56
+	ldr r5, _08043C98 @ =VolteelEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -952,7 +952,7 @@ _08043C88: .4byte gMission
 _08043C8C: .4byte RNG_0202f388
 _08043C90: .4byte 0x000343FD
 _08043C94: .4byte 0x00269EC3
-_08043C98: .4byte 0x080FEE56
+_08043C98: .4byte VolteelEXModes
 _08043C9C:
 	adds r0, r6, #0
 	bl FUN_080459d4
@@ -967,7 +967,7 @@ _08043C9C:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08043CF4 @ =0x080FEE34
+	ldr r5, _08043CF4 @ =VolteelModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -993,7 +993,7 @@ _08043C9C:
 _08043CE8: .4byte RNG_0202f388
 _08043CEC: .4byte 0x000343FD
 _08043CF0: .4byte 0x00269EC3
-_08043CF4: .4byte 0x080FEE34
+_08043CF4: .4byte VolteelModes
 _08043CF8:
 	ldr r0, _08043D24 @ =gMission
 	ldr r0, [r0]
@@ -1013,14 +1013,14 @@ _08043CF8:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08043D34 @ =0x080FEE56
+	ldr r5, _08043D34 @ =VolteelEXModes
 	b _08043D56
 	.align 2, 0
 _08043D24: .4byte gMission
 _08043D28: .4byte RNG_0202f388
 _08043D2C: .4byte 0x000343FD
 _08043D30: .4byte 0x00269EC3
-_08043D34: .4byte 0x080FEE56
+_08043D34: .4byte VolteelEXModes
 _08043D38:
 	adds r0, r6, #0
 	bl FUN_080459d4
@@ -1035,7 +1035,7 @@ _08043D38:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08043DAC @ =0x080FEE34
+	ldr r5, _08043DAC @ =VolteelModes
 _08043D56:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -1080,7 +1080,7 @@ _08043D94:
 _08043DA0: .4byte RNG_0202f388
 _08043DA4: .4byte 0x000343FD
 _08043DA8: .4byte 0x00269EC3
-_08043DAC: .4byte 0x080FEE34
+_08043DAC: .4byte VolteelModes
 
 	thumb_func_start nop_08043db0
 nop_08043db0: @ 0x08043DB0
@@ -1362,7 +1362,7 @@ _08043FD8:
 	b _080440A0
 	.align 2, 0
 _08043FE0: .4byte 0x0000A501
-_08043FE4: .4byte 0x08362378
+_08043FE4: .4byte sCollisions+(3*24)
 _08043FE8: .4byte 0x000007FF
 _08043FEC: .4byte 0xFFFFEE00
 _08043FF0: .4byte 0x0000A502
@@ -1692,7 +1692,7 @@ _08044284:
 	bl UpdateMotionGraphic
 	b _080449DC
 	.align 2, 0
-_0804428C: .4byte 0x08362378
+_0804428C: .4byte sCollisions+(3*24)
 _08044290: .4byte 0x0000A501
 _08044294:
 	ldr r0, [r6, #0x64]
@@ -1976,7 +1976,7 @@ _0804448E:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08044504 @ =0x080FEE34
+	ldr r5, _08044504 @ =VolteelModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -2002,7 +2002,7 @@ _080444F4: .4byte gMission
 _080444F8: .4byte RNG_0202f388
 _080444FC: .4byte 0x000343FD
 _08044500: .4byte 0x00269EC3
-_08044504: .4byte 0x080FEE34
+_08044504: .4byte VolteelModes
 _08044508:
 	adds r0, r6, #0
 	bl FUN_080459d4
@@ -2017,7 +2017,7 @@ _08044508:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08044560 @ =0x080FEE56
+	ldr r5, _08044560 @ =VolteelEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -2042,7 +2042,7 @@ _08044508:
 _08044554: .4byte RNG_0202f388
 _08044558: .4byte 0x000343FD
 _0804455C: .4byte 0x00269EC3
-_08044560: .4byte 0x080FEE56
+_08044560: .4byte VolteelEXModes
 _08044564:
 	ldr r0, _08044590 @ =gMission
 	ldr r0, [r0]
@@ -2062,14 +2062,14 @@ _08044564:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _080445A0 @ =0x080FEE34
+	ldr r5, _080445A0 @ =VolteelModes
 	b _080445C2
 	.align 2, 0
 _08044590: .4byte gMission
 _08044594: .4byte RNG_0202f388
 _08044598: .4byte 0x000343FD
 _0804459C: .4byte 0x00269EC3
-_080445A0: .4byte 0x080FEE34
+_080445A0: .4byte VolteelModes
 _080445A4:
 	adds r0, r6, #0
 	bl FUN_080459d4
@@ -2084,7 +2084,7 @@ _080445A4:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08044628 @ =0x080FEE56
+	ldr r5, _08044628 @ =VolteelEXModes
 _080445C2:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -2135,7 +2135,7 @@ _080445DC:
 _0804461C: .4byte RNG_0202f388
 _08044620: .4byte 0x000343FD
 _08044624: .4byte 0x00269EC3
-_08044628: .4byte 0x080FEE56
+_08044628: .4byte VolteelEXModes
 _0804462C:
 	movs r4, #5
 	movs r0, #0
@@ -2878,7 +2878,7 @@ _08044C00: .4byte 0xFFFFEE00
 _08044C04: .4byte 0x0000A512
 _08044C08: .4byte sCollisions
 _08044C0C: .4byte 0x0000A513
-_08044C10: .4byte 0x08362498
+_08044C10: .4byte sCollisions+(15*24)
 _08044C14:
 	movs r0, #1
 	ands r0, r1
@@ -3165,7 +3165,7 @@ _08044E2C:
 	b _08044E66
 	.align 2, 0
 _08044E54: .4byte 0x0000A509
-_08044E58: .4byte 0x083623A8
+_08044E58: .4byte sCollisions+(5*24)
 _08044E5C: .4byte gOverworld
 _08044E60: .4byte 0x0002D024
 _08044E64:
@@ -3350,7 +3350,7 @@ _08044FCC:
 	adds r0, #1
 	b _080450AC
 	.align 2, 0
-_08044FD4: .4byte 0x08362528
+_08044FD4: .4byte sCollisions+(21*24)
 _08044FD8:
 	ldr r1, _08045008 @ =0x0000A50D
 	adds r0, r5, #0
@@ -3428,7 +3428,7 @@ _0804506E:
 	.align 2, 0
 _08045074: .4byte 0x0000A50B
 _08045078: .4byte sCollisions+(24*1)
-_0804507C: .4byte 0x08362528
+_0804507C: .4byte sCollisions+(21*24)
 _08045080:
 	ldr r1, _080450B4 @ =0x0000A50D
 	adds r0, r5, #0
@@ -3605,7 +3605,7 @@ _08045174:
 	b _080452BE
 	.align 2, 0
 _080451E0: .4byte 0x0000A514
-_080451E4: .4byte 0x083624C8
+_080451E4: .4byte sCollisions+(17*24)
 _080451E8:
 	cmp r5, #2
 	bne _0804525C
@@ -3662,7 +3662,7 @@ _0804522E:
 	b _080452BE
 	.align 2, 0
 _08045254: .4byte 0x0000A516
-_08045258: .4byte 0x083624F8
+_08045258: .4byte sCollisions+(19*24)
 _0804525C:
 	adds r0, r4, #0
 	adds r0, #0xdc
@@ -3733,7 +3733,7 @@ _080452E2:
 	b _080453A8
 	.align 2, 0
 _080452E4: .4byte 0x0000A514
-_080452E8: .4byte 0x083624C8
+_080452E8: .4byte sCollisions+(17*24)
 _080452EC:
 	ldr r2, _0804533C @ =RNG_0202f388
 	ldr r1, [r2]
@@ -3983,7 +3983,7 @@ _080454B8:
 	b _08045560
 	.align 2, 0
 _080454D0: .4byte 0x0000A50E
-_080454D4: .4byte 0x083623F0
+_080454D4: .4byte sCollisions+(8*24)
 _080454D8:
 	movs r0, #0x7f
 	bl PlaySound
@@ -4869,3 +4869,4 @@ _08045B62:
 	pop {r0}
 	bx r0
 	.align 2, 0
+

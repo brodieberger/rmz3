@@ -14,10 +14,10 @@ static void Volteel_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gVolteelRoutine = {
-    [ENTITY_INIT] =      Volteel_Init,
-    [ENTITY_UPDATE] =    Volteel_Update,
-    [ENTITY_DIE] =       Volteel_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Volteel_Init,
+    [ENTITY_UPDATE] =    (void*)Volteel_Update,
+    [ENTITY_DIE] =       (void*)Volteel_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on

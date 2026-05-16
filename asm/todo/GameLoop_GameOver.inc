@@ -113,7 +113,7 @@ _080EF642:
 	b _080EF88C
 _080EF66E:
 	movs r0, #0xa1
-	bl playBGM
+	bl PlayBGM
 	movs r0, #0
 	strh r0, [r6, #6]
 	ldrb r0, [r6, #2]
@@ -181,7 +181,7 @@ _080EF6F4:
 	movs r0, #2
 	bl PlaySound
 	movs r0, #0xa1
-	bl fadeoutBGM
+	bl FadeOutBGM
 	movs r0, #0x20
 	strh r0, [r6, #4]
 	ldrb r0, [r6, #2]

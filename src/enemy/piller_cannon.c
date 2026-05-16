@@ -85,6 +85,7 @@ static const EnemyFunc sUpdates2[9] = {
 };
 // clang-format on
 
+// 0x0836609c
 static const struct Collision sCollisions[14] = {
     [0] = {
       kind : DRP,
@@ -223,6 +224,7 @@ static const struct Collision sCollisions[14] = {
 const struct Coord Coord_083661ec = {0xFFFFF500, 0x0};
 
 // clang-format off
+// 0x083661f4
 static const motion_t sMotions[7] = {
     MOTION(SM008_PILLAR_CANNON, 0x01),
     MOTION(SM008_PILLAR_CANNON, 0x02),

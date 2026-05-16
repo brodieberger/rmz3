@@ -17,6 +17,7 @@ extern u8 (*gUnlockedElfPtr)[CYBERELF_LENGTH];
 
 // --------------------------------------------
 
+typedef void (*ElfFunc)(struct Elf*);
 typedef ElfFunc ElfRoutine[5];
 extern const ElfRoutine* const gElfFnTable[13];
 
@@ -35,7 +36,7 @@ extern const struct ElfBreedInfo gElfBreedInfo[CYBERELF_LENGTH];
 
 // --------------------------------------------
 
-void DeleteElf(struct Elf* p);
+void DeleteElf(struct Entity* p);
 void clearUnlockedCyberElfData(u8* p);
 void clearUnlockedCyberElfDataHard(u8* p);
 void unlockAllElvesForUltimate(u8* p);
@@ -44,8 +45,7 @@ void CreateSateliteElf(struct Zero* z, cyberelf_t id, bool8 isSatelite2);
 motion_t GetElfMotion(u8 category);
 
 struct Entity* CreateElf0(struct Zero* z, u8 breed, u8 availability, u8 _);
-struct Elf* CreateNurseBElf(struct Zero* z, u8 r1, u8 r2, u8 isSatelite2);
-struct Elf* CreateElf3(struct Entity* r0, void* r1);
+struct Entity* CreateNurseBElf(struct Zero* z, u8 breed, u8 availability, u8 satelite_slot);
 struct Elf* CreateNurseEElf(struct Zero* z, u8 r1, u8 r2, u8 isSatelite2);
 struct Elf* CreateFollowerElf(struct Zero* z, u8 breed, u8 availability, bool8 isSatelite1);
 struct Elf* CreateSeaotterElf(struct Zero* z, u8 breed, u8 availability, u8 _);

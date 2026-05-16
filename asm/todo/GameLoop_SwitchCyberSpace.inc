@@ -263,7 +263,7 @@ _080EF1D2:
 	bl RestoreGraphicState
 	bl ResumeAllBlinks
 	ldr r0, _080EF240 @ =gStageRun+288
-	bl UpdateStageEntities
+	bl UpdateSpawnManager
 	ldr r0, _080EF244 @ =gSolidHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities

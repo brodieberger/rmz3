@@ -2,6 +2,8 @@
 #include "global.h"
 #include "solid.h"
 
+// Tretista
+
 struct Solid13Object {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)

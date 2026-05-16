@@ -102,13 +102,13 @@ _0800ACB6:\n\
 s32 CalcPushout_Up(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < W_TERRAIN_V2.objectLen; i++) {
-    const u32 w = W_TERRAIN_V2.objects[i].w << 1;
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].start).x) + W_TERRAIN_V2.objects[i].w;
+    const u32 w = W_TERRAIN_V2.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].center).x) + W_TERRAIN_V2.objects[i].hw;
     if (w > _x) {
-      const u32 h = W_TERRAIN_V2.objects[i].h << 1;
-      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].start).y) + W_TERRAIN_V2.objects[i].h - 1;
+      const u32 h = W_TERRAIN_V2.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].center).y) + W_TERRAIN_V2.objects[i].hh - 1;
       if (h > _y) {
-        y = (W_TERRAIN_V2.objects[i].start).y - W_TERRAIN_V2.objects[i].h;
+        y = (W_TERRAIN_V2.objects[i].center).y - W_TERRAIN_V2.objects[i].hh;
         return CalcPushout_Up(x, y);
       }
     }
@@ -126,14 +126,14 @@ s32 CalcPushout_Up(s32 x, s32 y) {
 s32 CalcPushout_Down(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < W_TERRAIN_V2.objectLen; i++) {
-    const u32 w = W_TERRAIN_V2.objects[i].w << 1;
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].start).x) + W_TERRAIN_V2.objects[i].w;
+    const u32 w = W_TERRAIN_V2.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].center).x) + W_TERRAIN_V2.objects[i].hw;
     if (w > _x) {
-      const u32 h = W_TERRAIN_V2.objects[i].h << 1;
-      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].start).y) + W_TERRAIN_V2.objects[i].h - 1;
+      const u32 h = W_TERRAIN_V2.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].center).y) + W_TERRAIN_V2.objects[i].hh - 1;
       if (h > _y) {
         if ((W_TERRAIN_V2.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          y = (W_TERRAIN_V2.objects[i].start).y + W_TERRAIN_V2.objects[i].h + 1;
+          y = (W_TERRAIN_V2.objects[i].center).y + W_TERRAIN_V2.objects[i].hh + 1;
           return CalcPushout_Down(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }
@@ -146,14 +146,14 @@ s32 CalcPushout_Down(s32 x, s32 y) {
 s32 CalcPushout_Left(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < W_TERRAIN_V2.objectLen; i++) {
-    const u32 w = W_TERRAIN_V2.objects[i].w << 1;
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].start).x) + W_TERRAIN_V2.objects[i].w;
+    const u32 w = W_TERRAIN_V2.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].center).x) + W_TERRAIN_V2.objects[i].hw;
     if (w > _x) {
-      const u32 h = W_TERRAIN_V2.objects[i].h << 1;
-      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].start).y) + W_TERRAIN_V2.objects[i].h - 1;
+      const u32 h = W_TERRAIN_V2.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].center).y) + W_TERRAIN_V2.objects[i].hh - 1;
       if (h > _y) {
         if ((W_TERRAIN_V2.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          x = ((W_TERRAIN_V2.objects[i].start).x - W_TERRAIN_V2.objects[i].w) - 1;
+          x = ((W_TERRAIN_V2.objects[i].center).x - W_TERRAIN_V2.objects[i].hw) - 1;
           return CalcPushout_Left(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }
@@ -166,14 +166,14 @@ s32 CalcPushout_Left(s32 x, s32 y) {
 s32 CalcPushout_Right(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < W_TERRAIN_V2.objectLen; i++) {
-    const u32 w = W_TERRAIN_V2.objects[i].w << 1;
-    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].start).x) + W_TERRAIN_V2.objects[i].w;
+    const u32 w = W_TERRAIN_V2.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (W_TERRAIN_V2.objects[i].center).x) + W_TERRAIN_V2.objects[i].hw;
     if (w > _x) {
-      const u32 h = W_TERRAIN_V2.objects[i].h << 1;
-      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].start).y) + W_TERRAIN_V2.objects[i].h - 1;
+      const u32 h = W_TERRAIN_V2.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (W_TERRAIN_V2.objects[i].center).y) + W_TERRAIN_V2.objects[i].hh - 1;
       if (h > _y) {
         if ((W_TERRAIN_V2.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          x = (W_TERRAIN_V2.objects[i].start).x + W_TERRAIN_V2.objects[i].w;
+          x = (W_TERRAIN_V2.objects[i].center).x + W_TERRAIN_V2.objects[i].hw;
           return CalcPushout_Right(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }

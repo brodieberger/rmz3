@@ -1267,7 +1267,7 @@ _0804E1C4:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804E24C @ =0x080FEF0A
+	ldr r5, _0804E24C @ =TretistaEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -1298,7 +1298,7 @@ _0804E23C: .4byte gMission
 _0804E240: .4byte RNG_0202f388
 _0804E244: .4byte 0x000343FD
 _0804E248: .4byte 0x00269EC3
-_0804E24C: .4byte 0x080FEF0A
+_0804E24C: .4byte TretistaEXModes
 _0804E250:
 	adds r0, r6, #0
 	bl isTretistaFarAway
@@ -1313,7 +1313,7 @@ _0804E250:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804E2A8 @ =0x080FEEE8
+	ldr r5, _0804E2A8 @ =TretistaModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -1339,7 +1339,7 @@ _0804E250:
 _0804E29C: .4byte RNG_0202f388
 _0804E2A0: .4byte 0x000343FD
 _0804E2A4: .4byte 0x00269EC3
-_0804E2A8: .4byte 0x080FEEE8
+_0804E2A8: .4byte TretistaModes
 _0804E2AC:
 	ldr r0, _0804E2D8 @ =gMission
 	ldr r0, [r0]
@@ -1359,14 +1359,14 @@ _0804E2AC:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804E2E8 @ =0x080FEF0A
+	ldr r5, _0804E2E8 @ =TretistaEXModes
 	b _0804E30A
 	.align 2, 0
 _0804E2D8: .4byte gMission
 _0804E2DC: .4byte RNG_0202f388
 _0804E2E0: .4byte 0x000343FD
 _0804E2E4: .4byte 0x00269EC3
-_0804E2E8: .4byte 0x080FEF0A
+_0804E2E8: .4byte TretistaEXModes
 _0804E2EC:
 	adds r0, r6, #0
 	bl isTretistaFarAway
@@ -1381,7 +1381,7 @@ _0804E2EC:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0804E350 @ =0x080FEEE8
+	ldr r5, _0804E350 @ =TretistaModes
 _0804E30A:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -1415,7 +1415,7 @@ _0804E31E:
 _0804E344: .4byte RNG_0202f388
 _0804E348: .4byte 0x000343FD
 _0804E34C: .4byte 0x00269EC3
-_0804E350: .4byte 0x080FEEE8
+_0804E350: .4byte TretistaModes
 _0804E354: .4byte 0x000077FF
 _0804E358:
 	subs r1, r1, r0

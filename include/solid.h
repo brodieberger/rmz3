@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "types.h"
 
+typedef void (*SolidFunc)(struct Solid*);
 typedef SolidFunc SolidRoutine[5];
 extern const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT];
 
@@ -17,6 +18,5 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2);
 void FUN_080cb4c0(struct Solid* p);
 struct Solid* CreateLeafBurn(u8 r0);
 struct Solid* CreateResistanceBaseElevator(u8 floor);
-void CreateLavaRiverPlatform(u32 x, u32 y);
 
 #endif  // GUARD_RMZ3_SOLID_H

@@ -4,7 +4,7 @@
 #include "global.h"
 #include "hud.h"
 #include "overworld.h"
-#include "sound.h"
+#include "spawn.h"
 #include "text.h"
 #include "zero.h"
 
@@ -119,6 +119,15 @@ void FUN_08021cb4(struct VM* vm, const struct Command* script, struct Entity* e)
     SetScript(vm, script);
   }
 }
+
+struct ScriptEntityTemplate {
+  u8 kind;
+  u8 variant;
+  u8 work[2];
+  struct Coord coord;
+  s8 xflip;
+  s8 yflip;
+};
 
 void CreateScriptEntity(u8 n, struct ScriptEntityTemplate* template) {
   struct ScriptEntity* se = &gStageRun.vm.entities[n];
@@ -510,16 +519,13 @@ static void StepEmergencyRed(struct VM* vm) {
 }
 
 static void quakeScreen(struct VM* vm) {
-  struct Coord c;
-  s32 rng;
-
   if (vm->magnitude != 0) {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    rng = (RNG_0202f388 >> 16) & 0xF;
+    s32 rng = RANDOM(RNG_0202f388) & 0xF;
     if (rng <= (vm->magnitude & 0xFF)) {
       AppendQuake(rng, &gStageRun.vm.camera.viewport);
     }
     if ((&gStageRun.vm.camera)->mode == 0) {
+      struct Coord c;
       CalcQuake(&(&gStageRun.vm.camera)->target, &c);
       BGOFS(1)->x = c.x >> 8;
       BGOFS(1)->y = c.y >> 8;

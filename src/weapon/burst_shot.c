@@ -25,11 +25,11 @@ void BurstShot_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gBurstShotRoutine = {
-    [ENTITY_INIT] =      BurstShot_Init,
-    [ENTITY_UPDATE] =    BurstShot_Update,
-    [ENTITY_DIE] =       BurstShot_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)BurstShot_Init,
+    [ENTITY_UPDATE] =    (void*)BurstShot_Update,
+    [ENTITY_DIE] =       (void*)BurstShot_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 

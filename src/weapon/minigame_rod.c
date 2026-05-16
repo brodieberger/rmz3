@@ -6,15 +6,15 @@
 
 static void Weapon16_Init(struct Weapon* w);
 static void Weapon16_Update(struct Weapon* w);
-void Weapon16_Die(struct Weapon* w);
+static void Weapon16_Die(Object* p);
 
 // clang-format off
 const WeaponRoutine gMinigameRodRoutine = {
-    [ENTITY_INIT] =      Weapon16_Init,
-    [ENTITY_UPDATE] =    Weapon16_Update,
-    [ENTITY_DIE] =       Weapon16_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)Weapon16_Init,
+    [ENTITY_UPDATE] =    (void*)Weapon16_Update,
+    [ENTITY_DIE] =       (void*)Weapon16_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
@@ -114,6 +114,12 @@ static void Weapon16_Update(struct Weapon* w) {
       weapon_0803cf84,
   };
   (sUpdates[(w->s).mode[1]])(w);
+}
+
+static void Weapon16_Die(Object* p) {
+  (p->s).flags &= ~DISPLAY;
+  EXIT_BODY(p);
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
 INCASM("asm/weapon/minigame_rod.inc");

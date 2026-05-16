@@ -8,7 +8,20 @@
 #include "weapon.h"
 #include "zero.h"
 
-#define PROP (w->props.saber)
+struct ZeroSaber {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct ZeroSaberProps {
+    struct Zero* z;  // 0xB4
+    u8 props[8];     // 0xB8
+    u8 element;      // 0xC0
+    u8 atk;          // 0xC1
+    u8 nature;       // 0xC2
+    bool8 unk;       // 0xC3
+    u8 unk_c4[40];   // 0xC4
+  } props;
+};
+static_assert(sizeof(struct ZeroSaber) == sizeof(struct Weapon));
 
 static const bool8 gIlethasables[25];
 static const WeaponFunc sSaberActions[SABER_ACTION_COUNT];
@@ -17,184 +30,184 @@ static const SoundID sSaberSEs[SABER_ACTION_COUNT];
 static const u8 sSaberDamages[SABER_ACTION_COUNT];
 static const struct Collision* const sSaberAirHitbox[7];
 
-static void Saber_Update(struct Weapon* w);
+static void Saber_Update(struct ZeroSaber* p);
 
 static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
 
-void DeleteSaber(struct Weapon* w) {
-  if ((w->s).id == WEAPON_MOVE_Z_SABER) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+void DeleteSaber(struct Weapon* p) {
+  if ((p->s).id == WEAPON_MOVE_Z_SABER) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
   }
 }
 
 NON_MATCH struct Weapon* CreateWeaponSaber(struct Zero* z, u8 r1) {
 #if MODERN
-  struct Weapon* w;
+  struct ZeroSaber* p;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
+  p = (struct ZeroSaber*)AllocEntityFirst(gWeaponHeaderPtr);
+  if (p != NULL) {
     u8 element;
 
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_Z_SABER);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = gWeaponPalIDs[0];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_Z_SABER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[0];
+      (p->s).palID = gWeaponPalIDs[0];
       element = gSaberElements[((&z->unk_b4)->status).element];
       SetWeaponElement(0, element);
 
     } else {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_Z_SABER);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = gWeaponPalIDs[1];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_Z_SABER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).taskCol = 16;
+      (p->s).tileNum = gWeaponTileNum[1];
+      (p->s).palID = gWeaponPalIDs[1];
       element = gSaberElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
     }
 
     z->saberAction = r1;
-    (&PROP)->z = z;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = ((&z->unk_b4)->status).element;
+    (p->props).z = z;
+    (p->s).work[0] = r1;
+    (p->s).work[1] = ((&z->unk_b4)->status).element;
   }
-  return w;
+  return (void*)p;
 #else
   INCCODE("asm/wip/CreateWeaponSaber.inc");
 #endif
 }
 
-NON_MATCH static void Saber_Init(struct Weapon* w) {
+NON_MATCH static void Saber_Init(struct ZeroSaber* p) {
 #if MODERN
   const struct Collision* collisions;
   struct Body* body;
-  struct Saber_b4* b4 = &PROP;
+  struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
 
-  SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sSaberMotions[(w->s).work[0]]);
-  collisions = *gSaberCollisions[(w->s).work[0]];
-  INIT_BODY(w, collisions, 1, NULL);
+  SET_WEAPON_ROUTINE(p, ENTITY_UPDATE);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetMotion(&p->s, sSaberMotions[(p->s).work[0]]);
+  collisions = *gSaberCollisions[(p->s).work[0]];
+  INIT_BODY(p, collisions, 1, NULL);
 
-  if (sSaberSEs[(w->s).work[0]] != MUS_DUMMY) {
-    if ((w->s).work[0] == SABER_ZANEIDAN) {
+  if (sSaberSEs[(p->s).work[0]] != MUS_DUMMY) {
+    if ((p->s).work[0] == SABER_ZANEIDAN) {
       if (z->tripleSlashCounter > 0) {
         PlaySound(SE_SLASH_UP);  // Saber wave by Cottus
       } else {
-        PlaySound(sSaberSEs[(w->s).work[0]]);  // Saber blade (EXSkill)
+        PlaySound(sSaberSEs[(p->s).work[0]]);  // Saber blade (EXSkill)
       }
     } else {
-      PlaySound(sSaberSEs[(w->s).work[0]]);
+      PlaySound(sSaberSEs[(p->s).work[0]]);
     }
   }
 
-  if ((w->s).work[0] == SABER_ZANEIDAN) {
+  if ((p->s).work[0] == SABER_ZANEIDAN) {
     if (z->tripleSlashCounter == 0) {
       if (((&z->unk_b4)->status).element == ELEMENT_ICE) {
-        CreateThrowBlade(z, w, TRUE);
+        CreateThrowBlade(z, (void*)p, TRUE);
       } else {
-        CreateThrowBlade(z, w, FALSE);
+        CreateThrowBlade(z, (void*)p, FALSE);
       }
     } else {
-      CreateSaberWave(z, w, FALSE);
+      CreateSaberWave(z, (void*)p, FALSE);
     }
   }
 
-  if (((((w->s).work[0] == SABER_TENRETUJIN) || ((w->s).work[0] == SABER_TENRETUJIN_2)) || ((w->s).work[0] == SABER_SMASH)) || !(collisions[0].nature & ELEMENT_ENCHANTABLE)) {
+  if (((((p->s).work[0] == SABER_TENRETUJIN) || ((p->s).work[0] == SABER_TENRETUJIN_2)) || ((p->s).work[0] == SABER_SMASH)) || !(collisions[0].nature & ELEMENT_ENCHANTABLE)) {
     b4->element = 0;
   } else {
-    b4->element = gSaberElements[(w->s).work[1]];
+    b4->element = gSaberElements[(p->s).work[1]];
   }
-  b4->atk = sSaberDamages[(w->s).work[0]] + CalcSaberBonus(z);
-  if (isElfUsed_2(z, ELF_ILETHAS) && gIlethasables[(w->s).work[0]]) {
+  b4->atk = sSaberDamages[(p->s).work[0]] + CalcSaberBonus(z);
+  if (isElfUsed_2(z, ELF_ILETHAS) && gIlethasables[(p->s).work[0]]) {
     b4->nature = collisions[0].nature | BODY_NATURE_ILETHAS;
   } else {
     b4->nature = collisions[0].nature;
   }
-  if ((w->s).work[0] == SABER_SMASH_ELEC) {
-    b4->element = gSaberElements[(w->s).work[1]];
+  if ((p->s).work[0] == SABER_SMASH_ELEC) {
+    b4->element = gSaberElements[(p->s).work[1]];
     b4->nature |= ELEMENT_ENCHANTABLE;
   }
-  body = &w->body;
+  body = &p->body;
   InitWeaponBody(body, collisions, b4->atk, b4->element, b4->nature, -1);
-  (w->s).work[2] = 0;
+  (p->s).work[2] = 0;
   b4->unk = TRUE;
   body->fn = onHit;
-  Saber_Update(w);
+  Saber_Update((void*)p);
 #else
   INCCODE("asm/wip/Saber_Init.inc");
 #endif
 }
 
-NON_MATCH static void Saber_Update(struct Weapon* w) {
+NON_MATCH static void Saber_Update(struct ZeroSaber* p) {
 #if MODERN
   bool8 xflip;
-  struct Saber_b4* b4 = &PROP;
+  struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
 
-  if ((w->s).work[0] != z->saberAction) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+  if ((p->s).work[0] != z->saberAction) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
-  if (b4->unk && ((w->body).status & BODY_STATUS_BLOCKED)) {
+  if (b4->unk && ((p->body).status & BODY_STATUS_BLOCKED)) {
     PlaySound(SE_BLOCKED);
     b4->unk = FALSE;
   }
 
-  if ((w->s).work[0] == SABER_WALL) {
+  if ((p->s).work[0] == SABER_WALL) {
     if ((z->s).mode[1] == ZERO_WALL) {
       xflip = (((z->s).flags & X_FLIP) != 0);
       if (xflip) {
-        (w->s).flags |= X_FLIP;
+        (p->s).flags |= X_FLIP;
       } else {
-        (w->s).flags &= ~X_FLIP;
+        (p->s).flags &= ~X_FLIP;
       }
 
     } else {
       xflip = (((z->s).flags & X_FLIP) == 0);
       if (xflip) {
-        (w->s).flags |= X_FLIP;
+        (p->s).flags |= X_FLIP;
       } else {
-        (w->s).flags &= ~X_FLIP;
+        (p->s).flags &= ~X_FLIP;
       }
     }
   } else {
     xflip = (((z->s).flags & X_FLIP) != 0);
     if (xflip) {
-      (w->s).flags |= X_FLIP;
+      (p->s).flags |= X_FLIP;
     } else {
-      (w->s).flags &= ~X_FLIP;
+      (p->s).flags &= ~X_FLIP;
     }
   }
 
-  (w->s).spr.xflip = xflip;
-  (w->s).spr.oam.xflip = xflip;
+  (p->s).spr.xflip = xflip;
+  (p->s).spr.oam.xflip = xflip;
 
-  (w->s).coord.x = (z->s).coord.x;
-  (w->s).coord.y = (z->s).coord.y;
+  (p->s).coord.x = (z->s).coord.x;
+  (p->s).coord.y = (z->s).coord.y;
 
-  (sSaberActions[(w->s).work[0]])(w);
+  (sSaberActions[(p->s).work[0]])((void*)p);
 #else
   INCCODE("asm/wip/Saber_Update.inc");
 #endif
 }
 
-static void Saber_Die(struct Weapon* w) {
-  (w->s).flags &= ~DISPLAY;
-  SET_WEAPON_ROUTINE(w, ENTITY_EXIT);
+static void Saber_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
 static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
@@ -203,359 +216,353 @@ static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 U
   }
 }
 
-static void saberTripleSlash(struct Weapon* w) {
-  UpdateMotionGraphic(&w->s);
+static void saberTripleSlash(struct ZeroSaber* p) {
+  UpdateMotionGraphic(&p->s);
 
   {
-    struct Body* body = &w->body;
-    const struct Collision* collisions = (gSaberCollisions[(w->s).work[0]])[((w->s).motion.cmdIdx)];
-    InitWeaponBody(body, collisions, (&PROP)->atk, (&PROP)->element, (&PROP)->nature, -1);
+    struct Body* body = &p->body;
+    const struct Collision* collisions = (gSaberCollisions[(p->s).work[0]])[((p->s).motion.cmdIdx)];
+    InitWeaponBody(body, collisions, (&p->props)->atk, (&p->props)->element, (&p->props)->nature, -1);
   }
 
-  if ((w->s).motion.state == MOTION_END) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE)
+  if ((p->s).motion.state == MOTION_END) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE)
   }
 }
 
-NON_MATCH static void saberAirSlash(struct Weapon* w) {
+NON_MATCH static void saberAirSlash(struct ZeroSaber* p) {
 #if MODERN
-  struct Saber_b4* b4 = &PROP;
+  struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
-  if ((w->s).mode[1] != 0) {
+  if ((p->s).mode[1] != 0) {
     motion_t m = MOTION_VALUE(z);
-    if ((m == MOTION(DM025_ZERO_SABER_AIR, 0x00)) && ((z->s).motion.cmdIdx == 0)) {
-      (w->s).flags &= ~DISPLAY;
-      (w->s).flags &= ~FLIPABLE;
-      EXIT_BODY(w);
-      SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+    if ((m == MOTION(DM025_ZERO_SABER_AIR, 0)) && ((z->s).motion.cmdIdx == 0)) {
+      (p->s).flags &= ~DISPLAY;
+      (p->s).flags &= ~FLIPABLE;
+      EXIT_BODY(p);
+      SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
       return;
     }
 
   } else {
-    if ((w->s).work[2] < 2) {
-      SetDDP(&w->body, gSaberGeneralCollisions);
-      (w->s).flags &= ~DISPLAY;
-      (w->s).work[2]++;
+    if ((p->s).work[2] < 2) {
+      SetDDP(&p->body, gSaberGeneralCollisions);
+      (p->s).flags &= ~DISPLAY;
+      (p->s).work[2]++;
     } else {
-      (w->s).flags |= DISPLAY;
-      (w->s).mode[1]++;
+      (p->s).flags |= DISPLAY;
+      (p->s).mode[1]++;
     }
   }
 
-  if ((w->s).mode[1] == 1) {
-    UpdateMotionGraphic(&w->s);
-    if ((w->s).motion.cmdIdx > 3) {
-      if (MOTION_VALUE(z) == MOTION(DM025_ZERO_SABER_AIR, 0x00)) {
+  if ((p->s).mode[1] == 1) {
+    UpdateMotionGraphic(&p->s);
+    if ((p->s).motion.cmdIdx > 3) {
+      if (MOTION_VALUE(z) == MOTION(DM025_ZERO_SABER_AIR, 0)) {
         b4->atk = 10 + CalcSaberBonus(z);
         b4->element = 0;
       } else {
-        (w->s).mode[1]++;
+        (p->s).mode[1]++;
       }
     }
-    InitWeaponBody(&w->body, gSaberCollisions[(w->s).work[0]][(w->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
+    InitWeaponBody(&p->body, gSaberCollisions[(p->s).work[0]][(p->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
     return;
   }
-  if ((w->s).mode[1] != 2) {
+  if ((p->s).mode[1] != 2) {
     return;
   }
-  if ((w->s).mode[2] == 0) {
-    SetMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x01));
-    SetDDP(&w->body, gSaberGeneralCollisions);
-    (w->s).mode[2]++;
+  if ((p->s).mode[2] == 0) {
+    SetMotion(&p->s, MOTION(DM098_SABER_CHARGE, 1));
+    SetDDP(&p->body, gSaberGeneralCollisions);
+    (p->s).mode[2]++;
   }
-  UpdateMotionGraphic(&w->s);
-  if ((w->s).motion.state != MOTION_END) {
+  UpdateMotionGraphic(&p->s);
+  if ((p->s).motion.state != MOTION_END) {
     return;
   }
-  SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  SET_WEAPON_ROUTINE(p, ENTITY_DIE);
 #else
   INCCODE("asm/wip/saberAirSlash.inc");
 #endif
 }
 
-NON_MATCH static void saberChargeAtk(struct Weapon* w) {
+NON_MATCH static void saberChargeAtk(struct ZeroSaber* p) {
 #if MODERN
-  struct Saber_b4* b4 = &PROP;
+  struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
-  if ((w->s).mode[2] == 0) {
+  if ((p->s).mode[2] == 0) {
     if (z->chargeSaber != 0) {
       motion_t m = sSaberMotions[z->chargeSaber + 7];
-      if (m != MOTION_VALUE(w)) {
-        if ((m == MOTION(DM098_SABER_CHARGE, 0x02)) && ((w->s).motion.cmdIdx > 6)) {
-          GotoMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x02), 7, 1);
+      if (m != MOTION_VALUE(p)) {
+        if ((m == MOTION(DM098_SABER_CHARGE, 2)) && ((p->s).motion.cmdIdx > 6)) {
+          GotoMotion(&p->s, MOTION(DM098_SABER_CHARGE, 2), 7, 1);
         } else {
-          GotoMotion(&w->s, m, (w->s).motion.cmdIdx, (w->s).motion.duration);
+          GotoMotion(&p->s, m, (p->s).motion.cmdIdx, (p->s).motion.duration);
         }
       }
-      if ((((w->s).work[0] == 8) && ((w->s).motion.cmdIdx == 3)) && ((w->s).motion.duration < 2)) {
-        oz_080b3820(&(w->s).coord, ((w->s).flags >> 4) & 1);
+      if ((((p->s).work[0] == 8) && ((p->s).motion.cmdIdx == 3)) && ((p->s).motion.duration < 2)) {
+        oz_080b3820(&(p->s).coord, ((p->s).flags >> 4) & 1);
       }
-      UpdateMotionGraphic(&w->s);
-      InitWeaponBody(&w->body, gSaberCollisions[z->chargeSaber + 7][(w->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
-      if ((w->s).motion.state != MOTION_END) {
+      UpdateMotionGraphic(&p->s);
+      InitWeaponBody(&p->body, gSaberCollisions[z->chargeSaber + 7][(p->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
+      if ((p->s).motion.state != MOTION_END) {
         return;
       }
-      if (m == MOTION(DM098_SABER_CHARGE, 0x02)) {
-        (w->s).mode[2] = 1;
-        (w->s).mode[3] = 0;
+      if (m == MOTION(DM098_SABER_CHARGE, 2)) {
+        (p->s).mode[2] = 1;
+        (p->s).mode[3] = 0;
         b4->atk = 10 + CalcSaberBonus(z);
         b4->element = 0;
         return;
       }
     }
   } else {
-    if ((w->s).mode[2] == 1) {
-      if ((w->s).mode[3] == 0) {
-        GotoMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x00), 4, 2);
-        (w->s).mode[3]++;
+    if ((p->s).mode[2] == 1) {
+      if ((p->s).mode[3] == 0) {
+        GotoMotion(&p->s, MOTION(DM098_SABER_CHARGE, 0), 4, 2);
+        (p->s).mode[3]++;
       }
-      UpdateMotionGraphic(&w->s);
-      InitWeaponBody(&w->body, sSaberAirHitbox[(w->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
+      UpdateMotionGraphic(&p->s);
+      InitWeaponBody(&p->body, sSaberAirHitbox[(p->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
       motion_t m = MOTION_VALUE(z);
-      if (m == MOTION(DM025_ZERO_SABER_AIR, 0x00)) {
+      if (m == MOTION(DM025_ZERO_SABER_AIR, 0)) {
         return;
       }
-      if (m == MOTION(DM025_ZERO_SABER_AIR, 0x02)) {
+      if (m == MOTION(DM025_ZERO_SABER_AIR, 2)) {
         return;
       }
-      (w->s).mode[2] = 2;
-      (w->s).mode[3] = 0;
+      (p->s).mode[2] = 2;
+      (p->s).mode[3] = 0;
       return;
     }
-    if ((w->s).mode[3] == 0) {
-      SetMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x01));
-      (w->s).mode[3]++;
+    if ((p->s).mode[3] == 0) {
+      SetMotion(&p->s, MOTION(DM098_SABER_CHARGE, 1));
+      (p->s).mode[3]++;
     }
-    UpdateMotionGraphic(&w->s);
-    SetDDP(&w->body, gSaberGeneralCollisions);
-    if ((w->s).motion.state != MOTION_END) {
+    UpdateMotionGraphic(&p->s);
+    SetDDP(&p->body, gSaberGeneralCollisions);
+    if ((p->s).motion.state != MOTION_END) {
       return;
     }
   }
-  SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  SET_WEAPON_ROUTINE(p, ENTITY_DIE);
 #else
   INCCODE("asm/wip/saberChargeAtk.inc");
 #endif
 }
 
 // 天裂刃, テンレツジン, Split Heavens
-static void saberSplitThrow(struct Weapon* w) {
-  const struct WeaponProps* b4 = &(w->props.common);
-  struct Zero* z = b4->z;
+static void saberSplitThrow(struct ZeroSaber* p) {
+  struct Zero* z = (p->props).z;
 
   if ((z->s).mode[1] != ZERO_AIR) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
-  if ((w->s).mode[2] == 0) {
+  if ((p->s).mode[2] == 0) {
     if ((z->s).mode[2] != 1) {
-      motion_t m = MOTION_VALUE(w);
-      if (m == MOTION(DM092_TENRETSUJIN, 0x01)) {
-        SetMotion(&w->s, MOTION(DM092_TENRETSUJIN, 0x02));
+      motion_t m = MOTION_VALUE(p);
+      if (m == MOTION(DM092_TENRETSUJIN, 1)) {
+        SetMotion(&p->s, MOTION(DM092_TENRETSUJIN, 2));
       } else {
-        SetMotion(&w->s, MOTION(DM092_TENRETSUJIN, 0x05));
+        SetMotion(&p->s, MOTION(DM092_TENRETSUJIN, 5));
       }
-      UpdateMotionGraphic(&w->s);
-      SetDDP(&w->body, gSaberGeneralCollisions);
-      (w->s).mode[2]++;
+      UpdateMotionGraphic(&p->s);
+      SetDDP(&p->body, gSaberGeneralCollisions);
+      (p->s).mode[2]++;
       return;
     }
 
-    UpdateMotionGraphic(&w->s);
+    UpdateMotionGraphic(&p->s);
 
     {
-      struct Body* body = &w->body;
-      const struct Collision* collisions = (gSaberCollisions[(w->s).work[0]])[((w->s).motion.cmdIdx)];
-      InitWeaponBody(body, collisions, (b4->props)[1][1], (b4->props)[1][0], (b4->props)[1][2], -1);
+      struct Body* body = &p->body;
+      const struct Collision* collisions = (gSaberCollisions[(p->s).work[0]])[((p->s).motion.cmdIdx)];
+      InitWeaponBody(body, collisions, (&p->props)->atk, (&p->props)->element, (&p->props)->nature, -1);
     }
     return;
   }
 
-  UpdateMotionGraphic(&w->s);
-  if ((w->s).motion.state == MOTION_END) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  UpdateMotionGraphic(&p->s);
+  if ((p->s).motion.state == MOTION_END) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
 }
 
-static void saberGale(struct Weapon* w) {
-  const struct WeaponProps* b4 = &(w->props.common);
-  struct Zero* z = b4->z;
+static void saberGale(struct ZeroSaber* p) {
+  struct Zero* z = (p->props).z;
 
   if ((z->s).mode[1] != ZERO_GROUND) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
-  (w->s).work[2]++;
-  if ((w->s).mode[2] == 0) {
+  (p->s).work[2]++;
+  if ((p->s).mode[2] == 0) {
     u8 val;
 
     motion_t m = MOTION_VALUE(z);
-    if (m != MOTION(DM024_ZERO_GALE, 0x00)) {
-      motion_t m = MOTION_VALUE(w);
-      if (m == MOTION(DM097_GALE_ATTACK, 0x00)) {
-        SetMotion(&w->s, MOTION(DM097_GALE_ATTACK, 0x01));
+    if (m != MOTION(DM024_ZERO_GALE, 0)) {
+      motion_t m = MOTION_VALUE(p);
+      if (m == MOTION(DM097_GALE_ATTACK, 0)) {
+        SetMotion(&p->s, MOTION(DM097_GALE_ATTACK, 1));
       } else {
-        SetMotion(&w->s, MOTION(DM097_GALE_ATTACK, 0x03));
+        SetMotion(&p->s, MOTION(DM097_GALE_ATTACK, 3));
       }
-      UpdateMotionGraphic(&w->s);
-      SetDDP(&w->body, gSaberGeneralCollisions);
-      (w->s).mode[2]++;
+      UpdateMotionGraphic(&p->s);
+      SetDDP(&p->body, gSaberGeneralCollisions);
+      (p->s).mode[2]++;
       return;
     }
 
-    UpdateMotionGraphic(&w->s);
-    val = (w->s).work[2] >> 2;
+    UpdateMotionGraphic(&p->s);
+    val = (p->s).work[2] >> 2;
     if (val > 2) val = 2;
 
     {
-      struct Body* body = &w->body;
-      const struct Collision* collisions = (gSaberCollisions[(w->s).work[0]])[0];
-      InitWeaponBody(body, collisions, (b4->props)[1][1], (b4->props)[1][0], (b4->props)[1][2], val + 1);
+      struct Body* body = &p->body;
+      const struct Collision* collisions = (gSaberCollisions[(p->s).work[0]])[0];
+      InitWeaponBody(body, collisions, (&p->props)->atk, (&p->props)->element, (&p->props)->nature, val + 1);
     }
     return;
   }
 
-  UpdateMotionGraphic(&w->s);
-  if ((w->s).motion.state == MOTION_END) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  UpdateMotionGraphic(&p->s);
+  if ((p->s).motion.state == MOTION_END) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
 }
 
-NON_MATCH static void saberJumpRolling(struct Weapon* w) {
+NON_MATCH static void saberJumpRolling(struct ZeroSaber* p) {
 #if MODERN
-  struct Saber_b4* b4 = &PROP;
+  struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
 
-  if ((w->s).mode[2] == 0) {
-    const u8 idx = (w->s).motion.cmdIdx;
+  if ((p->s).mode[2] == 0) {
+    const u8 idx = (p->s).motion.cmdIdx;
     const motion_t m = MOTION_VALUE(z);
-    if ((m == MOTION(DM026_ZERO_SABER_AIR_ROLLING, 0x00)) || ((z->s).motion.cmdIdx == idx)) {
-      UpdateMotionGraphic(&w->s);
+    if ((m == MOTION(DM026_ZERO_SABER_AIR_ROLLING, 0)) || ((z->s).motion.cmdIdx == idx)) {
+      UpdateMotionGraphic(&p->s);
       {
-        struct Body* body = &w->body;
-        const struct Collision* collisions = gSaberCollisions[(w->s).work[0]][idx];
-        const struct Saber_b4* b4 = &PROP;
+        struct Body* body = &p->body;
+        const struct Collision* collisions = gSaberCollisions[(p->s).work[0]][idx];
+        const struct ZeroSaberProps* b4 = &p->props;
         InitWeaponBody(body, collisions, b4->atk, b4->element, b4->nature, ((s8)idx >> 1) + 1);
       }
-      if ((w->s).motion.state == MOTION_END) {
-        (w->s).mode[2] = 1;
-        (w->s).mode[3] = 0;
+      if ((p->s).motion.state == MOTION_END) {
+        (p->s).mode[2] = 1, (p->s).mode[3] = 0;
         b4->atk = 10 + CalcSaberBonus(z);
         b4->element = gSaberElements[0];
       }
       return;
     }
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
-  if ((w->s).mode[2] == 1) {
+  if ((p->s).mode[2] == 1) {
     motion_t m;
-    if ((w->s).mode[3] == 0) {
-      GotoMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x00), 4, 2);
-      (w->s).mode[3]++;
+    if ((p->s).mode[3] == 0) {
+      GotoMotion(&p->s, MOTION(DM098_SABER_CHARGE, 0), 4, 2);
+      (p->s).mode[3]++;
     }
-    UpdateMotionGraphic(&w->s);
+    UpdateMotionGraphic(&p->s);
     {
-      struct Body* body = &w->body;
-      const struct Collision* collisions = gSaberCollisions[(w->s).work[0]][(w->s).motion.cmdIdx];
-      InitWeaponBody(&w->body, collisions, b4->atk, b4->element, b4->nature, -1);
+      struct Body* body = &p->body;
+      const struct Collision* collisions = gSaberCollisions[(p->s).work[0]][(p->s).motion.cmdIdx];
+      InitWeaponBody(&p->body, collisions, b4->atk, b4->element, b4->nature, -1);
     }
 
     m = MOTION_VALUE(z);
-    if ((m != MOTION(DM025_ZERO_SABER_AIR, 0x00)) && (m != MOTION(DM026_ZERO_SABER_AIR_ROLLING, 0x00))) {
-      (w->s).mode[2] = 2;
-      (w->s).mode[3] = 0;
+    if ((m != MOTION(DM025_ZERO_SABER_AIR, 0)) && (m != MOTION(DM026_ZERO_SABER_AIR_ROLLING, 0x00))) {
+      (p->s).mode[2] = 2, (p->s).mode[3] = 0;
     }
     return;
   }
 
-  if ((w->s).mode[3] == 0) {
-    SetMotion(&w->s, MOTION(DM098_SABER_CHARGE, 0x01));
-    (w->s).mode[3]++;
+  if ((p->s).mode[3] == 0) {
+    SetMotion(&p->s, MOTION(DM098_SABER_CHARGE, 1));
+    (p->s).mode[3]++;
   }
-  UpdateMotionGraphic(&w->s);
-  SetDDP(&w->body, gSaberGeneralCollisions);
-  if ((w->s).motion.state == MOTION_END) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  UpdateMotionGraphic(&p->s);
+  SetDDP(&p->body, gSaberGeneralCollisions);
+  if ((p->s).motion.state == MOTION_END) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
 #else
   INCCODE("asm/wip/saberJumpRolling.inc");
 #endif
 }
 
-static void saberDashRolling(struct Weapon* w) {
+static void saberDashRolling(struct ZeroSaber* p) {
   motion_t m;
-  struct Zero* z = (&PROP)->z;
-  UpdateMotionGraphic(&w->s);
+  struct Zero* z = (p->props).z;
+  UpdateMotionGraphic(&p->s);
 
   m = MOTION_VALUE(z);
-  if ((m != MOTION(DM026_ZERO_SABER_AIR_ROLLING, 1)) || (((z->s).motion.cmdIdx != (w->s).motion.cmdIdx))) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    EXIT_BODY(w);
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+  if ((m != MOTION(DM026_ZERO_SABER_AIR_ROLLING, 1)) || (((z->s).motion.cmdIdx != (p->s).motion.cmdIdx))) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
   } else {
-    struct Body* body = &w->body;
-    const struct Collision* collisions = (gSaberCollisions[(w->s).work[0]])[(w->s).motion.cmdIdx];
-    InitWeaponBody(body, collisions, (&PROP)->atk, (&PROP)->element, (&PROP)->nature, ((w->s).motion.cmdIdx >> 1) + 1);
+    struct Body* body = &p->body;
+    const struct Collision* collisions = (gSaberCollisions[(p->s).work[0]])[(p->s).motion.cmdIdx];
+    InitWeaponBody(body, collisions, (&p->props)->atk, (&p->props)->element, (&p->props)->nature, ((p->s).motion.cmdIdx >> 1) + 1);
   }
 }
 
-NON_MATCH static void saberSmash(struct Weapon* w) {
-#if MODERN
-  const struct Saber_b4* b4 = &PROP;
-  struct Zero* z = b4->z;
+// 0x08038d94
+static void saberSmash(struct ZeroSaber* p) {
+  struct Zero* z = p->props.z;
 
-  if ((w->s).mode[2] == 0) {
-    switch (MOTION_VALUE(z)) {
-      case MOTION(DM027_ZERO_SABER_SMASH, 0x00): {
-        (w->s).flags &= ~DISPLAY;
-        if ((w->s).work[2] > 1) {
-          UpdateMotionGraphic(&w->s);
-          (w->s).flags |= DISPLAY;
-          InitWeaponBody(&w->body, gSaberCollisions[(w->s).work[0]][(w->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
-          (w->s).mode[3]++;
-          break;
-        }
-        (w->s).work[2]++;
-        break;
-      }
-
-      case MOTION(DM027_ZERO_SABER_SMASH, 0x01): {
-        if ((w->s).work[0] == SABER_SMASH) {
-          SetMotion(&w->s, MOTION(DM100_RAKUSAIGA, 0x01));
+  if ((p->s).mode[2] == 0) {
+    motion_t m = MOTION_VALUE(z);
+    switch (m) {
+      case MOTION(DM027_ZERO_SABER_SMASH, 1): {
+        if ((p->s).work[0] == SABER_SMASH) {
+          SetMotion(&p->s, MOTION(DM100_RAKUSAIGA, 1));
         } else {
-          struct Zero_b4* b4;
-          SetMotion(&w->s, MOTION(DM100_RAKUSAIGA, 0x03));
-          b4 = &z->unk_b4;
-          if (((b4->status).element == ELEMENT_THUNDER) && (z->unk_13a == 0)) {
-            CreateSmashElec(z, &(w->s).coord, 0);
-            CreateSmashElec(z, &(w->s).coord, 1);
+          SetMotion(&p->s, MOTION(DM100_RAKUSAIGA, 3));
+          if ((((&z->unk_b4)->status).element == ELEMENT_THUNDER) && (z->saberSmashElecCount == 0)) {
+            CreateSmashElec(z, &(p->s).coord, 0);
+            CreateSmashElec(z, &(p->s).coord, 1);
           }
         }
-        UpdateMotionGraphic(&w->s);
-        (w->s).flags |= DISPLAY;
-        (w->s).mode[2]++;
+        UpdateMotionGraphic(&p->s);
+        (p->s).flags |= DISPLAY;
+        (p->s).mode[2]++;
         break;
       }
 
       default: {
-        (w->s).flags &= ~DISPLAY;
-        (w->s).flags &= ~FLIPABLE;
-        EXIT_BODY(w);
-        SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+        (p->s).flags &= ~DISPLAY;
+        (p->s).flags &= ~FLIPABLE;
+        EXIT_BODY(p);
+        SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
+        break;
+      }
+
+      case MOTION(DM027_ZERO_SABER_SMASH, 0): {
+        (p->s).flags &= ~DISPLAY;
+        if ((p->s).work[2] > 1) {
+          UpdateMotionGraphic(&p->s);
+          (p->s).flags |= DISPLAY;
+          InitWeaponBody(&p->body, gSaberCollisions[(p->s).work[0]][(p->s).motion.cmdIdx], (&p->props)->atk, (&p->props)->element, (&p->props)->nature, -1);
+          (p->s).mode[3]++;
+          break;
+        }
+        (p->s).work[2]++;
         break;
       }
     }
@@ -563,13 +570,10 @@ NON_MATCH static void saberSmash(struct Weapon* w) {
     return;
   }
 
-  UpdateMotionGraphic(&w->s);
-  if ((w->s).motion.state == MOTION_END) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+  UpdateMotionGraphic(&p->s);
+  if ((p->s).motion.state == MOTION_END) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
-#else
-  INCCODE("asm/wip/saberSmash.inc");
-#endif
 }
 
 // --------------------------------------------
@@ -578,30 +582,30 @@ NON_MATCH static void saberSmash(struct Weapon* w) {
 
 // idx: (w->s).work[0]
 static const WeaponFunc sSaberActions[SABER_ACTION_COUNT] = {
-    [SABER_TRIPLE_1] =           saberTripleSlash,
-    [SABER_TRIPLE_2] =           saberTripleSlash,
-    [SABER_TRIPLE_3] =           saberTripleSlash,
-    [SABER_WALK] =               saberTripleSlash,
-    [SABER_DASH] =               saberTripleSlash,
-    [SABER_AIR] =                saberAirSlash,
-    [SABER_WALL] =               saberTripleSlash,
-    [SABER_LADDER] =             saberTripleSlash,
-    [SABER_CHARGE] =             saberChargeAtk,
-    [SABER_CHARGE_AIR] =         saberChargeAtk,
-    [SABER_CHARGE_WALL] =        saberChargeAtk,
-    [SABER_CHARGE_LADDER] =      saberChargeAtk,
-    [SABER_SLASH_UP] =           saberTripleSlash,
-    [SABER_ZANEIDAN] =           saberTripleSlash,
-    [SABER_TENRETUJIN] =         saberTripleSlash,
-    [SABER_TENRETUJIN_FIRE] =    saberTripleSlash,
-    [SABER_TENRETUJIN_2] =       saberSplitThrow,
-    [SABER_TENRETUJIN_FIRE_2] =  saberSplitThrow,
-    [SABER_REPUGEKI] =           saberGale,
-    [SABER_UNK_19] =             saberGale,
-    [SABER_AIR_ROLLING] =        saberJumpRolling,
-    [SABER_DASH_ROLLING] =       saberDashRolling,
-    [SABER_SMASH] =              saberSmash,
-    [SABER_SMASH_ELEC] =         saberSmash,
+    [SABER_TRIPLE_1] =           (void*)saberTripleSlash,
+    [SABER_TRIPLE_2] =           (void*)saberTripleSlash,
+    [SABER_TRIPLE_3] =           (void*)saberTripleSlash,
+    [SABER_WALK] =               (void*)saberTripleSlash,
+    [SABER_DASH] =               (void*)saberTripleSlash,
+    [SABER_AIR] =                (void*)saberAirSlash,
+    [SABER_WALL] =               (void*)saberTripleSlash,
+    [SABER_LADDER] =             (void*)saberTripleSlash,
+    [SABER_CHARGE] =             (void*)saberChargeAtk,
+    [SABER_CHARGE_AIR] =         (void*)saberChargeAtk,
+    [SABER_CHARGE_WALL] =        (void*)saberChargeAtk,
+    [SABER_CHARGE_LADDER] =      (void*)saberChargeAtk,
+    [SABER_SLASH_UP] =           (void*)saberTripleSlash,
+    [SABER_ZANEIDAN] =           (void*)saberTripleSlash,
+    [SABER_TENRETUJIN] =         (void*)saberTripleSlash,
+    [SABER_TENRETUJIN_FIRE] =    (void*)saberTripleSlash,
+    [SABER_TENRETUJIN_2] =       (void*)saberSplitThrow,
+    [SABER_TENRETUJIN_FIRE_2] =  (void*)saberSplitThrow,
+    [SABER_REPUGEKI] =           (void*)saberGale,
+    [SABER_UNK_19] =             (void*)saberGale,
+    [SABER_AIR_ROLLING] =        (void*)saberJumpRolling,
+    [SABER_DASH_ROLLING] =       (void*)saberDashRolling,
+    [SABER_SMASH] =              (void*)saberSmash,
+    [SABER_SMASH_ELEC] =         (void*)saberSmash,
 };
 // clang-format on
 
@@ -2929,12 +2933,10 @@ static const bool8 gIlethasables[25] = {
 
 // clang-format off
 const WeaponRoutine gSaberRoutine = {
-    [ENTITY_INIT] =      Saber_Init,
-    [ENTITY_UPDATE] =    Saber_Update,
-    [ENTITY_DIE] =       Saber_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)Saber_Init,
+    [ENTITY_UPDATE] =    (void*)Saber_Update,
+    [ENTITY_DIE] =       (void*)Saber_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
-
-#undef PROP

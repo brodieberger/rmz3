@@ -195,7 +195,7 @@ _080F92E2:
 	str r0, [r7, #0x3c]
 	strh r4, [r7, #0x3a]
 	movs r0, #0xad
-	bl playBGM
+	bl PlayBGM
 	add sp, #0xc
 	pop {r3, r4, r5}
 	mov r8, r3
@@ -709,7 +709,7 @@ _080F97A4:
 	bl CreateMissionAlert
 	str r0, [r5, #0x10]
 	movs r0, #0xad
-	bl fadeoutBGM
+	bl FadeOutBGM
 	ldrh r0, [r5, #6]
 	adds r0, #1
 	strh r0, [r5, #6]

@@ -1,8 +1,8 @@
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
+#include "renderer.h"
 #include "system.h"
-#include "task.h"
 
 static const struct Stage* UpdateStageTileset(struct Coord* c);
 static void loadStageLandscape(const struct Stage* p, const struct ChunkMap* map);
@@ -479,13 +479,11 @@ NON_MATCH void ResetStageLayer(s32 n, const struct Stage* p) {
 #endif
 }
 
-#if MODERN == 0
 static void unused_080093a0(s32 n) {
   struct StageLayer* layer = &gOverworld.layer[n];
   layer->fn[LAYER_UPDATE] = NULL;
   layer->fn[LAYER_DRAW] = NULL;
 }
-#endif
 
 // ステージレイヤ の描画関数
 // TaskCB_UpdateOwGraphic から呼び出される

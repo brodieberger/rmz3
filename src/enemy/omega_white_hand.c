@@ -1,3 +1,4 @@
+#include "boss/omega1.h"
 #include "collision.h"
 #include "enemy.h"
 #include "entity.h"
@@ -135,7 +136,7 @@ static void OmegaWhiteHand_Update(Object* p) {
   }; // 0x08366410
   // clang-format on
 
-  struct Boss* omega = (struct Boss*)(p->s).unk_28;
+  struct Omega1* omega = (struct Omega1*)(p->s).unk_28;
   if ((omega->s).mode[0] >= ENTITY_DISAPPEAR) {
     // 本体が消えるときは、手も消える
     (p->s).flags &= ~DISPLAY;
@@ -145,9 +146,8 @@ static void OmegaWhiteHand_Update(Object* p) {
     return;
   }
 
-  if (((omega->props).omegaWhite.unk_d4 & 2) && ((p->s).mode[1] != 5)) {
-    (p->s).mode[1] = 5;
-    (p->s).mode[2] = 0;
+  if ((omega->unk_d4 & 2) && ((p->s).mode[1] != 5)) {
+    (p->s).mode[1] = 5, (p->s).mode[2] = 0;
   }
   (sUpdates[(p->s).mode[1]])((void*)p);
 

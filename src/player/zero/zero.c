@@ -51,20 +51,20 @@ NON_MATCH static void Zero_Init(struct Zero* z) {
   (z->s).mode[1] = b4->prevMode = 0;
   (z->s).mode[2] = b4->prevPhase = 0;
   (z->s).mode[3] = 0;
-  (z->unk_b4).unused_f0[0] = (z->unk_b4).attackMode[0] = 0;
-  (z->unk_b4).unused_f0[1] = (z->unk_b4).attackMode[1] = 0;
-  (z->unk_b4).unused_f0[2] = (z->unk_b4).attackMode[2] = 0;
-  (z->unk_b4).unused_f0[3] = (z->unk_b4).attackMode[3] = 0;
+  (z->unk_b4).unused_f0[0] = (z->unk_b4).attackState8[0] = 0;
+  (z->unk_b4).unused_f0[1] = (z->unk_b4).attackState8[1] = 0;
+  (z->unk_b4).unused_f0[2] = (z->unk_b4).attackState8[2] = 0;
+  (z->unk_b4).unused_f0[3] = (z->unk_b4).attackState8[3] = 0;
   (z->unk_b4).sound = MUS_NONE;
-  (z->unk_b4).mainCopy = (b4->status).mainWeapon;
-  (z->unk_b4).subCopy = (b4->status).subWeapon;
+  (z->unk_b4).mainCopy = (b4->status).weapons[0];
+  (z->unk_b4).subCopy = (b4->status).weapons[1];
 
   // Unreached?
-  if ((b4->status).mainWeapon == (b4->status).subWeapon) {
+  if ((b4->status).weapons[0] == (b4->status).weapons[1]) {
     u8 i;
     u16 unlocked;
-    (b4->status).asset.satelites[0] = ELF_NONE;
-    (b4->status).asset.satelites[1] = ELF_NONE;
+    (b4->status).satelites[0] = ELF_NONE;
+    (b4->status).satelites[1] = ELF_NONE;
 
     for (i = 0; i < 12; i++) {
       u32 n = 1 << i;
@@ -112,7 +112,7 @@ NON_MATCH static void Zero_Init(struct Zero* z) {
   CreateSateliteElf(z, SATELITE_1, 0);
   CreateSateliteElf(z, SATELITE_2, 1);
   LoadZeroPalette(&z->s, GetZeroColor(z));
-  setWramElement((b4->status).element);
+  RequestElementEffectGraphic((b4->status).element);
   Zero_Update(z);
 #else
   INCCODE("asm/wip/Zero_Init.inc");
@@ -157,8 +157,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
       case 2: {
         z->isRightDir = ((z->s).flags >> 4) & 1;
         (z->body).hp = 0;
-        (z->s).mode[1] = ZERO_DAMAGED;
-        (z->s).mode[2] = 0;
+        (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
         break;
       }
     }
@@ -168,8 +167,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
         case 1: {
           z->isRightDir = ((z->s).flags >> 4) & 1;
           (z->body).hp = 0;
-          (z->s).mode[1] = ZERO_DAMAGED;
-          (z->s).mode[2] = 0;
+          (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
           break;
         }
         case 2: {
@@ -186,7 +184,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
   }
 
   if (z->unk_234 == 0) {
-    if (((W_TERRAIN_V2.id & 0x7F) == STAGE_TWILIGHT_DESERT) && (FUN_080101a8() != 0)) {
+    if (((gOverworld.terrain.id & 0x7F) == STAGE_TWILIGHT_DESERT) && (FUN_080101a8() != 0)) {
       z->unk_234 = 16;
     }
   } else {
@@ -202,7 +200,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
   if (((z->s).mode[1] != ZERO_DAMAGED) || ((z->s).mode[2] != 0)) {
     z->isGround = FALSE;
   }
-  z->poseFixed = FALSE;
+  z->animDisabled = FALSE;
 
   // 落下死
   if ((z->body).hp != 0) {
@@ -214,13 +212,11 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
         metatile_attr_t attr = GetGroundMetatileAttr((z->s).coord.x, (z->s).coord.y - PIXEL(30));
         // Bird elf doesn't work for antlion
         if ((!(attr & METATILE_ANTTRAP)) && ((SATELITE_1 == ELF_BIRAID) || (SATELITE_1 == ELF_BIRLEAF) || (SATELITE_2 == ELF_BIRAID) || (SATELITE_2 == ELF_BIRLEAF))) {
-          (z->s).mode[1] = ZERO_FLOAT;
-          (z->s).mode[2] = 0;
+          (z->s).mode[1] = ZERO_FLOAT, (z->s).mode[2] = 0;
         } else {
           z->isRightDir = ((z->s).flags >> 4) & 1;
           (z->body).hp = 0;
-          (z->s).mode[1] = ZERO_DAMAGED;
-          (z->s).mode[2] = 0;
+          (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
         }
       }
     }
@@ -253,8 +249,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
     z->unk_143.raw = 0;
   }
   if (((z->s).mode[1] != ZERO_DAMAGED) && ((z->body).hp == 0)) {
-    (z->s).mode[1] = ZERO_DAMAGED;
-    (z->s).mode[2] = 0;
+    (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
   }
 
   (sZeroUpdates[(z->s).mode[1]])(z);
@@ -268,7 +263,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
     if (z->chargeSaber != 0) {
       tmp = TRUE;
     } else {
-      (z->unk_b4).attackMode[0] = 0;  // Cancel Attack (e.g. Air saber at landing)
+      (z->unk_b4).attackState8[0] = 0;  // Cancel Attack (e.g. Air saber at landing)
     }
   }
 LAB_080296fe:
@@ -299,7 +294,7 @@ LAB_080296fe:
       }
     }
   } else {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
   }
   (z->restriction).mainCharge = (z->restriction).subCharge = FALSE;
 
@@ -316,10 +311,8 @@ LAB_080296fe:
     if (PushoutByBorder(z, &gZeroRanges[z->posture], TRUE)) {
       z->isRightDir = ((z->s).flags >> 4) & 1;
       (z->body).hp = 0;
-      (z->s).mode[1] = ZERO_DAMAGED;
-      (z->s).mode[2] = 0;
-      (z->s).coord.x = x;
-      (z->s).coord.y = y;
+      (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
+      (z->s).coord.x = x, (z->s).coord.y = y;
     }
   }
 
@@ -338,10 +331,8 @@ LAB_080296fe:
     if (dx > PIXEL(16)) {
       z->isRightDir = ((z->s).flags >> 4) & 1;
       (z->body).hp = 0;
-      (z->s).mode[1] = ZERO_DAMAGED;
-      (z->s).mode[2] = 0;
-      (z->s).coord.x = x;
-      (z->s).coord.y = y;
+      (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
+      (z->s).coord.x = x, (z->s).coord.y = y;
     }
   }
   if (z->pushedOut && ((z->body).hp != 0)) {
@@ -349,16 +340,12 @@ LAB_080296fe:
     if (dy > PIXEL(16)) {
       z->isRightDir = ((z->s).flags >> 4) & 1;
       (z->body).hp = 0;
-      (z->s).mode[1] = ZERO_DAMAGED;
-      (z->s).mode[2] = 0;
-      (z->s).coord.x = x;
-      (z->s).coord.y = y;
+      (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
+      (z->s).coord.x = x, (z->s).coord.y = y;
     }
   }
 
-  if (!z->poseFixed) {
-    UpdateMotionGraphic(&z->s);
-  }
+  if (!z->animDisabled) UpdateMotionGraphic(&z->s);
   setStageElfFlags(z);
   z->unk_149 = 0;
   (z->unk_b4).deltaX = (z->s).coord.x - x;
@@ -368,7 +355,7 @@ LAB_080296fe:
 };
 
 // 0x080299dc
-static void Zero_Die(struct Zero* _) { return; }
+static void Zero_Die(void* _) {}
 
 // 0x080299e0
 static void Zero_Disappear(struct Zero* z) {
@@ -377,19 +364,16 @@ static void Zero_Disappear(struct Zero* z) {
     StopSound(n);
     z->unk_b4.sound = MUS_NONE;
   }
-  RemovePlayer(z);
+  RemovePlayer((struct Entity*)z);
 }
 
 // 0x08029a10
 // Zero take damages
 static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
-  u8 mode;
-
   struct Zero* z = (struct Zero*)body->parent;
-  struct Entity* enemy = (struct Entity*)body->enemy->parent;
+  struct Entity* q = (struct Entity*)body->enemy->parent;
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    const u16 damage = CalcDamage(body->enemy, body);
-    AddMissionDamage(damage);
+    AddMissionDamage(CalcDamage(body->enemy, body));
     z->unk_149 = 1;
   }
 
@@ -398,16 +382,18 @@ static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord
       return;
     }
     if (body->hitboxFlags & BODY_STATUS_BINDED) {
-      z->isRightDir = (enemy->coord).x > (z->s).coord.x;
-      (z->s).mode[1] = ZERO_BINDED;
-      (z->s).mode[2] = 0;
+      z->isRightDir = (q->coord).x > (z->s).coord.x;
+      (z->s).mode[1] = ZERO_BINDED, (z->s).mode[2] = 0;
       return;
     }
   }
-  if (((body->hitboxFlags & BODY_STATUS_WHITE) && (mode = (z->s).mode[1], mode != ZERO_DOOR_2D)) && (mode != ZERO_CYBER)) {
-    z->isRightDir = (enemy->coord).x > (z->s).coord.x;
-    (z->s).mode[1] = ZERO_DAMAGED;
-    (z->s).mode[2] = 0;
+
+  if (body->hitboxFlags & BODY_STATUS_WHITE) {
+    const u8 mode = (z->s).mode[1];
+    if ((mode != ZERO_DOOR_2D) && (mode != ZERO_CYBER)) {
+      z->isRightDir = (q->coord).x > (z->s).coord.x;
+      (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
+    }
   }
 }
 
@@ -478,11 +464,11 @@ static const ZeroFunc sZeroAttacks[4] = {
 
 // clang-format off
 const ZeroRoutine gZeroRoutine = {
-  [ENTITY_INIT] =       Zero_Init,
-  [ENTITY_UPDATE] =     Zero_Update,
-  [ENTITY_DIE]  =       Zero_Die,
-  [ENTITY_DISAPPEAR] =  Zero_Disappear,
-  [ENTITY_EXIT] =       (ZeroFunc)DeleteEntity,
+  [ENTITY_INIT] =       (void*)Zero_Init,
+  [ENTITY_UPDATE] =     (void*)Zero_Update,
+  [ENTITY_DIE]  =       (void*)Zero_Die,
+  [ENTITY_DISAPPEAR] =  (void*)Zero_Disappear,
+  [ENTITY_EXIT] =       (void*)DeleteEntity,
 };
 // clang-format on
 

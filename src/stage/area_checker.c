@@ -1,16 +1,13 @@
 #include "global.h"
-#include "stage.h"
+#include "spawn.h"
 
 static u32 getStage0Area(struct Coord* _) { return 0; }
 
+// 0x080190fc
 static u32 getSpaceCraftArea(struct Coord* c) {
-  s32 x = c->x;
-  if ((x < 0x4B000) || ((x - 0xC3001U) < 0xEFFF)) {
-    return 7;
-  }
-  if ((c->y < 0x14000) && (x > 0xE1000)) {
-    return 7;
-  }
+  if (c->x < PIXEL(1200)) return 7;
+  if ((c->x > PIXEL(3120)) && (c->x < PIXEL(3360))) return 7;
+  if ((c->y < PIXEL(320)) && (c->x > PIXEL(3600))) return 7;
   return 0;
 }
 
@@ -98,12 +95,8 @@ static u32 getOceanArea(struct Coord* c) {
 static u32 getRepairFactoryArea(struct Coord* c) {
   s32 x = c->x;
   if (x < 0x1AB001) {
-    if (x < 0xF0000) {
-      return 0;
-    }
-    if (0xFEFFF < x) {
-      return 1;
-    }
+    if (x < 0xF0000) return 0;
+    if (0xFEFFF < x) return 1;
   }
   return 7;
 }
@@ -129,12 +122,8 @@ static u32 getMissileFactoryArea(struct Coord* c) {
 static u32 getTwilightDesertArea(struct Coord* c) {
   s32 x = c->x;
   if (x < 0x21C001) {
-    if (x > 0x11D000) {
-      return 1;
-    }
-    if (x < 0x10E001) {
-      return 0;
-    }
+    if (x > 0x11D000) return 1;
+    if (x < 0x10E001) return 0;
   }
   return 7;
 }
@@ -146,19 +135,10 @@ static u32 getForestArea(struct Coord* c) {
 }
 
 static u32 getIceBaseArea(struct Coord* c) {
-  if ((c->x >= 0x205800) && (c->y <= 0x1DFFF)) {
-    return 7;
-  }
-  if (c->x >= 0x16F800) {
-    return 2;
-  }
-
-  if ((c->x >= 0x124800) && (c->y >= 0x32001)) {
-    return 1;
-  }
-  if (c->x >= 0xD9800 && (c->y <= 0x32000)) {
-    return 1;
-  }
+  if ((c->x >= 0x205800) && (c->y <= 0x1DFFF)) return 7;
+  if (c->x >= 0x16F800) return 2;
+  if ((c->x >= 0x124800) && (c->y >= 0x32001)) return 1;
+  if (c->x >= 0xD9800 && (c->y <= 0x32000)) return 1;
   return 0;
 }
 
@@ -273,31 +253,26 @@ static u32 getWeilLaboArea(struct Coord* c) {
   return 6;
 }
 
+// 0x08019578
 static u32 getBaseArea(struct Coord* c) {
   s32 x = c->x;
-  if (x < 0x1E000) {
-    if (c->y < 0x1E000) return 0;
+  if (x < PIXEL(480)) {
+    if (c->y < PIXEL(480)) return 0;
     return 5;
   }
-
-  if (x > 0xA5000) {
-    if (c->y < 0x14000) {
-      if (x > 0xC3000) return 0;
+  if (x > PIXEL(2640)) {
+    if (c->y < PIXEL(320)) {
+      if (x > PIXEL(3120)) return 0;
       return 3;
     }
-    if (c->y < 0x28000) {
-      return 4;
-    }
-    if (c->y < 0x3C000) {
-      return 5;
-    }
+    if (c->y < PIXEL(640)) return 4;
+    if (c->y < PIXEL(960)) return 5;
   } else {
-    if (c->y < 0x5A000) {
-      if (x < 0x63000) return 1;
+    if (c->y < PIXEL(1440)) {
+      if (x < PIXEL(1584)) return 1;
       return 2;
     }
   }
-
   return 5;
 }
 
@@ -305,23 +280,23 @@ static u32 getBaseArea(struct Coord* c) {
 
 // clang-format off
 const AreaChecker gAreaCheckers[STAGE_COUNT] = {
-  [STAGE_NONE]            = getStage0Area,
-  [STAGE_SPACE_CRAFT]     = getSpaceCraftArea,
-  [STAGE_VOLCANO]         = getVolcanoArea,
-  [STAGE_OCEAN]           = getOceanArea,
-  [STAGE_REPAIR_FACTORY]  = getRepairFactoryArea,
-  [STAGE_OLD_RESIDENTIAL] = getOldLifeSpaceArea,
-  [STAGE_MISSILE_FACTORY] = getMissileFactoryArea,
-  [STAGE_TWILIGHT_DESERT] = getTwilightDesertArea,
-  [STAGE_ANATRE_FOREST]   = getForestArea,
-  [STAGE_ICE_BASE]        = getIceBaseArea,
-  [STAGE_AREA_X2]         = getAreaX2Area,
-  [STAGE_E_FACILITY]      = getEnergyFactoryArea,
-  [STAGE_SNOWY_PLAINS]    = getSnowyPlainsArea,
-  [STAGE_SUNKEN_LIBRARY]  = getSubmergedLibArea,
-  [STAGE_GIANT_ELEVATOR]  = getGiantElevatorArea,
-  [STAGE_SUB_ARCADIA]     = getSubArcadiaArea,
-  [STAGE_WEILS_LABO]      = getWeilLaboArea,
-  [STAGE_BASE]            = getBaseArea,
+  [STAGE_NONE]            = (AreaChecker)getStage0Area,
+  [STAGE_SPACE_CRAFT]     = (AreaChecker)getSpaceCraftArea,
+  [STAGE_VOLCANO]         = (AreaChecker)getVolcanoArea,
+  [STAGE_OCEAN]           = (AreaChecker)getOceanArea,
+  [STAGE_REPAIR_FACTORY]  = (AreaChecker)getRepairFactoryArea,
+  [STAGE_OLD_RESIDENTIAL] = (AreaChecker)getOldLifeSpaceArea,
+  [STAGE_MISSILE_FACTORY] = (AreaChecker)getMissileFactoryArea,
+  [STAGE_TWILIGHT_DESERT] = (AreaChecker)getTwilightDesertArea,
+  [STAGE_ANATRE_FOREST]   = (AreaChecker)getForestArea,
+  [STAGE_ICE_BASE]        = (AreaChecker)getIceBaseArea,
+  [STAGE_AREA_X2]         = (AreaChecker)getAreaX2Area,
+  [STAGE_E_FACILITY]      = (AreaChecker)getEnergyFactoryArea,
+  [STAGE_SNOWY_PLAINS]    = (AreaChecker)getSnowyPlainsArea,
+  [STAGE_SUNKEN_LIBRARY]  = (AreaChecker)getSubmergedLibArea,
+  [STAGE_GIANT_ELEVATOR]  = (AreaChecker)getGiantElevatorArea,
+  [STAGE_SUB_ARCADIA]     = (AreaChecker)getSubArcadiaArea,
+  [STAGE_WEILS_LABO]      = (AreaChecker)getWeilLaboArea,
+  [STAGE_BASE]            = (AreaChecker)getBaseArea,
 };
 // clang-format on

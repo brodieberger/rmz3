@@ -459,7 +459,7 @@ _08020478:\n\
 	beq _080204CA\n\
 	lsls r0, r1, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 	b _080204CA\n\
 	.align 2, 0\n\
@@ -499,11 +499,11 @@ _080204D4:\n\
 	beq _080204FE\n\
 	lsls r0, r1, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _080204FE:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r1, #0xa1\n\
 	str r1, [r4]\n\
 _08020508:\n\

@@ -3,6 +3,7 @@
 #include "entity.h"
 #include "global.h"
 #include "overworld.h"
+#include "zero.h"
 
 extern const motion_t ElfActions[3];
 
@@ -49,8 +50,8 @@ void InitElfHeader(struct EntityHeader* h, struct Elf* p, s16 len) {
   gElfHeaderPtr = h;
 }
 
-void DeleteElf(struct Elf* p) {
-  (p->s).flags &= ~DISPLAY;
+void DeleteElf(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_ELF_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -533,8 +534,8 @@ u8 CalcElfPenalty(struct Zero* z) {
   u16 penalty = 0;
 
   if (((&z->unk_b4)->status).menuZeroColor == MZC_ULTIMATE) {
-    penalty = ((&z->unk_b4)->status).asset.fusions;
-    ((&z->unk_b4)->status).asset.fusions = 0;
+    penalty = ((&z->unk_b4)->status).fusions;
+    ((&z->unk_b4)->status).fusions = 0;
   } else {
     if (ELF_AVABILITY(0) & ELF_AVABILITY_USED) penalty = 5;
     if (ELF_AVABILITY(1) & ELF_AVABILITY_USED) penalty += 2;
@@ -561,8 +562,8 @@ u8 CalcElfPenalty(struct Zero* z) {
     if (ELF_AVABILITY(50) & ELF_AVABILITY_USED) penalty += 1;
     if (ELF_AVABILITY(51) & ELF_AVABILITY_USED) penalty += 1;
     if (ELF_AVABILITY(52) & ELF_AVABILITY_USED) penalty += 1;
-    penalty += ((&z->unk_b4)->status).asset.fusions;
-    ((&z->unk_b4)->status).asset.fusions = 0;
+    penalty += ((&z->unk_b4)->status).fusions;
+    ((&z->unk_b4)->status).fusions = 0;
   }
 
   if (penalty > 115) {
@@ -592,7 +593,7 @@ motion_t GetElfMotion(u8 category) {
 
 // 立ち止まっていると回復するエルフのためのチェック関数
 bool8 CheckPlayerStandStill(struct Zero* z) {
-  if (!((z->input).raw & 0x8000) && ((W_TERRAIN_V2.id & 0x7F) != STAGE_BASE)) {
+  if (!((z->input).raw & 0x8000) && ((gOverworld.terrain.id & 0x7F) != STAGE_BASE)) {
     return TRUE;
   }
   return FALSE;

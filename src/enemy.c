@@ -121,7 +121,7 @@ extern const EnemyRoutine gPantheonBomberRoutine;
 extern const EnemyRoutine gHanumachineObjRoutine;
 extern const EnemyRoutine gGallisniRoutine;
 extern const EnemyRoutine gMothjiroRoutine;
-extern const EnemyRoutine gMettaurSwimRoutine;
+extern const EnemyRoutine gMettaurRoutine;
 extern const EnemyRoutine gPantheonBaseRoutine;
 extern const EnemyRoutine gHanumachineNecroRoutine;
 extern const EnemyRoutine gCarrybeeGRoutine;
@@ -197,7 +197,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_HANUMACHINE_OBJ] = &gHanumachineObjRoutine,
   [ENEMY_GALLISNI] = &gGallisniRoutine,
   [ENEMY_MOTHJIRO] = &gMothjiroRoutine,
-  [ENEMY_METTAUR_SWIM] = &gMettaurSwimRoutine,
+  [ENEMY_METTAUR] = &gMettaurRoutine,
   [ENEMY_P_BASE] = &gPantheonBaseRoutine,
   [ENEMY_HANUMACHINE_NECRO] = &gHanumachineNecroRoutine,
   [ENEMY_CARRYBEE_G] = &gCarrybeeGRoutine,
@@ -209,7 +209,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_SEIMERAN] = &gSeimeranRoutine,
   [ENEMY_PETATRIA] = &gPetatriaRoutine,
   [ENEMY_59] = &gEnemy59Routine,
-  [ENEMY_60] = &gEnemy60Routine,
+  [ENEMY_OMEGA_ZX_X] = &gEnemy60Routine,
   [ENEMY_61] = &gEnemy61Routine,
   [ENEMY_SHOTLOID] = &gShotloidRoutine,
   [ENEMY_63] = &gEnemy63Routine,

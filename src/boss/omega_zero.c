@@ -39,8 +39,8 @@ static const struct Coord sExplosionCoords[2];
 
 void CreateOzChargeSaberRock(s32 x, u8 r1);
 void oz_080b3820(struct Coord* c, bool8 isRight);
-void oz_080c3b44(struct Boss* p);
-void oz_080c3b9c(struct Boss* p);
+void oz_080c3b44(struct Entity* p);
+void oz_080c3b9c(struct Entity* p);
 struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind);
 
 static const BossFunc gOmegaZeroMainRoutine1[24];
@@ -52,11 +52,11 @@ static void OmegaZero_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gOmegaZeroRoutine = {
-    [ENTITY_INIT] =      (BossFunc)OmegaZero_Init,
-    [ENTITY_UPDATE] =    (BossFunc)OmegaZero_Update,
-    [ENTITY_DIE] =       (BossFunc)OmegaZero_Die,
-    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)OmegaZero_Init,
+    [ENTITY_UPDATE] =    (void*)OmegaZero_Update,
+    [ENTITY_DIE] =       (void*)OmegaZero_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -74,9 +74,7 @@ NON_MATCH static void calcNextOmegaZeroAction(struct BossOmegaZero* p) {
   d <<= 4;
 
   while (TRUE) {
-    u32 rng;
-    RNG_0202f388 = LCG(RNG_0202f388);
-    rng = (RNG_0202f388 >> 16) & 0xF;
+    u32 rng = RANDOM(RNG_0202f388) & 0xF;
 
     if (p->prevMode == sModes[d + rng]) {
       if (p->unk_c6 != 0) continue;
@@ -804,8 +802,8 @@ static void double_charge_wave_1(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).work[2] = 24;
-      oz_080c3b44(p);
-      oz_080c3b9c(p);
+      oz_080c3b44((void*)p);
+      oz_080c3b9c((void*)p);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -1544,8 +1542,8 @@ static void charge_saber(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).work[2] = 24;
-      oz_080c3b44(p);
-      oz_080c3b9c(p);
+      oz_080c3b44((void*)p);
+      oz_080c3b9c((void*)p);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }

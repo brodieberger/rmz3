@@ -9,7 +9,7 @@ static const struct Rect sSize;
 
 struct LavaGeyserObject {
   OBJECT_HDR;
-  // props
+  // props (16bytes, offset: 0xB4..)
   u8 unk_b4[4];  // 0xB4
   s32 unk_b8_y;  // 0xB8
   s32 unk_bc_y;  // 0xBC

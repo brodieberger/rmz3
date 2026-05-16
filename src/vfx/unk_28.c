@@ -2,16 +2,7 @@
 #include "global.h"
 #include "story.h"
 #include "vfx.h"
-
-struct VFX28 {
-  struct Entity s;
-  // props (16bytes, offset: 0x74..)
-  u16 unk_0;
-  u16 unk_2;
-  s32 unk_4;
-  u8 unk_8[8];
-};
-static_assert(sizeof(struct VFX28) == sizeof(struct VFX));
+#include "vfx/unk_common.h"
 
 static void Ghost28_Init(struct VFX* p);
 static void Ghost28_Update(struct VFX* p);
@@ -40,17 +31,16 @@ struct Entity* FUN_080b9e68(struct Coord* c, u8 n) {
   return p;
 }
 
-struct Entity* FUN_080b9ebc(struct Coord* c, u8 n, u16 r2, s32 y) {
-  struct VFX28* p = (struct VFX28*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080b9ebc(struct Coord* c, u8 n, motion_t m, s32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, 28);
     (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = n, (p->s).work[1] = 1;
-    (p->s).coord.x = c->x;
-    (p->s).coord.y = c->y;
-    p->unk_0 = r2;
-    p->unk_4 = y;
+    (p->s).coord.x = c->x, (p->s).coord.y = c->y;
+    p->m_74 = m;
+    p->unk_78 = val;
   }
   return (void*)p;
 }

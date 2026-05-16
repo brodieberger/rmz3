@@ -6,8 +6,8 @@
 #include "entity.h"
 #include "game.h"
 #include "gba/types.h"
+#include "renderer.h"
 #include "script.h"
-#include "task.h"
 
 #define IS_DISK_UNLOCKED(flagbits, disk_id) ((flagbits[disk_id >> 2] & 0x0F) >> (disk_id & 3))
 
@@ -42,9 +42,9 @@ struct StageRun {
   */
   u16 missionStatus;
   u16 unk_0a;
-  u32 frame;  // チェックポイントに降り立ってからステージ内で経過したフレーム、リトライするとリセット
-  struct VM vm;
-  struct TaskManager* taskManager;
+  u32 frame;                        // チェックポイントに降り立ってからステージ内で経過したフレーム、リトライするとリセット
+  struct VM vm;                     // 0x10
+  struct TaskManager* taskManager;  // 0x178
   u8 stageEventPhase;
   u8 unk_17d;
 

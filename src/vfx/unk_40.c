@@ -119,11 +119,8 @@ static void FUN_080bdc74(struct Entity* p) {
 
       dx = (idx - 1) * PIXEL(1);
 
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->d).x = dx + ((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(1);
-
-      RNG_0202f388 = LCG(RNG_0202f388);
-      (p->d).y = -((RNG_0202f388 >> 16) & 0x1FF) - PIXEL(2);
+      (p->d).x = dx + (RANDOM(RNG_0202f388) & 0x1FF) - PIXEL(1);
+      (p->d).y = -(RANDOM(RNG_0202f388) & 0x1FF) - PIXEL(2);
 
       p->work[2] = 0;
       p->mode[2]++;

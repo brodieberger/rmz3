@@ -29,7 +29,6 @@ static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x, u8 y
 static void FUN_08024db4(void);
 
 void CreateDiskIcon(struct Coord* c, u8 n, u8 r2);
-void FUN_08024db4(void);
 
 void PrepareResultScreen(struct ResultState* p) {
   u8 i;
@@ -209,11 +208,11 @@ _080240A2:\n\
 	beq _08024160\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r7, [r4]\n\
 _08024160:\n\
 	movs r0, #0xbe\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xbe\n\
 	str r0, [r4]\n\
 _0802416A:\n\
@@ -314,7 +313,7 @@ _0802422E:\n\
 	beq _08024250\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r7]\n\
 _08024250:\n\
 	movs r2, #0xaa\n\

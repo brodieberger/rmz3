@@ -13,7 +13,7 @@ const ProjectileRoutine gPantheonAquaModProjectileRoutine = {
     [ENTITY_INIT] =      PantheonAquaModProjectile_Init,
     [ENTITY_UPDATE] =    PantheonAquaModProjectile_Update,
     [ENTITY_DIE] =       PantheonAquaModProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

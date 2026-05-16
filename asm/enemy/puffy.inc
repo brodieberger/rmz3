@@ -4,55 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreatePuffy
-CreatePuffy: @ 0x0807C584
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r4, r1, #0x18
-	ldr r0, _0807C5DC @ =gEnemyHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0807C5D2
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _0807C5E0 @ =gEnemyFnTable
-	movs r1, #0x20
-	strb r1, [r3, #9]
-	adds r0, #0x80
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	ldr r0, [r5]
-	ldr r1, [r5, #4]
-	str r0, [r3, #0x54]
-	str r1, [r3, #0x58]
-	strb r4, [r3, #0x10]
-_0807C5D2:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_0807C5DC: .4byte gEnemyHeaderPtr
-_0807C5E0: .4byte gEnemyFnTable
-
 	thumb_func_start Puffy_Init
 Puffy_Init: @ 0x0807C5E4
 	push {r4, r5, r6, r7, lr}
@@ -88,7 +39,7 @@ Puffy_Init: @ 0x0807C5E4
 	strb r0, [r5, #0xa]
 	adds r4, r5, #0
 	adds r4, #0x74
-	ldr r1, _0807C680 @ =0x08367B0C
+	ldr r1, _0807C680 @ =sCollisions
 	adds r2, #0xa
 	adds r0, r4, #0
 	movs r3, #6
@@ -131,7 +82,7 @@ Puffy_Init: @ 0x0807C5E4
 	str r0, [r5, #0x14]
 	b _0807C6E8
 	.align 2, 0
-_0807C680: .4byte 0x08367B0C
+_0807C680: .4byte sCollisions
 _0807C684: .4byte FUN_0807cba4
 _0807C688: .4byte gOverworld
 _0807C68C: .4byte 0x0002C00C
@@ -211,7 +162,7 @@ Puffy_Update: @ 0x0807C6F8
 	.align 2, 0
 _0807C724: .4byte gEnemyFnTable
 _0807C728:
-	ldr r1, _0807C754 @ =0x08367AEC
+	ldr r1, _0807C754 @ =PTR_ARRAY_08367aec
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -230,9 +181,9 @@ _0807C728:
 	strb r1, [r0]
 	b _0807C768
 	.align 2, 0
-_0807C754: .4byte 0x08367AEC
+_0807C754: .4byte PTR_ARRAY_08367aec
 _0807C758:
-	ldr r0, _0807C770 @ =0x08367AFC
+	ldr r0, _0807C770 @ =PTR_ARRAY_08367afc
 	ldrb r1, [r4, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r0
@@ -244,7 +195,7 @@ _0807C768:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807C770: .4byte 0x08367AFC
+_0807C770: .4byte PTR_ARRAY_08367afc
 
 	thumb_func_start Puffy_Die
 Puffy_Die: @ 0x0807C774
@@ -783,7 +734,7 @@ FUN_0807cb50: @ 0x0807CB50
 	ands r0, r7
 	cmp r0, #0
 	beq _0807CB9A
-	ldr r2, _0807CB8C @ =0x08367B3C
+	ldr r2, _0807CB8C @ =sElementCoord
 	movs r0, #0
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -800,7 +751,7 @@ FUN_0807cb50: @ 0x0807CB50
 	strb r7, [r4, #0xd]
 	b _0807CB98
 	.align 2, 0
-_0807CB8C: .4byte 0x08367B3C
+_0807CB8C: .4byte sElementCoord
 _0807CB90:
 	cmp r1, #0x30
 	bne _0807CB9A

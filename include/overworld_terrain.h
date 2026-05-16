@@ -27,6 +27,7 @@
 #include "stage/volcano/props.h"
 #include "stage/weil_labo/props.h"
 
+// gOverworldのデータレイアウトを変更したときの名残、後で消す
 #define W_TERRAIN_V2 gOverworld.terrain
 
 #define HAZARD(n) (&gOverworld.terrain.objects[n])
@@ -47,9 +48,9 @@ struct TerrainROMPointer {
 struct Hazard {
   u16 id;
   metatile_attr_t attr;
-  u16 w;
-  u16 h;
-  struct Coord start;
+  u16 hw;               // 横幅の1/2 (Half-Width)
+  u16 hh;               // 高さの1/2 (Half-Height)
+  struct Coord center;  // 中心の座標
   struct Coord unk_10;
 };  // 24 bytes
 static_assert(sizeof(struct Hazard) == 24);

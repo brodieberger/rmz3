@@ -5,9 +5,16 @@
 #include "hud.h"
 #include "mission.h"
 #include "overworld.h"
+#include "renderer.h"
+#include "spawn.h"
 #include "story.h"
-#include "task.h"
 #include "zero.h"
+
+extern const struct Command Script_MissionFail[];
+extern const struct Command Script_MissionFail2[];
+
+void RenderWipeZ(struct VM* vm);
+void FUN_08021b88(struct VM* _);
 
 static bool8 CheckMissionFail(struct StageRun* p);
 static void trySkipEventScene(void);
@@ -100,7 +107,7 @@ void LoadStageRun(u8 stageID, u8 checkPoint) {
   clearStageDisk();
 
   CpuFastCopy(&gGameState.save.status, &gGameState.save.zeroAsset, 0);
-  CpuCopy32(&gGameState.save.status, &gGameState.save.zeroAsset, 12);
+  CpuCopy32(&gGameState.save.status, &gGameState.save.zeroAsset, sizeof(struct ZeroAsset));
 
   gGameState.save.savedRank = (gMission.unk_00)->rank;
   saveCurStory(&gGameState.save.savedStory);
@@ -126,9 +133,9 @@ void ClearStageRun(struct TaskManager* tm) {
   ResetLandscape(gStageID32s[id], &gStageRun.vm.camera.viewport);
 
   if (((gMission.unk_00)->missionDones & (1 << gStageMissionBitTable[id])) == 0) {
-    InitStageEntityManager(gStageID8s[id], FALSE);
+    InitSpawnManager(gStageID8s[id], FALSE);
   } else {
-    InitStageEntityManager(gStageID8s[id], TRUE);
+    InitSpawnManager(gStageID8s[id], TRUE);
   }
   ClearVM(&gStageRun.vm, id);
 }
@@ -191,7 +198,7 @@ NON_MATCH bool32 OverworldUpdate(bool8 paused) {
   ApplyGiantElf(&gStageRun);
 
   if (((s32)((-cameraMode) | cameraMode) < 0) && (gStageRun.vm.camera.mode != 0)) {
-    UpdateStageEntities(&gStageRun.vm.camera.viewport);
+    UpdateSpawnManager(&gStageRun.vm.camera.viewport);
   }
 
   return exit;
@@ -225,25 +232,25 @@ void UpdateStoryFlag(void) {
   ClearBlinkings();
 
   if ((gStageRun.missionStatus & MISSION_FAIL) == 0) {
-    if ((gMission.unk_00)->missionDones & SPACE_CRAFT) {
+    if ((gMission.unk_00)->missionDones & (1 << STAGE_SPACE_CRAFT)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_7);
     }
-    if (((gMission.unk_00)->missionDones & FIRST4) == FIRST4) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_11);
+    if (((gMission.unk_00)->missionDones & ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) == ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_11);  // First 4 missions
     }
-    if ((gMission.unk_00)->missionDones & MISSILE_FACTORY) {
+    if ((gMission.unk_00)->missionDones & (1 << STAGE_MISSILE_FACTORY)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_12);
     }
-    if (((gMission.unk_00)->missionDones & MEDIUM3) == MEDIUM3) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_15);
+    if (((gMission.unk_00)->missionDones & ((1 << STAGE_ICE_BASE) | (1 << STAGE_ANATRE_FOREST) | (1 << STAGE_TWILIGHT_DESERT))) == ((1 << STAGE_ICE_BASE) | (1 << STAGE_ANATRE_FOREST) | (1 << STAGE_TWILIGHT_DESERT))) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_15);  // Medium 3 missions
     }
-    if ((gMission.unk_00)->missionDones & AREA_X2) {
+    if ((gMission.unk_00)->missionDones & (1 << STAGE_AREA_X2)) {
       SET_FLAG(gCurStory.s.gameflags, NO_HARPUIA);
     }
-    if (((gMission.unk_00)->missionDones & LATER4) == LATER4) {
-      SET_FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE);
+    if (((gMission.unk_00)->missionDones & ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) == ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) {
+      SET_FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE);  // Later 4 missions
     }
-    if ((gMission.unk_00)->missionDones & SUB_ARCADIA) {
+    if ((gMission.unk_00)->missionDones & (1 << STAGE_SUB_ARCADIA)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_WEIL_LABO);
     }
     saveCurStory(&gGameState.save.story);

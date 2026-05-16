@@ -2,6 +2,7 @@
 #include "overworld.h"
 #include "script.h"
 #include "solid.h"
+#include "spawn.h"
 
 extern struct Solid* gResistanceBaseElevatorPtr;
 
@@ -546,7 +547,7 @@ static void updateElevator(struct StageRun* p) {
   u8 level;
   struct Solid* lift;
   struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
-  if (((z->s).coord.x - 0x59001U < 0x19FFF) && (z->s).coord.y < 0x5A000 && ((6 >> gStageEntityManager.area) & 1)) {
+  if (((z->s).coord.x - 0x59001U < 0x19FFF) && (z->s).coord.y < 0x5A000 && ((6 >> gSpawnManager.area) & 1)) {
     if (p->unk_0a & 1) {
       return;
     }

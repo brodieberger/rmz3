@@ -68,6 +68,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x0836a6d4
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -134,6 +135,7 @@ static const u8 u8_ARRAY_0836a76a[8] = {
 };
 
 // clang-format off
+// 0x0836a772
 static const motion_t sMotions[12] = {
     MOTION(SM024_SHARKSEAL_X, 0),
     MOTION(SM053_SHELLUNO, 1),

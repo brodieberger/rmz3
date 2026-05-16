@@ -293,8 +293,8 @@ _0809A152:
 	.align 2, 0
 _0809A184: .4byte gEnemyFnTable
 _0809A188: .4byte 0x0836A76A
-_0809A18C: .4byte 0x0836A772
-_0809A190: .4byte 0x0836A6D4
+_0809A18C: .4byte sMotions
+_0809A190: .4byte sCollisions
 _0809A194: .4byte nop_0809a0b4
 
 	thumb_func_start LeviathanMinigameEnemy_Update
@@ -362,7 +362,7 @@ FUN_0809a1f0: @ 0x0809A1F0
 	bl SetDDP
 	b _0809A30A
 	.align 2, 0
-_0809A20C: .4byte 0x0836A6D4
+_0809A20C: .4byte sCollisions
 _0809A210:
 	adds r0, r5, #0
 	adds r0, #0x74
@@ -375,7 +375,7 @@ _0809A210:
 	beq _0809A292
 	b _0809A30A
 	.align 2, 0
-_0809A228: .4byte 0x0836A6EC
+_0809A228: .4byte sCollisions+(1*24)
 _0809A22C:
 	adds r1, r5, #0
 	adds r1, #0x22
@@ -514,7 +514,7 @@ FUN_0809a31c: @ 0x0809A31C
 	bl SetDDP
 	b _0809A49A
 	.align 2, 0
-_0809A338: .4byte 0x0836A6D4
+_0809A338: .4byte sCollisions
 _0809A33C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -527,7 +527,7 @@ _0809A33C:
 	beq _0809A3BE
 	b _0809A49A
 	.align 2, 0
-_0809A354: .4byte 0x0836A704
+_0809A354: .4byte sCollisions+(2*24)
 _0809A358:
 	adds r1, r4, #0
 	adds r1, #0x22
@@ -719,7 +719,7 @@ FUN_0809a4bc: @ 0x0809A4BC
 	bl SetDDP
 	b _0809A5CC
 	.align 2, 0
-_0809A4D8: .4byte 0x0836A6D4
+_0809A4D8: .4byte sCollisions
 _0809A4DC:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -732,7 +732,7 @@ _0809A4DC:
 	beq _0809A55C
 	b _0809A5CC
 	.align 2, 0
-_0809A4F4: .4byte 0x0836A71C
+_0809A4F4: .4byte sCollisions+(3*24)
 _0809A4F8:
 	movs r1, #0xf0
 	lsls r1, r1, #8
@@ -865,7 +865,7 @@ FUN_0809a5e0: @ 0x0809A5E0
 	bl SetDDP
 	b _0809A6EC
 	.align 2, 0
-_0809A5FC: .4byte 0x0836A6D4
+_0809A5FC: .4byte sCollisions
 _0809A600:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -878,7 +878,7 @@ _0809A600:
 	beq _0809A67A
 	b _0809A6EC
 	.align 2, 0
-_0809A618: .4byte 0x0836A734
+_0809A618: .4byte sCollisions+(4*24)
 _0809A61C:
 	movs r1, #0xef
 	lsls r1, r1, #8
@@ -1012,7 +1012,7 @@ FUN_0809a700: @ 0x0809A700
 	bl SetDDP
 	b _0809A8F4
 	.align 2, 0
-_0809A720: .4byte 0x0836A6D4
+_0809A720: .4byte sCollisions
 _0809A724:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -1027,7 +1027,7 @@ _0809A724:
 	beq _0809A750
 	b _0809A8F4
 	.align 2, 0
-_0809A740: .4byte 0x0836A74C
+_0809A740: .4byte sCollisions+(5*24)
 _0809A744:
 	cmp r0, #2
 	beq _0809A7A8
@@ -1437,11 +1437,11 @@ _0809AA54:
 	ble _0809AA5A
 	movs r4, #0x11
 _0809AA5A:
-	ldr r0, _0809AA88 @ =0x080FF064
+	ldr r0, _0809AA88 @ =StrMISS
 	adds r1, r5, #0
 	adds r2, r4, #0
 	bl PrintUnicodeString
-	ldr r0, _0809AA8C @ =0x080FF06C
+	ldr r0, _0809AA8C @ =StrSEC
 	adds r1, r5, #2
 	adds r4, #1
 	adds r2, r4, #0
@@ -1457,8 +1457,8 @@ _0809AA5A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809AA88: .4byte 0x080FF064
-_0809AA8C: .4byte 0x080FF06C
+_0809AA88: .4byte StrMISS
+_0809AA8C: .4byte StrSEC
 
 	thumb_func_start FUN_0809aa90
 FUN_0809aa90: @ 0x0809AA90
@@ -1516,12 +1516,12 @@ _0809AAE0:
 	lsls r2, r4, #0x10
 	lsrs r2, r2, #0x10
 	bl PrintMinigameNumber
-	ldr r0, _0809AB20 @ =0x080FF070
+	ldr r0, _0809AB20 @ =StrCOMBO
 	adds r1, r5, #2
 	adds r2, r4, #0
 	bl PrintUnicodeString
 _0809AAFC:
-	ldr r0, _0809AB24 @ =0x080FF078
+	ldr r0, _0809AB24 @ =StrPlusSEC
 	adds r4, #1
 	adds r1, r5, #0
 	adds r2, r4, #0
@@ -1538,8 +1538,8 @@ _0809AAFC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809AB20: .4byte 0x080FF070
-_0809AB24: .4byte 0x080FF078
+_0809AB20: .4byte StrCOMBO
+_0809AB24: .4byte StrPlusSEC
 
 	thumb_func_start FUN_0809ab28
 FUN_0809ab28: @ 0x0809AB28
@@ -1765,7 +1765,7 @@ _0809AC7A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809ACD4: .4byte 0x0836A77E
+_0809ACD4: .4byte sMotions+(6*2)
 _0809ACD8: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809acdc
@@ -1851,7 +1851,7 @@ _0809AD2A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809AD84: .4byte 0x0836A784
+_0809AD84: .4byte sMotions+(9*2)
 _0809AD88: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809ad8c

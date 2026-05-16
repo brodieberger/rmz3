@@ -4,96 +4,6 @@
 	
 	.text
 
-	thumb_func_start Lamplort_Update
-Lamplort_Update: @ 0x0806C390
-	push {r4, lr}
-	adds r4, r0, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #2
-	ands r0, r1
-	cmp r0, #0
-	bne _0806C3AC
-	adds r0, r4, #0
-	bl FUN_0806ce5c
-	cmp r0, #0
-	bne _0806C3CC
-_0806C3AC:
-	ldr r1, _0806C3C8 @ =gEnemyFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #2
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #8]
-	str r0, [r4, #0x14]
-	adds r0, r4, #0
-	bl Lamplort_Die
-	b _0806C43C
-	.align 2, 0
-_0806C3C8: .4byte gEnemyFnTable
-_0806C3CC:
-	adds r0, r4, #0
-	bl IsFrozen
-	cmp r0, #0
-	beq _0806C3F2
-	ldr r1, [r4, #0x2c]
-	adds r1, #0xb4
-	ldr r0, [r1]
-	movs r2, #2
-	orrs r0, r2
-	str r0, [r1]
-	adds r0, r4, #0
-	adds r0, #0xc0
-	ldr r1, [r0]
-	cmp r1, #0
-	bne _0806C3F2
-	movs r0, #1
-	strb r0, [r4, #0xd]
-	strb r1, [r4, #0xe]
-_0806C3F2:
-	ldr r0, _0806C428 @ =0x08366540
-	ldrb r1, [r4, #0xd]
-	lsls r1, r1, #2
-	adds r1, r1, r0
-	ldr r1, [r1]
-	adds r0, r4, #0
-	bl _call_via_r1
-	adds r0, r4, #0
-	bl lamplort_0806ce08
-	ldrb r0, [r4, #0xd]
-	cmp r0, #7
-	beq _0806C42C
-	cmp r0, #9
-	beq _0806C42C
-	adds r0, r4, #0
-	bl IsFrozen
-	cmp r0, #0
-	beq _0806C42C
-	ldrb r1, [r4, #0xd]
-	adds r0, r4, #0
-	adds r0, #0xba
-	strb r1, [r0]
-	b _0806C43C
-	.align 2, 0
-_0806C428: .4byte 0x08366540
-_0806C42C:
-	ldr r0, _0806C444 @ =0x08366568
-	ldrb r1, [r4, #0xd]
-	lsls r1, r1, #2
-	adds r1, r1, r0
-	ldr r1, [r1]
-	adds r0, r4, #0
-	bl _call_via_r1
-_0806C43C:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806C444: .4byte 0x08366568
-
 	thumb_func_start Lamplort_Die
 Lamplort_Die: @ 0x0806C448
 	push {r4, r5, r6, r7, lr}
@@ -587,7 +497,7 @@ _0806C842:
 _0806C84C:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806C874 @ =0x08366590
+	ldr r1, _0806C874 @ =sCollisions
 	bl SetDDP
 	movs r1, #0xc8
 	lsls r1, r1, #5
@@ -603,7 +513,7 @@ _0806C84C:
 	orrs r0, r1
 	b _0806C87E
 	.align 2, 0
-_0806C874: .4byte 0x08366590
+_0806C874: .4byte sCollisions
 _0806C878:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -670,7 +580,7 @@ _0806C8DC:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806C91C @ =0x08366590
+	ldr r1, _0806C91C @ =sCollisions
 	bl SetDDP
 	ldr r1, [r4, #0x2c]
 	adds r1, #0xb4
@@ -693,7 +603,7 @@ _0806C8DC:
 	b _0806C92A
 	.align 2, 0
 _0806C918: .4byte 0x00001904
-_0806C91C: .4byte 0x08366590
+_0806C91C: .4byte sCollisions
 _0806C920: .4byte 0x0000011F
 _0806C924: .4byte gStageRun+232
 _0806C928:
@@ -798,7 +708,7 @@ _0806C9D4:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806C9FC @ =0x08366590
+	ldr r1, _0806C9FC @ =sCollisions
 	bl SetDDP
 	adds r0, r4, #0
 	adds r0, #0xbc
@@ -811,7 +721,7 @@ _0806C9D4:
 	b _0806CA06
 	.align 2, 0
 _0806C9F8: .4byte 0x00001906
-_0806C9FC: .4byte 0x08366590
+_0806C9FC: .4byte sCollisions
 _0806CA00:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -935,7 +845,7 @@ _0806CAD8:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806CB0C @ =0x08366590
+	ldr r1, _0806CB0C @ =sCollisions
 	bl SetDDP
 	ldr r1, [r4, #0x2c]
 	adds r1, #0xb4
@@ -954,7 +864,7 @@ _0806CAD8:
 	b _0806CB16
 	.align 2, 0
 _0806CB08: .4byte 0x00001908
-_0806CB0C: .4byte 0x08366590
+_0806CB0C: .4byte sCollisions
 _0806CB10:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1016,7 +926,7 @@ _0806CB6C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806CB94 @ =0x08366590
+	ldr r1, _0806CB94 @ =sCollisions
 	bl SetDDP
 	adds r0, r4, #0
 	adds r0, #0xbc
@@ -1029,7 +939,7 @@ _0806CB6C:
 	b _0806CB9E
 	.align 2, 0
 _0806CB90: .4byte 0x00001901
-_0806CB94: .4byte 0x08366590
+_0806CB94: .4byte sCollisions
 _0806CB98:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1129,7 +1039,7 @@ _0806CC20:
 	b _0806CC52
 	.align 2, 0
 _0806CC44: .4byte 0x00001902
-_0806CC48: .4byte 0x08366608
+_0806CC48: .4byte sCollisions+(5*24)
 _0806CC4C:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1185,7 +1095,7 @@ _0806CCA8:
 	strb r0, [r4, #0x12]
 	cmp r1, #2
 	bne _0806CCC0
-	ldr r0, _0806CCD4 @ =0x080FF004
+	ldr r0, _0806CCD4 @ =Action_ARRAY_080ff004
 	ldrb r1, [r4, #0x13]
 	lsls r1, r1, #1
 	adds r1, r1, r0
@@ -1202,12 +1112,12 @@ _0806CCC0:
 	bl SetDDP
 	b _0806CCE6
 	.align 2, 0
-_0806CCD4: .4byte 0x080FF004
-_0806CCD8: .4byte 0x08366608
+_0806CCD4: .4byte Action_ARRAY_080ff004
+_0806CCD8: .4byte sCollisions+(5*24)
 _0806CCDC:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0806CD08 @ =0x08366590
+	ldr r1, _0806CD08 @ =sCollisions
 	bl SetDDP
 _0806CCE6:
 	ldrb r0, [r4, #0x13]
@@ -1227,7 +1137,7 @@ _0806CCE6:
 	orrs r0, r1
 	b _0806CD12
 	.align 2, 0
-_0806CD08: .4byte 0x08366590
+_0806CD08: .4byte sCollisions
 _0806CD0C:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1263,271 +1173,3 @@ _0806CD40:
 	bx r0
 	.align 2, 0
 
-	thumb_func_start true_0806cd48
-true_0806cd48: @ 0x0806CD48
-	movs r0, #1
-	bx lr
-
-	thumb_func_start FUN_0806cd4c
-FUN_0806cd4c: @ 0x0806CD4C
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	ldrb r0, [r4, #0xe]
-	cmp r0, #0
-	bne _0806CD72
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _0806CD9C @ =0x08366638
-	bl SetDDP
-	ldr r1, [r4, #0x2c]
-	adds r1, #0xb4
-	ldr r0, [r1]
-	movs r2, #2
-	orrs r0, r2
-	str r0, [r1]
-	ldrb r0, [r4, #0xe]
-	adds r0, #1
-	strb r0, [r4, #0xe]
-_0806CD72:
-	adds r5, r4, #0
-	adds r5, #0xc0
-	ldr r0, [r5]
-	bl isKilled
-	cmp r0, #0
-	beq _0806CD94
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _0806CDA0 @ =0x08366590
-	bl SetDDP
-	movs r1, #0
-	str r1, [r5]
-	movs r0, #1
-	strb r0, [r4, #0xd]
-	strb r1, [r4, #0xe]
-_0806CD94:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806CD9C: .4byte 0x08366638
-_0806CDA0: .4byte 0x08366590
-
-	thumb_func_start FUN_0806cda4
-FUN_0806cda4: @ 0x0806CDA4
-	movs r0, #1
-	bx lr
-
-	thumb_func_start FUN_0806cda8
-FUN_0806cda8: @ 0x0806CDA8
-	bx lr
-	.align 2, 0
-
-	thumb_func_start FUN_0806cdac
-FUN_0806cdac: @ 0x0806CDAC
-	movs r0, #1
-	bx lr
-
-	thumb_func_start FUN_0806cdb0
-FUN_0806cdb0: @ 0x0806CDB0
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	ldrb r5, [r4, #0xe]
-	cmp r5, #0
-	bne _0806CDD6
-	adds r0, #0x74
-	ldr r1, _0806CE00 @ =0x08366638
-	bl SetDDP
-	ldr r1, [r4, #0x2c]
-	adds r1, #0xb4
-	ldr r0, [r1]
-	movs r2, #2
-	orrs r0, r2
-	str r0, [r1]
-	str r5, [r4, #0x60]
-	ldrb r0, [r4, #0xe]
-	adds r0, #1
-	strb r0, [r4, #0xe]
-_0806CDD6:
-	adds r5, r4, #0
-	adds r5, #0xc0
-	ldr r0, [r5]
-	bl isKilled
-	cmp r0, #0
-	beq _0806CDF8
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _0806CE04 @ =0x08366590
-	bl SetDDP
-	movs r1, #0
-	str r1, [r5]
-	movs r0, #1
-	strb r0, [r4, #0xd]
-	strb r1, [r4, #0xe]
-_0806CDF8:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806CE00: .4byte 0x08366638
-_0806CE04: .4byte 0x08366590
-
-	thumb_func_start lamplort_0806ce08
-lamplort_0806ce08: @ 0x0806CE08
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	adds r6, r4, #0
-	adds r6, #0xc0
-	ldr r5, [r6]
-	cmp r5, #0
-	bne _0806CE52
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #1
-	ands r0, r1
-	cmp r0, #0
-	beq _0806CE52
-	ldr r2, _0806CE44 @ =0x08366650
-	movs r0, #0
-	adds r1, r4, #0
-	bl ApplyElementEffect
-	str r0, [r6]
-	cmp r0, #0
-	beq _0806CE52
-	adds r0, r4, #0
-	adds r0, #0x97
-	ldrb r0, [r0]
-	movs r1, #0xf0
-	ands r1, r0
-	cmp r1, #0x10
-	bne _0806CE48
-	movs r0, #7
-	b _0806CE4E
-	.align 2, 0
-_0806CE44: .4byte 0x08366650
-_0806CE48:
-	cmp r1, #0x30
-	bne _0806CE52
-	movs r0, #9
-_0806CE4E:
-	strb r0, [r4, #0xd]
-	strb r5, [r4, #0xe]
-_0806CE52:
-	movs r0, #1
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-
-	thumb_func_start FUN_0806ce5c
-FUN_0806ce5c: @ 0x0806CE5C
-	movs r0, #1
-	bx lr
-
-	thumb_func_start FUN_0806ce60
-FUN_0806ce60: @ 0x0806CE60
-	push {r4, lr}
-	adds r3, r0, #0
-	adds r4, r1, #0
-	ldr r0, [r3, #0xc]
-	ldr r0, [r0, #4]
-	ldrb r0, [r0, #4]
-	cmp r0, #3
-	beq _0806CE78
-	cmp r0, #0xe
-	beq _0806CE78
-	cmp r0, #0xf
-	bne _0806CEA2
-_0806CE78:
-	ldr r2, [r3, #0x2c]
-	adds r0, r2, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #2
-	ands r0, r1
-	cmp r0, #0
-	beq _0806CEA2
-	ldr r1, [r2, #0x54]
-	ldr r0, [r4]
-	cmp r1, r0
-	bge _0806CE9A
-	adds r1, r2, #0
-	adds r1, #0xbb
-	movs r0, #0xff
-	b _0806CEA0
-_0806CE9A:
-	adds r1, r2, #0
-	adds r1, #0xbb
-	movs r0, #0xfe
-_0806CEA0:
-	strb r0, [r1]
-_0806CEA2:
-	ldr r0, [r3, #4]
-	ldrb r0, [r0]
-	cmp r0, #2
-	bne _0806CF20
-	ldr r0, [r3, #0xc]
-	ldr r0, [r0, #4]
-	ldr r0, [r0, #4]
-	ldr r1, _0806CEEC @ =0x000200FF
-	ands r0, r1
-	subs r1, #0xfd
-	cmp r0, r1
-	bne _0806CF20
-	ldr r2, [r3, #0x2c]
-	ldrb r0, [r2, #0xd]
-	subs r0, #5
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #1
-	bls _0806CF20
-	ldrb r1, [r2, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	lsls r0, r0, #0x18
-	lsrs r3, r0, #0x18
-	cmp r3, #0
-	bne _0806CEF4
-	ldr r0, _0806CEF0 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r2, #0x54]
-	cmp r1, r0
-	bge _0806CF08
-	movs r0, #5
-	strb r0, [r2, #0xd]
-	strb r3, [r2, #0xe]
-	b _0806CF08
-	.align 2, 0
-_0806CEEC: .4byte 0x000200FF
-_0806CEF0: .4byte pZero2
-_0806CEF4:
-	ldr r0, _0806CF28 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r2, #0x54]
-	cmp r1, r0
-	ble _0806CF08
-	movs r1, #0
-	movs r0, #5
-	strb r0, [r2, #0xd]
-	strb r1, [r2, #0xe]
-_0806CF08:
-	adds r0, r2, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #2
-	ands r0, r1
-	cmp r0, #0
-	beq _0806CF20
-	adds r1, r2, #0
-	adds r1, #0xa4
-	movs r0, #1
-	strh r0, [r1]
-_0806CF20:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806CF28: .4byte pZero2

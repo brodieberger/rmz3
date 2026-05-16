@@ -888,7 +888,7 @@ _0805B670:
 	bne _0805B698
 	movs r0, #0x9a
 	lsls r0, r0, #3
-	ldr r2, _0805B694 @ =0x080FEFB8
+	ldr r2, _0805B694 @ =unk_080fefb8
 	ldrb r1, [r4, #0x12]
 	subs r1, #1
 	adds r1, r1, r2
@@ -898,7 +898,7 @@ _0805B670:
 	bl createGoldOmega1Laser
 	b _0805B6AE
 	.align 2, 0
-_0805B694: .4byte 0x080FEFB8
+_0805B694: .4byte unk_080fefb8
 _0805B698:
 	movs r0, #0x9a
 	lsls r0, r0, #3

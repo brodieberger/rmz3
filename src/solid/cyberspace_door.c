@@ -7,6 +7,7 @@
 
 struct CyberDoorObject {
   OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
   struct MetaspriteHeader* sprites;  // 0xB4
   u8 unk_bc[12];                     // 0xBC
 };
@@ -176,7 +177,7 @@ static void CyberSpaceDoor_Disappear(struct Solid* p) {
   s32* border;
   s32 val;
   if (((p->s).work[1] != 0) && FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
-    if ((W_TERRAIN_V2.id & 0x7F) != STAGE_AREA_X2) {
+    if ((gOverworld.terrain.id & 0x7F) != STAGE_AREA_X2) {
       border = &gStageRun.vm.camera.right;
       val = PIXEL(15360);
     } else {

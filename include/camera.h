@@ -42,7 +42,7 @@ struct Camera {
   u8 unk_24[4];
   struct Coord base;              // カメラの始点 画面の振動で利用
   struct Coord target;            // .coordがあるべき位置 .flagsによって、ここに.coordを徐々に近づけたり、一気にここに.coordがワープするよう設定する
-  struct Coord viewport;          // 現在の画面中央
+  struct Coord viewport;          // 0x38, 現在の画面中央
   struct Coord forceScrollSpeed;  // 強制スクロールの速度
   struct Coord* zero;
   s32 unk_left;

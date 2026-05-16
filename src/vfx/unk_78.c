@@ -2,9 +2,16 @@
 #include "global.h"
 #include "vfx.h"
 
-/*
-  シエルのミニゲームに関係
-*/
+// シエルのミニゲームに関係
+struct VFX78 {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u8 unk_74[8];  // 0x74
+  u8 unk_7c;     // 0x7C
+  u8 unk_7d;     // 0x7D
+  u32 pad80;     // 0x80
+};
+static_assert(sizeof(struct VFX78) == sizeof(struct VFX));
 
 static void Ghost78_Init(struct VFX* p);
 static void Ghost78_Update(struct VFX* p);
@@ -20,31 +27,27 @@ const VFXRoutine gGhost78Routine = {
 };
 // clang-format on
 
-void CreateGhost78_1(struct Entity* p, struct Coord* c, u8 r2, u8 r3) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_078);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).unk_28 = p;
-    (g->s).coord = *c;
-    (g->s).work[0] = r2;
-    (g->s).work[1] = r3;
+void CreateGhost78_1(struct Entity* e, struct Coord* c, u8 r2, u8 r3) {
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_078);
+    p->tileNum = 0, p->palID = 0;
+    p->unk_28 = e;
+    p->coord = *c;
+    p->work[0] = r2, p->work[1] = r3;
   }
 }
 
 void CreateGhost78_2(struct Coord* c, u8 r1, u8 r2, u8 r3) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_078);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).coord = *c;
-    (g->s).work[0] = r1;
-    (g->s).work[1] = r2;
-    *((u8*)&g->props.tmp.unk_7c + 1) = r3;
+  struct VFX78* p = (struct VFX78*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_078);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).coord = *c;
+    (p->s).work[0] = r1, (p->s).work[1] = r2;
+    p->unk_7d = r3;
   }
 }
 

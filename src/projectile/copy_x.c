@@ -13,7 +13,7 @@ const ProjectileRoutine gCopyXProjectileRoutine = {
     [ENTITY_INIT] =      CopyXProjectile_Init,
     [ENTITY_UPDATE] =    CopyXProjectile_Update,
     [ENTITY_DIE] =       CopyXProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

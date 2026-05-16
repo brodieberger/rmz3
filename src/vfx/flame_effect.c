@@ -39,10 +39,7 @@ static void FlameEffect_Init(struct Entity* p) {
   }
   p->taskCol = 0;
   ForceEntityPalette(p, 14);
-
-  RNG_0202f388 = LCG(RNG_0202f388);
-  SET_XFLIP(p, ((RNG_0202f388 >> 16) & 1));
-
+  SET_XFLIP(p, (RANDOM(RNG_0202f388) & 1));
   SetMotion(p, MOTION(SM027_FLAME_EFFECT, 7));
   p->flags |= DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
@@ -67,7 +64,7 @@ _080B4E90:\n\
 	ldrb r0, [r4, #0x12]\n\
 	subs r2, r0, #1\n\
 	strb r2, [r4, #0x12]\n\
-	ldr r0, _080B4ED4 @ =wElement\n\
+	ldr r0, _080B4ED4 @ =gElFxManager\n\
 	ldr r0, [r0]\n\
 	ldr r1, _080B4ED8 @ =0x00FF00FF\n\
 	ands r0, r1\n\
@@ -101,7 +98,7 @@ _080B4ECA:\n\
 	strb r0, [r4, #0xa]\n\
 	b _080B4F08\n\
 	.align 2, 0\n\
-_080B4ED4: .4byte wElement\n\
+_080B4ED4: .4byte gElFxManager\n\
 _080B4ED8: .4byte 0x00FF00FF\n\
 _080B4EDC:\n\
 	ldrb r1, [r4, #0xa]\n\

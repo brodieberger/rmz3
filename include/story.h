@@ -8,15 +8,6 @@
 // Story.id
 #define STAGE_DONE (1 << 5)
 
-// PlayInfo.missionDones
-#define SPACE_CRAFT (1 << 1)
-#define FIRST4 0x3C  // First 4 missions
-#define MISSILE_FACTORY (1 << 6)
-#define MEDIUM3 0x380  // Medium 3 missions
-#define AREA_X2 0x400
-#define LATER4 0x7800
-#define SUB_ARCADIA 0x8000
-
 #define ENEMY_KILLCOUNT(n) (gCurStory.s.counts[29 + n])
 
 #define IS_MISSION (!FLAG(gCurStory.s.gameflags, IS_FREERUN))
@@ -55,7 +46,6 @@ struct PlayInfo {
   u8 suffixIdx[8];  // 0834c9e0 の2つ目のidx(0..7)
   u8 unk_3a[16];
   u8 fusionCount;  // フュージョンエルフを使った回数 リザルトのエルフ使用回数に反映されるが、減点には反映せず
-  u8 _[3];
 };  // 80 bytes
 
 // これ全部 bitfield で struct じゃなくて u8[84] の方が適切かもしれん
@@ -89,6 +79,5 @@ extern struct Story96 gCurStory;
 void saveCurStory(struct Story* dst);
 void resetCurStory(u8 stageID, struct Story* src);
 void FUN_08019678(struct Story* p);
-void ClearPlayInfo(struct PlayInfo* p);
 
 #endif  // GUARD_RMZ3_STORY_H

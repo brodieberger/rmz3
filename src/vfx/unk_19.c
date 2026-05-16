@@ -29,8 +29,7 @@ struct VFX* CreateGhost19_1(struct Coord* c, struct Coord* d) {
   if (g != NULL) {
     (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_MEGAMILPA_DEAD);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
+    (g->s).tileNum = 0, (g->s).palID = 0;
 
     x = c->x;
     y = c->y;
@@ -47,20 +46,17 @@ struct VFX* CreateGhost19_1(struct Coord* c, struct Coord* d) {
   return g;
 }
 
-void CreateGhost19_2(struct Entity* p, struct Coord* c) {
+void CreateGhost19_2(struct Entity* e, struct Coord* c) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-    if (g != NULL) {
-      (g->s).taskCol = 1;
-      INIT_VFX_ROUTINE(g, VFX_MEGAMILPA_DEAD);
-      (g->s).tileNum = 0;
-      (g->s).palID = 0;
-      (g->s).work[0] = 1;  // メガミルパ本体
-      (g->s).work[1] = i;
-      (g->s).unk_28 = p;
-      (g->s).coord.x = c->x;
-      (g->s).coord.y = c->y;
+    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    if (p != NULL) {
+      p->taskCol = 1;
+      INIT_VFX_ROUTINE(p, VFX_MEGAMILPA_DEAD);
+      p->tileNum = 0, p->palID = 0;
+      p->work[0] = 1, p->work[1] = i;
+      p->unk_28 = (void*)e;
+      p->coord.x = c->x, p->coord.y = c->y;
     }
   }
 }

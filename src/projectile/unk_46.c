@@ -13,7 +13,7 @@ const ProjectileRoutine gProjectile46Routine = {
     [ENTITY_INIT] =      FUN_080b22c8,
     [ENTITY_UPDATE] =    FUN_080b22e0,
     [ENTITY_DIE] =       FUN_080b22f8,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

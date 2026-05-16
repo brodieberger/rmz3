@@ -3,32 +3,37 @@
 #include "vfx.h"
 
 // レジスタンスベースに振ってくる雪1つ1つ
+struct SnowVFX {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u32 unk_0;      // 0x74
+  u8 unk_78[12];  // 0x78
+};
+static_assert(sizeof(struct SnowVFX) == sizeof(struct VFX));
 
 static void Snow_Init(struct VFX* p);
-static void Snow_Update(struct VFX* p);
-static void Snow_Die(struct VFX* p);
+static void Snow_Update(struct SnowVFX* p);
+static void Snow_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gSnowRoutine = {
-    [ENTITY_INIT] =      Snow_Init,
-    [ENTITY_UPDATE] =    Snow_Update,
-    [ENTITY_DIE] =       Snow_Die,
+    [ENTITY_INIT] =      (void*)Snow_Init,
+    [ENTITY_UPDATE] =    (void*)Snow_Update,
+    [ENTITY_DIE] =       (void*)Snow_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 void CreateSnow(struct Coord* c, u32 n) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_080);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).coord = *c;
-    (g->props).snow.unk_0 = n;
-    (g->s).work[0] = 0;
-    (g->s).work[1] = 0;
+  struct SnowVFX* p = (struct SnowVFX*)AllocEntityFirst(gVFXHeaderPtr);
+  if (p != NULL) {
+    (p->s).taskCol = 1;
+    INIT_VFX_ROUTINE(p, VFX_UNK_080);
+    (p->s).tileNum = 0, (p->s).palID = 0;
+    (p->s).coord = *c;
+    p->unk_0 = n;
+    (p->s).work[0] = 0, (p->s).work[1] = 0;
   }
 }
 
@@ -158,9 +163,7 @@ _080C925E:\n\
  .syntax divided\n");
 }
 
-// --------------------------------------------
-
-static void Snow_Update(struct VFX* p) {
+static void Snow_Update(struct SnowVFX* p) {
   u32 unk_0;
   UpdateMotionGraphic(&p->s);
   (p->s).coord.y += (p->s).d.y;
@@ -169,16 +172,13 @@ static void Snow_Update(struct VFX* p) {
   (p->s).coord.x += (p->s).d.x;
 
   (p->s).d.x += PIXEL(1);
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.x -= (RNG_0202f388 >> 16) & 0x1FF;
+  (p->s).d.x -= RANDOM(RNG_0202f388) & 0x1FF;
 
-  unk_0 = (p->props).snow.unk_0--;
+  unk_0 = p->unk_0--;
   if (unk_0 == 0) {
     SET_VFX_ROUTINE(p, ENTITY_DIE);
-    Snow_Die(p);
+    Snow_Die((void*)p);
   }
 }
 
-// --------------------------------------------
-
-static void Snow_Die(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void Snow_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }

@@ -237,6 +237,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x083672b8
 static const struct Collision sCollisions[13] = {
     {
       kind : DRP,
@@ -361,4 +362,4 @@ static const motion_t sMotions[4] = {
     MOTION(SM046_VOLCAIRE, 10),
     MOTION(SM046_VOLCAIRE, 11),
     MOTION(SM046_VOLCAIRE, 8),
-};
+};  // 0x083673fc

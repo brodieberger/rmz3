@@ -301,7 +301,7 @@ _080FA7B8:
 	bl CreateMissionAlert
 	str r0, [r5, #0x10]
 	movs r0, #0xb3
-	bl fadeoutBGM
+	bl FadeOutBGM
 	ldrh r0, [r5, #6]
 	adds r0, #1
 	strh r0, [r5, #6]

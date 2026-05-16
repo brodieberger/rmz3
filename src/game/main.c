@@ -11,10 +11,10 @@
 #include "mission.h"
 #include "overworld.h"
 #include "pickup.h"
+#include "renderer.h"
 #include "sound.h"
 #include "story.h"
 #include "system.h"
-#include "task.h"
 #include "text.h"
 #include "weapon.h"
 #include "zero.h"
@@ -25,7 +25,8 @@ static const GameLoopFunc sGameLoops[16];
 static void PostProcess_CyberSpaceColorFilter(void);
 static void FUN_080ee328(u32* pal, u32 length, u32 r2, u16* lut);
 
-void FUN_080250b8(void);
+void InitElFxManager(void);
+void UpdateElFxManager(void);
 void FUN_08019678(struct Story* p);
 
 const u16 u16_ARRAY_083860b0[64] = {
@@ -326,7 +327,7 @@ static void GameLoop_PreOverworld(struct GameState* p) {
   gWindowRegBuffer.winin[2] = 0xFF;
   wMOSAIC = 0;
   PALETTE16(0) = RGB_BLACK;
-  gVideoRegBuffer.dispcnt &= BG_MODE_0;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   *(u32*)gVideoRegBuffer.bgofs[0] = 0;
@@ -348,7 +349,7 @@ static void GameLoop_PreOverworld(struct GameState* p) {
   InitSolidHeader(&p->entityHeaders[ENTITY_SOLID], gSolids, 22);
   InitPickupHeader(&p->entityHeaders[ENTITY_ITEM], gPickups, 10);
   InitElfHeader(&p->entityHeaders[ENTITY_ELF], gElfEntities, 16);
-  FUN_080250b8();
+  InitElFxManager();
   ResetHUD((u16*)gGameState.bg0);
   ClearTextWindow((u16*)gGameState.bg0);
   SaveZeroStatus(p->z2, &(p->save).status);
@@ -416,7 +417,7 @@ NON_MATCH static void GameLoop_Overworld(struct GameState* p) {
         (gMission.unk_00)->playTime++;
       }
     }
-    FUN_0802511c();  // ゼロの属性(エレメント)　によるグラフィックデータ？
+    UpdateElFxManager();  // ゼロの属性(エレメント)　によるグラフィックデータ？
     if (!gPause) {
       UpdateHazardEntities(gSolidHeaderPtr);
       UpdateHazardEntities(gBossHeaderPtr);
@@ -504,7 +505,7 @@ static void GameLoop_OpenMenu(struct GameState* p) {
     ClearAllHitboxes();
     gMatrixCount = 0;
     dst = gWhitePaintFlags;
-    CpuFastFill(0, dst, 32);
+    _CpuFastFill(0, dst, 32);
     OverworldUpdate(TRUE);
     DrawCollidableEntity(gSolidHeaderPtr, tm);
     DrawCollidableEntity(gBossHeaderPtr, tm);
@@ -518,9 +519,6 @@ static void GameLoop_OpenMenu(struct GameState* p) {
     CameraUpdate(TRUE);
     DrawHUD(p);
     UpdateTextWindow();
-    {
-      vu32 _;
-    }
   }
 }
 
@@ -570,7 +568,7 @@ NON_MATCH static void GameLoop_CloseMenu(struct GameState* p) {
   ClearAllHitboxes();
   gMatrixCount = 0;
   dst = gWhitePaintFlags;
-  CpuFastFill(0, dst, 32);
+  _CpuFastFill(0, dst, 32);
   OverworldUpdate(TRUE);
   DrawCollidableEntity(gSolidHeaderPtr, tm);
   DrawCollidableEntity(gBossHeaderPtr, tm);
@@ -584,9 +582,6 @@ NON_MATCH static void GameLoop_CloseMenu(struct GameState* p) {
   CameraUpdate(TRUE);
   DrawHUD(p);
   UpdateTextWindow();
-  {
-    vu32 _;
-  }
 
   p->frames += 2;
   gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = p->frames;
@@ -808,24 +803,20 @@ static void GameLoop_StartDemoPlay(struct GameState* g) {
   (g->save).status.keyMap.unk_a = 0;
 
   status2 = &gGameState.save.status;
-  status2->unlockedWeapon |= (1 << 2);
-  status2->unlockedWeapon |= (1 << 3);
+  status2->unlockedWeapon |= (1 << WEAPON_ROD);
+  status2->unlockedWeapon |= (1 << WEAPON_SHIELD);
 
   if ((g->save).stageID == STAGE_VOLCANO) {
-    status2->mainWeapon = WEAPON_ROD;
-    status2->subWeapon = WEAPON_SABER;
+    status2->weapons[0] = WEAPON_ROD, status2->weapons[1] = WEAPON_SABER;
 
   } else if ((g->save).stageID == STAGE_OCEAN) {
-    status2->mainWeapon = WEAPON_BUSTER;
-    status2->subWeapon = WEAPON_SABER;
+    status2->weapons[0] = WEAPON_BUSTER, status2->weapons[1] = WEAPON_SABER;
 
   } else if ((g->save).stageID == STAGE_REPAIR_FACTORY) {
-    status2->mainWeapon = WEAPON_SABER;
-    status2->subWeapon = WEAPON_ROD;
+    status2->weapons[0] = WEAPON_SABER, status2->weapons[1] = WEAPON_ROD;
 
   } else {
-    status2->mainWeapon = WEAPON_SHIELD;
-    status2->subWeapon = WEAPON_SABER;
+    status2->weapons[0] = WEAPON_SHIELD, status2->weapons[1] = WEAPON_SABER;
     status2->body = BODY_CHIP_FLAME;
     status2->element = ELEMENT_FLAME;
   }
@@ -846,7 +837,7 @@ static void GameLoop_SkieEventScene(struct GameState* p) {
   gWindowRegBuffer.winin[2] = 0xFF;
   wMOSAIC = 0;
   PALETTE16(0) = RGB_BLACK;
-  gVideoRegBuffer.dispcnt &= BG_MODE_0;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   LoadAsciiBold();

@@ -998,7 +998,7 @@ _08052D90:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08052E0C @ =0x080FEF5A
+	ldr r5, _08052E0C @ =CubitEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -1023,7 +1023,7 @@ _08052DFC: .4byte gMission
 _08052E00: .4byte RNG_0202f388
 _08052E04: .4byte 0x000343FD
 _08052E08: .4byte 0x00269EC3
-_08052E0C: .4byte 0x080FEF5A
+_08052E0C: .4byte CubitEXModes
 _08052E10:
 	adds r0, r6, #0
 	bl cubit_08054674
@@ -1038,7 +1038,7 @@ _08052E10:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08052E64 @ =0x080FEF38
+	ldr r5, _08052E64 @ =CubitModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -1062,7 +1062,7 @@ _08052E10:
 _08052E58: .4byte RNG_0202f388
 _08052E5C: .4byte 0x000343FD
 _08052E60: .4byte 0x00269EC3
-_08052E64: .4byte 0x080FEF38
+_08052E64: .4byte CubitModes
 _08052E68:
 	ldr r0, _08052E94 @ =gMission
 	ldr r0, [r0]
@@ -1082,14 +1082,14 @@ _08052E68:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08052EA4 @ =0x080FEF5A
+	ldr r5, _08052EA4 @ =CubitEXModes
 	b _08052EC6
 	.align 2, 0
 _08052E94: .4byte gMission
 _08052E98: .4byte RNG_0202f388
 _08052E9C: .4byte 0x000343FD
 _08052EA0: .4byte 0x00269EC3
-_08052EA4: .4byte 0x080FEF5A
+_08052EA4: .4byte CubitEXModes
 _08052EA8:
 	adds r0, r6, #0
 	bl cubit_08054674
@@ -1104,7 +1104,7 @@ _08052EA8:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _08052F04 @ =0x080FEF38
+	ldr r5, _08052F04 @ =CubitModes
 _08052EC6:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -1136,7 +1136,7 @@ _08052EEC:
 _08052EF8: .4byte RNG_0202f388
 _08052EFC: .4byte 0x000343FD
 _08052F00: .4byte 0x00269EC3
-_08052F04: .4byte 0x080FEF38
+_08052F04: .4byte CubitModes
 
 	thumb_func_start FUN_08052f08
 FUN_08052f08: @ 0x08052F08
@@ -1454,7 +1454,7 @@ _0805316E:
 	ldr r2, _08053208 @ =0xFFFFD800
 	adds r0, r0, r2
 	str r0, [r6, #0x58]
-	ldr r1, _0805320C @ =wElement
+	ldr r1, _0805320C @ =gElFxManager
 	movs r0, #4
 	strb r0, [r1, #2]
 	ldrb r0, [r6, #0xe]
@@ -1516,7 +1516,7 @@ _0805319A:
 _08053200: .4byte 0x0000B019
 _08053204: .4byte 0x08363A20
 _08053208: .4byte 0xFFFFD800
-_0805320C: .4byte wElement
+_0805320C: .4byte gElFxManager
 _08053210:
 	ldrb r1, [r6, #0xa]
 	movs r0, #0xef
@@ -1653,7 +1653,7 @@ _08053308:
 	adds r0, #0xc8
 	movs r2, #0
 	strb r2, [r0]
-	ldr r1, _08053364 @ =wElement
+	ldr r1, _08053364 @ =gElFxManager
 	movs r0, #4
 	strb r0, [r1, #2]
 	adds r0, r6, #0
@@ -1693,7 +1693,7 @@ _0805334E:
 	adds r0, #1
 	b _080533AC
 	.align 2, 0
-_08053364: .4byte wElement
+_08053364: .4byte gElFxManager
 _08053368: .4byte 0x0000B01A
 _0805336C: .4byte sCollisions+(24*1)
 _08053370: .4byte 0xFFFFC400
@@ -1991,7 +1991,7 @@ _080535B8:
 	bl SetDDP
 	adds r1, r5, #0
 	adds r1, #0xbc
-	ldr r2, _08053630 @ =0x080FEF88
+	ldr r2, _08053630 @ =Coord_ARRAY_080fef88
 	ldrb r0, [r5, #0x13]
 	lsls r0, r0, #3
 	adds r0, r0, r2
@@ -2040,7 +2040,7 @@ _08053622:
 	b _08053706
 	.align 2, 0
 _0805362C: .4byte sCollisions
-_08053630: .4byte 0x080FEF88
+_08053630: .4byte Coord_ARRAY_080fef88
 _08053634:
 	adds r1, r5, #0
 	adds r1, #0xcc

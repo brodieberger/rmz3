@@ -2,7 +2,7 @@
 #include "global.h"
 #include "text.h"
 
-void OverworldLoop_080f2c24(struct GameState *g) {
+void OverworldLoop_080f2c24(struct GameState* g) {
   switch (g->mode[3]) {
     default: {
       OverworldLoop_ManageSaveData(g);
@@ -18,7 +18,7 @@ void OverworldLoop_080f2c24(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage1(0x1302);
+      PrintOptionMessage1(0x1302);  // 今までのことをキロクしておくわね… はい/いいえ
       g->mode[3]++;
       FALLTHROUGH;
     }

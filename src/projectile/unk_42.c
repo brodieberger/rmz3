@@ -11,7 +11,7 @@ const ProjectileRoutine gProjectile42Routine = {
     [ENTITY_INIT] =      Projectile42_Init,
     [ENTITY_UPDATE] =    Projectile42_Update,
     [ENTITY_DIE] =       Projectile42_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

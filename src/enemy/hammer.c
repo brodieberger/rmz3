@@ -23,18 +23,16 @@ const EnemyRoutine gHammerRoutine = {
 };
 // clang-format on
 
-struct Enemy* unused_080752cc(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+struct Entity* unused_080752cc(struct Coord* c, u8 n) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
+    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_HAMMER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 0;
+    p->tileNum = 0, p->palID = 0;
+    p->flags2 |= WHITE_PAINTABLE;
+    p->invincibleID = p->uniqueID;
+    p->coord = *c;
+    p->work[0] = n, p->work[1] = 0;
   }
   return p;
 }
@@ -44,13 +42,11 @@ static struct Enemy* FUN_0807532c(struct Entity* e, u8 n) {
   if (p != NULL) {
     (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_HAMMER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
+    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).flags2 |= WHITE_PAINTABLE;
     (p->s).invincibleID = (p->s).uniqueID;
     (p->s).unk_28 = e;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 1;
+    (p->s).work[0] = n, (p->s).work[1] = 1;
   }
   return p;
 }

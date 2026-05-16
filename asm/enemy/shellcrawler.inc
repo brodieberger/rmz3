@@ -381,7 +381,7 @@ Shellcrawler_Update: @ 0x0809605C
 	push {r4, r5, r6, lr}
 	sub sp, #8
 	adds r4, r0, #0
-	ldr r0, _080960AC @ =0x080FF05C
+	ldr r0, _080960AC @ =Coord_080ff05c
 	ldr r1, [r0, #4]
 	ldr r0, [r0]
 	str r0, [sp]
@@ -420,7 +420,7 @@ _08096084:
 	movs r0, #1
 	b _080960C0
 	.align 2, 0
-_080960AC: .4byte 0x080FF05C
+_080960AC: .4byte Coord_080ff05c
 _080960B0: .4byte gEnemyFnTable
 _080960B4:
 	movs r0, #0x80

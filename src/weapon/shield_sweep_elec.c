@@ -35,11 +35,11 @@ void ElecShieldSweep_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gElecShieldSweepRoutine = {
-    [ENTITY_INIT] =      ElecShieldSweep_Init,
-    [ENTITY_UPDATE] =    ElecShieldSweep_Update,
-    [ENTITY_DIE] =       ElecShieldSweep_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)ElecShieldSweep_Init,
+    [ENTITY_UPDATE] =    (void*)ElecShieldSweep_Update,
+    [ENTITY_DIE] =       (void*)ElecShieldSweep_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 

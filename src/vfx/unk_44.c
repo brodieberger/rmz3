@@ -23,12 +23,10 @@ struct Entity* createGhost44(struct Coord* c, u8 kind) {
   struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
     p->taskCol = 1;
-    INIT_VFX_ROUTINE(p, VFX_UNK_044);
+    INIT_VFX_ROUTINE(p, VFX_UNK_MMBN4_044);
     p->tileNum = 0, p->palID = 0;
-    p->work[0] = kind;
-    p->work[1] = 0;
-    (p->coord).x = c->x;
-    (p->coord).y = c->y;
+    p->work[0] = kind, p->work[1] = 0;
+    (p->coord).x = c->x, (p->coord).y = c->y;
   }
   return p;
 }
@@ -47,9 +45,7 @@ static void VFX44_Init(struct Entity* p) {
   (p->d).y = 0;
   p->work[2] = 0xFF;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  p->mode[1] = 0;
-  p->mode[2] = 0;
-  p->mode[3] = 0;
+  p->mode[1] = 0, p->mode[2] = 0, p->mode[3] = 0;
   VFX44_Update((void*)p);
 }
 

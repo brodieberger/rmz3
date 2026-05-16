@@ -10,7 +10,7 @@ struct AfterImage {
   struct Coord c;
   u8 unk_8[8];
 };  // 132 bytes
-static_assert(sizeof(struct AfterImage) == sizeof(struct Entity) + 16);
+static_assert(sizeof(struct AfterImage) == sizeof(struct VFX));
 
 struct Entity* CreateAfterImages(struct Entity* p);
 

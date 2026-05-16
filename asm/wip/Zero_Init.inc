@@ -335,7 +335,7 @@ _08029262:
 	adds r0, r5, #0
 	bl LoadZeroPalette
 	ldrb r0, [r4, #0xe]
-	bl setWramElement
+	bl RequestElementEffectGraphic
 	adds r0, r5, #0
 	bl Zero_Update
 	add sp, #0x44

@@ -102,6 +102,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x0836686c
 static const struct Collision sCollisions[7] = {
     {
       kind : DRP,
@@ -170,6 +171,7 @@ static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
 static const u8 sInitModes[4] = {1, 1, 1, 1};
 
 // clang-format off
+// 0x08366920
 static const motion_t sMotions[13] = {
     MOTION(SM029_LEMMINGLES, 1),
     MOTION(SM029_LEMMINGLES, 0),

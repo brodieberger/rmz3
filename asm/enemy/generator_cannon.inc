@@ -85,14 +85,14 @@ _0808C470:
 	bl IsFrozen
 	cmp r0, #0
 	beq _0808C4DE
-	ldr r1, _0808C4AC @ =0x08368F08
+	ldr r1, _0808C4AC @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _0808C4B0 @ =0x08368F28
+	ldr r1, _0808C4B0 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -108,8 +108,8 @@ _0808C4A6:
 	movs r0, #1
 	b _0808C4E0
 	.align 2, 0
-_0808C4AC: .4byte 0x08368F08
-_0808C4B0: .4byte 0x08368F28
+_0808C4AC: .4byte sUpdates1
+_0808C4B0: .4byte sUpdates2
 _0808C4B4:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -260,7 +260,7 @@ _0808C5D0: .4byte 0x08369114
 _0808C5D4: .4byte 0x00000801
 _0808C5D8: .4byte gSystemSavedataManager
 _0808C5DC: .4byte gCurStory
-_0808C5E0: .4byte 0x08368F58
+_0808C5E0: .4byte sCollisions
 _0808C5E4:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -276,7 +276,7 @@ _0808C5E4:
 	movs r3, #0x14
 	b _0808C620
 	.align 2, 0
-_0808C600: .4byte 0x08368F58
+_0808C600: .4byte sCollisions
 _0808C604:
 	adds r0, r6, #0
 	adds r0, #0xb8
@@ -304,7 +304,7 @@ _0808C620:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C638: .4byte 0x08368F58
+_0808C638: .4byte sCollisions
 _0808C63C: .4byte onCollision
 
 	thumb_func_start GeneratorCannon_Update
@@ -377,14 +377,14 @@ _0808C6AC:
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _0808C6EA
-	ldr r1, _0808C6F0 @ =0x08368F08
+	ldr r1, _0808C6F0 @ =sUpdates1
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
 	ldr r1, [r0]
 	adds r0, r4, #0
 	bl _call_via_r1
-	ldr r1, _0808C6F4 @ =0x08368F28
+	ldr r1, _0808C6F4 @ =sUpdates2
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -396,8 +396,8 @@ _0808C6EA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C6F0: .4byte 0x08368F08
-_0808C6F4: .4byte 0x08368F28
+_0808C6F0: .4byte sUpdates1
+_0808C6F4: .4byte sUpdates2
 
 	thumb_func_start GeneratorCannon_Die
 GeneratorCannon_Die: @ 0x0808C6F8
@@ -522,7 +522,7 @@ _0808C7D0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C7D8: .4byte 0x08368F70
+_0808C7D8: .4byte sCollisions+(1*24)
 _0808C7DC: .4byte 0x00020001
 
 	thumb_func_start generatorcannon_0808c7e0
@@ -592,7 +592,7 @@ _0808C85A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C860: .4byte 0x08368F88
+_0808C860: .4byte sCollisions+(2*24)
 _0808C864: .4byte 0xFFFFF800
 
 	thumb_func_start generatorcannon_0808c868
@@ -635,7 +635,7 @@ _0808C894:
 	strb r5, [r4, #0xe]
 	b _0808C8C8
 	.align 2, 0
-_0808C8B4: .4byte 0x08369090
+_0808C8B4: .4byte sCollisions+(13*24)
 _0808C8B8: .4byte 0x00007106
 _0808C8BC: .4byte gStageRun+232
 _0808C8C0: .4byte 0x00000FFF
@@ -727,7 +727,7 @@ _0808C95E:
 	.align 2, 0
 _0808C964: .4byte 0xFFFFF000
 _0808C968: .4byte 0x0836911C
-_0808C96C: .4byte 0x08368F58
+_0808C96C: .4byte sCollisions
 
 	thumb_func_start generatorcannon_0808c970
 generatorcannon_0808c970: @ 0x0808C970
@@ -786,7 +786,7 @@ _0808C9B2:
 	.align 2, 0
 _0808C9D8: .4byte 0x00007101
 _0808C9DC: .4byte 0x08369120
-_0808C9E0: .4byte 0x08368F58
+_0808C9E0: .4byte sCollisions
 _0808C9E4:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -819,7 +819,7 @@ _0808CA1A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808CA20: .4byte 0x08369090
+_0808CA20: .4byte sCollisions+(13*24)
 _0808CA24: .4byte 0x00007106
 
 	thumb_func_start generatorcannon_0808ca28
@@ -969,7 +969,7 @@ _0808CB34:
 	orrs r0, r1
 	b _0808CB4E
 	.align 2, 0
-_0808CB40: .4byte 0x08368F70
+_0808CB40: .4byte sCollisions+(1*24)
 _0808CB44: .4byte pZero2
 _0808CB48:
 	ldrb r1, [r4, #0xa]
@@ -1159,7 +1159,7 @@ _0808CCA0:
 	.align 2, 0
 _0808CCB0: .4byte gStageRun+232
 _0808CCB4: .4byte 0x00003FFF
-_0808CCB8: .4byte 0x08368F70
+_0808CCB8: .4byte sCollisions+(1*24)
 _0808CCBC: .4byte pZero2
 _0808CCC0:
 	ldrb r1, [r7, #0xa]
@@ -1308,7 +1308,7 @@ _0808CD70:
 	str r1, [r5, #0x60]
 	b _0808CE00
 	.align 2, 0
-_0808CDEC: .4byte 0x083690F0
+_0808CDEC: .4byte sCollisions+(17*24)
 _0808CDF0: .4byte pZero2
 _0808CDF4: .4byte 0xFFFFE800
 _0808CDF8:
@@ -1434,7 +1434,7 @@ _0808CEC4:
 	bx r0
 	.align 2, 0
 _0808CEE8: .4byte 0xFFFFF000
-_0808CEEC: .4byte 0x08369124
+_0808CEEC: .4byte sMotions
 _0808CEF0: .4byte gMission
 _0808CEF4: .4byte 0x0000270E
 _0808CEF8: .4byte gEnemyFnTable
@@ -1504,7 +1504,7 @@ _0808CF5C:
 	bx r0
 	.align 2, 0
 _0808CF80: .4byte 0xFFFFF000
-_0808CF84: .4byte 0x0836912A
+_0808CF84: .4byte sMotions+(3*2)
 _0808CF88: .4byte gMission
 _0808CF8C: .4byte 0x0000270E
 _0808CF90: .4byte gEnemyFnTable
@@ -1582,7 +1582,7 @@ _0808CFB8:
 	.align 2, 0
 _0808D020: .4byte pZero2
 _0808D024: .4byte 0x00007202
-_0808D028: .4byte 0x08369130
+_0808D028: .4byte sMotions+(6*2)
 _0808D02C:
 	adds r1, r5, #0
 	adds r1, #0x54
@@ -1650,4 +1650,4 @@ _0808D0A4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808D0AC: .4byte 0x08369130
+_0808D0AC: .4byte sMotions+(6*2)

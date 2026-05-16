@@ -5,35 +5,25 @@
 #include "input.h"
 #include "types.h"
 
-enum MenuZeroColor {
-  MZC_NORMAL,
-  MZC_HARD,
-  MZC_ULTIMATE,
+union State32 {
+  u32 u32;
+  u16 u16[2];
+  u8 u8[4];
 };
 
-// Zero.mode[1]
-enum {
-  ZERO_GROUND = 0,     // 地上(棒立ち、歩き、ダッシュ、Zセイバー、etc...)
-  ZERO_AIR = 1,        // 空中
-  ZERO_WALL = 2,       // 壁ずり
-  ZERO_LADDER = 3,     // はしご
-  ZERO_DAMAGED = 4,    // 被ダメ
-  ZERO_DOOR_2D = 5,    // ドア(2D, ボス部屋とか)
-  ZERO_DOOR_3D = 6,    // ドア(3D, ベースのドアとか)
-  ZERO_BINDED = 7,     // (レバガチャが必要な)拘束状態
-  ZERO_FLOAT = 8,      // floated by Birleaf or Biraid
-  ZERO_TALK = 9,       // 仁王立ち(会話時)
-  ZERO_TELEPORT = 10,  // 転送
-  ZERO_CYBER = 11,     // サイバー空間のドア
-};
-
-struct ZeroAsset {
-  u8 satelites[2];  // 装備しているサテライトエルフ
-  u16 unused;
-  u16 fusions;  // フュージョンエルフでどれだけ減点もらうか
-  u16 EC;       // E-Crystal, 0x02037d1a
+#define STAT_HDR                                              \
+  u8 satelites[2]; /* 装備しているサテライトエルフ*/          \
+  u16 unused;                                                 \
+  u16 fusions; /* フュージョンエルフでどれだけ減点もらうか */ \
+  u16 EC;      /* E-Crystal, 0x02037d1a */                    \
   u8 subtankHP[4];
+
+// LoadStageRun(address: 0x08019ea4) での初期化の仕方 や SaveSlot のレイアウト的に　これで1つの構造体として扱うのが正解と思われる
+// サイバーエルフや、サブタンクなどの外付けパーツ的な強化要素　をまとめている構造体なので、名前をそれっぽい名前に変更したい
+struct ZeroAsset {
+  STAT_HDR;
 };  // 12 bytes
+static_assert(sizeof(struct ZeroAsset) == 12);
 
 struct KeyMap {
   KEY_INPUT jump;
@@ -50,45 +40,50 @@ struct KeyConfig {
   u8 _;
 };
 
+// ClearZeroStatus(address: 0x0803204c) や CopyZeroStatus (0x08032274) の内容的に、これで1つの構造体として扱うのが正解と思われる
+// 名前を変更する予定
 struct ZeroStatus {
-  struct ZeroAsset asset;
-  weapon_t mainWeapon;
-  weapon_t subWeapon;
-  u8 element;
-  u8 head;
-  u8 body;
-  u8 foot;
-  u16 exSkill;
-  u16 unlockedExSkill;
-  u8 unlockedWeapon;
+  STAT_HDR;
+  weapon_t weapons[2];  // 0: メイン武器, 1: サブ武器
+  u8 element;           // 0x0E
+  u8 head;              // 0x0F
+  u8 body;              // 0x10
+  u8 foot;              // 0x11
+  u16 exSkill;          // 0x12
+  u16 unlockedExSkill;  // 0x14
+  u8 unlockedWeapon;    // 0x16
   u8 unlockedHead;
   u8 unlockedBody;
   u8 unlockedFoot;
   u8 menuZeroColor;
-  u8 unk_1b;
-  struct KeyConfig keyMap;
-  u8 charge[2];  // 0: メイン武器, 1: サブ武器
-  u16 unk_2a;
-  u8 maxHP;
-  u8 dying;  // ゼロが肩を抑えてハァハァしているか
+  struct KeyConfig keyMap;  // 0x1C
+  u8 charge[2];             // 0x28, 0: メイン武器, 1: サブ武器
+  u16 unk_2a;               // 0x2A
+  u8 maxHP;                 // 0x2C
+  u8 dying;                 // 0x2D, ゼロが肩を抑えてハァハァしているか
   u16 pad_2e;
 };  // 48 bytes
+static_assert(sizeof(struct ZeroStatus) == 48);
 
+// PlayerState とかに名前変更予定
 struct Zero_b4 {
-  struct ZeroStatus status;
-  weapon_t mainCopy;
-  weapon_t subCopy;
-  u16 unk_e6;
+  struct ZeroStatus status;  // 0x00 (-> 0xB4)
 
-  u8 prevMode;
-  u8 prevPhase;
+  // これ以降は、ゼロと密接に関連するプロパティではない(つまり、ZX, ZXAのように主人公がゼロ以外のキャラでも使いまわせそう)
+  // つまり、 これ以降は別の構造体の可能性あり
+  weapon_t mainCopy;  // 0x30 (-> 0xE4)
+  weapon_t subCopy;   // 0x31 (-> 0xE5)
+  u16 unk_e6;         // 0x32 (-> 0xE6)
 
-  u8 ALIGNED(4) attackMode[4];
-  u8 ALIGNED(4) unused_f0[4];
+  u8 prevMode;   // 0x34 (-> 0xE8)
+  u8 prevPhase;  // 0x35 (-> 0xE9)
 
-  struct Entity* shadow;  // afterimage on dash(ダッシュ時の残像)
+  union State32 attackState;   // 0x38 (-> 0xEC), u8[4] だとアラインメントが4にならないので、 ただのu32 か union だと考えられる
+  u8 ALIGNED(4) unused_f0[4];  // 0x3C (-> 0xF0), 直近の attackState　を保存する場所だと思うけど使われてないっぽい
 
-  u8 wallDustTimer;  // 壁ずり中に毎フレーム減っていって0xFFになったら土煙
+  struct Entity* shadow;  // 0x40 (-> 0xF4), afterimage on dash(ダッシュ時の残像)
+
+  u8 wallDustTimer;  // 0x44 (-> 0xF8), 壁ずり中に毎フレーム減っていって0xFFになったら土煙
   SoundID ALIGNED(2) sound;
 
   u8 unk_fc[4];
@@ -96,18 +91,73 @@ struct Zero_b4 {
   s32 blownSpeed;  // パンテオンフィストに吹っ飛ばされた時用(ジャンプ時のX速度にふっ飛ばしを加えるため)
   s32 deltaX;      // 前のフレームからゼロがどれだけX方向に移動したか
   u8 dashTimer;
-  u8 unk_111;
-  bool8 dashable;      // ダッシュ可能なときにたつフラグ？
+  u8 unk_111;          // 0x5D (-> 0x111), ジャンプ時になにかのカウンタとして利用されている
+  bool8 dashable;      // 0x5E (-> 0x112) ダッシュ可能なときにたつフラグ？
   bool8 softPlatform;  // すり抜け床をすり抜け中か(すり抜け中=すり抜け床と重なっているか)
   s32 softPlatformY;   // 下ボタンですり抜け床をすり抜けた際の すり抜け床 のY座標 (すり抜け中かのチェックで利用)
-  // プロパティのアクセス方法から考えて、unk_114まで
+  // プロパティのアクセス方法から考えて、 .softPlatformY まで?
+};
+static_assert(sizeof(struct Zero_b4) == 100);
+
+struct PlayerInputState {
+  KEY_INPUT history[64];  // 直近64フレームのキー入力 idx=0が最新
+  KEY_INPUT pressed;      // 新たにOFFからONになったボタン
+  KEY_INPUT raw;          // 実際に押されたGBAのボタン Stage.pressedKeys が入る
+
+  // 抽象化した入力(もっとうまい言葉を考えたい)
+  // 例えば、ジャンプボタンが押されたかを確認する際は、いちいちジャンプボタンがキーコンでどのGBAのボタンに割り当てられているかを確認したりせずに、ここの ZERO_INPUT_JUMP を見るだけで良い
+  zero_input_t val;  // 0x218
+
+  struct KeyMap mapping;
+  u8 ultimateCommand_224[3];
+  u8 ultimateCommand_227[3];
+  u8 ultimateCommand_22a[2];
+  u8 ultimateCommand_22c[3];
+  u8 commandDashTimer;  // コマンドによるダッシュのダッシュ継続時間を表すタイマー
+};  // 156 bytes
+static_assert(sizeof(struct PlayerInputState) == 156);
+
+union MinigamePlayerState {
+  u8 raw[16];
+  struct {
+    u8 unk_27c;
+    u8 unk_27d;
+    u16 unk_27e;
+    u8 unk_280[4];
+    u8 unk_284;
+    u8 unk_285;
+    u8 unk_286;
+    u8 unk_287;
+    u8 unk_288[4];
+  } zero;
+  struct {
+    u8 element;  // 現在のXの属性(0: 炎 1: 雷, 2: 氷)
+    u8 life;     // 残機 = あと何回ミスできるか
+    u8 unk_27e;
+    u8 unk_27f;
+    struct Entity* unk_280[3];
+  } copyx;
+  struct {
+    s32 x;
+    struct Enemy* enemy;
+    u8 unk_8;
+    u8 unk_9;
+    u8 unk_a;
+    u8 unk_b;
+    s32 y;
+  } harpuia;
+  struct {
+    s32 x;
+    u8 unk_4[12];
+  } leviathan;
 };
 
 // 0x02037c60
 // プレイヤー(ゼロ、ミニゲームの操作キャラ)
-struct Zero {
-  struct Entity s;
-  struct Body body;
+typedef struct Zero {
+  OBJECT_HDR;
+
+  // ここから最後まで全て同じ構造体にまとめられている可能性あり
   struct Zero_b4 unk_b4;  // 0xB4 (addr = 0x2037d14)
 
   // 0x118..
@@ -125,6 +175,7 @@ struct Zero {
   u8 dashDustTimer;     // ダッシュ時に3フレームごとに土煙を発生させるためのフレームカウンタ
 
   // ゼロが武器モーション中で行動に制約がかかっていることを示すためのフラグ
+  // 0x0803152c のコンパイル結果が合わないので、型間違ってるかも？
   struct __attribute__((packed, aligned(1))) {
     u8 move : 1;    // Disallow Movement (移動不可能か(セイバーの三段切り中などにセットされるが、地上でのバスターは動きながら打てるのでセットされない))
     u8 dash : 1;    // Disallow Dash (ダッシュ不可能(シールドブーメラン構え中))
@@ -148,7 +199,7 @@ struct Zero {
   u8 rodID;  // リコイルロッドのアクションを区別するため
   u8 unk_127;
   u8 usingWeapon;         // ゼロが現在攻撃中の場合、その武器を示す
-  u8 atkCooltime;         // フレーム単位(短くするほどバスターの連射速度が上がる)
+  u8 atkCooltime;         // フレーム単位(短くするほどバスターの連射速度が上がる), このプロパティへのアクセス周りのアセンブリがなんかおかしい
   u8 tripleSlashCounter;  // 0x12A, 三段切りで何段目かを記録しておく(コータスの衝撃波やﾋｯﾌｯﾊﾃﾞｲﾔｰとかで利用)
   u8 forceWeapon;         // 武器を装備していなくてもその武器の攻撃を強制する FFで何もしない
   u8 bulletCount;         // バスターを今どれだけ連射したか
@@ -159,27 +210,27 @@ struct Zero {
   u8 subChargeFrame;
   u8 unk_rod_133;       // リコイルロッド関連のなにか
   u8 splitHeavensWait;  // テンレツジンの発生8フレームを待つためのフレームカウンタ
-  u8 unk_135;
+  u8 unk_135;           // リコイルロッド関連のなにか
   u8 unk_136;
   u8 unk_137;
-  s16 recoilJumpDx;  // リコイルジャンプのX速度を記録しておく
-  u8 unk_13a;
-  u8 rodToggle;  // リコイルロッドで通常攻撃を連続で打つ場合に、奇数発目の振り向きモーションを管理するためのToggle (0x00 or 0x10)
+  s16 recoilJumpDx;        // リコイルジャンプのX速度を記録しておく
+  u8 saberSmashElecCount;  // ラクサイガで出る電気玉の現在の個数をカウントしている(その他の用途はない?)
+  u8 rodToggle;            // リコイルロッドで通常攻撃を連続で打つ場合に、奇数発目の振り向きモーションを管理するためのToggle (0x00 or 0x10)
   u8 ALIGNED(1) unk_13c[2];
 
   // スプライトアニメーション関連
   motion_t prevMotion;
   u8 motionCmdIdx;
   u8 motionDuration;
-  bool8 poseFixed;  // ゼロの見た目が固定される
+  bool8 animDisabled;  // ゼロの見た目が固定される
   union {
     u8 raw;
     u8 lo : 4;
     u8 hi : 4;
   } ALIGNED(1) PACKED unk_143;
   u8 ALIGNED(1) unk_144[3];
-  u8 posture;
-  u8 prevPosture;  // bit0: dash now?, bit1: is shadow dash?
+  u8 posture;      // 0x147
+  u8 prevPosture;  // 0x148, bit0: dash now?, bit1: is shadow dash?
   u8 unk_149;
 
   struct Border border;  // 0x14C, ゼロが侵入不可能な境界座標を表す
@@ -188,73 +239,20 @@ struct Zero {
   u8 hazardCount;        // .hazard の長さ
   bool8 isGround;
   bool8 antlion;
-  bool8 pushedOut;     // 0x18F, 壁にめり込んで押し出されたときにTRUE
-  u8 horizontalSlide;  // 0x190, 1以上にすると右方向にプレイヤーが徐々に移動していく (コンベアとは無関係っぽい?)
-
-  // 0x194, 0x191..0x193 に 3バイトのパディング があるため、ここは構造体の可能性が高い
-  struct PlayerInputState {
-    KEY_INPUT history[64];  // 直近64フレームのキー入力 idx=0が最新
-    KEY_INPUT pressed;      // 新たにOFFからONになったボタン
-    KEY_INPUT raw;          // 実際に押されたGBAのボタン Stage.pressedKeys が入る
-
-    // 抽象化した入力(もっとうまい言葉を考えたい)
-    // 例えば、ジャンプボタンが押されたかを確認する際は、いちいちジャンプボタンがキーコンでどのGBAのボタンに割り当てられているかを確認したりせずに、ここの ZERO_INPUT_JUMP を見るだけで良い
-    zero_input_t val;  // 0x218
-
-    struct KeyMap mapping;
-    u8 ultimateCommand_224[3];
-    u8 ultimateCommand_227[3];
-    u8 ultimateCommand_22a[2];
-    u8 ultimateCommand_22c[3];
-    u8 commandDashTimer;  // コマンドによるダッシュのダッシュ継続時間を表すタイマー
-  } input;                // 156 bytes
+  bool8 pushedOut;                // 0x18F, 壁にめり込んで押し出されたときにTRUE
+  u8 horizontalSlide;             // 0x190, 1以上にすると右方向にプレイヤーが徐々に移動していく (コンベアとは無関係っぽい?)
+  struct PlayerInputState input;  // 0x194, 0x191..0x193 に 3バイトのパディング があるため、ここは構造体の可能性が高い
 
   // 0x230..
-  bool8 globbed;          // 0x230, ビーサーバーのはちみつを食らっている状態
-  bool8 inCyberSpace;     // 0x231
-  u8 elfMotion;           // 0x232, ゼロの周りを飛ぶサイバーエルフの動き
-  u8 subtankFilledFrame;  // 0x233, 毎フレーム減っていき、0になるとサブタンクが満タンになった音がなる
-  u8 unk_234;             // 0x234, 夕闇の砂漠で流砂に沈むことと関係あり
-  s32 door3d_x;           // 0x238, Door3D で x座標を保存するのに使われているが、その関数が使われていなさそうに見えるので、この変数も使われていない可能性がある
-  u8 unk_23c[64];         // 0x23C (addr = 0x2037e9c), 使われているか不明
-
-  // 0x27C..
-  // For minigame
-  union {
-    u8 raw[16];
-    struct {
-      u8 unk_27c;
-      u8 unk_27d;
-      u16 unk_27e;
-      u8 unk_280[4];
-      u8 unk_284;
-      u8 unk_285;
-      u8 unk_286;
-      u8 unk_287;
-      u8 unk_288[4];
-    } zero;
-    struct {
-      u8 element;  // 現在のXの属性(0: 炎 1: 雷, 2: 氷)
-      u8 life;     // 残機 = あと何回ミスできるか
-      u8 unk_27e;
-      u8 unk_27f;
-      struct Entity* unk_280[3];
-    } copyx;
-    struct {
-      s32 x;
-      struct Enemy* enemy;
-      u8 unk_8;
-      u8 unk_9;
-      u8 unk_a;
-      u8 unk_b;
-      s32 y;
-    } harpuia;
-    struct {
-      s32 x;
-      u8 unk_4[12];
-    } leviathan;
-  } mg;
-};  // 652 bytes
+  bool8 globbed;                 // 0x230, ビーサーバーのはちみつを食らっている状態
+  bool8 inCyberSpace;            // 0x231
+  u8 elfMotion;                  // 0x232, ゼロの周りを飛ぶサイバーエルフの動き
+  u8 subtankFilledFrame;         // 0x233, 毎フレーム減っていき、0になるとサブタンクが満タンになった音がなる
+  u8 unk_234;                    // 0x234, 夕闇の砂漠で流砂に沈むことと関係あり
+  s32 door3d_x;                  // 0x238, Door3D で x座標を保存するのに使われているが、その関数が使われていなさそうに見えるので、この変数も使われていない可能性がある
+  u8 unk_23c[64];                // 0x23C (addr = 0x2037e9c), 使われているか不明
+  union MinigamePlayerState mg;  // 0x27C (ミニゲーム以外では使わない)
+} Player;                        // 652 bytes
 static_assert(sizeof(struct Zero) == 652);
 
 typedef void (*ZeroFunc)(struct Zero*);

@@ -2,21 +2,33 @@
 #include "global.h"
 #include "projectile.h"
 
-INCASM("asm/projectile/unk_26.inc");
-
 void Projectile26_Init(struct Projectile* p);
 void Projectile26_Update(struct Projectile* p);
 void Projectile26_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile26Routine = {
-    [ENTITY_INIT] =      Projectile26_Init,
-    [ENTITY_UPDATE] =    Projectile26_Update,
-    [ENTITY_DIE] =       Projectile26_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile26_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile26_Update,
+    [ENTITY_DIE] =       (void*)Projectile26_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void FUN_080a88a4(struct Entity* e, u8 param_2, u8 param_3) {
+  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  if (p != NULL) {
+    p->taskCol = 8;
+    INIT_PROJECTILE_ROUTINE(p, 26);
+    p->tileNum = 0, p->palID = 0;
+    p->work[0] = param_2, p->work[1] = param_3;
+    p->unk_28 = (void*)e;
+    (p->coord) = e->coord;
+  }
+}
+
+INCASM("asm/projectile/unk_26.inc");
 
 // --------------------------------------------
 

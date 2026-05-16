@@ -167,7 +167,7 @@ _0801A19C:
 	movs r1, #0x90
 	lsls r1, r1, #1
 	adds r0, r4, r1
-	bl UpdateStageEntities
+	bl UpdateSpawnManager
 _0801A1C2:
 	adds r0, r7, #0
 _0801A1C4:
