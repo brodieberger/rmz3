@@ -16,23 +16,18 @@ void VolcanoCoffin_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gVolcanoCoffinRoutine = {
-    [ENTITY_INIT] =      VolcanoCoffin_Init,
-    [ENTITY_UPDATE] =    VolcanoCoffin_Update,
-    [ENTITY_DIE] =       VolcanoCoffin_Die,
+    [ENTITY_INIT] =      (void*)VolcanoCoffin_Init,
+    [ENTITY_UPDATE] =    (void*)VolcanoCoffin_Update,
+    [ENTITY_DIE] =       (void*)VolcanoCoffin_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 struct Solid* CreateVolcanoCoffin(u8 n, s32 x, s32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_VOLCANO_COFFIN);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = n;
     (p->s).coord.x = x;
     (p->s).unk_coord.y = x;
@@ -44,16 +39,16 @@ struct Solid* CreateVolcanoCoffin(u8 n, s32 x, s32 y) {
 // --------------------------------------------
 
 static void VolcanoCoffin_Init(struct Solid* p) {
-  struct Coord* d;
   s8 px;
-
   (p->s).flags |= FLIPABLE;
   px = gCurStory.s.counts[u16_ARRAY_083716b8[(p->s).work[0]]];
-  (p->s).coord.x += PIXEL(px);
+  (p->s).coord.x += (px * PIXEL(1));
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
   (p->s).coord.y -= (PIXEL(32) - 1);
-  d = &(p->s).d;
-  d->x = d->y = 0;
+  {
+    Coords32* d = &(p->s).d;
+    d->x = d->y = 0;
+  }
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   VolcanoCoffin_Update(p);
 }

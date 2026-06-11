@@ -27,17 +27,13 @@ NON_MATCH static void Door2DBlue_Init(struct Solid* p) {
   InitNonAffineMotion(&p->s);
   if ((p->s).work[1] == 0) {
     // Otherside
-    struct Entity* q = AllocEntityFirst(gSolidHeaderPtr);
+    struct Entity* q = AllocEntityLast(gSolidHeaderPtr);
     if (q == NULL) {
       return;
     }
     (p->s).coord.x += PIXEL(8);
     (p->s).coord.y += PIXEL(9);
-    q->taskCol = 30;
     INIT_SOLID_ROUTINE(q, SOLID_DOOR_2D_BLUE);
-    q->tileNum = 0, q->palID = 0;
-    q->flags2 |= WHITE_PAINTABLE;
-    q->invincibleID = q->uniqueID;
     q->work[1] = 1;
     q->unk_28 = (void*)p;
     (q->coord).x = (p->s).coord.x - PIXEL(1);
@@ -45,7 +41,7 @@ NON_MATCH static void Door2DBlue_Init(struct Solid* p) {
     if ((gOverworld.terrain.id & 0x7F) == STAGE_OCEAN) wStaticMotionPalIDs[SM018_DOOR_2D_BLUE] = 10;
     LOAD_STATIC_GRAPHIC(SM018_DOOR_2D_BLUE);
   } else {
-    SetMotion(&p->s, MOTION(SM018_DOOR_2D_BLUE, 0));
+    SetSpriteAnimation(p, MOTION(SM018_DOOR_2D_BLUE, 0));
     SET_XFLIP(p, TRUE);
   }
 
@@ -94,7 +90,7 @@ static void Door2DBlue_Die(struct Solid* p) {
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
-NAKED static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+NAKED static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	ldr r3, [r0, #0x2c]\n\
@@ -188,13 +184,13 @@ _080CAF78: .4byte gStageRun\n\
 static void FUN_080caf7c(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(SM018_DOOR_2D_BLUE, 0));
+      SetSpriteAnimation(p, MOTION(SM018_DOOR_2D_BLUE, 0));
       INIT_BODY(p, &sCollisions[0], 0, onCollision);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }

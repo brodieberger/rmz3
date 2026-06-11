@@ -17,12 +17,10 @@ const ProjectileRoutine gProjectile16Routine = {
 };
 // clang-format on
 
-struct Entity* FUN_080a244c(struct Coord* c1, struct Coord* c2, bool8 isDirRight) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+struct Entity* FUN_080a244c(Coords32* c1, Coords32* c2, bool8 isDirRight) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 16);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = isDirRight;
     (p->coord).x = c1->x, (p->coord).y = c1->y;
     (p->unk_coord).x = c2->x, (p->unk_coord).y = c2->y;

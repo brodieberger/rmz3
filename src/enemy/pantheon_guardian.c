@@ -19,9 +19,9 @@ struct PantheonGuardianObject {
 static_assert(sizeof(struct PantheonGuardianObject) == sizeof(struct Enemy));
 
 static const struct Collision sCollisions[];
-static const struct Coord Coord_08365b70;
+static const Coords32 Coord_08365b70;
 
-void FUN_0806465c(struct Body* body, struct Coord* c1, struct Coord* c2);
+void FUN_0806465c(struct Body* body, Coords32* c1, Coords32* c2);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -39,38 +39,29 @@ const EnemyRoutine gPantheonGuardianRoutine = {
 };
 // clang-format on
 
-NON_MATCH static void PantheonGuardian_Init(struct PantheonGuardianObject* p) {
-#if MODERN
-  s32 hp;
-  struct Body* body;
-
+static void PantheonGuardian_Init(struct PantheonGuardianObject* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_P_GUARDIAN_HP4) && !FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
-    hp = 14;
+  if (FLAG(gSystemSavedata.flags, MOD_P_GUARDIAN_HP4) && !FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
+    _INIT_BODY(p, sCollisions, 14);
   } else {
-    hp = 10;
+    _INIT_BODY(p, sCollisions, 10);
   }
-  INIT_BODY(p, sCollisions, hp, FUN_0806465c);
+  SET_BODY_INTERSECT_HANDLER(p, FUN_0806465c);
   p->x = (p->s).coord.x;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
   (p->s).d.x = (p->s).d.y = 0;
   p->unk_c0 = NULL;
-  p->unk_b8[0] = 0;
-  p->unk_b8[1] = 0;
+  p->unk_b8[0] = 0, p->unk_b8[1] = 0;
 
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
-  if ((pZero2->s).coord.x < (p->s).coord.x) {
-    (p->s).mode[1] = 1;
+  if ((pZero2->s).coord.x - (p->s).coord.x < 0) {
+    (p->s).mode[1] = 1, (p->s).mode[2] = 0;
   } else {
-    (p->s).mode[1] = 2;
+    (p->s).mode[1] = 2, (p->s).mode[2] = 0;
   }
-  (p->s).mode[2] = 0;
   PantheonGuardian_Update((void*)p);
-#else
-  INCCODE("asm/wip/PantheonGuardian_Init.inc");
-#endif
 }
 
 INCASM("asm/enemy/pantheon_guardian.inc");
@@ -193,4 +184,4 @@ static const struct Collision sCollisions[7] = {
     },
 };
 
-static const struct Coord Coord_08365b70 = {0, -PIXEL(16)};
+static const Coords32 Coord_08365b70 = {0, -PIXEL(16)};

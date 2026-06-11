@@ -27,10 +27,10 @@ const BossRoutine gPantheonAquaModRoutine = {
 };
 // clang-format on
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 bool8 tryKillPantheonAquaMod(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;
     PantheonAquaMod_Die(p);
@@ -441,5 +441,5 @@ static const struct Collision sCollisions[32] = {
 // --------------------------------------------
 
 static const u8 sInitModes[4] = {1, 4, 0, 0};
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 static const u8 u8_ARRAY_08363958[4] = {5, 6, 7, 8};

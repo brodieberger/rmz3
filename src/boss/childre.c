@@ -8,12 +8,12 @@ struct Childre {
   // props (48bytes, offset: 0xB4..)
   struct Entity* unk_b4;
   u32 unk_b8;
-  struct Coord unk_bc;
+  Coords32 unk_bc;
   u8 unk_c4;
   u8 unk_c5;
   bool8 shouldTurnRight;
   u8 unk_c7;
-  struct Coord unk_c8;
+  Coords32 unk_c8;
   u8 unk_d0[20];
 };
 static_assert(sizeof(struct Childre) == sizeof(struct Boss));
@@ -137,7 +137,7 @@ _080404D8:\n\
  .syntax divided\n");
 }
 
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   struct Zero* z = (struct Zero*)body->enemy->parent;
   struct Childre* p = (struct Childre*)body->parent;
 
@@ -149,7 +149,7 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 }
 
 static bool8 tryKillChildre(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     PlaySound(SE_CHILDRE_DEATH);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -502,7 +502,7 @@ const u8 u8_ARRAY_0836205c[4] = {2, 2, 12, 13};
 
 static const u8 sInitModes[4] = {1, 16, 0, 0};
 
-const struct Coord Coord_08362064 = {0, -0x1000};
+const Coords32 Coord_08362064 = {0, -0x1000};
 
 const s16 s16_0836206c = 0x2601;
 
@@ -517,5 +517,5 @@ const motion_t sChildreMotions[6] = {
 };
 // clang-format on
 
-const struct Coord Coord_0836207c = {0x200, 0xFFFFE800};
-const struct Coord Coord_08362084 = {0x600, 0xFFFFE700};
+const Coords32 Coord_0836207c = {0x200, 0xFFFFE800};
+const Coords32 Coord_08362084 = {0x600, 0xFFFFE700};

@@ -29,12 +29,10 @@ const VFXRoutine gGhost8Routine = {
 };
 // clang-format on
 
-void CreateGhost8(struct Coord* c, u8 n, u8 angle, u16 mag) {
-  struct VFX8* p = (struct VFX8*)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost8(Coords32* c, u8 n, u8 angle, u16 mag) {
+  struct VFX8* p = (struct VFX8*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_008);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).coord = *c;
     (p->s).work[1] = n;
     p->angle = angle;
@@ -139,10 +137,8 @@ _080B4AA8: .4byte gVFXFnTable\n\
 }
 
 static void Ghost8_Update(struct Entity* p) {
-  UpdateMotionGraphic(p);
-  if ((p->motion).state == MOTION_END) {
-    SET_VFX_ROUTINE(p, ENTITY_DIE);
-  }
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 static void Ghost8_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }

@@ -91,7 +91,7 @@ _08038798:
 	bl oz_080b3820
 _080387C4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r1, _08038828 @ =gSaberCollisions
@@ -157,7 +157,7 @@ _08038834:
 	strb r0, [r5, #0xf]
 _08038852:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r2, _080388A8 @ =gSaberCollisions
@@ -210,7 +210,7 @@ _080388AC:
 	strb r0, [r5, #0xf]
 _080388C0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r1, _080388FC @ =gSaberGeneralCollisions

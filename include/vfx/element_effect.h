@@ -7,7 +7,7 @@
 struct ElementEffect {
   struct Entity s;
   // props (16bytes, offset: 0x74..)
-  struct Coord c;
+  Coords32 c;
   u8 unk_8[8];
 };  // 132 bytes
 static_assert(sizeof(struct ElementEffect) == sizeof(struct VFX));

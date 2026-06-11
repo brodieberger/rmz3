@@ -1,6 +1,7 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -139,7 +140,7 @@ static void buster_0(struct Zero* z) {
     (z->unk_b4).attackState8[0] = 0;
     return;
   }
-  SetMotion(&z->s, MOTION(DM013_ZERO_BUSTER_LADDER, 1));
+  SetSpriteAnimation(z, MOTION(DM013_ZERO_BUSTER_LADDER, 1));
   z->atkCooltime = 2;
   (z->unk_b4).attackState8[1] = 1;
   buster_1((void*)z);
@@ -218,7 +219,7 @@ static void buster_3(struct Zero* z) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 2), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 1));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 1));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -304,7 +305,7 @@ static void handle_saber_input(struct Zero* z) {
 // 0x803139c
 static void ladder_saber(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM029_ZERO_SABER_LADDER, 0x00));
+    SetSpriteAnimation(z, MOTION(DM029_ZERO_SABER_LADDER, 0x00));
     (z->unk_b4).attackState8[2]++;
     return;
   }
@@ -319,13 +320,13 @@ static void ladder_saber(struct Zero* z) {
     return;
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     (z->unk_b4).attackState8[0] = 0;
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -340,7 +341,7 @@ static void ladder_saber(struct Zero* z) {
 // 0x0803144c
 static void charge_saber(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM029_ZERO_SABER_LADDER, 0x01));
+    SetSpriteAnimation(z, MOTION(DM029_ZERO_SABER_LADDER, 0x01));
     CreateWeaponSaber(z, SABER_CHARGE_LADDER);
     (z->unk_b4).attackState8[2]++;
   } else {
@@ -351,14 +352,14 @@ static void charge_saber(struct Zero* z) {
     }
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     (z->unk_b4).attackState8[0] = 0;
 
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -598,7 +599,7 @@ static void fail_ladder_rod(struct Zero* z) {
     if ((z->s).mode[3] == 2) {
       GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
     } else {
-      SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+      SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
     }
   } else {
     if ((z->s).mode[3] == 3) {
@@ -1252,7 +1253,7 @@ static void FUN_08031c94(struct Zero* z) {
 
   m = MOTION_VALUE(z);
   if (m != MOTION(DM047_ZERO_SHIELD_LADDER, 0x00)) {
-    SetMotion(&z->s, MOTION(DM047_ZERO_SHIELD_LADDER, 0x00));
+    SetSpriteAnimation(z, MOTION(DM047_ZERO_SHIELD_LADDER, 0x00));
   }
 
   if ((z->unk_b4).attackState8[2] == 0) {
@@ -1277,7 +1278,7 @@ static void FUN_08031c94(struct Zero* z) {
 
 static void FUN_08031d1c(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM047_ZERO_SHIELD_LADDER, 0x02));
+    SetSpriteAnimation(z, MOTION(DM047_ZERO_SHIELD_LADDER, 0x02));
     (z->unk_b4).attackState8[2]++;
   }
   z->restriction.shield = TRUE;
@@ -1289,12 +1290,12 @@ static void FUN_08031d1c(struct Zero* z) {
     return;
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -1312,7 +1313,7 @@ static void FUN_08031ddc(struct Zero* z) {
   z->unk_127 = 3;
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
+    SetSpriteAnimation(z, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
     CreateWeaponShieldFly(z, 0);
     (z->unk_b4).attackState8[2]++;
   }
@@ -1323,13 +1324,13 @@ static void FUN_08031ddc(struct Zero* z) {
     GotoMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00), z->motionCmdIdx, z->motionDuration);
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     z->unk_127 = 0xFF;
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -1347,7 +1348,7 @@ static void FUN_08031eac(struct Zero* z) {
   z->unk_127 = 3;
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
+    SetSpriteAnimation(z, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
     CreateWeaponShieldFly(z, 1);
     (z->unk_b4).attackState8[2]++;
   }
@@ -1358,13 +1359,13 @@ static void FUN_08031eac(struct Zero* z) {
     GotoMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00), z->motionCmdIdx, z->motionDuration);
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     z->unk_127 = 0xFF;
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {
@@ -1382,7 +1383,7 @@ static void FUN_08031f7c(struct Zero* z) {
   z->unk_127 = 3;
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
+    SetSpriteAnimation(z, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00));
     CreateWeaponShieldFly(z, 2);
     (z->unk_b4).attackState8[2]++;
   }
@@ -1393,13 +1394,13 @@ static void FUN_08031f7c(struct Zero* z) {
     GotoMotion(&z->s, MOTION(DM048_ZERO_SHIELD_THROW_LADDER, 0x00), z->motionCmdIdx, z->motionDuration);
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     z->unk_127 = 0xFF;
     if ((z->s).mode[2] == 0) {
       if ((z->s).mode[3] == 2) {
         GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x02), 1, 1);
       } else {
-        SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0x01));
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0x01));
       }
     } else {
       if ((z->s).mode[3] == 3) {

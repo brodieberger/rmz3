@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -81,7 +82,7 @@ Entity_08355d84:
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_08355d94:
-  eventflag 0, 33, 0
+  cutscene_start CS_SNOWY_PLAINS_MISSION
   spawn 0, Entity_08355cf4
   spawn 3, Entity_08355d34
   reset_camera Camera_08355c70
@@ -89,12 +90,12 @@ Script_08355d94:
   normal_screen
   wait 1
   visible 0, FALSE
-  wait_screeneffect
+  wait_transition_end
   play_bgm 331
   wait 15
   force 6, 0, 0
   wait 60
-  emotion 3, 0x1000, 0x00FFD800, 0
+  emotion_bubble 3, 16, -40, 0
   wait 75
   entityflag 3, 0, TRUE
   wait 45
@@ -104,12 +105,12 @@ Script_08355d94:
   wait 15
   entityflag 3, 1, TRUE
   wait 30
-  eventflag 1, 0, 0
+  cutscene_end
   indicator 1, 2, 0
   wait 45
   play_bgm 181
   wait_indicator_end
-  entity 3, 7, 0
+  detach_entity 3
   release
   resume 0
   end
@@ -117,11 +118,11 @@ Script_08355d94:
 Script_08355e94:
   spawn 0, Entity_08355cf4
   spawn 3, Entity_08355d44
-  entity 3, 7, 0
+  detach_entity 3
   reset_camera Camera_08355c70
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm 181
@@ -134,8 +135,8 @@ Script_08355f04:
   spawn 0, Entity_08355cf4
   reset_camera Camera_08355c70
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 181
   indicator 1, 0, 0
   wait_indicator_end
@@ -151,10 +152,10 @@ Script_08355f5c:
   turn_right 0
   force 1, 0, 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8160*PX
   adjust_camera 12, 0 8400*PX
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   stop_bgm
   wait 120
   entityflag 1, 0, TRUE
@@ -166,10 +167,10 @@ Script_08355f5c:
 Script_08355fec:
   stop_bgm
   wait 120
-  cmd08 1, 2
+  cmd08_wait_set 1
   destroy 1
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 12, 0 15360*PX
   play_bgm 181
   resume 1
@@ -179,8 +180,8 @@ Script_0835603c:
   spawn 0, Entity_08355d04
   reset_camera Camera_08355c9c
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 181
   indicator 1, 0, 0
   wait_indicator_end
@@ -192,9 +193,9 @@ Script_08356094:
   spawn 0, Entity_08355d14
   reset_camera Camera_08355c70
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 161
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
   release
@@ -204,18 +205,18 @@ Script_08356094:
 Script_083560ec:
   forcekeyinput 0x0010
   pause
-  eventflag 0, 34, 0
+  cutscene_start CS_SNOWY_PLAINS_BOSS
   walkto 13552*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 13504*PX
   adjust_camera 12, 0 13808*PX
   wait 75
   message 1, 0, 0x0E01
   wait_msgbox_end
   wait 15
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 75
   spawn 3, Entity_08355d64
   wait 60
@@ -230,18 +231,18 @@ Script_083560ec:
   triumphant_message 0, 0x0E04
   message 1, 0, 0x0E03
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 120
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 13440*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -249,15 +250,15 @@ Script_0835623c:
   spawn 1, Entity_08355d74
   forcekeyinput 0x0010
   pause
-  eventflag 0, 34, 0
+  cutscene_start CS_SNOWY_PLAINS_BOSS
   walkto 13552*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 13504*PX
   adjust_camera 12, 0 13808*PX
   wait 60
-  eventflag 1, 0, 0
+  cutscene_end
   triumphant_message 0, 0x0E04
   entityflag 1, 0, TRUE
   stop_bgm
@@ -265,11 +266,11 @@ Script_0835623c:
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 13440*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -279,7 +280,7 @@ Script_0835630c:
   reset_camera Camera_08355cc8
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0E04
   entityflag 1, 0, TRUE
   stop_bgm
@@ -287,11 +288,11 @@ Script_0835630c:
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 13440*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -303,18 +304,18 @@ Script_083563ac:
   message 1, 0, 0x0E05
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 2
-  screeneffect 6
-  wait_screeneffect
+  cmd08_wait_set 1
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   destroy 0
   wait 2
   lockmenu
@@ -322,13 +323,13 @@ Script_083563ac:
 
 Script_08356464:
   unlockmenu
-  eventflag 0, 35, 0
+  cutscene_start CS_SNOWY_PLAINS_AFTER_BOSS
   spawn 0, Entity_08355d24
   reset_camera Camera_08355cc8
   lock
   normal_screen
-  wait_screeneffect
-  play_bgm 167
+  wait_transition_end
+  play_bgm BGM_ANTAN
   spawn 3, Entity_08355d84
   wait 150
   message 1, 0, 0x0E06
@@ -343,8 +344,8 @@ Script_08356464:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
-  eventflag 1, 0, 0
+  wait_transition_end
+  cutscene_end
   destroy 3
   destroy 0
   end
@@ -356,7 +357,7 @@ Script_0835653c:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 181
   indicator 1, 0, 0
   wait 15
@@ -378,7 +379,7 @@ Script_083565b4:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

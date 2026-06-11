@@ -18,12 +18,10 @@ const VFXRoutine gGhost67Routine = {
 };
 // clang-format on
 
-struct Entity* FUN_080c4914(struct Coord* c, u8 kind, motion_t m, u32 val) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c4914(Coords32* c, u8 kind, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_067);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind, (p->s).work[1] = 0;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     p->m_74 = m;
@@ -228,7 +226,7 @@ _080C4BBC:\n\
 	adds r0, r0, r1\n\
 	str r0, [r7, #0x54]\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080C4BD2:\n\
 	pop {r3, r4}\n\
 	mov r8, r3\n\

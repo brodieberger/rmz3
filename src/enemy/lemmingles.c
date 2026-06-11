@@ -28,13 +28,9 @@ const EnemyRoutine gLemminglesRoutine = {
 // --------------------------------------------
 
 void FUN_0806e590(struct Entity* e, u8 kind1, u8 kind2, u8 kind3) {
-  struct EnemyLemmingles* p = (struct EnemyLemmingles*)AllocEntityFirst(gEnemyHeaderPtr);
+  struct EnemyLemmingles* p = (struct EnemyLemmingles*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_LEMMINGLES);
-    (p->s).tileNum = 0, (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord.x = e->coord.x;
     (p->s).coord.y = e->coord.y;
     (p->s).unk_28 = (void*)e;
@@ -46,7 +42,7 @@ void FUN_0806e590(struct Entity* e, u8 kind1, u8 kind2, u8 kind3) {
 }
 
 // 0x0806e600
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 INCASM("asm/enemy/lemmingles.inc");
 
@@ -167,7 +163,7 @@ static const struct Collision sCollisions[7] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 static const u8 sInitModes[4] = {1, 1, 1, 1};
 
 // clang-format off
@@ -190,5 +186,4 @@ static const motion_t sMotions[13] = {
     MOTION(SM029_LEMMINGLES, 19),
     MOTION(SM029_LEMMINGLES, 17),
 };
-
-
+// clang-format on

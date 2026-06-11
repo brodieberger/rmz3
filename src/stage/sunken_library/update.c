@@ -1,7 +1,7 @@
 #include "global.h"
 #include "overworld.h"
 
-static const struct Coord sSunkenLibRoom[24];
+static const Coords32 sSunkenLibRoom[24];
 
 /*
 checkpoint (0202fe62):
@@ -580,24 +580,25 @@ _0801F6BE:\n\
 
 s16 SunkenLib_FreeUpdate(struct StageRun* p) { return SunkenLib_MissionUpdate(p); }
 
-NAKED struct Coord* getSunkenLibRoomCoord(u8 idx) {
+// 0x0801f6dc
+NAKED Coords32* getSunkenLibRoomCoord(u8 idx) {
   asm(".syntax unified\n\
 	push {lr}\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r1, r0, #0x18\n\
 	cmp r1, #7\n\
 	bls _0801F6FC\n\
-	ldr r0, _0801F6F4 @ =0x0202FFF4\n\
+	ldr r0, _0801F6F4 @ =gSunkenLibDiskRoomIdxs\n\
 	adds r0, r1, r0\n\
 	ldrb r0, [r0]\n\
 	lsls r0, r0, #3\n\
 	ldr r1, _0801F6F8 @ =sSunkenLibRoom\n\
 	b _0801F706\n\
 	.align 2, 0\n\
-_0801F6F4: .4byte 0x0202FFF4\n\
+_0801F6F4: .4byte gSunkenLibDiskRoomIdxs\n\
 _0801F6F8: .4byte sSunkenLibRoom\n\
 _0801F6FC:\n\
-	ldr r0, _0801F70C @ =0x0202FFF4\n\
+	ldr r0, _0801F70C @ =gSunkenLibDiskRoomIdxs\n\
 	adds r0, r1, r0\n\
 	ldrb r0, [r0]\n\
 	lsls r0, r0, #3\n\
@@ -607,12 +608,12 @@ _0801F706:\n\
 	pop {r1}\n\
 	bx r1\n\
 	.align 2, 0\n\
-_0801F70C: .4byte 0x0202FFF4\n\
+_0801F70C: .4byte gSunkenLibDiskRoomIdxs\n\
 _0801F710: .4byte sSunkenLibRoom\n\
  .syntax divided\n");
 }
 
-NAKED struct Coord* FUN_0801f714(struct Coord* c) {
+NAKED Coords32* FUN_0801f714(Coords32* c) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
@@ -656,7 +657,7 @@ _0801F756:\n\
 	movs r1, #3\n\
 	ands r0, r1\n\
 	adds r4, r0, #4\n\
-	ldr r1, _0801F77C @ =gMission\n\
+	ldr r1, _0801F77C @ =gScore\n\
 	movs r0, #7\n\
 	ldrsb r0, [r1, r0]\n\
 	subs r0, #2\n\
@@ -668,7 +669,7 @@ _0801F756:\n\
 	.align 2, 0\n\
 _0801F774: .4byte 0x00002FFF\n\
 _0801F778: .4byte 0x00001FFF\n\
-_0801F77C: .4byte gMission\n\
+_0801F77C: .4byte gScore\n\
 _0801F780:\n\
 	movs r0, #0\n\
 _0801F782:\n\
@@ -691,12 +692,12 @@ _0801F7A0: .4byte Coord_ARRAY_0834cea4\n\
  .syntax divided\n");
 }
 
-struct Coord* FUN_0801f7a4(struct Coord* _ UNUSED) { return (struct Coord*)&gStageRun.unk_188; }
+Coords32* FUN_0801f7a4(Coords32* _ UNUSED) { return (Coords32*)&gStageRun.unk_188; }
 
 NAKED void calcSunkenLibDiskRoom(void) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
-	ldr r0, _0801F82C @ =0x0202FFF4\n\
+	ldr r0, _0801F82C @ =gSunkenLibDiskRoomIdxs\n\
 	movs r3, #0x17\n\
 	adds r0, #0x17\n\
 _0801F7B4:\n\
@@ -763,7 +764,7 @@ _0801F7FC:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_0801F82C: .4byte 0x0202FFF4\n\
+_0801F82C: .4byte gSunkenLibDiskRoomIdxs\n\
 _0801F830: .4byte 0x0202FFF0\n\
 _0801F834: .4byte 0x000343FD\n\
 _0801F838: .4byte 0x00269EC3\n\
@@ -781,7 +782,7 @@ _0801F83C: .4byte gStageRun\n\
     16 04 05 06 07 17
     18 19 20 21 22 23
 */
-static const struct Coord sSunkenLibRoom[24] = {
+static const Coords32 sSunkenLibRoom[24] = {
   { 0x001A5000, 0x00031F00 }, { 0x001AA000, 0x00031F00 }, { 0x001AF000, 0x00031F00 }, { 0x001B4000, 0x00031F00 }, { 0x001A5000, 0x00035F00 }, { 0x001AA000, 0x00035F00 },
   { 0x001AF000, 0x00035F00 }, { 0x001B4000, 0x00035F00 }, { 0x001A0000, 0x0002DF00 }, { 0x001A5000, 0x0002DF00 }, { 0x001AA000, 0x0002DF00 }, { 0x001AF000, 0x0002DF00 },
   { 0x001B4000, 0x0002DF00 }, { 0x001B9000, 0x0002DF00 }, { 0x001A0000, 0x00031F00 }, { 0x001B9000, 0x00031F00 }, { 0x001A0000, 0x00035F00 }, { 0x001B9000, 0x00035F00 },
@@ -825,7 +826,7 @@ const s32 s32_ARRAY_0834ce94[4] = {
 };
 
 // clang-format off
-const struct Coord Coord_ARRAY_0834cea4[8] = {
+const Coords32 Coord_ARRAY_0834cea4[8] = {
     { 0x11000, 0x4E000},
     { 0x6B000, 0x4E000},
     { 0x3E000, 0x4E000},

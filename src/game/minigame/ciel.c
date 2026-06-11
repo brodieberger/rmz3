@@ -1,7 +1,7 @@
-#include "blink.h"
 #include "game.h"
 #include "global.h"
 #include "minigame.h"
+#include "palette_animation.h"
 
 INCASM("asm/minigame/ciel.inc");
 
@@ -12,13 +12,13 @@ const u8 u8_ARRAY_08386b58[40] = {
 #define STATE (&(g->sceneState).mg)
 
 bool32 exitCielMinigame(struct GameState* g) {
-  if (gSystemSavedataManager.minigameHiscores[MINIGAME_CIEL] < STATE->unk_08) {
-    gSystemSavedataManager.minigameHiscores[MINIGAME_CIEL] = STATE->unk_08;
+  if (gSystemSavedata.minigameHiscores[MINIGAME_CIEL] < STATE->unk_08) {
+    gSystemSavedata.minigameHiscores[MINIGAME_CIEL] = STATE->unk_08;
     SaveSystemData();
   }
 
   gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
-  ClearBlink(0xD6);
+  RemovePaletteAnimation(0xD6);
   return FALSE;
 }
 

@@ -148,7 +148,7 @@ _080BC31A:
 	strb r0, [r4, #0xe]
 _080BC326:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -235,7 +235,7 @@ _080BC3B0:
 	movs r0, #0x7e
 	bl PlaySound
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0xa
 	strb r0, [r4, #0x12]
 _080BC3DA:
@@ -244,7 +244,7 @@ _080BC3DA:
 	strb r0, [r4, #0xe]
 _080BC3E0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _080BC3F6
@@ -289,7 +289,7 @@ _080BC42C:
 	strb r0, [r4, #0xe]
 _080BC432:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -379,7 +379,7 @@ _080BC4BE:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x28]
 	ldrb r1, [r0, #0xa]
 	movs r0, #1

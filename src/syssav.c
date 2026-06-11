@@ -27,9 +27,9 @@ static const mod_t AllResetModIDs[4] = {82, 95, 122, 125};
  */
 void LoadSystemData(void) {
   s8 health = -1;
-  if (CheckSavedataCorrect(SLOT_SYSTEM, sizeof(gSystemSavedataManager))) {
+  if (ValidateSector(SECTOR_SYSTEM, sizeof(gSystemSavedata))) {
     s8 tmp;
-    sram_08003378(SLOT_SYSTEM, (u8*)&gSystemSavedataManager, sizeof(gSystemSavedataManager));
+    sram_08003378(SECTOR_SYSTEM, &gSystemSavedata, sizeof(gSystemSavedata));
     do {
       UpdateSram();
       if (gSramState.unk_00 != 1) {
@@ -42,11 +42,8 @@ void LoadSystemData(void) {
   }
 
   if (health < 0) {
-    u32 fill = 0;
-    struct SystemSavedataManager* s = &gSystemSavedataManager;
-    CpuFastFill(fill, s, (sizeof(gSystemSavedataManager) / 32) * 32);
-    CpuFill32(fill, &s->mmbn4, sizeof(gSystemSavedataManager) % 32);
-    s->mmbn4 = 0x32DA;
+    MemFill32(0, &gSystemSavedata, sizeof(gSystemSavedata));
+    gSystemSavedata.mmbn4 = 0x32DA;
     SaveSystemData();
   }
 }
@@ -55,7 +52,7 @@ void LoadSystemData(void) {
  * @note 0x08008368
  */
 void SaveSystemData(void) {
-  sram_08003330(SLOT_SYSTEM, gSystemSavedataManager.flags, sizeof(gSystemSavedataManager));
+  sram_08003330(SECTOR_SYSTEM, &gSystemSavedata, sizeof(gSystemSavedata));
   do {
     do {
       UpdateSram();
@@ -80,7 +77,7 @@ NAKED void ToggleMods(mod_t id) {
 	adds r0, r0, r1\n\
 	lsrs r6, r0, #0x18\n\
 	movs r5, #0\n\
-	ldr r7, _08008420 @ =gSystemSavedataManager\n\
+	ldr r7, _08008420 @ =gSystemSavedata\n\
 	ldr r0, _08008424 @ =0x08338DE2\n\
 	mov sl, r0\n\
 	ldr r1, _08008428 @ =0x08338DC4\n\
@@ -141,7 +138,7 @@ _080083F8:\n\
 	ble _080083F8\n\
 	b _08008438\n\
 	.align 2, 0\n\
-_08008420: .4byte gSystemSavedataManager\n\
+_08008420: .4byte gSystemSavedata\n\
 _08008424: .4byte AllResetModIDs\n\
 _08008428: .4byte MsgBoxModIDs\n\
 _0800842C:\n\
@@ -154,7 +151,7 @@ _0800842C:\n\
 _08008438:\n\
 	movs r5, #0\n\
 	ldr r4, _080084A4 @ =0x08338DCC\n\
-	ldr r1, _080084A8 @ =gSystemSavedataManager\n\
+	ldr r1, _080084A8 @ =gSystemSavedata\n\
 	mov r8, r1\n\
 	movs r0, #7\n\
 	mov sb, r0\n\
@@ -211,7 +208,7 @@ _0800847C:\n\
 	b _080084B8\n\
 	.align 2, 0\n\
 _080084A4: .4byte TitleScreenModIDs\n\
-_080084A8: .4byte gSystemSavedataManager\n\
+_080084A8: .4byte gSystemSavedata\n\
 _080084AC:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -222,7 +219,7 @@ _080084AC:\n\
 _080084B8:\n\
 	movs r5, #0\n\
 	ldr r4, _08008524 @ =0x08338DD0\n\
-	ldr r0, _08008528 @ =gSystemSavedataManager\n\
+	ldr r0, _08008528 @ =gSystemSavedata\n\
 	mov r8, r0\n\
 	movs r1, #7\n\
 	mov sb, r1\n\
@@ -279,7 +276,7 @@ _080084FC:\n\
 	b _08008538\n\
 	.align 2, 0\n\
 _08008524: .4byte ElevatorModIDs\n\
-_08008528: .4byte gSystemSavedataManager\n\
+_08008528: .4byte gSystemSavedata\n\
 _0800852C:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -290,7 +287,7 @@ _0800852C:\n\
 _08008538:\n\
 	movs r5, #0\n\
 	ldr r4, _080085A4 @ =0x08338DD2\n\
-	ldr r1, _080085A8 @ =gSystemSavedataManager\n\
+	ldr r1, _080085A8 @ =gSystemSavedata\n\
 	mov r8, r1\n\
 	movs r0, #7\n\
 	mov sb, r0\n\
@@ -347,7 +344,7 @@ _0800857C:\n\
 	b _080085B8\n\
 	.align 2, 0\n\
 _080085A4: .4byte WeatherModIDs\n\
-_080085A8: .4byte gSystemSavedataManager\n\
+_080085A8: .4byte gSystemSavedata\n\
 _080085AC:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -358,7 +355,7 @@ _080085AC:\n\
 _080085B8:\n\
 	movs r5, #0\n\
 	ldr r4, _08008624 @ =0x08338DD4\n\
-	ldr r0, _08008628 @ =gSystemSavedataManager\n\
+	ldr r0, _08008628 @ =gSystemSavedata\n\
 	mov r8, r0\n\
 	movs r1, #7\n\
 	mov sb, r1\n\
@@ -415,7 +412,7 @@ _080085FC:\n\
 	b _08008638\n\
 	.align 2, 0\n\
 _08008624: .4byte CielComputerModIDs\n\
-_08008628: .4byte gSystemSavedataManager\n\
+_08008628: .4byte gSystemSavedata\n\
 _0800862C:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -426,7 +423,7 @@ _0800862C:\n\
 _08008638:\n\
 	movs r5, #0\n\
 	ldr r4, _080086A4 @ =0x08338DD8\n\
-	ldr r1, _080086A8 @ =gSystemSavedataManager\n\
+	ldr r1, _080086A8 @ =gSystemSavedata\n\
 	mov r8, r1\n\
 	movs r0, #7\n\
 	mov sb, r0\n\
@@ -483,7 +480,7 @@ _0800867C:\n\
 	b _080086B8\n\
 	.align 2, 0\n\
 _080086A4: .4byte LifeEnergyModIDs\n\
-_080086A8: .4byte gSystemSavedataManager\n\
+_080086A8: .4byte gSystemSavedata\n\
 _080086AC:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -494,7 +491,7 @@ _080086AC:\n\
 _080086B8:\n\
 	movs r5, #0\n\
 	ldr r4, _08008724 @ =0x08338DDA\n\
-	ldr r0, _08008728 @ =gSystemSavedataManager\n\
+	ldr r0, _08008728 @ =gSystemSavedata\n\
 	mov r8, r0\n\
 	movs r1, #7\n\
 	mov sb, r1\n\
@@ -551,7 +548,7 @@ _080086FC:\n\
 	b _08008738\n\
 	.align 2, 0\n\
 _08008724: .4byte ECrystalModIDs\n\
-_08008728: .4byte gSystemSavedataManager\n\
+_08008728: .4byte gSystemSavedata\n\
 _0800872C:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -562,7 +559,7 @@ _0800872C:\n\
 _08008738:\n\
 	movs r5, #0\n\
 	ldr r4, _080087A4 @ =0x08338DDC\n\
-	ldr r1, _080087A8 @ =gSystemSavedataManager\n\
+	ldr r1, _080087A8 @ =gSystemSavedata\n\
 	mov r8, r1\n\
 	movs r0, #7\n\
 	mov sb, r0\n\
@@ -619,7 +616,7 @@ _0800877C:\n\
 	b _080087B8\n\
 	.align 2, 0\n\
 _080087A4: .4byte DiskModIDs\n\
-_080087A8: .4byte gSystemSavedataManager\n\
+_080087A8: .4byte gSystemSavedata\n\
 _080087AC:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -630,7 +627,7 @@ _080087AC:\n\
 _080087B8:\n\
 	movs r5, #0\n\
 	ldr r4, _08008824 @ =0x08338DDE\n\
-	ldr r0, _08008828 @ =gSystemSavedataManager\n\
+	ldr r0, _08008828 @ =gSystemSavedata\n\
 	mov r8, r0\n\
 	movs r1, #7\n\
 	mov sb, r1\n\
@@ -687,7 +684,7 @@ _080087FC:\n\
 	b _08008838\n\
 	.align 2, 0\n\
 _08008824: .4byte ExtraLifeModIDs\n\
-_08008828: .4byte gSystemSavedataManager\n\
+_08008828: .4byte gSystemSavedata\n\
 _0800882C:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -698,7 +695,7 @@ _0800882C:\n\
 _08008838:\n\
 	movs r5, #0\n\
 	ldr r4, _080088A4 @ =0x08338DE0\n\
-	ldr r1, _080088A8 @ =gSystemSavedataManager\n\
+	ldr r1, _080088A8 @ =gSystemSavedata\n\
 	mov r8, r1\n\
 	movs r0, #7\n\
 	mov sb, r0\n\
@@ -755,7 +752,7 @@ _0800887C:\n\
 	b _080088B8\n\
 	.align 2, 0\n\
 _080088A4: .4byte BulletModIDs\n\
-_080088A8: .4byte gSystemSavedataManager\n\
+_080088A8: .4byte gSystemSavedata\n\
 _080088AC:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -765,7 +762,7 @@ _080088AC:\n\
 	ble _08008848\n\
 _080088B8:\n\
 	movs r5, #0\n\
-	ldr r0, _08008930 @ =gSystemSavedataManager\n\
+	ldr r0, _08008930 @ =gSystemSavedata\n\
 	mov ip, r0\n\
 	movs r4, #0\n\
 	movs r1, #0x44\n\
@@ -780,7 +777,7 @@ _080088C6:\n\
 	cmp r6, r0\n\
 	bne _08008934\n\
 	movs r5, #0x3f\n\
-	ldr r0, _08008930 @ =gSystemSavedataManager\n\
+	ldr r0, _08008930 @ =gSystemSavedata\n\
 	mov r8, r0\n\
 	movs r6, #7\n\
 	movs r7, #1\n\
@@ -826,7 +823,7 @@ _080088DE:\n\
 	bl SaveSystemData\n\
 	b _080089D4\n\
 	.align 2, 0\n\
-_08008930: .4byte gSystemSavedataManager\n\
+_08008930: .4byte gSystemSavedata\n\
 _08008934:\n\
 	adds r0, r2, #1\n\
 	lsls r0, r0, #0x10\n\
@@ -935,19 +932,19 @@ _080089D4:\n\
  */
 bool8 IsAnyMinigameUnlocked(void) {
   bool8 ok = FALSE;
-  if (gSystemSavedataManager.unlockedMinigames[0] == (gSineTable[10 + 0] & 0xFF)) {
+  if (gSystemSavedata.unlockedMinigames[0] == (gSineTable[10 + 0] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[1] == (gSineTable[10 + 1] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[1] == (gSineTable[10 + 1] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[2] == (gSineTable[10 + 2] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[2] == (gSineTable[10 + 2] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[3] == (gSineTable[10 + 3] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[3] == (gSineTable[10 + 3] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[4] == (gSineTable[10 + 4] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[4] == (gSineTable[10 + 4] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[5] == (gSineTable[10 + 5] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[5] == (gSineTable[10 + 5] & 0xFF)) {
     ok = TRUE;
-  } else if (gSystemSavedataManager.unlockedMinigames[6] == (gSineTable[10 + 6] & 0xFF)) {
+  } else if (gSystemSavedata.unlockedMinigames[6] == (gSineTable[10 + 6] & 0xFF)) {
     ok = TRUE;
   }
   return ok;

@@ -114,7 +114,7 @@ _080CBEF2:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r5, r6, #0
 	str r4, [r6, #0x28]
 	ldrb r0, [r6, #0x10]
@@ -164,7 +164,7 @@ _080CBF5C:
 	ldr r0, _080CBFD8 @ =gSolidHeaderPtr
 	ldr r0, [r0]
 	str r3, [sp]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r2, r0, #0
 	ldr r3, [sp]
 	cmp r2, #0
@@ -258,7 +258,7 @@ _080CBFDC:
 	adds r1, r1, r6
 	mov sb, r1
 _080CC022:
-	ldr r0, _080CC050 @ =gSystemSavedataManager
+	ldr r0, _080CC050 @ =gSystemSavedata
 	ldrb r1, [r0, #0x15]
 	movs r0, #8
 	ands r0, r1
@@ -282,7 +282,7 @@ _080CC022:
 	movs r3, #0x14
 	b _080CC06E
 	.align 2, 0
-_080CC050: .4byte gSystemSavedataManager
+_080CC050: .4byte gSystemSavedata
 _080CC054: .4byte gCurStory
 _080CC058: .4byte sCollisions
 _080CC05C:
@@ -303,7 +303,7 @@ _080CC06E:
 	.align 2, 0
 _080CC078: .4byte sCollisions
 _080CC07C:
-	ldr r0, _080CC0C0 @ =gSystemSavedataManager
+	ldr r0, _080CC0C0 @ =gSystemSavedata
 	ldrb r1, [r0, #0x15]
 	movs r0, #8
 	ands r0, r1
@@ -337,7 +337,7 @@ _080CC07C:
 	mov sb, r0
 	b _080CC0F4
 	.align 2, 0
-_080CC0C0: .4byte gSystemSavedataManager
+_080CC0C0: .4byte gSystemSavedata
 _080CC0C4: .4byte gCurStory
 _080CC0C8: .4byte sCollisions
 _080CC0CC:
@@ -525,7 +525,7 @@ _080CC212:
 	movs r0, #0
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _080CC278 @ =gMission
+	ldr r2, _080CC278 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080CC27C @ =0x0000270E
 	cmp r1, r0
@@ -553,7 +553,7 @@ _080CC256:
 	.align 2, 0
 _080CC270: .4byte 0xFFFFF800
 _080CC274: .4byte gHeavyCannonMotions
-_080CC278: .4byte gMission
+_080CC278: .4byte gScore
 _080CC27C: .4byte 0x0000270E
 _080CC280: .4byte gSolidFnTable
 
@@ -700,7 +700,7 @@ _080CC392:
 	subs r0, #1
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	bne _080CC3BC
@@ -750,7 +750,7 @@ _080CC3EA:
 	strb r0, [r4, #0xe]
 _080CC3FC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -798,7 +798,7 @@ _080CC432:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080CC4C4
 	.align 2, 0
 _080CC464: .4byte 0x00003808
@@ -839,7 +839,7 @@ _080CC492:
 	strb r0, [r4, #0xe]
 _080CC4AC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -886,7 +886,7 @@ _080CC4EC:
 	strb r0, [r4, #0xe]
 _080CC506:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CC50C:
 	adds r0, r4, #0
 	bl FUN_080cbe38

@@ -25,12 +25,9 @@ const ElfRoutine gElf7Routine = {
 // clang-format on
 
 struct Entity* CreateElf7(struct Zero* z, u8 breed, u8 availability, u8 _) {
-  struct CyberElf7* p = (struct CyberElf7*)AllocEntityFirst(gElfHeaderPtr);
+  struct CyberElf7* p = (struct CyberElf7*)AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 7);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     p->player = z;
     (p->s).work[0] = breed;
     (p->s).work[1] = availability;

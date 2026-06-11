@@ -2,17 +2,17 @@
 #include "motion.h"
 
 // 0x080fecc4
-const struct Coord Coord_080fecc4 = {
+const Coords32 Coord_080fecc4 = {
     0x0,
     0x10001,
 };
 
-const struct Coord gSnowyPlainMetatileShift1 = {0x500000, 0x4500F0};
-const struct Coord gSnowyPlainMetatileShift2 = {0x6E00F0, 0x310096};
+const Coords32 gSnowyPlainMetatileShift1 = {0x500000, 0x4500F0};
+const Coords32 gSnowyPlainMetatileShift2 = {0x6E00F0, 0x310096};
 
-const struct Coord Coord_080fecdc = {PIXEL(352), PIXEL(1056)};
+const Coords32 Coord_080fecdc = {PIXEL(352), PIXEL(1056)};
 
-const struct Coord gMaxCoords = {MAX_X, MAX_Y};
+const Coords32 gMaxCoords = {MAX_X, MAX_Y};
 
 const ALIGNED(4) u8 u8_ARRAY_080fecec[6] = {
     0x0e, 0x20, 0x2a, 0x2a, 0x20, 0x0e,
@@ -53,7 +53,7 @@ const ALIGNED(4) u8 u8_ARRAY_080feda8[16] = {
 };
 
 // 080fedb8
-const struct Coord Coord_ARRAY_080fedb8[13] = {
+const Coords32 Coord_ARRAY_080fedb8[13] = {
     {0xFFFFD400, 0xFFFFF000}, {0xFFFFD100, 0xFFFFEC00}, {0xFFFFD000, 0xFFFFE900}, {0xFFFFCE00, 0xFFFFE400}, {0xFFFFD000, 0xFFFFE100}, {0xFFFFD200, 0xFFFFDE00}, {0xFFFFD300, 0xFFFFD700}, {0xFFFFD200, 0xFFFFDE00}, {0xFFFFD000, 0xFFFFE100}, {0xFFFFCE00, 0xFFFFE400}, {0xFFFFD000, 0xFFFFE900}, {0xFFFFD100, 0xFFFFEC00}, {0xFFFFD400, 0xFFFFF000},
 };
 
@@ -115,7 +115,7 @@ const u8 CubitEXModes[46] = {
     0x10, 0x04, 0x04, 0x04, 0x04, 0x06, 0x06, 0x06, 0x07, 0x07, 0x07, 0x07, 0x09, 0x09, 0x09, 0x09, 0x09, 0x10, 0x06, 0x06, 0x06, 0x06, 0x06, 0x06, 0x05, 0x05, 0x05, 0x05, 0x08, 0x08, 0x08, 0x08, 0x08, 0x08, 0x04, 0x00, 0x05, 0x00, 0x06, 0x00, 0x07, 0x00, 0x08, 0x00, 0x09, 0x00,
 };
 
-const struct Coord Coord_ARRAY_080fef88[5] = {
+const Coords32 Coord_ARRAY_080fef88[5] = {
     {0x1400, 0x3C00}, {0x3100, 0x5E00}, {0x6600, 0x1C00}, {0x9B00, 0x5E00}, {0xB800, 0x3C00},
 };
 
@@ -160,7 +160,7 @@ const ALIGNED(4) u8 u8_ARRAY_080ff00c[80] = {
 };
 
 // 0x080ff05c
-const struct Coord Coord_080ff05c = {0, -2048};
+const Coords32 Coord_080ff05c = {0, -2048};
 
 const ALIGNED(4) u8 StrMISS[] = "MISS";
 const ALIGNED(4) u8 StrSEC[] = "SEC";
@@ -168,7 +168,7 @@ const ALIGNED(4) u8 StrCOMBO[] = "COMBO";
 const ALIGNED(4) u8 StrPlusSEC[] = "+  SEC";
 
 // 080ff080
-const struct Coord Coord_ARRAY_080ff080[5] = {
+const Coords32 Coord_ARRAY_080ff080[5] = {
     {0, 0}, {4096, 4096}, {-4096, 4096}, {4096, -4096}, {-4096, -4096},
 };
 

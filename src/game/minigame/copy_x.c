@@ -286,7 +286,7 @@ _080FA4A8:\n\
 	strh r4, [r7, #6]\n\
 	str r4, [r7, #0x18]\n\
 	str r4, [r7, #0x1c]\n\
-	ldr r0, _080FA538 @ =gSystemSavedataManager\n\
+	ldr r0, _080FA538 @ =gSystemSavedata\n\
 	ldr r0, [r0, #0x2c]\n\
 	str r0, [r7, #0x24]\n\
 	strh r4, [r7, #0xe]\n\
@@ -313,7 +313,7 @@ _080FA528: .4byte wStaticMotionPalIDs\n\
 _080FA52C: .4byte 0x0000071C\n\
 _080FA530: .4byte 0x0000076C\n\
 _080FA534: .4byte 0x00001310\n\
-_080FA538: .4byte gSystemSavedataManager\n\
+_080FA538: .4byte gSystemSavedata\n\
  .syntax divided\n");
 }
 
@@ -343,8 +343,8 @@ bool32 exitCopyXMinigame(struct GameState* g) {
   }
   if (s->unk_06 == 1) {
     if ((*((s16*)s->unk_00) <= 0 || (--(*((s16*)s->unk_00)) <= 0))) {
-      if (s->unk_24 > gSystemSavedataManager.minigameHiscores[MINIGAME_COPY_X]) {
-        gSystemSavedataManager.minigameHiscores[MINIGAME_COPY_X] = s->unk_24;
+      if (s->unk_24 > gSystemSavedata.minigameHiscores[MINIGAME_COPY_X]) {
+        gSystemSavedata.minigameHiscores[MINIGAME_COPY_X] = s->unk_24;
         SaveSystemData();
       }
       return FALSE;

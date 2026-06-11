@@ -61,12 +61,10 @@
 #define MAX_X (PIXEL(64 * DISPLAY_WIDTH))
 #define MAX_Y (PIXEL(64 * DISPLAY_HEIGHT))
 
-#define SCREEN_LEFT(coord_x) (((coord_x >> 8) + -120) << 8)  // Screen center -> Screen left
-#define SCREEN_TOP(coord_y) (((coord_y >> 8) + -80) << 8)    // Screen center -> Screen top
+#define METATILE_SIZE 16
+
 #define MOTION(id, idx) ((id << 8) | idx)
 #define GAMEMODE(m0, m1, m2, m3) ((m3 << 24) | (m2 << 16) | (m1 << 8) | m0)
-#define SCREEN_WIDTH (240 << 8)
-#define SCREEN_HEIGHT (160 << 8)
 
 #define PLTTDATA(u16val) {u16val & 0x1F, (u16val >> 5) & 0x1F, (u16val >> 10) & 0x1F, (u16val >> 15) & 0x1}
 
@@ -82,7 +80,9 @@
 #define LO_NIBBLE(byte) (((u8)byte) & 0xF)
 
 #define PTR_U32(p) ((u32)(void*)(p))
-#define SELF_REL_PTR(ptr32) ((void*)((char*)ptr32 + *((u32*)ptr32)))
+
+// 自己相対ポインタ(Self-relative pointer)
+#define SELF_REL_PTR(ptr32) ((void*)((char*)(ptr32) + *((u32*)(ptr32))))
 
 #define min(a, b) ((a) < (b) ? (a) : (b))
 #define max(a, b) ((a) > (b) ? (a) : (b))
@@ -94,5 +94,7 @@ static inline s32 abs(s32 n) {
   }
   return val;
 }
+
+#define TILEMAP_PAL(pal) ((pal & 0xF) << 12)  // bits 12-15
 
 #endif  // GUARD_RMZ3_GLOBAL_H

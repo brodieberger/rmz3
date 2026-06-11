@@ -23,12 +23,9 @@ const WidgetRoutine gMenuHPRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct Widget* CreateMenuHPGauge(struct GameState* g, u8 x, u8 r2) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 4);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = x;
     (w->s).work[1] = r2;
@@ -139,7 +136,7 @@ _080E68F8:\n\
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080E693C @ =0x00000DCC\n\
 	add r0, r8\n\
 	ldrb r0, [r0, #4]\n\

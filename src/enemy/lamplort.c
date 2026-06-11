@@ -12,8 +12,8 @@ struct Lamplort {
   u8 unk_b9;
   u8 unk_ba;
   u8 unk_bb;
-  u8 unk_bc;           // 0xBC
-  struct Entity* efx;  // 0xC0, Element FX
+  u8 unk_bc;            // 0xBC
+  struct Entity* elfx;  // 0xC0, Element FX
 };
 static_assert(sizeof(struct Lamplort) == sizeof(struct Enemy));
 
@@ -34,14 +34,10 @@ const EnemyRoutine gLamplortRoutine = {
 };
 // clang-format on
 
-static struct Entity* CreateLamplort(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+static struct Entity* CreateLamplort(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_LAMPLORT);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = n;
   }
@@ -50,7 +46,7 @@ static struct Entity* CreateLamplort(struct Coord* c, u8 n) {
 
 // --------------------------------------------
 
-static void onCollision(struct Body* body, struct Coord* c, struct Coord* _ UNUSED);
+static void onCollision(struct Body* body, Coords32* c, Coords32* _ UNUSED);
 
 NAKED static void Lamplort_Init(struct Enemy* p) {
   asm(".syntax unified\n\
@@ -67,7 +63,7 @@ NAKED static void Lamplort_Init(struct Enemy* p) {
 	orrs r2, r0\n\
 	orrs r2, r3\n\
 	strb r2, [r6, #0xa]\n\
-	ldr r0, _0806C290 @ =gSystemSavedataManager\n\
+	ldr r0, _0806C290 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x15]\n\
 	movs r0, #1\n\
 	ands r0, r1\n\
@@ -93,7 +89,7 @@ NAKED static void Lamplort_Init(struct Enemy* p) {
 	movs r3, #0xc\n\
 	b _0806C2B4\n\
 	.align 2, 0\n\
-_0806C290: .4byte gSystemSavedataManager\n\
+_0806C290: .4byte gSystemSavedata\n\
 _0806C294: .4byte gCurStory\n\
 _0806C298: .4byte sCollisions\n\
 _0806C29C:\n\
@@ -192,7 +188,7 @@ _0806C306:\n\
 	adds r0, r6, #0\n\
 	bl SetMotion\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0806C362:\n\
 	adds r0, r6, #0\n\
 	adds r0, #0xbb\n\
@@ -379,9 +375,9 @@ static void FUN_0806cd4c(struct Lamplort* p) {
     flame->unk_b4 |= 2;
     (p->s).mode[2]++;
   }
-  if (isKilled(p->efx)) {
+  if (IsDead(p->elfx)) {
     SetDDP(&p->body, &sCollisions[0]);
-    p->efx = NULL;
+    p->elfx = NULL;
     (p->s).mode[1] = 1, (p->s).mode[2] = 0;
   }
 }
@@ -401,19 +397,19 @@ static void FUN_0806cdb0(struct Lamplort* p) {
     (p->s).d.y = 0;
     (p->s).mode[2]++;
   }
-  if (isKilled(p->efx)) {
+  if (IsDead(p->elfx)) {
     SetDDP(&p->body, &sCollisions[0]);
-    p->efx = NULL;
+    p->elfx = NULL;
     (p->s).mode[1] = 1, (p->s).mode[2] = 0;
   }
 }
 
-static const struct Coord sElementCoord;
+static const Coords32 sElementCoord;
 
 static bool32 lamplort_0806ce08(struct Lamplort* p) {
-  if ((p->efx == NULL) && ((p->body).status & BODY_STATUS_WHITE)) {
-    p->efx = (void*)ApplyElementEffect(0, (Object*)p, &sElementCoord);
-    if (p->efx != NULL) {
+  if ((p->elfx == NULL) && ((p->body).status & BODY_STATUS_WHITE)) {
+    p->elfx = (void*)ApplyElementEffect(0, (Object*)p, &sElementCoord);
+    if (p->elfx != NULL) {
       if ((p->body).elemented == ELEMENT_THUNDER) {
         (p->s).mode[1] = 7, (p->s).mode[2] = 0;
       } else if ((p->body).elemented == ELEMENT_ICE) {
@@ -429,7 +425,7 @@ static bool32 FUN_0806ce5c(void* _ UNUSED) { return TRUE; }
 /**
  * @note 0x0806ce60
  */
-NAKED static void onCollision(struct Body* body, struct Coord* c, struct Coord* _ UNUSED) {
+NAKED static void onCollision(struct Body* body, Coords32* c, Coords32* _ UNUSED) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r3, r0, #0\n\
@@ -615,4 +611,4 @@ static const struct Collision sCollisions[8] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(10)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(10)};

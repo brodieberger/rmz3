@@ -1,6 +1,7 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -132,7 +133,7 @@ static void walk_buster_0(struct Zero* z) {
     if (*(u16*)&b4->prevMode == 0x100) {
       GotoMotion(&z->s, MOTION(DM009_ZERO_BUSTER_WALK, 0), (z->s).motion.cmdIdx, (z->s).motion.duration);
     } else {
-      SetMotion(&z->s, MOTION(DM009_ZERO_BUSTER_WALK, 0));
+      SetSpriteAnimation(z, MOTION(DM009_ZERO_BUSTER_WALK, 0));
     }
     z->atkCooltime = 2;
     (z->unk_b4).attackState8[1] = 1;
@@ -541,7 +542,7 @@ static void walk_shield_1(struct Zero* z) {
     if ((*(u16*)&b4->prevMode) == 0x100) {
       GotoMotion(&z->s, MOTION(DM042_ZERO_SHIELD_WALK, 0), (z->s).motion.cmdIdx, (z->s).motion.duration);
     } else {
-      SetMotion(&z->s, MOTION(DM042_ZERO_SHIELD_WALK, 0));
+      SetSpriteAnimation(z, MOTION(DM042_ZERO_SHIELD_WALK, 0));
     }
   }
 

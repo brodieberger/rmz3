@@ -216,7 +216,7 @@ _0803B2E8: @ jump table
 	.4byte _0803B430 @ case 5
 _0803B300:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -270,7 +270,7 @@ _0803B35C:
 	strb r0, [r4, #0xd]
 _0803B36C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	adds r1, #1
@@ -317,7 +317,7 @@ _0803B3C0:
 	strb r0, [r4, #0xd]
 _0803B3CC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	adds r1, #1
@@ -363,7 +363,7 @@ _0803B428: .4byte 0xFFFFF800
 _0803B42C: .4byte gWeaponFnTable
 _0803B430:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x58]
 	ldr r0, [r4, #0x60]
 	adds r1, r1, r0
@@ -440,7 +440,7 @@ FUN_0803b4b0: @ 0x0803B4B0
 	cmp r0, #0
 	beq _0803B4DA
 	ldr r1, [r2, #0x2c]
-	ldr r3, _0803B4E0 @ =gMission
+	ldr r3, _0803B4E0 @ =gScore
 	ldrh r2, [r3, #0x20]
 	ldr r0, _0803B4E4 @ =0x0000FFFE
 	cmp r2, r0
@@ -458,7 +458,7 @@ _0803B4DA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803B4E0: .4byte gMission
+_0803B4E0: .4byte gScore
 _0803B4E4: .4byte 0x0000FFFE
 
 	thumb_func_start FUN_0803b4e8

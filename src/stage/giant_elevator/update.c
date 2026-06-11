@@ -1176,7 +1176,7 @@ const u8 u8_ARRAY_ARRAY_0834cf30[33][4] = {
 // --------------------------------------------
 
 // 0x0834cfb4
-const struct Coord sGiantElevatorZakoRushCoords[2] = {
+const Coords32 sGiantElevatorZakoRushCoords[2] = {
     {0xE7000, 0x6B000},
     {0xF9000, 0x6B000},
 };

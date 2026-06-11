@@ -21,11 +21,9 @@ const ElfRoutine gElf3Routine = {
 // clang-format on
 
 struct Entity* CreateElf3(struct Entity* nurse_b, struct Entity* z) {
-  struct Entity* p = AllocEntityFirst(gElfHeaderPtr);
+  struct Entity* p = AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 16;
     INIT_ELF_ROUTINE(p, 3);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = nurse_b;
     p->unk_2c = z;
     p->work[0] = 0, p->work[1] = nurse_b->work[1];
@@ -36,12 +34,11 @@ struct Entity* CreateElf3(struct Entity* nurse_b, struct Entity* z) {
 // --------------------------------------------
 
 static const struct Collision sElf3Collisions[];
-void FUN_080e2af0(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+void FUN_080e2af0(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void Elf3_Init(Object* p) {
   (p->s).flags |= FLIPABLE;
-  (p->s).spr.xflip = FALSE;
-  (p->s).spr.oam.xflip = FALSE;
+  (p->s).spr.xflip = FALSE, (p->s).spr.oam.xflip = FALSE;
   (p->s).flags &= ~X_FLIP;
   INIT_BODY(p, sElf3Collisions, 1, FUN_080e2af0);
   (p->s).work[2] = 0;

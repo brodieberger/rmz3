@@ -117,7 +117,7 @@ _0806C512:
 	b _0806C5D0
 _0806C534:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -131,7 +131,7 @@ _0806C548:
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	strb r0, [r7, #0x13]
 	str r0, [r7, #0x60]
@@ -198,7 +198,7 @@ _0806C5D0:
 	b _0806C7DC
 _0806C5D8:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x54]
 	ldr r1, [r7, #0x58]
 	bl FUN_080098a4
@@ -251,7 +251,7 @@ _0806C5D8:
 	bl FUN_080b9ebc
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0806C684 @ =gMission
+	ldr r2, _0806C684 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806C688 @ =0x0000270E
 	cmp r1, r0
@@ -271,7 +271,7 @@ _0806C674: .4byte 0x00269EC3
 _0806C678: .4byte 0x0000190C
 _0806C67C: .4byte 0x0000190D
 _0806C680: .4byte 0x0000190E
-_0806C684: .4byte gMission
+_0806C684: .4byte gScore
 _0806C688: .4byte 0x0000270E
 _0806C68C:
 	ldrb r0, [r7, #0x12]
@@ -330,7 +330,7 @@ _0806C6A0:
 	bl FUN_080b9ebc
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0806C730 @ =gMission
+	ldr r2, _0806C730 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806C734 @ =0x0000270E
 	cmp r1, r0
@@ -349,7 +349,7 @@ _0806C720: .4byte 0x00269EC3
 _0806C724: .4byte 0x0000190C
 _0806C728: .4byte 0x0000190D
 _0806C72C: .4byte 0x0000190E
-_0806C730: .4byte gMission
+_0806C730: .4byte gScore
 _0806C734: .4byte 0x0000270E
 _0806C738:
 	ldr r0, [r7, #0x54]
@@ -404,7 +404,7 @@ _0806C738:
 	adds r0, r6, #0
 	adds r3, r4, #0
 	bl FUN_080b9ebc
-	ldr r2, _0806C804 @ =gMission
+	ldr r2, _0806C804 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806C808 @ =0x0000270E
 	cmp r1, r0
@@ -445,7 +445,7 @@ _0806C7F4: .4byte 0x00269EC3
 _0806C7F8: .4byte 0x0000190C
 _0806C7FC: .4byte 0x0000190D
 _0806C800: .4byte 0x0000190E
-_0806C804: .4byte gMission
+_0806C804: .4byte gScore
 _0806C808: .4byte 0x0000270E
 _0806C80C: .4byte gEnemyFnTable
 
@@ -539,7 +539,7 @@ _0806C87E:
 	strb r0, [r4, #0xe]
 _0806C8A2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0806C8B8
@@ -594,7 +594,7 @@ _0806C8DC:
 	ldr r0, _0806C924 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -648,7 +648,7 @@ _0806C966:
 	ldr r0, _0806C984 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -661,7 +661,7 @@ _0806C988:
 	ldr r0, _0806C9BC @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -671,7 +671,7 @@ _0806C99C:
 	strb r0, [r4, #0x13]
 _0806C99E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -748,7 +748,7 @@ _0806CA06:
 	ldr r0, _0806CA44 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -779,7 +779,7 @@ _0806CA60:
 	ldr r0, _0806CA80 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -793,7 +793,7 @@ _0806CA84:
 	ldr r0, _0806CAC0 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -803,7 +803,7 @@ _0806CA98:
 	strb r0, [r4, #0x13]
 _0806CA9A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0806CAB0
@@ -890,7 +890,7 @@ _0806CB16:
 	strb r0, [r4, #0xe]
 _0806CB3A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -973,7 +973,7 @@ _0806CB9E:
 	strb r0, [r4, #0xe]
 _0806CBD2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1160,7 +1160,7 @@ _0806CD12:
 	strb r0, [r3]
 _0806CD30:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0806CD40
 _0806CD38:
 	movs r1, #0

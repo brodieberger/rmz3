@@ -14,7 +14,7 @@ hanu_080ad598: @ 0x080AD598
 	lsrs r5, r2, #0x18
 	ldr r0, _080AD5E8 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AD5E2
@@ -60,7 +60,7 @@ FUN_080ad5f0: @ 0x080AD5F0
 	lsrs r5, r2, #0x18
 	ldr r0, _080AD640 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AD63A
@@ -243,7 +243,7 @@ _080AD774: .4byte gProjectileFnTable
 FUN_080ad778: @ 0x080AD778
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -343,7 +343,7 @@ _080AD83C: .4byte gProjectileFnTable
 FUN_080ad840: @ 0x080AD840
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	cmp r0, #0
 	beq _080AD860
@@ -422,7 +422,7 @@ FUN_080ad8b8: @ 0x080AD8B8
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x24
 	strb r4, [r0]
@@ -491,7 +491,7 @@ _080AD954: .4byte gProjectileFnTable
 FUN_080ad958: @ 0x080AD958
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	ldrb r1, [r4, #0x12]
 	adds r0, r0, r1
@@ -619,7 +619,7 @@ _080ADA4C: .4byte gProjectileFnTable
 FUN_080ada50: @ 0x080ADA50
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

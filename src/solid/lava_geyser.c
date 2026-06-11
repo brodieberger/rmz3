@@ -36,17 +36,12 @@ const SolidRoutine gLavaGeyserRoutine = {
 void CreateLavaGeyser(struct Entity* e, s32 x, s32 y, s32 n) {
   s32 i;
   for (i = 0; i < 6; i++) {
-    struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+    struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
     if (p != NULL) {
       register s32 r0 asm("r0");
       register s32 r1 asm("r1");
 
-      p->taskCol = 30;
       INIT_SOLID_ROUTINE(p, SOLID_LAVA_GEYSER);
-      p->tileNum = 0;
-      p->palID = 0;
-      p->flags2 |= WHITE_PAINTABLE;
-      p->invincibleID = p->uniqueID;
       (p->work)[0] = 12;
       (p->work)[1] = i;
 
@@ -67,14 +62,9 @@ void CreateLavaGeyser(struct Entity* e, s32 x, s32 y, s32 n) {
 }
 
 static void CreateSolid7_Unused(s32 x, u8 n) {
-  struct Entity* p = (struct Entity*)AllocEntityLast(gSolidHeaderPtr);
+  struct Entity* p = (struct Entity*)AllocEntityFirst(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_LAVA_GEYSER);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     (p->work)[0] = n;
     (p->coord).x = x;
   }
@@ -83,7 +73,7 @@ static void CreateSolid7_Unused(s32 x, u8 n) {
 bool8 FUN_080cc814(struct Entity* p) { return (p->mode)[1] == ENTITY_EXIT; }
 
 // 0x080cc828
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Entity* enemy = (struct Entity*)(body->enemy)->parent;
   struct LavaGeyserObject* self = (struct LavaGeyserObject*)body->parent;
 
@@ -105,9 +95,9 @@ static void Solid7_Init(struct LavaGeyserObject* p) {
     (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y) - PIXEL(14);
     p->unk_b8_y = (p->s).coord.y;
     p->unk_c0_x = (p->s).coord.x;
-    (p->s).flags2 |= ENTITY_HAZARD;
+    (p->s).flags2 |= ENTI_PHYSICS;
     (p->s).size = &sSize;
-    (p->s).hazardAttr = 0x811;
+    (p->s).physicsAttr = MTATTR_B11 | MTATTR_SPIKE | SHAPE_BLOCK;
     CreateLavaGeyserPlatform((void*)p);
   }
   Solid7_Update((void*)p);

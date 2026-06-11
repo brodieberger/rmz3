@@ -611,7 +611,7 @@ initLeviathanMinigame: @ 0x080FB81C
 	mov r0, r8
 	str r2, [r0, #0x24]
 	str r2, [r0, #0x28]
-	ldr r0, _080FBB04 @ =gSystemSavedataManager
+	ldr r0, _080FBB04 @ =gSystemSavedata
 	ldr r0, [r0, #0x38]
 	mov r1, r8
 	str r0, [r1, #0x2c]
@@ -649,7 +649,7 @@ _080FBAF4: .4byte 0x000343FD
 _080FBAF8: .4byte 0x00269EC3
 _080FBAFC: .4byte 0x00000DFD
 _080FBB00: .4byte 0x00000E01
-_080FBB04: .4byte gSystemSavedataManager
+_080FBB04: .4byte gSystemSavedata
 _080FBB08: .4byte 0x00000DFC
 
 	thumb_func_start leviathanMinigame

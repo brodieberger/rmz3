@@ -47,7 +47,7 @@ void OverworldLoop_CerveauTalk(struct GameState* g) {
           if (!FLAG(gCurStory.s.gameflags, FLAG_10)) {
             PrintOptionMessage2(0x207);  // おや？ シエルのところへ行かなくていいのかい？ ...
           } else {
-            if (!FLAG(gCurStory.s.gameflags, FLAG_11)) {
+            if (!FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE)) {
               if (gCurStory.s.counts[1] == 0) {
                 u8* disks;
                 PrintOptionMessage2(0x208);
@@ -66,7 +66,7 @@ void OverworldLoop_CerveauTalk(struct GameState* g) {
                 }
               }
             } else {
-              if (!FLAG(gCurStory.s.gameflags, NO_HARPUIA)) {
+              if (!FLAG(gCurStory.s.gameflags, FLAG_AREAX2_DONE)) {
                 if (gCurStory.s.counts[1] < 3) {
                   PrintOptionMessage2(0x20A);
                   gCurStory.s.counts[1] = 3;

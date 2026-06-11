@@ -241,7 +241,7 @@ _080FAA3A:
 	str r4, [r7, #0x24]
 	strh r4, [r7, #0x28]
 	strh r4, [r7, #0x2a]
-	ldr r0, _080FAAE8 @ =gSystemSavedataManager
+	ldr r0, _080FAAE8 @ =gSystemSavedata
 	ldr r0, [r0, #0x30]
 	str r0, [r7, #0x3c]
 	strh r4, [r7, #0x3a]
@@ -267,7 +267,7 @@ _080FAAD8: .4byte gStaticMotionGraphics
 _080FAADC: .4byte gStaticMotionGraphics+12
 _080FAAE0: .4byte 0x00000D48
 _080FAAE4: .4byte pZero2
-_080FAAE8: .4byte gSystemSavedataManager
+_080FAAE8: .4byte gSystemSavedata
 
 	thumb_func_start harpuiaMinigame
 harpuiaMinigame: @ 0x080FAAEC

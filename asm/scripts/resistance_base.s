@@ -4,6 +4,7 @@
 #include "constants/song.h"
 #include "constants/entity.h"
 #include "constants/flag.h"
+#include "constants/cutscene.h"
 
   .balign 4
   .section .rodata
@@ -140,8 +141,8 @@ Script_0835bfc0:
   spawn 0, EntityTemplate_Zero_0835be70
   reset_camera Camera_0835bdec
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_RBASE
   release
   resume 0
@@ -156,7 +157,7 @@ Script_ContinueGameSaveSelect:
   play_bgm BGM_RBASE
   wait 1
   start_talk
-  wait_screeneffect
+  wait_transition_end
   resume 0
   end
 
@@ -165,7 +166,7 @@ Script_0835c060:
   reset_camera Camera_0835bdec
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm BGM_RBASE
   release
   resume 0
@@ -181,7 +182,7 @@ Script_ReturnFromStageRun:
   spawn 4, EntityTemplate_0835bec0
   gimmick 1, 0, 1
   cmd1c 1, 0, 0
-  wait_screeneffect
+  wait_transition_end
   print_message 0x14, 0x0050
   wait_msgbox_end
   play_se SE_TENSOU_VOICE
@@ -250,8 +251,8 @@ Script_0835c288:
   wait_msgbox_end
   stop_bgm
   wait SECOND
-  screeneffect 10
-  wait_screeneffect
+  start_transition 10
+  wait_transition_end
   destroy 0
   wait SECOND*2
   end
@@ -285,17 +286,17 @@ Script_ReceiveRod:
   forcekeyinput DPAD_LEFT
   wait 10*FRAME
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   lock
   stop_camera
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   message 1, 0, 0x130C @ シエルにはまだ...ささえてやってくれ ゼロ....
   wait_msgbox_end
   sweep 3, 0, 0
   wait 32*FRAME
   resume_camera
-  wait_screeneffect
+  wait_transition_end
   release
   resume 0
   end
@@ -336,7 +337,7 @@ Script_0835c480:
   wait_msgbox_end
   wait SECOND/4
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND
   end
 
@@ -348,7 +349,7 @@ Script_0835c5b0:
   wait FRAME
   gimmick 1, 0, 1
   cmd1c 1, 0, 0
-  wait_screeneffect
+  wait_transition_end
   print_message 0x14, 0x50
   wait_msgbox_end
   play_se SE_TENSOU_VOICE
@@ -360,7 +361,7 @@ Script_0835c5b0:
   gimmick 1, 0, 2
   wait SECOND
   stop_bgm
-  print_message 0x14, 0x51
+  print_message 0x14, 0x51 @ おつかれさまでした
   wait_msgbox_end
   reset_camera Camera_0835bdec
   play_bgm BGM_RBASE
@@ -404,7 +405,7 @@ Script_FreeRunTransport:
   emergency_off
   wait SECOND
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND
   end
 
@@ -416,7 +417,7 @@ Script_0835c7b0:
   wait FRAME
   gimmick 1, 0, 1
   cmd1c 1, 0, 0
-  wait_screeneffect
+  wait_transition_end
   spawn 0, Entity_Zero_0835bed0, 1
   lock
   wait FRAME
@@ -424,7 +425,7 @@ Script_0835c7b0:
   gimmick 1, 0, 2
   wait SECOND
   stop_bgm
-  print_message 0x14, 0x51
+  print_message 0x14, 0x51 @ おつかれさまでした
   wait_msgbox_end
   reset_camera Camera_0835bdec
   play_bgm BGM_RBASE
@@ -434,7 +435,7 @@ Script_0835c7b0:
   end
 
 Script_0835c868:
-  eventflag 0, 17, 0
+  cutscene_start CS_HARPUIA_FIRED
   gimmick 0, 10, 0
   reset_camera Camera_0835be44
   normal_screen
@@ -443,11 +444,11 @@ Script_0835c868:
   gimmick 0, 10, 0
   spawn 3, Entity_0835bee0
   spawn 4, Entity_0835bef0
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 164
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_X
   wait 120
-  message 1, 0, 0x1315
+  message 1, 0, 0x1315 @ エックスさま…… まだ、あのオトコ…バイルを
   wait_msgbox_end
   entityflag 4, 0, TRUE
   wait 30
@@ -459,27 +460,27 @@ Script_0835c868:
   message 1, 0, 0x1317
   wait_msgbox_end
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 118, 0, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x1318
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   reset_camera Camera_0835be44
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   entityflag 5, 0, TRUE
   wait 90
   message 1, 0, 0x1319
   wait_msgbox_end
-  emotion 4, 0x0C00, 0x00FFD000, 0
+  emotion_bubble 4, 12, -48, 0
   wait 75
   message 1, 0, 0x131A
   wait_msgbox_end
@@ -489,34 +490,34 @@ Script_0835c868:
   wait_msgbox_end
   stop_bgm
   wait 60
-  screeneffect 10
-  wait_screeneffect
+  start_transition 10
+  wait_transition_end
   wait 120
   destroy 3
   destroy 4
   destroy 5
-  eventflag 1, 0, 0
+  cutscene_end
   end
 
 Script_0835ca60:
-  eventflag 0, 18, 0
+  cutscene_start CS_MISSILE_ALERT
   cmd1c 1, 0, 0
   wait 1
   gimmick 0, 17, 0
   spawn 0, Entity_0835bf10
   reset_camera Camera_0835bdec
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 186
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_RBASE
   wait 60
   stop_bgm
   play_se 293
   emergency_on
-  emotion 0, 0x0800, 0x00FFD800, 0
+  emotion_bubble 0, 8, -40, 0
   wait 75
-  play_bgm 167
-  message 1, 0, 0x131C
+  play_bgm BGM_ANTAN
+  message 1, 0, 0x131C @ 巨大ミサイルが ハッシャじゅんびに入りました
   wait_msgbox_end
   wait 15
   force 9, 0, 92160
@@ -571,10 +572,10 @@ Script_0835ca60:
   stop_bgm
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 60
   sweep 3, 0, 0
-  eventflag 1, 0, 0
+  cutscene_end
   end
 
 Script_0835ccc8:
@@ -586,9 +587,9 @@ Script_0835ccc8:
   wait 15
   reset_camera Camera_0835bdec
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 167
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_ANTAN
   wait 30
   gimmick 1, 1, 1
   wait 30
@@ -614,19 +615,19 @@ Script_0835cdb8:
   reset_camera Camera_0835bdec
   lock
   normal_screen
-  wait_screeneffect
-  play_bgm 167
+  wait_transition_end
+  play_bgm BGM_ANTAN
   end
 
 Script_0835cdf0:
-  eventflag 0, 24, 0
+  cutscene_start CS_RBASE_24
   wait 30
   play_se 298
   wait 90
-  message 1, 0, 0x1329
+  message 1, 0, 0x1329 @ ツウシンかいせんに キョウセイわりこみ……！
   wait_msgbox_end
   wait 15
-  emotion 0, 0x0800, 0x00FFD800, 0
+  emotion_bubble 0, 8, -40, 0
   wait 75
   sweep 2, 0, 0
   force 2, 0, 0
@@ -636,22 +637,22 @@ Script_0835cdf0:
   stop_bgm
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 119, 0, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 166
   wait 15
   message 1, 0, 0x132B
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   reset_camera Camera_0835bdec
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x132C
   wait_msgbox_end
@@ -666,21 +667,21 @@ Script_0835cdf0:
   message 1, 0, 0x132E
   wait_msgbox_end
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 119, 0, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x132F
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   reset_camera Camera_0835bdec
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   stop_bgm
   message 1, 0, 0x1330
@@ -694,10 +695,10 @@ Script_0835cdf0:
   fadeout_se 60, 293
   emergency_off
   wait 15
-  eventflag 1, 0, 0
+  cutscene_end
   sweep 3, 0, 0
   wait 16
-  play_bgm 186
+  play_bgm BGM_RBASE
   wait_msgbox_end
   wait 15
   release
@@ -710,8 +711,8 @@ Script_0835d098:
   reset_camera Camera_0835bdec
   lock
   normal_screen
-  wait_screeneffect
-  play_bgm 186
+  wait_transition_end
+  play_bgm BGM_RBASE
   force 2, 0, 0
   wait 16
   wait_msgbox_end
@@ -761,16 +762,16 @@ Script_0835d208:
   cmd1c 3, 0, 160*PX
   gameflag FLAG_BRAIN_CONTROL, TRUE
   destroy 0
-  eventflag 0, 44, 0
+  cutscene_start CS_RBASE_44
   spawn 3, Entity_0835bf30
   spawn 4, Entity_0835bf40
-  wait_screeneffect
+  wait_transition_end
   stop_bgm
   wait 15
-  emotion 4, 0x1000, 0x00FFD800, 0
+  emotion_bubble 4, 16, -40, 0
   wait 75
-  play_bgm 167
-  message 1, 0, 0x133C
+  play_bgm BGM_ANTAN
+  message 1, 0, 0x133C @ もう…たてるのか さすがだな ハルピュイア……
   wait_msgbox_end
   wait 15
   entityflag 4, 0, TRUE
@@ -803,21 +804,21 @@ Script_0835d208:
   stop_bgm
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd1c 3, 0, 10240*PX
   destroy 3
   destroy 4
   destroy 5
   wait 30
-  eventflag 1, 0, 0
+  cutscene_end
   spawn 0, Entity_0835bf60
   reset_camera Camera_0835bdec
   forcekeyinput 0xFFFF
   normal_screen
   wait 1
   release
-  wait_screeneffect
-  play_bgm 186
+  wait_transition_end
+  play_bgm BGM_RBASE
   end
 
 Script_0835d3f0:
@@ -825,14 +826,14 @@ Script_0835d3f0:
   reset_camera Camera_0835bdec
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm BGM_RBASE
   release
   resume 0
   end
 
 Script_0835d438:
-  eventflag 0, 45, 0
+  cutscene_start CS_RBASE_45
   lock
   message 1, 1, 0x1346
   message 2, 1, 0
@@ -841,10 +842,10 @@ Script_0835d438:
   stop_bgm
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 223
   wait 60
   message 1, 0, 0x1347
@@ -853,17 +854,17 @@ Script_0835d438:
   normal_screen
   wait 1
   cmd06 122, 0, 0
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x1348
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   reset_camera Camera_0835bdec
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x1349
   wait_msgbox_end
@@ -873,7 +874,7 @@ Script_0835d438:
   wait_msgbox_end
   play_bgm 166
   wait 15
-  emotion 0, 0x0C00, 0x00FFD800, 0
+  emotion_bubble 0, 12, -40, 0
   wait 75
   message 1, 0, 0x134B
   wait_msgbox_end
@@ -882,13 +883,13 @@ Script_0835d438:
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
-  cutscene 6
+  play_brain_control_movie 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
-  cutscene 7
+  play_brain_control_movie 1
   wait 15
   message 1, 1, 0x134D
   message 2, 1, 0
@@ -896,48 +897,48 @@ Script_0835d438:
   message 2, 1, 0
   wait 15
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 15
   message 1, 1, 0x134F
   message 2, 1, 0
   wait 15
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 15
   message 1, 1, 0x1350
   message 2, 1, 0
   wait 15
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 30
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 30
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 12
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 12
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 12
   play_se 333
-  screeneffect 5
+  start_transition 5
   wait 15
   message 1, 1, 0x1351
   message 2, 1, 0
   kill_message
   wait_msgbox_end
   wait 15
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 120
-  cutscene 8
+  play_brain_control_movie 2
   reset_camera Camera_0835bdec
   gimmick 0, 17, 0
-  screeneffect 5
-  wait_screeneffect
+  start_transition 5
+  wait_transition_end
   wait 15
   message 1, 0, 0x1352
   wait_msgbox_end
@@ -946,7 +947,7 @@ Script_0835d438:
   wait 15
   spawn 3, Entity_0835bf70
   wait 60
-  emotion 0, 0x0C00, 0x00FFD800, 0
+  emotion_bubble 0, 12, -40, 0
   wait 75
   force 3, 0, 0
   wait 15
@@ -984,12 +985,12 @@ Script_0835d438:
   entityflag 4, 0, TRUE
   entityflag 5, 0, TRUE
   entityflag 6, 0, TRUE
-  screeneffect 5
+  start_transition 5
   stop_bgm
   wait 90
   message 1, 0, 0x135A
   wait 30
-  play_bgm 167
+  play_bgm BGM_ANTAN
   wait_msgbox_end
   wait 15
   turn_left 0
@@ -1036,14 +1037,14 @@ Script_0835d438:
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   destroy 3
   destroy 4
   destroy 5
   destroy 6
   destroy 7
   wait 60
-  eventflag 1, 0, 0
+  cutscene_end
   end
 
 Script_0835dae0:

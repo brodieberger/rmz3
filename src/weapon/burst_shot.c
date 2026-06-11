@@ -46,18 +46,18 @@ void MenuExit_BurstShot(struct Weapon* w) {
 }
 
 struct Weapon* CreateBurstShot(struct Zero* z, struct Weapon* p, u8 n, s32 x, s32 y) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_BUSTER) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_BURST_SHOT);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[0];
       (w->s).palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_BURST_SHOT);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[1];
       (w->s).palID = gWeaponPalIDs[1];
     }

@@ -51,22 +51,22 @@ static const ALIGNED(4) u8 sWeakElements[34][4] = {
 };
 
 // 0x0835e01c
-static const struct Coord Coord_ARRAY_0835e01c[7] = {
+static const Coords32 Coord_ARRAY_0835e01c[7] = {
     {0x00000000, 0x00000000}, {-0x00001C00, 0x00000000}, {0x00001C00, 0x00000000}, {-0x00000E00, -0x00001C00}, {0x00000E00, -0x00001C00}, {-0x00000E00, 0x00001C00}, {0x00000E00, 0x00001C00},
 };
 
 // 0x0835e054
-static const struct Coord Coord_ARRAY_0835e054[4] = {{-PIXEL(14), -PIXEL(14)}, {PIXEL(14), -PIXEL(14)}, {-PIXEL(14), PIXEL(14)}, {PIXEL(14), PIXEL(14)}};
+static const Coords32 Coord_ARRAY_0835e054[4] = {{-PIXEL(14), -PIXEL(14)}, {PIXEL(14), -PIXEL(14)}, {-PIXEL(14), PIXEL(14)}, {PIXEL(14), PIXEL(14)}};
 
-struct ElementEffect* CreateThunderEffect(struct Entity* e, struct Coord* c, u8 r2);
-struct ElementEffect* CreateFlameEffect(struct Entity* e, struct Coord* c, u8 r2);
-struct ElementEffect* CreateIceEffect(struct Entity* e, struct Coord* c, u8 r2);
+struct ElementEffect* CreateThunderEffect(struct Entity* e, Coords32* c, u8 r2);
+struct ElementEffect* CreateFlameEffect(struct Entity* e, Coords32* c, u8 r2);
+struct ElementEffect* CreateIceEffect(struct Entity* e, Coords32* c, u8 r2);
 
 // Entityに属性攻撃のエフェクト(氷や電撃)をつける関数
-NON_MATCH struct VFX* ApplyElementEffect(u8 idx, Object* p, const struct Coord* base) {
+NON_MATCH struct Entity* ApplyElementEffect(u8 idx, Object* p, const Coords32* base) {
 #if MODERN
   struct ElementEffect* fx = NULL;
-  struct Coord c = {
+  Coords32 c = {
       .x = base->x,
       .y = base->y,
   };
@@ -101,7 +101,7 @@ NON_MATCH struct VFX* ApplyElementEffect(u8 idx, Object* p, const struct Coord* 
       u8 lifetime = 30;
 
       if (elfx == ELFX_THUNDER) {
-        struct Coord _c;
+        Coords32 _c;
         s32 i;
         for (i = 0; i < (s32)ARRAY_COUNT(Coord_ARRAY_0835e01c); i++) {
           _c.x = c.x + (Coord_ARRAY_0835e01c[i]).x;
@@ -113,7 +113,7 @@ NON_MATCH struct VFX* ApplyElementEffect(u8 idx, Object* p, const struct Coord* 
           }
         }
       } else if (elfx == ELFX_FIRE) {
-        struct Coord _c;
+        Coords32 _c;
         s32 i;
         for (i = 0; i < (s32)ARRAY_COUNT(Coord_ARRAY_0835e054); i++) {
           _c.x = c.x + (Coord_ARRAY_0835e054[i]).x;
@@ -129,7 +129,7 @@ NON_MATCH struct VFX* ApplyElementEffect(u8 idx, Object* p, const struct Coord* 
           _c.x -= PIXEL(10), _c.y += PIXEL(2), CreateFlameEffect((void*)p, &_c, lifetime);
         }
       } else if (elfx == ELFX_ICE) {
-        struct Coord _c;
+        Coords32 _c;
         s32 i;
         for (i = 0; i < (s32)ARRAY_COUNT(Coord_ARRAY_0835e054); i++) {
           _c.x = c.x + (Coord_ARRAY_0835e054[i]).x;

@@ -20,13 +20,10 @@ const ProjectileRoutine gProjectile47Routine = {
 // clang-format on
 
 // 0x080b2794
-struct Entity* CreateChildreShipSonicBoom(struct Coord* c, u8 updown) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+struct Entity* CreateChildreShipSonicBoom(Coords32* c, u8 updown) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 47);
-    p->tileNum = 0;
-    p->palID = 0;
     (p->coord).x = c->x;
     (p->coord).y = c->y;
     (p->d).x = 0;
@@ -55,14 +52,14 @@ static void FUN_080b27f8(struct Projectile* p) {
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   INIT_BODY(p, &sCollision, 0, NULL);
-  SetMotion(&p->s, MOTION(SM183_CHILDRE_SHIP_SONIC_WAVE, 0));
+  SetSpriteAnimation(p, MOTION(SM183_CHILDRE_SHIP_SONIC_WAVE, 0));
   if ((p->s).d.y < 0) SET_YFLIP(p, TRUE);  // 上向き
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
   FUN_080b2884(p);
 }
 
 static void FUN_080b2884(struct Projectile* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 
   // outside of sea
   if (((p->s).coord.y < gOverworld.sea) || ((p->s).coord.y > PIXEL(1040))) {

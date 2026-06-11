@@ -151,7 +151,9 @@
       src/stage/weil_labo/spawn.o (.rodata);
       src/stage/resistance_base/spawn.o (.rodata);
 
-		src/mission.o (.rodata);
+		src/score.o (.rodata);
+		src/warp_coords.o (.rodata);
+		src/unk0202fe50.o (.rodata);
 		src/stagerun.o (.rodata);
 		src/camera.o (.rodata);
 		src/stage/sunken_library/update.o (.rodata);
@@ -224,7 +226,7 @@
 
 		src/boss.o (.rodata);
       src/boss/megamilpa.o (.rodata);
-      src/boss/omega_white.o (.rodata);
+      src/boss/omega1w.o (.rodata);
       src/boss/blazin.o (.rodata);
       src/boss/childre.o (.rodata);
       src/boss/wormer.o (.rodata);
@@ -241,7 +243,7 @@
       src/boss/copy_x.o (.rodata);
       src/boss/glacierle.o (.rodata);
       src/boss/blizzack.o (.rodata);
-      src/boss/omega_gold.o (.rodata);
+      src/boss/omega1g.o (.rodata);
       src/boss/hanumachine.o (.rodata);
       src/boss/omega_zero.o (.rodata);
       src/boss/phantom.o (.rodata);
@@ -258,7 +260,7 @@
       src/enemy/piller_cannon.o (.rodata);
       src/enemy/grand_cannon.o (.rodata);
       src/enemy/shrimpolin.o (.rodata);
-      src/enemy/omega_white_hand.o (.rodata);
+      src/enemy/omega1w_hand.o (.rodata);
       src/enemy/flopper.o (.rodata);
       src/enemy/lamplort.o (.rodata);
       src/enemy/gyro_cannon.o (.rodata);
@@ -290,7 +292,7 @@
       src/enemy/pantheon_zombie.o (.rodata);
       src/enemy/pantheon_aqua_mod_obj.o (.rodata);
       src/enemy/glacierle_arm.o (.rodata);
-      src/enemy/omega_gold_hand.o (.rodata);
+      src/enemy/omega1g_hand.o (.rodata);
       src/enemy/eye_cannon.o (.rodata);
       src/enemy/unk_42.o (.rodata);
       src/enemy/capsule_cannon.o (.rodata);
@@ -303,7 +305,7 @@
       src/enemy/hanumachine_necro.o (.rodata);
       src/enemy/carrybee_g.o (.rodata);
       src/enemy/omega_zero_rock.o (.rodata);
-      src/enemy/omega_gold_sword.o (.rodata);
+      src/enemy/omega1g_sword.o (.rodata);
       src/enemy/generator_cannon.o (.rodata);
       src/enemy/deathlock.o (.rodata);
       src/enemy/claveker.o (.rodata);
@@ -329,17 +331,17 @@
       src/projectile/shotcounter_bullet.o (.rodata);
       src/projectile/unk_02.o (.rodata);
       src/projectile/grand_cannon_bomb.o (.rodata);
-      src/projectile/omega_white.o (.rodata);
-      src/projectile/unk_05.o (.rodata);
+      src/projectile/omega1w_laser.o (.rodata);
+      src/projectile/omega1w_hoop_shot.o (.rodata);
       src/projectile/unk_06.o (.rodata);
       src/projectile/unk_07.o (.rodata);
-      src/projectile/unk_08.o (.rodata);
+      src/projectile/gyro_cannon_bomb.o (.rodata);
       src/projectile/blazin.o (.rodata);
       src/projectile/blazin_tail.o (.rodata);
       src/projectile/ear_shot.o (.rodata);
       src/projectile/unk_12.o (.rodata);
-      src/projectile/unk_13.o (.rodata);
-      src/projectile/unk_14.o (.rodata);
+      src/projectile/baby_elf.o (.rodata);
+      src/projectile/deathtanz_14.o (.rodata);
       src/projectile/hellbat.o (.rodata);
       src/projectile/unk_16.o (.rodata);
       src/projectile/unk_17.o (.rodata);
@@ -349,17 +351,17 @@
       src/projectile/pantheon_aqua_mod.o (.rodata);
       src/projectile/cubit.o (.rodata);
       src/projectile/locomo_if.o (.rodata);
-      src/projectile/copy_x.o (.rodata);
-      src/projectile/unk_25.o (.rodata);
-      src/projectile/unk_26.o (.rodata);
-      src/projectile/unk_27.o (.rodata);
-      src/projectile/unk_28.o (.rodata);
-      src/projectile/unk_29.o (.rodata);
-      src/projectile/unk_30.o (.rodata);
-      src/projectile/unk_31.o (.rodata);
-      src/projectile/unk_32.o (.rodata);
-      src/projectile/omega_gold.o (.rodata);
-      src/projectile/unk_34.o (.rodata);
+      src/projectile/copy_x_tackle.o (.rodata);
+      src/projectile/copy_x_shot_normal.o (.rodata);
+      src/projectile/copy_x_shot_fire.o (.rodata);
+      src/projectile/copy_x_shot_elecice.o (.rodata);
+      src/projectile/copy_x_28.o (.rodata);
+      src/projectile/copy_x_29.o (.rodata);
+      src/projectile/glacierle_30.o (.rodata);
+      src/projectile/blizzack_31.o (.rodata);
+      src/projectile/blizzack_32.o (.rodata);
+      src/projectile/omega1g_33.o (.rodata);
+      src/projectile/omega1g_34.o (.rodata);
       src/projectile/pantheon_bomber.o (.rodata);
       src/projectile/unk_36.o (.rodata);
       src/projectile/unk_37.o (.rodata);
@@ -367,8 +369,8 @@
       src/projectile/claveker_yellow_balls.o (.rodata);
       src/projectile/phantom.o (.rodata);
       src/projectile/omega_zx.o (.rodata);
-      src/projectile/unk_42.o (.rodata);
-      src/projectile/unk_43.o (.rodata);
+      src/projectile/shotloid.o (.rodata);
+      src/projectile/shellcrawler.o (.rodata);
       src/projectile/unk_44.o (.rodata);
       src/projectile/unk_45.o (.rodata);
       src/projectile/unk_46.o (.rodata);
@@ -402,7 +404,7 @@
       src/vfx/icebon_icedust.o (.rodata);
       src/vfx/unk_27.o (.rodata);
       src/vfx/unk_28.o (.rodata);
-      src/vfx/unk_29.o (.rodata);
+      src/vfx/burning_flame_effect.o (.rodata);
       src/vfx/unk_30.o (.rodata);
       src/vfx/unk_31.o (.rodata);
       src/vfx/pantheon_aqua.o (.rodata);
@@ -421,15 +423,15 @@
       src/vfx/particle_iceball.o (.rodata);
       src/vfx/unk_46.o (.rodata);
       src/vfx/unk_47.o (.rodata);
-      src/vfx/elf_particle.o (.rodata);
+      src/vfx/particle_cyberelf.o (.rodata);
       src/vfx/unk_49.o (.rodata);
       src/vfx/unk_50.o (.rodata);
       src/vfx/unk_51.o (.rodata);
       src/vfx/unk_52.o (.rodata);
       src/vfx/unk_53.o (.rodata);
       src/vfx/particle_icicle.o (.rodata);
-      src/vfx/unk_55.o (.rodata);
-      src/vfx/unk_56.o (.rodata);
+      src/vfx/copy_x_55.o (.rodata);
+      src/vfx/copy_x_reflect_laser.o (.rodata);
       src/vfx/unk_57.o (.rodata);
       src/vfx/unk_58.o (.rodata);
       src/vfx/unk_59.o (.rodata);
@@ -463,7 +465,7 @@
       src/solid/icebon.o (.rodata);
       src/solid/icebon_ice.o (.rodata);
       src/solid/door_2d_blue.o (.rodata);
-      src/solid/unk_03.o (.rodata);
+      src/solid/burning_flame.o (.rodata);
       src/solid/iron_star.o (.rodata);
       src/solid/heavy_cannon.o (.rodata);
       src/solid/lava_geyser_platform.o (.rodata);
@@ -485,7 +487,7 @@
       src/solid/door_2d_gray_h.o (.rodata);
       src/solid/turtloid_s.o (.rodata);
       src/solid/phantom_teleporter.o (.rodata);
-      src/solid/unk_25.o (.rodata);
+      src/solid/platform_areax2_weillabo.o (.rodata);
       src/solid/ice_block.o (.rodata);
       src/solid/unk_27.o (.rodata);
       src/solid/minigame_ninjastar.o (.rodata);
@@ -493,11 +495,11 @@
       src/solid/main_npc.o (.rodata);
       src/solid/cyberspace_door.o (.rodata);
       src/solid/light_switch.o (.rodata);
-      src/solid/platform_weil_labo.o (.rodata);
+      src/solid/platform_unused33.o (.rodata);
       src/solid/toggle_switch_red.o (.rodata);
       src/solid/container.o (.rodata);
       src/solid/platform_missile_factory.o (.rodata);
-      src/solid/unk_37.o (.rodata);
+      src/solid/flying_fish.o (.rodata);
       src/solid/seagulls.o (.rodata);
       src/solid/cat.o (.rodata);
       src/solid/plant.o (.rodata);
@@ -539,13 +541,13 @@
 		src/widget.o (.rodata);
       src/widget/weapon_icon.o (.rodata);
       src/widget/unk_01.o (.rodata);
-      src/widget/unk_02.o (.rodata);
+      src/widget/cursor_square.o (.rodata);
       src/widget/subtank.o (.rodata);
       src/widget/hp.o (.rodata);
       src/widget/armor_icons.o (.rodata);
       src/widget/exskill.o (.rodata);
       src/widget/elf_menu_item.o (.rodata);
-      src/widget/cursor.o (.rodata);
+      src/widget/cursor_triangle.o (.rodata);
       src/widget/unk_09.o (.rodata);
       src/widget/disk_icon.o (.rodata);
       src/widget/elf_icon.o (.rodata);
@@ -598,15 +600,16 @@
 		FILL(0xFF)
 		. += 106244;
 
-    INCLUDE "linker/rodata_sprite.txt"
+    src/data/animation/sprite_dynamic.o (.rodata);
+    src/data/graphic_table/sprite_dynamic.o (.rodata);
 
 		src/data/bgmaps.o (.rodata);
 		src/data/graphic_table/bg.o (.rodata);
 		src/data/graphic_table/dialog.o (.rodata);
-		src/blink.o (.rodata);
+		src/data/animation/palette.o (.rodata);
 
-    sprites/static/anim.o (.rodata);
-    sprites/static/header.o (.rodata);
+    src/data/animation/sprite_static.o (.rodata);
+    src/data/graphic_table/sprite_static.o (.rodata);
 		FILL(0xFF)
 		. += 40;
 

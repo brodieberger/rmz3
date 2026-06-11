@@ -7,6 +7,8 @@
 #include "gba/gba.h"
 #include "types.h"
 
+// 後で player.h に名前変更予定
+
 // Zero.mode[1]
 enum {
   ZERO_GROUND = 0,     // 地上(棒立ち、歩き、ダッシュ、Zセイバー、etc...)
@@ -41,23 +43,11 @@ enum MenuZeroColor {
   MZC_ULTIMATE,
 };
 
-enum WeaponCharge {
-  NO_CHARGE,
-  SEMI_CHARGE,
-  FULL_CHARGE,
-};
-
 typedef ZeroFunc ZeroRoutine[5];
 extern const ZeroRoutine* const gPlayerFnTable[PLAYER_ENTITY_COUNT];
 
 #define INIT_PLAYER_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gPlayerFnTable, entity, entityID)
 #define SET_PLAYER_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gPlayerFnTable, entity, modeID)
-
-enum ZeroGround {
-  GROUND_IDLE,
-  GROUND_WALK,
-  GROUND_DASH,
-};
 
 #define HEAD ((z->unk_b4).status.head)
 #define BODY(z) (((&z->unk_b4)->status).body)
@@ -66,7 +56,7 @@ enum ZeroGround {
 #define SATELITE_1 (((&z->unk_b4)->status).satelites[0])
 #define SATELITE_2 (((&z->unk_b4)->status).satelites[1])
 
-extern struct Zero* pZero;
+extern struct Entity* pZero;
 extern struct Zero* pZero2;
 
 extern const struct Collision gZeroCollisions[POSTURE_COUNT];
@@ -77,15 +67,15 @@ void ClearZeroStatusHard(struct ZeroStatus* p);
 void ClearZeroStatusUltimate(struct ZeroStatus* p);
 void FUN_080321d4(struct ZeroStatus* p);
 
-void SaveZeroStatus(struct Zero* z, struct ZeroStatus* status);
-void CopyZeroStatus(struct Zero* z, struct ZeroStatus* status);
+void LoadZeroStatus(struct Zero* z, struct ZeroStatus* status);
+void StoreZeroStatus(struct Zero* z, struct ZeroStatus* status);
 
 u8 GetZeroColor(struct Zero* z);
 
 u16 FUN_080101a8(void);
 void InitPlayerHeader(struct EntityHeader* h, struct Zero* p, s16 len);
-struct Zero* AllocPlayer(void);
-struct Zero* AllocPlayer2(void);
+struct Entity* AllocPlayer(void);
+struct Entity* AllocPlayer2(void);
 void RemovePlayer(struct Entity* p);
 void LoadZeroPalette(struct Entity* _, u32 color);
 void LoadShadowDashPalette(struct Zero* _, u32 color);
@@ -101,45 +91,11 @@ u8 CountButtonMashing(struct Zero* z);
 void ResetZeroInput(struct Zero* z);
 void resetSateliteElfPosition(struct Zero* z);
 u16 GetDefaultMotion(struct Zero* z);
-u8 CalcBusterBonus(struct Zero* z);
 s16 CalcMaxWalkSpeed(struct Zero* z);
 void FUN_080322c4(struct ZeroStatus* d);
 bool8 IsButtonMashed(struct Zero* z);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
-
-void zeroNeutral2(struct Zero* z);
-void zeroAir2(struct Zero* z);
-void zeroWall2(struct Zero* z);
-void zeroLadder2(struct Zero* z);
-void zeroDamaged(struct Zero* z);
-void zeroKnockBack(struct Zero* z);
-void FUN_0802c010(struct Zero* z);
-void zeroDoor2D(struct Zero* z);
-void zeroDoor3D(struct Zero* z);
-void zeroMode7(struct Zero* z);
-void zeroFloat(struct Zero* z);
-void zeroTalk(struct Zero* z);
-void zeroTeleport(struct Zero* z);
-void zeroCyberDoor(struct Zero* z);
-
-// ------------------------------------------------------------------------------------------------------------------------------------
-
-void ZeroAttack_Ground(struct Zero* z);
-void zeroAttack(struct Zero* z);
-void onSaber_GroundIdle(struct Zero* z);
-void charge_saber_ground(struct Zero* z);
-void recoilAttack(struct Zero* z);
-void shieldAttack(struct Zero* z);
-void shield_throw(struct Zero* z);
-void shield_0802e1c8(struct Zero* z);
-void zero_shield_0802e268(struct Zero* z);
-void zeroAirAtk(struct Zero* z);
-void ZeroAttack_Air(struct Zero* z);
-void ZeroAttack_Wall(struct Zero* z);
-void ZeroAttack_Ladder(struct Zero* z);
-void zeroWallAtk(struct Zero* z);
-void zeroLadderAtk(struct Zero* z);
 
 bool8 zero_08026f90(struct Zero* z, const struct Rect* p);
 s16 CalcDx(struct Zero* z);
@@ -164,19 +120,15 @@ u8 RecoilFromFloor(struct Zero* z, const struct Rect* range);
 metatile_attr_t PushoutByFloor2(struct Zero* z, const struct Rect* p, bool8 r2);
 bool8 IsElfUsed(struct Zero* z, cyberelf_t elfID);
 bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID);
-metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, struct Coord* c);
+metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, Coords32* c);
 s16 GetDashSpeed(struct Zero* z);
 bool8 IsAttackOK(struct Zero* z, weapon_t* w);
 void KeepMotion(struct Zero* z, motion_t m);
-void FUN_08032504(struct Zero* z, motion_t m);
-void FUN_0803267c(struct Zero* z, motion_t m);
-void skipEventScene(struct Zero* z, struct ZeroStatus* status);
+void CopyPlayerMaxHPChargeOnSkipEventScene(Player* p, struct ZeroStatus* status);
 void InstantlyKilling(struct Zero* z);
 s16 getWallFallSpeed(struct Zero* z);
 void CheckZeroHazard(struct Zero* z);
 void setStageElfFlags(struct Zero* z);
-bool8 Is1000Slash(struct Zero* z);
-void zero_08032724(struct Zero* z);
 void SetDisableArea(struct Zero* z, s32 left, s32 top, s32 right, s32 bottom);
 void HandlePlayerInput(struct Zero* z);
 u8 zero_08026970(struct Zero* z, const struct Rect* range, bool8 _);

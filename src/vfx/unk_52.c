@@ -20,12 +20,9 @@ const VFXRoutine gVFX52Routine = {
 // --------------------------------------------
 
 struct Entity* CreateVFX52(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_052);
-    p->tileNum = 0;
-    p->palID = 0;
     p->work[0] = 0;
     p->work[1] = 0;
     p->unk_28 = e;
@@ -37,8 +34,8 @@ struct Entity* CreateVFX52(struct Entity* e) {
 
 static void VFX52_Init(struct Entity* p) {
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  InitScalerotMotion1(p);
-  p->taskCol = 25;
+  EnableSpriteAnimation_Affine(p);
+  p->renderPrio = 25;
   ForceEntityPalette(p, 13);
   p->flags |= DISPLAY;
   p->work[3] = 0x80;

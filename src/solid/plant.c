@@ -28,15 +28,15 @@ NAKED static void ModPlant_Init(struct Solid* p) {
 	ldrb r0, [r4, #0x10]\n\
 	cmp r0, #0\n\
 	bne _080DD914\n\
-	ldr r0, _080DD910 @ =gSystemSavedataManager\n\
+	ldr r0, _080DD910 @ =gSystemSavedata\n\
 	ldrb r0, [r0, #8]\n\
 	movs r2, #1\n\
 	ands r2, r0\n\
 	b _080DD920\n\
 	.align 2, 0\n\
-_080DD910: .4byte gSystemSavedataManager\n\
+_080DD910: .4byte gSystemSavedata\n\
 _080DD914:\n\
-	ldr r0, _080DD95C @ =gSystemSavedataManager\n\
+	ldr r0, _080DD95C @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x11]\n\
 	movs r0, #4\n\
 	ands r0, r1\n\
@@ -73,7 +73,7 @@ _080DD920:\n\
 	str r0, [r4, #0x14]\n\
 	b _080DD9E4\n\
 	.align 2, 0\n\
-_080DD95C: .4byte gSystemSavedataManager\n\
+_080DD95C: .4byte gSystemSavedata\n\
 _080DD960: .4byte gSolidFnTable\n\
 _080DD964:\n\
 	ldr r1, _080DD99C @ =gSolidFnTable\n\
@@ -109,7 +109,7 @@ _080DD9A0:\n\
 	bl SetMotion\n\
 _080DD9A8:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r2, #0\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0xef\n\
@@ -145,7 +145,7 @@ _080DD9EC: .4byte 0x0000E701\n\
 }
 
 static void ModPlant_Update(struct Solid* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   return;
 }
 

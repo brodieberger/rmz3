@@ -25,14 +25,9 @@ void CreateSplitMineBomb(s32 x, s32 y) {
   struct Enemy* p;
 
   CreateVFX31_1(x, y);
-  p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
+  p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -56,7 +51,7 @@ NAKED void ExplodeSplitMine(s32 x, s32 y) {
 _080736CE:\n\
 	ldr r0, _08073770 @ =gEnemyHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityLast\n\
+	bl AllocEntityFirst\n\
 	adds r2, r0, #0\n\
 	cmp r2, #0\n\
 	beq _08073752\n\
@@ -147,14 +142,9 @@ void CreateChildreScrewIce(s32 x, s32 y, u8 n) {
   struct Enemy* p;
 
   CreateVFX31_1(x, y);
-  p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
+  p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 2;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -163,14 +153,9 @@ void CreateChildreScrewIce(s32 x, s32 y, u8 n) {
 }
 
 void CreateChildreMissile(s32 x, s32 y, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
+  struct Enemy* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CHILDRE_OBJ);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 3;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -178,7 +163,7 @@ void CreateChildreMissile(s32 x, s32 y, u8 n) {
   }
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }

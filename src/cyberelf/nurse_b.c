@@ -28,11 +28,9 @@ const ElfRoutine gNurseBRoutine = {
 // clang-format on
 
 struct Entity* CreateNurseBElf(struct Zero* z, u8 breed, u8 availability, u8 satelite_slot) {
-  struct CyberElfNurseB* p = (struct CyberElfNurseB*)AllocEntityFirst(gElfHeaderPtr);
+  struct CyberElfNurseB* p = (struct CyberElfNurseB*)AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 2);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     p->player = z;
     (p->s).work[0] = breed, (p->s).work[1] = availability, (p->s).work[2] = satelite_slot;
     if (satelite_slot == 0) {

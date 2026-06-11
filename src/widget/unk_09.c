@@ -17,12 +17,9 @@ const WidgetRoutine gWidget9Routine = {
 // clang-format on
 
 struct Widget* CreateMenuComp9(struct GameState* g, bool8 r1, u8 r2) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 9);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = r1;
     (w->s).work[1] = r2;
@@ -76,7 +73,7 @@ static void Widget9_Update(struct Widget* w) {
     (w->s).flags |= DISPLAY;
     (sUpdates[(w->s).work[0]])(w);
   }
-  UpdateMotionGraphic(&w->s);
+  UpdateSpriteAnimation(w);
 }
 
 // --------------------------------------------
@@ -115,7 +112,7 @@ NAKED static void FUN_080e7ab0(struct Widget* w) {
 	ldrb r2, [r0]\n\
 	cmp r2, #0xff\n\
 	beq _080E7B8C\n\
-	ldr r0, _080E7AE8 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E7AE8 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r4, r0, r2\n\
 	ldrb r5, [r4]\n\
@@ -128,7 +125,7 @@ NAKED static void FUN_080e7ab0(struct Widget* w) {
 	.align 2, 0\n\
 _080E7AE0: .4byte 0x000064AC\n\
 _080E7AE4: .4byte 0x00000DFC\n\
-_080E7AE8: .4byte gUnlockedElfPtr\n\
+_080E7AE8: .4byte gElfAvailability\n\
 _080E7AEC: .4byte 0x00005302\n\
 _080E7AF0:\n\
 	adds r1, #0xb4\n\
@@ -260,7 +257,7 @@ _080E7BD8:\n\
 	.align 2, 0\n\
 _080E7BDC: .4byte 0x00005308\n\
 _080E7BE0:\n\
-	ldr r0, _080E7C04 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E7C04 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r4\n\
 	ldrb r1, [r0]\n\
@@ -278,7 +275,7 @@ _080E7BE0:\n\
 	ldr r1, _080E7C08 @ =0x00005311\n\
 	b _080E7C2A\n\
 	.align 2, 0\n\
-_080E7C04: .4byte gUnlockedElfPtr\n\
+_080E7C04: .4byte gElfAvailability\n\
 _080E7C08: .4byte 0x00005311\n\
 _080E7C0C:\n\
 	ldr r1, _080E7C10 @ =0x00005308\n\

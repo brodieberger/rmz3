@@ -39,22 +39,22 @@ const struct SpawnTemplate gAreaX2Entity[36] =
         [7] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 0, 0),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 0, 0),
             },
         [8] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 1, 0),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 1, 0),
             },
         [9] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 2, 0),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 2, 0),
             },
         [10] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 3, 0),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 3, 0),
             },
         [11] =
             {

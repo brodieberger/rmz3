@@ -440,7 +440,7 @@ _080DD134:
 	strb r0, [r5, #0x12]
 _080DD138:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r4, [r5, #0xd]
 	cmp r4, #1
 	bne _080DD146
@@ -627,7 +627,7 @@ _080DD284:
 	orrs r0, r1
 	strb r0, [r3]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	adds r0, #1
 	strb r0, [r5, #0x12]
@@ -652,7 +652,7 @@ _080DD2B4:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0xa]
 	movs r0, #0x10
 	ands r0, r1
@@ -725,7 +725,7 @@ _080DD360: .4byte 0x00269EC3
 FUN_080dd364: @ 0x080DD364
 	push {r4, r5, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x54]
 	ldr r0, [r4, #0x5c]
 	adds r1, r1, r0

@@ -11,7 +11,7 @@ Solid18_Update: @ 0x080CF74C
 	ldr r0, _080CF7BC @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	adds r4, r0, #0
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
@@ -109,7 +109,7 @@ _080CF800:
 	ldr r0, _080CF840 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	ldr r1, _080CF844 @ =0x00003FFF
 	cmp r0, r1
 	bhi _080CF854
@@ -310,7 +310,7 @@ _080CF9A6:
 	str r1, [r4, #0x5c]
 _080CF9AC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	bl FUN_080cf428
 	lsls r0, r0, #0x18
@@ -409,7 +409,7 @@ _080CFA3A:
 	strb r4, [r5, #0xe]
 _080CFA64:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CFA6A:
 	ldrb r0, [r6, #0xc]
 	cmp r0, #1
@@ -508,7 +508,7 @@ _080CFB16:
 	ands r0, r1
 	strb r0, [r4, #0x13]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CFB26:
 	pop {r4, r5}
 	pop {r0}
@@ -579,7 +579,7 @@ _080CFB9C:
 	str r1, [r4, #0x5c]
 _080CFBA6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	bl FUN_080cf428
 	lsls r0, r0, #0x18

@@ -9,7 +9,7 @@ Ripple_Update: @ 0x080B54F4
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	ldr r6, [r4, #0x28]
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x8c
 	ldr r5, [r0]
@@ -103,7 +103,7 @@ _080B55AA:
 	movs r1, #0x14
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xdf
 	ands r0, r1
@@ -137,7 +137,7 @@ _080B55F0:
 	movs r1, #0x15
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xd]
 	adds r0, #1
 	strb r0, [r4, #0xd]

@@ -4,6 +4,8 @@
 #include "global.h"
 #include "sound_wave.h"
 
+#define MUSIC_PLAYER_LENGTH 15
+
 extern SoundID SoundID1;
 extern SoundID SoundID2;
 extern u32 gSongCount;
@@ -49,23 +51,19 @@ void StopAllMusics(void) {
   SoundID2 = MUS_DUMMY;
 }
 
-void _usrHBlankCallback(void) {
+void SoundHBlank(void) {
   if (SoundID1 != 0) {
     SoundID1--;
   } else {
     if (SoundID2 != 0) {
       m4aSongNumStart(SoundID2);
-      SoundID2 = 0;
-      SoundID1 = 8;
+      SoundID2 = 0, SoundID1 = 8;
     }
   }
   m4aSoundMain();
 }
 
-void FUN_080044a0(void) {
-  m4aSoundVSync();
-  return;
-}
+void SoundVBlank(void) { m4aSoundVSync(); }
 
 // メニュー画面を開いた時など、BGMの音量を落とす
 NON_MATCH void TurnDownBGM(void) {
@@ -91,10 +89,7 @@ NON_MATCH void TurnUpBGM(void) {
 #endif
 }
 
-void PlayBGM(SoundID n) {
-  m4aSongNumStart(n);
-  return;
-}
+void PlayBGM(SoundID n) { m4aSongNumStart(n); }
 
 void FadeOutBGM(SoundID n) {
   bool32 playing = _isSoundPlaying(n);
@@ -181,13 +176,11 @@ bool32 isSoundPlaying(SoundID n) {
   }
 }
 
-/*
-  ベルトコンベアや時間系エルフのカチコチ音などBGMとは違うがずっと流れている環境音の音量を設定する
-*/
+// ベルトコンベアや時間系エルフのカチコチ音などBGMとは違うがずっと流れている環境音の音量を設定する
 void SetStageNoiseVolume(SoundID n) {
   bool32 b = _isSoundPlaying(n);
   if (b != 0) {
-    m4aMPlayVolumeControl(gMPlayTable[gSongTable[n].ms].info, 0xffff, 0x100);
+    m4aMPlayVolumeControl(gMPlayTable[gSongTable[n].ms].info, 0xFFFF, 0x100);
   }
 }
 

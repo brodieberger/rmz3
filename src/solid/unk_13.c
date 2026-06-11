@@ -31,14 +31,10 @@ const SolidRoutine gSolid13Routine = {
 };
 // clang-format on
 
-struct Solid* CreateSolid13(struct Entity* e, struct Coord* c, struct Coord* d, u8 n) {
-  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+struct Solid* CreateSolid13(struct Entity* e, Coords32* c, Coords32* d, u8 n) {
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_013);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = n;
     p->coord.x = c->x, p->coord.y = c->y;
     p->d.x = d->x, p->d.y = d->y;
@@ -48,9 +44,9 @@ struct Solid* CreateSolid13(struct Entity* e, struct Coord* c, struct Coord* d, 
 }
 
 static void Solid13_Init(struct Solid13Object* p) {
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &sSize;
-  (p->s).hazardAttr = METATILE_GROUND;
+  (p->s).physicsAttr = SHAPE_BLOCK;
   (p->s).flags |= FLIPABLE;
   (p->s).flags &= ~DISPLAY;
   InitNonAffineMotion(&p->s);

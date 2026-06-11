@@ -26,12 +26,9 @@ const motion_t sWeaponIconMotions[WEAPON_KINDS] = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct Widget* createMenuWeaponIcon(void* g, weapon_t weapon, bool8 isSubWeapon, bool8 r3) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 0);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = weapon;
     (w->s).work[1] = isSubWeapon;
@@ -47,7 +44,7 @@ static void MenuWeapon_Init(struct Widget* w) {
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sWeaponIconMotions[(w->s).work[0]]);
+  SetSpriteAnimation(w, sWeaponIconMotions[(w->s).work[0]]);
   (w->s).spr.xflip = FALSE;
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;
@@ -356,7 +353,7 @@ _080E61F0:\n\
 	strb r0, [r4, #0xd]\n\
 _080E61F2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x58]\n\
 	str r0, [r4, #0x64]\n\

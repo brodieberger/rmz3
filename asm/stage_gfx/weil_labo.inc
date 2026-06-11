@@ -318,13 +318,13 @@ _08015664:
 	beq _0801570A
 	ldr r0, _08015698 @ =0x0000010D
 	movs r1, #0
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r6, #0xf]
 	adds r0, #1
 	strb r0, [r6, #0xf]
 _0801567E:
 	ldr r0, _08015698 @ =0x0000010D
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #4
@@ -336,18 +336,18 @@ _08015694: .4byte 0x0002D027
 _08015698: .4byte 0x0000010D
 _0801569C:
 	ldr r0, _080156EC @ =0x0000010D
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #0x87
 	lsls r0, r0, #1
 	movs r1, #0
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r6, #0xf]
 	adds r0, #1
 	strb r0, [r6, #0xf]
 _080156B2:
 	movs r0, #0x87
 	lsls r0, r0, #1
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r0, _080156F0 @ =gOverworld
 	ldr r1, _080156F4 @ =0x0002D027
 	adds r0, r0, r1
@@ -357,7 +357,7 @@ _080156B2:
 	movs r0, #0x1f
 	movs r1, #8
 	movs r2, #0x60
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrb r0, [r6, #0xf]
 	adds r0, #1
 	strb r0, [r6, #0xf]
@@ -370,7 +370,7 @@ _080156D6:
 	bne _080156FC
 	movs r0, #0x87
 	lsls r0, r0, #1
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	b _0801570A
 	.align 2, 0
 _080156EC: .4byte 0x0000010D
@@ -380,7 +380,7 @@ _080156F8: .4byte 0x0002D024
 _080156FC:
 	movs r0, #0x87
 	lsls r0, r0, #1
-	bl ClearBlink
+	bl RemovePaletteAnimation
 _08015704:
 	ldrb r0, [r6, #0xf]
 	adds r0, #1
@@ -504,7 +504,7 @@ _080157D8:
 	movs r2, #0x80
 	lsls r2, r2, #5
 	movs r0, #0
-	bl RequestType2Transfer
+	bl RequestVRAMFill
 	ldr r0, _08015890 @ =gOverworld
 	ldr r1, _08015894 @ =0x0002D025
 	adds r0, r0, r1
@@ -674,7 +674,7 @@ _0801594E:
 	movs r2, #0x80
 	lsls r2, r2, #5
 	movs r0, #0
-	bl RequestType2Transfer
+	bl RequestVRAMFill
 	ldr r0, _08015A10 @ =gOverworld
 	ldr r1, _08015A14 @ =0x0002D025
 	adds r0, r0, r1

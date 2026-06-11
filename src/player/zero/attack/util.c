@@ -1,5 +1,6 @@
 #include "global.h"
 #include "mod.h"
+#include "player/zero.h"
 #include "weapon.h"
 #include "zero.h"
 
@@ -145,7 +146,7 @@ static bool8 isShieldOK(struct Zero* z) {
 NON_MATCH struct Weapon* CreateBuster(struct Zero* z, s32 x, s32 y, bool8 isDirRight) {
 #if MODERN
   u8 kind;
-  struct Coord c;
+  Coords32 c;
   struct Weapon* w;
   u8* tmp;
   if (((&z->unk_b4)->status).weapons[0] == WEAPON_BUSTER) {
@@ -267,51 +268,51 @@ bool8 Is1000Slash(struct Zero* z) {
 
 u8 CalcBusterBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_BUSRAS) != 0;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK3)) return bonus + 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK2)) return bonus + 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BUSTER_ATK1)) return bonus + 1;
+  if (FLAG(gSystemSavedata.flags, MOD_BUSTER_ATK3)) return bonus + 3;
+  if (FLAG(gSystemSavedata.flags, MOD_BUSTER_ATK2)) return bonus + 2;
+  if (FLAG(gSystemSavedata.flags, MOD_BUSTER_ATK1)) return bonus + 1;
   return bonus;
 }
 
 u8 CalcSaberBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_SABRAS) != 0;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK3)) return bonus + 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK2)) return bonus + 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SABER_ATK1)) return bonus + 1;
+  if (FLAG(gSystemSavedata.flags, MOD_SABER_ATK3)) return bonus + 3;
+  if (FLAG(gSystemSavedata.flags, MOD_SABER_ATK2)) return bonus + 2;
+  if (FLAG(gSystemSavedata.flags, MOD_SABER_ATK1)) return bonus + 1;
   return bonus;
 }
 
 // エルフや改造カードなどでリコイルロッドの攻撃力がどれだけ上がっているかを求める
 u8 CalcRodBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_RODERAS) != 0;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK3)) return bonus + 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK2)) return bonus + 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ROD_ATK1)) return bonus + 1;
+  if (FLAG(gSystemSavedata.flags, MOD_ROD_ATK3)) return bonus + 3;
+  if (FLAG(gSystemSavedata.flags, MOD_ROD_ATK2)) return bonus + 2;
+  if (FLAG(gSystemSavedata.flags, MOD_ROD_ATK1)) return bonus + 1;
   return bonus;
 }
 
 u8 CalcShieldBonus(struct Zero* z) {
   u8 bonus = isElfUsed_2(z, ELF_BOOMERAS) != 0;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK3)) return bonus + 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK2)) return bonus + 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_SHIELD_ATK1)) return bonus + 1;
+  if (FLAG(gSystemSavedata.flags, MOD_SHIELD_ATK3)) return bonus + 3;
+  if (FLAG(gSystemSavedata.flags, MOD_SHIELD_ATK2)) return bonus + 2;
+  if (FLAG(gSystemSavedata.flags, MOD_SHIELD_ATK1)) return bonus + 1;
   return bonus;
 }
 
 // 0x08034520
 u8 GetBeeAtkBoost(void) {
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK3)) return 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK2)) return 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_BEE_ATK1)) return 1;
+  if (FLAG(gSystemSavedata.flags, MOD_BEE_ATK3)) return 3;
+  if (FLAG(gSystemSavedata.flags, MOD_BEE_ATK2)) return 2;
+  if (FLAG(gSystemSavedata.flags, MOD_BEE_ATK1)) return 1;
   return 0;
 }
 
 // 0x0803455c
 u8 GetArchimAtkBoost(void) {
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK4)) return 4;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK3)) return 3;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK2)) return 2;
-  if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_ARCHIM_ATK1)) return 1;
+  if (FLAG(gSystemSavedata.flags, MOD_ARCHIM_ATK4)) return 4;
+  if (FLAG(gSystemSavedata.flags, MOD_ARCHIM_ATK3)) return 3;
+  if (FLAG(gSystemSavedata.flags, MOD_ARCHIM_ATK2)) return 2;
+  if (FLAG(gSystemSavedata.flags, MOD_ARCHIM_ATK1)) return 1;
   return 0;
 }
 
@@ -325,7 +326,7 @@ NON_MATCH bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
 	adds r3, r0, #0\n\
 	lsls r1, r1, #0x18\n\
 	lsrs r1, r1, #0x18\n\
-	ldr r0, _080345E4 @ =gUnlockedElfPtr\n\
+	ldr r0, _080345E4 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r1\n\
 	ldrb r2, [r0]\n\
@@ -354,7 +355,7 @@ _080345DE:\n\
 	movs r0, #1\n\
 	b _080345EE\n\
 	.align 2, 0\n\
-_080345E4: .4byte gUnlockedElfPtr\n\
+_080345E4: .4byte gElfAvailability\n\
 _080345E8: .4byte 0x00000231\n\
 _080345EC:\n\
 	movs r0, #0\n\

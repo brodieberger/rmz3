@@ -12,7 +12,7 @@ createPantheonZombie: @ 0x0807FD20
 	adds r7, r2, #0
 	ldr r0, _0807FD7C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0807FD76
@@ -442,7 +442,7 @@ _08080044:
 	str r0, [r4, #0x58]
 _08080046:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0808004C:
 	pop {r4, r5}
 	pop {r0}
@@ -638,13 +638,13 @@ _080801AC:
 	strb r0, [r4, #0xe]
 _080801C0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080801EE
 	.align 2, 0
 _080801C8: .4byte 0x000013FF
 _080801CC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0808020C @ =pZero2
 	ldr r0, [r0]
 	ldr r1, [r0, #0x54]
@@ -881,7 +881,7 @@ _08080374:
 	strb r0, [r4, #0xe]
 _08080394:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080803D0
 	.align 2, 0
 _0808039C: .4byte 0x08367EE8
@@ -908,7 +908,7 @@ _080803B6:
 	strb r1, [r4, #0xe]
 _080803CA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080803D0:
 	pop {r4, r5}
 	pop {r0}
@@ -1011,7 +1011,7 @@ _08080478:
 	str r1, [r2, #0x58]
 _0808048E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08080494:
 	pop {r4, r5}
 	pop {r0}
@@ -1155,7 +1155,7 @@ _0808057E:
 	strb r0, [r4, #0xe]
 _0808059E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08080608
 	.align 2, 0
 _080805A8: .4byte 0xFFFFFE80
@@ -1199,7 +1199,7 @@ _08080600:
 	strb r0, [r4, #0xe]
 _08080602:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08080608:
 	pop {r4, r5}
 	pop {r0}
@@ -1251,7 +1251,7 @@ _08080650:
 	str r0, [r4, #0x58]
 _08080660:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08080666:
 	pop {r4}
 	pop {r0}
@@ -1419,7 +1419,7 @@ _08080744:
 	strb r0, [r5, #0xe]
 _080807B6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x5c]
 	adds r0, r0, r1

@@ -27,24 +27,20 @@ const VFXRoutine gGhost78Routine = {
 };
 // clang-format on
 
-void CreateGhost78_1(struct Entity* e, struct Coord* c, u8 r2, u8 r3) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost78_1(struct Entity* e, Coords32* c, u8 r2, u8 r3) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_078);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = e;
     p->coord = *c;
     p->work[0] = r2, p->work[1] = r3;
   }
 }
 
-void CreateGhost78_2(struct Coord* c, u8 r1, u8 r2, u8 r3) {
-  struct VFX78* p = (struct VFX78*)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost78_2(Coords32* c, u8 r1, u8 r2, u8 r3) {
+  struct VFX78* p = (struct VFX78*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_078);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).coord = *c;
     (p->s).work[0] = r1, (p->s).work[1] = r2;
     p->unk_7d = r3;
@@ -456,7 +452,7 @@ NAKED static void FUN_080c8c00(struct VFX* p) {
 	push {r4, r5, lr}\n\
 	adds r5, r0, #0\n\
 	ldr r4, [r5, #0x28]\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r5, #0x54]\n\
 	ldr r1, [r5, #0x5c]\n\
 	adds r0, r0, r1\n\
@@ -551,7 +547,7 @@ _080C8CC8: .4byte gVFXFnTable\n\
 }
 
 static void FUN_080c8ccc(struct VFX* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
   if ((p->s).work[2] & 1) {
@@ -567,7 +563,7 @@ static void FUN_080c8ccc(struct VFX* p) {
 }
 
 static void FUN_080c8d30(struct VFX* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
   (p->s).d.x += (p->s).unk_coord.x;

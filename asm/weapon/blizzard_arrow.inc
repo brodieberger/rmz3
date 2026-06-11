@@ -15,7 +15,7 @@ CreateBlizzardArrow: @ 0x0803B7FC
 	lsrs r5, r3, #0x18
 	ldr r0, _0803B84C @ =gWeaponHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	mov ip, r0
 	cmp r0, #0
 	beq _0803B8E2
@@ -262,7 +262,7 @@ _0803B9FA:
 	b _0803BD32
 _0803B9FC:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r6, #0x60]
 	ldr r0, [r6, #0x68]
 	adds r1, r1, r0
@@ -285,7 +285,7 @@ _0803BA20:
 	b _0803BAAC
 _0803BA28:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r6, #0xa]
 	movs r0, #0x10
 	ands r0, r1
@@ -361,7 +361,7 @@ _0803BAB8:
 	ldr r0, _0803BAE8 @ =gStageRun+232
 	adds r1, r6, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xa0
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -607,7 +607,7 @@ _0803BC96:
 	strb r0, [r6, #0xd]
 _0803BCB8:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r6, #0
 	adds r2, #0xb4
 	ldr r0, [r2]
@@ -703,7 +703,7 @@ hitBlizzardArrow: @ 0x0803BD5C
 	cmp r0, #0
 	beq _0803BD92
 	ldr r4, [r2, #0x2c]
-	ldr r3, _0803BD98 @ =gMission
+	ldr r3, _0803BD98 @ =gScore
 	ldrh r1, [r3, #0x1c]
 	ldr r0, _0803BD9C @ =0x0000FFFE
 	cmp r1, r0
@@ -729,5 +729,5 @@ _0803BD92:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803BD98: .4byte gMission
+_0803BD98: .4byte gScore
 _0803BD9C: .4byte 0x0000FFFE

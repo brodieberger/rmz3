@@ -55,12 +55,9 @@ void MenuExit_FollowerElf(struct FollowerCyberElf* e) {
 }
 
 struct Elf* CreateFollowerElf(struct Zero* p, u8 breed, u8 availability, bool8 isSatelite1) {
-  struct FollowerCyberElf* e = (struct FollowerCyberElf*)AllocEntityFirst(gElfHeaderPtr);
+  struct FollowerCyberElf* e = (struct FollowerCyberElf*)AllocEntityLast(gElfHeaderPtr);
   if (e != NULL) {
-    (e->s).taskCol = 16;
     INIT_ELF_ROUTINE(e, 8);
-    (e->s).tileNum = 0;
-    (e->s).palID = 0;
     e->player = p;
     (e->s).work[0] = breed;
     (e->s).work[1] = availability;
@@ -138,7 +135,7 @@ _080E41FC:\n\
 	bl SetMotion\n\
 _080E420E:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x4c\n\
 	movs r0, #0\n\
@@ -206,7 +203,7 @@ NAKED static void FollowerElf_Update(struct Elf* e) {
 	adds r0, #0xb4\n\
 	ldr r4, [r0]\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080E42E0 @ =gPause\n\
 	ldrb r2, [r0]\n\
 	cmp r2, #0\n\

@@ -27,7 +27,7 @@ static void Solid36_Init(struct Solid* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= FLIPABLE;
   (p->s).unk_coord.y = (p->s).coord.y - PIXEL(8);
-  SetMotion(&p->s, MOTION(SM151_MISSILE_PLATFORM, 1));
+  SetSpriteAnimation(p, MOTION(SM151_MISSILE_PLATFORM, 1));
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   Solid36_Update(p);
 }
@@ -111,7 +111,7 @@ _080DC750:\n\
 	strb r0, [r4, #0xb]\n\
 _080DC758:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	pop {r4}\n\
 	pop {r0}\n\
 	bx r0\n\

@@ -23,14 +23,10 @@ const BossRoutine gBlazinRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateBlazin(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateBlazin(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_BLAZIN);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = n;
   }
@@ -364,10 +360,10 @@ static void Blazin_Die(struct Boss* p) {
 }
 
 static void blazinDeath0(struct Boss* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
   switch ((p->s).mode[2]) {
     case 0: {
-      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1)) {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
@@ -499,7 +495,7 @@ _0803EC4C:\n\
 	str r1, [r4, #0x5c]\n\
 _0803EC6C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0803EDE8\n\
 	.align 2, 0\n\
 _0803EC74: .4byte 0xFFFFA200\n\
@@ -603,7 +599,7 @@ _0803ED28:\n\
 	adds r0, r4, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0x44\n\
 	strb r0, [r4, #0x12]\n\
 	b _0803EDE8\n\
@@ -612,7 +608,7 @@ _0803ED4C: .4byte 0x0000A21A\n\
 _0803ED50: .4byte 0xFFFFA200\n\
 _0803ED54:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _0803ED6A\n\
@@ -740,21 +736,19 @@ static bool8 nop_0803ee2c(struct Boss* _) { return TRUE; }
 INCASM("asm/boss/blazin.inc");
 
 // 0x080403c4
-NON_MATCH static void setBlazinDirection(struct Entity* p) {
-#if MODERN
+static void setBlazinDirection(struct Entity* p) {
   struct Entity* z = (struct Entity*)pZero2;
   if ((z->coord).x > (p->coord).x) {
     if (!(p->flags & X_FLIP)) {
-      SET_XFLIP(p, TRUE);
+      (p->spr).xflip = TRUE, (p->spr).oam.xflip = TRUE;
+      p->flags |= X_FLIP;
     }
   } else {
     if (p->flags & X_FLIP) {
-      SET_XFLIP(p, FALSE);
+      (p->spr).xflip = FALSE, (p->spr).oam.xflip = FALSE;
+      p->flags &= ~X_FLIP;
     }
   }
-#else
-  INCCODE("asm/wip/setBlazinDirection.inc");
-#endif
 }
 
 // --------------------------------------------
@@ -925,6 +919,6 @@ const struct Collision gBlazinCollisions[15] = {
 };
 
 // 0x08361dd0
-const struct Coord gBlazinCoords[5] = {
+const Coords32 gBlazinCoords[5] = {
     {PIXEL(0), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)},
 };

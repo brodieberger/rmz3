@@ -5,9 +5,6 @@
 #include "gba/gba.h"
 #include "types.h"
 
-// Story.id
-#define STAGE_DONE (1 << 5)
-
 #define ENEMY_KILLCOUNT(n) (gCurStory.s.counts[29 + n])
 
 #define IS_MISSION (!FLAG(gCurStory.s.gameflags, IS_FREERUN))
@@ -15,69 +12,36 @@
 
 // --------------------------------------------
 
-struct PlayInfo {
-  u8 extraLife;
-  u8 rank;  // 0: F, 1: E, ... A: 5, S: 6
-  u8 codenameSuffix;
-  u8 pad_03;
-  u8 codenamePrefix;
-  u8 pad_05;
-  bool8 allElfCompleted;  // エルフを全種類捕まえているか(育てているかは無関係)
-
-  /*
-    bit0: 全部のエルフを育てきってるか(称号エルフブリーダーの条件を満たしているか)
-    bit4: 全てのシークレットディスクを取得している(解析の有無は問わない)
-  */
-  u8 collectFlag;
-
-  u8 clearCodenameSuffix;  // ストーリークリア時に適用される
-  u8 clearCodenamePrefix;  // ストーリークリア時に適用される
-
-  s16 scoreSum;         // 今までクリアしたステージのスコアの合計
-  u32 playTime;         // フレーム単位のプレイ時間
-  u8 clearCount;        // 今までクリアしたステージの数
-  u8 unusedClearCount;  // clearCountと全く同じ内容
-  u8 unk_12;
-  u8 lastStage;            // 最後にクリアしたステージ 根拠: 08019794
-  u32 missionDones;        // クリア済みミッション を表すbitfield
-  u32 unusedMissionDones;  // missionDonesと全く同じ内容
-  u32 unk_1c;
-  u8 unk_20[20];
-  u8 suffixIdx[8];  // 0834c9e0 の2つ目のidx(0..7)
-  u8 unk_3a[16];
-  u8 fusionCount;  // フュージョンエルフを使った回数 リザルトのエルフ使用回数に反映されるが、減点には反映せず
-};  // 80 bytes
-
-// これ全部 bitfield で struct じゃなくて u8[84] の方が適切かもしれん
 struct Story {
-  u16 id;  // stageID と思ってたけど違うかもしれない
-  u16 pad_02;
-
-  // 0x0202fdc4
-  u8 gameflags[8];
+  u8 gameflags[8];  // 0x00, bitfields, see "include/constants/flag.h"
   /*
     0..28: 会話の進行度
     29..69: 雑魚敵の種類ごとの撃破数
-    70..71: 火山のリコイルで動かす棺桶みたいなコンテナの移動量
+    70..71: 火山のリコイルで動かす棺桶みたいなコンテナの移動量(ピクセル単位), VolcanoCoffin_Init
   */
   u8 counts[29 + 41 + 2];  // chatProgress[29] + zakoCounts[41] + volcanoCoffinX[2]
+  u8 unk_54;               // 0x50, エネルギー施設の何かのbitfield
+  u8 _[3];                 // padding
 };  // 84 bytes
+static_assert(sizeof(struct Story) == 84);
 
 // 0202fdc0
-struct Story96 {
-  struct Story s;
-  u8 unk_54;
-  u8 ALIGNED(1) _[11];
-};  // 96 bytes
+// ラン開始時に gGameState.save.story から gCurStory にロードして、ラン終了時に gCurStory から gGameState.save.story に書き戻す
+struct Story88 {
+  u16 id;          // 0x00, ヘッダ的な何か?, ゲーム時にはラン開始時に stageID が入る
+  u16 _;           // 0x02, padding
+  struct Story s;  // 0x04
+};  // 88 bytes
+static_assert(sizeof(struct Story88) == 88);
 
 // --------------------------------------------
 
-extern struct Story96 gCurStory;
+extern struct Story88 gCurStory;
 
 // --------------------------------------------
 
-void saveCurStory(struct Story* dst);
-void resetCurStory(u8 stageID, struct Story* src);
-void FUN_08019678(struct Story* p);
+void LoadStoryData(u8 stageID, struct Story* src);
+void StoreStoryData(struct Story* dst);
+void FUN_08019678(struct Story* story);
 
 #endif  // GUARD_RMZ3_STORY_H

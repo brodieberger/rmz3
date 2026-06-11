@@ -150,7 +150,7 @@ _080666F8:
 	adds r0, r0, r1
 	str r0, [r5]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r5]
 	movs r0, #0xa8
 	lsls r0, r0, #7
@@ -310,7 +310,7 @@ _08066826:
 	bl SetDDP
 _08066846:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -385,7 +385,7 @@ _080668CA:
 	bl PlaySound
 _080668E4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -400,7 +400,7 @@ _080668F6:
 	strb r0, [r5, #0xe]
 _08066900:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -430,7 +430,7 @@ _08066928:
 	strb r0, [r5, #0xe]
 _0806693C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r6, [r0]
@@ -546,7 +546,7 @@ _08066A10:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -623,7 +623,7 @@ _08066AA8:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

@@ -258,7 +258,7 @@ static void PhantomProjectile_Update(struct Projectile* p) {
   };
   // clang-format on
   (sUpdates[(p->s).work[0]])(p);
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 }
 
 void FUN_080af368(struct Projectile* p);

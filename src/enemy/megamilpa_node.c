@@ -29,13 +29,9 @@ const EnemyRoutine gMegamilpaNodeRoutine = {
 // --------------------------------------------
 
 struct Entity* CreateMegamilpaNode(u8 idx) {
-  struct EnemyMegamilpaNode* p = (struct EnemyMegamilpaNode*)AllocEntityFirst(gEnemyHeaderPtr);
+  struct EnemyMegamilpaNode* p = (struct EnemyMegamilpaNode*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_MEGAMILPA_NODE);
-    (p->s).tileNum = 0, (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     p->nodeIdx = idx;
   }

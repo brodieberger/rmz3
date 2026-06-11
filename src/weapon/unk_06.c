@@ -17,11 +17,11 @@ const WeaponRoutine gWeapon6Routine = {
 // clang-format on
 
 void CreateWeapon6(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gWeaponHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gWeaponHeaderPtr);
   if (p != NULL) {
     INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_06);
     p->flags2 &= ~ENTITY_FLAGS2_B6;
-    p->taskCol = 16;
+    p->renderPrio = 16;
     p->tileNum = gWeaponTileNum[0];
     p->palID = gWeaponPalIDs[0];
     (p->coord).x = x;
@@ -31,7 +31,7 @@ void CreateWeapon6(s32 x, s32 y) {
 }
 
 // 0x0803aaec
-static void onHit(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onHit(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 // --------------------------------------------
 
@@ -84,7 +84,7 @@ static void _Weapon6_Update(struct Weapon* w) {
       (w->s).flags2 &= ~DYNAMIC;
       (w->s).tileNum = 0;
       (w->s).palID = 0;
-      SetMotion(&w->s, MOTION(SM033_FEFNIR_FIREBALL, 0));
+      SetSpriteAnimation(w, MOTION(SM033_FEFNIR_FIREBALL, 0));
       (w->s).angle = 64;
       (w->s).mode[2]++;
       FALLTHROUGH;
@@ -95,7 +95,7 @@ static void _Weapon6_Update(struct Weapon* w) {
       if (((w->s).coord.x - (u32)PIXEL(9808) > PIXEL(304)) || (y - (u32)PIXEL(436) > PIXEL(224))) {
         SET_WEAPON_ROUTINE(w, ENTITY_DIE);
       }
-      UpdateMotionGraphic(&w->s);
+      UpdateSpriteAnimation(w);
       break;
     }
   }

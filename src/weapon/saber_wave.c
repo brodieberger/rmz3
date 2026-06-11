@@ -216,17 +216,17 @@ const WeaponRoutine gSaberWaveRoutine = {
 // clang-format on
 
 struct Entity* CreateSaberWave(struct Zero* z, struct Weapon* saber, bool8 isProjectile) {
-  struct SaverWave* p = (struct SaverWave*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct SaverWave* p = (struct SaverWave*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SABER_WAVE);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SABER_WAVE);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
     }
     (&p->props)->saber = saber;

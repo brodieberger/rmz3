@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_CONST_FLAG_H
 #define GUARD_RMZ3_CONST_FLAG_H
 
+// gCurStory.s.gameflags
 #define FLAG_HARD 0
 #define FLAG_ULTIMATE 1
 #define FLAG_2 2
@@ -8,21 +9,21 @@
 #define IN_CYBERSPACE 4
 #define IS_FREERUN 5
 #define DEMO_PLAY 6
-#define FLAG_7 7
+#define FLAG_SPACE_CRAFT_DONE 7
 #define FLAG_8 8
 #define FLAG_9 9  // シミュレーションの結果が出るまで...
 #define FLAG_10 10
-#define FLAG_11 11  // わかったわ...
-#define FLAG_12 12  // じゃあせめて
+#define FLAG_FIRST4_DONE 11   // Clear first 4 missions (Volcano, Ocean, RepairFactory, OldResidential)
+#define FLAG_MISSILE_DONE 12  // Clear Missile Factory
 #define FLAG_13 13
 #define FLAG_14 14
-#define FLAG_15 15
-#define NO_HARPUIA 16
+#define FLAG_MID3_DONE 15    // Clear Medium 3 missions (Twilight Desert, Anatre Forest, Ice Base)
+#define FLAG_AREAX2_DONE 16  // Clear Area X2 missions
 #define FLAG_17 17
-#define SUNKEN_ANALYZE 18  // ディスク解析中
+#define FLAG_LATER4_DONE 18  // Clear later 4 missions (Energy Facility, Snowy Plains, Sunken Library, Giant Elevator)
 #define FLAG_19 19
-#define FLAG_BRAIN_CONTROL 20  // オメガによる洗脳
-#define FLAG_WEIL_LABO 21      // バイル研究所突撃
+#define FLAG_BRAIN_CONTROL 20    // オメガによる洗脳
+#define FLAG_SUBARCADIA_DONE 21  // Clear Sub Arcadia missions
 #define FLAG_22 22
 #define FLAG_23 23
 #define FLAG_BOSS_RUSH_0 24

@@ -13,7 +13,7 @@ createPantheonBomb: @ 0x080AD004
 	lsrs r6, r2, #0x18
 	ldr r0, _080AD05C @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AD052
@@ -61,7 +61,7 @@ createPantheonBombBlast: @ 0x080AD064
 	lsrs r5, r1, #0x18
 	ldr r0, _080AD0B4 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AD0AA
@@ -399,7 +399,7 @@ _080AD2EE:
 	strb r0, [r5, #0xe]
 _080AD31A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080AD3F4
 _080AD322:
 	ldr r1, _080AD348 @ =0x0000690C
@@ -412,7 +412,7 @@ _080AD322:
 	strb r0, [r5, #0xe]
 _080AD334:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -430,7 +430,7 @@ _080AD34C:
 	strb r0, [r5, #0xe]
 _080AD35A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x13]
 	cmp r0, #0
 	beq _080AD370
@@ -599,7 +599,7 @@ _080AD4A0:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	cmp r0, #0
 	beq _080AD4B8

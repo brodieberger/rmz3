@@ -3,11 +3,13 @@
 #include "renderer.h"
 #include "vfx.h"
 
+// enemy/omega_zx_x.c 関連
+
 extern struct Zero* pZero2;
 
-static void Ghost83_Init(struct VFX* p);
-static void Ghost83_Update(struct VFX* p);
-static void Ghost83_Die(struct VFX* p);
+static void Ghost83_Init(struct Entity* p);
+static void Ghost83_Update(struct Entity* p);
+static void Ghost83_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gGhost83Routine = {
@@ -22,11 +24,9 @@ const VFXRoutine gGhost83Routine = {
 // --------------------------------------------
 
 struct Entity* CreateGhost83(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_083);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0, p->work[1] = 0;
     p->unk_28 = e;
   }
@@ -37,34 +37,34 @@ struct Entity* CreateGhost83(struct Entity* e) {
 
 static void TaskCB_080c9b4c(struct Sprite* p, struct DrawPivot* _);
 
-static void Ghost83_Init(struct VFX* p) {
-  SetTaskCallback((struct Task*)&(p->s).spr, TaskCB_080c9b4c);
-  (p->s).spr.sprites = (struct MetaspriteHeader*)p;
-  (p->s).flags &= 0xF7;
-  (p->s).flags |= DISPLAY;
-  (p->s).flags |= FLIPABLE;
+static void Ghost83_Init(struct Entity* p) {
+  SetTaskCallback((struct Task*)&p->spr, TaskCB_080c9b4c);
+  (p->spr).sprites = (void*)p;
+  p->flags &= ~USE_COMMON_OAM_RENDERER;
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 0;
-  (p->s).mode[2] = 0;
-  (p->s).mode[3] = 0;
+  p->mode[1] = 0, p->mode[2] = 0, p->mode[3] = 0;
   Ghost83_Update(p);
 }
 
 // --------------------------------------------
 
-static void FUN_080c9b44(struct VFX* p);
-static void FUN_080c9b48(struct VFX* p);
+static void FUN_080c9b44(void* _ UNUSED);
+static void FUN_080c9b48(void* _ UNUSED);
 
-static void Ghost83_Update(struct VFX* vfx) {
-  static const VFXFunc sUpdates[2] = {
-      FUN_080c9b44,
-      FUN_080c9b48,
+static void Ghost83_Update(struct Entity* p) {
+  static const EntityFunc sUpdates[2] = {
+      (void*)FUN_080c9b44,
+      (void*)FUN_080c9b48,
   };
 
-  if (((vfx->s).unk_28)->mode[0] < 2) {
-    if (((vfx->s).unk_28)->mode[0] != 4) {
-      if (((vfx->s).unk_2c)->mode[0] < 2) {
-        if ((((vfx->s).unk_2c)->mode[2] < 10) && (((vfx->s).unk_2c)->mode[0] != 4)) {
+  struct Entity* q = p->unk_28;
+  if (q->mode[0] <= ENTITY_UPDATE) {
+    if (q->mode[0] != ENTITY_EXIT) {
+      struct Entity* r = p->unk_2c;
+      if (r->mode[0] <= ENTITY_UPDATE) {
+        if ((r->mode[2] < 10) && (r->mode[0] != ENTITY_EXIT)) {
           if ((pZero2->s).flags & DISPLAY) {
             goto _Update;
           }
@@ -72,27 +72,26 @@ static void Ghost83_Update(struct VFX* vfx) {
       }
     }
   }
-  (vfx->s).flags &= ~DISPLAY;
-  (vfx->s).flags &= ~FLIPABLE;
-  SET_VFX_ROUTINE(vfx, ENTITY_DISAPPEAR);
+  p->flags &= ~DISPLAY;
+  p->flags &= ~FLIPABLE;
+  SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
   return;
 
 _Update:
-  (sUpdates[(vfx->s).mode[1]])(vfx);
+  (sUpdates[p->mode[1]])(p);
 }
 
 // --------------------------------------------
 
-static void Ghost83_Die(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void Ghost83_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void FUN_080c9b44(struct VFX* p) { return; }
-
-static void FUN_080c9b48(struct VFX* p) { return; }
+static void FUN_080c9b44(void* _) {}
+static void FUN_080c9b48(void* _) {}
 
 // --------------------------------------------
 

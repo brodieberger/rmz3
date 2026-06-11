@@ -19,13 +19,9 @@ const EnemyRoutine gLemminglesNestRoutine = {
 // --------------------------------------------
 
 static void FUN_0806df3c(struct Entity* e) {
-  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_LEMMINGLES_NEST);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
     p->unk_28 = (void*)e;
     if (e->work[0] == 0) {
@@ -62,19 +58,17 @@ static const EnemyFunc sUpdates2[4] = {
 static bool8 FUN_0806dfa4(struct Entity* p) {
   switch (p->mode[3]) {
     case 0: {
-      if (IsFrozen((void*)p)) {
+      if (IsFrozen(p)) {
         (sUpdates1[p->mode[1]])((void*)p);
         (sUpdates2[p->mode[1]])((void*)p);
         p->mode[3]++;
-        UpdateMotionGraphic(p);
+        UpdateSpriteAnimation(p);
         return TRUE;
       }
       break;
     }
     case 1: {
-      if (IsFrozen((void*)p)) {
-        return TRUE;
-      }
+      if (IsFrozen(p)) return TRUE;
       p->mode[3] = 0;
       break;
     }
@@ -96,13 +90,13 @@ static void FUN_0806e518(struct Entity* p) {
     case 0: {
       p->flags2 |= WHITE_PAINTABLE;
       p->invincibleID = q->uniqueID;
-      SetMotion(p, MOTION(SM030_LEMMINGLES_NEST, 21));
+      SetSpriteAnimation(p, MOTION(SM030_LEMMINGLES_NEST, 21));
       SET_XFLIP(p, p->work[0] == 3);
       p->mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       break;
     }
   }

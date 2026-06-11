@@ -186,7 +186,7 @@ ReflectLaser_Update: @ 0x0803AF78
 _0803AFC0: .4byte gWeaponFnTable
 _0803AFC4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x10]
 	movs r0, #1
 	ands r0, r1

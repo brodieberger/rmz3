@@ -15,7 +15,7 @@ FUN_080b1698: @ 0x080B1698
 	lsrs r4, r3, #0x18
 	ldr r0, _080B16E8 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080B16E0
@@ -232,7 +232,7 @@ _080B184C:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r2, [r4, #0x12]
 	cmp r2, #0
 	beq _080B1880

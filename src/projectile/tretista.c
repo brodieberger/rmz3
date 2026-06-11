@@ -16,12 +16,10 @@ const ProjectileRoutine gTretistaProjectileRoutine = {
 };
 // clang-format on
 
-struct Entity* createTretistaBreathGas(struct Entity* e, struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+struct Entity* createTretistaBreathGas(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 19);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0, p->work[1] = kind;
     (p->coord) = *c;
     p->unk_28 = (void*)e;
@@ -569,7 +567,7 @@ static const struct Collision sCollisions[53] = {
 };
 
 // clang-format off
-static const struct Coord sCoords[10] = {
+static const Coords32 sCoords[10] = {
     {PIXEL(28), PIXEL(24)},
     {-PIXEL(28), -PIXEL(24)},
     {PIXEL(14), PIXEL(10)},

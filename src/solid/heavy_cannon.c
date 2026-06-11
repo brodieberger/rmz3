@@ -149,7 +149,7 @@ const motion_t gHeavyCannonMotions[3] = {
 };
 
 // 0x0836ff28
-const struct Coord Coord_0836ff28 = {PIXEL(0), -PIXEL(8)};
+const Coords32 Coord_0836ff28 = {PIXEL(0), -PIXEL(8)};
 
 // 0x0836ff30
 const struct Rect Rect_ARRAY_0836ff30[2] = {

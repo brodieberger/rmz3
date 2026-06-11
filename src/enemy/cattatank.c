@@ -229,6 +229,6 @@ static const struct Collision sCollisions[18] = {
 };
 
 // 0x0836a670
-static const struct Coord sElementCoords[1] = {
+static const Coords32 sElementCoords[1] = {
     {PIXEL(0), -PIXEL(18)},
 };

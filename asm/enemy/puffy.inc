@@ -123,7 +123,7 @@ _0807C694:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807C6E2:
 	adds r0, r5, #0
 	bl Puffy_Update
@@ -213,7 +213,7 @@ Puffy_Die: @ 0x0807C774
 	bl TryDropItem
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807C7AC @ =gMission
+	ldr r2, _0807C7AC @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C7B0 @ =0x0000270E
 	cmp r1, r0
@@ -226,7 +226,7 @@ _0807C7A2:
 	b _0807C936
 	.align 2, 0
 _0807C7A8: .4byte gStageRun
-_0807C7AC: .4byte gMission
+_0807C7AC: .4byte gScore
 _0807C7B0: .4byte 0x0000270E
 _0807C7B4:
 	ldrb r0, [r4, #0xe]
@@ -313,7 +313,7 @@ _0807C848:
 	movs r0, #5
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _0807C888 @ =gMission
+	ldr r2, _0807C888 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C88C @ =0x0000270E
 	cmp r1, r0
@@ -326,11 +326,11 @@ _0807C87C:
 	b _0807C936
 	.align 2, 0
 _0807C884: .4byte 0xFFFFFA00
-_0807C888: .4byte gMission
+_0807C888: .4byte gScore
 _0807C88C: .4byte 0x0000270E
 _0807C890:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -408,7 +408,7 @@ _0807C90C:
 _0807C91C:
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807C95C @ =gMission
+	ldr r2, _0807C95C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C960 @ =0x0000270E
 	cmp r1, r0
@@ -440,7 +440,7 @@ _0807C954:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807C95C: .4byte gMission
+_0807C95C: .4byte gScore
 _0807C960: .4byte 0x0000270E
 _0807C964: .4byte gEnemyFnTable
 
@@ -552,7 +552,7 @@ _0807CA16:
 	strb r0, [r3]
 _0807CA30:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0807CA46

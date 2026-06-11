@@ -20,7 +20,7 @@ FUN_080bc6ac: @ 0x080BC6AC
 	mov sb, r4
 	ldr r0, _080BC74C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC73E
@@ -99,7 +99,7 @@ FUN_080bc758: @ 0x080BC758
 	adds r5, r1, #0
 	ldr r0, _080BC79C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC796
@@ -150,7 +150,7 @@ FUN_080bc7a4: @ 0x080BC7A4
 	mov sb, r0
 	ldr r0, _080BC83C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC830
@@ -306,7 +306,7 @@ _080BC8D0:
 	strb r0, [r4, #0xe]
 _080BC8EA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -421,7 +421,7 @@ _080BC984:
 	strb r0, [r5, #0xe]
 _080BC9C4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x5c]
 	adds r0, r0, r1
@@ -574,7 +574,7 @@ _080BCAD8:
 	mov r1, r8
 	adds r1, #0x54
 	mov r0, ip
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080BCB00
 	ldrb r1, [r4, #0x13]
@@ -629,7 +629,7 @@ _080BCB3A:
 	str r0, [r4, #0x14]
 _080BCB58:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCB5E:
 	pop {r3}
 	mov r8, r3
@@ -718,13 +718,13 @@ _080BCBEA:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x18
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _080BCC12:
 	movs r0, #0x18
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #3
@@ -734,11 +734,11 @@ _080BCC12:
 	strb r0, [r4, #0xe]
 _080BCC26:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCC8E
 _080BCC2E:
 	movs r0, #0x18
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #6
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -785,7 +785,7 @@ _080BCC80:
 _080BCC86:
 	strb r0, [r4, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCC8E:
 	pop {r4}
 	pop {r0}
@@ -846,10 +846,10 @@ _080BCCE0:
 	cmp r0, #0
 	beq _080BCCFC
 	movs r0, #0x19
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 _080BCCFC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCD90
 	.align 2, 0
 _080BCD04: .4byte 0x0000330B
@@ -924,7 +924,7 @@ _080BCD7A:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCD90:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -960,7 +960,7 @@ _080BCDAC:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x1a
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0xc
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -968,9 +968,9 @@ _080BCDAC:
 	strb r0, [r4, #0xe]
 _080BCDE0:
 	movs r0, #0x1a
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #1
 	ands r0, r1
@@ -995,7 +995,7 @@ _080BCE0A:
 	cmp r0, #0
 	bne _080BCE3C
 	movs r0, #0x1a
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -1087,7 +1087,7 @@ _080BCEB8:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCF5E
 	.align 2, 0
 _080BCED0: .4byte 0x0836EE0A
@@ -1160,7 +1160,7 @@ _080BCF48:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCF5E:
 	pop {r4, r5}
 	pop {r0}

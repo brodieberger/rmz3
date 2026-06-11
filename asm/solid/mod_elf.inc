@@ -11,7 +11,7 @@ ModElf_Init: @ 0x080DF900
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0
 	bne _080DF91A
-	ldr r0, _080DF968 @ =gSystemSavedataManager
+	ldr r0, _080DF968 @ =gSystemSavedata
 	ldrb r1, [r0, #0xf]
 	movs r0, #2
 	ands r0, r1
@@ -23,7 +23,7 @@ _080DF91A:
 	ldrb r0, [r6, #0x10]
 	cmp r0, #1
 	bne _080DF970
-	ldr r0, _080DF968 @ =gSystemSavedataManager
+	ldr r0, _080DF968 @ =gSystemSavedata
 	ldrb r1, [r0, #0xb]
 	movs r0, #2
 	ands r0, r1
@@ -60,7 +60,7 @@ _080DF930:
 	str r0, [r6, #0x14]
 	b _080DFA10
 	.align 2, 0
-_080DF968: .4byte gSystemSavedataManager
+_080DF968: .4byte gSystemSavedata
 _080DF96C: .4byte gSolidFnTable
 _080DF970:
 	ldr r1, _080DFA18 @ =gSolidFnTable
@@ -90,7 +90,7 @@ _080DF970:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r5, #0
 	ldrb r1, [r6, #0xa]
 	movs r0, #0xef
@@ -148,7 +148,7 @@ _080DFA20: .4byte 0xFFFFD000
 ModElf_Update: @ 0x080DFA24
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r0, [r0]

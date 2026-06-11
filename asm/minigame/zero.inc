@@ -190,7 +190,7 @@ _080F92E2:
 	strh r4, [r7, #0x28]
 	strh r4, [r7, #0x2a]
 	strh r4, [r1, #4]
-	ldr r0, _080F93BC @ =gSystemSavedataManager
+	ldr r0, _080F93BC @ =gSystemSavedata
 	ldr r0, [r0, #0x24]
 	str r0, [r7, #0x3c]
 	strh r4, [r7, #0x3a]
@@ -219,7 +219,7 @@ _080F93AC: .4byte gGameState
 _080F93B0: .4byte 0x0000626C
 _080F93B4: .4byte 0x41C64E6D
 _080F93B8: .4byte 0x00003039
-_080F93BC: .4byte gSystemSavedataManager
+_080F93BC: .4byte gSystemSavedata
 
 	thumb_func_start zeroMinigame
 zeroMinigame: @ 0x080F93C0

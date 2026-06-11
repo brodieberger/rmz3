@@ -177,11 +177,11 @@ static void MobNPC_Die(struct Solid* p) { SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR)
 
 static void mob_neutral_080d95a8(struct MobObject* p) {
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, p->motion);
+    SetSpriteAnimation(p, p->motion);
     (p->s).work[2] = 64;
     (p->s).mode[2]++;
   }
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   if ((p->unk_08 != 0) && (--(p->s).work[2] == 0xff)) {
     (p->s).mode[1] = 1;
     (p->s).mode[2] = 0;
@@ -240,7 +240,7 @@ _080D962C:\n\
 	strb r0, [r4, #0xe]\n\
 _080D9656:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
@@ -353,12 +353,12 @@ _080D972C:\n\
 
 static void FUN_080d9734(struct MobObject* p) {
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, p->motion);
+    SetSpriteAnimation(p, p->motion);
     (p->s).work[2] = 64;
     (p->s).mode[2]++;
   }
 
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 
   (p->s).work[2]--;
   if ((p->s).work[2] == 0xFF) {

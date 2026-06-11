@@ -24,21 +24,10 @@ SEQUENCE := $(subst .json,.inc,$(SEQUENCE_JSON))
 $(SEQUENCE): %.inc: %.json
 	$(SEQUENCE_JSON_CONVERTER) $< > $@
 
-#### Sprite Table Rules ####
-
-SPRITE_TABLES := sprites/dynamic/table.s sprites/dynamic/anim.s sprites/static/anim.s
-
-sprites/dynamic/anim.s: sprites/dynamic/sprite.json
-	./tools/dev/animation.ts $< > $@
-sprites/static/anim.s: sprites/static/sprite.json
-	./tools/dev/animation.ts $< > $@
-sprites/dynamic/table.s: sprites/dynamic/sprite.json
-	./tools/dev/sprite_gfxhdr_table.ts > $@
-
 ########################
 
-SPRITES := $(METASPRITE) $(SEQUENCE) $(SPRITE_TABLES)
+SPRITES := $(METASPRITE) $(SEQUENCE)
 
 .PHONY: clean-sprite
 clean-sprite:
-	@rm -f $(METASPRITE) $(SEQUENCE) $(SPRITE_TABLES)
+	@rm -f $(METASPRITE) $(SEQUENCE)

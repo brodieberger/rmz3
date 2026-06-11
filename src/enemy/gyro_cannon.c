@@ -1,6 +1,7 @@
 #include "collision.h"
 #include "enemy.h"
 #include "global.h"
+#include "mod.h"
 #include "story.h"
 #include "vfx.h"
 
@@ -9,8 +10,11 @@ struct GyroCannon {
   // props (16bytes, offset: 0xB4..)
   struct {
     struct VFX* elfx;  // 0xB4
-    u8 unk_b8[4];      // 0xB8
+    s32 init_y;        // 0xB8
     bool8 is_right;    // 0xBC
+    u8 unk_bd;         // 0xBD
+    u8 unk_be;         // 0xBE
+    u8 unk_bf;         // 0xBF
     u32 unk_c0;        // 0xC0
   } props;
 };
@@ -24,22 +28,18 @@ static void GyroCannon_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gGyroCannonRoutine = {
-    [ENTITY_INIT] =      (EnemyFunc)GyroCannon_Init,
-    [ENTITY_UPDATE] =    (EnemyFunc)GyroCannon_Update,
-    [ENTITY_DIE] =       (EnemyFunc)GyroCannon_Die,
-    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)GyroCannon_Init,
+    [ENTITY_UPDATE] =    (void*)GyroCannon_Update,
+    [ENTITY_DIE] =       (void*)GyroCannon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 static struct Entity* CreateGyroCannon(struct Entity* e, bool8 isPropeller, u8 r2) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_GYRO_CANNON);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->unk_28 = e;
     p->work[0] = isPropeller, p->work[1] = r2;
   }
@@ -48,7 +48,7 @@ static struct Entity* CreateGyroCannon(struct Entity* e, bool8 isPropeller, u8 r
 
 // --------------------------------------------
 
-static void initGyroCannonMainBody(struct Enemy* p);
+static void initGyroCannonMainBody(struct GyroCannon* p);
 static void initGyroCannonPropeller(struct GyroCannon* p);
 
 static void GyroCannon_Init(struct Enemy* p) {
@@ -59,7 +59,7 @@ static void GyroCannon_Init(struct Enemy* p) {
   if ((p->s).work[0] != 0) {  // propeller
     initGyroCannonPropeller((void*)p);
   } else {
-    initGyroCannonMainBody(p);
+    initGyroCannonMainBody((void*)p);
   }
   GyroCannon_Update(p);
 }
@@ -108,101 +108,38 @@ static void GyroCannon_Die(struct Enemy* p) {
 
 // --------------------------------------------
 
-NAKED static void initGyroCannonMainBody(struct Enemy* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	movs r1, #0xb8\n\
-	lsls r1, r1, #5\n\
-	bl SetMotion\n\
-	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
-	ldr r0, _0806D0F0 @ =gSystemSavedataManager\n\
-	ldrb r1, [r0, #0x16]\n\
-	movs r0, #1\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _0806D0FC\n\
-	ldr r0, _0806D0F4 @ =gCurStory\n\
-	ldrb r1, [r0, #4]\n\
-	movs r0, #0x40\n\
-	ands r0, r1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r5, r0, #0x18\n\
-	cmp r5, #0\n\
-	bne _0806D0FC\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #4\n\
-	orrs r0, r1\n\
-	strb r0, [r6, #0xa]\n\
-	adds r4, r6, #0\n\
-	adds r4, #0x74\n\
-	ldr r1, _0806D0F8 @ =sCollisions\n\
-	adds r2, r6, #0\n\
-	adds r2, #0x54\n\
-	adds r0, r4, #0\n\
-	movs r3, #0x14\n\
-	b _0806D114\n\
-	.align 2, 0\n\
-_0806D0F0: .4byte gSystemSavedataManager\n\
-_0806D0F4: .4byte gCurStory\n\
-_0806D0F8: .4byte sCollisions\n\
-_0806D0FC:\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #4\n\
-	movs r5, #0\n\
-	orrs r0, r1\n\
-	strb r0, [r6, #0xa]\n\
-	adds r4, r6, #0\n\
-	adds r4, #0x74\n\
-	ldr r1, _0806D14C @ =sCollisions\n\
-	adds r2, r6, #0\n\
-	adds r2, #0x54\n\
-	adds r0, r4, #0\n\
-	movs r3, #0x10\n\
-_0806D114:\n\
-	bl InitBody\n\
-	str r6, [r4, #0x2c]\n\
-	str r5, [r4, #0x24]\n\
-	ldr r0, _0806D150 @ =FUN_0806df10\n\
-	str r0, [r4, #0x24]\n\
-	adds r0, r6, #0\n\
-	movs r1, #1\n\
-	movs r2, #0\n\
-	bl CreateGyroCannon\n\
-	str r0, [r6, #0x2c]\n\
-	adds r2, r6, #0\n\
-	adds r2, #0xb4\n\
-	movs r1, #0\n\
-	strb r1, [r2, #9]\n\
-	ldr r0, [r6, #0x58]\n\
-	str r0, [r2, #4]\n\
-	strb r1, [r2, #0xa]\n\
-	strb r1, [r2, #0xb]\n\
-	str r1, [r6, #0x60]\n\
-	strb r1, [r6, #0x13]\n\
-	str r1, [r2]\n\
-	movs r0, #2\n\
-	strb r0, [r6, #0xd]\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_0806D14C: .4byte sCollisions\n\
-_0806D150: .4byte FUN_0806df10\n\
- .syntax divided\n");
+static void FUN_0806df10(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
+
+// 0x0806d0a8
+static void initGyroCannonMainBody(struct GyroCannon* p) {
+  SetSpriteAnimation(p, MOTION(SM023_GYRO_CANNON, 0));
+  UpdateSpriteAnimation(p);
+  if (FLAG(gSystemSavedata.flags, MOD_120) && !FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
+    _INIT_BODY(p, sCollisions, 20);
+  } else {
+    _INIT_BODY(p, sCollisions, 16);
+  }
+  SET_BODY_INTERSECT_HANDLER(p, FUN_0806df10);
+  (p->s).unk_2c = CreateGyroCannon((void*)p, TRUE, 0);
+  (&p->props)->unk_bd = 0;
+  (&p->props)->init_y = (p->s).coord.y;
+  (&p->props)->unk_be = 0, (&p->props)->unk_bf = 0;
+  (p->s).d.y = 0;
+  (p->s).work[3] = 0;
+  (&p->props)->elfx = NULL;
+  (p->s).mode[1] = 2;
 }
 
 static void initGyroCannonPropeller(struct GyroCannon* p) {
-  SetMotion(&p->s, MOTION(SM023_GYRO_CANNON, 6));
-  UpdateMotionGraphic(&p->s);
+  SetSpriteAnimation(p, MOTION(SM023_GYRO_CANNON, 6));
+  UpdateSpriteAnimation(p);
   INIT_BODY(p, &sCollisions[2], 6, NULL);
   (p->s).flags &= ~X_FLIP;
   (p->s).spr.xflip = FALSE, (p->s).spr.oam.xflip = FALSE;
   (p->props).elfx = NULL;
 }
 
-static const struct Coord sElementCoord;
+static const Coords32 sElementCoord;
 static const EnemyFunc PTR_ARRAY_0836666c[10];
 
 NAKED static void gyrocannon_0806d1b4(struct Enemy* p) {
@@ -380,7 +317,7 @@ _0806D306:\n\
 	adds r0, r4, #0\n\
 	bl _call_via_r1\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0806D31C:\n\
 	pop {r4, r5, r6}\n\
 	pop {r0}\n\
@@ -420,7 +357,7 @@ NAKED static void FUN_0806ddfc(struct Enemy* p) {
 	strb r0, [r4, #0xf]\n\
 _0806DE2E:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r4, #0x12]\n\
@@ -498,7 +435,7 @@ _0806DEC4:\n\
 	bl TryDropItem\n\
 	movs r0, #0x2a\n\
 	bl PlaySound\n\
-	ldr r2, _0806DF04 @ =gMission\n\
+	ldr r2, _0806DF04 @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _0806DF08 @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -525,14 +462,14 @@ _0806DEFA:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_0806DF04: .4byte gMission\n\
+_0806DF04: .4byte gScore\n\
 _0806DF08: .4byte 0x0000270E\n\
 _0806DF0C: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
 // 0x0806df10
-static void FUN_0806df10(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void FUN_0806df10(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
     struct Entity* other = (struct Entity*)body->enemy->parent;
     struct GyroCannon* self = (struct GyroCannon*)body->parent;
@@ -576,7 +513,7 @@ static const EnemyFunc sUpdates2[3] = {
     FUN_0806ddfc,
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 
 // 0x083666a8
 static const struct Collision sCollisions[5] = {

@@ -9,43 +9,33 @@ void VFX37_Die(struct VFX* vfx);
 
 // clang-format off
 const VFXRoutine gVFX37Routine = {
-    [ENTITY_INIT] =      VFX37_Init,
-    [ENTITY_UPDATE] =    VFX37_Update,
-    [ENTITY_DIE] =       VFX37_Die,
+    [ENTITY_INIT] =      (void*)VFX37_Init,
+    [ENTITY_UPDATE] =    (void*)VFX37_Update,
+    [ENTITY_DIE] =       (void*)VFX37_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
 void FUN_080bc540(s32 x1, s32 y1, s32 x2, s32 y2) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_037);
-    p->tileNum = 0;
-    p->palID = 0;
     p->work[0] = 0;
-    p->coord.x = x1;
-    p->coord.y = y1;
-    p->d.x = x2;
-    p->d.y = y2;
+    (p->coord).x = x1, (p->coord).y = y1;
+    (p->d).x = x2, (p->d).y = y2;
   }
 }
 
 void FUN_080bc594(s32 x1, s32 y1, s32 x2, s32 y2, u8 n) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_037);
-    p->tileNum = 0;
-    p->palID = 0;
     p->work[0] = 1;
-    p->coord.x = x1;
-    p->coord.y = y1;
-    p->d.x = x2;
-    p->d.y = y2;
+    (p->coord).x = x1, (p->coord).y = y1;
+    (p->d).x = x2, (p->d).y = y2;
     p->work[2] = n;
   }
 }
@@ -53,12 +43,9 @@ void FUN_080bc594(s32 x1, s32 y1, s32 x2, s32 y2, u8 n) {
 void FUN_080bc5fc(struct Entity* e, u8 n) {
   s32 i;
   for (i = 0; i < 6; i++) {
-    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_037);
-      p->tileNum = 0;
-      p->palID = 0;
       p->work[0] = 2;
       p->unk_28 = e;
       p->work[2] = i;
@@ -68,15 +55,11 @@ void FUN_080bc5fc(struct Entity* e, u8 n) {
 }
 
 void FUN_080bc660(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_037);
-    p->tileNum = 0;
-    p->palID = 0;
     p->work[0] = 3;
-    p->coord.x = x;
-    p->coord.y = y;
+    (p->coord).x = x, (p->coord).y = y;
   }
 }
 

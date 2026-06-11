@@ -52,7 +52,6 @@ SECTIONS {
 	{
     /* INCLUDE "linker/rodata.txt" */
 		*(.rodata*);
-    INCLUDE "linker/rodata_sprite.txt"
 	} >rom = 0x00
 
     /* Discard everything not specifically mentioned above. */

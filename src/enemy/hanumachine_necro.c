@@ -16,16 +16,11 @@ const EnemyRoutine gHanumachineNecroRoutine = {
 // clang-format on
 
 struct Enemy* CreateEnemy50(struct Boss* hanu) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     bool8 xflip;
 
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_HANUMACHINE_NECRO);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = (hanu->s).coord;
     (p->s).unk_28 = &hanu->s;
     xflip = (((hanu->s).flags >> 4) & 1) != 0;
@@ -56,7 +51,7 @@ static void HanumachineNecro_Init(struct Enemy* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(DM181_HANUMACHINE, 4));
+  SetSpriteAnimation(p, MOTION(DM181_HANUMACHINE, 4));
   (p->s).flags2 |= WHITE_PAINTABLE;
   (p->s).invincibleID = (hanu->s).uniqueID;
   if ((p->s).flags & X_FLIP) {
@@ -73,7 +68,7 @@ static void HanumachineNecro_Init(struct Enemy* p) {
 
 static void HanumachineNecro_Update(struct Enemy* p) {
   struct Entity* hanu;
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   if ((p->s).mode[3] == 0) {
     u8 frame;
     (p->s).coord.x += (p->s).d.x;

@@ -26,11 +26,9 @@ const VFXRoutine gBubbleRoutine = {
 // clang-format on
 
 void CreateBubble(s32 x, s32 y, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_BUBBLE);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind;
     (p->coord).x = x, (p->coord).y = y;
   }

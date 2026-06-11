@@ -31,9 +31,6 @@
 #define ZERO_INPUT_PRESS_SUB_WEAPON (1 << 14)
 #define ZERO_INPUT_SUB_WEAPON (1 << 15)
 
-#define X_FLIP (1 << 4)
-#define Y_FLIP (1 << 5)
-
 #define AUTO_RECOVER 1
 
 #endif  // GUARD_RMZ3_CONST_ZERO_H

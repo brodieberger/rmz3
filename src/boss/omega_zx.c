@@ -1,8 +1,8 @@
-#include "blink.h"
 #include "boss.h"
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 // I call Omega Second Form "Omega ZX" because his shoulder pads look like Zero and X.
 
@@ -27,7 +27,7 @@ struct OmegaZX {
 };
 static_assert(sizeof(struct OmegaZX) == sizeof(struct Boss));
 
-struct Entity* FUN_08092444(struct Coord* c, u8 kind, struct Entity* boss);
+struct Entity* FUN_08092444(Coords32* c, u8 kind, struct Entity* boss);
 
 static void OmegaZX_Init(struct OmegaZX* p);
 static void OmegaZX_Update(struct Boss* p);
@@ -44,14 +44,10 @@ const BossRoutine gOmegaZXRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateOmegaZX(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateOmegaZX(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_OMEGA_ZX);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = n;
   }
@@ -204,18 +200,18 @@ _08060C44:\n\
 	lsls r4, r4, #2\n\
 	movs r0, #0xa7\n\
 	adds r1, r4, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r1, #0xb8\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0xa8\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0xa9\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0xaa\n\
 	adds r1, r4, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	adds r0, r5, #0\n\
 	bl OmegaZX_Update\n\
 	add sp, #8\n\
@@ -277,7 +273,7 @@ static void OmegaZX_Update(struct Boss* p) {
   // clang-format on
 
   if (((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) {
-    if (!(gStageRun.missionStatus & MISSION_FAIL)) {
+    if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
       SET_BOSS_ROUTINE(p, ENTITY_DIE);
       OmegaZX_Die(p);
       return;
@@ -304,10 +300,10 @@ static void OmegaZX_Die(struct Boss* p) {
 // --------------------------------------------
 
 static void OmegaZX_Disappear(struct Boss* p) {
-  ClearBlink(167);
-  ClearBlink(168);
-  ClearBlink(169);
-  ClearBlink(170);
+  RemovePaletteAnimation(167);
+  RemovePaletteAnimation(168);
+  RemovePaletteAnimation(169);
+  RemovePaletteAnimation(170);
   DeleteBoss((void*)p);
 }
 
@@ -316,7 +312,7 @@ static void OmegaZX_Disappear(struct Boss* p) {
 static void FUN_08060d60(Object* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1)) {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
@@ -326,10 +322,10 @@ static void FUN_08060d60(Object* p) {
       FALLTHROUGH;
     }
     case 1: {
-      UpdateBlinkMotionState(167);
-      UpdateBlinkMotionState(168);
-      UpdateBlinkMotionState(169);
-      UpdateBlinkMotionState(170);
+      StepPaletteAnimation(167);
+      StepPaletteAnimation(168);
+      StepPaletteAnimation(169);
+      StepPaletteAnimation(170);
       if ((p->s).work[2] != 0) {
         (p->s).work[2]--;
         if ((p->s).work[2] == 0) {

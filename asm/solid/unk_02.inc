@@ -97,7 +97,7 @@ _080CB068:
 	orrs r2, r0
 	strb r2, [r1, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -110,7 +110,7 @@ _080CB068:
 _080CB0A0: .4byte gCollisionManager
 _080CB0A4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r1, [r0]
@@ -150,7 +150,7 @@ _080CB0F0: .4byte gStageRun+232
 _080CB0F4: .4byte 0x00001203
 _080CB0F8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -294,7 +294,7 @@ _080CB1FC:
 	ands r0, r1
 	strb r0, [r2, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -307,7 +307,7 @@ _080CB1FC:
 _080CB238: .4byte gCollisionManager
 _080CB23C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r1, [r0]
@@ -347,7 +347,7 @@ _080CB288: .4byte gStageRun+232
 _080CB28C: .4byte 0x00001203
 _080CB290:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -417,7 +417,7 @@ _080CB312:
 	strb r0, [r5, #0xe]
 _080CB316:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -432,7 +432,7 @@ _080CB316:
 	b _080CB356
 _080CB336:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x10]
 	ands r4, r0
 	cmp r4, #0

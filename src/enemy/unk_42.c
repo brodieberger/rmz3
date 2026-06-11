@@ -19,13 +19,9 @@ const EnemyRoutine gEnemy42Routine = {
 // clang-format on
 
 struct Entity* CreateEnemy42(struct Entity* e, u8 type, u8 param_3) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_42);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = type, p->work[1] = param_3;
     p->unk_28 = e;
     p->coord = *(&e->coord);

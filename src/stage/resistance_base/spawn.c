@@ -244,7 +244,7 @@ const struct SpawnTemplate gResistanceBaseEntity[64] =
         [44] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_037, 0, 0),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_FLYING_FISH, 0, 0),
             },
         [45] =
             {

@@ -1,4 +1,3 @@
-#include "blink.h"
 #include "collision.h"
 #include "element.h"
 #include "entity.h"
@@ -6,9 +5,10 @@
 #include "global.h"
 #include "gpu_regs.h"
 #include "hud.h"
-#include "mission.h"
 #include "overworld.h"
+#include "palette_animation.h"
 #include "result.h"
+#include "score.h"
 #include "spawn.h"
 #include "sprite.h"
 #include "story.h"
@@ -43,7 +43,7 @@ static bool32 Cmd_emergency(struct VM* vm);
 static bool32 Cmd_quake(struct VM* vm);
 static bool32 Cmd_emotion(struct VM* vm);
 static bool32 Cmd_scroll(struct VM* vm);
-static bool32 Cmd_screeneffect(struct VM* vm);
+static bool32 Cmd_transition(struct VM* vm);
 static bool32 Cmd_printstring(struct VM* vm);
 static bool32 Cmd_indicator(struct VM* vm);
 static bool32 Cmd_message(struct VM* vm);
@@ -57,10 +57,10 @@ static bool32 Cmd_lockmenu(struct VM* vm);
 static bool32 Cmd_eventflag(struct VM* vm);
 static bool32 Cmd_load_graphic_primitive(struct VM* vm);
 static bool32 Cmd_drop(struct VM* vm);
-static bool32 Cmd_missionresult(struct VM* vm);
+static bool32 Cmd_result_screen(struct VM* vm);
 static bool32 Cmd_goodluck(struct VM* vm);
 static bool32 Cmd_killtimeelf(struct VM* vm);
-static bool32 Cmd_cutscene(struct VM* vm);
+static bool32 Cmd_movie(struct VM* vm);
 
 // clang-format off
 const CommandHandler gScriptCommands[38] = {
@@ -84,7 +84,7 @@ const CommandHandler gScriptCommands[38] = {
     [17] = Cmd_quake,
     [18] = Cmd_emotion,
     [19] = Cmd_scroll,
-    [20] = Cmd_screeneffect,
+    [20] = Cmd_transition,
     [21] = Cmd_printstring,
     [22] = Cmd_indicator,
     [23] = Cmd_message,
@@ -98,24 +98,24 @@ const CommandHandler gScriptCommands[38] = {
     [31] = Cmd_eventflag,
     [32] = Cmd_load_graphic_primitive,
     [33] = Cmd_drop,
-    [34] = Cmd_missionresult,
+    [34] = Cmd_result_screen,
     [35] = Cmd_goodluck,
     [36] = Cmd_killtimeelf,
-    [37] = Cmd_cutscene,
+    [37] = Cmd_movie,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 static bool32 Cmd_goto(struct VM* vm) {
-  if (vm->pc->status == 0) {
-    vm->pc = (struct Command*)(vm->pc->work - sizeof(struct Command));
+  if (((vm->pc)->c).status == 0) {
+    vm->pc = (GameCommand*)(((vm->pc)->c).work - sizeof(GameCommand));
   }
   return FALSE;
 }
 
 static bool32 Cmd_wait(struct VM* vm) {
-  struct Command* c = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
   if (c->status == 0) {
     if (vm->unk_004 != 0) {
       vm->pc--;
@@ -139,7 +139,7 @@ static bool32 Cmd_wait(struct VM* vm) {
 }
 
 static bool32 Cmd_time(struct VM* vm) {
-  vm->time = vm->pc->work;
+  vm->time = ((vm->pc)->c).work;
   return FALSE;
 }
 
@@ -151,20 +151,18 @@ static bool32 Cmd_nop(struct VM* _ UNUSED) {
 // カメラの設定を一括で行う
 static bool32 Cmd_reset_camera(struct VM* vm) {
   struct Entity* p;
-  struct CameraTemplate* t = (struct CameraTemplate*)vm->pc->work;
-  struct Camera* camera = &gStageRun.vm.camera;
-  if (camera->mode == 0) {
-    RestoreBackground();
-  }
-  LoadCameraTemplate(camera, t);
-  if (t->mode != 1) {
+  struct CameraTemplate* t = (struct CameraTemplate*)((vm->pc)->c).work;
+  struct Camera* cam = &gStageRun.vm.camera;
+  if (cam->mode == CM0_DISABLED) RestoreBackground();
+  Camera_LoadTemplate(cam, t);
+  if (t->mode != CM1) {
     struct ScriptEntity* se = &vm->entities[t->unk_02];
     p = se->entity;
     if (p != NULL) {
-      camera->zero = &p->coord;
-      if (t->chaseMode & (1 << 3)) {
-        (camera->target).x = (p->coord).x;
-        (camera->target).y = (p->coord).y;
+      cam->player = &p->coord;
+      if (t->chaseMode & CHASE_MODE_B3) {
+        (cam->target).x = (p->coord).x;
+        (cam->target).y = (p->coord).y;
       }
     }
   }
@@ -172,6 +170,7 @@ static bool32 Cmd_reset_camera(struct VM* vm) {
 }
 
 /*
+adjust_camera
 カメラの微調整
 
 type:
@@ -182,88 +181,88 @@ type:
   04: カメラのY座標セット
 */
 static bool32 Cmd_adjust_camera(struct VM* vm) {
-  struct Camera* camera = &gStageRun.vm.camera;
-  switch (vm->pc->status) {
-    case 0: {
-      SetCameraMode(camera, vm->pc->work);
+  struct Camera* cam = &gStageRun.vm.camera;
+  switch (((vm->pc)->c).status) {
+    case 0: {  // change_camera_mode
+      Camera_SetMode(cam, ((vm->pc)->c).work);
       break;
     }
-    case 1: {
-      camera->chaseMode = (u8)vm->pc->work;
-      camera->unk_22 = 0;
+    case 1: {  // set_chase_mode
+      cam->chaseMode = (u8)((vm->pc)->c).work;
+      cam->counter = 0;
       break;
     }
     case 2: {
-      if (camera->mode != 1) {
-        struct ScriptEntity* s = &(vm->entities[(vm->pc)->work]);
-        struct Entity* z = s->entity;
-        if (z != NULL) {
-          camera->zero = &z->coord;
+      if (cam->mode != CM1) {
+        struct ScriptEntity* s = &(vm->entities[((vm->pc)->c).work]);
+        struct Entity* p = s->entity;
+        if (p != NULL) {
+          cam->player = &p->coord;
         }
       }
       break;
     }
-    case 3: {
-      camera->target.x = vm->pc->work;
+    case 3: {  // set_camera_target_x
+      cam->target.x = ((vm->pc)->c).work;
       break;
     }
-    case 4: {
-      camera->target.y = vm->pc->work;
+    case 4: {  // set_camera_target_y
+      cam->target.y = ((vm->pc)->c).work;
       break;
     }
     case 5: {
-      camera->forceScrollSpeed.x = vm->pc->work;
+      cam->forceScrollSpeed.x = ((vm->pc)->c).work;
       break;
     }
     case 6: {
-      camera->forceScrollSpeed.y = vm->pc->work;
+      cam->forceScrollSpeed.y = ((vm->pc)->c).work;
       break;
     }
     case 7: {
-      camera->unk_left = vm->pc->work;
+      cam->dx = ((vm->pc)->c).work;
       break;
     }
     case 8: {
-      camera->unk_right = vm->pc->work;
+      cam->ddx = ((vm->pc)->c).work;
       break;
     }
     case 9: {
-      camera->unk_top = vm->pc->work;
+      cam->dy = ((vm->pc)->c).work;
       break;
     }
     case 10: {
-      camera->unk_bottom = vm->pc->work;
+      cam->ddy = ((vm->pc)->c).work;
       break;
     }
     case 11: {
-      camera->left = vm->pc->work;
+      cam->left = ((vm->pc)->c).work;
       break;
     }
     case 12: {
-      camera->right = vm->pc->work;
+      cam->right = ((vm->pc)->c).work;
       break;
     }
     case 13: {
-      camera->top = vm->pc->work;
+      cam->top = ((vm->pc)->c).work;
       break;
     }
     case 14: {
-      camera->bottom = vm->pc->work;
+      cam->bottom = ((vm->pc)->c).work;
       break;
     }
     case 15: {
-      camera->chaseMode |= (1 << 3);
-      camera->unk_22 = 0;
+      cam->chaseMode |= CHASE_MODE_B3;
+      cam->counter = 0;
       break;
     }
     case 16: {
-      SetCameraMode(camera, 0);
+      Camera_SetMode(cam, CM0_DISABLED);
       SaveDispRegister();
       gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON);
       break;
     }
     case 17: {
-      SetCameraMode(camera, 6);
+      Camera_SetMode(cam, CM6);
       RestoreBackground();
       break;
     }
@@ -271,50 +270,51 @@ static bool32 Cmd_adjust_camera(struct VM* vm) {
   return FALSE;
 }
 
+// 0x080225b4
 NON_MATCH static bool32 Cmd_cmd06(struct VM* vm) {
 #if MODERN
-  struct Command* c = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
   switch (c->val2) {
-    case 0: {
+    case 0: {                                                                   // (おそらく)静止した8bppの1枚絵を表示する
       BGCNT16(1) = (BGCNT_SCREENBASE(2) | BGCNT_256COLOR | BGCNT_CHARBASE(1));  // 0x284
       *(u32*)gVideoRegBuffer.bgofs[1] = 0;
       gVideoRegBuffer.dispcnt |= (DISPCNT_OBJ_ON | DISPCNT_BG1_ON);
-      LoadGraphic(BG_GRAPHIC(c->status), (void*)0x4000);
+      LoadGraphic(BG_GRAPHIC(c->status), BG_CHAR_OFFSET(1));
       LoadPalette(BG_PALETTE(c->status), 0);
       LoadBgMap(USE_BG1, gBgMapOffsets, c->status, 0, 0);
-      PauseAllBlinks();
+      PauseAllPaletteAnimations();
       break;
     }
     case 1: {
       gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_OBJ_ON);
       gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
-      ResumeAllBlinks();
+      ResumeAllPaletteAnimations();
       break;
     }
     case 2: {
-      BGCNT16(1) = (BGCNT_AFF512x512 | BGCNT_SCREENBASE(2) | BGCNT_256COLOR | BGCNT_CHARBASE(1));  // 0x8284
+      BGCNT16(1) = (BGCNT_TXT256x512 | BGCNT_SCREENBASE(2) | BGCNT_256COLOR | BGCNT_CHARBASE(1));  // 0x8284
       BGOFS(1)->x = 0;
       BGOFS(1)->y = 160;
       gVideoRegBuffer.dispcnt |= (DISPCNT_OBJ_ON | DISPCNT_BG1_ON);
       gVideoRegBuffer.dispcnt |= 0;
       gVideoRegBuffer.dispcnt &= ~DISPCNT_BG0_ON;
-      LoadGraphic(BG_GRAPHIC(c->status), (void*)0x4000);
+      LoadGraphic(BG_GRAPHIC(c->status), BG_CHAR_OFFSET(1));
       LoadPalette(BG_PALETTE(c->status), 0);
       LoadBgMap(USE_BG1, gBgMapOffsets, c->status, 0, 0);
-      loadBgMap_08004248((u16*)(void*)(BG_SCREEN_ADDR(1) + SCREEN_BASE_16(1)), gBgMapOffsets, c->status + 1, 0, 0);
-      PauseAllBlinks();
+      loadBgMap_08004248(SCREEN_ADDR(1) + BG_SCREEN_SIZE, gBgMapOffsets, c->status + 1, 0, 0);
+      PauseAllPaletteAnimations();
       break;
     }
     case 3: {
-      BGCNT16(1) = (BGCNT_AFF512x512 | BGCNT_SCREENBASE(2) | BGCNT_256COLOR | BGCNT_CHARBASE(1));  // 0x8284
+      BGCNT16(1) = (BGCNT_TXT256x512 | BGCNT_SCREENBASE(2) | BGCNT_256COLOR | BGCNT_CHARBASE(1));  // 0x8284
       BGOFS(1)->x = 0;
       BGOFS(1)->y = 96;
       gVideoRegBuffer.dispcnt |= (DISPCNT_OBJ_ON | DISPCNT_BG1_ON);
       gVideoRegBuffer.dispcnt &= ~DISPCNT_BG0_ON;
-      LoadGraphic(BG_GRAPHIC(c->status), (void*)0x4000);
+      LoadGraphic(BG_GRAPHIC(c->status), BG_CHAR_OFFSET(1));
       LoadPalette(BG_PALETTE(c->status), 0);
       LoadBgMap(USE_BG1, gBgMapOffsets, c->status, 0, 0);
-      PauseAllBlinks();
+      PauseAllPaletteAnimations();
       break;
     }
     case 4: {
@@ -326,18 +326,18 @@ NON_MATCH static bool32 Cmd_cmd06(struct VM* vm) {
       LoadAsciiBold();
       break;
     }
-    case 5: {
+    case 5: {  // backdrop_color
       PALETTE16(0) = (u16)c->work;
       break;
     }
-    case 6: {
+    case 6: {                                                                  // (おそらく)静止した4bppの1枚絵を表示する
       BGCNT16(1) = (BGCNT_SCREENBASE(2) | BGCNT_16COLOR | BGCNT_CHARBASE(1));  // 0x204
       *(u32*)gVideoRegBuffer.bgofs[1] = 0;
       gVideoRegBuffer.dispcnt |= (DISPCNT_OBJ_ON | DISPCNT_BG1_ON);
-      LoadGraphic(BG_GRAPHIC(c->status), (void*)0x4000);
+      LoadGraphic(BG_GRAPHIC(c->status), BG_CHAR_OFFSET(1));
       LoadPalette(BG_PALETTE(c->status), 0);
       LoadBgMap(USE_BG1, gBgMapOffsets, c->status, 0, 0);
-      PauseAllBlinks();
+      PauseAllPaletteAnimations();
       break;
     }
     default: {
@@ -352,20 +352,19 @@ NON_MATCH static bool32 Cmd_cmd06(struct VM* vm) {
 }
 
 static bool32 Cmd_resume(struct VM* vm) {
-  if (vm->pc->status == 0) {
+  if (((vm->pc)->c).status == 0) {
     struct Zero* z = (struct Zero*)vm->entities[0].entity;
-    struct Camera* camera = &gStageRun.vm.camera;
-    if (camera->mode == 0) {
+    struct Camera* cam = &gStageRun.vm.camera;
+    if (cam->mode == CM0_DISABLED) {
       RestoreBackground();
-      SetCameraMode(camera, 6);
-      camera->chaseMode = (1 << 3);
-      camera->unk_22 = 0;
+      Camera_SetMode(cam, CM6);
+      cam->chaseMode = CHASE_MODE_B3;
+      cam->counter = 0;
     }
-    camera->zero = &(z->s).coord;
-    camera->viewport.x = (z->s).coord.x;
-    camera->viewport.y = (z->s).coord.y;
-    camera->unk_left = 0;
-    camera->unk_top = 0;
+    cam->player = &(z->s).coord;
+    cam->viewport.x = (z->s).coord.x;
+    cam->viewport.y = (z->s).coord.y;
+    cam->dx = 0, cam->dy = 0;
     gCollisionManager.disabled &= 0x7F;
     gCollisionManager.sweep = 0;
   } else {
@@ -376,13 +375,16 @@ static bool32 Cmd_resume(struct VM* vm) {
   return FALSE;
 }
 
+// VM.active の 特定のbit が セット or クリア されるまで待機する
+// このゲームでは VM_FLAG1 のセット　まで待機する用途でしか使われていない
 static bool32 Cmd_cmd08(struct VM* vm) {
-  if (vm->pc->status != 0) {
-    if ((gStageRun.vm.active & vm->pc->work) != 0) {
+  if (((vm->pc)->c).status != 0) {
+    // cmd08_wait_set
+    if ((gStageRun.vm.active & ((vm->pc)->c).work) != 0) {
       return FALSE;
     }
-  } else if ((gStageRun.vm.active & vm->pc->work) == 0) {
-    return FALSE;
+  } else if ((gStageRun.vm.active & ((vm->pc)->c).work) == 0) {
+    return FALSE;  // cmd08_wait_clear
   }
   vm->pc--;
   return TRUE;
@@ -395,7 +397,7 @@ status:
   2: プレイヤーのキー入力を無効にし、valで指定したキー入力を強制する
 */
 static bool32 Cmd_disablekeyinput(struct VM* vm) {
-  switch ((vm->pc)->status) {
+  switch (((vm->pc)->c).status) {
     case 0: {
       vm->forcedKey = INPUT_DISABLED;
       break;
@@ -405,56 +407,46 @@ static bool32 Cmd_disablekeyinput(struct VM* vm) {
       break;
     }
     case 2: {
-      vm->forcedKey = ((vm->pc)->work) | INPUT_DISABLED;
+      vm->forcedKey = (((vm->pc)->c).work) | INPUT_DISABLED;
       break;
     }
   }
   return FALSE;
 }
 
+// cmd10
 static bool32 Cmd_loadgraphic(struct VM* vm) {
-  u32 n = *((s16*)&vm->pc->work);
+  u32 n = *((s16*)&((vm->pc)->c).work);
   LOAD_STATIC_GRAPHIC(n);
   return FALSE;
 }
 
 static bool32 Cmd_spawn(struct VM* vm) {
-  struct Command* pc = vm->pc;
-  u8 idx = pc->status;
-  CreateScriptEntity(idx, (struct ScriptEntityTemplate*)pc->work);
+  u8 slot = ((vm->pc)->spawn).slot;
+  CreateScriptEntity(slot, ((vm->pc)->spawn).tmpl);
 
-  // create Zero
-  if ((vm->pc->val2 == 0) && (idx == 0)) {
-    struct Zero* z = (struct Zero*)vm->entities[0].entity;
-    s32 y = FUN_08009f6c((z->s).coord.x, (z->s).coord.y);
-    (z->s).coord.y = y;
+  // create Player?
+  if ((!((vm->pc)->spawn).val2) && (slot == 0)) {
+    Player* z = (Player*)vm->entities[0].entity;
+    (z->s).coord.y = FUN_08009f6c((z->s).coord.x, (z->s).coord.y);
   }
   return FALSE;
 }
 
-// なんかこれ用意したらコンパイル結果がやっと一致してくれた
-struct __attribute__((packed, aligned(1))) EntityOamData_06 {
-  /*0x06*/ u8 unused : 4;
-  /*    */ u8 xflip : 1;
-  /*    */ u8 yflip : 1;
-  /*    */ u8 size : 2;
-  /*    */ u8 : 8;
-};
-
+// cmd0c
 static bool32 Cmd_entity(struct VM* vm) {
-  struct EntityOamData_06* fxxk;
-  struct Command* c = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
   struct ScriptEntity* se = &vm->entities[c->status];
   struct Entity* e = se->entity;
 
   if (e != NULL) {
     switch (c->val2) {
-      case 0: {
-        (e->coord).x = ((struct Coord*)c->work)->x;
-        (e->coord).y = ((struct Coord*)c->work)->y;
+      case 0: {  // set_entity_coords
+        (e->coord).x = ((Coords32*)c->work)->x;
+        (e->coord).y = ((Coords32*)c->work)->y;
         break;
       }
-      case 1: {
+      case 1: {  // copy_entity_coords (unused)
         struct Entity* target = vm->entities[c->work].entity;
         if (target != NULL) {
           (e->coord).x = (target->coord).x;
@@ -462,49 +454,43 @@ static bool32 Cmd_entity(struct VM* vm) {
         }
         break;
       }
-      case 2: {
+      case 2: {  // turn_left, turn_right
         if (c->work) {
           e->flags |= X_FLIP;
         } else {
           e->flags &= ~X_FLIP;
         }
-        if (e->flags & OAM_PRIO) {
-          u32 work;
+        if (e->flags & USE_COMMON_OAM_RENDERER) {
           (e->spr).xflip = (c->work & 1);
-          work = (c->work & 1);
-          fxxk = (struct EntityOamData_06*)((void*)&(e->spr).oam + 6);
-          fxxk->xflip = work;
+          (e->spr).oam.xflip = c->work;
         }
         break;
       }
-      case 3: {
+      case 3: {  // set_entity_yflip (unused)
         if (c->work) {
           e->flags |= Y_FLIP;
         } else {
           e->flags &= ~Y_FLIP;
         }
-        if (e->flags & OAM_PRIO) {
-          u32 work;
+        if (e->flags & USE_COMMON_OAM_RENDERER) {
           (e->spr).yflip = (c->work & 1);
-          work = (c->work & 1);
-          fxxk = (struct EntityOamData_06*)((void*)&(e->spr).oam + 6);
-          fxxk->yflip = work;
+          (e->spr).oam.yflip = c->work;
         }
         break;
       }
-      case 4: {
+      case 4: {  // visible
         e->flags &= ~DISPLAY;
         break;
       }
-      case 5: {
+      case 5: {  // visible
         e->flags |= DISPLAY;
         break;
       }
-      case 6: {
+      case 6: {  // destroy
         DeleteScriptEntity(c->status);
         break;
       }
-      case 7: {
+      case 7: {  // detach_entity
         se->entity = NULL;
         break;
       }
@@ -514,30 +500,24 @@ static bool32 Cmd_entity(struct VM* vm) {
   return FALSE;
 }
 
-struct Command0D {
-  u8 cmd;        // 0x0, コマンドID, .cmd = 0x0D
-  u8 entityIdx;  // 0x1
-  s16 val;       // 0x2
-  u32 flags;     // 0x4
-};
-
+// 0x08022ac8
 NON_MATCH static bool32 Cmd_flag(struct VM* vm) {
 #if MODERN
-  struct Command0D* c = (struct Command0D*)vm->pc;
-  if (c->flags & (1 << 1)) {
+  s32 mode = ((vm->pc)->flag).mode;
+  if (mode & (1 << 1)) {
     // gameflag
-    if (c->flags & (1 << 0)) {
-      SET_FLAG(gCurStory.s.gameflags, c->val);
+    if (mode & (1 << 0)) {
+      SET_FLAG(gCurStory.s.gameflags, ((vm->pc)->flag).val);
     } else {
-      CLEAR_FLAG(gCurStory.s.gameflags, c->val);
+      CLEAR_FLAG(gCurStory.s.gameflags, ((vm->pc)->flag).val);
     }
   } else {
     // entityflag
-    if (vm->entities[c->entityIdx].entity != NULL) {
-      if (c->flags) {
-        vm->entities[c->entityIdx].flags |= c->val;
+    if (vm->entities[((vm->pc)->flag).slot].entity != NULL) {
+      if (mode) {
+        vm->entities[((vm->pc)->flag).slot].flags |= ((vm->pc)->flag).val;
       } else {
-        vm->entities[c->entityIdx].flags &= ~c->val;
+        vm->entities[((vm->pc)->flag).slot].flags &= ~((vm->pc)->flag).val;
       }
     }
   }
@@ -548,7 +528,7 @@ NON_MATCH static bool32 Cmd_flag(struct VM* vm) {
 }
 
 static bool32 Cmd_cmd0e(struct VM* vm) {
-  struct Command* c = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
   if (vm->entities[c->status].entity != NULL) {
     (vm->entities[c->status].unk_0A)[c->val2] = (u16)c->work;
   }
@@ -556,9 +536,9 @@ static bool32 Cmd_cmd0e(struct VM* vm) {
 }
 
 static bool32 Cmd_cmd0f(struct VM* vm) {
-  const u8 n = vm->pc->status;
+  const u8 n = ((vm->pc)->c).status;
   if (vm->entities[n].entity != NULL) {
-    struct Entity* p = vm->entities[vm->pc->val2].entity;
+    struct Entity* p = vm->entities[((vm->pc)->c).val2].entity;
     if (p != NULL) {
       vm->entities[n].unk_04 = p;
     }
@@ -566,14 +546,15 @@ static bool32 Cmd_cmd0f(struct VM* vm) {
   return FALSE;
 }
 
+// パレットに赤フィルタをかける
 static bool32 Cmd_emergency(struct VM* vm) {
-  switch (vm->pc->status) {
-    case 0: {
-      vm->emergency = (u16)(vm->pc->work) | EMERGENCY_ENABLED;
+  switch (((vm->pc)->emergency).op2) {
+    case 0: {  // emergency_on
+      vm->emergency = EMERGENCY_ENABLED | ((vm->pc)->emergency).offset;
       break;
     }
-    case 1: {
-      vm->emergency |= EMERGENCY_TEMPORARY;
+    case 1: {  // emergency_off
+      vm->emergency |= EMERGENCY_END;
       break;
     }
   }
@@ -581,10 +562,10 @@ static bool32 Cmd_emergency(struct VM* vm) {
 }
 
 static bool32 Cmd_quake(struct VM* vm) {
-  struct Command* pc = vm->pc;
-  switch (pc->status) {
+  struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
     case 0: {
-      vm->magnitude = (u16)pc->work | 0x8000;
+      vm->magnitude = (u16)c->work | 0x8000;
       break;
     }
     case 1: {
@@ -592,33 +573,22 @@ static bool32 Cmd_quake(struct VM* vm) {
       break;
     }
     case 2: {
-      AppendQuake(*(u8*)&pc->work, &gStageRun.vm.camera.viewport);
+      AppendQuake(*(u8*)&c->work, &gStageRun.vm.camera.viewport);
       break;
     }
   }
   return FALSE;
 }
 
-// For emotion layout
-struct Command12 {
-  u8 cmd;  // コマンドID
-  u8 idx;
-  s16 x;
-  u16 kind;
-  s16 y;
-};
-
+// emotion_bubble
 // びっくりマークなどの吹き出し(Emotion Bubble)を出す
 static bool32 Cmd_emotion(struct VM* vm) {
-  struct Entity* e;
-  struct Coord coord;
-  struct Command12* c = (struct Command12*)vm->pc;
-  u16 kind = c->kind;
-  coord.x = ((s32)c->x) << 8;
-  coord.y = ((s32)c->y) << 8;
-  e = vm->entities[c->idx].entity;
+  u16 kind = ((vm->pc)->emotion).kind;
+  Coords32 offset = {.x = ((s32)((vm->pc)->emotion).px) << 8, .y = ((s32)((vm->pc)->emotion).py) << 8};
+
+  struct Entity* e = vm->entities[((vm->pc)->emotion).slot].entity;
   if (e != NULL) {
-    CreateEmotionBubble(kind, &e->coord, &coord);
+    CreateEmotionBubble(kind, &e->coord, &offset);
   }
   return FALSE;
 }
@@ -820,22 +790,19 @@ _08022DEC: .4byte 0x0000FEFF\n\
  .syntax divided\n");
 }
 
-/*
-status:
-  0:       transition が NONE　になるまで待つ
-  それ以外: transition に status をセット
-*/
-static bool32 Cmd_screeneffect(struct VM* vm) {
-  struct Command* c = vm->pc;
-  if (c->status == 0) {
+// 0x08022df0
+static bool32 Cmd_transition(struct VM* vm) {
+  struct GameCommandCommon* c = &(vm->pc)->c;
+  if (c->status == 0) {  // wait_transition_end
     if (vm->transition != TRANSITION_NONE) {
-      vm->pc = c - 1;
+      vm->pc = (void*)(c - 1);
       return TRUE;
     }
   } else {
+    // start_transition XX
     vm->transition = c->status;
-    if (vm->transition & (1 << 3)) {
-      *(u16*)(&gPaletteManager.buf[0]) = 0;
+    if (vm->transition & TRANSITION_Z) {
+      PALETTE16(0) = RGB_BLACK;
     }
   }
   return FALSE;
@@ -844,7 +811,7 @@ static bool32 Cmd_screeneffect(struct VM* vm) {
 // 文字列(string.s) を表示させる
 // プロローグの "あれから2ヶ月後" の表示でしか使われていない (トランジションと組み合わせて使われることを想定されてる？)
 static bool32 Cmd_printstring(struct VM* vm) {
-  struct Command* c = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
   if (c->work == 0) {  // print_string_end
     *(u32*)&vm->string = 0;
     gVideoRegBuffer.dispcnt &= ~DISPCNT_BG0_ON;
@@ -862,9 +829,9 @@ static bool32 Cmd_printstring(struct VM* vm) {
 static bool32 Cmd_indicator(struct VM* vm) {
   struct VFX* indicator;
   struct Boss* boss = (struct Boss*)vm->entities[1].entity;
-  struct Command* pc = vm->pc;
+  struct GameCommandCommon* c = &(vm->pc)->c;
 
-  if (pc->status == 0) {
+  if (c->status == 0) {
     if (vm->indicator == NULL) {
       return FALSE;
     }
@@ -872,7 +839,7 @@ static bool32 Cmd_indicator(struct VM* vm) {
   }
   if (gVFXHeaderPtr->remaining == 0) {
   _REDO:
-    vm->pc = pc - 1;
+    vm->pc = (void*)(c - 1);
     return TRUE;
   }
 
@@ -884,30 +851,30 @@ static bool32 Cmd_indicator(struct VM* vm) {
     SET_VFX_ROUTINE(indicator, ENTITY_DISAPPEAR);
   }
 
-  switch (vm->pc->status - 1) {
+  switch (((vm->pc)->c).status - 1) {
     case 0: {
       if (!IS_MISSION) {
-        vm->indicator = CreateExlifeIndicator((gMission.unk_00)->extraLife);
+        vm->indicator = CreateExlifeIndicator((gScore.total)->extraLife);
         PlaySound(SE_CUTSCENE);
         break;
       }
 
-      if (vm->pc->val2 == 2) {
+      if (((vm->pc)->c).val2 == 2) {
         PlaySound(SE_MISSION_VOICE);
       } else {
         PlaySound(SE_CUTSCENE);
       }
       vm->indicator = CreateMissionAlert(0);
-      if (vm->pc->val2 == 3) {
+      if (((vm->pc)->c).val2 == 3) {
         break;
       }
-      CreateExlifeIndicator((gMission.unk_00)->extraLife);
+      CreateExlifeIndicator((gScore.total)->extraLife);
       break;
     }
 
     case 1:
     case 5: {
-      if ((gMission.unk_00)->extraLife != 0) {
+      if ((gScore.total)->extraLife != 0) {
         if (IS_MISSION) {
           vm->indicator = CreateMissionAlert(1);
           break;
@@ -950,25 +917,25 @@ status:
   7: メッセージを強制終了
 */
 static bool32 Cmd_message(struct VM* vm) {
-  switch (vm->pc->status) {
+  switch (((vm->pc)->c).status) {
     case 0: {
-      PrintTextWindow(*(TextID*)&(vm->pc->work), (u16)vm->pc->val2);
+      PrintTextWindow(*(TextID*)&(((vm->pc)->c).work), (u16)((vm->pc)->c).val2);
       break;
     }
     case 1: {
       if (FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
-        PrintTextWindow(*(TextID*)&vm->pc->work, 0x50);
+        PrintTextWindow(*(TextID*)&((vm->pc)->c).work, 0x50);
         break;
       }
-      if (vm->pc->val2 == 0) {
-        PrintNormalMessage(*(TextID*)&vm->pc->work);
+      if (((vm->pc)->c).val2 == 0) {
+        PrintNormalMessage(*(TextID*)&((vm->pc)->c).work);
       } else {
-        PrintOptionMessage2(*(TextID*)&vm->pc->work);
+        PrintOptionMessage2(*(TextID*)&((vm->pc)->c).work);
       }
       break;
     }
     case 2: {
-      if (vm->pc->val2 == 0) {
+      if (((vm->pc)->c).val2 == 0) {
         if ((&gTextWindow.text)->mode != 0) {
           vm->pc--;
           return TRUE;
@@ -980,25 +947,25 @@ static bool32 Cmd_message(struct VM* vm) {
       break;
     }
     case 3: {
-      vm->zeroDeathTextIDs[vm->pc->val2] = vm->pc->work;
+      vm->zeroDeathTextIDs[((vm->pc)->c).val2] = ((vm->pc)->c).work;
       break;
     }
     case 4: {
-      if (vm->zeroDeathTextIDs[vm->pc->val2] != 0xFFFF) {
-        PrintTextWindow(vm->zeroDeathTextIDs[vm->pc->val2], *(u16*)&vm->pc->work);
-        vm->zeroDeathTextIDs[vm->pc->val2] = 0xFFFF;
+      if (vm->zeroDeathTextIDs[((vm->pc)->c).val2] != 0xFFFF) {
+        PrintTextWindow(vm->zeroDeathTextIDs[((vm->pc)->c).val2], *(u16*)&((vm->pc)->c).work);
+        vm->zeroDeathTextIDs[((vm->pc)->c).val2] = 0xFFFF;
       }
       break;
     }
     case 5: {
-      if (vm->zeroDeathTextIDs[vm->pc->val2] != 0xFFFF) {
-        PrintNormalMessage(vm->zeroDeathTextIDs[vm->pc->val2]);
-        vm->zeroDeathTextIDs[vm->pc->val2] = 0xFFFF;
+      if (vm->zeroDeathTextIDs[((vm->pc)->c).val2] != 0xFFFF) {
+        PrintNormalMessage(vm->zeroDeathTextIDs[((vm->pc)->c).val2]);
+        vm->zeroDeathTextIDs[((vm->pc)->c).val2] = 0xFFFF;
       }
       break;
     }
     case 6: {
-      vm->zeroDeathTextIDs[vm->pc->val2] = 0xFFFF;
+      vm->zeroDeathTextIDs[((vm->pc)->c).val2] = 0xFFFF;
       break;
     }
     case 7: {
@@ -1016,14 +983,14 @@ status:
  2: BGMが終わるまで待機(このコマンドを再度やり直す)
 */
 static bool32 Cmd_bgm(struct VM* vm) {
-  struct Command* pc = vm->pc;
-  switch (pc->status) {
+  struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
     case 0: {
       if (vm->bgm != MUS_NONE) {
         FadeOutBGM(vm->bgm & 0xFFFF);
       }
-      PlayBGM(*(u16*)&vm->pc->work);
-      vm->bgm = vm->pc->work;
+      PlayBGM(*(u16*)&((vm->pc)->c).work);
+      vm->bgm = ((vm->pc)->c).work;
       break;
     }
 
@@ -1055,18 +1022,18 @@ status:
  2: コマンドで指定したSEをフェードアウトさせる(val4=SoundID)
 */
 static bool32 Cmd_se(struct VM* vm) {
-  struct Command* pc = vm->pc;
-  switch (pc->status) {
+  struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
     case 0: {
-      PlaySound(pc->work);
+      PlaySound(c->work);
       break;
     }
     case 1: {
-      StopSound(pc->work);
+      StopSound(c->work);
       break;
     }
     case 2: {
-      FadeOutSound(pc->work, pc->val2);
+      FadeOutSound(c->work, c->val2);
       break;
     }
     default: {
@@ -1095,14 +1062,13 @@ status:
  13: エルフのポジションをリセット
 */
 static bool32 Cmd_force(struct VM* vm) {
-  struct Command* pc;
   struct Zero* z = (struct Zero*)vm->entities[0].entity;
-  if ((vm->pc)->status == 12) {
+  if (((vm->pc)->c).status == 12) {
     (&gGameState.save.status)->weapons[0] = WEAPON_SABER;
     (&gGameState.save.status)->weapons[1] = WEAPON_SABER;
   }
   if (z != NULL) {
-    switch ((vm->pc)->status) {
+    switch (((vm->pc)->c).status) {
       case 0: {
         (vm->forceCoord).x = (z->s).coord.x;
         (vm->forceCoord).y = (z->s).coord.y;
@@ -1159,7 +1125,7 @@ static bool32 Cmd_force(struct VM* vm) {
         break;
       }
       case 9: {
-        const s32 d = (z->s).coord.x - vm->pc->work;
+        const s32 d = (z->s).coord.x - ((vm->pc)->c).work;
         if (d < -PIXEL(2)) {
           vm->forcedKey = INPUT_DISABLED | DPAD_RIGHT;
           vm->pc--;
@@ -1169,7 +1135,7 @@ static bool32 Cmd_force(struct VM* vm) {
           vm->pc--;
           return TRUE;
         }
-        (z->s).coord.x = vm->pc->work;
+        (z->s).coord.x = ((vm->pc)->c).work;
         vm->forcedKey = INPUT_DISABLED;
         break;
       }
@@ -1199,15 +1165,15 @@ static bool32 Cmd_force(struct VM* vm) {
 
 // ステージに変化を与えるためのコマンド
 static bool32 Cmd_gimmick(struct VM* vm) {
-  const struct Command* pc = vm->pc;
-  switch (pc->status) {
+  const struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
     case 0: {
       ExitStageLandscape();
-      ResetLandscape(vm->pc->val2, &gOverworld.terrain.viewport);
+      ResetLandscape(((vm->pc)->c).val2, &gOverworld.terrain.viewport);
       break;
     }
     case 1: {
-      gOverworld.state[pc->val2] = (u8)pc->work;
+      gOverworld.state[c->val2] = (u8)c->work;
       break;
     }
   }
@@ -1216,8 +1182,8 @@ static bool32 Cmd_gimmick(struct VM* vm) {
 }
 
 static bool32 Cmd_cmd1c(struct VM* vm) {
-  const struct Command* pc = vm->pc;
-  switch (pc->status) {
+  const struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
     case 0: {
       gSpawnManager.spawnDisabled |= (1 << 0);
       break;
@@ -1227,11 +1193,11 @@ static bool32 Cmd_cmd1c(struct VM* vm) {
       break;
     }
     case 2: {
-      ClipSpawnRange(pc->work, gSpawnManager.borderY[1]);
+      ClipSpawnRange(c->work, gSpawnManager.borderY[1]);
       break;
     }
     case 3: {
-      ClipSpawnRange(gSpawnManager.borderY[0], pc->work);
+      ClipSpawnRange(gSpawnManager.borderY[0], c->work);
       break;
     }
   }
@@ -1239,7 +1205,7 @@ static bool32 Cmd_cmd1c(struct VM* vm) {
 }
 
 static bool32 Cmd_sweep(struct VM* vm) {
-  switch (vm->pc->status) {
+  switch (((vm->pc)->c).status) {
     case 0: {
       gCollisionManager.sweep |= (1 << 1);
       break;
@@ -1265,43 +1231,37 @@ static bool32 Cmd_sweep(struct VM* vm) {
 }
 
 static bool32 Cmd_lockmenu(struct VM* vm) {
-  switch (vm->pc->status) {
+  switch (((vm->pc)->c).status) {
     case 0: {
       gStageRun.missionStatus |= DISABLE_MENU;
       break;
     }
-
     case 1: {
       gStageRun.missionStatus &= ~DISABLE_MENU;
       break;
     }
   }
-
   return FALSE;
 }
 
 static bool32 Cmd_eventflag(struct VM* vm) {
-  struct Command* pc = vm->pc;
-  switch (pc->status) {
-    case 0: {
-      vm->unk_003 = pc->val2;
+  struct GameCommandCommon* c = &(vm->pc)->c;
+  switch (c->status) {
+    case 0: {  // cutscene_start, イベント区間の開始を示す
+      vm->eventID = c->val2;
       if (!FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
-        s32 flags = gSystemSavedataManager.flags[vm->unk_003 >> 3];
-        u8 idx = vm->unk_003 & 7;
-        if ((flags >> idx) & 1) {
-          gStageRun.missionStatus |= EVENT_SCENE;
+        if (FLAG(gSystemSavedata.flags, vm->eventID)) {  // すでに見たことのあるイベントならスキップ可能にする
+          gStageRun.missionStatus |= SKIPPABLE_CUTSCENE;
         }
       }
       break;
     }
-    case 1: {
-      s32 flags = gSystemSavedataManager.flags[vm->unk_003 >> 3];
-      u8 idx = vm->unk_003 & 7;
-      if (((flags >> idx) & 1) == 0) {
-        gSystemSavedataManager.flags[vm->unk_003 >> 3] |= (1 << idx);
+    case 1: {  // cutscene_end, イベント区間の終了を示す
+      if (!FLAG(gSystemSavedata.flags, vm->eventID)) {
+        SET_FLAG(gSystemSavedata.flags, vm->eventID);  // 初見のイベントなら見たことをあらわすフラグを立てる
         SaveSystemData();
       }
-      gStageRun.missionStatus &= ~EVENT_SCENE;
+      gStageRun.missionStatus &= ~SKIPPABLE_CUTSCENE;
       break;
     }
   }
@@ -1318,29 +1278,30 @@ static bool32 Cmd_load_graphic_primitive(struct VM* vm) {
 }
 
 static bool32 Cmd_drop(struct VM* vm) {
-  const struct Command* pc = vm->pc;
-  struct ScriptEntity* se = &vm->entities[pc->work];
+  const struct GameCommandCommon* c = &(vm->pc)->c;
+  struct ScriptEntity* se = &vm->entities[c->work];
   struct Entity* e = se->entity;
-  if (pc->status == 0) {
-    TryDropItem(pc->val2, (struct Coord*)pc->work);
+  if (c->status == 0) {
+    TryDropItem(c->val2, (Coords32*)c->work);
   } else if (e != NULL) {
-    TryDropItem(pc->val2, &e->coord);
+    TryDropItem(c->val2, &e->coord);
   }
   return FALSE;
 }
 
-/*
-status:
-  0: リザルトの前処理
-  1: リザルト処理(完了までには result_0802400c を何回も行っている)
-*/
-static bool32 Cmd_missionresult(struct VM* vm) {
-  const struct Command* pc = vm->pc;
-  if (pc->status == 0) {
-    PrepareResultScreen(&gGameState.sceneState.result);
+/**
+ * @brief opcode=34, リザルト画面
+ * @note 0x080236c0
+ */
+static bool32 Cmd_result_screen(struct VM* vm) {
+  const struct GameCommandCommon* c = &(vm->pc)->c;
+  if (c->status == 0) {
+    // start_result_screen
+    ResultScreen_Init(&gGameState.sceneState.result);
   } else {
-    bool32 redo = result_0802400c(&gGameState.sceneState.result);
-    if (redo == 1) {
+    // wait_for_result_screen_end
+    bool32 status = ResultScreen_Update(&gGameState.sceneState.result);  // 0: 終了, 1: 処理中
+    if (status == 1) {
       vm->pc--;
       return TRUE;
     }
@@ -1350,19 +1311,19 @@ static bool32 Cmd_missionresult(struct VM* vm) {
 
 // ゼロがミッションに出撃した後のシエルの独り言
 static bool32 Cmd_goodluck(struct VM* vm) {
-  if ((vm->pc)->status == 0) {
-    if (CielGoodluckTextIDs[(gMission.unk_00)->lastStage] != 0) {
-      PrintNormalMessage(CielGoodluckTextIDs[(gMission.unk_00)->lastStage]);
+  if (((vm->pc)->c).status == 0) {
+    if (CielGoodluckTextIDs[(gScore.total)->lastStage] != 0) {
+      PrintNormalMessage(CielGoodluckTextIDs[(gScore.total)->lastStage]);
     }
-  } else if (FLAG(gCurStory.s.gameflags, FLAG_11) == 0) {
+  } else if (FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE) == 0) {
     PrintNormalMessage(0x4a);
-  } else if (FLAG(gCurStory.s.gameflags, FLAG_15) == 0) {
+  } else if (FLAG(gCurStory.s.gameflags, FLAG_MID3_DONE) == 0) {
     PrintNormalMessage(0x4b);
-  } else if (FLAG(gCurStory.s.gameflags, NO_HARPUIA) == 0) {
+  } else if (FLAG(gCurStory.s.gameflags, FLAG_AREAX2_DONE) == 0) {
     PrintNormalMessage(0x4c);
-  } else if (FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE) == 0) {
+  } else if (FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE) == 0) {
     PrintNormalMessage(0x4d);
-  } else if (FLAG(gCurStory.s.gameflags, FLAG_WEIL_LABO) == 0) {
+  } else if (FLAG(gCurStory.s.gameflags, FLAG_SUBARCADIA_DONE) == 0) {
     PrintNormalMessage(0x4e);
   } else {
     PrintNormalMessage(0x4f);
@@ -1382,7 +1343,7 @@ static bool32 Cmd_killtimeelf(struct VM* vm) {
   return FALSE;
 }
 
-// helper for Cmd_cutscene?
+// helper for Cmd_movie?
 NAKED static void FUN_080237c4(u32 r0, s32 x, s32 y, u16 r3) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
@@ -1494,7 +1455,12 @@ _0802389C:\n\
  .syntax divided\n");
 }
 
-NAKED static bool32 Cmd_cutscene(struct VM* vm) {
+// play_movie, ムービーシーンを再生する
+// このゲームでの ムービーシーンは 次の3つ (静止した一枚絵だけのものはここには該当しない)
+// - プロローグで落ちてきた宇宙船を発見したときのムービー
+// - オリジナルゼロが出てきたときのムービー
+// - 後半の4ミッションを終えた後にオメガによる洗脳が始まるときのムービー
+NAKED static bool32 Cmd_movie(struct VM* vm) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1644,7 +1610,7 @@ _080238F0:\n\
 	add r1, sl\n\
 	adds r0, r4, #0\n\
 	bl LoadPalette\n\
-	bl PauseAllBlinks\n\
+	bl PauseAllPaletteAnimations\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xd0\n\
 	movs r2, #0\n\
@@ -1893,10 +1859,10 @@ _08023B88:\n\
 	movs r2, #0x7d\n\
 	movs r3, #0\n\
 	bl LoadBgMap\n\
-	bl PauseAllBlinks\n\
+	bl PauseAllPaletteAnimations\n\
 	ldr r0, _08023C30 @ =0x00000111\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xd0\n\
 	str r5, [r0]\n\
@@ -1914,7 +1880,7 @@ _08023C2C: .4byte gGraphic_Capcom+2512\n\
 _08023C30: .4byte 0x00000111\n\
 _08023C34:\n\
 	ldr r0, _08023C80 @ =0x00000111\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xd0\n\
 	ldr r3, [r0]\n\
@@ -2083,7 +2049,7 @@ _08023D84:\n\
 	b _08023E8E\n\
 _08023D94:\n\
 	ldr r0, _08023DBC @ =0x00000111\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	bl LoadAsciiBold\n\
 _08023D9E:\n\
 	ldr r2, _08023DC0 @ =gVideoRegBuffer\n\
@@ -2095,7 +2061,7 @@ _08023D9E:\n\
 	adds r1, r3, #0\n\
 	orrs r0, r1\n\
 	strh r0, [r2]\n\
-	bl ResumeAllBlinks\n\
+	bl ResumeAllPaletteAnimations\n\
 	b _08023EE6\n\
 	.align 2, 0\n\
 _08023DB8: .4byte gStageRun\n\
@@ -2133,7 +2099,7 @@ _08023DC8:\n\
 	movs r2, #0x79\n\
 	movs r3, #0\n\
 	bl LoadBgMap\n\
-	bl PauseAllBlinks\n\
+	bl PauseAllPaletteAnimations\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xd0\n\
 	str r4, [r0]\n\
@@ -2234,7 +2200,7 @@ _08023ED0:\n\
 	adds r1, r3, #0\n\
 	orrs r0, r1\n\
 	strh r0, [r2]\n\
-	bl ResumeAllBlinks\n\
+	bl ResumeAllPaletteAnimations\n\
 _08023EE6:\n\
 	movs r0, #0\n\
 _08023EE8:\n\

@@ -23,14 +23,11 @@ const VFXRoutine gMegamilpaDeadRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 // 0x080b6e84
-struct VFX* CreateGhost19_1(struct Coord* c, struct Coord* d) {
+struct VFX* CreateGhost19_1(Coords32* c, Coords32* d) {
   s32 x, y, dx, dy;
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* g = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (g != NULL) {
-    (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_MEGAMILPA_DEAD);
-    (g->s).tileNum = 0, (g->s).palID = 0;
-
     x = c->x;
     y = c->y;
     (g->s).coord.x = x;
@@ -46,14 +43,12 @@ struct VFX* CreateGhost19_1(struct Coord* c, struct Coord* d) {
   return g;
 }
 
-void CreateGhost19_2(struct Entity* e, struct Coord* c) {
+void CreateGhost19_2(struct Entity* e, Coords32* c) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_MEGAMILPA_DEAD);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 1, p->work[1] = i;
       p->unk_28 = (void*)e;
       p->coord.x = c->x, p->coord.y = c->y;
@@ -155,7 +150,7 @@ _080B7006:\n\
 	str r0, [r5, #0x14]\n\
 _080B703C:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080B7042:\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\

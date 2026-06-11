@@ -81,6 +81,7 @@ TOOL = $(DEVKITARM)/bin
 ifeq ($(MODERN),1)
   AGBCC := $(TOOL)/arm-none-eabi-gcc
 else
+  # agbcc は gcc 2.95.1 か gcc 2.95.2
   AGBCC := tools/agbcc/bin/agbcc$(EXE)
 endif
 
@@ -95,20 +96,23 @@ ARCH := -mcpu=arm7tdmi -march=armv4t -mthumb
 ASFLAGS := $(ARCH) -mthumb-interwork -g
 
 CFLAGS := -mthumb-interwork  -Wimplicit -Wparentheses -Werror -O2 -fshort-enums
-ifeq ($(MODERN),1)
+ifeq ($(MODERN),0)
+# Vanilla
+# undef: 組み込みマクロ無効, std は 指定しなくても gnu89 っぽい？
+	CPPFLAGS := -I tools/agbcc -I tools/agbcc/include -iquote include -nostdinc -undef -std=gnu89 -DMODERN=$(MODERN)
+	CFLAGS += -fhex-asm
+	LIBPATH := -L ../../tools/agbcc/lib
+else
+# Modern
 	CPPFLAGS := -I $(DEVKITARM)/arm-none-eabi/include -iquote include -DMODERN=$(MODERN)
 	CFLAGS += $(ARCH) $(CPPFLAGS) -Wno-pointer-to-int-cast -fno-toplevel-reorder -fno-aggressive-loop-optimizations -Wno-address-of-packed-member
 	LIBPATH := -L $(shell dirname $(shell $(AGBCC) --print-file-name=libgcc.a)) -L $(shell dirname $(shell $(AGBCC) --print-file-name=libc.a))
-else
-	CPPFLAGS := -I tools/agbcc -I tools/agbcc/include -iquote include -nostdinc -DMODERN=$(MODERN)
-	CFLAGS += -fhex-asm
-	LIBPATH := -L ../../tools/agbcc/lib
 endif
 LDFLAGS := $(LIBPATH) -lgcc -lc
 
 include assets.mk
 
-ASM_DATAS := $(SONG_ASMS) $(SPRITE_TABLES)
+ASM_DATAS := $(SONG_ASMS)
 ASM_CODES := $(wildcard asm/*.s) $(wildcard asm/*/*.s) $(shell find src -type f -name '*.s')
 ASM_SRCS := $(ASM_CODES) $(ASM_DATAS)
 ASM_OBJS := $(addprefix $(BUILD_DIR)/, $(ASM_SRCS:.s=.o))
@@ -128,7 +132,7 @@ C_SRCS := $(shell find src -type f -name '*.c')
 C_OBJS := $(addprefix $(BUILD_DIR)/, $(C_SRCS:.c=.o))
 C_DEPS := $(C_OBJS:.o=.d)
 
-OBJS := $(ASM_OBJS) $(C_OBJS) $(GFX_HDR)
+OBJS := $(ASM_OBJS) $(C_OBJS)
 OBJS_REL := $(patsubst $(BUILD_DIR)/%,%,$(OBJS))
 
 SUBDIRS := $(sort $(dir $(OBJS)))
@@ -138,6 +142,7 @@ ifneq ($(MODERN),1)
 # Special configurations required for lib files
 $(BUILD_DIR)/src/mmbn4.o: CFLAGS := -O -mno-thumb-interwork
 $(BUILD_DIR)/src/libs/agb_sram.o: CFLAGS := -O -mthumb-interwork
+# 外部ライブラリは old_agbcc (gcc 2.95) でビルドされているらしい
 $(BUILD_DIR)/src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
 endif
 

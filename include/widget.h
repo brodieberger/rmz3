@@ -22,7 +22,7 @@ extern const WidgetRoutine* const gWidgetFnTable[14];
 
 // --------------------------------------------
 
-#define INIT_WIDGET_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gWidgetFnTable, entity, entityID)
+#define INIT_WIDGET_ROUTINE(entity, entityID) INIT_RENDER_ENTITY(16, gWidgetFnTable, entity, entityID)
 #define SET_WIDGET_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gWidgetFnTable, entity, modeID)
 
 // --------------------------------------------

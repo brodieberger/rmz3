@@ -13,7 +13,7 @@ typedef struct EnemySeimeran {
   // props (16bytes, offset: 0xB4..)
   struct {
     struct Entity* elfx;  // 0xB4, Element Effect
-    struct Coord c_b8;    // 0xB8
+    Coords32 c_b8;        // 0xB8
     u8 unk_c0;            // 0xC0
   } props;
 } Seimeran;
@@ -35,13 +35,9 @@ const EnemyRoutine gSeimeranRoutine = {
 
 // 0x0808f27c
 static struct Entity* CreateClone(struct Entity* q, s32 x, s32 y, u8 idx) {
-  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_SEIMERAN);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = SEIMERAN_CLONE;
     (p->unk_coord).x = x;
     (p->coord).x = x, (p->coord).y = y;
@@ -53,13 +49,9 @@ static struct Entity* CreateClone(struct Entity* q, s32 x, s32 y, u8 idx) {
 
 // 0x0808f2e4
 static void FUN_0808f2e4(s32 x, s32 y, u8 idx) {
-  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_SEIMERAN);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = SEIMERAN_SEED;
     (p->coord).x = x, (p->coord).y = y;
     p->work[2] = idx;
@@ -67,7 +59,7 @@ static void FUN_0808f2e4(s32 x, s32 y, u8 idx) {
 }
 
 // 0x0808f344
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 // 0x0808f348
 static bool8 FUN_0808f348(Seimeran* p) {
@@ -127,19 +119,17 @@ static bool8 FUN_0808f3a8(Seimeran* p) {
   if (((p->s).work[0] != SEIMERAN_SEED) && (p->props).elfx == NULL) {
     switch ((p->s).mode[3]) {
       case 0: {
-        if (IsFrozen((void*)p)) {
+        if (IsFrozen(p)) {
           (sUpdates1[(p->s).mode[1]])((void*)p);
           (sUpdates2[(p->s).mode[1]])((void*)p);
           (p->s).mode[3]++;
-          UpdateMotionGraphic(&p->s);
+          UpdateSpriteAnimation(p);
           return TRUE;
         }
         break;
       }
       case 1: {
-        if (IsFrozen((void*)p)) {
-          return TRUE;
-        }
+        if (IsFrozen(p)) return TRUE;
         (p->s).mode[3] = 0;
         break;
       }
@@ -148,7 +138,7 @@ static bool8 FUN_0808f3a8(Seimeran* p) {
   return FALSE;
 }
 
-static const struct Coord sElementCoord;
+static const Coords32 sElementCoord;
 
 // 0x0808f424
 static void FUN_0808f424(Seimeran* p) {
@@ -312,7 +302,7 @@ static const struct Collision sCollisions[15] = {
 static const u8 sCollisionIdxs[16] = {1, 1, 3, 3, 5, 5, 7, 7, 9, 9, 11, 11, 11, 0, 0, 0};
 
 // 0x08369594
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 
 static const u8 sInitModes[4] = {1, 5, 7, 0};
 

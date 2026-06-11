@@ -1,24 +1,11 @@
-#include "blink.h"
+#include "boss/copy_x.h"
+
 #include "boss.h"
 #include "collision.h"
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
-
-struct BossCopyX {
-  OBJECT_HDR;
-  // props (48bytes, offset: 0xB4..)
-  u8 unk_b4[16];
-  u8 unk_c4;
-  u8 unk_c5;
-  u8 unk_c6;
-  u8 unk_c7;
-  u8 unk_c8[20];
-  u8 unk_dc;
-  s8 unk_dd;
-  u8 unk_de[6];
-};
-static_assert(sizeof(struct BossCopyX) == sizeof(struct Boss));
+#include "palette_animation.h"
 
 struct Entity* CreateVFX55(struct Boss* e, u8 r1, u8 r2);
 
@@ -40,14 +27,10 @@ const BossRoutine gCopyXRoutine = {
 
 // --------------------------------------------
 
-void CreateCopyX(struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
+void CreateCopyX(Coords32* c) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_COPY_X);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     (p->coord).x = c->x;
     (p->coord).y = c->y;
     p->work[0] = 0, p->work[1] = 0;
@@ -253,7 +236,7 @@ NAKED static void CopyX_Init(struct Boss* p) {
 	adds r0, r7, #0\n\
 	bl SetMotion\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r7, #0\n\
 	adds r0, #0x4c\n\
 	strb r5, [r0]\n\
@@ -349,7 +332,7 @@ NAKED static void CopyX_Init(struct Boss* p) {
 	adds r0, r7, #0\n\
 	movs r1, #1\n\
 	movs r2, #0\n\
-	bl FUN_080a9aa0\n\
+	bl CreateProjectile28\n\
 	ldr r1, _0805564C @ =gBossFnTable\n\
 	ldrb r0, [r7, #9]\n\
 	lsls r0, r0, #2\n\
@@ -471,10 +454,10 @@ static void CopyX_Update(struct BossCopyX* p) {
   };
   // clang-format on
 
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
-    LoadBlink(92, 640);
-    UpdateBlinkMotionState(92);
-    ClearBlink(92);
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
+    StartPaletteAnimation(92, 640);
+    StepPaletteAnimation(92);
+    RemovePaletteAnimation(92);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[2] = 1;
     EXIT_BODY(p);
@@ -506,10 +489,10 @@ static void CopyX_Update(struct BossCopyX* p) {
   }
 
   (sUpdates[(p->s).mode[1]])((void*)p);
-  LoadBlink(92 + p->unk_c5, 640);
-  UpdateBlinkMotionState(92 + p->unk_c5);
-  ClearBlink(92 + p->unk_c5);
-  UpdateMotionGraphic(&p->s);
+  StartPaletteAnimation(92 + p->unk_c5, 640);
+  StepPaletteAnimation(92 + p->unk_c5);
+  RemovePaletteAnimation(92 + p->unk_c5);
+  UpdateSpriteAnimation(p);
 }
 
 void copyx_08057204(struct Boss* p);
@@ -543,10 +526,9 @@ static void copyx_080557a4(struct Boss* p) {
 
 static void copyxMode1(struct Boss* p) {
   if ((p->s).mode[2] != 0) {
-    SetMotion(&p->s, MOTION(DM179_COPY_X, 26));
+    SetSpriteAnimation(p, MOTION(DM179_COPY_X, 26));
     CreateVFX55(p, 0, 0);
-    (p->s).mode[2] = 0;
-    (p->s).mode[3] = 0;
+    (p->s).mode[2] = 0, (p->s).mode[3] = 0;
     (p->s).work[2] = 0;
   }
   if (((p->s).work[2] == 0) && ((p->s).motion.cmdIdx == 6)) {
@@ -554,13 +536,10 @@ static void copyxMode1(struct Boss* p) {
     (p->s).work[2]++;
   }
   if ((p->s).mode[3] == 0) {
-    if ((p->s).motion.state == MOTION_END) {
-      (p->s).mode[3]++;
-    }
-  } else if (!(gStageRun.vm.active & 1)) {
-    SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
-    (p->s).mode[1] = 2;
-    (p->s).mode[2] = 1;
+    if (IsSpriteAnimEnd(p)) (p->s).mode[3]++;
+  } else if (!(gStageRun.vm.active & VM_ACTIVE)) {
+    SetSpriteAnimation(p, MOTION(DM179_COPY_X, 0));
+    (p->s).mode[1] = 2, (p->s).mode[2] = 1;
   }
 }
 
@@ -605,7 +584,7 @@ _08055890:\n\
 	subs r1, r1, r0\n\
 	mov r8, r1\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r3, #0\n\
 	ldr r0, _080558E0 @ =pZero2\n\
 	ldr r2, [r0]\n\
@@ -653,7 +632,7 @@ _080558EA:\n\
 	adds r4, r5, #0\n\
 	adds r4, #0x54\n\
 	adds r1, r4, #0\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	adds r3, r0, #0\n\
 	mov ip, r4\n\
 	adds r4, #0x50\n\
@@ -707,7 +686,7 @@ _08055942:\n\
 _0805595A:\n\
 	ldr r0, _0805597C @ =gStageRun+232\n\
 	mov r1, ip\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	cmp r0, #0\n\
 	beq _080559A0\n\
 	cmp r6, #0xf\n\
@@ -907,7 +886,7 @@ _08055ABC:\n\
 }
 
 static void copyxNextMode(Object* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   if (--(p->s).work[2] == 0xFF) {
     (p->s).mode[1] = (p->s).mode[3];
     (p->s).mode[2] = 1;
@@ -916,7 +895,7 @@ static void copyxNextMode(Object* p) {
 
 // 0x08055aec
 static void copyxMode4(struct BossCopyX* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   p->unk_c6 = 1;
   (p->s).mode[1] = 3;
   (p->s).mode[2] = 1;

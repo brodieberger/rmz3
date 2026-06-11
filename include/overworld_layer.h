@@ -15,9 +15,9 @@
 #define STAGE_LAYER_NUM 3
 
 enum LayerRoutine {
-  LAYER_UPDATE,
-  LAYER_DRAW,
-  LAYER_EXIT,
+  LAYER_UPDATE,  // 0  UpdateStageLandscape で呼び出される
+  LAYER_DRAW,    // 1, RenderTask_Overworld で呼び出される
+  LAYER_EXIT,    // 2  ExitStageLandscape, UpdateStageLayer で呼び出される
 };
 
 struct StageLayer;
@@ -36,12 +36,12 @@ struct StageLayer {
   u16 unk_10;
   u16 unk_12;
   struct LayerGraphic gfx;
-  struct Coord drawPivotOffset;          // 画面の振動時に0以外になってた
-  struct Coord viewportCenterPixel;      // 現在の画面中央のワールド座標(ピクセル単位)
-  struct Coord prevViewportCenterPixel;  // 1フレーム?前の.viewportCenterPixel
-  struct Coord scrollPower;              // ゼロが1px動く時に、画面がどれくらいスクロールするか(256で1px動くと1pxスクロール,つまり1倍, 512で1px動くと2pxスクロール,つまり2倍)
-  struct Coord scroll;
-  struct Coord scrollCopy;
+  Coords32 drawPivotOffset;              // 画面の振動時に0以外になってた
+  PixelCoords viewportLeftTopPixel;      // 現在の画面左上のワールド座標(ピクセル単位)
+  PixelCoords prevViewportLeftTopPixel;  // 1フレーム?前の.viewportLeftTopPixel
+  Coords32 scrollPower;                  // ゼロが1px動く時に、画面がどれくらいスクロールするか(256で1px動くと1pxスクロール,つまり1倍, 512で1px動くと2pxスクロール,つまり2倍)
+  PixelCoords scroll;
+  PixelCoords scrollCopy;
 
   u32 bgIdx;  // このステージレイヤが、実際のGBAのどのBGレイヤに割り当てられるか  bit4-8がbgcntのn(BGnか), そしてbit0-4 は (1 << n) したもの
   u32 prio;   // BGCNTn の bit0-1　部分でもある
@@ -65,13 +65,14 @@ struct StageLayer {
     } volcano;
     struct {
       s32 scrollTimer;
-      struct Coord c;
+      Coords32 c;
       u8 unk_74[20];
     } missile;
   } work;
 
   // ステージによる？
 };  // 136 bytes
+static_assert(sizeof(struct StageLayer) == 136);
 
 void DrawGeneralStageLayer(struct StageLayer* p, const struct Stage* _);
 

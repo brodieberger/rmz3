@@ -21,40 +21,32 @@ const SolidRoutine gSolid16Routine = {
 // clang-format on
 
 struct Solid* FUN_080cedc0(u8 n) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_016);
-    (p->s).tileNum = 0, (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = n, (p->s).work[1] = 0;
   }
   return p;
 }
 
 void FUN_080cee14(u8 n, s32 x, s32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_016);
-    (p->s).tileNum = 0, (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord.x = x + PIXEL(24);
     (p->s).coord.y = y;
     (p->s).work[0] = n, (p->s).work[1] = 1;
     (p->s).flags |= DISPLAY;
     InitNonAffineMotion(&p->s);
-    SetMotion(&p->s, MOTION(SM112_ANATRE_CUBE, 15));
-    UpdateMotionGraphic(&p->s);
+    SetSpriteAnimation(p, MOTION(SM112_ANATRE_CUBE, 15));
+    UpdateSpriteAnimation(p);
     AppendQuake(5, &(p->s).coord);
   }
 }
 
 // --------------------------------------------
 
-static void FUN_080cefb4(struct Body* body, struct Coord* c1, struct Coord* c2);
+static void FUN_080cefb4(struct Body* body, Coords32* c1, Coords32* c2);
 
 static void Solid16_Init(struct Solid* p) {
   static const struct Collision sCollision = {
@@ -89,21 +81,21 @@ static void Solid16_Update(struct Entity* p) {
 static void Solid16_Die(struct Solid* p) {
   switch ((p->s).mode[1]) {
     case 0: {
-      struct Coord* d = &(p->s).d;
+      Coords32* d = &(p->s).d;
       d->x = d->y = 0;
       (p->s).mode[1]++;
       break;
     }
     case 1: {
       s32 y;
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).d.y < PIXEL(7)) {
         (p->s).d.y += PIXEL(1) / 8;
       }
       y = (p->s).coord.y + (p->s).d.y;
       (p->s).coord.y = y;
       (p->s).unk_coord.y = y;
-      if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
+      if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
         (p->s).flags &= ~DISPLAY;
         SET_SOLID_ROUTINE(p, ENTITY_EXIT);
       }
@@ -114,7 +106,7 @@ static void Solid16_Die(struct Solid* p) {
 
 // --------------------------------------------
 
-NAKED static void FUN_080cefb4(struct Body* body, struct Coord* c1, struct Coord* c2) {
+NAKED static void FUN_080cefb4(struct Body* body, Coords32* c1, Coords32* c2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\

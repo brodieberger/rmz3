@@ -4,8 +4,8 @@
 struct VFX69 {
   struct Entity s;
   // props (16bytes, offset: 0x74..)
-  struct Coord c;  // 0x74
-  u8 unk_7c[8];    // 0x7C
+  Coords32 c;    // 0x74
+  u8 unk_7c[8];  // 0x7C
 };
 static_assert(sizeof(struct VFX69) == sizeof(struct VFX));
 
@@ -23,13 +23,10 @@ const VFXRoutine gGhost69Routine = {
 };
 // clang-format on
 
-struct VFX* FUN_080c4e58(struct Coord* c, void* _, struct Entity* e) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4e58(Coords32* c, void* _, struct Entity* e) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
@@ -38,13 +35,10 @@ struct VFX* FUN_080c4e58(struct Coord* c, void* _, struct Entity* e) {
   return p;
 }
 
-struct VFX* FUN_080c4eac(struct Entity* e, struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4eac(struct Entity* e, Coords32* c, u8 n) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 1;
     (p->s).work[1] = n;
     (p->s).unk_coord.x = c->x;
@@ -54,13 +48,10 @@ struct VFX* FUN_080c4eac(struct Entity* e, struct Coord* c, u8 n) {
   return p;
 }
 
-struct VFX* FUN_080c4f04(struct Entity* e, struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4f04(struct Entity* e, Coords32* c, u8 n) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 2;
     (p->s).work[1] = n;
     (p->s).coord.x = c->x;
@@ -70,12 +61,10 @@ struct VFX* FUN_080c4f04(struct Entity* e, struct Coord* c, u8 n) {
   return p;
 }
 
-struct Entity* FUN_080c4f60(struct Entity* e, struct Coord* c1, struct Coord* c2, u8 n) {
-  struct VFX69* p = (struct VFX69*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c4f60(struct Entity* e, Coords32* c1, Coords32* c2, u8 n) {
+  struct VFX69* p = (struct VFX69*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = 3, (p->s).work[1] = n;
     (p->s).unk_coord.x = c1->x;
     (p->s).unk_coord.y = c1->y;

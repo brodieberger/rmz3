@@ -117,7 +117,7 @@ _08018870:
 	adds r1, r1, r2
 	adds r0, r5, #0
 	bl LoadPalette
-	ldr r0, _08018B0C @ =gSystemSavedataManager
+	ldr r0, _08018B0C @ =gSystemSavedata
 	mov sl, r0
 	adds r0, #0x49
 	ldrb r4, [r0]
@@ -336,7 +336,7 @@ _08018AFC: .4byte wStaticGraphicTilenums
 _08018B00: .4byte gStaticMotionGraphics+12
 _08018B04: .4byte wStaticMotionPalIDs
 _08018B08: .4byte 0x00001054
-_08018B0C: .4byte gSystemSavedataManager
+_08018B0C: .4byte gSystemSavedata
 _08018B10: .4byte gPaletteManager+(464*2)
 _08018B14: .4byte 0x01000008
 _08018B18: .4byte gSpawnManager

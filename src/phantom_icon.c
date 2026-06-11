@@ -30,7 +30,7 @@ struct PhantomIconSprite {
 };
 static_assert(sizeof(struct PhantomIconSprite) == sizeof(struct Sprite));
 
-static void DrawFunc_PhantomIcon(struct PhantomIconSprite* s, struct DrawPivot* pivot);
+static void RenderTask_PhantomIcon(struct PhantomIconSprite* s, struct DrawPivot* pivot);
 
 /**
  * @brief Create phantom face icon for Minigame HP
@@ -41,7 +41,7 @@ static void DrawFunc_PhantomIcon(struct PhantomIconSprite* s, struct DrawPivot* 
  * @note Called on Phantom minigame only in Zero3
  */
 void CreatePhantomIcon(struct PhantomIconSprite* s, void* p, u8 r2, u16 tilenum) {
-  SetTaskCallback((void*)s, DrawFunc_PhantomIcon);
+  SetTaskCallback((void*)s, RenderTask_PhantomIcon);
   (s->oam).bpp = 0;
   (s->oam).paletteNum = 0;
   (s->oam).pad[0] = 0, (s->oam).pad[1] = 0;
@@ -59,7 +59,7 @@ void CreatePhantomIcon(struct PhantomIconSprite* s, void* p, u8 r2, u16 tilenum)
 
 // Only used in Phantom minigame
 // 0x08004d80
-NAKED static void DrawFunc_PhantomIcon(struct PhantomIconSprite* s, struct DrawPivot* pivot) {
+NAKED static void RenderTask_PhantomIcon(struct PhantomIconSprite* s, struct DrawPivot* pivot) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r4, r0, #0\n\

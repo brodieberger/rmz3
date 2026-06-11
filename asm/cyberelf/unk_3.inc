@@ -135,7 +135,7 @@ _080E2B42:
 	adds r0, #0xb4
 	ldrb r1, [r0, #1]
 _080E2B48:
-	ldr r0, _080E2B60 @ =gUnlockedElfPtr
+	ldr r0, _080E2B60 @ =gElfAvailability
 	ldr r0, [r0]
 	adds r0, r0, r1
 	ldrb r1, [r0]
@@ -147,7 +147,7 @@ _080E2B48:
 	adds r0, #2
 	b _080E2B68
 	.align 2, 0
-_080E2B60: .4byte gUnlockedElfPtr
+_080E2B60: .4byte gElfAvailability
 _080E2B64:
 	ldrb r0, [r4, #0x12]
 	adds r0, #1

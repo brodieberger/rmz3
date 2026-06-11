@@ -293,7 +293,7 @@ _08035340:
 	strb r0, [r4, #0xe]
 _08035352:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08035368
@@ -363,7 +363,7 @@ _080353B8:
 	strb r0, [r4, #0xe]
 _080353D0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080353D6:
 	pop {r4}
 	pop {r0}
@@ -425,7 +425,7 @@ _0803542A:
 	strb r0, [r4, #0xe]
 _0803543C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -444,7 +444,7 @@ _0803543C:
 _08035460: .4byte 0x0000BE21
 _08035464:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -460,7 +460,7 @@ _08035478:
 	b _0803549E
 _08035480:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08035496
@@ -540,7 +540,7 @@ _080354F2:
 	strb r0, [r4, #0xe]
 _08035512:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x70]
 	ldr r1, _08035550 @ =0x00FFFF00
 	ands r0, r1
@@ -585,7 +585,7 @@ _0803555C:
 	strb r0, [r4, #0xe]
 _0803557A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x70]
 	ldr r1, _080355B8 @ =0x00FFFF00
 	ands r0, r1
@@ -712,7 +712,7 @@ _08035652:
 	strb r0, [r4, #0xa]
 _0803566C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08035672:
 	pop {r4, r5}
 	pop {r0}

@@ -582,7 +582,7 @@ _08050516:
 	strb r0, [r5, #0xe]
 _08050528:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -623,7 +623,7 @@ _08050572:
 	strb r0, [r5, #0xe]
 _08050578:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080505E6
 	.align 2, 0
 _08050580: .4byte 0x0000AF01
@@ -637,7 +637,7 @@ _08050586:
 	strb r0, [r5, #0xe]
 _08050592:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -675,7 +675,7 @@ _080505BE:
 	strb r4, [r5, #0xe]
 _080505E0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080505E6:
 	pop {r4, r5}
 	pop {r0}
@@ -794,7 +794,7 @@ _080506B8:
 	cmp r0, #2
 	bls _0805073C
 	ldr r7, _080506D0 @ =u8_ARRAY_083635c0
-	ldr r0, _080506D4 @ =gMission
+	ldr r0, _080506D4 @ =gScore
 	mov r8, r0
 	ldr r6, _080506D8 @ =RNG_0202f388
 	adds r5, r4, #0
@@ -802,7 +802,7 @@ _080506B8:
 	b _080506E4
 	.align 2, 0
 _080506D0: .4byte u8_ARRAY_083635c0
-_080506D4: .4byte gMission
+_080506D4: .4byte gScore
 _080506D8: .4byte RNG_0202f388
 _080506DC:
 	adds r0, r1, r7
@@ -853,7 +853,7 @@ _0805072C:
 _08050734: .4byte 0x000343FD
 _08050738: .4byte 0x00269EC3
 _0805073C:
-	ldr r2, _0805074C @ =gMission
+	ldr r2, _0805074C @ =gScore
 	mov r8, r2
 	ldr r6, _08050750 @ =RNG_0202f388
 	adds r5, r4, #0
@@ -861,7 +861,7 @@ _0805073C:
 	ldr r7, _08050754 @ =u8_ARRAY_083635c0+4
 	b _08050760
 	.align 2, 0
-_0805074C: .4byte gMission
+_0805074C: .4byte gScore
 _08050750: .4byte RNG_0202f388
 _08050754: .4byte u8_ARRAY_083635c0+4
 _08050758:
@@ -925,7 +925,7 @@ _080507C0:
 	adds r0, r4, #0
 	bl FUN_08050090
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080507CC:
 	pop {r3}
 	mov r8, r3
@@ -978,7 +978,7 @@ _080507FE:
 	strb r0, [r4, #0xe]
 _0805082C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -1021,11 +1021,11 @@ _08050876:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080508A8 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -1068,7 +1068,7 @@ _080508DC:
 	movs r0, #0x3c
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
@@ -1190,7 +1190,7 @@ _080509B6:
 	adds r0, r4, #0
 	bl FUN_08050090
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08050A12
 	.align 2, 0
 _080509D4: .4byte 0x0000AF01
@@ -1198,7 +1198,7 @@ _080509D8:
 	adds r0, r4, #0
 	bl FUN_08050090
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xc0
 	ldr r0, [r0]
@@ -1270,7 +1270,7 @@ _08050A3A:
 	strb r0, [r4, #0xe]
 _08050A64:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1299,7 +1299,7 @@ _08050A9C:
 	adds r0, r4, #0
 	bl FUN_08050090
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xc0
 	ldr r0, [r0]
@@ -1349,7 +1349,7 @@ _08050AF4:
 	cmp r0, #0
 	beq _08050B10
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #1
 	strb r0, [r4, #0xd]
 	movs r0, #2
@@ -1380,7 +1380,7 @@ _08050B10:
 	strb r0, [r4, #0xe]
 _08050B3E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1582,7 +1582,7 @@ _08050CA4:
 	strb r0, [r4, #0xe]
 _08050CCC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1732,7 +1732,7 @@ _08050DEE:
 	bl PlaySound
 _08050DF4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	mov r0, r8
 	ldr r1, [r0]
 	movs r0, #0x80
@@ -1942,7 +1942,7 @@ _08050F84:
 	strb r0, [r4, #0xe]
 _08050F96:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08051002
 	.align 2, 0
 _08050FA0: .4byte 0x0000AF03
@@ -1993,7 +1993,7 @@ _08050FDE:
 	strb r3, [r4, #0xe]
 _08050FFC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08051002:
 	pop {r4, r5}
 	pop {r0}
@@ -2065,7 +2065,7 @@ _0805107E:
 	strb r0, [r4, #0xe]
 _08051090:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -2141,7 +2141,7 @@ _08051120:
 	ldrb r6, [r0]
 	ldr r0, _08051214 @ =gBossHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08051188
@@ -2290,7 +2290,7 @@ _0805123A:
 	strb r0, [r4, #0xe]
 _08051256:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08051286
 _0805125E:
 	ldr r1, _08051290 @ =0x083635E4

@@ -29,7 +29,7 @@ const GameLoopFunc PhantomMinigameLoops[3] = {
 
 bool32 exitPhantomMinigame(struct GameState* g) {
   struct MinigameState* s = (struct MinigameState*)(g->sceneState).raw;
-  gSystemSavedataManager.minigameHiscores[MINIGAME_PHANTOM] = s->unk_3c;
+  gSystemSavedata.minigameHiscores[MINIGAME_PHANTOM] = s->unk_3c;
   SaveSystemData();
   return FALSE;
 }

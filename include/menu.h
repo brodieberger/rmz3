@@ -22,9 +22,11 @@ typedef struct Elf* (*MenuElfFunc)(struct Zero*, u8, u8, u8);
 
 #define MENU (&(g->sceneState).menu)
 #define ELF_MENU (&((g->sceneState).menu).elf)
+#define EXSKILL_MENU (&((g->sceneState).menu).exskill)
 
+struct SquareCursorWidget;
 struct ExSkillMenuState {
-  struct Widget* w;  // EXSkill用のMC(カーソル？)
+  struct SquareCursorWidget* cursor;  // カーソル
   u8 selected;
   bool8 inactive;  // 現在EXスキルメニュー中か
   u16 _;
@@ -32,7 +34,7 @@ struct ExSkillMenuState {
 
 struct KeyConfigMenuState {
   u8 y;  // キーコンフィグでカーソルが何行目か
-  u8 blinkID;
+  u8 plttAnimID;
   u16 _;
 };
 
@@ -44,7 +46,7 @@ struct ElfMenuState {
   u8 cursor;                // サテライト1などのエルフのリストでページの上から何行目のエルフを選択しているか(ページ=6行分)
   u8 unk_a;
   u8 unk_b;
-  u8 blinkID;
+  u8 plttAnimID;
   u8 unk_d;
   u8 unk_e;
   u8 unk_f;

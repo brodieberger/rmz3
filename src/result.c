@@ -2,10 +2,14 @@
 
 #include "game.h"
 #include "global.h"
+#include "palette_animation.h"
+#include "score.h"
 #include "sprite.h"
 #include "stagerun.h"
+#include "story.h"
 #include "text_window.h"
 #include "widget.h"
+#include "zero.h"
 
 #define STAGE_CHIP_NONE 0
 #define STAGE_CHIP_HEAD 1
@@ -21,20 +25,29 @@ static const TextID sUnlockEquipTextIDs[STAGE_COUNT];
 static const u32 sStageRewardExSkills[STAGE_COUNT];
 static const TextID sUnlockExSkillTextIDs[STAGE_COUNT];
 
-static void printNumOnResultScreen(s32 n, u8 x, u8 y);
+static void printNumOnResultScreen(s32 n, u8 x8, u8 y8);
 static void PrintResultRank(u8 rank);
 static void PrintCodeName1(struct ResultState* p);
 static void PrintCodeName2(struct ResultState* p);
-static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x, u8 y);
-static void FUN_08024db4(void);
+static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x8, u8 y8);
 
-void CreateDiskIcon(struct Coord* c, u8 n, u8 r2);
+static void ResultScreen_InitWidget(void);
+static void ResultScreen_UpdateAndRenderWidget(void);
 
-void PrepareResultScreen(struct ResultState* p) {
+bool8 IsAllElfUnlocked(Player* _);
+bool8 IsElfBreeder(Player* _);
+bool8 allSecretDiskFound(void);
+void CalcMissionScore(void);
+u8 CalcElfPenalty(Player* p);
+
+void CreateDiskIcon(Coords32* c, u8 n, u8 r2);
+
+// 0x08023f00
+void ResultScreen_Init(struct ResultState* p) {
   u8 i;
-  struct Coord c;
+  Coords32 c;
 
-  FUN_08024db4();
+  ResultScreen_InitWidget();
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
   gBlendRegBuffer.bldclt = 0;
@@ -54,342 +67,127 @@ static bool32 printPlayerAllScore(struct ResultState* p);
 static bool32 getStageRewardChip(struct ResultState* p);
 static bool32 getStageRewardExSkill(struct ResultState* p);
 static bool32 FUN_080248f0(struct ResultState* p);
-static void result_08024e0c(void);
 
-NAKED bool32 result_0802400c(struct ResultState* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	adds r6, r0, #0\n\
-	ldrb r0, [r6]\n\
-	cmp r0, #8\n\
-	bls _08024018\n\
-	b _080242E4\n\
-_08024018:\n\
-	lsls r0, r0, #2\n\
-	ldr r1, _08024024 @ =_08024028\n\
-	adds r0, r0, r1\n\
-	ldr r0, [r0]\n\
-	mov pc, r0\n\
-	.align 2, 0\n\
-_08024024: .4byte _08024028\n\
-_08024028: @ jump table\n\
-	.4byte _0802404C @ case 0\n\
-	.4byte _0802417C @ case 1\n\
-	.4byte _080241D4 @ case 2\n\
-	.4byte _080241EC @ case 3\n\
-	.4byte _08024202 @ case 4\n\
-	.4byte _08024218 @ case 5\n\
-	.4byte _0802422E @ case 6\n\
-	.4byte _08024268 @ case 7\n\
-	.4byte _0802429A @ case 8\n\
-_0802404C:\n\
-	ldr r4, _0802419C @ =gMission\n\
-	ldr r0, [r4]\n\
-	ldrb r0, [r0, #1]\n\
-	str r0, [r6, #0x10]\n\
-	ldr r0, _080241A0 @ =gGameState\n\
-	ldr r1, _080241A4 @ =0x000064AC\n\
-	adds r5, r0, r1\n\
-	ldr r0, [r5]\n\
-	bl IsAllElfUnlocked\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _08024088\n\
-	ldr r1, [r4]\n\
-	movs r0, #1\n\
-	strb r0, [r1, #6]\n\
-	ldr r0, [r5]\n\
-	bl IsElfBreeder\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _08024088\n\
-	ldr r2, [r4]\n\
-	ldrb r1, [r2, #7]\n\
-	movs r0, #0x10\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r1\n\
-	movs r1, #1\n\
-	orrs r0, r1\n\
-	strb r0, [r2, #7]\n\
-_08024088:\n\
-	bl allSecretDiskFound\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _080240A2\n\
-	ldr r0, _0802419C @ =gMission\n\
-	ldr r2, [r0]\n\
-	ldrb r1, [r2, #7]\n\
-	movs r0, #0xf\n\
-	ands r0, r1\n\
-	movs r1, #0x10\n\
-	orrs r0, r1\n\
-	strb r0, [r2, #7]\n\
-_080240A2:\n\
-	ldr r0, _080241A0 @ =gGameState\n\
-	ldr r2, _080241A4 @ =0x000064AC\n\
-	adds r0, r0, r2\n\
-	ldr r0, [r0]\n\
-	bl CalcElfPenalty\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	ldr r2, _0802419C @ =gMission\n\
-	ldr r1, [r2, #0x10]\n\
-	adds r1, r1, r0\n\
-	movs r7, #1\n\
-	rsbs r7, r7, #0\n\
-	str r1, [r2, #0x10]\n\
-	bl calcStageScore\n\
-	ldr r5, _080241A8 @ =gVideoRegBuffer+6\n\
-	movs r3, #0x81\n\
-	lsls r3, r3, #2\n\
-	adds r0, r3, #0\n\
-	strh r0, [r5]\n\
-	adds r1, r5, #0\n\
-	adds r1, #0xa\n\
-	movs r0, #0\n\
-	str r0, [r1]\n\
-	subs r2, r5, #6\n\
-	ldrh r1, [r2]\n\
-	ldr r0, _080241AC @ =0x0000F0FF\n\
-	ands r0, r1\n\
-	movs r3, #0x98\n\
-	lsls r3, r3, #5\n\
-	adds r1, r3, #0\n\
-	orrs r0, r1\n\
-	strh r0, [r2]\n\
-	ldr r0, _080241B0 @ =gGraphic_Capcom+(22*20)\n\
-	movs r4, #0xc\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #7\n\
-	bl LoadGraphic\n\
-	ldr r0, _080241B4 @ =gGraphic_Capcom+(22*20)+12\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-	ldr r0, _080241B8 @ =gGraphics_CodeName\n\
-	ldrh r1, [r5]\n\
-	ands r4, r1\n\
-	lsls r4, r4, #0xc\n\
-	adds r1, r4, #0\n\
-	bl LoadGraphic\n\
-	ldr r0, _080241BC @ =0x085475E8\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-	ldrh r1, [r5]\n\
-	movs r0, #0xf8\n\
-	lsls r0, r0, #5\n\
-	ands r0, r1\n\
-	lsls r0, r0, #3\n\
-	movs r1, #0xc0\n\
-	lsls r1, r1, #0x13\n\
-	adds r0, r0, r1\n\
-	ldr r2, _080241C0 @ =0x08522430\n\
-	ldr r1, [r2]\n\
-	adds r1, r1, r2\n\
-	movs r2, #0\n\
-	movs r3, #0\n\
-	bl CopyBgMap\n\
-	bl PauseAllBlinks\n\
-	movs r0, #0x40\n\
-	movs r1, #0\n\
-	bl LoadBlink\n\
-	ldr r2, _080241C4 @ =gWindowRegBuffer\n\
-	ldrh r1, [r2]\n\
-	ldr r0, _080241C8 @ =0x0000BFFF\n\
-	ands r0, r1\n\
-	strh r0, [r2]\n\
-	ldr r0, _080241CC @ =gStageRun\n\
-	movs r1, #0xb4\n\
-	lsls r1, r1, #1\n\
-	adds r4, r0, r1\n\
-	ldr r0, [r4]\n\
-	cmp r0, #0xbe\n\
-	beq _0802416A\n\
-	cmp r0, r7\n\
-	beq _08024160\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r0, r0, #0x10\n\
-	bl FadeOutBGM\n\
-	str r7, [r4]\n\
-_08024160:\n\
-	movs r0, #0xbe\n\
-	bl PlayBGM\n\
-	movs r0, #0xbe\n\
-	str r0, [r4]\n\
-_0802416A:\n\
-	ldr r0, _080241CC @ =gStageRun\n\
-	movs r2, #0xaa\n\
-	lsls r2, r2, #1\n\
-	adds r0, r0, r2\n\
-	movs r1, #9\n\
-	str r1, [r0]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-_0802417C:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	ldr r0, _080241CC @ =gStageRun\n\
-	movs r3, #0xaa\n\
-	lsls r3, r3, #1\n\
-	adds r0, r0, r3\n\
-	ldr r2, [r0]\n\
-	cmp r2, #0\n\
-	beq _08024192\n\
-	b _080242E4\n\
-_08024192:\n\
-	ldr r0, _080241D0 @ =gPaletteManager\n\
-	movs r1, #0\n\
-	strh r2, [r0]\n\
-	strb r1, [r6, #1]\n\
-	b _0802425A\n\
-	.align 2, 0\n\
-_0802419C: .4byte gMission\n\
-_080241A0: .4byte gGameState\n\
-_080241A4: .4byte 0x000064AC\n\
-_080241A8: .4byte gVideoRegBuffer+6\n\
-_080241AC: .4byte 0x0000F0FF\n\
-_080241B0: .4byte gGraphic_Capcom+(22*20)\n\
-_080241B4: .4byte gGraphic_Capcom+(22*20)+12\n\
-_080241B8: .4byte gGraphics_CodeName\n\
-_080241BC: .4byte gGraphics_CodeName+12\n\
-_080241C0: .4byte gBgMapOffsets+400\n\
-_080241C4: .4byte gWindowRegBuffer\n\
-_080241C8: .4byte 0x0000BFFF\n\
-_080241CC: .4byte gStageRun\n\
-_080241D0: .4byte gPaletteManager\n\
-_080241D4:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	adds r0, r6, #0\n\
-	bl printPlayerAllScore\n\
-	cmp r0, #1\n\
-	bne _080241E6\n\
-	b _080242E4\n\
-_080241E6:\n\
-	movs r0, #0\n\
-	strb r0, [r6, #1]\n\
-	b _0802425A\n\
-_080241EC:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	adds r0, r6, #0\n\
-	bl getStageRewardChip\n\
-	cmp r0, #1\n\
-	beq _080242E4\n\
-	movs r0, #0\n\
-	strb r0, [r6, #1]\n\
-	b _0802425A\n\
-_08024202:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	adds r0, r6, #0\n\
-	bl getStageRewardExSkill\n\
-	cmp r0, #1\n\
-	beq _080242E4\n\
-	movs r0, #0\n\
-	strb r0, [r6, #1]\n\
-	b _0802425A\n\
-_08024218:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	adds r0, r6, #0\n\
-	bl FUN_080248f0\n\
-	cmp r0, #1\n\
-	beq _080242E4\n\
-	movs r0, #0\n\
-	strb r0, [r6, #1]\n\
-	b _0802425A\n\
-_0802422E:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	ldr r4, _08024264 @ =gStageRun\n\
-	movs r0, #0xb4\n\
-	lsls r0, r0, #1\n\
-	adds r7, r4, r0\n\
-	ldr r0, [r7]\n\
-	movs r5, #1\n\
-	rsbs r5, r5, #0\n\
-	cmp r0, r5\n\
-	beq _08024250\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r0, r0, #0x10\n\
-	bl FadeOutBGM\n\
-	str r5, [r7]\n\
-_08024250:\n\
-	movs r2, #0xaa\n\
-	lsls r2, r2, #1\n\
-	adds r1, r4, r2\n\
-	movs r0, #0xa\n\
-	str r0, [r1]\n\
-_0802425A:\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-	b _080242E4\n\
-	.align 2, 0\n\
-_08024264: .4byte gStageRun\n\
-_08024268:\n\
-	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
-	ldr r0, _080242C4 @ =gStageRun\n\
-	movs r3, #0xaa\n\
-	lsls r3, r3, #1\n\
-	adds r0, r0, r3\n\
-	ldr r0, [r0]\n\
-	cmp r0, #0\n\
-	bne _080242E4\n\
-	ldr r2, _080242C8 @ =gVideoRegBuffer\n\
-	ldrh r1, [r2]\n\
-	ldr r0, _080242CC @ =0x0000EDFF\n\
-	ands r0, r1\n\
-	strh r0, [r2]\n\
-	movs r0, #0x40\n\
-	bl ClearBlink\n\
-	bl ResumeAllBlinks\n\
-	movs r0, #0x3c\n\
-	strh r0, [r6, #4]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-_0802429A:\n\
-	ldrh r0, [r6, #4]\n\
-	movs r2, #4\n\
-	ldrsh r1, [r6, r2]\n\
-	cmp r1, #0\n\
-	bne _080242E0\n\
-	ldr r0, _080242D0 @ =gMission\n\
-	ldr r0, [r0]\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	ldr r1, _080242D4 @ =gGameState\n\
-	ldr r3, _080242D8 @ =0x000064AC\n\
-	adds r0, r1, r3\n\
-	ldr r0, [r0]\n\
-	ldr r2, _080242DC @ =0x00006460\n\
-	adds r1, r1, r2\n\
-	bl CopyZeroStatus\n\
-	bl result_08024e0c\n\
-	movs r0, #0\n\
-	b _080242EA\n\
-	.align 2, 0\n\
-_080242C4: .4byte gStageRun\n\
-_080242C8: .4byte gVideoRegBuffer\n\
-_080242CC: .4byte 0x0000EDFF\n\
-_080242D0: .4byte gMission\n\
-_080242D4: .4byte gGameState\n\
-_080242D8: .4byte 0x000064AC\n\
-_080242DC: .4byte 0x00006460\n\
-_080242E0:\n\
-	subs r0, #1\n\
-	strh r0, [r6, #4]\n\
-_080242E4:\n\
-	bl result_08024e0c\n\
-	movs r0, #1\n\
-_080242EA:\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
+// 0x0802400c
+/**
+ * @brief リザルト画面のときに毎フレーム実行される
+ * @return まだリザルト画面かどうか (TRUE: まだリザルト画面, FALSE: リザルト画面が終了)
+ */
+NON_MATCH bool32 ResultScreen_Update(struct ResultState* p) {
+#if MODERN
+  switch (p->mode[0]) {
+    case 0: {
+      p->rank = (gScore.total)->rank;
+      if (IsAllElfUnlocked(gGameState.z2)) {
+        (gScore.total)->allElfCompleted = TRUE;
+        if (IsElfBreeder(gGameState.z2)) (gScore.total)->allCyberElfBreeded = TRUE;
+      }
+      if (allSecretDiskFound()) (gScore.total)->allSecretDiskFound = TRUE;
+      gScore.elfPenalty += CalcElfPenalty(gGameState.z2);
+      CalcMissionScore();
+      BGCNT16(1) = BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(2);  // 0x204
+      *(u32*)gVideoRegBuffer.bgofs[1] = 0;
+      gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
+      gVideoRegBuffer.dispcnt |= (DISPCNT_BG0_ON | DISPCNT_BG1_ON | DISPCNT_OBJ_ON);
+      LoadGraphic(BG_GRAPHIC(BG_MISC_MENU), BG_CHAR_OFFSET(1));
+      LoadPalette(BG_PALETTE(BG_MISC_MENU), 0);
+      LoadGraphic(BG_GRAPHIC(BG_CODENAME), CHAR_BASE(1));
+      LoadPalette(BG_PALETTE(BG_CODENAME), 0);
+      CopyBgMap(SCREEN_ADDR(1), SELF_REL_PTR(&gBgMapOffsets[100]), 0, 0);
+      PauseAllPaletteAnimations();
+      StartPaletteAnimation(64, 0);
+      gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN1_ON;
+      if (gStageRun.vm.bgm != BGM_RESULT) {
+        if (gStageRun.vm.bgm != MUS_NONE) {
+          FadeOutBGM(gStageRun.vm.bgm & 0xFFFF);
+          gStageRun.vm.bgm = MUS_NONE;
+        }
+        PlayBGM(BGM_RESULT);
+        gStageRun.vm.bgm = BGM_RESULT;
+      }
+      gStageRun.vm.transition = TRANSITION_Z | TRANSITION_REVERSE;
+      p->mode[0]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      StepPaletteAnimation(64);
+      if (gStageRun.vm.transition == TRANSITION_NONE) {
+        PALETTE16(0) = RGB_BLACK;
+        p->mode[1] = 0;
+        p->mode[0]++;
+      }
+      break;
+    }
+    case 2: {
+      StepPaletteAnimation(64);
+      if (printPlayerAllScore(p) != TRUE) {
+        p->mode[1] = 0;
+        p->mode[0]++;
+      }
+      break;
+    }
+    case 3: {
+      StepPaletteAnimation(64);
+      if (getStageRewardChip(p) != TRUE) {
+        p->mode[1] = 0;
+        p->mode[0]++;
+      }
+      break;
+    }
+    case 4: {
+      StepPaletteAnimation(64);
+      if (getStageRewardExSkill(p) != TRUE) {
+        p->mode[1] = 0;
+        p->mode[0]++;
+      }
+      break;
+    }
+    case 5: {
+      StepPaletteAnimation(64);
+      if (FUN_080248f0(p) != TRUE) {
+        p->mode[1] = 0;
+        p->mode[0]++;
+      }
+      break;
+    }
+    case 6: {
+      StepPaletteAnimation(64);
+      if (gStageRun.vm.bgm != MUS_NONE) {
+        FadeOutBGM(gStageRun.vm.bgm & 0xFFFF);
+        gStageRun.vm.bgm = MUS_NONE;
+      }
+      gStageRun.vm.transition = TRANSITION_Z | TRANSITION_BLACKOUT;
+      p->mode[0]++;
+      break;
+    }
+    case 7: {
+      StepPaletteAnimation(64);
+      if (gStageRun.vm.transition != TRANSITION_NONE) {
+        break;
+      }
+      gVideoRegBuffer.dispcnt &= ~(DISPCNT_OBJ_ON | DISPCNT_BG1_ON);  // &= 0xEDFF
+      RemovePaletteAnimation(64);
+      ResumeAllPaletteAnimations();
+      p->frame = 60;
+      p->mode[0]++;
+      FALLTHROUGH;
+    }
+    case 8: {
+      if (p->frame == 0) {
+        (gScore.total)->fusionCount = 0;
+        StoreZeroStatus(gGameState.z2, &gGameState.save.status);
+        ResultScreen_UpdateAndRenderWidget();
+        return FALSE;
+      }
+      p->frame--;
+      break;
+    }
+  }
+  ResultScreen_UpdateAndRenderWidget();
+  return TRUE;
+#else
+  INCCODE("asm/wip/ResultScreen_Update.inc");
+#endif
 }
 
 NAKED static bool32 printPlayerAllScore(struct ResultState* p) {
@@ -448,7 +246,7 @@ _08024328: @ jump table\n\
 	.4byte _080246F4 @ case 22\n\
 	.4byte _0802471C @ case 23\n\
 _08024388:\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	movs r1, #7\n\
 	ldrsb r1, [r0, r1]\n\
 	lsls r0, r1, #2\n\
@@ -485,7 +283,7 @@ _080243C8:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x16]\n\
 	movs r2, #4\n\
 	ldrsh r1, [r5, r2]\n\
@@ -513,7 +311,7 @@ _080243F2:\n\
 	bgt _08024402\n\
 	b _08024774\n\
 _08024402:\n\
-	ldr r4, _08024724 @ =gMission\n\
+	ldr r4, _08024724 @ =gScore\n\
 	ldr r0, [r4, #8]\n\
 	movs r1, #0xe1\n\
 	lsls r1, r1, #4\n\
@@ -562,7 +360,7 @@ _08024464:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x17]\n\
 	movs r2, #4\n\
 	ldrsh r1, [r5, r2]\n\
@@ -589,7 +387,7 @@ _0802448C:\n\
 	bgt _0802449C\n\
 	b _08024774\n\
 _0802449C:\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrh r0, [r0, #0xc]\n\
 	movs r1, #0x11\n\
 	movs r2, #4\n\
@@ -623,7 +421,7 @@ _080244D6:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x18]\n\
 	movs r2, #4\n\
 	ldrsh r1, [r5, r2]\n\
@@ -651,7 +449,7 @@ _08024500:\n\
 	bgt _08024510\n\
 	b _08024774\n\
 _08024510:\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrh r0, [r0, #0xe]\n\
 	movs r1, #0x11\n\
 	movs r2, #5\n\
@@ -685,7 +483,7 @@ _0802454A:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x19]\n\
 	movs r2, #4\n\
 	ldrsh r1, [r5, r2]\n\
@@ -713,7 +511,7 @@ _08024574:\n\
 	bgt _08024584\n\
 	b _08024774\n\
 _08024584:\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrh r0, [r0, #0x14]\n\
 	movs r1, #0x11\n\
 	movs r2, #6\n\
@@ -747,7 +545,7 @@ _080245BE:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x1a]\n\
 	movs r2, #4\n\
 	ldrsh r1, [r5, r2]\n\
@@ -775,7 +573,7 @@ _080245E8:\n\
 	bgt _080245F8\n\
 	b _08024774\n\
 _080245F8:\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldr r0, [r0]\n\
 	adds r0, #0x4c\n\
 	ldrb r0, [r0]\n\
@@ -811,7 +609,7 @@ _08024636:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #0x1b]\n\
 	lsls r0, r0, #0x18\n\
 	asrs r0, r0, #0x18\n\
@@ -850,7 +648,7 @@ _0802467E:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldrb r0, [r0, #5]\n\
 	lsls r0, r0, #0x18\n\
 	asrs r0, r0, #0x18\n\
@@ -885,7 +683,7 @@ _080246C2:\n\
 	ldrh r0, [r5, #4]\n\
 	adds r0, #1\n\
 	strh r0, [r5, #4]\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldr r1, [r0]\n\
 	movs r2, #0xa\n\
 	ldrsh r0, [r1, r2]\n\
@@ -913,7 +711,7 @@ _080246F4:\n\
 	asrs r0, r0, #0x10\n\
 	cmp r0, #0x1d\n\
 	ble _08024774\n\
-	ldr r0, _08024724 @ =gMission\n\
+	ldr r0, _08024724 @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldrb r0, [r0, #1]\n\
 	bl PrintResultRank\n\
@@ -930,7 +728,7 @@ _0802471C:\n\
 	strh r0, [r5, #6]\n\
 	b _08024728\n\
 	.align 2, 0\n\
-_08024724: .4byte gMission\n\
+_08024724: .4byte gScore\n\
 _08024728:\n\
 	lsls r0, r0, #0x10\n\
 	asrs r0, r0, #0x10\n\
@@ -940,7 +738,7 @@ _08024728:\n\
 	ldrh r0, [r0]\n\
 	cmp r0, #0x10\n\
 	beq _0802474C\n\
-	ldr r0, _08024748 @ =gMission\n\
+	ldr r0, _08024748 @ =gScore\n\
 	ldr r1, [r0]\n\
 	ldrb r0, [r1, #4]\n\
 	strb r0, [r5, #0x18]\n\
@@ -948,9 +746,9 @@ _08024728:\n\
 	b _08024756\n\
 	.align 2, 0\n\
 _08024744: .4byte gStageRun\n\
-_08024748: .4byte gMission\n\
+_08024748: .4byte gScore\n\
 _0802474C:\n\
-	ldr r0, _08024770 @ =gMission\n\
+	ldr r0, _08024770 @ =gScore\n\
 	ldr r1, [r0]\n\
 	ldrb r0, [r1, #9]\n\
 	strb r0, [r5, #0x18]\n\
@@ -966,7 +764,7 @@ _08024756:\n\
 	movs r0, #0\n\
 	b _08024776\n\
 	.align 2, 0\n\
-_08024770: .4byte gMission\n\
+_08024770: .4byte gScore\n\
 _08024774:\n\
 	movs r0, #1\n\
 _08024776:\n\
@@ -1030,82 +828,34 @@ static bool32 getStageRewardChip(struct ResultState* p) {
   return FALSE;
 }
 
-#undef PLAYER_STATE
+static bool32 getStageRewardExSkill(struct ResultState* p) {
+  struct GameState* g = &gGameState;
+  struct Zero* player = g->z2;
 
-NAKED static bool32 getStageRewardExSkill(struct ResultState* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	adds r5, r0, #0\n\
-	ldr r0, _080248D0 @ =gGameState\n\
-	ldr r1, _080248D4 @ =0x000064AC\n\
-	adds r0, r0, r1\n\
-	ldr r0, [r0]\n\
-	adds r4, r0, #0\n\
-	adds r4, #0xb4\n\
-	ldrb r0, [r4, #0x1a]\n\
-	cmp r0, #1\n\
-	beq _080248CC\n\
-	ldrb r0, [r5, #1]\n\
-	cmp r0, #0\n\
-	bne _080248C4\n\
-	ldr r1, _080248D8 @ =sStageRewardExSkills\n\
-	ldr r7, _080248DC @ =gStageRun\n\
-	ldrh r0, [r7]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	ldr r3, [r0]\n\
-	cmp r3, #0xff\n\
-	beq _080248BE\n\
-	ldr r0, [r5, #0x10]\n\
-	cmp r0, #4\n\
-	bls _080248BE\n\
-	ldrh r2, [r4, #0x14]\n\
-	movs r6, #1\n\
-	adds r1, r6, #0\n\
-	lsls r1, r3\n\
-	adds r0, r2, #0\n\
-	ands r0, r1\n\
-	asrs r0, r3\n\
-	cmp r0, #0\n\
-	bne _080248CC\n\
-	orrs r2, r1\n\
-	strh r2, [r4, #0x14]\n\
-	ldr r0, _080248E0 @ =sUnlockExSkillTextIDs\n\
-	ldrh r1, [r7]\n\
-	lsls r1, r1, #1\n\
-	adds r1, r1, r0\n\
-	ldrh r0, [r1]\n\
-	movs r1, #0\n\
-	bl PrintResultInline\n\
-	str r6, [r5, #0xc]\n\
-_080248BE:\n\
-	ldrb r0, [r5, #1]\n\
-	adds r0, #1\n\
-	strb r0, [r5, #1]\n\
-_080248C4:\n\
-	ldr r0, _080248E4 @ =gTextWindow+8\n\
-	ldrh r0, [r0, #2]\n\
-	cmp r0, #0\n\
-	bne _080248E8\n\
-_080248CC:\n\
-	movs r0, #0\n\
-	b _080248EA\n\
-	.align 2, 0\n\
-_080248D0: .4byte gGameState\n\
-_080248D4: .4byte 0x000064AC\n\
-_080248D8: .4byte sStageRewardExSkills\n\
-_080248DC: .4byte gStageRun\n\
-_080248E0: .4byte sUnlockExSkillTextIDs\n\
-_080248E4: .4byte gTextWindow+8\n\
-_080248E8:\n\
-	movs r0, #1\n\
-_080248EA:\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
+  if ((PLAYER_STATE(player)->status).menuZeroColor == MZC_HARD) return FALSE;
+
+  if (p->mode[1] == 0) {
+    u32 id = sStageRewardExSkills[gStageRun.id];
+    if ((id != EXSKILL_ID_NONE) && (p->rank >= RANK_A)) {
+      if (((PLAYER_STATE(player)->status).unlockedExSkill & (1 << id)) >> id) {
+        return FALSE;
+      }
+      (PLAYER_STATE(player)->status).unlockedExSkill |= (1 << id);
+      PrintResultInline(sUnlockExSkillTextIDs[gStageRun.id], 0);
+      p->unk_0c = 1;
+    }
+    p->mode[1]++;
+  }
+
+  if (((&gTextWindow.text)->mode) != 0) {
+    return TRUE;
+  }
+  return FALSE;
 }
 
+#undef PLAYER_STATE
+
+// 0x080248f0
 NAKED static bool32 FUN_080248f0(struct ResultState* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
@@ -1115,7 +865,7 @@ NAKED static bool32 FUN_080248f0(struct ResultState* p) {
 	bne _0802491A\n\
 	movs r1, #0\n\
 	movs r2, #0\n\
-	bl CreateMenuComp2\n\
+	bl CreateSquareCursor\n\
 	str r0, [r4, #0x14]\n\
 	adds r0, #0x74\n\
 	movs r1, #0x18\n\
@@ -1309,7 +1059,7 @@ _08024A70: .4byte gStringData\n\
   リザルト画面用の数値描画関数
   数値nを(8*x px, 8*y px)に描画
 */
-NAKED static void printNumOnResultScreen(s32 n, u8 x, u8 y) {
+NAKED static void printNumOnResultScreen(s32 n, u8 x8, u8 y8) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1433,8 +1183,8 @@ _08024B50: .4byte gVideoRegBuffer+6\n\
 static void PrintResultRank(u8 rank) {
   u16* m = Malloc(2);
   if (m != NULL) {
-    *m = ((5 << 12) | 0x166) - rank;
-    RequestBgMapTransfer(m, (void*)SCREEN_BASE_16(1) + 738, 2);
+    *m = (TILEMAP_PAL(5) | 0x166) - rank;
+    RequestBgMapTransfer(m, (void*)SCREEN_BASE(1) + 738, 2);
   }
 }
 
@@ -1443,17 +1193,17 @@ static void PrintCodeName1(struct ResultState* p) {
   s16 i;
   u16* m = Malloc(16);
   if (m != NULL) {
-    if (p->codenamePrefix == CODENAME_NO_PREFIX) {
+    if (p->codenamePrefix == 0) {  // no prefix
       for (i = 0; i < 8; i++) {
-        m[i] = 0xF300 + u8_ARRAY_083863e8[p->codenameSuffix * 2] + i;
+        m[i] = (TILEMAP_PAL(15) | 0x300) + u8_ARRAY_083863e8[p->codenameSuffix * 2] + i;
       }
     } else {
       for (i = 0; i < 8; i++) {
-        m[i] = 0xF300 + u8_ARRAY_083863d0[p->codenamePrefix * 2] + i;
+        m[i] = (TILEMAP_PAL(15) | 0x300) + u8_ARRAY_083863d0[p->codenamePrefix * 2] + i;
       }
       // 残りのコードネームは PrintCodeName2 で描画する
     }
-    RequestBgMapTransfer(m, (void*)SCREEN_BASE_16(1) + 802, 16);
+    RequestBgMapTransfer(m, (void*)SCREEN_BASE(1) + 802, 16);
   }
 }
 
@@ -1566,7 +1316,7 @@ _08024D10: .4byte 0x000001B1\n\
 }
 
 // リザルトスコアをカウントアップさせる演出
-NON_MATCH static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x, u8 y) {
+NON_MATCH static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x8, u8 y8) {
 #if MODERN
   s32 turbo;
   if (score >> 4) {
@@ -1582,35 +1332,42 @@ NON_MATCH static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, 
     }
     n *= turbo;
     if (abs(n) <= abs(score)) {
-      printNumOnResultScreen(n, x, y);
+      printNumOnResultScreen(n, x8, y8);
       return TRUE;
     }
   }
 
-  printNumOnResultScreen(score, x, y);
+  printNumOnResultScreen(score, x8, y8);
   return FALSE;
 #else
   INCCODE("asm/wip/CountUpResultScore.inc");
 #endif
 }
 
-static void FUN_08024db4(void) {
-  struct Coord* c = &gGameState.unk_0dc4;
-  c->x = PIXEL(120);
-  c->y = PIXEL(80);
+/**
+ * @brief Widgetのアロケータ + それを描画する Renderer の初期化
+ * @note 0x08024db4
+ */
+static void ResultScreen_InitWidget(void) {
+  Coords32* c = &gGameState.unk_0dc4;
+  c->x = PIXEL(120), c->y = PIXEL(80);
   ResetPivot(&gGameState.unk_0db8, c, 0, 0);
-  ResetTaskManager(&gGameState.taskManager2);
-  SetTaskPivot(&gGameState.taskManager2, &gGameState.unk_0db8);
+  Renderer_Init(&gGameState.rendererUI);
+  Renderer_SetPivot(&gGameState.rendererUI, &gGameState.unk_0db8);
   InitWidgetHeader(&gGameState.entityHeaders[ENTITY_WIDGET], gWidgets, 64);
 }
 
-static void result_08024e0c(void) {
-  struct Coord* c = &gGameState.unk_0dc4;
+/**
+ * @brief Widgetを更新して描画する
+ * @note 0x08024e0c
+ */
+static void ResultScreen_UpdateAndRenderWidget(void) {
+  Coords32* c = &gGameState.unk_0dc4;
   c->x = PIXEL(BGOFS(1)->x & 0x1FF) + PIXEL(120);
-  ClearTaskBuffer(&gGameState.taskManager2);
+  Renderer_Clear(&gGameState.rendererUI);
   UpdateEntities(gWidgetHeaderPtr);
-  DrawEntity(gWidgetHeaderPtr, &gGameState.taskManager2);
-  RunAllTasks(&gGameState.taskManager2);
+  DrawEntity(gWidgetHeaderPtr, &gGameState.rendererUI);
+  Renderer_Flush(&gGameState.rendererUI);
 }
 
 // clang-format off

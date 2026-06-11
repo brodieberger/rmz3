@@ -7,21 +7,21 @@ static const s32 sSonicWaveXCoords[4];
 
 void ChildreShip_Init(struct Solid* p);
 void ChildreShip_Update(struct Solid* p);
-static void ChildreShip_Die(struct Solid* p);
+static void ChildreShip_Die(void* _);
 
 // clang-format off
 const SolidRoutine gChildreShipRoutine = {
-    [ENTITY_INIT] =      ChildreShip_Init,
-    [ENTITY_UPDATE] =    ChildreShip_Update,
-    [ENTITY_DIE] =       ChildreShip_Die,
+    [ENTITY_INIT] =      (void*)ChildreShip_Init,
+    [ENTITY_UPDATE] =    (void*)ChildreShip_Update,
+    [ENTITY_DIE] =       (void*)ChildreShip_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 INCASM("asm/solid/childre_ship.inc");
 
-static void ChildreShip_Die(struct Solid* _) { return; }
+static void ChildreShip_Die(void* _) {}
 
 NAKED void ChildreShip_CreateBubbles(s32 x, s32 y) {
   asm(".syntax unified\n\
@@ -38,7 +38,7 @@ NAKED void ChildreShip_CreateBubbles(s32 x, s32 y) {
 	movs r4, #6\n\
 	ldr r0, _080E0910 @ =gStageRun+232\n\
 	mov r1, sp\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #8\n\
 	cmp r0, r1\n\
@@ -118,6 +118,7 @@ _080E0928: .4byte 0xFFFFF000\n\
  .syntax divided\n");
 }
 
+// 0x083719D0
 static const struct Collision sCollisions[2] = {
     {
       kind : DDP,
@@ -139,9 +140,5 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
-static const s32 sSonicWaveXCoords[4] = {
-    PIXEL(2984),
-    PIXEL(4696),
-    PIXEL(8600),
-    PIXEL(9736),
-};
+// 0x08371a00
+static const s32 sSonicWaveXCoords[4] = {PIXEL(2984), PIXEL(4696), PIXEL(8600), PIXEL(9736)};

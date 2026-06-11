@@ -129,7 +129,7 @@ _080C6AEE:
 	str r1, [r5, #0x60]
 _080C6B08:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -309,7 +309,7 @@ FUN_080c6c60: @ 0x080C6C60
 	adds r1, #0x40
 	str r1, [r4, #0x60]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	adds r0, #1
 	strb r0, [r4, #0x12]
@@ -490,7 +490,7 @@ FUN_080c6dc4: @ 0x080C6DC4
 	adds r1, #0x40
 	str r1, [r4, #0x60]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	bl FUN_080098a4

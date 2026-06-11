@@ -1,8 +1,10 @@
 #include "collision.h"
 #include "cyberelf.h"
 #include "global.h"
-#include "mission.h"
 #include "mod.h"
+#include "overworld.h"
+#include "player/zero.h"
+#include "score.h"
 #include "weapon.h"
 #include "zero.h"
 
@@ -11,11 +13,8 @@
 void ClearZeroStatus(struct ZeroStatus* p) {
   p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  p->satelites[0] = ELF_NONE;
-  p->satelites[1] = ELF_NONE;
-  p->head = HEAD_CHIP_NONE;
-  p->body = BODY_CHIP_NONE;
-  p->foot = FOOT_CHIP_NONE;
+  p->satelites[0] = ELF_NONE, p->satelites[1] = ELF_NONE;
+  p->head = HEAD_CHIP_NONE, p->body = BODY_CHIP_NONE, p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
   p->unlockedHead = (1 << HEAD_CHIP_NONE);
@@ -41,11 +40,8 @@ void ClearZeroStatus(struct ZeroStatus* p) {
 void ClearZeroStatusHard(struct ZeroStatus* p) {
   p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  p->satelites[0] = ELF_NONE;
-  p->satelites[1] = ELF_NONE;
-  p->head = HEAD_CHIP_NONE;
-  p->body = BODY_CHIP_NONE;
-  p->foot = FOOT_CHIP_NONE;
+  p->satelites[0] = ELF_NONE, p->satelites[1] = ELF_NONE;
+  p->head = HEAD_CHIP_NONE, p->body = BODY_CHIP_NONE, p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
   p->unlockedHead = (1 << HEAD_CHIP_NONE);
@@ -71,11 +67,8 @@ void ClearZeroStatusHard(struct ZeroStatus* p) {
 void ClearZeroStatusUltimate(struct ZeroStatus* p) {
   p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  p->satelites[0] = ELF_NONE;
-  p->satelites[1] = ELF_NONE;
-  p->head = HEAD_CHIP_NONE;
-  p->body = BODY_CHIP_NONE;
-  p->foot = FOOT_CHIP_NONE;
+  p->satelites[0] = ELF_NONE, p->satelites[1] = ELF_NONE;
+  p->head = HEAD_CHIP_NONE, p->body = BODY_CHIP_NONE, p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
   p->unlockedHead = (1 << HEAD_CHIP_NONE) | (1 << 1) | (1 << 2) | (1 << HEAD_CHIP_QKCHARGE);
@@ -103,11 +96,8 @@ void FUN_080321d4(struct ZeroStatus* p) {
   u8 i;
   p->weapons[0] = WEAPON_BUSTER, p->weapons[1] = WEAPON_SABER;
   p->element = 0;
-  p->satelites[0] = ELF_NONE;
-  p->satelites[1] = ELF_NONE;
-  p->head = HEAD_CHIP_NONE;
-  p->body = BODY_CHIP_NONE;
-  p->foot = FOOT_CHIP_NONE;
+  p->satelites[0] = ELF_NONE, p->satelites[1] = ELF_NONE;
+  p->head = HEAD_CHIP_NONE, p->body = BODY_CHIP_NONE, p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
   (p->keyMap).unk_a = 0;
@@ -122,21 +112,27 @@ void FUN_080321d4(struct ZeroStatus* p) {
   p->dying = FALSE;
 }
 
-void SaveZeroStatus(struct Zero* z, struct ZeroStatus* src) {
-  CpuFastCopy(src, &(&z->unk_b4)->status, 32);
-  CpuCopy32((void*)src + 32, &(z->unk_b4).status.keyMap.keys.main, 16);
+/**
+ * @brief (&z->unk_b4)->status に src の内容をロードする
+ * @note 0x08032240
+ */
+void LoadZeroStatus(struct Zero* z, struct ZeroStatus* src) {
+  MemCopy32(src, &(&z->unk_b4)->status, sizeof(struct ZeroStatus));
   (z->body).hp = 64;
 }
 
-void CopyZeroStatus(struct Zero* z, struct ZeroStatus* dst) {
-  CpuFastCopy(&(&z->unk_b4)->status, dst, 32);
-  CpuCopy32(&(z->unk_b4).status.keyMap.keys.main, (void*)dst + 32, 16);
-}
+/**
+ * @brief dst に (&z->unk_b4)->status の内容を書き込む
+ * @param dst 書き込み先の ZeroStatus (だいたい gGameState.save.status)
+ * @note 0x08032274
+ */
+void StoreZeroStatus(struct Zero* z, struct ZeroStatus* dst) { MemCopy32(&(&z->unk_b4)->status, dst, sizeof(struct ZeroStatus)); }
 
-void skipEventScene(struct Zero* z, struct ZeroStatus* status) {
-  status->maxHP = (z->body).hp;
-  status->charge[0] = (z->unk_b4).status.charge[0];
-  status->charge[1] = (z->unk_b4).status.charge[1];
+// 0x0803229c
+void CopyPlayerMaxHPChargeOnSkipEventScene(Player* p, struct ZeroStatus* dst) {
+  dst->maxHP = (p->body).hp;
+  dst->charge[0] = (p->unk_b4).status.charge[0];
+  dst->charge[1] = (p->unk_b4).status.charge[1];
 }
 
 void FUN_080322c4(struct ZeroStatus* status) {
@@ -153,7 +149,7 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
   weapon_t w[4];
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, m);
+    SetSpriteAnimation(z, m);
     CreateWeaponRod(z);
     (z->unk_b4).attackState8[2]++;
     return;
@@ -215,14 +211,14 @@ NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
     }
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     if (r2 == 0) {
       z->rodToggle = 0x10;
     } else {
       z->rodToggle = 0x0;
     }
     (z->unk_b4).attackState8[0] = 0;
-    SetMotion(&z->s, GetDefaultMotion(z));
+    SetSpriteAnimation(z, GetDefaultMotion(z));
     z->rodID = 0xFF;
     return;
   }
@@ -242,7 +238,7 @@ void FUN_08032504(struct Zero* z, motion_t m) {
 
   z->rodToggle = 0x10;
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, m);
+    SetSpriteAnimation(z, m);
     CreateWeaponRod(z);
     (z->unk_b4).attackState8[2]++;
     return;
@@ -261,11 +257,11 @@ void FUN_08032504(struct Zero* z, motion_t m) {
     return;
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     if ((z->s).mode[2] == 1) {
-      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x03), 2, 1);
+      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 3), 2, 1);
     } else {
-      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x04), 2, 1);
+      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 4), 2, 1);
     }
     (z->unk_b4).attackState8[0] = 0;
     z->rodID = 0xFF;
@@ -276,7 +272,7 @@ void FUN_080325e8(struct Zero* z, motion_t m) {
   motion_t zm;
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, m);
+    SetSpriteAnimation(z, m);
     z->unk_135 = 0;
     CreateWeaponRod(z);
     (z->unk_b4).attackState8[2]++;
@@ -289,9 +285,9 @@ void FUN_080325e8(struct Zero* z, motion_t m) {
     GotoMotion(&z->s, m, z->motionCmdIdx, z->motionDuration);
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     (z->unk_b4).attackState8[0] = 0;
-    SetMotion(&z->s, GetDefaultMotion(z));
+    SetSpriteAnimation(z, GetDefaultMotion(z));
     z->rodID = 0xFF;
   }
 }
@@ -300,7 +296,7 @@ void FUN_0803267c(struct Zero* z, motion_t m) {
   motion_t zm;
 
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, m);
+    SetSpriteAnimation(z, m);
     z->unk_135 = 0;
     CreateWeaponRod(z);
     (z->unk_b4).attackState8[2]++;
@@ -313,11 +309,11 @@ void FUN_0803267c(struct Zero* z, motion_t m) {
     GotoMotion(&z->s, m, z->motionCmdIdx, z->motionDuration);
   }
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     if ((z->s).mode[2] == 1) {
-      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x03), 2, 1);
+      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 3), 2, 1);
     } else {
-      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0x04), 2, 1);
+      GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 4), 2, 1);
     }
     (z->unk_b4).attackState8[0] = 0;
     z->rodID = 0xFF;
@@ -337,32 +333,42 @@ void zero_08032724(struct Zero* z) {
   }
 }
 
-NON_MATCH void setStageElfFlags(struct Zero* z) {
-#if MODERN
-  if ((ELF_AVABILITY(ELF_BYSE) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_BYSE) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_BYSE || SATELITE_2 == ELF_BYSE)) {
+static inline bool32 IsCyberElfUsed(Player* p, cyberelf_t id) {
+  struct Zero_b4* b4;
+  cyberelf_t* satelites;
+  if (gElfAvailability[id] & ELF_AVABILITY_UNLOCKED) {
+    if (gElfAvailability[id] & ELF_AVABILITY_USED) {
+      return TRUE;
+    }
+    b4 = &p->unk_b4;
+    satelites = (b4->status).satelites;
+    if ((p->inCyberSpace) || ((satelites[0] == id) || (satelites[1] == id))) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+void setStageElfFlags(Player* p) {
+  if (IsCyberElfUsed(p, ELF_BYSE)) {
     SET_FLAG(gCurStory.s.gameflags, BYSE_ENABLED);
-    SET_FLAG(gGameState.save.story.gameflags, FLAG_7);
-    SET_FLAG(gGameState.save.savedStory.gameflags, FLAG_7);
+    SET_FLAG((&gGameState.save.story)->gameflags, BYSE_ENABLED);
+    SET_FLAG((&gGameState.save.savedStory)->gameflags, BYSE_ENABLED);
   } else {
     CLEAR_FLAG(gCurStory.s.gameflags, BYSE_ENABLED);
-    CLEAR_FLAG(gGameState.save.story.gameflags, FLAG_7);
-    CLEAR_FLAG(gGameState.save.savedStory.gameflags, FLAG_7);
+    CLEAR_FLAG((&gGameState.save.story)->gameflags, BYSE_ENABLED);
+    CLEAR_FLAG((&gGameState.save.savedStory)->gameflags, BYSE_ENABLED);
   }
-
-  if ((ELF_AVABILITY(ELF_DYLPHINA) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_DYLPHINA) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_DYLPHINA || SATELITE_2 == ELF_DYLPHINA)) {
+  if (IsCyberElfUsed(p, ELF_DYLPHINA)) {
     SET_FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED);
   } else {
     CLEAR_FLAG(gCurStory.s.gameflags, DYLPHINA_ENABLED);
   }
-
-  if ((ELF_AVABILITY(ELF_PUTITE) & ELF_AVABILITY_UNLOCKED) && ((ELF_AVABILITY(ELF_PUTITE) & ELF_AVABILITY_USED) || z->inCyberSpace || SATELITE_1 == ELF_PUTITE || SATELITE_2 == ELF_PUTITE)) {
+  if (IsCyberElfUsed(p, ELF_PUTITE)) {
     SET_FLAG(gCurStory.s.gameflags, PUTITE_ENABLED);
   } else {
     CLEAR_FLAG(gCurStory.s.gameflags, PUTITE_ENABLED);
   }
-#else
-  INCCODE("asm/wip/setStageElfFlags.inc");
-#endif
 }
 
 u8 FUN_08032880(void* _, u8 r1) {
@@ -376,8 +382,8 @@ u8 FUN_08032880(void* _, u8 r1) {
   if (r1 == 0xFF) {
     for (i = 0; i < ARRAY_COUNT(sSatelitableElfIDs); i++) {
       u8 id = sSatelitableElfIDs[i];
-      if (ELF_AVABILITY(id) & ELF_AVABILITY_UNLOCKED) {
-        if (!(ELF_AVABILITY(id) & ELF_AVABILITY_USED)) {
+      if (gElfAvailability[id] & ELF_AVABILITY_UNLOCKED) {
+        if (!(gElfAvailability[id] & ELF_AVABILITY_USED)) {
           ctr++;
         }
       }
@@ -387,7 +393,7 @@ u8 FUN_08032880(void* _, u8 r1) {
 
   for (i = 0; i < ARRAY_COUNT(sSatelitableElfIDs); i++) {
     u8 id = sSatelitableElfIDs[i];
-    if ((ELF_AVABILITY(id) & (ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED)) == ELF_AVABILITY_UNLOCKED) {
+    if ((gElfAvailability[id] & (ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED)) == ELF_AVABILITY_UNLOCKED) {
       if (ctr == r1) {
         if (sSatelitableElfIDs[i] <= ELF_SLOPPE) return 0;
         if (sSatelitableElfIDs[i] <= ELF_ARCHIL) return 1;
@@ -400,14 +406,14 @@ u8 FUN_08032880(void* _, u8 r1) {
 }
 
 s16 getFallAcceleration(struct Zero* z) {
-  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > SEA) {
+  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > gOverworld.sea) {
     return 0x20;
   }
   return 0x40;
 }
 
 s16 calcMaxFallSpeed(struct Zero* z) {
-  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > SEA) {
+  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > gOverworld.sea) {
     return PIXEL(7) / 2;
   }
   return PIXEL(7);
@@ -428,7 +434,7 @@ s16 getWallFallSpeed(struct Zero* z) {
     }
   }
 
-  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > SEA) {
+  if ((z->s).coord.y - (gZeroRanges[z->posture].h >> 1) > gOverworld.sea) {
     if (dy == 0xC0) {
       return 0x60;
     } else {
@@ -526,32 +532,13 @@ NON_MATCH s16 GetSplitHeavenSpeed(struct Zero* z) {
 }
 
 // 0x08032c84
-bool8 IsElfUsed(struct Zero* z, cyberelf_t id) {
-  struct Zero_b4* b4;
-  cyberelf_t* satelites;
-
-  if (ELF_AVABILITY(id) & ELF_AVABILITY_UNLOCKED) {
-    if (ELF_AVABILITY(id) & ELF_AVABILITY_USED) {
-      return TRUE;
-    }
-    b4 = &z->unk_b4;
-    satelites = (b4->status).satelites;
-    if ((z->inCyberSpace) || ((satelites[0] == id) || (satelites[1] == id))) {
-      return TRUE;
-    }
-  }
-  return FALSE;
-}
+bool8 IsElfUsed(struct Zero* z, cyberelf_t id) { return IsCyberElfUsed(z, id); }
 
 u8 GetZeroColor(struct Zero* z) {
   struct Zero_b4* b4 = &(z->unk_b4);
   u8 c = (b4->status).menuZeroColor;
-  if (c == MZC_ULTIMATE) {
-    return BODY_CHIP_ULTIMA;
-  }
-  if (c == MZC_HARD) {
-    return BODY_CHIP_PROTO;
-  }
+  if (c == MZC_ULTIMATE) return BODY_CHIP_ULTIMA;
+  if (c == MZC_HARD) return BODY_CHIP_PROTO;
   return (b4->status).body;
 }
 
@@ -559,7 +546,7 @@ void InstantlyKilling(struct Zero* z) {
   if ((z->body).hp != 0) {
     if (((z->body).invincibleTime == 0) || (z->unk_149 != 0)) {
       if (IsElfUsed(z, ELF_PUTITE)) {
-        if (MOD_ENABLED(gSystemSavedataManager.mods, MOD_DAMAGE_50P)) {
+        if (FLAG(gSystemSavedata.flags, MOD_DAMAGE_50P)) {
           AddMissionDamage(PUTITED_DAMAGE / 2);
           CalcPutitedSpikeDamage(&z->body, PUTITED_DAMAGE / 2);
         } else {

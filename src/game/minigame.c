@@ -1,8 +1,8 @@
 #include "minigame.h"
 
-#include "blink.h"
 #include "global.h"
 #include "hud.h"
+#include "palette_animation.h"
 #include "pickup.h"
 #include "sprite.h"
 #include "system.h"
@@ -47,23 +47,23 @@ static void MinigameLoop_InitMinigame(struct GameState* g) {
   // clang-format on
 
   struct Pivot* pivot = &g->unk_0db8;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
   gPaletteManager.post_process = NULL;
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
   wMOSAIC = 0x0;
   PALETTE16(0) = RGB_BLACK;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x00;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   g->unk_1ed8 = 0xFFFFFFFF;
   g->inMenu = FALSE;
   ResetPivot(pivot, &g->unk_0dc4, 0, 0);
-  ResetTaskManager(&g->taskManager);
-  SetTaskPivot(&g->taskManager, pivot);
+  Renderer_Init(&g->rendererMain);
+  Renderer_SetPivot(&g->rendererMain, pivot);
   ResetCollisionManager();
   ResetEntityEnvironment();
   RNG_0202f388 = (g->save).stageID;
@@ -71,7 +71,7 @@ static void MinigameLoop_InitMinigame(struct GameState* g) {
   PTR_0202f384 = &g->unk_1ed8;
   pZero2 = g->z2;
 
-  InitPlayerHeader(&g->entityHeaders[ENTITY_PLAYER], &gZero, 1);
+  InitPlayerHeader(&g->entityHeaders[ENTITY_PLAYER], gPlayers, 1);
   InitWeaponHeader(&g->entityHeaders[ENTITY_WEAPON], gWeapons, 24);
   InitEnemyHeader(&g->entityHeaders[ENTITY_ENEMY], gEnemies, 18);
   InitProjectileHeader(&g->entityHeaders[ENTITY_PROJECTILE], gProjectiles, 24);
@@ -119,11 +119,11 @@ NON_MATCH static void MinigameLoop_Main(struct GameState* g) {
     gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames;
   } else if (g->frames > 32) {
     g->frames--;
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames - 32;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames - FILTER_NONE;
   }
   g->unk_1ed8++;
 
-  ClearTaskBuffer(&g->taskManager);
+  Renderer_Clear(&g->rendererMain);
   gMatrixCount = 0;
   {
     void* dst = gWhitePaintFlags;
@@ -140,9 +140,7 @@ NON_MATCH static void MinigameLoop_Main(struct GameState* g) {
     u32 bytesize = gOverworld.terrain.objectLen * sizeof(struct Hazard);
     u32 fastsize = bytesize & ~31;
     CpuFastCopy(src, dst, fastsize);
-    if (bytesize & 31) {
-      CpuCopy32(src + fastsize, dst + fastsize, bytesize & 31);
-    }
+    if (bytesize & 31) CpuCopy32(src + fastsize, dst + fastsize, bytesize & 31);
     gOverworld.terrain.objectLenPrev = gOverworld.terrain.objectLen;
     gOverworld.terrain.objectLen = 0;
   }
@@ -168,15 +166,15 @@ NON_MATCH static void MinigameLoop_Main(struct GameState* g) {
   RunDamageEffect(gZeroHeaderPtr);
   RunDamageEffect(gPickupHeaderPtr);
 
-  DrawCollidableEntity(gSolidHeaderPtr, &g->taskManager);
-  DrawCollidableEntity(gEnemyHeaderPtr, &g->taskManager);
-  DrawCollidableEntity(gZeroHeaderPtr, &g->taskManager);
-  DrawWeapon(&g->taskManager);
-  DrawEntity(gProjectileHeaderPtr, &g->taskManager);
-  DrawEntity(gVFXHeaderPtr, &g->taskManager);
-  DrawCollidableEntity(gPickupHeaderPtr, &g->taskManager);
-  if (g->mode[1] != MINIGAME_CIEL) DrawOverworld(&g->taskManager);
-  RunAllTasks(&g->taskManager);
+  DrawCollidableEntity(gSolidHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gEnemyHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gZeroHeaderPtr, &g->rendererMain);
+  DrawWeapon(&g->rendererMain);
+  DrawEntity(gProjectileHeaderPtr, &g->rendererMain);
+  DrawEntity(gVFXHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gPickupHeaderPtr, &g->rendererMain);
+  if (g->mode[1] != MINIGAME_CIEL) DrawOverworld(&g->rendererMain);
+  Renderer_Flush(&g->rendererMain);
 
   if (gIsPlayDamageSE && (!(gCollisionManager.sweep & SWEEP_ALL_ENEMY))) PlaySound(SE_ZAKO_STUN);
   gIsPlayDamageSE = FALSE;
@@ -212,7 +210,7 @@ static void MinigameLoop_ExitMinigame(struct GameState* g) {
   result = (sMinigameDeinitializers[g->mode[1]])(g);
   if (result == FALSE) {
     ExitStageLandscape();
-    ClearBlinkings();
+    RemoveAllPaletteAnimations();
     ExitProcess();
   }
 }

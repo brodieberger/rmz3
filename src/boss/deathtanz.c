@@ -6,7 +6,7 @@
 struct Deathtanz {
   OBJECT_HDR;
   // props (48bytes, offset: 0xB4..)
-  struct Coord unk_b4;
+  Coords32 unk_b4;
   u8 unk_bc;
   u8 unk_bd;
   u8 unk_be;
@@ -17,7 +17,7 @@ struct Deathtanz {
   u8 unk_c3;
   u8 unk_c4;
   u8 unk_c5[3];
-  struct Coord unk_c8;
+  Coords32 unk_c8;
   u8 unk_d0[20];
 };
 static_assert(sizeof(struct Deathtanz) == sizeof(struct Boss));
@@ -77,7 +77,7 @@ _08048DA4: .4byte pZero2\n\
 _08048DA8: .4byte RNG_0202f388\n\
 _08048DAC: .4byte sDeathtanzModes\n\
 _08048DB0:\n\
-	ldr r0, _08048DF8 @ =gMission\n\
+	ldr r0, _08048DF8 @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldrb r0, [r0, #1]\n\
 	cmp r0, #4\n\
@@ -117,7 +117,7 @@ _08048DE6:\n\
 	adds r0, #1\n\
 	b _08048E08\n\
 	.align 2, 0\n\
-_08048DF8: .4byte gMission\n\
+_08048DF8: .4byte gScore\n\
 _08048DFC: .4byte 0x000343FD\n\
 _08048E00: .4byte 0x00269EC3\n\
 _08048E04:\n\
@@ -140,7 +140,7 @@ _08048E08:\n\
  .syntax divided\n");
 }
 
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   struct Zero* z = (struct Zero*)body->enemy->parent;
   struct Deathtanz* p = (struct Deathtanz*)body->parent;
 
@@ -152,7 +152,7 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 }
 
 static bool8 tryKillDeathtanz(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     PlaySound(SE_DEATHTANZ_DEATH);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -1060,7 +1060,7 @@ static const u8 sPostures[14] = {
 };
 
 // 0x08362ec4
-static const struct Coord sExplosionCoords[2] = {
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(35)},
     {PIXEL(0), -PIXEL(35)},
 };

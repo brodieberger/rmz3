@@ -7,7 +7,8 @@ static const disk_t SunkenSecretDisks[4];
 static const str_id_t StrID_ARRAY_08386294[4];
 static const TextID AfterSearchTextIDs[4];
 
-NAKED void OverworldLoop_SunkenLibrarySearch(struct GameState* p) {
+// 0x080F2620
+NAKED void OverworldLoop_SunkenLibrarySearch(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -103,10 +104,10 @@ _080F26CA:\n\
 	bl PrintOptionMessage2\n\
 	movs r0, #0x97\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x98\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r6, #3]\n\
 	adds r0, #1\n\
 	strb r0, [r6, #3]\n\
@@ -467,9 +468,9 @@ _080F29AC:\n\
 	b _080F2BF8\n\
 _080F29BA:\n\
 	movs r0, #0x97\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x98\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	ldr r4, _080F2A00 @ =0x087044BC\n\
 	ldr r0, [r4]\n\
 	ldr r5, _080F2A04 @ =0x08704520\n\
@@ -532,7 +533,7 @@ _080F2A2A:\n\
 	adds r4, #0xe8\n\
 	adds r0, r4, #0\n\
 	movs r1, #3\n\
-	bl SetCameraMode\n\
+	bl Camera_SetMode\n\
 	movs r0, #8\n\
 	strb r0, [r4, #0x19]\n\
 	strh r7, [r4, #0x22]\n\
@@ -686,7 +687,7 @@ _080F2B84:\n\
 	adds r4, #0xe8\n\
 	adds r0, r4, #0\n\
 	movs r1, #6\n\
-	bl SetCameraMode\n\
+	bl Camera_SetMode\n\
 	movs r0, #8\n\
 	strb r0, [r4, #0x19]\n\
 	strh r5, [r4, #0x22]\n\
@@ -740,9 +741,9 @@ _080F2BF6:\n\
 	strb r0, [r6, #3]\n\
 _080F2BF8:\n\
 	movs r0, #0x97\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x98\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	add sp, #0x20\n\
 	pop {r3, r4, r5}\n\
 	mov r8, r3\n\

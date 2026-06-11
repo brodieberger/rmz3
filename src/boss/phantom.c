@@ -21,7 +21,7 @@ static_assert(sizeof(struct BossPhantom) == sizeof(struct Boss));
 void FUN_080c4be0(s32 x, s32 y);
 
 void phantom_080607e4(struct Entity* p);
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2);
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2);
 void FUN_080607a0(struct BossPhantom* p, s32 anim);
 
 static const motion_t sMotions[];
@@ -239,7 +239,7 @@ _0805EED0: .4byte onCollision\n\
 }
 
 // 0x0805eed4
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   struct BossPhantom* p = (struct BossPhantom*)body->parent;
   if (body->hitboxFlags & BODY_STATUS_WHITE) PlaySound(SE_PHANTOM_DAMAGE);
   p->isRight = ((pZero2->s).coord.x - (p->s).coord.x) > 0;
@@ -248,7 +248,7 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 static const EntityFunc sUpdates[1];
 
 static void Phantom_Update(struct BossPhantom* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     if (p->unk_d0 != NULL) p->unk_d0 = NULL;
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;

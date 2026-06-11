@@ -28,14 +28,9 @@ const SolidRoutine gLavaRiverPlatformRoutine = {
 // clang-format on
 
 void CreateLavaRiverPlatform(u32 x, u32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_LAVA_RIVER_PLATFORM);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -50,9 +45,9 @@ static void LavaRiverPlatform_Init(struct Solid8Object* p) {
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = (struct Rect*)&sSize;
-  (p->s).hazardAttr = 0x2001;
+  (p->s).physicsAttr = MTATTR_CONVEYOR1 | SHAPE_BLOCK;
   p->y = PIXEL(40);
   LavaRiverPlatform_Update((void*)p);
 }
@@ -79,7 +74,7 @@ static void LavaRiverPlatform_Update(struct Solid* p) {
 // --------------------------------------------
 
 static void LavaRiverPlatform_Die(struct Solid* p) {
-  (p->s).flags2 &= ~ENTITY_HAZARD;
+  (p->s).flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 

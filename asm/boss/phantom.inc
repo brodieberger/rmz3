@@ -2443,7 +2443,7 @@ _080602D0:
 	movs r1, #0
 	bl FUN_080607a0
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x14
 	strb r0, [r5, #0xe]
 	b _080603AC
@@ -3035,7 +3035,7 @@ _08060746:
 	strb r0, [r5, #0xe]
 _0806074C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08060794
 	.align 2, 0
 _08060754: .4byte 0x0000BC13
@@ -3116,7 +3116,7 @@ _080607E0: .4byte sMotions
 	thumb_func_start phantom_080607e4
 phantom_080607e4: @ 0x080607E4
 	push {lr}
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r0}
 	bx r0
 	.align 2, 0

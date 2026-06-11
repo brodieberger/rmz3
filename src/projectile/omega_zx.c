@@ -16,13 +16,10 @@ const ProjectileRoutine gOmegaZXProjectileRoutine = {
 };
 // clang-format on
 
-struct Projectile* FUN_080afe84(struct Entity* parent, struct Coord* c, u8 n) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_080afe84(struct Entity* parent, Coords32* c, u8 n) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 41);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).work[1] = n;
     (p->s).coord.x = c->x;
@@ -32,13 +29,10 @@ struct Projectile* FUN_080afe84(struct Entity* parent, struct Coord* c, u8 n) {
   return p;
 }
 
-struct Projectile* FUN_080afedc(struct Entity* parent, struct Coord* c, u8 n) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_080afedc(struct Entity* parent, Coords32* c, u8 n) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 41);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = n;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
@@ -47,13 +41,10 @@ struct Projectile* FUN_080afedc(struct Entity* parent, struct Coord* c, u8 n) {
   return p;
 }
 
-struct Projectile* FUN_080aff34(struct Entity* parent, struct Coord* c) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_080aff34(struct Entity* parent, Coords32* c) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 41);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 4;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
@@ -62,13 +53,10 @@ struct Projectile* FUN_080aff34(struct Entity* parent, struct Coord* c) {
   return p;
 }
 
-struct Projectile* FUN_080aff88(struct Entity* parent, struct Coord* c, u8 n) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_080aff88(struct Entity* parent, Coords32* c, u8 n) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 41);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 5;
     (p->s).work[1] = n;
     (p->s).coord.x = c->x;

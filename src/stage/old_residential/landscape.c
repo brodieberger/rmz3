@@ -7,10 +7,10 @@
 static const u8 u8_ARRAY_0833dfac[9][2];
 static const u8 u8_ARRAY_0833dfbe[14][2];
 
-static void initOldLifeSpace(struct Coord* _ UNUSED);
-static void oldLifeSpace_0800dbc4(struct Coord* _ UNUSED);
-static void FUN_0800dc6c(struct Coord* _ UNUSED);
-static void exitOldLifeSpace(struct Coord* _ UNUSED);
+static void initOldLifeSpace(Coords32* _ UNUSED);
+static void oldLifeSpace_0800dbc4(Coords32* _ UNUSED);
+static void FUN_0800dc6c(Coords32* _ UNUSED);
+static void exitOldLifeSpace(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initOldLifeSpace,
@@ -19,7 +19,7 @@ static const StageFunc sStageRoutine[4] = {
     exitOldLifeSpace,
 };
 
-static void initOldLifeSpace(struct Coord* _ UNUSED) {
+static void initOldLifeSpace(Coords32* _ UNUSED) {
   STAGE.leaf = NULL;
   STAGE.unk_004[0] = 0;
   STAGE.unk_008 = 0;
@@ -29,7 +29,7 @@ static void initOldLifeSpace(struct Coord* _ UNUSED) {
   STAGE.unk_012 = 0;
 }
 
-static void oldLifeSpace_0800dbc4(struct Coord* _ UNUSED) {
+static void oldLifeSpace_0800dbc4(Coords32* _ UNUSED) {
   if (STAGE.leaf == NULL) {
     STAGE.leaf = CreateLeafBurn(0);
   }
@@ -59,7 +59,7 @@ static void oldLifeSpace_0800dbc4(struct Coord* _ UNUSED) {
   }
 }
 
-static void FUN_0800dc6c(struct Coord* _ UNUSED) {
+static void FUN_0800dc6c(Coords32* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_OLD_RESIDENTIAL) && (TILESET_IDX(0) == 0)) {
     while (STAGE.unk_008 >= u8_ARRAY_0833dfac[STAGE.unk_00a][1]) {
       STAGE.unk_00a++;
@@ -82,7 +82,7 @@ static void FUN_0800dc6c(struct Coord* _ UNUSED) {
   }
 }
 
-static void exitOldLifeSpace(struct Coord* _ UNUSED) {
+static void exitOldLifeSpace(Coords32* _ UNUSED) {
   struct Solid* leaf = STAGE.leaf;
   if (leaf != NULL) {
     (leaf->s).flags &= ~DISPLAY;
@@ -167,29 +167,30 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   }
 }
 
+// 0x0800DECC
 static void LayerDraw_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   s32 x, y;
   u32 dx, dy;
-  struct Coord c;
+  PixelCoords lefttop;
   struct LayerGraphic* g;
 
   g = &l->gfx;
 
-  x = (l->viewportCenterPixel).x;
-  y = (l->viewportCenterPixel).y;
+  x = (l->viewportLeftTopPixel).x;
+  y = (l->viewportLeftTopPixel).y;
 
-  dx = (u32)(x - (l->prevViewportCenterPixel).x) + 15;
-  dy = (u32)(y - (l->prevViewportCenterPixel).y) + 15;
+  dx = (u32)(x - (l->prevViewportLeftTopPixel).x) + 15;
+  dy = (u32)(y - (l->prevViewportLeftTopPixel).y) + 15;
 
-  y += 160 * 10;
+  y += DISPLAY_HEIGHT * 10;
 
-  c.x = COORD_TO_PIXEL((l->drawPivotOffset).x) + x;
-  c.y = COORD_TO_PIXEL((l->drawPivotOffset).y) + y;
+  lefttop.x = COORD_TO_PIXEL((l->drawPivotOffset).x) + x;
+  lefttop.y = COORD_TO_PIXEL((l->drawPivotOffset).y) + y;
 
   if ((dx >= 31) || (dy >= 31) || (STAGE.unk_004[0] != 0)) {
-    FUN_08006ae0(g, &c, (u32*)(VRAM + SCREEN_BASE_16(l->bgIdx >> 4)), (u16*)gOverworld.terrain.tilemap);
+    FUN_08006ae0(g, &lefttop, SCREEN_ADDR(l->bgIdx >> 4), gOverworld.terrain.tilemap);
   } else {
-    FUN_08006bb4(g, &c, (u32*)(VRAM + SCREEN_BASE_16(l->bgIdx >> 4)), &gOverworld.terrain.tilemap);
+    FUN_08006bb4(g, &lefttop, SCREEN_ADDR(l->bgIdx >> 4), gOverworld.terrain.tilemap);
   }
 
   STAGE.unk_004[0] = 0;
@@ -227,17 +228,17 @@ static void LayerUpdate_5(struct StageLayer* l, const struct Stage* _ UNUSED) {
     l->phase++;
   }
 
-  if ((l->viewportCenterPixel).x < 960) {
+  if ((l->viewportLeftTopPixel).x < 960) {
     (l->scrollPower).x = 0x40;
     (l->scrollPower).y = 0x100;
     (l->scroll).x = 180;
     (l->scroll).y = 0;
-  } else if ((l->viewportCenterPixel).y >= 321) {
+  } else if ((l->viewportLeftTopPixel).y > 320) {
     (l->scrollPower).x = 0x40;
     (l->scrollPower).y = 0x40;
     (l->scroll).x = 1260;
     (l->scroll).y = 360;
-  } else if ((l->viewportCenterPixel).x < 1920) {
+  } else if ((l->viewportLeftTopPixel).x < 1920) {
     (l->scrollPower).x = 0x40;
     (l->scrollPower).y = 0x40;
     (l->scroll).x = 1260;
@@ -460,7 +461,7 @@ void FUN_0800e2c4(s32 x, s32 y) {
     val = gOverworld.terrain.tilemap_duty;
     mx = METACOORD(x);
     my = METACOORD(y + PIXEL(1600));
-    PatchMetatileMap(mx, my, (struct MetatilePatch*)&sMetatilePatch2x1_0833dfda);
+    PatchMetatileMap(mx, my, (void*)&sMetatilePatch2x1_0833dfda);
     gOverworld.terrain.tilemap_duty = val;
     STAGE.unk_004[0] = 1;
   }
@@ -474,10 +475,10 @@ struct MetatilePatch2x2 {
 };
 
 static const struct MetatilePatch2x2 ALIGNED(2) sDefaultMetatilePatch2x2;
-static const struct Coord sMetatilePatch2x2Coords[12];
+static const Coords32 sMetatilePatch2x2Coords[12];
 static const struct MetatilePatch2x2 sMetatilePatch2x2s[12];
 
-void FUN_0800e370(struct Coord* c) {
+void FUN_0800e370(Coords32* c) {
   s16 i;
   s32 x, y;
 
@@ -486,12 +487,12 @@ void FUN_0800e370(struct Coord* c) {
 
   for (i = 0; i < 12; i++) {
     if ((x == sMetatilePatch2x2Coords[i].x) && (y == sMetatilePatch2x2Coords[i].y)) {
-      PatchMetatileMap(x, y, (struct MetatilePatch*)&sMetatilePatch2x2s[i]);
+      PatchMetatileMap(x, y, (void*)&sMetatilePatch2x2s[i]);
       return;
     }
   }
 
-  PatchMetatileMap(x, y, (struct MetatilePatch*)&sDefaultMetatilePatch2x2);
+  PatchMetatileMap(x, y, (void*)&sDefaultMetatilePatch2x2);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -593,7 +594,7 @@ static const struct MetatilePatch2x2 ALIGNED(2) sDefaultMetatilePatch2x2 = {
 };
 
 // clang-format off
-static const struct Coord sMetatilePatch2x2Coords[12] = {
+static const Coords32 sMetatilePatch2x2Coords[12] = {
     {109, 27},
     {115, 27},
     {120, 15},

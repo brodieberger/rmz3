@@ -28,19 +28,19 @@ s32 FUN_080349a8(struct Entity* p) {
   return FUN_08009f6c((p->coord).x, (p->coord).y);
 }
 
-struct Zero* CreatePlayerPhantom(void* q, s32 x, s32 y) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_PHANTOM);
-    (z->s).work[0] = 0;
-    (z->s).coord.x = x, (z->s).coord.y = y;
-    (z->s).unk_28 = q;
+struct Entity* CreatePlayerPhantom(void* q, s32 x, s32 y) {
+  struct Entity* p = AllocPlayer();
+  if (p != NULL) {
+    p->renderPrio = 16;
+    INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_PHANTOM);
+    p->work[0] = 0;
+    p->coord.x = x, p->coord.y = y;
+    p->unk_28 = q;
   }
-  return z;
+  return p;
 }
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct MinigameState* s;
   struct Zero* z = (struct Zero*)body->parent;
   if (body->hitboxFlags & BODY_STATUS_WHITE) {

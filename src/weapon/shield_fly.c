@@ -1,6 +1,6 @@
 #include "collision.h"
 #include "global.h"
-#include "mission.h"
+#include "score.h"
 #include "sound.h"
 #include "weapon.h"
 
@@ -9,7 +9,7 @@ static const motion_t sShieldFlyMotions[3][4];
 static const WeaponFunc sShieldFlyUpdates[5];
 
 bool32 shield_0803a5fc(struct WeaponCommon* w);
-static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onHit(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void ShieldFly_Init(struct WeaponCommon* p);
 static void ShieldFly_Update(struct WeaponCommon* p);
@@ -31,14 +31,14 @@ struct Entity* CreateWeaponShieldFly(struct Zero* z, u8 r1) {
   struct WeaponCommon* p;
 
   KillAllWeapons(DeleteSaber);
-  p = (struct WeaponCommon*)AllocEntityFirst(gWeaponHeaderPtr);
+  p = (struct WeaponCommon*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     u8 element;
 
     if ((z->unk_b4).mainCopy == WEAPON_SHIELD) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_FLY);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(0, element);
@@ -46,7 +46,7 @@ struct Entity* CreateWeaponShieldFly(struct Zero* z, u8 r1) {
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_FLY);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
@@ -65,7 +65,7 @@ static void ShieldFly_Init(struct WeaponCommon* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, sShieldFlyMotions[(p->s).work[1]][(p->s).work[0]]);
+  SetSpriteAnimation(p, sShieldFlyMotions[(p->s).work[1]][(p->s).work[0]]);
   PlaySound(SE_CHARGE_SHIELD_VOICE);
   (&p->props)->props[1][2] = 1;
   ShieldFly_Update(p);
@@ -96,7 +96,7 @@ static void ShieldFly_Update(struct WeaponCommon* p) {
     }
   }
   (sShieldFlyUpdates[(p->s).mode[1]])((void*)p);
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 
   if (((p->s).mode[1] == 2) && shield_0803a5fc(p)) {
     SET_WEAPON_ROUTINE(p, ENTITY_DIE);
@@ -108,10 +108,8 @@ static void ShieldFly_Die(struct Entity* p) {
   SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
-static void onHit(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
-  if ((body->hitboxFlags & BODY_STATUS_B2) && (gMission.weaponCount[WEAPON_SHIELD] < 0xFFFF)) {
-    gMission.weaponCount[WEAPON_SHIELD]++;
-  }
+static void onHit(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  if (body->hitboxFlags & BODY_STATUS_B2) IncWeaponUseCount(WEAPON_SHIELD);
 }
 
 INCASM("asm/weapon/shield_fly.inc");

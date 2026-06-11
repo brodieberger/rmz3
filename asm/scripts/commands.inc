@@ -6,25 +6,23 @@
   .4byte \dst
 	.endm
 
-	.macro pause
+  .macro cmd01 subcommand arg
   .byte 0x01
-	.byte 0x00
-  .2byte 0x00
-  .4byte 0x00
+  .byte \subcommand
+  .2byte 0
+  .4byte \arg
+  .endm
+
+	.macro pause
+  cmd01 0, 0
 	.endm
 
 	.macro wait frame
-  .byte 0x01
-	.byte 0x01
-  .2byte 0x00
-  .4byte \frame
+  cmd01 1, \frame
 	.endm
 
 	.macro waitabs absolute_time
-  .byte 0x01
-	.byte 0x02
-  .2byte 0x00
-  .4byte \absolute_time
+  cmd01 2, \absolute_time
 	.endm
 
 	.macro time t
@@ -46,7 +44,7 @@
 	.byte 0x00, 0x00, 0x00
   .4byte \template
 	.endm
-
+  
 	.macro adjust_camera a b c
   .byte 0x05
 	.byte \a
@@ -55,38 +53,35 @@
 	.endm
 
 	.macro change_camera_mode mode
-  .byte 0x05
-	.byte 0x00
-  .2byte 0x00
-  .4byte \mode
+  adjust_camera 0, 0, \mode
+	.endm
+
+	.macro set_chase_mode mode
+  adjust_camera 1, 0, \mode
+	.endm
+
+	.macro set_camera_target_x x_coord
+  adjust_camera 3, 0, \x_coord
+	.endm
+
+	.macro set_camera_target_y y_coord
+  adjust_camera 4, 0, \y_coord
 	.endm
 
 	.macro scroll_speed_x speed
-  .byte 0x05
-	.byte 0x05
-  .2byte 0x00
-  .4byte \speed
+  adjust_camera 5, 0, \speed
 	.endm
 
 	.macro scroll_speed_y speed
-  .byte 0x05
-	.byte 0x06
-  .2byte 0x00
-  .4byte \speed
+  adjust_camera 6, 0, \speed
 	.endm
 
 	.macro stop_camera
-  .byte 0x05
-	.byte 0x10
-  .2byte 0x00
-  .4byte 0x00
+  adjust_camera 16, 0, 0
 	.endm
 
 	.macro resume_camera
-  .byte 0x05
-	.byte 0x11
-  .2byte 0x00
-  .4byte 0x00
+  adjust_camera 17, 0, 0
 	.endm
 
 	.macro cmd06 a b c
@@ -97,10 +92,7 @@
 	.endm
 
   .macro backdrop_color color
-  .byte 0x06
-	.byte 0x00
-  .2byte 0x05
-  .2byte \color, 0x00
+  cmd06 0, 5, \color
 	.endm
 
 	.macro resume a
@@ -115,6 +107,16 @@
 	.byte \a
   .2byte 0x00
   .4byte \c
+	.endm
+
+  @ VM.active の bitidx がセットされるまで待機する
+	.macro cmd08_wait_set bitidx
+  cmd08 1, (1 << \bitidx)
+	.endm
+
+  @ VM.active の bitidx がクリアされるまで待機する
+	.macro cmd08_wait_clear bitidx
+  cmd08 0, (1 << \bitidx)
 	.endm
 
   .macro lock
@@ -140,44 +142,40 @@
 
   .macro spawn slot addr b=0
   .byte 0x0b
-	.byte \slot
+	.byte \slot @ gStageRun.vm.entities の idx
   .2byte \b
   .4byte \addr
 	.endm
 
-	.macro entity a b c
+  .macro change_entity_val slot targetattr val
   .byte 0x0c
-	.byte \a
-  .2byte \b
-  .4byte \c
+	.byte \slot
+  .2byte \targetattr
+  .4byte \val
+	.endm
+
+  .macro set_entity_coords slot coords
+  change_entity_val \slot, 0x0, \coords
 	.endm
 
 	.macro turn_left slot
-  .byte 0x0c
-	.byte \slot
-  .2byte 0x02
-  .4byte 0x00
+  change_entity_val \slot, 0x2, 0
 	.endm
 
 	.macro turn_right slot
-  .byte 0x0c
-	.byte \slot
-  .2byte 0x02
-  .4byte 0x01
+  change_entity_val \slot, 0x2, 1
 	.endm
 
 	.macro visible slot val
-  .byte 0x0c
-	.byte \slot
-  .2byte 0x04+\val
-  .4byte 0x00
+  change_entity_val \slot, 0x4+\val, 0
 	.endm
 
   .macro destroy slot
-  .byte 0x0c
-	.byte \slot
-  .2byte 0x06
-  .4byte 0x00
+  change_entity_val \slot, 0x6, 0
+	.endm
+
+	.macro detach_entity slot
+  change_entity_val \slot, 0x7, 0x0
 	.endm
 
 	.macro entityflag slot bit bool
@@ -200,14 +198,17 @@
   .4byte \c
 	.endm
 
-	.macro emergency_on
-  .byte 0x10, 0
+	.macro set_emergency on_off
+  .byte 0x10, \on_off
   .2byte 0, 0, 0
 	.endm
 
+	.macro emergency_on
+  set_emergency 0
+	.endm
+
 	.macro emergency_off
-  .byte 0x10, 1
-  .2byte 0, 0, 0
+  set_emergency 1
 	.endm
 
 	.macro quake a b c
@@ -224,13 +225,13 @@
   .4byte 0
 	.endm
 
-	.macro emotion idx x y c
+  .macro emotion_bubble target_entity_idx pixel_x pixel_y emotion_kind
   .byte 0x12
-	.byte \idx
-  .2byte \x >> 8
-  .2byte \c
-  .2byte \y >> 8
-	.endm
+  .byte \target_entity_idx
+  .2byte \pixel_x
+  .2byte \emotion_kind
+  .2byte \pixel_y
+  .endm
 
 	.macro scroll a string_id duration
   .byte 0x13
@@ -239,29 +240,25 @@
   .4byte \duration
 	.endm
 
-	.macro screeneffect a
-	.byte 0x14, \a
+	.macro start_transition vmtransition
+	.byte 0x14, \vmtransition
   .2byte 0, 0, 0
 	.endm
 
-  .macro wait_screeneffect
-	.byte 0x14, 0x00
-  .2byte 0, 0, 0
+  .macro wait_transition_end
+	start_transition 0
 	.endm
 
   .macro normal_screen
-	.byte 0x14, 0x01
-  .2byte 0, 0, 0
+	start_transition (1 << 0)
 	.endm
 
   .macro blackout_screen
-	.byte 0x14, 0x02
-  .2byte 0, 0, 0
+	start_transition (1 << 1)
 	.endm
 
   .macro whiteout_screen
-	.byte 0x14, 0x04
-  .2byte 0, 0, 0
+	start_transition (1 << 2)
 	.endm
 
   @ string_id で指定した文字列(string.s) を描画させる (print_string_end を呼ぶまで表示し続ける)
@@ -287,18 +284,15 @@
 	.endm
 
   .macro wait_indicator_end
-  .byte 0x16, 0x00
-  .2byte 0x00, 0x00, 0x00
+  indicator 0, 0, 0
 	.endm
 
   .macro failed_or_gameover_indicator
-  .byte 0x16, 0x02
-  .2byte 0x00, 0x00, 0x00
+  indicator 2, 0, 0
 	.endm
 
   .macro warning_indicator
-  .byte 0x16, 0x04
-  .2byte 0x00, 0x00, 0x00
+  indicator 4, 0, 0
 	.endm
 
 	.macro message a b c
@@ -309,28 +303,19 @@
 	.endm
 
 	.macro print_message msgtype textid
-  .byte 0x17
-	.byte 0
-  .2byte \msgtype
-  .2byte \textid
-  .2byte 0x00
+  message 0, \msgtype, \textid
 	.endm
 
 	.macro wait_msgbox_end
-  .byte 0x17, 2
-  .2byte 0x00, 0x00, 0x00
+  message 2, 0, 0
 	.endm
 
 	.macro triumphant_message slot textid
-  .byte 0x17, 3
-  .2byte \slot
-  .2byte \textid
-  .2byte 0x00
+  message 3, \slot, \textid
 	.endm
 
   .macro kill_message
-  .byte 0x17, 7
-  .2byte 0x00, 0x00, 0x00
+  message 7, 0, 0
   .endm
 
   .macro play_bgm song
@@ -383,31 +368,19 @@
 	.endm
 
   .macro clear_force_coord
-  .byte 0x1a
-	.byte 1
-  .2byte 0
-  .4byte 0
+  force 1, 0, 0
 	.endm
 
   .macro start_talk
-  .byte 0x1a
-	.byte 2
-  .2byte 0
-  .4byte 0
+  force 2, 0, 0
 	.endm
 
   .macro end_talk
-  .byte 0x1a
-	.byte 3
-  .2byte 0
-  .4byte 0
+  force 3, 0, 0
 	.endm
 
   .macro walkto dst
-  .byte 0x1a
-	.byte 9
-  .2byte 0
-  .4byte \dst
+  force 9, 0, \dst
 	.endm
 
 	.macro gimmick a b c
@@ -445,11 +418,21 @@
   .4byte 0
 	.endm
 
-	.macro eventflag a b c
-  .byte 0x1f
+	.macro cutscene_flag a b
+  .byte 0x1F
 	.byte \a
   .2byte \b
-  .4byte \c
+  .4byte 0
+	.endm
+
+  @ ここから cutscene_end までのコマンドがカットシーンであることを示すコマンド
+	.macro cutscene_start cutscene_id
+  cutscene_flag 0, \cutscene_id
+	.endm
+
+  @ カットシーンの終了を示す (初見のイベントだったらここで見たことをあらわすフラグが立つ)
+	.macro cutscene_end
+  cutscene_flag 1, 0
 	.endm
 
   @ 汎用的なグラフィックデータ (戦闘エフェクト、吹き出し、数字、エレメントエフェクト) の読み込み
@@ -458,18 +441,17 @@
 	.2byte 0x00, 0x00, 0x00
 	.endm
 
-	.macro prepare_missionresult
-  .byte 0x22
-	.byte 0
-  .2byte 0
-  .4byte 0
+	.macro result_screen init_or_update
+  .byte 0x22, \init_or_update
+  .2byte 0x00, 0x00, 0x00
 	.endm
 
-	.macro missionresult
-  .byte 0x22
-	.byte 1
-  .2byte 0
-  .4byte 0
+	.macro start_result_screen
+  result_screen 0
+	.endm
+
+	.macro wait_for_result_screen_end
+  result_screen 1
 	.endm
 
 	.macro goodluck val
@@ -486,12 +468,28 @@
   .4byte 0
 	.endm
 
-	.macro cutscene id
+  @ 大きな一枚絵を使って(静止したものではない)ムービーシーンを再生する
+	.macro play_movie id
   .byte 0x25
 	.byte \id
   .2byte 0
   .4byte 0
 	.endm
+
+  @ プロローグで落ちてきた宇宙船を発見したときのムービー
+  .macro play_find_spacecraft_movie step
+  play_movie (0 + \step)
+  .endm
+
+  @ オリジナルゼロが出てきたときのムービー
+  .macro play_omega_zero_appear_movie step
+  play_movie (3 + \step)
+  .endm
+
+  @ 後半の4ミッションを終えた後にオメガによる洗脳が始まるときのムービー
+  .macro play_brain_control_movie step
+  play_movie (6 + \step)
+  .endm
 
 	.macro end
   .byte 0xFF

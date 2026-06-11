@@ -1,9 +1,12 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
+
+void zero_08032724(struct Zero* z);
 
 enum ZeroLadder {
   LADDER_UP,

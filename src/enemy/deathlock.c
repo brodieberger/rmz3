@@ -228,7 +228,7 @@ static const motion_t sMotions1[6] = {
 static const u8 sCollisionIdxs1[6] = {2, 4, 8, 10, 10, 12};
 
 // 0x08369314
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(12)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(12)};
 
 // 0x0836931C
 static const u8 sCollisionIdxs2[6] = {3, 6, 9, 11, 11, 13};

@@ -16,14 +16,10 @@ const EnemyRoutine gSwordyRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateSwordy(struct Coord* c, u8 n) {
-  struct Entity* p = (struct Entity*)AllocEntityFirst(gEnemyHeaderPtr);
+struct Entity* CreateSwordy(Coords32* c, u8 n) {
+  struct Entity* p = (struct Entity*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_SWORDY);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = n;
   }
@@ -105,4 +101,4 @@ static const struct Collision sCollisions[5] = {
 };
 
 // 0x08367ad0
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(12)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(12)};

@@ -5,7 +5,7 @@
 
 #define FONT_BOLD 0x7800
 
-static s32 printStringWithLen(u8 startX, u8 startY, char_t* s, u16 len);
+static s32 printStringWithLen(u8 start_x8, u8 start_y8, char_t* s, u16 len);
 
 void InitTextPrinter(u32* bg0) {
   gTextPrinter.bg0 = (tile_id_t*)bg0;
@@ -18,7 +18,7 @@ void InitTextPrinter(u32* bg0) {
 }
 
 void LoadAsciiBold(void) {
-  static const ALIGNED(4) u16 sDefaultBGPalette[SLOT_4BPP] = {
+  static const ALIGNED(4) u16 sDefaultBGPalette[16] = {
       0x0000, 0xFFFF, 0xB9CE, 0x8421, 0xC21F, 0xABFF, 0xC3EC, 0x9E80, 0xA110, 0xF3F3, 0xF68A, 0xD14A, 0xA8FC, 0x8537, 0x908D, 0xCEB5,
   };
 
@@ -81,7 +81,7 @@ WIP void PrintAllStrings(void) {
   gTextPrinter.cur = NULL;
 
   for (i = 0; i < gTextPrinter.len; i++) {
-    printStringWithLen(gTextPrinter.x[i], gTextPrinter.y[i], gTextPrinter.strings[i], gTextPrinter.progress[i]);
+    printStringWithLen(gTextPrinter.x8[i], gTextPrinter.y8[i], gTextPrinter.strings[i], gTextPrinter.progress[i]);
   }
   gTextPrinter.len = 0;
 #else
@@ -291,74 +291,59 @@ _080E9A70: .4byte gFontBig+32\n\
 s16 getStringLength(char_t* s) {
   s16 len = 0;
   for (; *s < CHAR_NEXT; s++) {
-    if (*s == CHAR_VARIABLE) {  // Insert
-      len += getStringLength(gTextPrinter.variable);
-    }
-    if (*s < 0xF0) {
-      len++;
-    }
+    if (*s == CHAR_VARIABLE) len += getStringLength(gTextPrinter.variable);
+    if (*s < CHAR_KANJI) len++;  // バイト数ではなく文字数を数える
   }
   return len;
 }
 
-// Unused
-static s16 GetLineCount(char_t* s) {
+static s16 Unused_GetLineCount(char_t* s) {
   s16 line = 1;
   for (; *s < CHAR_NEXT; s++) {
-    if (*s == CHAR_LF) {
-      line++;
-    }
+    if (*s == CHAR_LF) line++;
   }
   return line;
 }
 
-void PrintString(const char_t* s, u32 x, u32 y) {
+void PrintString(const char_t* s, u32 x8, u32 y8) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
     gTextPrinter.strings[gTextPrinter.len] = (char_t*)s;
-    gTextPrinter.x[gTextPrinter.len] = x;
-    gTextPrinter.y[gTextPrinter.len] = y;
+    gTextPrinter.x8[gTextPrinter.len] = x8;
+    gTextPrinter.y8[gTextPrinter.len] = y8;
     gTextPrinter.progress[gTextPrinter.len] = -1;
     gTextPrinter.len++;
   }
 }
 
-void text_080e9b40(const char_t* s, u32 x, u32 y, u16 count) {
+void text_080e9b40(const char_t* s, u32 x8, u32 y8, u16 count) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
     gTextPrinter.strings[gTextPrinter.len] = (char_t*)s;
-    gTextPrinter.x[gTextPrinter.len] = x;
-    gTextPrinter.y[gTextPrinter.len] = y;
+    gTextPrinter.x8[gTextPrinter.len] = x8;
+    gTextPrinter.y8[gTextPrinter.len] = y8;
     gTextPrinter.progress[gTextPrinter.len] = count;
     gTextPrinter.len++;
   }
 }
 
 // 文字列のうち、 rowStart行 から rowEnd行 までを描画
-void PrintRows(char_t* s, u32 x, u32 y, u16 rowStart, u16 rowEnd) {
+void PrintRows(char_t* s, u32 x8, u32 y8, u16 rowStart, u16 rowEnd) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
     u16 line = 0;
     for (; (line < rowStart) && (*s < CHAR_NEXT); s++) {
-      if (*s == CHAR_LF) {
-        line++;
-      }
+      if (*s == CHAR_LF) line++;
     }
 
     if (*s < CHAR_NEXT) {
       u16 len;
       gTextPrinter.strings[gTextPrinter.len] = s;
-      gTextPrinter.x[gTextPrinter.len] = x;
-      gTextPrinter.y[gTextPrinter.len] = y;
+      gTextPrinter.x8[gTextPrinter.len] = x8;
+      gTextPrinter.y8[gTextPrinter.len] = y8;
 
       len = 0;
       for (; (line < rowEnd) && (*s < CHAR_NEXT); s++) {
-        if (*s == CHAR_VARIABLE) {
-          len += getStringLength(gTextPrinter.variable);
-        }
-        if (*s < CHAR_KANJI) {
-          len++;
-        }
-        if (*s == CHAR_LF) {
-          line++;
-        }
+        if (*s == CHAR_VARIABLE) len += getStringLength(gTextPrinter.variable);
+        if (*s < CHAR_KANJI) len++;
+        if (*s == CHAR_LF) line++;
       }
       gTextPrinter.progress[gTextPrinter.len] = len;
       gTextPrinter.len++;
@@ -406,7 +391,7 @@ NAKED void PrintMinigameNumber(s32 score, u16 x, u16 y) { INCCODE("asm/todo/Prin
 
 NAKED void unused_080e9d94(s32 r0, u16 r1, u16 r2) { INCCODE("asm/unused/unused_080e9d94.inc"); };
 
-NAKED static s32 printStringWithLen(u8 startX, u8 startY, char_t* s, u16 len) {
+NAKED static s32 printStringWithLen(u8 start_x8, u8 start_y8, char_t* s, u16 len) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\

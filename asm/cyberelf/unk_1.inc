@@ -19,7 +19,7 @@ Elf1_Update: @ 0x080E21C8
 	ldr r4, [r0]
 	ldr r5, [r0, #4]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	lsls r1, r4, #0x10
 	asrs r1, r1, #0x10
 	ldr r0, [r6, #0x54]
@@ -119,7 +119,7 @@ Elf1_Die: @ 0x080E229C
 	ldr r1, _080E22FC @ =gPause
 	movs r0, #0
 	strb r0, [r1]
-	ldr r1, _080E2300 @ =gUnlockedElfPtr
+	ldr r1, _080E2300 @ =gElfAvailability
 	adds r3, r2, #0
 	adds r3, #0xb4
 	ldr r5, _080E2304 @ =0x00000121
@@ -134,7 +134,7 @@ Elf1_Die: @ 0x080E229C
 	ldrh r0, [r3, #4]
 	adds r0, #1
 	strh r0, [r3, #4]
-	ldr r0, _080E2308 @ =gMission
+	ldr r0, _080E2308 @ =gScore
 	ldr r0, [r0]
 	adds r1, r0, #0
 	adds r1, #0x4c
@@ -162,9 +162,9 @@ _080E22DA:
 	bx r0
 	.align 2, 0
 _080E22FC: .4byte gPause
-_080E2300: .4byte gUnlockedElfPtr
+_080E2300: .4byte gElfAvailability
 _080E2304: .4byte 0x00000121
-_080E2308: .4byte gMission
+_080E2308: .4byte gScore
 _080E230C: .4byte gElfFnTable
 
 	thumb_func_start FUN_080e2310

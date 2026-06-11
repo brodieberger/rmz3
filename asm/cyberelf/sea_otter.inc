@@ -16,7 +16,7 @@ CreateSeaotterElf: @ 0x080E45B8
 	lsrs r5, r3, #0x18
 	ldr r0, _080E4610 @ =gElfHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080E4620
@@ -99,7 +99,7 @@ SeaOtterElf_Init: @ 0x080E4628
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x4c
 	mov r1, r8
@@ -176,7 +176,7 @@ SeaOtterElf_Update: @ 0x080E4700
 	adds r0, #0xb4
 	ldr r5, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080E476C @ =gPause
 	ldrb r3, [r0]
 	cmp r3, #0

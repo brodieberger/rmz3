@@ -23,15 +23,10 @@ const SolidRoutine gSeaLevelButtonRoutine = {
 
 // --------------------------------------------
 
-struct Solid* CreateSeaLevelButton(u8 idx, struct Coord* c) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+struct Solid* CreateSeaLevelButton(u8 idx, Coords32* c) {
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_SEA_LV_BTN);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
     (p->s).work[0] = idx;
@@ -42,7 +37,7 @@ struct Solid* CreateSeaLevelButton(u8 idx, struct Coord* c) {
 // --------------------------------------------
 
 static void SeaLevelButton_Init(struct Solid* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
   (p->s).flags |= FLIPABLE;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
   velocity = &(p->s).d;
@@ -77,7 +72,7 @@ _080DFFAC:\n\
 	ldr r0, _080E00C4 @ =gStageRun+232\n\
 	adds r1, r7, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #5\n\
 	adds r5, r7, #0\n\
@@ -178,7 +173,7 @@ _080E0042:\n\
 	strb r0, [r7, #0xd]\n\
 _080E007E:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r1, r7, #0\n\
 	adds r1, #0x8c\n\
 	ldr r2, [r1]\n\
@@ -267,7 +262,7 @@ _080E00F2:\n\
 _080E0142:\n\
 	ldr r0, _080E01E0 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #5\n\
 	cmp r0, r1\n\
@@ -348,24 +343,24 @@ _080E01E4: .4byte gSolidFnTable\n\
 static void SeaLevelButton_Die(struct Solid* p) {
   switch ((p->s).mode[1]) {
     case 0: {
-      if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(16)) {
+      if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(16)) {
         return;
       }
       LOAD_STATIC_GRAPHIC(SM181_SEA_LEVEL_BUTTON);
       (p->s).flags |= DISPLAY;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM181_SEA_LEVEL_BUTTON, 2));
-      (p->s).flags2 |= ENTITY_HAZARD;
+      SetSpriteAnimation(p, MOTION(SM181_SEA_LEVEL_BUTTON, 2));
+      (p->s).flags2 |= ENTI_PHYSICS;
       (p->s).size = &sSizes[1];
-      (p->s).hazardAttr = (METATILE_CONVEYOR1 | METATILE_GROUND);
+      (p->s).physicsAttr = (MTATTR_CONVEYOR1 | SHAPE_BLOCK);
       (p->s).mode[1]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
-      if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(16)) {
+      UpdateSpriteAnimation(p);
+      if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(16)) {
         (p->s).flags &= ~DISPLAY;
-        (p->s).flags2 &= ~ENTITY_HAZARD;
+        (p->s).flags2 &= ~ENTI_PHYSICS;
         (p->s).mode[1] = 0;
       }
       break;

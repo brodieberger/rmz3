@@ -183,7 +183,7 @@ initFefnirMinigame: @ 0x080FB05C
 	movs r0, #0
 	str r0, [r5, #0x20]
 	str r0, [r5, #0x24]
-	ldr r0, _080FB244 @ =gSystemSavedataManager
+	ldr r0, _080FB244 @ =gSystemSavedata
 	ldr r0, [r0, #0x34]
 	str r0, [r5, #0x28]
 	ldr r0, _080FB248 @ =0x00000DF8
@@ -220,7 +220,7 @@ _080FB234: .4byte 0x000343FD
 _080FB238: .4byte 0x00269EC3
 _080FB23C: .4byte 0x00000DF9
 _080FB240: .4byte 0x00000DFA
-_080FB244: .4byte gSystemSavedataManager
+_080FB244: .4byte gSystemSavedata
 _080FB248: .4byte 0x00000DF8
 _080FB24C: .4byte 0x00000DFB
 

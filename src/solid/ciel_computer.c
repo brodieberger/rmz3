@@ -50,8 +50,8 @@ static void CielComputer_Init(struct Solid* p) {
   (p->s).flags |= FLIPABLE;
   InitNonAffineMotion(&p->s);
   SET_XFLIP(p, FALSE);
-  SetMotion(&p->s, sMotions[gSystemSavedataManager.cielComputer]);
-  id = sMotions[gSystemSavedataManager.cielComputer] >> 8;
+  SetSpriteAnimation(p, sMotions[gSystemSavedata.cielComputer]);
+  id = sMotions[gSystemSavedata.cielComputer] >> 8;
   LOAD_STATIC_GRAPHIC(id);
   INIT_BODY(p, sCollisions, 0, NULL);
   (p->s).coord.x += PIXEL(8);
@@ -66,7 +66,7 @@ NAKED static void CielComputer_Update(struct Solid* p) {
 	mov r7, r8\n\
 	push {r7}\n\
 	adds r6, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0xd]\n\
 	cmp r0, #0\n\
 	beq _080DF294\n\
@@ -101,7 +101,7 @@ _080DF2B0:\n\
 	beq _080DF2C4\n\
 	b _080DF3EA\n\
 _080DF2C4:\n\
-	ldr r0, _080DF348 @ =gSystemSavedataManager\n\
+	ldr r0, _080DF348 @ =gSystemSavedata\n\
 	adds r4, r0, #0\n\
 	adds r4, #0x48\n\
 	ldrb r0, [r4]\n\
@@ -128,9 +128,9 @@ _080DF2C4:\n\
 	adds r0, r2, #0\n\
 	orrs r1, r0\n\
 	movs r0, #0xf1\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _080DF302:\n\
-	ldr r0, _080DF348 @ =gSystemSavedataManager\n\
+	ldr r0, _080DF348 @ =gSystemSavedata\n\
 	adds r0, #0x48\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #4\n\
@@ -145,7 +145,7 @@ _080DF302:\n\
 	adds r0, r2, #0\n\
 	orrs r1, r0\n\
 	movs r0, #0xf2\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _080DF326:\n\
 	movs r0, #0x95\n\
 	lsls r0, r0, #1\n\
@@ -160,24 +160,24 @@ _080DF326:\n\
 	.align 2, 0\n\
 _080DF340: .4byte gInChat\n\
 _080DF344: .4byte gCollisionManager\n\
-_080DF348: .4byte gSystemSavedataManager\n\
+_080DF348: .4byte gSystemSavedata\n\
 _080DF34C: .4byte sMotions\n\
 _080DF350: .4byte gGameState\n\
 _080DF354: .4byte 0x00060400\n\
 _080DF358:\n\
 	movs r0, #0xf1\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0xf2\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _080DF3F4 @ =gGameState\n\
 	ldrb r7, [r0, #2]\n\
 	cmp r7, #0\n\
 	bne _080DF3EA\n\
 	movs r0, #0xf1\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0xf2\n\
-	bl ClearBlink\n\
-	ldr r0, _080DF3F8 @ =gSystemSavedataManager\n\
+	bl RemovePaletteAnimation\n\
+	ldr r0, _080DF3F8 @ =gSystemSavedata\n\
 	adds r0, #0x48\n\
 	mov r8, r0\n\
 	ldrb r0, [r0]\n\
@@ -240,7 +240,7 @@ _080DF3EA:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _080DF3F4: .4byte gGameState\n\
-_080DF3F8: .4byte gSystemSavedataManager\n\
+_080DF3F8: .4byte gSystemSavedata\n\
 _080DF3FC: .4byte sMotions\n\
 _080DF400: .4byte gStaticMotionGraphics\n\
 _080DF404: .4byte wStaticGraphicTilenums\n\

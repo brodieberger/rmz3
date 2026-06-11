@@ -23,17 +23,17 @@ const ZeroRoutine gFefnirRoutine = {
 // clang-format on
 
 void CreatePlayerFefnir(struct MinigameState* q, s32 x, s32 y) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, 1);
-    (z->s).work[0] = 0;
-    (z->s).coord.x = x, (z->s).coord.y = y;
-    (z->s).unk_28 = (void*)q;
+  struct Entity* p = AllocPlayer();
+  if (p != NULL) {
+    p->renderPrio = 16;
+    INIT_PLAYER_ROUTINE(p, 1);
+    p->work[0] = 0;
+    p->coord.x = x, p->coord.y = y;
+    p->unk_28 = (void*)q;
   }
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 static void Fefnir_Init(struct Zero* z) {
   SET_PLAYER_ROUTINE(z, ENTITY_UPDATE);
@@ -140,7 +140,7 @@ static void FUN_080347a0(struct Zero* z) {
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
+      UpdateSpriteAnimation(z);
       break;
     }
   }
@@ -245,7 +245,7 @@ _080348AE:\n\
 	strb r0, [r4, #0xa]\n\
 _080348B0:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080348B6:\n\
 	pop {r4, r5, r6}\n\
 	pop {r0}\n\
@@ -261,10 +261,10 @@ static void fefnir_080348bc(struct Zero* z) {
       (z->s).spr.oam.xflip = FALSE;
       (z->s).flags &= ~X_FLIP;
       if ((z->s).work[3] != 0) {
-        SetMotion(&z->s, MOTION(DM161_FEFNIR, 25));
+        SetSpriteAnimation(z, MOTION(DM161_FEFNIR, 25));
         CreateWeapon6((z->s).coord.x + PIXEL(9), (z->s).coord.y - PIXEL(76));
       } else {
-        SetMotion(&z->s, MOTION(DM161_FEFNIR, 24));
+        SetSpriteAnimation(z, MOTION(DM161_FEFNIR, 24));
         CreateWeapon6((z->s).coord.x - PIXEL(9), (z->s).coord.y - PIXEL(76));
       }
       (z->s).work[2] = (z->s).work[3] * 6 + 8;
@@ -273,7 +273,7 @@ static void fefnir_080348bc(struct Zero* z) {
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
+      UpdateSpriteAnimation(z);
       (z->s).work[2]--;
       if ((z->s).work[2] == 0) {
         (z->s).mode[1] = 0;
@@ -288,12 +288,12 @@ static void fefnir_08034974(struct Zero* z) {
   switch ((z->s).mode[2]) {
     case 0: {
       PlaySound(SE_FEFNIR_DAMAGE);
-      SetMotion(&z->s, MOTION(DM161_FEFNIR, 27));
+      SetSpriteAnimation(z, MOTION(DM161_FEFNIR, 27));
       (z->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
+      UpdateSpriteAnimation(z);
       break;
     }
   }

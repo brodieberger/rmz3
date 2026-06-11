@@ -6,10 +6,10 @@ struct ReflectLaser {
   OBJECT_HDR;
   // props (56bytes, offset: 0xB4..)
   struct ReflectLaserProps {
-    struct Entity* q;   // 0xB4
-    struct Coord c_b8;  // 0xB8
-    u8 unk_c0;          // 0xC0
-    u8 unk_c1[43];      // 0xC1
+    struct Entity* q;  // 0xB4
+    Coords32 c_b8;     // 0xB8
+    u8 unk_c0;         // 0xC0
+    u8 unk_c1[43];     // 0xC1
   } props;
 };
 static_assert(sizeof(struct ReflectLaser) == sizeof(struct Weapon));
@@ -74,17 +74,17 @@ void MenuExit_ReflectLaser(struct Weapon* p) {
 }
 
 struct Entity* CreateReflectLaser(struct Zero* z, struct Entity* q, u8 n) {
-  struct ReflectLaser* p = (struct ReflectLaser*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct ReflectLaser* p = (struct ReflectLaser*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_BUSTER) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_REFLECT_LASER);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_REFLECT_LASER);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
     }
     (p->s).unk_28 = (void*)z;

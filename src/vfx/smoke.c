@@ -22,24 +22,21 @@ const VFXRoutine gSmokeRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateSmoke(u8 kind, struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateSmoke(u8 kind, Coords32* c) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, 0);
-    p->tileNum = 0;
-    p->palID = 0;
     (p->coord).x = c->x;
     (p->coord).y = c->y;
     InitNonAffineMotion(p);
-    SetMotion(p, MOTION(SM000_BATTLE_EFFECT, sMotionSubIDs[kind]));
+    SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, sMotionSubIDs[kind]));
   }
   return p;
 }
 
-NAKED static struct Entity* unused_080b2a68(u8 kind, struct Coord* c, bool8 xflip, bool8 yflip) { INCCODE("asm/unused/unused_080b2a68.inc"); }
+NAKED static struct Entity* unused_080b2a68(u8 kind, Coords32* c, bool8 xflip, bool8 yflip) { INCCODE("asm/unused/unused_080b2a68.inc"); }
 
-NAKED struct Entity* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool16 isDirRight) {
+NAKED struct Entity* FUN_080b2b40(u8 kind, Coords32* c, u16 r2, bool16 isDirRight) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -54,7 +51,7 @@ NAKED struct Entity* FUN_080b2b40(u8 kind, struct Coord* c, u16 r2, bool16 isDir
 	mov r8, r3\n\
 	ldr r0, _080B2BB8 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r4, r0, #0\n\
 	cmp r4, #0\n\
 	beq _080B2C1A\n\
@@ -159,7 +156,7 @@ _080B2C1A:\n\
  .syntax divided\n");
 }
 
-NAKED struct Entity* FUN_080b2c28(motion_t m, struct Coord* c, bool8 xflip, bool8 yflip) {
+NAKED struct Entity* FUN_080b2c28(motion_t m, Coords32* c, bool8 xflip, bool8 yflip) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -174,7 +171,7 @@ NAKED struct Entity* FUN_080b2c28(motion_t m, struct Coord* c, bool8 xflip, bool
 	mov r8, r3\n\
 	ldr r0, _080B2C90 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r4, r0, #0\n\
 	cmp r4, #0\n\
 	beq _080B2CEC\n\
@@ -277,10 +274,8 @@ static void Smoke_Init(struct Entity* p) {
 }
 
 static void Smoke_Update(struct Entity* p) {
-  UpdateMotionGraphic(p);
-  if ((p->motion).state == MOTION_END) {
-    SET_VFX_ROUTINE(p, ENTITY_DIE);
-  }
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 static void Smoke_Die(struct Entity* p) {

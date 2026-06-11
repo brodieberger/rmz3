@@ -17,6 +17,11 @@
     "[c]": {
         "editor.wordBasedSuggestions": "off",
         "editor.suggest.insertMode": "replace",
+        "editor.quickSuggestions": {
+          "other": "on",
+          "comments": "off",
+          "strings": "off"
+        },
         "editor.semanticHighlighting.enabled": true,
         "editor.formatOnSave": true,
         "editor.insertSpaces": true,

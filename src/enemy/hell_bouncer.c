@@ -2,30 +2,41 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/hell_bouncer.inc");
-
 void HellBouncer_Init(struct Enemy* p);
 void HellBouncer_Update(struct Enemy* p);
 void HellBouncer_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gHellBouncerRoutine = {
-    [ENTITY_INIT] =      HellBouncer_Init,
-    [ENTITY_UPDATE] =    HellBouncer_Update,
-    [ENTITY_DIE] =       HellBouncer_Die,
+    [ENTITY_INIT] =      (void*)HellBouncer_Init,
+    [ENTITY_UPDATE] =    (void*)HellBouncer_Update,
+    [ENTITY_DIE] =       (void*)HellBouncer_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+struct Entity* createHellBouncer(struct Entity* q, Coords32* c, u8 r2, u8 idx) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_HELL_BOUNCER);
+    p->coord = *c;
+    p->work[0] = r2, p->work[1] = idx;
+    p->unk_28 = q;
+  }
+  return p;
+}
+
+INCASM("asm/enemy/hell_bouncer.inc");
 
 void FUN_0807e5f0(struct Enemy* p);
 void FUN_0807ead8(struct Enemy* p);
 void FUN_0807f644(struct Enemy* p);
 
 static const EnemyFunc sUpdates1[3] = {
-    FUN_0807e5f0,
-    FUN_0807ead8,
-    FUN_0807f644,
+    (void*)FUN_0807e5f0,
+    (void*)FUN_0807ead8,
+    (void*)FUN_0807f644,
 };
 
 void FUN_0807e5f4(struct Enemy* p);
@@ -33,10 +44,12 @@ void FUN_0807eadc(struct Enemy* p);
 void FUN_0807f648(struct Enemy* p);
 
 static const EnemyFunc sUpdates2[3] = {
-    FUN_0807e5f4,
-    FUN_0807eadc,
-    FUN_0807f648,
+    (void*)FUN_0807e5f4,
+    (void*)FUN_0807eadc,
+    (void*)FUN_0807f648,
 };
+
+void nop_0807fd1c(struct Body* body, Coords32* c1, Coords32* c2) {}
 
 // 0x08367D98
 static const struct Collision sCollisions[9] = {

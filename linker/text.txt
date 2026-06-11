@@ -5,13 +5,14 @@
 
     /* Graphics */
 		src/gfx.o (.text);
-		src/blink.o (.text);
+		src/palette.o (.text);
+		src/palette_animation.o (.text);
 		src/gpu_regs.o (.text);
 		src/sound.o (.text);
 		src/sprite.o (.text);
 		src/phantom_icon.o (.text);
 		src/renderer.o (.text);
-		src/motion.o (.text);
+		src/animation.o (.text);
 		src/overworld_layer.o (.text);
 
 		src/entity_manager.o (.text);
@@ -50,7 +51,9 @@
 		src/stage/area_checker.o (.text);
 
 		src/story.o (.text);
-		src/mission.o (.text);
+		src/score.o (.text);
+		src/warp_coords.o (.text);
+		src/unk0202fe50.o (.text);
 		src/stagerun.o (.text);
 		src/camera.o (.text);
 		src/quake.o (.text);
@@ -124,7 +127,7 @@
 
 		src/boss.o (.text);
       src/boss/megamilpa.o (.text);
-      src/boss/omega_white.o (.text);
+      src/boss/omega1w.o (.text);
       src/boss/blazin.o (.text);
       src/boss/childre.o (.text);
       src/boss/wormer.o (.text);
@@ -141,7 +144,7 @@
       src/boss/copy_x.o (.text);
       src/boss/glacierle.o (.text);
       src/boss/blizzack.o (.text);
-      src/boss/omega_gold.o (.text);
+      src/boss/omega1g.o (.text);
       src/boss/hanumachine.o (.text);
       src/boss/omega_zero.o (.text);
       src/boss/phantom.o (.text);
@@ -158,7 +161,7 @@
 			src/enemy/piller_cannon.o (.text);
 			src/enemy/grand_cannon.o (.text);
 			src/enemy/shrimpolin.o (.text);
-			src/enemy/omega_white_hand.o (.text);
+			src/enemy/omega1w_hand.o (.text);
 			src/enemy/flopper.o (.text);
 			src/enemy/lamplort.o (.text);
 			src/enemy/gyro_cannon.o (.text);
@@ -190,7 +193,7 @@
 			src/enemy/pantheon_zombie.o (.text);
 			src/enemy/pantheon_aqua_mod_obj.o (.text);
 			src/enemy/glacierle_arm.o (.text);
-			src/enemy/omega_gold_hand.o (.text);
+			src/enemy/omega1g_hand.o (.text);
 			src/enemy/eye_cannon.o (.text);
 			src/enemy/unk_42.o (.text);
 			src/enemy/capsule_cannon.o (.text);
@@ -203,7 +206,7 @@
 			src/enemy/hanumachine_necro.o (.text);
 			src/enemy/carrybee_g.o (.text);
 			src/enemy/omega_zero_rock.o (.text);
-			src/enemy/omega_gold_sword.o (.text);
+			src/enemy/omega1g_sword.o (.text);
 			src/enemy/generator_cannon.o (.text);
 			src/enemy/deathlock.o (.text);
 			src/enemy/claveker.o (.text);
@@ -229,17 +232,17 @@
       src/projectile/shotcounter_bullet.o (.text);
       src/projectile/unk_02.o (.text);
       src/projectile/grand_cannon_bomb.o (.text);
-      src/projectile/omega_white.o (.text);
-      src/projectile/unk_05.o (.text);
+      src/projectile/omega1w_laser.o (.text);
+      src/projectile/omega1w_hoop_shot.o (.text);
       src/projectile/unk_06.o (.text);
       src/projectile/unk_07.o (.text);
-      src/projectile/unk_08.o (.text);
+      src/projectile/gyro_cannon_bomb.o (.text);
       src/projectile/blazin.o (.text);
       src/projectile/blazin_tail.o (.text);
       src/projectile/ear_shot.o (.text);
       src/projectile/unk_12.o (.text);
-      src/projectile/unk_13.o (.text);
-      src/projectile/unk_14.o (.text);
+      src/projectile/baby_elf.o (.text);
+      src/projectile/deathtanz_14.o (.text);
       src/projectile/hellbat.o (.text);
       src/projectile/unk_16.o (.text);
       src/projectile/unk_17.o (.text);
@@ -249,17 +252,17 @@
       src/projectile/pantheon_aqua_mod.o (.text);
       src/projectile/cubit.o (.text);
       src/projectile/locomo_if.o (.text);
-      src/projectile/copy_x.o (.text);
-      src/projectile/unk_25.o (.text);
-      src/projectile/unk_26.o (.text);
-      src/projectile/unk_27.o (.text);
-      src/projectile/unk_28.o (.text);
-      src/projectile/unk_29.o (.text);
-      src/projectile/unk_30.o (.text);
-      src/projectile/unk_31.o (.text);
-      src/projectile/unk_32.o (.text);
-      src/projectile/omega_gold.o (.text);
-      src/projectile/unk_34.o (.text);
+      src/projectile/copy_x_tackle.o (.text);
+      src/projectile/copy_x_shot_normal.o (.text);
+      src/projectile/copy_x_shot_fire.o (.text);
+      src/projectile/copy_x_shot_elecice.o (.text);
+      src/projectile/copy_x_28.o (.text);
+      src/projectile/copy_x_29.o (.text);
+      src/projectile/glacierle_30.o (.text);
+      src/projectile/blizzack_31.o (.text);
+      src/projectile/blizzack_32.o (.text);
+      src/projectile/omega1g_33.o (.text);
+      src/projectile/omega1g_34.o (.text);
       src/projectile/pantheon_bomber.o (.text);
       src/projectile/unk_36.o (.text);
       src/projectile/unk_37.o (.text);
@@ -267,8 +270,8 @@
       src/projectile/claveker_yellow_balls.o (.text);
       src/projectile/phantom.o (.text);
       src/projectile/omega_zx.o (.text);
-      src/projectile/unk_42.o (.text);
-      src/projectile/unk_43.o (.text);
+      src/projectile/shotloid.o (.text);
+      src/projectile/shellcrawler.o (.text);
       src/projectile/unk_44.o (.text);
       src/projectile/unk_45.o (.text);
       src/projectile/unk_46.o (.text);
@@ -302,7 +305,7 @@
       src/vfx/icebon_icedust.o (.text);
       src/vfx/unk_27.o (.text);
       src/vfx/unk_28.o (.text);
-      src/vfx/unk_29.o (.text);
+      src/vfx/burning_flame_effect.o (.text);
       src/vfx/unk_30.o (.text);
       src/vfx/unk_31.o (.text);
       src/vfx/pantheon_aqua.o (.text);
@@ -321,15 +324,15 @@
       src/vfx/particle_iceball.o (.text);
       src/vfx/unk_46.o (.text);
       src/vfx/unk_47.o (.text);
-      src/vfx/elf_particle.o (.text);
+      src/vfx/particle_cyberelf.o (.text);
       src/vfx/unk_49.o (.text);
       src/vfx/unk_50.o (.text);
       src/vfx/unk_51.o (.text);
       src/vfx/unk_52.o (.text);
       src/vfx/unk_53.o (.text);
       src/vfx/particle_icicle.o (.text);
-      src/vfx/unk_55.o (.text);
-      src/vfx/unk_56.o (.text);
+      src/vfx/copy_x_55.o (.text);
+      src/vfx/copy_x_reflect_laser.o (.text);
       src/vfx/unk_57.o (.text);
       src/vfx/unk_58.o (.text);
       src/vfx/unk_59.o (.text);
@@ -363,7 +366,7 @@
       src/solid/icebon.o (.text);
       src/solid/icebon_ice.o (.text);
       src/solid/door_2d_blue.o (.text);
-      src/solid/unk_03.o (.text);
+      src/solid/burning_flame.o (.text);
       src/solid/iron_star.o (.text);
       src/solid/heavy_cannon.o (.text);
       src/solid/lava_geyser_platform.o (.text);
@@ -385,7 +388,7 @@
       src/solid/door_2d_gray_h.o (.text);
       src/solid/turtloid_s.o (.text);
       src/solid/phantom_teleporter.o (.text);
-      src/solid/unk_25.o (.text);
+      src/solid/platform_areax2_weillabo.o (.text);
       src/solid/ice_block.o (.text);
       src/solid/unk_27.o (.text);
       src/solid/minigame_ninjastar.o (.text);
@@ -393,11 +396,11 @@
       src/solid/main_npc.o (.text);
       src/solid/cyberspace_door.o (.text);
       src/solid/light_switch.o (.text);
-      src/solid/platform_weil_labo.o (.text);
+      src/solid/platform_unused33.o (.text);
       src/solid/toggle_switch_red.o (.text);
       src/solid/container.o (.text);
       src/solid/platform_missile_factory.o (.text);
-      src/solid/unk_37.o (.text);
+      src/solid/flying_fish.o (.text);
       src/solid/seagulls.o (.text);
       src/solid/cat.o (.text);
       src/solid/plant.o (.text);
@@ -439,13 +442,13 @@
 		src/widget.o (.text);
       src/widget/weapon_icon.o (.text);
       src/widget/unk_01.o (.text);
-      src/widget/unk_02.o (.text);
+      src/widget/cursor_square.o (.text);
       src/widget/subtank.o (.text);
       src/widget/hp.o (.text);
       src/widget/armor_icons.o (.text);
       src/widget/exskill.o (.text);
       src/widget/elf_menu_item.o (.text);
-      src/widget/cursor.o (.text);
+      src/widget/cursor_triangle.o (.text);
       src/widget/unk_09.o (.text);
       src/widget/disk_icon.o (.text);
       src/widget/elf_icon.o (.text);

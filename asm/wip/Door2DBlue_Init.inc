@@ -6,7 +6,7 @@
 	bne _080CADD8
 	ldr r0, _080CADB8 @ =gSolidHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r2, r0, #0
 	cmp r2, #0
 	bne _080CAD16

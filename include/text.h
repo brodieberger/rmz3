@@ -5,7 +5,7 @@
 #include "text_window.h"
 #include "types.h"
 
-#define STRING(n) (&gStringData[StringOfsTable[n]])
+#define STRING(n) (&gStringData[StringOfsTable[(n)]])
 
 // gTextWindow.text.flag
 #define TEXT_FLAG_TERMINATE (1 << 1)  // セットすると会話が強制的に終わった
@@ -23,15 +23,16 @@ struct CharTile {
   u16 c;  // 上位1バイトstyled, 下位1バイトは CharCode
   u16 tileID;
 };
+static_assert(sizeof(struct CharTile) == 8);
 
-// 02030314 , lenが1以上の時、配列96のテキストをidx=0からlen個画面に表示する
+// 02030310 , lenが1以上の時、配列96のテキストをidx=0からlen個画面に表示する
 struct TextPrinter {
   tile_id_t* bg0;  // BG0's tilemap
   s16 len;
   s16 unk_002;
   str_t strings[MAX_STRING_COUNT];  // 文字列の内容 e.g. 0x08374142, 0x0837c6da, 0x08377b60, 0x08376be6
-  u8 x[MAX_STRING_COUNT];           // 1文字目のX
-  u8 y[MAX_STRING_COUNT];           // 1文字目のY
+  u8 x8[MAX_STRING_COUNT];          // 1文字目のX (8px単位)
+  u8 y8[MAX_STRING_COUNT];          // 1文字目のY (8px単位)
   u16 progress[MAX_STRING_COUNT];   // 描画をどれくらい終えたか(文字数単位)
   struct CharTile tilelist[80];
   struct CharTile* cur;   // 0x588, 次に描画する文字
@@ -43,7 +44,8 @@ struct TextPrinter {
   u8 endX;
   u8 endY;
   u32 unk_598;
-};  // 1436 bytes
+};  // 1440 bytes
+static_assert(sizeof(struct TextPrinter) == 1440);
 
 extern struct TextPrinter gTextPrinter;
 extern char_t gTerminateCharCode;

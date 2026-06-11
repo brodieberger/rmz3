@@ -18,19 +18,17 @@ void InitProjectileHeader(struct EntityHeader* h, struct Projectile* p, s16 len)
 void UpdateProjectiles(void) {
   struct Entity* p;
   struct EntityHeader* h = gProjectileHeaderPtr;
-  if ((gStageRun.id != STAGE_SPACE_CRAFT) && (((!(gStageRun.missionStatus & MISSION_STAY)) || (gStageRun.vm.active & 1) || (gStageRun.vm.unk_004 & 1)) || gInChat || gIsUsingDoor3D)) {
+  if ((gStageRun.id != STAGE_SPACE_CRAFT) && (((!(gStageRun.missionStatus & MISSION_STAY)) || (gStageRun.vm.active & VM_ACTIVE) || (gStageRun.vm.unk_004 & 1)) || gInChat || gIsUsingDoor3D)) {
     gIsLemonCollisionRemoved = TRUE;
   } else {
     gIsLemonCollisionRemoved = FALSE;
   }
 
-  setCurProcessedEntityHeader(h);
-  p = h->last->prev;
-  h->last = p;
-  while (p != (struct Entity*)&h->next) {
+  p = StartEntityListIteration(h);
+
+  while (p != (struct Entity*)&h->tail) {
     ((EntityFunc)p->onUpdate)(p);
-    p = h->last->prev;
-    h->last = p;
+    p = GetNextEntity(h);
   }
 }
 
@@ -39,9 +37,9 @@ void DeleteProjectile(struct Entity* p) {
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 
-static struct Coord* unused_0809c978(struct Entity* p) {
-  struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
-  if (w != NULL) return &w->coord;
+static Coords32* unused_0809c978(struct Entity* q) {
+  struct Entity* p = GetNearestEntity(gWeaponHeaderPtr, &q->coord);
+  if (p != NULL) return &p->coord;
   return NULL;
 }
 
@@ -71,7 +69,7 @@ extern const ProjectileRoutine gProjectile20Routine;
 extern const ProjectileRoutine gPantheonAquaModProjectileRoutine;
 extern const ProjectileRoutine gCubitProjectileRoutine;
 extern const ProjectileRoutine gProjectile23Routine;
-extern const ProjectileRoutine gCopyXProjectileRoutine;
+extern const ProjectileRoutine gCopyXTackleProjectileRoutine;
 extern const ProjectileRoutine gProjectile25Routine;
 extern const ProjectileRoutine gProjectile26Routine;
 extern const ProjectileRoutine gProjectile27Routine;
@@ -89,8 +87,8 @@ extern const ProjectileRoutine gOmegaZeroProjectileRoutine;
 extern const ProjectileRoutine gClavekerYellowBallsRoutine;
 extern const ProjectileRoutine gPhantomProjectileRoutine;
 extern const ProjectileRoutine gOmegaZXProjectileRoutine;
-extern const ProjectileRoutine gProjectile42Routine;
-extern const ProjectileRoutine gProjectile43Routine;
+extern const ProjectileRoutine gShotloidProjectileRoutine;
+extern const ProjectileRoutine gShellcrawlerProjectileRoutine;
 extern const ProjectileRoutine gProjectile44Routine;
 extern const ProjectileRoutine gProjectile45Routine;
 extern const ProjectileRoutine gProjectile46Routine;
@@ -122,7 +120,7 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [21] = &gPantheonAquaModProjectileRoutine,
     [22] = &gCubitProjectileRoutine,
     [23] = &gProjectile23Routine,
-    [24] = &gCopyXProjectileRoutine,
+    [24] = &gCopyXTackleProjectileRoutine,
     [25] = &gProjectile25Routine,
     [26] = &gProjectile26Routine,
     [27] = &gProjectile27Routine,
@@ -140,8 +138,8 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [39] = &gClavekerYellowBallsRoutine,
     [40] = &gPhantomProjectileRoutine,
     [41] = &gOmegaZXProjectileRoutine,
-    [42] = &gProjectile42Routine,
-    [43] = &gProjectile43Routine,
+    [42] = &gShotloidProjectileRoutine,
+    [43] = &gShellcrawlerProjectileRoutine,
     [44] = &gProjectile44Routine,
     [45] = &gProjectile45Routine,
     [46] = &gProjectile46Routine,

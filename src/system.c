@@ -1,12 +1,12 @@
 #include "system.h"
 
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "gpu_regs.h"
 #include "input.h"
 #include "intro.h"
+#include "palette_animation.h"
 #include "sram.h"
 #include "syssav.h"
 #include "text.h"
@@ -46,6 +46,9 @@ void FlushPalette(void);
 static void InterruptSystemProcess(struct Process* p, bool32 b);
 static void transferData(void);
 
+void SoundHBlank(void);
+void SoundVBlank(void);
+
 extern const VoidFunc gHBlankIntrs[];
 
 // Malloc(0x08001b14)で確保される汎用メモリ領域
@@ -67,14 +70,14 @@ static const VoidFunc gIntrTableTemplate[14] = {
 void Process_SoftReset(struct Process* _ UNUSED) {
   gIntrManager.slowGameRatio = 1;
   ResetVideoRegister();
-  EnableBG0(gGameState.bg0, SCREEN_BASE_16(0), 1408, 0x3C0);
+  EnableBG0(gGameState.bg0, SCREEN_BASE(0), 1408, 0x3C0);
   gJoypad[0].field6_0x14 = 24;
   gJoypad[0].field7_0x15 = 4;
   gJoypad[1].field6_0x14 = 24;
   gJoypad[1].field7_0x15 = 4;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
   gPaletteManager.post_process = NULL;
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
@@ -100,7 +103,7 @@ NON_MATCH NORETURN void Process_System(struct Process* p) {
   u16* head = &heap->ofs;
   while (TRUE) {
     PrintAllStrings();
-    ExecBlink();
+    TransferAnimatedPalettesToPaletteBuffer();
     // swap buffers
     heap->idx = (heap->idx == 0);
     *head = 0;
@@ -140,14 +143,11 @@ NON_MATCH NORETURN void Process_System(struct Process* p) {
 #endif
 }
 
-void usrHBlankCallback(void) {
-  _usrHBlankCallback();
-  return;
-}
+void usrHBlankCallback(void) { SoundHBlank(); }
 
 void usrVBlankCallback(void) {
   LinkVSync();
-  FUN_080044a0();
+  SoundVBlank();
 }
 
 void ClearMemory(void) {

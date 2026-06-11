@@ -29,7 +29,7 @@ struct OamDataNoAffine {
 
 NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
 #if MODERN
-  struct Coord* c = s->c;
+  Coords32* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
   s32 len = h->subspriteCount;
@@ -77,7 +77,7 @@ NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc)
 
 NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc) {
 #if MODERN
-  struct Coord* c = s->c;
+  Coords32* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
   s32 len = h->subspriteCount;

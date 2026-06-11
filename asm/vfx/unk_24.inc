@@ -24,7 +24,7 @@ _080B9080:
 	strb r0, [r4, #0xe]
 _080B9090:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -65,7 +65,7 @@ _080B90CC:
 	strb r0, [r4, #0xe]
 _080B90DA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -127,7 +127,7 @@ _080B9144:
 	strb r0, [r4, #0xe]
 _080B9152:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

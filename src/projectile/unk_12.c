@@ -12,42 +12,36 @@ static void Projectile12_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile12Routine = {
-    [ENTITY_INIT] =      Projectile12_Init,
-    [ENTITY_UPDATE] =    Projectile12_Update,
-    [ENTITY_DIE] =       Projectile12_Die,
+    [ENTITY_INIT] =      (void*)Projectile12_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile12_Update,
+    [ENTITY_DIE] =       (void*)Projectile12_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
-struct Projectile* FUN_0809f48c(struct Entity* e, struct Coord* c) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Entity* FUN_0809f48c(struct Entity* q, Coords32* c) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 12);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = 0;
-    (p->s).coord = *c;
-    (p->s).unk_28 = e;
+    p->work[0] = 0;
+    p->coord = *c;
+    p->unk_28 = q;
   }
   return p;
 }
 
-struct Projectile* FUN_0809f4dc(struct Entity* e, struct Coord* c, struct Coord* d, u8 n) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_0809f4dc(struct Entity* e, Coords32* c, Coords32* d, u8 n) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 12);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 1;
     (p->s).d = *d;
     (p->s).coord = *c;
     (p->s).unk_28 = e;
-    p->work[0] = n;
+    p->buffer[0] = n;
   }
   return p;
 }
@@ -55,7 +49,7 @@ struct Projectile* FUN_0809f4dc(struct Entity* e, struct Coord* c, struct Coord*
 // --------------------------------------------
 
 static void Projectile12_Init(struct Projectile* p) {
-  InitScalerotMotion1(&p->s);
+  EnableSpriteAnimation_Affine(p);
   (p->s).angle = 0;
   (p->s).spr.mag.x = 0x100;
   (p->s).spr.mag.y = 0x100;
@@ -69,9 +63,7 @@ static void Projectile12_Init(struct Projectile* p) {
   }
   (p->s).work[2] = 0xFF;
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 1;
-  (p->s).mode[2] = 0;
-  (p->s).mode[3] = 0;
+  (p->s).mode[1] = 1, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
   Projectile12_Update(p);
 }
 

@@ -56,7 +56,7 @@ _08007610:
 	bne _08007632
 	movs r2, #8
 _08007632:
-	ldr r0, _08007668 @ =gSystemSavedataManager
+	ldr r0, _08007668 @ =gSystemSavedata
 	ldrb r1, [r0, #9]
 	movs r0, #8
 	ands r0, r1
@@ -85,7 +85,7 @@ _0800765C:
 	b _0800766E
 	.align 2, 0
 _08007664: .4byte gCurStory
-_08007668: .4byte gSystemSavedataManager
+_08007668: .4byte gSystemSavedata
 _0800766C:
 	adds r0, r2, #0
 _0800766E:

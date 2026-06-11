@@ -1227,6 +1227,7 @@ _080336F6:\n\
  .syntax divided\n");
 }
 
+// コマンドダッシュ(十字キー2回押し)
 NON_MATCH static void tryCommandDash(struct Zero* z) {
 #if MODERN
   u8 i, j;

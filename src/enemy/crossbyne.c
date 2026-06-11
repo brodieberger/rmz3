@@ -19,34 +19,26 @@ const EnemyRoutine gCrossbyneRoutine = {
 // --------------------------------------------
 
 struct Entity* FUN_0807cbf4(s32 x, s32 y, u8 n) {
-  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = n;
     (p->coord).x = x, (p->coord).y = y;
   }
   return p;
 }
 
-static const struct Coord16 Coord16_ARRAY_08367c14[4];
+static const Coords16 Coord16_ARRAY_08367c14[4];
 
 // 0x0807cc50
 static void FUN_0807cc50(s32 x, s32 y) {
   s32 i;
-  const struct Coord16* c = Coord16_ARRAY_08367c14;
+  const Coords16* c = Coord16_ARRAY_08367c14;
 
   for (i = 0; i < (s32)ARRAY_COUNT(Coord16_ARRAY_08367c14); i++) {
-    struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+    struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 24;
       INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
-      p->tileNum = 0, p->palID = 0;
-      p->flags2 |= WHITE_PAINTABLE;
-      p->invincibleID = p->uniqueID;
       p->work[0] = 2, p->work[1] = i;
       (p->coord).x = x;
       (p->coord).x += c[i].x;
@@ -56,20 +48,16 @@ static void FUN_0807cc50(s32 x, s32 y) {
   }
 }
 
-static const struct Coord16 Coord16_ARRAY_08367c24[4];
+static const Coords16 Coord16_ARRAY_08367c24[4];
 
 static void FUN_0807cce0(s32 x, s32 y) {
   s32 i;
-  const struct Coord16* c = Coord16_ARRAY_08367c24;
+  const Coords16* c = Coord16_ARRAY_08367c24;
 
   for (i = 0; i < (s32)ARRAY_COUNT(Coord16_ARRAY_08367c24); i++) {
-    struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+    struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 24;
       INIT_ENEMY_ROUTINE(p, ENEMY_CROSSBYNE);
-      p->tileNum = 0, p->palID = 0;
-      p->flags2 |= WHITE_PAINTABLE;
-      p->invincibleID = p->uniqueID;
       p->work[0] = 3, p->work[1] = i;
       (p->coord).x = x;
       (p->coord).x += c[i].x;
@@ -80,7 +68,7 @@ static void FUN_0807cce0(s32 x, s32 y) {
 }
 
 // 0x0807cd70
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 INCASM("asm/enemy/crossbyne.inc");
 
@@ -181,14 +169,14 @@ static const struct Collision sCollisions[5] = {
 };
 
 // 0x08367c14
-static const struct Coord16 Coord16_ARRAY_08367c14[4] = {
+static const Coords16 Coord16_ARRAY_08367c14[4] = {
     {-PIXEL(14), PIXEL(0)},
     {PIXEL(14), PIXEL(0)},
     {PIXEL(0), -PIXEL(14)},
     {PIXEL(0), PIXEL(14)},
 };
 
-static const struct Coord16 Coord16_ARRAY_08367c24[4] = {
+static const Coords16 Coord16_ARRAY_08367c24[4] = {
     {-PIXEL(9), -PIXEL(9)},
     {PIXEL(9), -PIXEL(9)},
     {-PIXEL(9), PIXEL(9)},
@@ -196,7 +184,7 @@ static const struct Coord16 Coord16_ARRAY_08367c24[4] = {
 };
 
 // 0x08367C34
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 
 // 0x08367C3C
 static const u8 sInitModes[4] = {1, 1, 5, 6};

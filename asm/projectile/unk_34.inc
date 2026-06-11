@@ -13,7 +13,7 @@ FUN_080ac880: @ 0x080AC880
 	adds r7, r3, #0
 	ldr r0, _080AC8E0 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	mov ip, r0
 	cmp r0, #0
 	beq _080AC8D8
@@ -67,7 +67,7 @@ FUN_080ac8e8: @ 0x080AC8E8
 	adds r7, r3, #0
 	ldr r0, _080AC948 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	mov ip, r0
 	cmp r0, #0
 	beq _080AC940
@@ -121,7 +121,7 @@ FUN_080ac950: @ 0x080AC950
 	adds r7, r3, #0
 	ldr r0, _080AC9AC @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AC9A4
@@ -173,7 +173,7 @@ FUN_080ac9b4: @ 0x080AC9B4
 	adds r7, r3, #0
 	ldr r0, _080ACA10 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080ACA06
@@ -400,7 +400,7 @@ _080ACBAA:
 	strb r0, [r4, #0xe]
 _080ACBB0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080ACBB6:
 	adds r1, r4, #0
 	adds r1, #0xbc
@@ -524,7 +524,7 @@ _080ACC7E:
 	strb r0, [r4, #0xe]
 _080ACC9E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -554,7 +554,7 @@ _080ACCD4:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080ACCEA:
 	pop {r4, r5}
 	pop {r0}
@@ -692,7 +692,7 @@ _080ACDE0:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	beq _080ACE06
@@ -823,7 +823,7 @@ _080ACF02:
 	strb r0, [r4, #0xe]
 _080ACF08:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0xbc
 	ldr r0, [r1]
@@ -892,7 +892,7 @@ _080ACF74:
 	strb r0, [r4, #0xe]
 _080ACF94:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -925,7 +925,7 @@ _080ACFCC:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	bne _080ACFFA

@@ -6,7 +6,7 @@
 
 struct VFX18 {
   struct Entity s;
-  struct Coord c;
+  Coords32 c;
   bool8 xflip;
   u8 unk_7d;
   u16 unk_7e;
@@ -27,13 +27,10 @@ const VFXRoutine gGhost18Routine = {
 };
 // clang-format on
 
-void CreateGhost18(struct Coord* c, u8 kind, bool8 xflip, u8 r3) {
-  struct VFX18* g = (struct VFX18*)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost18(Coords32* c, u8 kind, bool8 xflip, u8 r3) {
+  struct VFX18* g = (struct VFX18*)AllocEntityLast(gVFXHeaderPtr);
   if (g != NULL) {
-    (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_UNK_018);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
     (g->s).coord = *c;
     (g->s).work[0] = kind;
     (g->s).work[1] = 0;
@@ -46,10 +43,10 @@ static void Ghost18_Init(struct VFX18* p) {
   InitRotatableMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM019_PANTHEON_HUNTER, 5));
-  UpdateMotionGraphic(&p->s);
+  SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 5));
+  UpdateSpriteAnimation(p);
   SET_XFLIP(&p->s, p->xflip);
-  (p->s).taskCol = 25;
+  (p->s).renderPrio = 25;
   (p->c).x = (p->s).coord.x;
   (p->c).y = (p->s).coord.y + 1;
   (p->s).work[2] = 0;
@@ -90,7 +87,7 @@ _080B6D18: .4byte gCurStory\n\
 _080B6D1C: .4byte gVFXFnTable\n\
 _080B6D20:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0xd]\n\
 	cmp r0, #0\n\
 	beq _080B6D32\n\

@@ -188,7 +188,7 @@ _0808B76A:
 	str r0, [r4, #0x14]
 _0808B788:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0808B78E:
 	pop {r4}
 	pop {r0}

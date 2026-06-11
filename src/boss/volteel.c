@@ -22,15 +22,10 @@ const BossRoutine gVolteelRoutine = {
 };
 // clang-format on
 
-struct Boss* CreateVolteel(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Boss* CreateVolteel(Coords32* c, u8 n) {
+  struct Boss* p = (struct Boss*)AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_VOLTEEL);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -272,7 +267,7 @@ static void Volteel_Update(struct Boss* p) {
       volteelKnockBackDamage,
   };
   // clang-format on
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     PlaySound(SE_VOLTEEL_DEATH);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -545,6 +540,6 @@ static const struct Collision sCollisions[24] = {
 };
 
 // 0x08362570
-const struct Coord Coord_ARRAY_08362570[7] = {
+const Coords32 Coord_ARRAY_08362570[7] = {
     {0x00000000, -0x00002000}, {0x00000600, -0x00002500}, {0x00000600, -0x00002500}, {0x00000000, 0x00000400}, {0x00000000, 0x00000400}, {-0x00001000, 0x00000000}, {-0x00001000, 0x00000000},
 };

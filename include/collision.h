@@ -18,7 +18,14 @@
 #define FORCE_ELEMENT (1 << 1)
 #define FORCE_NATURE (1 << 2)
 #define FORCE_COMBO_LEVEL (1 << 3)
-#define FORCE_LAYER (6)
+#define FORCE_LAYER (6)  // ???
+
+// Collision.hardness
+#define METAL (1 << 0)  // 攻撃が当たった時に金属音がなり、バスターが貫通しなくなる(ダメージは通る)
+#define NO_DAMAGE (1 << 1)
+#define LITTLE_HARD (1 << 2)  // Take 2/3 damage
+#define HARDNESS_B3 (1 << 3)
+#define HARDNESS_WEAK (1 << 4)  // Take 2x damage
 
 #define priorityLayer layer
 
@@ -27,6 +34,9 @@
 #define LAYER(val) \
   atkType:         \
   ((val) >> 0) & 0xFF, element : ((val) >> 8) & 0xFF, nature : ((val) >> 16) & 0xFF, comboLv : ((val) >> 24) & 0xFF
+
+// LAYER(RECOIL_PUSHABLE)
+#define RECOIL_PUSHABLE 0x7800
 
 // Collision.atkType
 enum CollisionAtkType {
@@ -66,74 +76,55 @@ enum CollisionFaction {
   FACTION_NEUTRAL,  // NPC(敵ではないけど会話のために接触判定はしたい) や 中立(兵器再生工場のハンマー振り子やリコイルロッドで吹き飛ばした敵)
 };
 
+// HitboxTemplate とかにした方がいいかも
 struct Collision {
-  u8 kind;     // HitboxKind
-  u8 faction;  // 同じレイヤーに属するもの同士のコリジョンは発生し"無い"
-
-  /*
-    bit 0: プチットやダメージ半減などの特殊処理の対象を示すフラグ
-    bit 1: ???
-  */
-  u8 special;
-  u8 damage;  // damage dealt (for enemies only?)
+  u8 kind;     // 0x00, HitboxKind
+  u8 faction;  // 0x01, 同じレイヤーに属するもの同士のコリジョンは発生し"無い"
+  u8 special;  // 0x02, bit0: プチットやダメージ半減などの特殊処理の対象を示すフラグ, bit1: ???
+  u8 damage;   // 0x03, damage dealt (for enemies only?)
 
   // --------------------------------------------
   // If DRP, this is u32 layer value for DDPBody.collisionLayer
-  u8 atkType;
-  u8 element;
-  u8 nature;
-  u8 comboLv;
+  u8 atkType;  // 0x04
+  u8 element;  // 0x05
+  u8 nature;   // 0x06
+  u8 comboLv;  // 0x07
   // --------------------------------------------
 
-  u8 hitzone;   // 肉質
-  u8 hardness;  // 特殊なダメージカットなどを実装したい時
-  u8 unk_0a;
-  u8 remaining;  // is 0, Collision chain is end
+  u8 hitzone;    // 0x08, 肉質
+  u8 hardness;   // 0x09, 特殊なダメージカットなどを実装したい時
+  u8 unk_0a;     // 0x0a
+  u8 remaining;  // 0x0b, 通常キャラクターの当たり判定は複数のAABBで構成されている, (struct Collisionの配列において、)後続の Collision のうち、
 
-  /*
-    DDPの場合: 単純なCollisionのレイヤ、 self.unk_0c & LAYER(DRP) されて0じゃないならCollisionが処理される
-    DRPの場合: 連鎖値を無視して処理する優先レイヤ、 ランプロートの盾など、優先的に攻撃を吸ってもらいたい部位に設定される
-  */
-  u32 layer;
-  struct Rect range;  // Collision range
+  u32 layer;          // 0x0c, DDPの場合: 単純なCollisionのレイヤ、 self.unk_0c & LAYER(DRP) されて0じゃないならCollisionが処理される, DRPの場合: 連鎖値を無視して処理する優先レイヤ、 ランプロートの盾など、優先的に攻撃を吸ってもらいたい部位に設定される
+  struct Rect range;  // 0x10, Hitbox range
 };
+static_assert(sizeof(struct Collision) == 24);
 
-// 0x030038e4
+// 1 Hitbox が 1 Collision　に対応
 struct Hitbox {
-  struct Hitbox* next;
-  struct Collision* collisions;
-  struct Body* body;
-  struct Coord c;
-  u16 w;
-  u16 h;
+  struct Hitbox* next;     // 0x00, Hitboxのリンクリスト (あくまで同じレイヤーのHitbox同士のリンクで、別のBodyのHitboxも指す)
+  struct Collision* data;  // 0x04, この Hitbox の AABBのデータ (ROM)
+  struct Body* body;       // 0x08, この Hitbox の持ち主
+  Coords32 c;              // 0x0C, この Hitbox のワールド座標 (= body->coord + data.range)
+  u16 w;                   // 0x14, この Hitbox の幅 (= data.range.w)
+  u16 h;                   // 0x16, この Hitbox の高さ (= data.range.h)
 };  // 24 bytes
+static_assert(sizeof(struct Hitbox) == 24);
 
 // 0x030032e0
 struct CollisionManager {
-  /*
-    bit 0: ゼロ側のコリジョン関連の処理をスキップ(FACTION_ALLY)
-    bit 1: 敵側のコリジョン関連の処理をスキップ(FACTION_ENEMY)
-    bit 2: 中立エンティティのコリジョン関連の処理をスキップ(FACTION_NEUTRAL)
-    bit 7: 全部スキップ
-  */
-  u8 disabled;
-
-  /*
-    bit 0:    kill Zero(FACTION_ALLY)
-    bit 1:    kill All Enemies (Used for area change?)(FACTION_ENEMY)
-    bit 2:    kill Neutral Entities(FACTION_NEUTRAL)
-    bit 3..7: Unused
-  */
-  u8 sweep;
-  u8 hitstop;                 // この値がxxの場合、xxフレーム後まで画面が止まる 回復アイテム取った時とかに使う？
-  u8 length;                  // 次に追加するコリジョンデータのidxでもある(毎フレーム0にセットされてその後、各エンティティのコリジョンデータが設定されるごとに増えていく)
-  struct Hitbox buf[64];      // Collision data のバッファ
-  struct Hitbox* list[3][3];  // Collision data linklist (.bufのデータのリンクリスト)
+  u8 disabled;                // 0x00, bitに対応するFACTIONの重なり検知をしない, bit0: FACTION_ALLY, bit1: FACTION_ENEMY, bit2: FACTION_NEUTRAL, bit3..6: Unused, bit7: 全部
+  u8 sweep;                   // 0x01, bitに対応するFACTIONのEntityを全てkillする, bit0: FACTION_ALLY, bit1: FACTION_ENEMY(Used for area change?), bit2: FACTION_NEUTRAL, bit3..7: Unused
+  u8 hitstop;                 // 0x02, この値がxxの場合、xxフレーム後まで画面が止まる 回復アイテム取った時とかに使う？
+  u8 length;                  // 0x03, 次に追加するコリジョンデータのidxでもある(毎フレーム0にセットされてその後、各エンティティのコリジョンデータが設定されるごとに増えていく)
+  struct Hitbox buf[64];      // Hitbox のバッファ
+  struct Hitbox* list[3][3];  // Hitbox linklist (.bufのデータのリンクリスト)
   struct Body* talkTo;        // ゼロが上ボタンを押すと会話ができるキャラクター
   struct Body* door;          // ゼロが上ボタンを押すと開ける範囲にあるドア
   struct Body* teleportal;
-  u8 _[12];
-};  // 1600 bytes
+};
+static_assert(sizeof(struct CollisionManager) == 1588);
 
 extern struct CollisionManager gCollisionManager;
 
@@ -144,11 +135,11 @@ u16 CalcDamage(struct Body* a, struct Body* d);
 void CheckCollision(void);
 
 void ResisterNonAffineHitbox(struct Body* body);
-void RegisterFlipableHitbox(struct Body* p, u8 flip);
-void RegisterScalerotHitbox(struct Body* o, u32 r1, u32 r2);
+void RegisterFlipableHitbox(struct Body* body, u8 flip);
+void RegisterScalerotHitbox(struct Body* body, u8 flip, u8 angle);
 
 void InitWeaponBody(struct Body* o, const struct Collision* hitbox, s16 atk, s16 elementID, s16 r4, s16 r5);
-void InitBody(struct Body* p, const struct Collision* hitbox, struct Coord* coord, s16 hp);
+void InitBody(struct Body* p, const struct Collision* hitbox, Coords32* coord, s16 hp);
 
 u16 CalcPutitedSpikeDamage(struct Body* body, u8 damage);
 

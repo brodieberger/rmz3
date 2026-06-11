@@ -332,7 +332,7 @@ _080C31F6:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C320C:
 	pop {r4, r5}
 	pop {r0}
@@ -502,7 +502,7 @@ _080C3366:
 	adds r0, r0, r1
 	str r0, [r6, #0x54]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C337C:
 	add sp, #0x10
 	pop {r4, r5, r6}
@@ -659,7 +659,7 @@ _080C349C:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C34B2:
 	pop {r3, r4}
 	mov r8, r3

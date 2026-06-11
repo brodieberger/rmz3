@@ -1,7 +1,7 @@
 #ifndef GUARD_RMZ3_SYSTEM_H
 #define GUARD_RMZ3_SYSTEM_H
 
-#include "gba/types.h"
+#include "gba/gba.h"
 
 // Process.status
 #define PROCESS_DISABLED (1 << 0)
@@ -19,6 +19,7 @@ struct Process {
   u8 unk_0c[4];
   u8 unk_10[8];
 };  // 24 bytes
+static_assert(sizeof(struct Process) == 24);
 
 struct TransferReservation {
   void* start;
@@ -33,6 +34,7 @@ struct TransferReservation {
   u16 remaining;
   u16 _;
 };  // 36 bytes
+static_assert(sizeof(struct TransferReservation) == 36);
 
 // 0x03001590
 struct InterruptManager {
@@ -74,9 +76,7 @@ extern const u16 gProcessStackPointerOffsets[3];
 void ResetProcess(s32 i, void* fn);
 void Process_SoftReset(struct Process* _);
 void Process_System(struct Process* p);
-void _usrHBlankCallback(void);
 void LinkVSync(void);
-void FUN_080044a0(void);
 void disableProcess(s32 i);
 void SwitchProcess(bool32 b);
 void ExitProcess(void);

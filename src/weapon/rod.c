@@ -1,8 +1,8 @@
 #include "collision.h"
 #include "global.h"
-#include "mission.h"
 #include "motion.h"
 #include "overworld.h"
+#include "score.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -26,7 +26,7 @@ struct RecoilRod {
 };
 static_assert(sizeof(struct RecoilRod) == sizeof(struct Weapon));
 
-static void onCollision(struct Body* body, struct Coord* r1, struct Coord* r2);
+static void onCollision(struct Body* body, Coords32* r1, Coords32* r2);
 
 static const u8 gRodElement[4];
 
@@ -35,12 +35,12 @@ struct Weapon* CreateWeaponRod(struct Zero* z) {
   u8 element;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct RecoilRod*)AllocEntityFirst(gWeaponHeaderPtr);
+  w = (struct RecoilRod*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_ROD) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_RECOIL_ROD);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[0];
       (w->s).palID = gWeaponPalIDs[0];
       element = gRodElement[((&z->unk_b4)->status).element];
@@ -48,7 +48,7 @@ struct Weapon* CreateWeaponRod(struct Zero* z) {
     } else {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_RECOIL_ROD);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[1];
       (w->s).palID = gWeaponPalIDs[1];
       element = gRodElement[((&z->unk_b4)->status).element];
@@ -1825,7 +1825,7 @@ NON_MATCH static void Rod_Init(struct RecoilRod* w) {
   ResetDynamicMotion(&w->s);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sMotions[(w->s).work[0]]);
+  SetSpriteAnimation(w, sMotions[(w->s).work[0]]);
 
   collisions = *gRodHitboxes[(w->s).work[0]];
   INIT_BODY(w, collisions, 1, NULL);
@@ -1884,12 +1884,12 @@ static void Rod_Die(struct Entity* p) {
 struct Entity* CreateWeapon13(struct Zero* z, u8 n);
 
 // 0x08039960
-static void onCollision(struct Body* body, struct Coord* r1, struct Coord* r2) {
+static void onCollision(struct Body* body, Coords32* r1, Coords32* r2) {
   struct RecoilRod* p = (struct RecoilRod*)body->parent;
   Object* q = (Object*)body->enemy->parent;
   struct Zero* z = (p->props).z;
   if (body->hitboxFlags & BODY_STATUS_B2) {
-    if (gMission.weaponCount[WEAPON_ROD] < 0xFFFF) gMission.weaponCount[WEAPON_ROD]++;
+    IncWeaponUseCount(WEAPON_ROD);
 
     if (body->hitboxFlags & BODY_STATUS_B2) {
       if (((p->s).work[0] >= 11) && ((p->s).work[0] < 21)) {

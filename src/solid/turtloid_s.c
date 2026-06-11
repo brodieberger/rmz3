@@ -32,7 +32,7 @@ const SolidRoutine gTurtloidSRoutine = {
 
 // --------------------------------------------
 
-static void onCollision(struct Body* _ UNUSED, struct Coord* r1, struct Coord* r2) { return; }
+static void onCollision(struct Body* _ UNUSED, Coords32* r1, Coords32* r2) { return; }
 
 static void Solid23_Init(struct Solid* p) {
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
@@ -41,7 +41,7 @@ static void Solid23_Init(struct Solid* p) {
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
   INIT_BODY(p, &Collision_ARRAY_08370ea8[0], 1, onCollision);
-  (p->s).coord.y = SEA;
+  (p->s).coord.y = gOverworld.sea;
   Solid23_Update(p);
 }
 
@@ -80,7 +80,7 @@ static void Solid23_Update(struct Solid* p) {
 // --------------------------------------------
 
 static void Solid23_Die(struct Entity* p) {
-  p->flags2 &= ~ENTITY_HAZARD;
+  p->flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -93,7 +93,7 @@ static void FUN_080d8334(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       SetDDP(&p->body, Collision_ARRAY_08370ea8);
-      SetMotion(&p->s, MOTION(SM121_TURTLOID_S, 2));
+      SetSpriteAnimation(p, MOTION(SM121_TURTLOID_S, 2));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -101,15 +101,13 @@ static void FUN_080d8334(struct Solid* p) {
       if ((p->body).status & BODY_STATUS_WHITE) {
         (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
 
-  dy = SEA - (p->s).coord.y;
-  if (dy < 0) {
-    dy += 7;
-  }
+  dy = gOverworld.sea - (p->s).coord.y;
+  if (dy < 0) dy += 7;
   (p->s).coord.y += (dy >> 3);
 }
 
@@ -119,7 +117,7 @@ static void FUN_080d83a4(struct Solid* p) {
     case 0: {
       SetDDP(&p->body, Collision_ARRAY_08370f08);
       (p->s).work[2] = 30;
-      SetMotion(&p->s, MOTION(SM121_TURTLOID_S, 3));
+      SetSpriteAnimation(p, MOTION(SM121_TURTLOID_S, 3));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -128,26 +126,26 @@ static void FUN_080d83a4(struct Solid* p) {
       if ((p->s).work[2] == 0) {
         (p->s).mode[2]++;
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
 
     case 2: {
       SetDDP(&p->body, Collision_ARRAY_08370f68);
-      SetMotion(&p->s, MOTION(SM121_TURTLOID_S, 4));
+      SetSpriteAnimation(p, MOTION(SM121_TURTLOID_S, 4));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 2, (p->s).mode[2] = 0;
       }
       break;
     }
   }
 
-  dy = SEA - (p->s).coord.y;
+  dy = gOverworld.sea - (p->s).coord.y;
   if (dy < 0) {
     dy += 7;
   }
@@ -159,23 +157,23 @@ static void FUN_080d8460(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       PlaySound(SE_SEA_LEVEL);
-      SetMotion(&p->s, MOTION(SM121_TURTLOID_S, 0));
+      SetSpriteAnimation(p, MOTION(SM121_TURTLOID_S, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).motion.cmdIdx > 3) {
         SetDDP(&p->body, Collision_ARRAY_08370f98);
       }
-      if ((p->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 3, (p->s).mode[2] = 0;
       }
       break;
     }
   }
 
-  dy = SEA - (p->s).coord.y;
+  dy = gOverworld.sea - (p->s).coord.y;
   if (dy < 0) {
     dy += 7;
   }
@@ -195,11 +193,11 @@ static void FUN_080d84e4(struct Solid* p) {
       const bool8 ok = (pZero2->s).coord.y < ((p->s).coord.y - PIXEL(13));
 
       if (ok) {
-        (p->s).flags2 |= ENTITY_HAZARD;
+        (p->s).flags2 |= ENTI_PHYSICS;
         (p->s).size = (struct Rect*)&Rect_08371014;
-        (p->s).hazardAttr = 0x801;
+        (p->s).physicsAttr = MTATTR_B11 | SHAPE_BLOCK;
       } else {
-        (p->s).flags2 &= ~ENTITY_HAZARD;
+        (p->s).flags2 &= ~ENTI_PHYSICS;
       }
 
       if (((p->body).status & BODY_STATUS_B2) && ok) {
@@ -212,12 +210,12 @@ static void FUN_080d84e4(struct Solid* p) {
           (p->s).mode[1] = 4, (p->s).mode[2] = 0;
         }
       }
-      dy = SEA + (p->s).unk_coord.y - (p->s).coord.y;
+      dy = gOverworld.sea + (p->s).unk_coord.y - (p->s).coord.y;
       if (dy < 0) {
         dy += 7;
       }
       (p->s).coord.y += (dy >> 3);
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -258,7 +256,7 @@ _080D85D2:\n\
 	strb r0, [r4, #0xe]\n\
 _080D85F2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x71\n\
 	ldrb r0, [r0]\n\
@@ -328,7 +326,7 @@ _080D8652:\n\
 	strb r0, [r4, #0xe]\n\
 _080D867C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\

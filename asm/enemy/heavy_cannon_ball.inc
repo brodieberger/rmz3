@@ -4,53 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateHeavyCannonBall
-CreateHeavyCannonBall: @ 0x0807AA8C
-	push {r4, r5, r6, r7, lr}
-	adds r6, r0, #0
-	adds r7, r1, #0
-	lsls r2, r2, #0x18
-	lsrs r5, r2, #0x18
-	ldr r0, _0807AAE0 @ =gEnemyHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _0807AAD8
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _0807AAE4 @ =gEnemyFnTable
-	movs r0, #0x1c
-	strb r0, [r4, #9]
-	ldr r0, [r1, #0x70]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	strb r2, [r4, #0x10]
-	strb r5, [r4, #0x12]
-	str r6, [r4, #0x54]
-	str r7, [r4, #0x58]
-_0807AAD8:
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0807AAE0: .4byte gEnemyHeaderPtr
-_0807AAE4: .4byte gEnemyFnTable
-
 	thumb_func_start FUN_0807aae8
 FUN_0807aae8: @ 0x0807AAE8
 	push {r4, r5, lr}
@@ -157,7 +110,7 @@ HeavyCannon_Init: @ 0x0807AB68
 	strb r0, [r4, #0xa]
 	adds r5, r4, #0
 	adds r5, #0x74
-	ldr r1, _0807ABD8 @ =0x08367784
+	ldr r1, _0807ABD8 @ =sCollisions
 	adds r2, r4, #0
 	adds r2, #0x54
 	adds r0, r5, #0
@@ -177,8 +130,8 @@ HeavyCannon_Init: @ 0x0807AB68
 	bx r0
 	.align 2, 0
 _0807ABD0: .4byte gEnemyFnTable
-_0807ABD4: .4byte 0x083677CC
-_0807ABD8: .4byte 0x08367784
+_0807ABD4: .4byte sInitModes
+_0807ABD8: .4byte sCollisions
 _0807ABDC: .4byte FUN_0807aae8
 
 	thumb_func_start HeavyCannon_Update
@@ -247,8 +200,8 @@ _0807AC5C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807AC64: .4byte 0x08367774
-_0807AC68: .4byte 0x0836777C
+_0807AC64: .4byte PTR_ARRAY_08367774
+_0807AC68: .4byte PTR_ARRAY_0836777c
 
 	thumb_func_start HeavyCannon_Die
 HeavyCannon_Die: @ 0x0807AC6C
@@ -296,7 +249,7 @@ HeavyCannon_Die: @ 0x0807AC6C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807ACC8: .4byte 0x083677CE
+_0807ACC8: .4byte sMotions
 _0807ACCC: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807acd0
@@ -331,7 +284,7 @@ _0807ACE4:
 	orrs r0, r1
 	b _0807AD0E
 	.align 2, 0
-_0807AD04: .4byte 0x0836779C
+_0807AD04: .4byte sCollisions+(1*24)
 _0807AD08:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xef
@@ -675,7 +628,7 @@ _0807AFAC:
 	ldr r0, _0807AFF4 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -712,7 +665,7 @@ _0807AFF4: .4byte gStageRun+232
 _0807AFF8: .4byte gEnemyFnTable
 _0807AFFC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807B002:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -780,11 +733,11 @@ _0807B06C:
 _0807B072:
 	strb r0, [r4, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0807B0C8 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1

@@ -13,8 +13,8 @@ typedef u16 Metatile[4];  // GBAのBGマップデータ x4枚分(16x16px)
 struct MetatileShift {
   s16 x;      // メタタイル単位
   s16 y;      // メタタイル単位
-  s16 block;  // 動かすメタタイルの数
-  s16 row;
+  s16 block;  // 動かすメタタイルの数(col)
+  s16 row;    // 動かすメタタイルの数(row)
 };
 
 // --------------------------------------------
@@ -38,7 +38,7 @@ metatile_attr_t GetHazardMetatileAttr(s32 x, s32 y);
 metatile_attr_t FUN_080098a4(s32 x, s32 y);
 metatile_attr_t GetGroundMetatileAttr(s32 x, s32 y);
 
-void ShiftMetatile(s32 x, s32 y, const struct MetatileShift* s);
-void PatchMetatileMap(u32 x, u32 y, struct MetatilePatch* p);
+void ShiftMetatile(s32 x16, s32 y16, const struct MetatileShift* s);
+void PatchMetatileMap(s32 x, s32 y, u16* patch);
 
 #endif  // GUARD_RMZ3_OW_METATILE_H

@@ -19,14 +19,9 @@ const EnemyRoutine gCielMinigameEnemy2Routine = {
 // --------------------------------------------
 
 struct Enemy* FUN_0809c1cc(struct Entity* e, u8 a, u8 b) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CIEL_MG_2);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).unk_28 = e;
     (p->s).work[0] = a;
     (p->s).work[1] = b;
@@ -63,7 +58,7 @@ NAKED static void CielMinigameEnemy2_Init(struct Enemy* p) {
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r1, [r5, #0xa]\n\
 	movs r0, #0xef\n\
 	ands r0, r1\n\
@@ -219,7 +214,7 @@ _0809C38C:\n\
 	strb r0, [r4, #0xd]\n\
 _0809C38E:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\
 	bx r0\n\

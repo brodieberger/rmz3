@@ -19,11 +19,9 @@ const VFXRoutine gOrWormerDustCloudRoutine = {
 // clang-format on
 
 void CreateGhost35(s32 x, s32 y, u8 n) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_ORWORMER_DUST_CLOUD);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0, p->work[2] = n;
     p->coord.x = x;
     p->coord.y = y;
@@ -70,7 +68,7 @@ static void _VFX35_Update(struct Entity* p) {
       (p->d).y = -PIXEL(1);
       (p->d).y -= (RANDOM(RNG_0202f388) & 0x1FF);
 
-      SetMotion(p, MOTION(SM044_WORMER_ROCK_DRONE, 0));
+      SetSpriteAnimation(p, MOTION(SM044_WORMER_ROCK_DRONE, 0));
       p->mode[2]++;
       FALLTHROUGH;
     }
@@ -83,7 +81,7 @@ static void _VFX35_Update(struct Entity* p) {
         (p->d).y = PIXEL(7);
       }
       (p->coord).y += (p->d).y;
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
 
       delta = PushoutToUp1((p->coord).x, (p->coord).y);
       if ((delta < 0) && ((p->d).y > 0)) {

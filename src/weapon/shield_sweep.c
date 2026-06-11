@@ -26,19 +26,19 @@ void MenuExit_ShieldSweep(struct WeaponCommon* p) {
 
 struct Entity* CreateShieldSweep(struct Zero* z, struct Entity* q, u8 n) {
   u8 element;
-  struct WeaponCommon* p = (struct WeaponCommon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct WeaponCommon* p = (struct WeaponCommon*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SHIELD) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_SWEEP);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
       element = ((&z->unk_b4)->status).element;
       SetWeaponElement(0, element);
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_SWEEP);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
       element = ((&z->unk_b4)->status).element;
       SetWeaponElement(1, element);

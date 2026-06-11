@@ -6,7 +6,7 @@
 #include "syssav.h"
 #include "zero.h"
 
-void FUN_08008eb8(s32 x, s32 y, struct Coord* c);
+void FUN_08008eb8(s32 x, s32 y, Coords32* c);
 
 /*
   Z軸方向にある上ボタンで入れるドア
@@ -17,7 +17,7 @@ struct Door3D {
   struct Entity s;
   struct Body body;
   struct Zero* z;
-  struct Coord* c;
+  Coords32* c;
   bool8 allowXFlip;  // 左右反転が許されているか
   u16 msgID;
   u8 unk_bc;
@@ -31,24 +31,24 @@ struct Door3D {
 static const struct Collision sCollisions[6];
 static const motion_t sMotions[6][4];
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
-struct Coord* FUN_0801f7a4(struct Coord* _ UNUSED);
-struct Coord* FUN_08019dd0(struct Coord* c);
+Coords32* FUN_0801f7a4(Coords32* _ UNUSED);
+Coords32* GetWarpDestination2(Coords32* c);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 static void Door3D_Init(struct Solid* p);
-static void Door3D_Update(struct Solid* p);
+static void Door3D_Update(struct Entity* p);
 static void Door3D_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gDoor3DRoutine = {
-    [ENTITY_INIT] =      Door3D_Init,
-    [ENTITY_UPDATE] =    Door3D_Update,
-    [ENTITY_DIE] =       Door3D_Die,
+    [ENTITY_INIT] =      (void*)Door3D_Init,
+    [ENTITY_UPDATE] =    (void*)Door3D_Update,
+    [ENTITY_DIE] =       (void*)Door3D_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -148,7 +148,7 @@ _080CD16C:\n\
 	adds r3, r0, #0\n\
 	cmp r4, #3\n\
 	bne _080CD1BC\n\
-	ldr r0, _080CD1B4 @ =gSystemSavedataManager\n\
+	ldr r0, _080CD1B4 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0xb]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
@@ -180,7 +180,7 @@ _080CD16C:\n\
 	str r4, [r6, #0xc]\n\
 	b _080CD206\n\
 	.align 2, 0\n\
-_080CD1B4: .4byte gSystemSavedataManager\n\
+_080CD1B4: .4byte gSystemSavedata\n\
 _080CD1B8: .4byte gSolidFnTable\n\
 _080CD1BC:\n\
 	lsls r0, r3, #0x18\n\
@@ -326,13 +326,13 @@ static void FUN_080cd354(struct Solid* p);
 static void FUN_080cd674(struct Solid* p);
 static void FUN_080cd720(struct Door3D* p);
 
-static void Door3D_Update(struct Solid* p) {
-  static const SolidFunc sUpdates[] = {
-      FUN_080cd354,
-      FUN_080cd674,
-      (SolidFunc)FUN_080cd720,
+static void Door3D_Update(struct Entity* p) {
+  static const EntityFunc sUpdates[] = {
+      (void*)FUN_080cd354,
+      (void*)FUN_080cd674,
+      (void*)FUN_080cd720,
   };
-  (sUpdates[(p->s).mode[1]])(p);
+  (sUpdates[p->mode[1]])(p);
 }
 
 // --------------------------------------------
@@ -344,13 +344,13 @@ static void Door3D_Die(struct Solid* p) {
 }
 
 // 0x080cd320
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Door3D* door = (struct Door3D*)body->parent;
-  struct Zero* z = (struct Zero*)(body->enemy)->parent;
-  if ((z->s).kind == ENTITY_PLAYER) {
-    door->z = z;
-    gStageRun.vm.unk_004 |= 1;
-    z->isAreaChange = TRUE;
+  Player* player = (Player*)(body->enemy)->parent;
+  if ((player->s).kind == ENTITY_PLAYER) {
+    door->z = player;
+    gStageRun.vm.unk_004 |= (1 << 0);
+    player->isAreaChange = TRUE;
   }
 }
 
@@ -386,7 +386,7 @@ _080CD388:\n\
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x74\n\
 	ldr r1, _080CD3B0 @ =sCollisions\n\
@@ -402,7 +402,7 @@ _080CD3B4:\n\
 	ldr r0, _080CD3D4 @ =gStageRun+232\n\
 	adds r1, r5, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #6\n\
 	cmp r0, r1\n\
@@ -417,7 +417,7 @@ _080CD3D8:\n\
 	ldr r0, _080CD410 @ =gStageRun+232\n\
 	adds r1, r5, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #6\n\
 	cmp r0, r1\n\
@@ -427,7 +427,7 @@ _080CD3EC:\n\
 	strb r0, [r5, #0xf]\n\
 _080CD3EE:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r2, _080CD414 @ =gStageRun\n\
 	ldrh r1, [r2, #8]\n\
 	movs r0, #2\n\
@@ -521,7 +521,7 @@ _080CD498:\n\
 _080CD4AC: .4byte sMotions\n\
 _080CD4B0:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -570,7 +570,7 @@ _080CD50C: .4byte sMotions\n\
 _080CD510: .4byte gStageRun\n\
 _080CD514:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080CD544 @ =gStageRun\n\
 	movs r1, #0xaa\n\
 	lsls r1, r1, #1\n\
@@ -589,7 +589,7 @@ _080CD52A:\n\
 	beq _080CD54C\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x54\n\
-	bl FUN_08019d20\n\
+	bl GetWarpDestination1\n\
 	b _080CD554\n\
 	.align 2, 0\n\
 _080CD544: .4byte gStageRun\n\
@@ -746,13 +746,13 @@ _080CD670: .4byte sCollisions\n\
 static void FUN_080cd674(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, sMotions[(p->s).work[0]][2]);
+      SetSpriteAnimation(p, sMotions[(p->s).work[0]][2]);
       (p->s).work[2] = 30;
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).work[2]--;
       if ((p->s).work[2] == 0) {
         if (((p->s).work[0] & 1) == 0) {
@@ -760,17 +760,16 @@ static void FUN_080cd674(struct Solid* p) {
         } else {
           PlaySound(SE_RBASE_DOOR_CLOSE);
         }
-        SetMotion(&p->s, sMotions[(p->s).work[0]][3]);
+        SetSpriteAnimation(p, sMotions[(p->s).work[0]][3]);
         (p->s).mode[2]++;
       }
       break;
     }
     case 2: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 0;
-        (p->s).mode[3] = 0;
-        (p->s).mode[2] = 0;
+        (p->s).mode[2] = (p->s).mode[3] = 0;
       }
     }
   }
@@ -791,19 +790,19 @@ static void FUN_080cd720(struct Door3D* p) {
         (p->z)->isAreaChange = FALSE;
         gStageRun.vm.transition = TRANSITION_REVERSE;
 
-        if ((p->s).work[0] != 2) {  // 水没した図書館 かどうか？
-          p->c = FUN_08019dd0(&(p->s).coord);
+        if ((p->s).work[0] != 2) {
+          p->c = GetWarpDestination2(&(p->s).coord);  // それ以外
         } else {
-          p->c = FUN_0801f7a4(&(p->s).coord);
+          p->c = FUN_0801f7a4(&(p->s).coord);  // 水没した図書館
         }
         if (p->c != NULL) {
           (pZero2->s).coord.y = FUN_08009f6c((p->c)->x, (p->c)->y);
           (pZero2->s).coord.x = (p->c)->x;
           resetSateliteElfPosition(pZero2);
-          gStageRun.vm.unk_004 &= ~1;
+          gStageRun.vm.unk_004 &= ~(1 << 0);
 
-          (&gStageRun.vm.camera)->chaseMode = (1 << 3);
-          (&gStageRun.vm.camera)->unk_22 = 0;
+          (&gStageRun.vm.camera)->chaseMode = CHASE_MODE_B3;
+          (&gStageRun.vm.camera)->counter = 0;
           p->z = NULL;
           (p->s).mode[2] = 0;
         }

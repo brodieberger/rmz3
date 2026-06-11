@@ -121,7 +121,7 @@ _080DB48C:
 	strb r0, [r6, #0xd]
 _080DB4FA:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -202,7 +202,7 @@ _080DB598:
 _080DB5A4: .4byte gGameState
 _080DB5A8:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB5E4 @ =gGameState
 	ldrb r1, [r0, #2]
 	cmp r1, #0
@@ -235,7 +235,7 @@ _080DB5E4: .4byte gGameState
 _080DB5E8: .4byte gInChat
 _080DB5EC:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB62C @ =gTextWindow+8
 	ldrh r0, [r0, #2]
 	cmp r0, #0
@@ -271,7 +271,7 @@ _080DB634: .4byte gGameState+25696
 _080DB638: .4byte 0x0000C201
 _080DB63C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -288,7 +288,7 @@ _080DB63C:
 _080DB65C: .4byte 0x0000C202
 _080DB660:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -305,7 +305,7 @@ _080DB660:
 _080DB680: .4byte 0x0000C201
 _080DB684:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -323,7 +323,7 @@ _080DB6A0:
 	b _080DB6DE
 _080DB6A8:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB6E4 @ =gStageRun
 	ldrb r1, [r0, #0x12]
 	movs r4, #1
@@ -462,7 +462,7 @@ _080DB754:
 	strb r0, [r5, #0xd]
 _080DB7BA:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -533,7 +533,7 @@ _080DB81E:
 _080DB848: .4byte 0x00001306
 _080DB84C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB868 @ =gTextWindow+8
 	ldrh r1, [r0, #2]
 	cmp r1, #0

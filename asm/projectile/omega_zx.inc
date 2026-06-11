@@ -15,7 +15,7 @@ FUN_080affe4: @ 0x080AFFE4
 	lsrs r5, r3, #0x18
 	ldr r0, _080B0040 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080B0038
@@ -63,7 +63,7 @@ FUN_080b0048: @ 0x080B0048
 	adds r4, r1, #0
 	ldr r0, _080B0094 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080B008C
@@ -106,7 +106,7 @@ FUN_080b009c: @ 0x080B009C
 	adds r5, r0, #0
 	ldr r0, _080B00DC @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080B00D2
@@ -284,7 +284,7 @@ _080B01F8:
 	adds r0, r0, r1
 	str r0, [r5, #0x54]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080B0206:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -343,7 +343,7 @@ _080B0268:
 	ldr r0, [r1, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x28]
 	ldrb r0, [r0, #0xd]
 	cmp r0, #5
@@ -355,7 +355,7 @@ _080B0282:
 	ldr r0, [r1, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	adds r0, r1, #0
 	adds r0, #0xff
@@ -470,7 +470,7 @@ _080B0356:
 	ldr r0, [r0, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080B0368:
 	pop {r4, r5}
 	pop {r0}
@@ -679,7 +679,7 @@ _080B0512:
 	adds r0, r0, r1
 	str r0, [r7, #0x58]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -841,7 +841,7 @@ _080B064C:
 	str r0, [r2, #0x58]
 _080B0666:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x64]
 	ldr r1, [r7, #0x68]
 	subs r0, r0, r1
@@ -900,7 +900,7 @@ _080B06A4:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080B06E2:
 	adds r0, r7, #0
 	adds r0, #0x8c
@@ -931,7 +931,7 @@ _080B0706:
 	adds r0, r0, r1
 	str r0, [r7, #0x58]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -947,7 +947,7 @@ _080B0732:
 	ldr r0, _080B0750 @ =gStageRun+232
 	adds r1, r7, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	beq _080B07BA
 	ldrb r0, [r7, #0x12]
@@ -979,7 +979,7 @@ _080B0754:
 	strb r0, [r7, #0xe]
 _080B0776:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	beq _080B0786
@@ -1110,7 +1110,7 @@ _080B083C:
 _080B089C:
 	movs r4, #0
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -1280,7 +1280,7 @@ _080B09DA:
 _080B09E4:
 	movs r5, #0
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080B0A08 @ =pZero2
 	ldr r0, [r0]
 	ldrb r1, [r0, #0xa]
@@ -1357,7 +1357,7 @@ _080B0A74:
 	adds r4, r6, #0
 	adds r4, #0x54
 	adds r1, r4, #0
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	beq _080B0A9A
 	ldrb r0, [r6, #0x12]
@@ -1493,7 +1493,7 @@ _080B0B74:
 _080B0B7A:
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	cmp r0, #0
 	beq _080B0B92
@@ -1593,7 +1593,7 @@ _080B0BFA:
 	strb r0, [r5, #0xe]
 _080B0C40:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080B0C98
 	.align 2, 0
 _080B0C48: .4byte 0x0836D6CC
@@ -1619,7 +1619,7 @@ _080B0C50:
 	strb r0, [r5, #0xe]
 _080B0C76:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1737,7 +1737,7 @@ _080B0D7E:
 	ldr r0, [r0, #0x58]
 	str r0, [r7, #0x58]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _080B0D96
@@ -2074,7 +2074,7 @@ _080B1014:
 	str r0, [r1, #0x64]
 _080B1048:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	beq _080B105E
@@ -2180,7 +2180,7 @@ _080B10D2:
 	strb r0, [r5, #0xe]
 _080B1124:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	beq _080B113A

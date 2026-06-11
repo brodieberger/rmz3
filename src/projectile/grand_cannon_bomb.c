@@ -20,13 +20,10 @@ const ProjectileRoutine gGrandCannonBombRoutine = {
 };
 // clang-format on
 
-void CreateGrandCannonBomb(struct Coord* c, s32 amplitude, u8 angle) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+void CreateGrandCannonBomb(Coords32* c, s32 amplitude, u8 angle) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 3);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
     (p->s).d.x = Cos(angle, amplitude);
@@ -95,7 +92,7 @@ _0809D3C4:\n\
 	strb r0, [r4, #0xe]\n\
 _0809D3D4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x5c]\n\
 	adds r0, r0, r1\n\

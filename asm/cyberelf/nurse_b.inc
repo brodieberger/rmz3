@@ -40,7 +40,7 @@ NurseB_Init: @ 0x080E25EC
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x4c
 	mov r1, r8
@@ -127,7 +127,7 @@ NurseB_Update: @ 0x080E26CC
 	ldr r6, [r0]
 	ldr r7, [r0, #4]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080E273C @ =gPause
 	ldrb r2, [r0]
 	cmp r2, #0

@@ -33,6 +33,7 @@
 #define BG_ELF_TAB 40
 #define BG_CODENAME 43
 #define BG_GAMEOVER_KATAKANA 102  // ゲームオーバー画面のカタカナでかかれたゲームオーバー
+#define BG_GAMEOVER_103 103
 //
 #define BG_OP_ANIM0 129
 #define BG_OP_ANIM1 130

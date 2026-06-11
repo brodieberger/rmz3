@@ -196,7 +196,7 @@ static const EnemyFunc sDeads[4] = {
 
 // 0x0836A418
 static const u8 sInitModes[4] = {0, 0, 0, 0};
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(19)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(19)};
 
 // 0x0836A424
 static const u8 u8_ARRAY_0836a424[14] = {

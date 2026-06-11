@@ -17,12 +17,10 @@ const VFXRoutine gIceEffectRoutine = {
 };
 // clang-format on
 
-struct ElementEffect* CreateIceEffect(struct Entity* e, struct Coord* c, u8 r2) {
-  struct ElementEffect* p = (struct ElementEffect*)AllocEntityFirst(gVFXHeaderPtr);
+struct ElementEffect* CreateIceEffect(struct Entity* e, Coords32* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_ICE_EFFECT);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).unk_28 = e;
     (p->c).x = c->x, (p->c).y = c->y;
     (p->s).work[2] = r2;
@@ -329,7 +327,7 @@ _080B52B0:\n\
 	str r0, [r4, #0x58]\n\
 _080B52B2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B52C4\n\
@@ -442,7 +440,7 @@ _080B5376:\n\
 	adds r1, #0x40\n\
 	str r1, [r6, #0x60]\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B53A6\n\

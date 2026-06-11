@@ -209,7 +209,7 @@ _080DD698: .4byte gSolidFnTable
 FUN_080dd69c: @ 0x080DD69C
 	push {r4, r5, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xd]
 	cmp r0, #1
 	beq _080DD744
@@ -276,7 +276,7 @@ _080DD710:
 	strb r0, [r4, #0xd]
 _080DD724:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r2, _080DD738 @ =RNG_0202f388
 	ldr r1, [r2]
 	ldr r0, _080DD73C @ =0x000343FD
@@ -324,7 +324,7 @@ _080DD782:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xd]
 	adds r0, #1
 	b _080DD87C
@@ -378,7 +378,7 @@ _080DD7EC:
 	strb r0, [r4, #0xd]
 _080DD7FE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r2, _080DD828 @ =RNG_0202f388
 	ldr r1, [r2]
 	ldr r0, _080DD82C @ =0x000343FD
@@ -433,7 +433,7 @@ _080DD86C:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 _080DD87C:
 	strb r0, [r4, #0xd]
@@ -451,7 +451,7 @@ _080DD890: .4byte 0x0000D803
 FUN_080dd894: @ 0x080DD894
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r3, [r4, #0xd]
 	cmp r3, #0
 	beq _080DD8BE

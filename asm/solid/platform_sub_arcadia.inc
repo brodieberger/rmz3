@@ -31,7 +31,7 @@ _080CF21C:
 	strb r0, [r4, #0xe]
 _080CF23C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CF242:
 	pop {r4}
 	pop {r0}
@@ -133,7 +133,7 @@ _080CF2F2:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r5, _080CF374 @ =0x08370638
 	ldrb r2, [r4, #0x10]
 	lsls r2, r2, #3
@@ -267,7 +267,7 @@ _080CF3EC:
 	strb r0, [r4, #0xe]
 _080CF40E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CF414:
 	pop {r4, r5}
 	pop {r0}

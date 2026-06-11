@@ -3,7 +3,7 @@
 #include "overworld.h"
 #include "solid.h"
 
-void FUN_0800e370(struct Coord* c);
+void FUN_0800e370(Coords32* c);
 
 static void Solid11_Init(struct Solid* p);
 static void Solid11_Update(struct Solid* p);
@@ -11,11 +11,11 @@ static void Solid11_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gSolid11Routine = {
-    [ENTITY_INIT] =      Solid11_Init,
-    [ENTITY_UPDATE] =    Solid11_Update,
-    [ENTITY_DIE] =       Solid11_Die,
+    [ENTITY_INIT] =      (void*)Solid11_Init,
+    [ENTITY_UPDATE] =    (void*)Solid11_Update,
+    [ENTITY_DIE] =       (void*)Solid11_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -39,7 +39,7 @@ static void Solid11_Init(struct Solid* p) {
   }
   INIT_BODY(p, &sCollision, 0, NULL);
   {
-    struct Coord* d = &(p->s).d;
+    Coords32* d = &(p->s).d;
     d->x = d->y = 0;
   }
   (p->s).coord.x += PIXEL(8);
@@ -55,7 +55,7 @@ static void Solid11_Update(struct Solid* p) {
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM072_UNK, 0));
+      SetSpriteAnimation(p, MOTION(SM072_UNK, 0));
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Solid11_Die(p);
     }
@@ -74,14 +74,14 @@ static void Solid11_Die(struct Solid* p) {
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).d.y < PIXEL(7)) {
         (p->s).d.y += PIXEL(1) / 8;
       }
       y = (p->s).coord.y + (p->s).d.y;
       (p->s).coord.y = y;
       (p->s).unk_coord.y = y;
-      if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
+      if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
         (p->s).flags &= ~DISPLAY;
         SET_SOLID_ROUTINE(p, ENTITY_EXIT);
       }

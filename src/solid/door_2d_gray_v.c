@@ -57,7 +57,7 @@ static void Door2DGray_Die(struct Solid* p) {
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
-NAKED static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+NAKED static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	ldr r3, [r0, #0x2c]\n\
@@ -151,13 +151,13 @@ _080D0474: .4byte gStageRun\n\
 static void FUN_080d0478(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(SM122_DOOR_2D_GRAY_V, 0));
+      SetSpriteAnimation(p, MOTION(SM122_DOOR_2D_GRAY_V, 0));
       INIT_BODY(p, &sCollisions[0], 0, onCollision);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }

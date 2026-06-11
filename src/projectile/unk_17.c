@@ -16,12 +16,10 @@ const ProjectileRoutine gProjectile17Routine = {
 };
 // clang-format on
 
-static struct Entity* FUN_080a2790(struct Coord* c, bool8 kind) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+static struct Entity* FUN_080a2790(Coords32* c, bool8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 17);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind;
     (p->coord).x = c->x, (p->coord).y = c->y;
     p->work[1] = 1;
@@ -29,12 +27,10 @@ static struct Entity* FUN_080a2790(struct Coord* c, bool8 kind) {
   return p;
 }
 
-static struct Entity* FUN_080a27e4(struct Coord* c, bool8 kind) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+static struct Entity* FUN_080a27e4(Coords32* c, bool8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 17);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind;
     (p->coord).x = c->x, (p->coord).y = c->y;
     p->work[1] = 2;
@@ -42,12 +38,10 @@ static struct Entity* FUN_080a27e4(struct Coord* c, bool8 kind) {
   return p;
 }
 
-struct Entity* FUN_080a2838(struct Entity* e, struct Coord* c1, struct Coord* c2, bool8 isDirRight) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+struct Entity* FUN_080a2838(struct Entity* e, Coords32* c1, Coords32* c2, bool8 isDirRight) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 17);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = isDirRight;
     (p->coord).x = c1->x, (p->coord).y = c1->y;
     (p->unk_coord).x = c2->x, (p->unk_coord).y = c2->y;

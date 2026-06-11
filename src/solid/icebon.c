@@ -5,12 +5,13 @@
 #include "physics.h"
 #include "solid.h"
 
-static const struct Coord Coord_0836fc80;
+static const Coords32 Coord_0836fc80;
+static const struct Rect sSize;
 
 struct IcebonObject {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  void* fx;
+  void* elfx;
   u8 unk_04[12];
 };
 static_assert(sizeof(struct IcebonObject) == sizeof(struct Solid));
@@ -36,12 +37,11 @@ void nop_080c9e90(struct Body* _ UNUSED) { return; }
 
 // 0x080c9e94
 static void CreateElementEffect(struct IcebonObject* p) {
-  if ((p->fx == NULL) && ((p->body).status & BODY_STATUS_WHITE)) {
+  if ((p->elfx == NULL) && ((p->body).status & BODY_STATUS_WHITE)) {
     if ((((p->s).coord.y - PIXEL(15)) <= gOverworld.sea) || ((p->body).elemented != ELEMENT_FLAME)) {
-      p->fx = ApplyElementEffect(0, (Object*)p, &Coord_0836fc80);
-      if (p->fx != NULL) {
-        (p->s).mode[1] = 0;
-        (p->s).mode[2] = 0;
+      p->elfx = (void*)ApplyElementEffect(0, (Object*)p, &Coord_0836fc80);
+      if (p->elfx != NULL) {
+        (p->s).mode[1] = 0, (p->s).mode[2] = 0;
       }
     }
   }
@@ -71,7 +71,7 @@ NAKED static void Icebon_Init(struct Solid* p) {
 	movs r0, #8\n\
 	orrs r0, r1\n\
 	strb r0, [r6, #0xb]\n\
-	ldr r0, _080C9FC0 @ =Coord_0836fc88\n\
+	ldr r0, _080C9FC0 @ =sSize\n\
 	str r0, [r6, #0x30]\n\
 	movs r2, #1\n\
 	strh r2, [r6, #0x26]\n\
@@ -97,7 +97,7 @@ NAKED static void Icebon_Init(struct Solid* p) {
 	strb r0, [r6, #0xa]\n\
 	adds r0, r6, #0\n\
 	bl InitNonAffineMotion\n\
-	ldr r0, _080C9FCC @ =gSystemSavedataManager\n\
+	ldr r0, _080C9FCC @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x13]\n\
 	movs r0, #0x20\n\
 	ands r0, r1\n\
@@ -124,10 +124,10 @@ NAKED static void Icebon_Init(struct Solid* p) {
 	movs r3, #0xc\n\
 	b _080C9FF0\n\
 	.align 2, 0\n\
-_080C9FC0: .4byte Coord_0836fc88\n\
+_080C9FC0: .4byte sSize\n\
 _080C9FC4: .4byte gSolidFnTable\n\
 _080C9FC8: .4byte u8_ARRAY_0836fc90\n\
-_080C9FCC: .4byte gSystemSavedataManager\n\
+_080C9FCC: .4byte gSystemSavedata\n\
 _080C9FD0: .4byte gCurStory\n\
 _080C9FD4: .4byte sIcebonCollisions\n\
 _080C9FD8:\n\
@@ -231,10 +231,9 @@ static void Icebon_Die(struct Solid* p) {
 static void nop_080ca0b4(void* _ UNUSED) { return; }
 
 static void icebon_080ca0b8(struct IcebonObject* p) {
-  if ((p->fx == NULL) || isKilled(p->fx)) {
-    p->fx = NULL;
-    (p->s).mode[1] = 1;
-    (p->s).mode[2] = 0;
+  if ((p->elfx == NULL) || isKilled(p->elfx)) {
+    p->elfx = NULL;
+    (p->s).mode[1] = 1, (p->s).mode[2] = 0;
   }
 }
 
@@ -249,15 +248,14 @@ static void icebon_080ca104(Object* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       SetDDP(&p->body, &sIcebonCollisions[1]);
-      SetMotion(&p->s, MOTION(SM016_ICEBON, 0));
+      SetSpriteAnimation(p, MOTION(SM016_ICEBON, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (--(p->s).work[2] == 0) {
-        (p->s).mode[1] = 2;
-        (p->s).mode[2] = 0;
+        (p->s).mode[1] = 2, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -297,13 +295,15 @@ const struct Collision sIcebonCollisions[3] = {
     },
 };
 
-static const struct Coord Coord_0836fc80 = {PIXEL(0), -PIXEL(16)};
+static const Coords32 Coord_0836fc80 = {PIXEL(0), -PIXEL(16)};
 
-const struct Coord Coord_0836fc88 = {-0x10000000, 0x20001800};
+// 0x0836fc88
+static const struct Rect sSize = {PIXEL(0), -PIXEL(16), PIXEL(24), PIXEL(32)};
 
 const u8 u8_ARRAY_0836fc90[2] = {1, 0};
 
-const motion_t motion_t_ARRAY_0836fc92[4] = {
+// 0x0836FC92
+static const motion_t motion_t_ARRAY_0836fc92[4] = {
     MOTION(SM016_ICEBON, 3),
     MOTION(SM016_ICEBON, 4),
     MOTION(SM016_ICEBON, 5),

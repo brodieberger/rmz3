@@ -5,7 +5,6 @@
 //
 #include "entity/entity.h"
 #include "entity/player.h"
-#include "entity/projectile.h"
 #include "entity_manager.h"
 #include "renderer.h"
 //
@@ -21,7 +20,7 @@ extern struct EntityHeader* gProjectileHeaderPtr;
 extern struct EntityHeader* gEnemyHeaderPtr;
 extern struct EntityHeader* gElfHeaderPtr;
 
-extern struct Zero gZero;
+extern Player gPlayers[1];
 extern struct Weapon gWeapons[24];
 extern struct Boss gBosses[5];
 extern struct Enemy gEnemies[18];
@@ -31,32 +30,45 @@ extern struct Solid gSolids[22];
 extern struct Elf gElfEntities[16];
 extern u8 gEntityIDGenerator;
 
-void setCurProcessedEntityHeader(struct EntityHeader* h);
-struct Entity* AllocEntityLast(struct EntityHeader* h);
-struct Entity* AllocEntityFirst(struct EntityHeader* h);
+void _StartEntityListIteration(struct EntityHeader* h);
+static inline struct Entity* StartEntityListIteration(struct EntityHeader* h) {
+  _StartEntityListIteration(h);
+  return h->cur = (h->cur)->next;  // この時点で h->cur = &h->tail なので、 (h->cur)->next で h->head が取れる
+}
+
+void _GetEntityList(struct EntityHeader* h);
+static inline struct Entity* GetEntityList(struct EntityHeader* h) {
+  _GetEntityList(h);
+  return h->cur = (h->cur)->next;  // この時点で h->cur = &h->tail なので、 (h->cur)->next で h->head が取れる
+}
+
+static inline struct Entity* GetNextEntity(struct EntityHeader* h) { return h->cur = (h->cur)->next; }
+
+void* AllocEntityFirst(struct EntityHeader* h);
+void* AllocEntityLast(struct EntityHeader* h);
 void DeleteEntity(struct Entity* p);
 void DeleteEntityEx(struct EntityHeader* h, struct Entity* z);
 void UpdateEntities(struct EntityHeader* h);
 void UpdateHazardEntities(struct EntityHeader* h);
-void ignoreEntityFn(struct EntityHeader* h);
 void RunDamageEffect(struct EntityHeader* h);
 void RegisterHitboxes(struct EntityHeader* h);
 
-void DrawEntity(struct EntityHeader* h, struct TaskManager* r1);
-void DrawCollidableEntity(struct EntityHeader* h, struct TaskManager* r1);
-void DrawWeapon(struct TaskManager* r);
-struct Entity* GetNearestEntity(struct EntityHeader* h, struct Coord* c);
+void DrawEntity(struct EntityHeader* h, Renderer* r);
+void DrawCollidableEntity(struct EntityHeader* h, Renderer* r);
+void DrawWeapon(Renderer* r);
+struct Entity* GetNearestEntity(struct EntityHeader* h, Coords32* c);
+
 void InitNonAffineMotion(struct Entity* e);
 void InitRotatableMotion(struct Entity* e);
 u16 countSpecificEntities1(struct EntityHeader* h, u8 id);
 u16 countSpecificEntities2(struct EntityHeader* h, u8 id, u8 r2, u8 r3);
 
-void UpdateSpawnManager(struct Coord* viewport);
+void UpdateSpawnManager(Coords32* viewport);
 
-void InitNonAffineSprite(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c);
-void InitRotatableSprite(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c);
-void InitScalerotSprite1(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c);
-void InitScalerotSprite2(struct Sprite* s, struct MetaspriteHeader* sprites, struct Coord* c);
+void InitNonAffineSprite(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c);
+void InitRotatableSprite(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c);
+void InitScalerotSprite1(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c);
+void InitScalerotSprite2(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c);
 
 void RotateSprite(struct Sprite* s, s32 angle);
 void ScalerotSprite(struct Sprite* s, s32 angle);
@@ -72,5 +84,6 @@ void PaintEntityWhite(struct Entity* p);
 void FUN_0801779c(struct Entity* p);
 
 bool32 isKilled(struct Entity* p);
+#define IsDead(p) (isKilled((struct Entity*)(p)))
 
 #endif  // GUARD_RMZ3_ENTITY_H

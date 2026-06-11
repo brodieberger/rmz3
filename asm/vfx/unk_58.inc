@@ -16,7 +16,7 @@ FUN_080c1cf4: @ 0x080C1CF4
 	lsrs r7, r3, #0x10
 	ldr r0, _080C1D54 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C1D4C
@@ -262,7 +262,7 @@ _080C1E6A:
 _080C1EF0:
 	ldr r0, _080C1F54 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C1FC6
@@ -564,7 +564,7 @@ _080C214E:
 	strb r0, [r4, #0xe]
 _080C215C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2162:
 	pop {r4}
 	pop {r0}
@@ -610,7 +610,7 @@ _080C21A0:
 	strb r0, [r4, #0xe]
 _080C21AE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C21B4:
 	pop {r4}
 	pop {r0}
@@ -725,7 +725,7 @@ _080C226E:
 	strb r0, [r4, #0xa]
 _080C2282:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2288:
 	pop {r4, r5}
 	pop {r0}
@@ -837,7 +837,7 @@ _080C234A:
 	strb r0, [r4, #0xa]
 _080C2352:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2358:
 	pop {r4, r5}
 	pop {r0}
@@ -991,7 +991,7 @@ _080C246A:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2480:
 	pop {r3}
 	mov r8, r3
@@ -1023,7 +1023,7 @@ _080C249C:
 	strb r0, [r4, #0xe]
 _080C24B2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #1
 	ands r0, r1
@@ -1135,7 +1135,7 @@ _080C2516:
 	strb r0, [r7, #0xe]
 _080C258A:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]
@@ -1257,7 +1257,7 @@ _080C260A:
 	strb r0, [r7, #0xe]
 _080C267E:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]

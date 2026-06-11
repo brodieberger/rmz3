@@ -18,7 +18,7 @@ struct MissileFactoryState {
   u8 unk_00b;
   u32 unk_00c;
   u32 unk_010;
-  struct Coord unk_014;
+  Coords32 unk_014;
   u8 unk_01c[236];
 };
 static_assert(sizeof(struct MissileFactoryState) == 264);

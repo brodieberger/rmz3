@@ -268,7 +268,7 @@ FUN_08085060: @ 0x08085060
 	strb r0, [r4, #0xe]
 _0808507C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r5, #0
 	adds r2, #0xe0
 	ldrb r1, [r2]
@@ -574,7 +574,7 @@ _080852C2:
 _080852DC: .4byte gEnemyFnTable
 _080852E0:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080852E6:
 	add sp, #0xc
 	pop {r3}
@@ -588,7 +588,7 @@ _080852E6:
 FUN_080852f4: @ 0x080852F4
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r2, [r4, #0xf]
 	adds r3, r2, #0
 	cmp r3, #0

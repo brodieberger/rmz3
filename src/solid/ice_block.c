@@ -5,7 +5,7 @@
 // 壊れた宇宙船の屋内とかで上から落ちてくる氷ブロック
 
 static const struct Collision sCollisions[2];
-static const struct Rect sSize;
+static const struct Rect sIceBlock_Size;
 
 bool16 FUN_0800bd38(s32 x, s32 y);
 void FUN_0800bd78(s32 x, s32 y);
@@ -47,15 +47,15 @@ NON_MATCH static void IceBlock_Init(struct Solid* p) {
     if (FUN_0800bd38((p->s).coord.x, (p->s).coord.y + PIXEL(32))) {
       (p->s).coord.y += PIXEL(32);
     }
-    (p->s).flags2 |= ENTITY_HAZARD;
-    (p->s).size = &sSize;
-    (p->s).hazardAttr = 0x3801;
+    (p->s).flags2 |= ENTI_PHYSICS;
+    (p->s).size = &sIceBlock_Size;
+    (p->s).physicsAttr = MTATTR_CONVEYOR1 | MTATTR_SLIP | MTATTR_B11 | SHAPE_BLOCK;
     FUN_0800bd78((p->s).coord.x, (p->s).coord.y);
-    SetMotion(&p->s, MOTION(SM203_ICE_BLOCK, 1));
+    SetSpriteAnimation(p, MOTION(SM203_ICE_BLOCK, 1));
     INIT_BODY(p, &sCollisions[1], 80, NULL);
     (p->s).mode[1] = (p->s).work[0] = 2;
   } else {
-    SetMotion(&p->s, MOTION(SM203_ICE_BLOCK, 0));
+    SetSpriteAnimation(p, MOTION(SM203_ICE_BLOCK, 0));
     INIT_BODY(p, &sCollisions[0], 80, NULL);
   }
   IceBlock_Update(p);
@@ -97,4 +97,4 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
-static const struct Rect sSize = {PIXEL(0), -PIXEL(12), PIXEL(32), PIXEL(32)};
+static const struct Rect sIceBlock_Size = {PIXEL(0), -PIXEL(12), PIXEL(32), PIXEL(32)};  // 0x083710d8

@@ -23,11 +23,9 @@ const VFXRoutine gVFX47Routine = {
 
 void FUN_080bf390(struct Entity* e) {
   void* q = e->unk_2c;
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_047);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 1;
     p->unk_28 = (void*)e;
     p->unk_2c = q;
@@ -38,11 +36,9 @@ void FUN_080bf3d8(struct Entity* e) {
   s32 i;
   void* q = NULL;
   for (i = 0; i < 2; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 0;
       p->work[2] = i;
       p->unk_28 = (void*)e;
@@ -53,11 +49,9 @@ void FUN_080bf3d8(struct Entity* e) {
 }
 
 void FUN_080bf438(s32 x, s32 y, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_047);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 2, p->work[2] = kind;
     (p->coord).x = x, (p->coord).y = y;
   }
@@ -66,11 +60,9 @@ void FUN_080bf438(s32 x, s32 y, u8 kind) {
 void FUN_080bf48c(s32 x, s32 y, u8 n) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 3;
       p->work[2] = i;
       p->work[3] = n;
@@ -84,11 +76,9 @@ void FUN_080bf48c(s32 x, s32 y, u8 n) {
 void FUN_080bf52c(s32 x, s32 y, u8 n) {
   s32 i;
   for (i = 0; i < 6; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_047);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 4;
       p->work[2] = i;
       (p->coord).x = x - PIXEL(8);

@@ -506,7 +506,7 @@ _08014490:
 _080144AC:
 	cmp r1, #0
 	bne _080144F0
-	ldr r2, _08014550 @ =0x083458B4
+	ldr r2, _08014550 @ =sMetatileShift1
 	movs r0, #0xf7
 	movs r1, #0x64
 	bl ShiftMetatile
@@ -579,7 +579,7 @@ _080144F0:
 _08014544: .4byte gOverworld
 _08014548: .4byte 0x0002D03C
 _0801454C: .4byte 0x0002D030
-_08014550: .4byte 0x083458B4
+_08014550: .4byte sMetatileShift1
 _08014554: .4byte 0x00000141
 _08014558: .4byte 0x00000143
 _0801455C: .4byte gStageRun+288
@@ -1296,21 +1296,3 @@ giantElevator_08014ad4: @ 0x08014AD4
 	.align 2, 0
 _08014AFC: .4byte gVideoRegBuffer+12
 _08014B00: .4byte 0xFFFFEBD8
-
-	thumb_func_start FUN_08014b04
-FUN_08014b04: @ 0x08014B04
-	push {lr}
-	ldr r2, _08014B20 @ =0x083458BC
-	movs r0, #0xb4
-	movs r1, #0x72
-	bl ShiftMetatile
-	ldr r2, _08014B24 @ =gCurStory
-	ldrb r1, [r2, #0xa]
-	movs r0, #2
-	orrs r0, r1
-	strb r0, [r2, #0xa]
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08014B20: .4byte 0x083458BC
-_08014B24: .4byte gCurStory

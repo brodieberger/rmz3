@@ -18,12 +18,10 @@ const VFXRoutine gVFX41Routine = {
 };
 // clang-format on
 
-struct Entity* FUN_080bdd74(struct Entity* e, struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bdd74(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_041);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 0;
     (p->coord).x = c->x, (p->coord).y = c->y;
     p->unk_28 = (void*)e;
@@ -31,12 +29,10 @@ struct Entity* FUN_080bdd74(struct Entity* e, struct Coord* c, u8 kind) {
   return p;
 }
 
-struct Entity* FUN_080bddcc(struct Coord* c, u8 kind, motion_t m, u32 val) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bddcc(Coords32* c, u8 kind, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_041);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind, (p->s).work[1] = 1;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     p->m_74 = m;
@@ -45,12 +41,10 @@ struct Entity* FUN_080bddcc(struct Coord* c, u8 kind, motion_t m, u32 val) {
   return (void*)p;
 }
 
-struct Entity* createHellbatElectricBeam(struct Entity* e, struct Coord* c, u8 kind, u8 param_4) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* createHellbatElectricBeam(struct Entity* e, Coords32* c, u8 kind, u8 param_4) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_041);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind;
     p->unk_7c = param_4;
     (p->s).work[1] = 2;
@@ -60,12 +54,10 @@ struct Entity* createHellbatElectricBeam(struct Entity* e, struct Coord* c, u8 k
   return (void*)p;
 }
 
-struct Entity* FUN_080bde9c(struct Entity* e, struct Coord* c, u8 kind, u8 param_4) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bde9c(struct Entity* e, Coords32* c, u8 kind, u8 param_4) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_041);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind;
     p->unk_7c = param_4;
     (p->s).work[1] = 3;

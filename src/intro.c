@@ -1,11 +1,12 @@
 #include "intro.h"
 
-#include "blink.h"
+#include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "gpu_regs.h"
 #include "mmbn4.h"
 #include "motion.h"
+#include "palette_animation.h"
 #include "sound.h"
 #include "sprite.h"
 #include "sram.h"
@@ -18,7 +19,7 @@ typedef void (*IntroLoopFunc)(struct Intro*);
 static const u8 u8_ARRAY_08385f9c[7];
 static const s32 s32_ARRAY_08385fec[8];
 static const s32 s32_ARRAY_ARRAY_0838600c[16];
-static const struct Coord s32_ARRAY_ARRAY_0838604c[4];
+static const Coords32 s32_ARRAY_ARRAY_0838604c[4];
 
 // --------------------------------------------
 
@@ -86,11 +87,11 @@ static void IntroLoop_CapcomInti(struct Intro* p) {
     }
     case 1: {
       p->frame += 1 + p->titleFrame;
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x40 - p->frame;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_WHITE - p->frame;
       if (p->frame < 32) {
         break;
       }
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       p->frame = 120;
       p->mode[1]++;
       FALLTHROUGH;
@@ -123,7 +124,7 @@ static void IntroLoop_CapcomInti(struct Intro* p) {
       if (p->frame < 32) {
         break;
       }
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       p->frame = 120;
       p->mode[1]++;
       FALLTHROUGH;
@@ -143,7 +144,7 @@ static void IntroLoop_CapcomInti(struct Intro* p) {
       if (p->frame > 0) {
         break;
       }
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       gVideoRegBuffer.dispcnt &= 0xC7FF;
       SetIntroMode(p, 4);
       break;
@@ -158,27 +159,24 @@ static void IntroLoop_ComeBackTitle(struct Intro* p) {
 }
 
 static void initGameSavedata(struct Intro* p) {
-  s16 saveIdx;
+  s16 sector;
 
   LoadSystemData();
   p->saveOK = FALSE;
-  saveIdx = 0;
+  sector = 0;
   do {
-    bool32 ok = CheckSavedataCorrect(saveIdx, SAVE_SLOT_SIZE);
-    if (ok) {
-      p->saveOK = 1;
-    }
-    saveIdx++;
-  } while (saveIdx < 5);
+    if (ValidateSector(sector, sizeof(GameSavedata))) p->saveOK = 1;
+    sector++;
+  } while (sector < GAME_SECTOR_NUM);
 }
 
 // デモプレイ1 (ゲームのプロローグを垂れ流して、プレイヤーが A,B,START のいずれかを押すとタイトルに戻る)
 static void IntroLoop_DemoPlay1(struct Intro* p) {
   switch (p->mode[1]) {
     case 0: {
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       gPaletteManager.post_process = NULL;
-      ClearBlinkings();
+      RemoveAllPaletteAnimations();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
       gWindowRegBuffer.winin[2] = 0xFF;
@@ -202,9 +200,9 @@ static void IntroLoop_DemoPlay1(struct Intro* p) {
         gJoypad[0].field3_0x6 = gJoypad[0].pressed = gJoypad[0].input = 0;
       }
       if (gProcessManager.processes[1].status == PROCESS_DISABLED) {
-        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
         gPaletteManager.post_process = NULL;
-        ClearBlinkings();
+        RemoveAllPaletteAnimations();
         gBlendRegBuffer.bldclt = 0;
         gWindowRegBuffer.dispcnt = 0;
         gWindowRegBuffer.winin[2] = 0xFF;
@@ -282,9 +280,9 @@ static void IntroLoop_DemoPlay2(struct Intro* p) {
 
   switch (p->mode[1]) {
     case 0: {
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       gPaletteManager.post_process = NULL;
-      ClearBlinkings();
+      RemoveAllPaletteAnimations();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
       gWindowRegBuffer.winin[2] = 0xFF;
@@ -314,9 +312,9 @@ static void IntroLoop_DemoPlay2(struct Intro* p) {
         stepDemoPlay2(p);
       }
       if (gProcessManager.processes[1].status == PROCESS_DISABLED) {
-        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
         gPaletteManager.post_process = NULL;
-        ClearBlinkings();
+        RemoveAllPaletteAnimations();
         gBlendRegBuffer.bldclt = 0;
         gWindowRegBuffer.dispcnt = 0;
         gWindowRegBuffer.winin[2] = 0xFF;
@@ -377,9 +375,9 @@ static void IntroLoop_TitleScreen(struct Intro* p) {
 // 04 00 xx nn
 static void InitTitleAnimation(struct Intro* p) {
   DisableBG0();
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
   gPaletteManager.post_process = NULL;
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
@@ -468,7 +466,7 @@ NON_MATCH static void updateTitleAnimation(struct Intro* p) {
 
   if (p->unk_235 != 0) {
     p->unk_235--;
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x40 - p->unk_235;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_WHITE - p->unk_235;
   } else if (p->unk_234 < 0x40) {
     p->unk_234++;
     gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = (p->unk_234 >> 1);
@@ -484,7 +482,7 @@ NON_MATCH static void updateTitleAnimation(struct Intro* p) {
     PlaySound(SE_UNK_14d);
     FadeOutBGM(BGM_TITLE);
   }
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x40;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_WHITE;
   p->mode[2] = 0;
   p->mode[1] = 2;
 #else
@@ -602,7 +600,7 @@ NAKED static void InitTitleScreen(struct Intro* p) {
 	movs r1, #0xd0\n\
 	lsls r1, r1, #1\n\
 	movs r0, #0xf0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldr r2, _080EC34C @ =gWindowRegBuffer\n\
 	ldrh r0, [r2]\n\
 	orrs r6, r0\n\
@@ -670,13 +668,13 @@ _080EC358: .4byte 0x00000808\n\
 NAKED static void SelectOnTitle(struct Intro* p) { INCCODE("asm/todo/SelectOnTitle.inc"); }
 
 static void HandleTitleAction(struct Intro* p) {
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
   gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG_ALL_ON | DISPCNT_WIN1_ON);
-  BGCNT16(0) = BGCNT_CHARBASE(2) | BGCNT_AFF256x256;
+  BGCNT16(0) = BGCNT_CHARBASE(2) | BGCNT_TXT512x256;
   gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN1_ON;
   gWindowRegBuffer.winin[2] |= 0xE;
   gBlendRegBuffer.bldclt = 0;
-  ClearBlink(0xf0);
+  RemovePaletteAnimation(240);
   SioLink_SendDisconnect();
   EReader_SioAbortSession();
   switch (p->cursor) {
@@ -709,13 +707,13 @@ static void HandleTitleAction(struct Intro* p) {
 NAKED static u8 intro_080ecd28(struct Intro* p) { INCCODE("asm/todo/intro_080ecd28.inc"); }
 
 static void loadTitleScreen(struct Intro* _ UNUSED) {
-  if (gSystemSavedataManager.title < 3) {
-    *(u32*)gVideoRegBuffer.bgofs[3] = gSystemSavedataManager.title * 80;
+  if (gSystemSavedata.title < 3) {
+    *(u32*)gVideoRegBuffer.bgofs[3] = gSystemSavedata.title * 80;
     LoadGraphic(BG_GRAPHIC(BG_TITLE_ZERO), (void*)CHAR_BASE(3));
     LoadPalette(BG_PALETTE(BG_TITLE_ZERO), 0);
     LoadBgMap(USE_BG3, gBgMapOffsets, BG_TITLE_ZERO, 0, 0);
   } else {
-    *(u32*)gVideoRegBuffer.bgofs[3] = (gSystemSavedataManager.title - 3) * 80;
+    *(u32*)gVideoRegBuffer.bgofs[3] = (gSystemSavedata.title - 3) * 80;
     LoadGraphic(BG_GRAPHIC(BG_TITLE_CIEL), (void*)CHAR_BASE(3));
     LoadPalette(BG_PALETTE(BG_TITLE_CIEL), 0);
     LoadBgMap(USE_BG3, gBgMapOffsets, BG_TITLE_CIEL, 0, 0);
@@ -744,7 +742,7 @@ static void intro_080ed1d4(struct Intro* p) {
   p->unk_243 = 10;
 }
 
-static const struct Coord Coord_ARRAY_08385fa4[9];
+static const Coords32 Coord_ARRAY_08385fa4[9];
 static void FUN_080ed57c(motion_t m, s32 x, s32 y, u16 r3, u8 r4);
 
 NAKED static void intro_080ed2a0(struct Intro* p) {
@@ -1281,11 +1279,11 @@ static void FUN_080ed6c4(struct Intro* p) {
   *(u32*)gVideoRegBuffer.bgofs[3] = 0;
 
   {
-    void* dst = (void*)(VRAM + SCREEN_BASE_16(3));
+    void* dst = SCREEN_ADDR(3);
     _CpuFastFill(0, dst, 4096);
   }
 
-  LoadGraphic(BG_GRAPHIC(BG_TITLE_ZERO), (void*)CHAR_BASE(3));
+  LoadGraphic(BG_GRAPHIC(BG_TITLE_ZERO), CHAR_BASE(3));
   LoadPalette(BG_PALETTE(BG_TITLE_ZERO), 0);
   LoadBgMap(USE_BG3, gBgMapOffsets, BG_TITLE_ZERO, 0, 0);
 
@@ -1500,9 +1498,9 @@ _080ED8D8: .4byte gWindowRegBuffer\n\
 static void IntroLoop_StartMainGame(struct Intro* p) {
   switch (p->mode[1]) {
     case 0: {
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       gPaletteManager.post_process = NULL;
-      ClearBlinkings();
+      RemoveAllPaletteAnimations();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
       gWindowRegBuffer.winin[2] = 0xFF;
@@ -1545,7 +1543,7 @@ static const u8 u8_ARRAY_08385f9c[7] = {
     0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8,
 };
 
-static const struct Coord Coord_ARRAY_08385fa4[9] = {
+static const Coords32 Coord_ARRAY_08385fa4[9] = {
     {0x1900, 0x3000}, {0x2D00, 0x3000}, {0x4200, 0x3000}, {0x5800, 0x3000}, {0x6F00, 0x3000}, {0x8B00, 0x3200}, {0xA200, 0x3000}, {0xC600, 0x3000}, {0x9800, 0x3000},
 };
 
@@ -1557,7 +1555,7 @@ static const s32 s32_ARRAY_ARRAY_0838600c[16] = {
     0x00001900, 0x00003000, 0x00002D00, 0x00003000, 0x00004200, 0x00003000, 0x00005800, 0x00003000, 0x00006F00, 0x00003000, 0x00008B00, 0x00003200, 0x0000A200, 0x00003000, 0x0000C600, 0x00003000,
 };
 
-static const struct Coord s32_ARRAY_ARRAY_0838604c[4] = {
+static const Coords32 s32_ARRAY_ARRAY_0838604c[4] = {
     {0x3400, -0x1E00},
     {-0xA00, 0x5C00},
     {-0xA00, -0x1E00},
@@ -1582,9 +1580,9 @@ static void IntroLoop_Minigame(struct Intro* p) {
 }
 
 static void FUN_080ed9c0(struct Intro* p) {
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
   gPaletteManager.post_process = NULL;
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
@@ -1671,7 +1669,7 @@ _080EDA8E:\n\
 	bl LoadBgMap\n\
 	movs r0, #0x40\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldr r1, _080EDC08 @ =gBlendRegBuffer\n\
 	ldr r0, _080EDC0C @ =0x00003E41\n\
 	strh r0, [r1]\n\
@@ -1682,7 +1680,7 @@ _080EDA8E:\n\
 	bl LoadAsciiBold\n\
 	bl FUN_080e9840\n\
 	movs r1, #0\n\
-	ldr r6, _080EDC10 @ =gSystemSavedataManager\n\
+	ldr r6, _080EDC10 @ =gSystemSavedata\n\
 	ldrb r0, [r6, #0x1a]\n\
 	ldr r7, _080EDC14 @ =gSineTable\n\
 	movs r4, #0xff\n\
@@ -1826,7 +1824,7 @@ _080EDC00: .4byte gGraphic_Capcom+(22*20)+12\n\
 _080EDC04: .4byte gBgMapOffsets\n\
 _080EDC08: .4byte gBlendRegBuffer\n\
 _080EDC0C: .4byte 0x00003E41\n\
-_080EDC10: .4byte gSystemSavedataManager\n\
+_080EDC10: .4byte gSystemSavedata\n\
 _080EDC14: .4byte gSineTable\n\
 _080EDC18: .4byte 0x00000241\n\
 _080EDC1C: .4byte gJoypad\n\
@@ -1850,7 +1848,7 @@ _080EDC38:\n\
 	movs r0, #3\n\
 	bl PlaySound\n\
 	movs r0, #0x40\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	ldrb r0, [r5, #6]\n\
 	adds r0, #1\n\
 	strb r0, [r5, #6]\n\
@@ -1884,7 +1882,7 @@ _080EDC80: .4byte gPaletteManager\n\
 _080EDC84: .4byte 0x00000402\n\
 _080EDC88:\n\
 	movs r0, #0x40\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	adds r0, r5, #0\n\
 	movs r1, #4\n\
 	bl SetIntroMode\n\
@@ -1915,7 +1913,7 @@ _080EDCBC:\n\
 	strb r0, [r5, #5]\n\
 _080EDCC4:\n\
 	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	mov r1, sb\n\
 	lsls r4, r1, #0x10\n\
 	asrs r1, r4, #0x10\n\
@@ -1974,7 +1972,7 @@ _080EDD20:\n\
 	b _080EDD52\n\
 	.align 2, 0\n\
 _080EDD38: .4byte 0x00000241\n\
-_080EDD3C: .4byte gSystemSavedataManager+24\n\
+_080EDD3C: .4byte gSystemSavedata+24\n\
 _080EDD40: .4byte u8_ARRAY_0838607c\n\
 _080EDD44: .4byte gSineTable\n\
 _080EDD48: .4byte StringOfsTable\n\
@@ -2068,7 +2066,7 @@ static void FUN_080eddb8(struct Intro* p) {
         p->frame--;
         gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = p->frame;
       } else {
-        ClearBlink(0x40);
+        RemovePaletteAnimation(0x40);
         gBlendRegBuffer.bldclt = 0;
         p->mode[2] = 0;
         p->mode[1] = 3;
@@ -2090,7 +2088,7 @@ static void FUN_080eddb8(struct Intro* p) {
     }
   }
 
-  UpdateBlinkMotionState(0x40);
+  StepPaletteAnimation(0x40);
   PrintString(STRING(1088), 13, 2);  // sMinigameRules (0x083763c4)
   PrintString(STRING(sMinigameRuleStrings[p->unk_242]), 3, 4);
 }
@@ -2098,9 +2096,9 @@ static void FUN_080eddb8(struct Intro* p) {
 static void FUN_080edf04(struct Intro* p) {
   switch (p->mode[2]) {
     case 0: {
-      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
       gPaletteManager.post_process = NULL;
-      ClearBlinkings();
+      RemoveAllPaletteAnimations();
       gBlendRegBuffer.bldclt = 0;
       gWindowRegBuffer.dispcnt = 0;
       gWindowRegBuffer.winin[2] = 0xFF;

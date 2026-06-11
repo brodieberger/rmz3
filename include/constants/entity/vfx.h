@@ -30,7 +30,7 @@
 #define VFX_UNK_026 26
 #define VFX_UNK_027 27
 #define VFX_UNK_028 28
-#define VFX_UNK_029 29
+#define VFX_BURNING_FLAME_FX 29
 #define VFX_UNK_030 30
 #define VFX_UNK_031 31
 #define VFX_P_AQUA 32
@@ -57,7 +57,7 @@
 #define VFX_UNK_053 53
 #define VFX_ICICLE_PARTICLE 54
 #define VFX_UNK_055 55
-#define VFX_UNK_056 56
+#define VFX_COPYX_REFLECTLASER 56
 #define VFX_UNK_057 57
 #define VFX_UNK_058 58
 #define VFX_UNK_059 59

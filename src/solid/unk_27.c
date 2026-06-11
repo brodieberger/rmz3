@@ -20,26 +20,18 @@ const SolidRoutine gSolid27Routine = {
 // clang-format on
 
 struct Entity* FUN_080d8f2c(void) {
-  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_027);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 0;
   }
   return p;
 }
 
 struct Entity* FUN_080d8f7c(u8 kind) {
-  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_027);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 1, p->work[1] = kind;
   }
   return p;

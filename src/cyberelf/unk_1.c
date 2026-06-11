@@ -8,10 +8,10 @@ struct Zero;
 struct CyberElf1 {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  struct Zero* player;    // 0xB4
-  u8 unk_b8;              // 0xB8
-  u8 unk_b9;              // 0xB9
-  struct Coord coord_bc;  // 0xBC
+  struct Zero* player;  // 0xB4
+  u8 unk_b8;            // 0xB8
+  u8 unk_b9;            // 0xB9
+  Coords32 coord_bc;    // 0xBC
 };
 static_assert(sizeof(struct CyberElf1) == sizeof(struct Elf));
 
@@ -32,11 +32,9 @@ const ElfRoutine gElf1Routine = {
 // --------------------------------------------
 
 struct Entity* CreateElf1(struct Zero* player, u8 breed, u8 availability, u8 _) {
-  struct CyberElf1* p = (struct CyberElf1*)AllocEntityFirst(gElfHeaderPtr);
+  struct CyberElf1* p = (struct CyberElf1*)AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 1);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     p->player = player;
     (p->s).work[0] = breed, (p->s).work[1] = availability;
   }
@@ -53,7 +51,7 @@ static void Elf1_Init(struct CyberElf1* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, GetElfMotion(0));
+  SetSpriteAnimation(p, GetElfMotion(0));
   (p->s).spr.xflip = FALSE;
   (p->s).spr.oam.xflip = FALSE;
   (p->s).flags &= ~X_FLIP;

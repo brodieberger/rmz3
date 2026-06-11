@@ -947,7 +947,7 @@ _08097682:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0xa]
 	movs r0, #0x20
 	ands r0, r1
@@ -1004,7 +1004,7 @@ _08097732:
 	cmp r0, #1
 	bne _08097740
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #2
 	strb r0, [r4, #0xf]
 _08097740:
@@ -1372,7 +1372,7 @@ _080979E8:
 	strb r1, [r4, #0xe]
 _08097A06:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08097A0C:
 	pop {r4}
 	pop {r0}
@@ -1492,7 +1492,7 @@ _08097AD4:
 	strb r1, [r4, #0xe]
 _08097AEA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08097AF0:
 	pop {r4}
 	pop {r0}
@@ -1682,7 +1682,7 @@ _08097C28:
 	bl SetMotion
 	strb r4, [r7]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08097CBC
 	.align 2, 0
 _08097C60: .4byte sCollisions
@@ -1732,7 +1732,7 @@ _08097CB2:
 	str r0, [r6, #0x60]
 _08097CB6:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08097CBC:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -1772,7 +1772,7 @@ _08097CEA:
 	strb r1, [r4, #0xe]
 _08097CFE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08097D04:
 	pop {r4}
 	pop {r0}
@@ -1968,7 +1968,7 @@ _08097E7E:
 	strb r0, [r5, #0xe]
 _08097E80:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08097F34
 _08097E88:
 	movs r1, #0xdc
@@ -2060,7 +2060,7 @@ _08097F16:
 	strb r3, [r5, #0xe]
 _08097F2E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08097F34:
 	add sp, #8
 	pop {r4, r5, r6, r7}
@@ -2281,7 +2281,7 @@ _080980C6:
 	movs r0, #1
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _08098104 @ =gMission
+	ldr r2, _08098104 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08098108 @ =0x0000270E
 	cmp r1, r0
@@ -2307,7 +2307,7 @@ _080980FA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08098104: .4byte gMission
+_08098104: .4byte gScore
 _08098108: .4byte 0x0000270E
 _0809810C: .4byte gEnemyFnTable
 
@@ -2665,7 +2665,7 @@ _08098374:
 	movs r0, #1
 	adds r1, r4, #0
 	bl TryDropItem
-	ldr r2, _080983D8 @ =gMission
+	ldr r2, _080983D8 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080983DC @ =0x0000270E
 	cmp r1, r0
@@ -2681,11 +2681,11 @@ _080983BC:
 	strb r0, [r5, #0xe]
 _080983CA:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08098406
 	.align 2, 0
 _080983D4: .4byte 0xFFFFF000
-_080983D8: .4byte gMission
+_080983D8: .4byte gScore
 _080983DC: .4byte 0x0000270E
 _080983E0:
 	ldrb r1, [r5, #0xa]
@@ -2894,7 +2894,7 @@ _08098538:
 	str r0, [r4, #0x60]
 _08098556:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -2932,7 +2932,7 @@ _08098576:
 	movs r0, #1
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _080985D0 @ =gMission
+	ldr r2, _080985D0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080985D4 @ =0x0000270E
 	cmp r1, r0
@@ -2949,7 +2949,7 @@ _080985BC:
 	b _080985FE
 	.align 2, 0
 _080985CC: .4byte 0xFFFFFB80
-_080985D0: .4byte gMission
+_080985D0: .4byte gScore
 _080985D4: .4byte 0x0000270E
 _080985D8:
 	ldrb r1, [r4, #0xa]
@@ -3106,7 +3106,7 @@ _080986D4:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0809875C @ =pZero2
 	ldr r2, [r0]
 	ldr r1, [r5, #0x54]

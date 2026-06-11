@@ -1,6 +1,7 @@
 #include "game.h"
 #include "global.h"
 
+// 0x080f21f4
 NAKED void OverworldLoop_Computer(struct GameState* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
@@ -364,14 +365,14 @@ _080F24D4:\n\
 _080F24D8:\n\
 	bl FUN_08001098\n\
 	ldr r1, _080F24E8 @ =gUnkMmbn4\n\
-	ldr r0, _080F24EC @ =gSystemSavedataManager\n\
+	ldr r0, _080F24EC @ =gSystemSavedata\n\
 	ldr r0, [r0, #0x40]\n\
 	str r0, [r1]\n\
 	movs r0, #0xf\n\
 	b _080F2614\n\
 	.align 2, 0\n\
 _080F24E8: .4byte gUnkMmbn4\n\
-_080F24EC: .4byte gSystemSavedataManager\n\
+_080F24EC: .4byte gSystemSavedata\n\
 _080F24F0:\n\
 	bl FUN_08001154\n\
 	lsls r0, r0, #0x18\n\
@@ -382,7 +383,7 @@ _080F24F0:\n\
 _080F24FE:\n\
 	cmp r4, #1\n\
 	bne _080F2520\n\
-	ldr r0, _080F2518 @ =gSystemSavedataManager\n\
+	ldr r0, _080F2518 @ =gSystemSavedata\n\
 	ldr r0, [r0, #0x40]\n\
 	cmp r0, #0\n\
 	bne _080F2514\n\
@@ -395,7 +396,7 @@ _080F2514:\n\
 	movs r0, #0x10\n\
 	b _080F2614\n\
 	.align 2, 0\n\
-_080F2518: .4byte gSystemSavedataManager\n\
+_080F2518: .4byte gSystemSavedata\n\
 _080F251C: .4byte 0x020014C0\n\
 _080F2520:\n\
 	cmp r4, #2\n\
@@ -445,7 +446,7 @@ _080F2564:\n\
 	cmp r4, #1\n\
 	bne _080F25A8\n\
 	movs r2, #0\n\
-	ldr r3, _080F259C @ =gSystemSavedataManager\n\
+	ldr r3, _080F259C @ =gSystemSavedata\n\
 	ldr r1, [r3, #0x40]\n\
 	ldr r0, _080F25A0 @ =0x000032DA\n\
 	cmp r1, r0\n\
@@ -465,7 +466,7 @@ _080F2586:\n\
 	movs r0, #0x13\n\
 	b _080F2614\n\
 	.align 2, 0\n\
-_080F259C: .4byte gSystemSavedataManager\n\
+_080F259C: .4byte gSystemSavedata\n\
 _080F25A0: .4byte 0x000032DA\n\
 _080F25A4: .4byte 0x020014C0\n\
 _080F25A8:\n\
@@ -488,7 +489,7 @@ _080F25C4:\n\
 	movs r0, #4\n\
 	ldrsh r3, [r5, r0]\n\
 	movs r2, #0\n\
-	ldr r0, _080F25E8 @ =gSystemSavedataManager\n\
+	ldr r0, _080F25E8 @ =gSystemSavedata\n\
 	ldr r1, [r0, #0x40]\n\
 	ldr r0, _080F25EC @ =0x000032DA\n\
 	cmp r1, r0\n\
@@ -503,7 +504,7 @@ _080F25DA:\n\
 	bl PrintOptionMessage2\n\
 	b _080F25F6\n\
 	.align 2, 0\n\
-_080F25E8: .4byte gSystemSavedataManager\n\
+_080F25E8: .4byte gSystemSavedata\n\
 _080F25EC: .4byte 0x000032DA\n\
 _080F25F0:\n\
 	movs r0, #0x6f\n\

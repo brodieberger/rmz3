@@ -1,10 +1,10 @@
 #include "global.h"
-#include "mission.h"
+#include "score.h"
 #include "weapon.h"
 
 // ラクサイガ雷が地面につくる電撃
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 // 0x083616e0
 static const struct Collision sCollisions[2] = {
@@ -57,18 +57,18 @@ void MenuExit_SaberSmash(struct Weapon* p) {
   }
 }
 
-struct Entity* CreateSmashElec(struct Zero* z, struct Coord* c, u8 leftOrRight) {
-  struct Entity* p = AllocEntityFirst(gWeaponHeaderPtr);
+struct Entity* CreateSmashElec(struct Zero* z, Coords32* c, u8 leftOrRight) {
+  struct Entity* p = AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_RAKUSAIGA);
       p->flags2 &= ~ENTITY_FLAGS2_B6;
-      p->taskCol = 16;
+      p->renderPrio = 16;
       p->tileNum = gWeaponTileNum[0], p->palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_RAKUSAIGA);
       p->flags2 &= ~ENTITY_FLAGS2_B6;
-      p->taskCol = 16;
+      p->renderPrio = 16;
       p->tileNum = gWeaponTileNum[1], p->palID = gWeaponPalIDs[1];
     }
     p->unk_28 = (void*)z;
@@ -89,10 +89,10 @@ static void SmashElec_Disappear(struct Entity* p) {
 }
 
 // 0x0803cb64
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   if (body->hitboxFlags & BODY_STATUS_B2) {
     struct Entity* p = (struct Entity*)body->parent;
-    if (gMission.weaponCount[WEAPON_SABER] < 0xFFFF) gMission.weaponCount[WEAPON_SABER]++;
+    IncWeaponUseCount(WEAPON_SABER);
     p->work[1] = 1;
   }
 }

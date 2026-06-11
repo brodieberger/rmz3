@@ -12,7 +12,7 @@ createGlacierleAtkHand: @ 0x08082194
 	mov r8, r0
 	ldr r0, _08082210 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r7, r0, #0
 	cmp r7, #0
 	beq _08082204
@@ -80,7 +80,7 @@ createGlacierleJoint: @ 0x08082218
 	mov r8, r1
 	ldr r0, _080822A4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080822D8
@@ -185,7 +185,7 @@ createGlacierleSucker: @ 0x080822E4
 	adds r4, r1, #0
 	ldr r0, _08082340 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08082336
@@ -1176,7 +1176,7 @@ _08082A30:
 	cmp r0, #0
 	bne _08082A58
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082A58:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -1192,7 +1192,7 @@ _08082A68:
 	cmp r0, #0
 	beq _08082A78
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082A78:
 	ldr r0, [r6, #0x28]
 	ldrb r0, [r0, #0xc]
@@ -1236,7 +1236,7 @@ _08082AB0:
 	strb r0, [r4, #0xe]
 _08082AC4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082ACA:
 	adds r0, r4, #0
 	adds r0, #0xbc
@@ -1286,7 +1286,7 @@ _08082B08:
 	strb r0, [r6, #0xe]
 _08082B24:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082B2A:
 	adds r0, r6, #0
 	adds r0, #0xbc

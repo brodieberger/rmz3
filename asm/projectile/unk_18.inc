@@ -13,7 +13,7 @@ FUN_080a2ea0: @ 0x080A2EA0
 _080A2EA8:
 	ldr r0, _080A2EE4 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _080A2ED4
@@ -50,7 +50,7 @@ FUN_080a2ee8: @ 0x080A2EE8
 	adds r5, r1, #0
 	ldr r0, _080A2F2C @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A2F24
@@ -97,7 +97,7 @@ FUN_080a2f34: @ 0x080A2F34
 _080A2F48:
 	ldr r0, _080A2FA0 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _080A2F80
@@ -370,7 +370,7 @@ _080A3152:
 	strb r1, [r4, #0xe]
 _080A3160:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A3166:
 	adds r5, r4, #0
 	adds r5, #0x8c
@@ -475,7 +475,7 @@ _080A320E:
 	strb r1, [r4, #0xe]
 _080A322E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A3234:
 	adds r5, r4, #0
 	adds r5, #0x8c
@@ -558,7 +558,7 @@ _080A32BA:
 	strb r0, [r4, #0xe]
 _080A32D2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -674,7 +674,7 @@ _080A335A:
 	str r0, [r4, #0x14]
 _080A33BC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A33C2:
 	ldr r0, [r5]
 	movs r1, #4
@@ -745,7 +745,7 @@ _080A3436:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r3, [r0]
@@ -909,7 +909,7 @@ _080A3576:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080A363A
 	.align 2, 0
 _080A3594: .4byte RNG_0202f388
@@ -943,7 +943,7 @@ _080A35C6:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0x12]
 	movs r0, #2
 	ands r0, r1

@@ -22,12 +22,9 @@ const VFXRoutine gChargeEffectRoutine = {
 // clang-format on
 
 struct VFX* CreateChargeEffect(struct Zero* z, struct VFX* v, u8 r2) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* g = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (g != NULL) {
-    (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_CHARGE_EFFECT);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
     (g->s).unk_28 = &z->s;
     (g->s).unk_2c = &v->s;
     (g->s).work[0] = r2;
@@ -191,7 +188,7 @@ _080B34CC:\n\
 	str r0, [r4, #0x74]\n\
 _080B34D6:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080B34E6\n\
 _080B34DE:\n\
 	movs r0, #0xfe\n\

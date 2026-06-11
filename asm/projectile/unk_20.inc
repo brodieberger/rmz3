@@ -53,7 +53,7 @@ _080A519C:
 	adds r0, r4, #0
 	bl FUN_080a4fa4
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A51A8:
 	pop {r4, r5}
 	pop {r0}
@@ -128,7 +128,7 @@ _080A5222:
 	adds r0, r4, #0
 	bl FUN_080a4fa4
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0x25
 	movs r3, #0
@@ -305,7 +305,7 @@ _080A549E:
 	adds r1, #0x24
 	strb r0, [r1]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080A54F0
 	.align 2, 0
 _080A54B4: .4byte 0x0836BAB8
@@ -325,7 +325,7 @@ _080A54CA:
 	adds r1, #0x24
 	strb r0, [r1]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0xc0
 	ldr r0, [r0]
@@ -470,7 +470,7 @@ _080A5736:
 	adds r6, r6, r0
 	str r6, [r7, #0x58]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080A57A6
 	.align 2, 0
 _080A5760: .4byte 0x00004901
@@ -510,7 +510,7 @@ _080A5796:
 	adds r0, #0x24
 	strb r1, [r0]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A57A6:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -612,7 +612,7 @@ _080A5856:
 	adds r1, #0x24
 	strb r0, [r1]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080A5946
 	.align 2, 0
 _080A586C: .4byte 0xFFFFF000
@@ -722,7 +722,7 @@ _080A5934:
 	adds r1, #0x24
 	strb r0, [r1]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A5946:
 	adds r0, r7, #0
 	adds r0, #0xb8
@@ -1038,7 +1038,7 @@ _080A5B9C:
 	adds r0, r4, #0
 	bl FUN_080a4fa4
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A5BA8:
 	pop {r4, r5}
 	pop {r0}

@@ -58,7 +58,7 @@ _080D0AEC:
 	strb r0, [r4, #0xf]
 _080D0B24:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	movs r2, #0xe0
 	lsls r2, r2, #5
@@ -78,7 +78,7 @@ _080D0B48: .4byte gStageRun+232
 _080D0B4C: .4byte 0xFFFFA000
 _080D0B50:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	lsls r0, r0, #6
 	adds r0, #0x20
@@ -106,7 +106,7 @@ _080D0B50:
 	b _080D0BBA
 _080D0B88:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	lsls r0, r0, #2
 	movs r2, #0x90
@@ -152,7 +152,7 @@ _080D0BD2:
 	strb r0, [r4, #0xf]
 _080D0BE4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #1
 	ands r0, r1

@@ -5,10 +5,10 @@
 #define HEIGHT 9
 #define WIDTH 16
 
-static void nop_0800b1fc(struct Coord* _ UNUSED) { return; }
-static void nop_0800b200(struct Coord* _ UNUSED) { return; }
-static void nop_0800b204(struct Coord* _ UNUSED) { return; }
-static void nop_0800b208(struct Coord* _ UNUSED) { return; }
+static void nop_0800b1fc(Coords32* _ UNUSED) { return; }
+static void nop_0800b200(Coords32* _ UNUSED) { return; }
+static void nop_0800b204(Coords32* _ UNUSED) { return; }
+static void nop_0800b208(Coords32* _ UNUSED) { return; }
 
 // 0x0833a330
 const StageFunc sStageRoutine[4] = {
@@ -23,15 +23,18 @@ static const StageLayerRoutine sLayerRoutine[2] = {
     {NULL, DrawGeneralStageLayer, NULL},
 };
 
-const struct ChunkMap ScreenMap_0833a358 = {
+// 0x0833a358
+static const struct ChunkMap sChunkMap1 = {
   realWidth : 16,
-  skip : 1,
-  width : 16,
-  height : 9,
+  nullChunkID : 1,
+  width : WIDTH,
+  height : HEIGHT,
+  // 以下、データ部分 u8[HEIGHT][WIDTH]
 };
 
+// 0x0833a358
 // clang-format off
-const u8 ScreenMapData_0833a358[HEIGHT][WIDTH] = {
+static const u8 sChunkMapData1[HEIGHT][WIDTH] = {
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09, 0x0A, 0x0B, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x1E, 0x1F, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
@@ -44,15 +47,17 @@ const u8 ScreenMapData_0833a358[HEIGHT][WIDTH] = {
 };
 // clang-format on
 
-const struct ChunkMap ScreenMap_0833a3ec = {
+// 0x0833a3ec
+static const struct ChunkMap sChunkMap2 = {
   realWidth : 16,
-  skip : 1,
-  width : 16,
-  height : 9,
+  nullChunkID : 1,
+  width : WIDTH,
+  height : HEIGHT,
 };
 
+// 0x0833a3ec
 // clang-format off
-const u8 ScreenMapData_0833a3ec[HEIGHT][WIDTH] = {
+static const u8 sChunkMapData2[HEIGHT][WIDTH] = {
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
@@ -65,15 +70,17 @@ const u8 ScreenMapData_0833a3ec[HEIGHT][WIDTH] = {
 };
 // clang-format on
 
-const struct ChunkMap ScreenMap_0833a480 = {
+// 0x0833a480
+const struct ChunkMap sChunkMap3 = {
   realWidth : 16,
-  skip : 1,
-  width : 16,
-  height : 9,
+  nullChunkID : 1,
+  width : WIDTH,
+  height : HEIGHT,
 };
 
+// 0x0833a480
 // clang-format off
-const u8 ScreenMapData_0833a480[HEIGHT][WIDTH] = {
+static const u8 sChunkMapData3[HEIGHT][WIDTH] = {
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
   { 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01 },
@@ -86,9 +93,10 @@ const u8 ScreenMapData_0833a480[HEIGHT][WIDTH] = {
 };
 // clang-format on
 
+// 0x0833a514
 // clang-format off
 static const tileset_ofs_t sTilesetOffset[4+(HEIGHT*WIDTH)] = {
-  4, 15, 16, 9,
+  4, 15, WIDTH, HEIGHT,
 
   0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
   0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01, 0x01,
@@ -102,13 +110,15 @@ static const tileset_ofs_t sTilesetOffset[4+(HEIGHT*WIDTH)] = {
 };
 // clang-format on
 
-#define LAYER_CB(prefix, bg1, bg2, bg3) ((prefix << 12) | ((bg1 << 8) | (bg2 << 4) | (bg3 << 0)))  // 0xF000 | (Bg1のbgFnsのインデックス) | (Bg2のbgFnsのインデックス) | | (Bg3のbgFnsのインデックス)
+// FUN_080094f0
+// (カメラに関係する値 << 12) | (Bg1のbgFnsのインデックス) | (Bg2のbgFnsのインデックス) | | (Bg3のbgFnsのインデックス)
+#define LAYER_CB(prefix, bg1, bg2, bg3) ((prefix << 12) | ((bg1 << 8) | (bg2 << 4) | (bg3 << 0)))
 
 // clang-format off
 static const u16 sScreenBehavior[4+(HEIGHT*WIDTH)] = {
-  4, 15, 16, 9,
+  4, 15, WIDTH, HEIGHT,
 
-  LAYER_CB(0xF, 1, 0, 0), // 0xF000 | (Bg1のbgFnsのインデックス) | (Bg2のbgFnsのインデックス) | | (Bg3のbgFnsのインデックス) 
+  LAYER_CB(0xF, 1, 0, 0), // (カメラに関係する値 << 12) | (STAGE_LAYER_TERRAINのbgFnsのインデックス << 8) | (STAGE_LAYER_1のbgFnsのインデックス << 4) | | (STAGE_LAYER_2のbgFnsのインデックス) 
   0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100,
   0xF100, 0x0100, 0x0100, 0x0100, 0x0100, 0x0100, 0x0100, 0x0100, 0x0100, 0x0100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100,
   0xF100, 0x0100, 0x0100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100, 0xF100,
@@ -125,16 +135,14 @@ const struct Stage gStage0Landscape = {
   id : 0,
   fn : sStageRoutine,
   terrainHdr : gStageTerrains,
-  maps : {&ScreenMap_0833a358, &ScreenMap_0833a3ec, &ScreenMap_0833a480},
+  maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {2, 1, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
-  scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,
   bgFns : sLayerRoutine,
   behavior : sScreenBehavior,
-  conveyor : {0, 0},
 };
 
 #undef HEIGHT

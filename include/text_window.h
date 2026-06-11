@@ -50,6 +50,7 @@ struct TextWindowText {
   char_t* next;
   char_t* optional_next;
 };  // 40 bytes
+static_assert(sizeof(struct TextWindowText) == 40);
 
 // ウィンドウ付きテキスト 0x020308d0
 struct TextWindow {
@@ -57,6 +58,7 @@ struct TextWindow {
   void* buffer;  // (BG0の)BGマップのバッファ
   struct TextWindowText text;
 };
+static_assert(sizeof(struct TextWindow) == 48);
 
 extern struct TextWindow gTextWindow;
 

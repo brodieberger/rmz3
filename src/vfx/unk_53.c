@@ -20,12 +20,9 @@ const VFXRoutine gVFX53Routine = {
 
 void CreateVFX53(struct Entity* e, u8 n) {
   if (gVFXHeaderPtr->remaining > 23) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_053);
-      p->tileNum = 0;
-      p->palID = 0;
       p->work[0] = n;
       p->work[1] = 0;
       p->unk_28 = (void*)e;
@@ -38,7 +35,7 @@ static void VFX53_Init(struct Entity* p) {
   InitNonAffineMotion(p);
   p->flags |= DISPLAY;
   p->flags |= FLIPABLE;
-  SetMotion(p, MOTION(SM092_COPYX_ELEC_ICE_SHOT, 4));
+  SetSpriteAnimation(p, MOTION(SM092_COPYX_ELEC_ICE_SHOT, 4));
   p->work[2] = 32;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   p->mode[1] = 0;
@@ -46,7 +43,7 @@ static void VFX53_Init(struct Entity* p) {
 }
 
 static void VFX53_Update(struct Entity* p) {
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   p->work[2]--;
   if ((p->work[2] & 3) >= 2) {  // 2フレームごとに点滅
     p->flags |= DISPLAY;

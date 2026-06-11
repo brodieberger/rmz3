@@ -18,11 +18,9 @@ const VFXRoutine gGhost65Routine = {
 // --------------------------------------------
 
 void CreateGhost65(s32 x, s32 y, u8 kind1, u8 kind2) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_065);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0, p->work[1] = kind1, p->work[2] = kind2;
     p->coord.x = x, p->coord.y = y;
   }
@@ -141,7 +139,7 @@ _080C435E:\n\
 	strb r0, [r7, #0xe]\n\
 _080C43BA:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r7, #0x54]\n\
 	ldr r1, [r7, #0x5c]\n\
 	adds r0, r0, r1\n\
@@ -183,7 +181,7 @@ _080C440A:\n\
 	ldr r0, _080C4448 @ =gStageRun+232\n\
 	adds r1, r7, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\

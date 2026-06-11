@@ -27,13 +27,9 @@ const SolidRoutine gSeagullsRoutine = {
 // clang-format on
 
 struct Entity* CreateSeagulls(struct Entity* q, u8 t, u8 param_3) {
-  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_SEAGULLS);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->unk_28 = (void*)q;
     p->coord = q->coord;
     p->work[0] = t, p->work[1] = param_3;
@@ -108,7 +104,7 @@ static void Seagulls_Die(struct Solid* p) {
 
 static void FUN_080dcd20(struct Seagulls* p) {
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
-  if (!MOD_ENABLED(gSystemSavedataManager.mods, MOD_SEAGULLS)) {
+  if (!FLAG(gSystemSavedata.flags, MOD_SEAGULLS)) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
     EXIT_BODY(p);

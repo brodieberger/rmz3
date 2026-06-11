@@ -2,9 +2,8 @@ include songs.mk
 include stage_rules.mk
 include sprite_rules.mk
 include graphics_file_rules.mk
-include graphic_header_rules.mk
 
-ASSETS := $(SONG_ASMS) $(STAGE_HDR) $(SPRITES) $(ALL_GRAPHICS) $(GFX_HDR)
+ASSETS := $(SONG_ASMS) $(STAGE_HDR) $(SPRITES) $(ALL_GRAPHICS)
 
 .PHONY: assets
 assets: $(ASSETS)

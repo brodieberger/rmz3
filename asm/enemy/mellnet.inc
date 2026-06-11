@@ -13,7 +13,7 @@ FUN_0807d6c0: @ 0x0807D6C0
 	lsrs r4, r2, #0x18
 	ldr r0, _0807D718 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0807D710
@@ -152,7 +152,7 @@ _0807D7A0:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807D7D6:
 	movs r0, #1
 	b _0807D808
@@ -516,7 +516,7 @@ _0807DA76:
 	strb r1, [r4, #0xe]
 _0807DA8A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807DA90:
 	pop {r4}
 	pop {r0}
@@ -621,7 +621,7 @@ _0807DB38:
 	strb r0, [r4, #0xe]
 _0807DB52:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0807DB94
 	.align 2, 0
 _0807DB5C: .4byte 0xFFFFFD00
@@ -650,7 +650,7 @@ _0807DB7A:
 	strb r1, [r4, #0xe]
 _0807DB8E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807DB94:
 	pop {r4}
 	pop {r0}
@@ -844,7 +844,7 @@ _0807DE64:
 	strb r0, [r6, #0xe]
 _0807DE6C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -887,7 +887,7 @@ _0807DE8C:
 	strb r0, [r6, #0xe]
 _0807DEC4:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -955,7 +955,7 @@ _0807DF2C:
 	ldr r0, _0807DF9C @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -989,7 +989,7 @@ _0807DF2C:
 	str r0, [r4, #0x14]
 _0807DF8A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807DF90:
 	pop {r4}
 	pop {r0}
@@ -1063,7 +1063,7 @@ _0807E018:
 	bl TryDropItem
 _0807E024:
 	adds r1, r4, #0
-	ldr r3, _0807E054 @ =gMission
+	ldr r3, _0807E054 @ =gScore
 	ldrh r2, [r3, #0xc]
 	ldr r0, _0807E058 @ =0x0000270E
 	cmp r2, r0
@@ -1087,7 +1087,7 @@ _0807E034:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807E054: .4byte gMission
+_0807E054: .4byte gScore
 _0807E058: .4byte 0x0000270E
 _0807E05C: .4byte gEnemyFnTable
 
@@ -1208,7 +1208,7 @@ _0807E13E:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1262,7 +1262,7 @@ _0807E188:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0807E220 @ =pZero2
 	ldr r2, [r0]
 	ldr r1, [r5, #0x54]

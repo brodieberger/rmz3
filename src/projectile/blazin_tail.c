@@ -2,49 +2,53 @@
 #include "global.h"
 #include "projectile.h"
 
+struct BlazinTail {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  s32 hp;        // 0xB4
+  s32 xflip;     // 0xB8
+  u8 unk_bc[8];  // 0xBC
+};
+static_assert(sizeof(struct BlazinTail) == sizeof(struct Projectile));
+
 static const struct Collision sCollisions[2];
 
-static void BlazinTail_Init(struct Projectile* p);
-static void BlazinTail_Update(struct Projectile* p);
-static void BlazinTail_Die(struct Projectile* p);
+static void BlazinTail_Init(struct BlazinTail* p);
+static void BlazinTail_Update(struct BlazinTail* p);
+static void BlazinTail_Die(Object* p);
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 // clang-format off
 const ProjectileRoutine gBlazinTailRoutine = {
-    [ENTITY_INIT] =      BlazinTail_Init,
-    [ENTITY_UPDATE] =    BlazinTail_Update,
-    [ENTITY_DIE] =       BlazinTail_Die,
+    [ENTITY_INIT] =      (void*)BlazinTail_Init,
+    [ENTITY_UPDATE] =    (void*)BlazinTail_Update,
+    [ENTITY_DIE] =       (void*)BlazinTail_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
 
 struct Projectile* createBlazinTail(struct Entity* e, s32 hp) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+  struct BlazinTail* p = (struct BlazinTail*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 10);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).unk_28 = e;
-    *(s32*)(p->work) = hp;
+    p->hp = hp;
   }
-  return p;
+  return (struct Projectile*)p;
 }
 
 // --------------------------------------------
 
-static void BlazinTail_Init(struct Projectile* p) {
+static void BlazinTail_Init(struct BlazinTail* p) {
   (p->s).flags |= FLIPABLE;
-  INIT_BODY(p, &sCollisions[0], *(s16*)(p->work), onCollision);
+  INIT_BODY(p, &sCollisions[0], *((s16*)&p->hp), onCollision);
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 0;
-  (p->s).mode[2] = 0;
-  (p->s).mode[3] = 0;
+  (p->s).mode[1] = 0, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
   BlazinTail_Update(p);
 }
 
@@ -52,23 +56,23 @@ static void BlazinTail_Init(struct Projectile* p) {
 
 static void FUN_0809f140(struct Projectile* p);
 
-static void BlazinTail_Update(struct Projectile* p) {
-  static const ProjectileFunc sUpdates[1] = {
-      FUN_0809f140,
+static void BlazinTail_Update(struct BlazinTail* p) {
+  static const EntityFunc sUpdates[1] = {
+      (void*)FUN_0809f140,
   };
 
   if ((p->body).hp < 1) {
     SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
-    BlazinTail_Die(p);
+    BlazinTail_Die((void*)p);
     return;
   }
-  (p->prevCoord).x = (((p->s).unk_28)->flags & X_FLIP) ? 1 : 0;
-  (sUpdates[(p->s).mode[1]])(p);
+  p->xflip = (((p->s).unk_28)->flags & X_FLIP) ? 1 : 0;
+  (sUpdates[(p->s).mode[1]])((void*)p);
 }
 
 // --------------------------------------------
 
-static void BlazinTail_Die(struct Projectile* p) {
+static void BlazinTail_Die(Object* p) {
   EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
@@ -214,7 +218,7 @@ _0809F236:\n\
  .syntax divided\n");
 }
 
-NAKED static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+NAKED static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   asm(".syntax unified\n\
 	push {lr}\n\
 	movs r3, #0\n\

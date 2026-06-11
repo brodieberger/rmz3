@@ -27,9 +27,9 @@ void FUN_080dd5e0(struct Solid* p);
 static void Cat_Init(struct Solid* p) {
   u8 enabled;
   if ((p->s).work[0] == 0) {
-    enabled = MOD_ENABLED(gSystemSavedataManager.mods, MOD_ORANGE_CAT);
+    enabled = FLAG(gSystemSavedata.flags, MOD_ORANGE_CAT);
   } else {
-    enabled = MOD_ENABLED(gSystemSavedataManager.mods, MOD_TABBY_CAT);
+    enabled = FLAG(gSystemSavedata.flags, MOD_TABBY_CAT);
   }
   if (!enabled) {
     (p->s).flags &= ~DISPLAY;

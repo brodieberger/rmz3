@@ -9,12 +9,13 @@ typedef void (*EnemyFunc)(struct Enemy*);
 typedef EnemyFunc EnemyRoutine[5];
 extern const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT];
 
-#define INIT_ENEMY_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gEnemyFnTable, entity, entityID)
+#define INIT_ENEMY_ROUTINE(entity, entityID) INIT_OBJECT_ENTITY(24, gEnemyFnTable, entity, entityID)
 #define SET_ENEMY_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gEnemyFnTable, entity, modeID)
 
 // --------------------------------------------
 
 void DeleteEnemy(struct Entity* p);
-bool32 IsFrozen(struct Entity* p);
+
+bool32 IsFrozen(void* enemy_entity);
 
 #endif  // GUARD_RMZ3_ENEMY_H

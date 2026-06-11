@@ -14,8 +14,8 @@ static u8 hazard_0802855c(struct Zero* z, s32 x, s32 y);
 static metatile_attr_t IsInHazard(struct Zero* z, s32 x, s32 y);
 static bool16 hazard_08028338(struct Zero* z, s32 x, s32 y);
 
-static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coord* c);
-static metatile_attr_t _pushoutHazardX2(struct Zero* z, s32 x, s32 y, struct Coord* c);
+static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, Coords32* c);
+static metatile_attr_t _pushoutHazardX2(struct Zero* z, s32 x, s32 y, Coords32* c);
 
 // 0x08025628
 void InitPlayerHeader(struct EntityHeader* h, struct Zero* p, s16 len) {
@@ -27,44 +27,36 @@ void InitPlayerHeader(struct EntityHeader* h, struct Zero* p, s16 len) {
   }
   gEntityIDGenerator += len;
   gZeroHeaderPtr = h;
-  pZero = p;
+  pZero = (void*)p;
 }
 
-struct Zero* AllocPlayer(void) {
-  struct Zero* tmp;
-  struct Zero* z;
-
-  z = (struct Zero*)AllocEntityLast(gZeroHeaderPtr);
-  if ((z != NULL) && (z != pZero)) {  // not equal
-    tmp = AllocPlayer();
-    DeleteEntityEx(gZeroHeaderPtr, (struct Entity*)z);
-    z = tmp;
+struct Entity* AllocPlayer(void) {
+  struct Entity* p = AllocEntityFirst(gZeroHeaderPtr);
+  if ((p != NULL) && (p != pZero)) {  // not equal
+    struct Entity* q = AllocPlayer();
+    DeleteEntityEx(gZeroHeaderPtr, p);
+    p = q;
   }
-  (z->s).work[0] = 0;
-  (z->s).tileNum = 0;
-  (z->s).palID = 0;
-  (z->s).flags2 |= WHITE_PAINTABLE;
-  (z->s).invincibleID = (z->s).uniqueID;
-  return z;
+  p->work[0] = 0;
+  p->tileNum = 0, p->palID = 0;
+  p->flags2 |= WHITE_PAINTABLE;
+  p->invincibleID = p->uniqueID;
+  return p;
 }
 
 // スクリプトエンジンによるプレイヤー生成
-struct Zero* AllocPlayer2(void) {
-  struct Zero* tmp;
-  struct Zero* z;
-
-  z = (struct Zero*)AllocEntityFirst(gZeroHeaderPtr);
-  if ((z != NULL) && (z == pZero)) {  // equal
-    tmp = AllocPlayer2();
-    DeleteEntityEx(gZeroHeaderPtr, (struct Entity*)z);
-    z = tmp;
+struct Entity* AllocPlayer2(void) {
+  struct Entity* p = AllocEntityLast(gZeroHeaderPtr);
+  if ((p != NULL) && (p == pZero)) {  // equal
+    struct Entity* q = AllocPlayer2();
+    DeleteEntityEx(gZeroHeaderPtr, p);
+    p = q;
   }
-  (z->s).work[0] = 1;
-  (z->s).tileNum = 512;
-  (z->s).palID = 4;
-  (z->s).flags2 |= WHITE_PAINTABLE;
-  (z->s).invincibleID = (z->s).uniqueID;
-  return z;
+  p->work[0] = 1;
+  p->tileNum = 512, p->palID = 4;
+  p->flags2 |= WHITE_PAINTABLE;
+  p->invincibleID = p->uniqueID;
+  return p;
 }
 
 void RemovePlayer(struct Entity* p) { SET_PLAYER_ROUTINE(p, ENTITY_EXIT); }
@@ -73,7 +65,7 @@ void RemovePlayer(struct Entity* p) { SET_PLAYER_ROUTINE(p, ENTITY_EXIT); }
 
 void LoadZeroPalette(struct Entity* _, u32 c) {
   // clang-format off
-  static const ALIGNED(4) struct PlttData sZeroPalettes[9][SLOT_4BPP] = { // 0x0835e074
+  static const ALIGNED(4) struct PlttData sZeroPalettes[9][16] = { // 0x0835e074
     { PLTTDATA(0xCA49), PLTTDATA(0x2128), PLTTDATA(0xB4A0), PLTTDATA(0xC588), PLTTDATA(0x6AD2), PLTTDATA(0xFFFF), PLTTDATA(0x8A1B), PLTTDATA(0x82FF), PLTTDATA(0x43BF), PLTTDATA(0x575F), PLTTDATA(0xA053), PLTTDATA(0xAC9A), PLTTDATA(0xB15F), PLTTDATA(0x469F), PLTTDATA(0x95AB), PLTTDATA(0x9EB1) },
     { PLTTDATA(0xCA49), PLTTDATA(0x2128), PLTTDATA(0xB4A0), PLTTDATA(0xC588), PLTTDATA(0x6AD2), PLTTDATA(0xFFFF), PLTTDATA(0x8A1B), PLTTDATA(0x82FF), PLTTDATA(0x43BF), PLTTDATA(0x575F), PLTTDATA(0xA9A0), PLTTDATA(0xAE26), PLTTDATA(0xAB8E), PLTTDATA(0xCBF8), PLTTDATA(0x95AB), PLTTDATA(0x9EB1) },
     { PLTTDATA(0xCA49), PLTTDATA(0x2128), PLTTDATA(0xB4A0), PLTTDATA(0xC588), PLTTDATA(0x6AD2), PLTTDATA(0xFFFF), PLTTDATA(0x8A1B), PLTTDATA(0x82FF), PLTTDATA(0x43BF), PLTTDATA(0x575F), PLTTDATA(0xB189), PLTTDATA(0xC62C), PLTTDATA(0x6713), PLTTDATA(0xFFFC), PLTTDATA(0x95AB), PLTTDATA(0x9EB1) },
@@ -87,7 +79,7 @@ void LoadZeroPalette(struct Entity* _, u32 c) {
   // clang-format on
 
   // clang-format off
-  static const ALIGNED(4) struct PlttData sZeroShadowPalettes[9][SLOT_4BPP] = { // 0x0835e194
+  static const ALIGNED(4) struct PlttData sZeroShadowPalettes[9][16] = { // 0x0835e194
     { PLTTDATA(0xCA49), PLTTDATA(0x180C), PLTTDATA(0x1C91), PLTTDATA(0x2116), PLTTDATA(0x299B), PLTTDATA(0x565E), PLTTDATA(0x1813), PLTTDATA(0x20D7), PLTTDATA(0x299B), PLTTDATA(0xCE1E), PLTTDATA(0x180E), PLTTDATA(0x1C92), PLTTDATA(0x2117), PLTTDATA(0x299B), PLTTDATA(0x1C92), PLTTDATA(0x2117) },
     { PLTTDATA(0xCA49), PLTTDATA(0xA167), PLTTDATA(0x8D87), PLTTDATA(0x95EB), PLTTDATA(0x1E6F), PLTTDATA(0xAF34), PLTTDATA(0x8D87), PLTTDATA(0x122B), PLTTDATA(0x12B0), PLTTDATA(0x92F1), PLTTDATA(0x8D87), PLTTDATA(0x920B), PLTTDATA(0x12AE), PLTTDATA(0x92F1), PLTTDATA(0x920B), PLTTDATA(0x12AE) },
     { PLTTDATA(0xCA49), PLTTDATA(0x2128), PLTTDATA(0xB189), PLTTDATA(0xC62C), PLTTDATA(0xD690), PLTTDATA(0x6713), PLTTDATA(0xB1C9), PLTTDATA(0x422C), PLTTDATA(0x4AAE), PLTTDATA(0x56F0), PLTTDATA(0xB189), PLTTDATA(0x39EB), PLTTDATA(0x4A6D), PLTTDATA(0x56F0), PLTTDATA(0xC62C), PLTTDATA(0xD690) },
@@ -113,7 +105,7 @@ void LoadZeroPalette(struct Entity* _, u32 c) {
 
 void LoadShadowDashPalette(struct Zero* _, u32 c) {
   // clang-format off
-  static const ALIGNED(4) struct PlttData sZeroShadowDashPalette[9][SLOT_4BPP] = {  // 0x0835e2b4
+  static const ALIGNED(4) struct PlttData sZeroShadowDashPalette[9][16] = {  // 0x0835e2b4
     { PLTTDATA(0xCA49), PLTTDATA(0x180C), PLTTDATA(0x20B0), PLTTDATA(0x2958), PLTTDATA(0xBA3F), PLTTDATA(0xF39F), PLTTDATA(0xA8B8), PLTTDATA(0x3E1F), PLTTDATA(0x52BF), PLTTDATA(0xDF7F), PLTTDATA(0x9850), PLTTDATA(0x80F8), PLTTDATA(0x297C), PLTTDATA(0xAA3E), PLTTDATA(0x1C92), PLTTDATA(0x2117) },
     { PLTTDATA(0xCA49), PLTTDATA(0xA167), PLTTDATA(0x0DE7), PLTTDATA(0x964B), PLTTDATA(0x2332), PLTTDATA(0x47B7), PLTTDATA(0x8D87), PLTTDATA(0x928B), PLTTDATA(0x0F0E), PLTTDATA(0x3F96), PLTTDATA(0x8D87), PLTTDATA(0x920B), PLTTDATA(0x12CE), PLTTDATA(0x1371), PLTTDATA(0x920B), PLTTDATA(0x12AE) },
     { PLTTDATA(0xCA49), PLTTDATA(0x2128), PLTTDATA(0x2D46), PLTTDATA(0xC62C), PLTTDATA(0x56F1), PLTTDATA(0xF3D8), PLTTDATA(0xB1C9), PLTTDATA(0x422C), PLTTDATA(0x4AAE), PLTTDATA(0x63DE), PLTTDATA(0xB189), PLTTDATA(0x39EB), PLTTDATA(0xCE8E), PLTTDATA(0x5F51), PLTTDATA(0xC62C), PLTTDATA(0xD690) },
@@ -155,15 +147,12 @@ bool8 UseSubtank(struct Zero* z) {
  */
 bool8 IsDoubleHP(struct Zero* z) {
   const u8* satelites;
-  if (ELF_AVABILITY(0) & ELF_AVABILITY_UNLOCKED) {
-    if (ELF_AVABILITY(0) & ELF_AVABILITY_USED) return TRUE;
+  if (gElfAvailability[ELF_MARTINA] & ELF_AVABILITY_UNLOCKED) {
+    if (gElfAvailability[ELF_MARTINA] & ELF_AVABILITY_USED) return TRUE;
 
     satelites = (z->unk_b4).status.satelites;
     if (z->inCyberSpace) return TRUE;
-
-    if ((satelites[0] == ELF_MARTINA) || (satelites[1] == ELF_MARTINA)) {
-      return TRUE;
-    }
+    if ((satelites[0] == ELF_MARTINA) || (satelites[1] == ELF_MARTINA)) return TRUE;
   }
   return FALSE;
 }
@@ -179,8 +168,8 @@ NON_MATCH u8 GetMaxHP(struct Zero* z) {
 
   for (i = 0; i < 4; i++) {
     const cyberelf_t id = i + 1;
-    if (ELF_AVABILITY(id) & ELF_AVABILITY_UNLOCKED) {
-      if ((ELF_AVABILITY(id) & ELF_AVABILITY_USED)) {
+    if (gElfAvailability[id] & ELF_AVABILITY_UNLOCKED) {
+      if ((gElfAvailability[id] & ELF_AVABILITY_USED)) {
         hp += 4;
         continue;
       }
@@ -208,10 +197,8 @@ NON_MATCH u8 GetMaxHP(struct Zero* z) {
  * @return Zero Max HP (affected by Nurse(+4))
  */
 u8 getMaxHP1x(struct Zero* z) {
-  bool8 martina;
   u8 maxHP;
-
-  martina = IsDoubleHP(z);
+  bool8 martina = IsDoubleHP(z);
   if (!martina) {
     maxHP = GetMaxHP(z);
   } else {
@@ -301,10 +288,7 @@ void ResetZeroInput(struct Zero* z) {
   (z->unk_b4).status.charge[1] = 0;
 }
 
-void resetSateliteElfPosition(struct Zero* z) {
-  z->elfMotion = 2;
-  return;
-}
+void resetSateliteElfPosition(struct Zero* z) { z->elfMotion = 2; }
 
 // u16 = struct Action
 motion_t GetDefaultMotion(struct Zero* z) {
@@ -315,40 +299,42 @@ motion_t GetDefaultMotion(struct Zero* z) {
 }
 
 // ゼロが壁にめり込んだときに横に押し出す処理(= ゼロが壁にぶつかったときにX方向にめり込まないようにする処理)
-NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, u8 r2) {
+NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, bool8 r2) {
 #if MODERN
   metatile_attr_t attr;
   s32 x;
   s32 y[3];
-  s16 i, len;
+  u16 i;
+  s16 len;
   metatile_attr_t retval = 0;
   PushoutByBorder(z, p, FALSE);
   if ((z->s).flags & X_FLIP) {
-    x = (z->s).coord.x - p->x;
-    if (r2) {
-      x -= (p->w / 2);
+    if (r2 == 0) {
+      x = ((z->s).coord.x - p->x);
+      x += (p->w >> 1);
     } else {
-      x += (p->w / 2);
+      x = ((z->s).coord.x - p->x);
+      x -= (p->w >> 1);
     }
   } else {
-    x = (z->s).coord.x + p->x;
-    if (r2) {
-      x += (p->w / 2);
+    if (r2 == 0) {
+      x = ((z->s).coord.x + p->x);
+      x -= (p->w >> 1);
     } else {
-      x -= (p->w / 2);
+      x = ((z->s).coord.x + p->x);
+      x += (p->w >> 1);
     }
   }
   y[0] = (z->s).coord.y + p->y;
-  y[1] = (z->s).coord.y + p->y - (p->h / 2);
-  y[2] = (z->s).coord.y + p->y + (p->h / 2);
+  y[1] = (z->s).coord.y + p->y - (p->h >> 1);
+  y[2] = (z->s).coord.y + p->y + (p->h >> 1);
 
   if (z->hazardCount != 0) {
-    u16 i;
     for (i = 0; i < (3 - r2); i++) {
       attr = AppendHazardID(z, x, y[i]);
-      if ((!(attr & METATILE_SOFT_PLATFORM)) || (((attr & 0xF) == 0) || ((attr & 0xF) == 0xF))) {
+      if ((!(attr & MTATTR_SOFT_PLATFORM)) || ((attr & 0xF) == 0) || ((attr & 0xF) > 0xE)) {
         if (attr != 0) {
-          struct Coord d;  // delta
+          Coords32 d;  // delta
           if ((z->s).mode[1] == ZERO_WALL) {
             retval = _pushoutHazardX1(z, x, y[i], &d);
           } else if (i == 0) {
@@ -368,36 +354,31 @@ NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, u8 
   }
 
   attr = GetMetatileAttr((z->unk_b4).prevCoord.x, y[2]);
-  if ((attr & 0xF) == METATILE_GROUND) {
-    u32 shape;
+  if ((attr & 0xF) == SHAPE_BLOCK) {
     attr = GetMetatileAttr((z->s).coord.x, y[2] - PIXEL(4));
-    shape = attr & 0xF;
-    if ((((shape != METATILE_WALL) && (shape != SHAPE_4)) && (shape != SHAPE_9)) && (shape != 0xd)) {
-      attr = METATILE_GROUND;
+    if (((((attr & 0xF) != SHAPE_SLOPE2) && ((attr & 0xF) != SHAPE_SLOPE4)) && ((attr & 0xF) != SHAPE_SLOPE9)) && ((attr & 0xF) != SHAPE_SLOPE13)) {
+      attr = SHAPE_BLOCK;
     }
   }
 
-  len = 3;
-  attr = attr & 0xf;
-  if (METATILE_GROUND < attr) {
+  attr &= 0x0F;
+  if (SHAPE_BLOCK < attr) {
     if (attr < 8) {
-      len = 3;
-      if (((~((z->s).flags >> 4)) & 1) == r2) {
-        len = 2;
-      }
+      len = ((!((z->s).flags & X_FLIP)) == r2) ? 2 : 3;
     } else if (attr < 14) {
-      len = 2;
-      if (((~((z->s).flags >> 4)) & 1) == r2) {
-        len = 3;
-      }
+      len = ((!((z->s).flags & X_FLIP)) == r2) ? 3 : 2;
+    } else {
+      len = 3;
     }
+  } else {
+    len = 3;
   }
 
   for (i = 0; i < len; i++) {
+    s32 dx;
     metatile_attr_t attr = GetGroundMetatileAttr(x, y[i]);
-    if ((attr & 0x0F) == METATILE_GROUND) {
-      if (!(attr & METATILE_SOFT_PLATFORM) && !(attr & METATILE_ANTTRAP)) {
-        s32 dx;
+    if ((attr & 0x0F) == SHAPE_BLOCK) {
+      if (!(attr & MTATTR_SOFT_PLATFORM) && !(attr & MTATTR_ANTTRAP)) {
         if ((z->s).flags & X_FLIP) {
           if (r2) {
             dx = PushoutToRight2(x, y[i]);
@@ -411,28 +392,34 @@ NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, u8 
             dx = PushoutToRight2(x, y[i]);
           }
         }
-        (z->s).coord.x += dx;
-        x += dx;
-        retval = attr;
       }
-
-    } else if (((attr & 0x0F) != 0) && ((attr & 0x0F) < 14)) {
-      if ((attr & 0x0F) < 8) {
-        if (((z->s).coord.x > x) && (GetMetatileAttr(x + PIXEL(16), y[i]) == 0)) {
-          const s32 dx = PushoutToRight2(x, y[i]);
-          (z->s).coord.x += dx;
-          x += dx;
-          retval = attr;
+    } else {
+      if ((attr & 0x0F) != 0) {
+        if ((attr & 0x0F) < 14) {
+          if ((attr & 0x0F) < 8) {
+            if (((z->s).coord.x > x) && (GetMetatileAttr(x + PIXEL(16), y[i]) == 0)) {
+              dx = PushoutToRight2(x, y[i]);
+            } else {
+              continue;
+            }
+          } else {
+            if (((z->s).coord.x < x) && (GetMetatileAttr(x - PIXEL(16), y[i]) == 0)) {
+              dx = PushoutToLeft2(x, y[i]);
+            } else {
+              continue;
+            }
+          }
+        } else {
+          continue;
         }
       } else {
-        if (((z->s).coord.x < x) && (GetMetatileAttr(x - PIXEL(16), y[i]) == 0)) {
-          const s32 dx = PushoutToLeft2(x, y[i]);
-          (z->s).coord.x += dx;
-          x += dx;
-          retval = attr;
-        }
+        continue;
       }
     }
+
+    (z->s).coord.x += dx;
+    x += dx;
+    retval = attr;
   }
   return retval;
 #else
@@ -440,6 +427,7 @@ NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, u8 
 #endif
 }
 
+// 0x08025d3c
 NAKED metatile_attr_t PushoutByFloor1(struct Zero* z, const struct Rect* p, bool8 r2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
@@ -1386,13 +1374,13 @@ _0802644A:\n\
 */
 metatile_attr_t GetWallMetatileAttr(struct Zero* z, const struct Rect* p, bool8 _ UNUSED) {
   metatile_attr_t attr;
-  struct Coord c;
+  Coords32 c;
   u32 shape;
 
   const s32 y = (z->s).coord.y + p->y - (p->h >> 1);  // Zero's center Y
   if (z->hazardCount != 0) {
     metatile_attr_t attr = AppendHazardID(z, (z->s).coord.x, y);
-    if (((attr & METATILE_SOFT_PLATFORM) == 0) || ((attr & 0xF) == 0) || ((attr & 0xF) > 0xE)) {
+    if (((attr & MTATTR_SOFT_PLATFORM) == 0) || ((attr & 0xF) == 0) || ((attr & 0xF) > 0xE)) {
       _pushoutHazardY(z, (z->s).coord.x, y, &c);
     }
   }
@@ -1401,7 +1389,7 @@ metatile_attr_t GetWallMetatileAttr(struct Zero* z, const struct Rect* p, bool8 
   shape = attr & 0xF;
 
   // めり込んでる?(すり抜け床と重なってる場合は除く)
-  if ((shape == METATILE_GROUND) && ((attr & METATILE_SOFT_PLATFORM) == 0)) {
+  if ((shape == SHAPE_BLOCK) && ((attr & MTATTR_SOFT_PLATFORM) == 0)) {
     (z->s).coord.y += PushoutToDown2((z->s).coord.x, y);
   }
   return attr;
@@ -1701,12 +1689,12 @@ NON_MATCH metatile_attr_t IsOnSoftPlatform(struct Zero* z, const struct Rect* p,
 
   for (i = 0; i < 3; i++) {
     metatile_attr_t attr = AppendHazardID(z, x[i], y);
-    if (attr & METATILE_SOFT_PLATFORM) {
+    if (attr & MTATTR_SOFT_PLATFORM) {
       if ((attr & 0xF) != 0) {
-        if ((attr & 0xF) == 0xF) {
+        if ((attr & 0xF) == SHAPE_15) {
           return 0;
         }
-        return METATILE_WALL;
+        return 2;
       }
     } else if ((attr & 0xF) != 0) {
       return 0;
@@ -1715,10 +1703,10 @@ NON_MATCH metatile_attr_t IsOnSoftPlatform(struct Zero* z, const struct Rect* p,
   for (i = 0; i < 3; i++) {
     metatile_attr_t attr = GetMetatileAttr(x[i], y);
     if (attr != 0) {
-      if ((attr & METATILE_SOFT_PLATFORM) == 0 || (attr & 0xF) == 0 || (attr & 0xF) == 0xF) {
+      if ((attr & MTATTR_SOFT_PLATFORM) == 0 || (attr & 0xF) == SHAPE_EMPTY || (attr & 0xF) == SHAPE_15) {
         return 0;
       }
-      result = METATILE_GROUND;
+      result = 1;
     }
   }
   return result;
@@ -1727,9 +1715,8 @@ NON_MATCH metatile_attr_t IsOnSoftPlatform(struct Zero* z, const struct Rect* p,
 #endif
 }
 
-bool8 CanWallSlide(struct Zero* z, const struct Rect* p, bool8 r2) {
-  bool8 ok = IsForwardPressed(z, p, r2);
-  if (ok && IsZeroAgainstWall(z, p, r2)) {
+bool8 CanWallSlide(struct Zero* z, const struct Rect* p, bool8 _) {
+  if (IsForwardPressed(z, p, _) && IsZeroAgainstWall(z, p, _)) {
     return TRUE;
   }
   return FALSE;
@@ -2086,23 +2073,26 @@ _08026BA2:\n\
  .syntax divided\n");
 }
 
-NON_MATCH u8 ladder_08026bb0(struct Zero* z, const struct Rect* range, bool8 _) {
-#if MODERN
+u8 ladder_08026bb0(struct Zero* z, const struct Rect* range, bool8 _) {
   u8 val;
-  metatile_attr_t attr;
-  attr = GetMetatileAttr((z->s).coord.x, (z->s).coord.y + range->y);
-  if (attr == (METATILE_SOFT_PLATFORM | 0x0F)) {
+  metatile_attr_t attr = GetMetatileAttr((z->s).coord.x, (z->s).coord.y + range->y);
+  if (attr == (MTATTR_SOFT_PLATFORM | 0x0F)) {
     val = 1;
-  } else if (attr == (METATILE_SOFT_PLATFORM | 0x0E)) {
-    val = 2;
   } else {
-    attr = GetMetatileAttr((&(z->unk_b4).prevCoord)->x, (&(z->unk_b4).prevCoord)->y + range->y);
-    val = 3;
+    register u32 r6 asm("r6") = (MTATTR_SOFT_PLATFORM | 0x0E);
+    if (attr == r6) {  // attr == (MTATTR_SOFT_PLATFORM | 0x0E)
+      val = 2;
+    } else {
+      attr = GetMetatileAttr((&(z->unk_b4).prevCoord)->x, (&(z->unk_b4).prevCoord)->y + range->y);
+      // ???
+      if (attr == 3) {
+        val = attr;
+      } else {
+        val = 3;
+      }
+    }
   }
   return val;
-#else
-  INCCODE("asm/wip/ladder_08026bb0.inc");
-#endif
 }
 
 /**
@@ -2115,10 +2105,10 @@ u8 TryLadderUp(struct Zero* z, const struct Rect* range, bool8 _) {
 
   // Check 1
   attr = GetMetatileAttr((z->s).coord.x, y);
-  if (attr == METTAILE_LADDER) {
+  if (attr == MT_LADDER) {
     return 1;
   }
-  if (attr == METTAILE_LADDER_FLOOR) {
+  if (attr == MT_LADDER_FLOOR) {
     return 2;
   }
 
@@ -2129,11 +2119,11 @@ u8 TryLadderUp(struct Zero* z, const struct Rect* range, bool8 _) {
     x = (z->s).coord.x - PIXEL(5);
   }
   attr = GetMetatileAttr(x, y);
-  if (attr == METTAILE_LADDER) {
+  if (attr == MT_LADDER) {
     (z->s).coord.x = x;
     return 1;
   }
-  if (attr == METTAILE_LADDER_FLOOR) {
+  if (attr == MT_LADDER_FLOOR) {
     (z->s).coord.x = x;
     return 2;
   }
@@ -2145,11 +2135,11 @@ u8 TryLadderUp(struct Zero* z, const struct Rect* range, bool8 _) {
     x = (z->s).coord.x + PIXEL(2);
   }
   attr = GetMetatileAttr(x, y);
-  if (attr == METTAILE_LADDER) {
+  if (attr == MT_LADDER) {
     (z->s).coord.x = x;
     return 1;
   }
-  if (attr == METTAILE_LADDER_FLOOR) {
+  if (attr == MT_LADDER_FLOOR) {
     (z->s).coord.x = x;
     return 2;
   }
@@ -2161,16 +2151,16 @@ u8 TryLadderUp(struct Zero* z, const struct Rect* range, bool8 _) {
 NON_MATCH u8 TryContinueLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
 #if MODERN
   metatile_attr_t attr = GetGroundMetatileAttr((z->s).coord.x, (z->s).coord.y + range->y + (range->h / 2) + 1);
-  if (attr != METTAILE_LADDER_FLOOR) {
+  if (attr != MT_LADDER_FLOOR) {
     if (((z->s).mode[1] == ZERO_LADDER) && (((attr & 0xF) - 1) < 0xD)) {
       return 3;
     }
 
     attr = GetMetatileAttr((z->s).coord.x, (z->s).coord.y + range->y);
-    if (attr == METTAILE_LADDER) {
+    if (attr == MT_LADDER) {
       return 1;
     }
-    if (attr != METTAILE_LADDER_FLOOR) {
+    if (attr != MT_LADDER_FLOOR) {
       return 0;
     }
   }
@@ -2194,7 +2184,7 @@ NON_MATCH u8 TryLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
   }
 
   attr = GetMetatileAttr((z->s).coord.x, y);
-  if (attr != METTAILE_LADDER_FLOOR) {
+  if (attr != MT_LADDER_FLOOR) {
     if ((z->s).flags & X_FLIP) {
       x = (z->s).coord.x + PIXEL(5);
     } else {
@@ -2202,7 +2192,7 @@ NON_MATCH u8 TryLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
     }
     attr = GetMetatileAttr(x, y);
 
-    if (attr != METTAILE_LADDER_FLOOR) {
+    if (attr != MT_LADDER_FLOOR) {
       if ((z->s).flags & X_FLIP) {
         x = (z->s).coord.x - PIXEL(2);
       } else {
@@ -2210,7 +2200,7 @@ NON_MATCH u8 TryLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
       }
       attr = GetMetatileAttr(x, y);
 
-      if (attr != METTAILE_LADDER_FLOOR) {
+      if (attr != MT_LADDER_FLOOR) {
         return 0;
       }
     }
@@ -2222,11 +2212,11 @@ NON_MATCH u8 TryLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
 #endif
 }
 
-void SetDisableArea(struct Zero* z, s32 left, s32 top, s32 right, s32 bottom) {
-  (z->border).left = left;
-  (z->border).right = right;
-  (z->border).top = top;
-  (z->border).bottom = bottom;
+void SetDisableArea(Player* p, s32 left, s32 top, s32 right, s32 bottom) {
+  (p->border).left = left;
+  (p->border).right = right;
+  (p->border).top = top;
+  (p->border).bottom = bottom;
 }
 
 // ゼロが border の外に行かないようにする
@@ -2357,12 +2347,12 @@ NON_MATCH void CheckZeroHazard(struct Zero* z) {
 
 // Hazard となるEntity と プレイヤーが重なった時に、プレイヤーを弾き出す
 NAKED u8 RecoilFromHazards(struct Zero* z, const struct Rect* range) {
-  // TODO
+  // NOTE: アセンブリだと長すぎてファイルの見通しが悪いので一旦別ファイルに退避
   INCCODE("asm/wip/RecoilFromHazards.inc");
 }
 
 // Hazardによる横方向への押し出し処理っぽい
-NAKED static metatile_attr_t _pushoutHazardX2(struct Zero* z, s32 x, s32 y, struct Coord* c) {
+NAKED static metatile_attr_t _pushoutHazardX2(struct Zero* z, s32 x, s32 y, Coords32* c) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -2954,7 +2944,7 @@ _08027DF8: .4byte 0x0000018F\n\
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 // Hazardによる横方向への押し出し処理っぽい
-static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coord* delta) {
+static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, Coords32* delta) {
   u8 i;
   metatile_attr_t attr = 0;
   delta->x = delta->y = 0;
@@ -2989,7 +2979,7 @@ static metatile_attr_t _pushoutHazardX1(struct Zero* z, s32 x, s32 y, struct Coo
 
 // 0x08027f0c
 // Hazardによる縦方向への押し出し処理っぽい
-metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, struct Coord* delta) {
+metatile_attr_t _pushoutHazardY(struct Zero* z, s32 x, s32 y, Coords32* delta) {
   u8 i;
   metatile_attr_t attr = 0;
   delta->x = delta->y = 0;
@@ -4232,226 +4222,79 @@ _08028BBC:\n\
 
 NAKED bool8 unused_08028bcc(struct Zero* z, const struct Rect* range) { INCCODE("asm/unused/unused_08028bcc.inc"); }
 
-NAKED bool8 TryGroundDash(struct Zero* z, const struct Rect* range) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sb\n\
-	mov r6, r8\n\
-	push {r6, r7}\n\
-	adds r7, r0, #0\n\
-	mov r8, r1\n\
-	ldrb r1, [r7, #0xa]\n\
-	movs r0, #0x10\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _08028DD8\n\
-	mov r1, r8\n\
-	movs r2, #0\n\
-	ldrsh r0, [r1, r2]\n\
-	ldr r2, [r7, #0x54]\n\
-	subs r0, r2, r0\n\
-	ldrh r1, [r1, #4]\n\
-	b _08028DE4\n\
-_08028DD8:\n\
-	mov r3, r8\n\
-	movs r1, #0\n\
-	ldrsh r0, [r3, r1]\n\
-	ldr r2, [r7, #0x54]\n\
-	adds r0, r2, r0\n\
-	ldrh r1, [r3, #4]\n\
-_08028DE4:\n\
-	lsls r1, r1, #0x10\n\
-	asrs r1, r1, #0x11\n\
-	adds r4, r0, r1\n\
-	subs r5, r0, r1\n\
-	adds r0, r2, #0\n\
-	ldr r1, [r7, #0x58]\n\
-	adds r1, #1\n\
-	bl GetGroundMetatileAttr\n\
-	movs r1, #0xf\n\
-	ands r1, r0\n\
-	cmp r1, #1\n\
-	bne _08028E12\n\
-	mov r2, r8\n\
-	movs r3, #2\n\
-	ldrsh r0, [r2, r3]\n\
-	ldr r1, [r7, #0x58]\n\
-	adds r1, r1, r0\n\
-	ldrh r0, [r2, #6]\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x11\n\
-	adds r6, r1, r0\n\
-	b _08028E1C\n\
-_08028E12:\n\
-	mov r0, r8\n\
-	movs r2, #2\n\
-	ldrsh r1, [r0, r2]\n\
-	ldr r0, [r7, #0x58]\n\
-	adds r6, r0, r1\n\
-_08028E1C:\n\
-	adds r0, r4, #0\n\
-	adds r1, r6, #0\n\
-	bl PushoutToLeft2\n\
-	cmp r0, #0\n\
-	blt _08028E36\n\
-	adds r0, r7, #0\n\
-	adds r1, r4, #0\n\
-	adds r2, r6, #0\n\
-	bl hazard_0802802c\n\
-	cmp r0, #0\n\
-	bge _08028E68\n\
-_08028E36:\n\
-	adds r0, r0, r5\n\
-	mov sb, r0\n\
-	adds r1, r6, #0\n\
-	bl GetGroundMetatileAttr\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r1, r0, #0x10\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _08028E68\n\
-	movs r0, #0xf\n\
-	ands r1, r0\n\
-	cmp r1, #1\n\
-	bne _08028E58\n\
-	b _08028F58\n\
-_08028E58:\n\
-	adds r0, r7, #0\n\
-	mov r1, sb\n\
-	adds r2, r6, #0\n\
-	bl IsInHazard\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	bne _08028F58\n\
-_08028E68:\n\
-	adds r0, r5, #0\n\
-	adds r1, r6, #0\n\
-	bl PushoutToRight2\n\
-	cmp r0, #0\n\
-	bgt _08028E82\n\
-	adds r0, r7, #0\n\
-	adds r1, r5, #0\n\
-	adds r2, r6, #0\n\
-	bl hazard_0802802c\n\
-	cmp r0, #0\n\
-	ble _08028EB2\n\
-_08028E82:\n\
-	adds r0, r0, r4\n\
-	mov sb, r0\n\
-	adds r1, r6, #0\n\
-	bl GetGroundMetatileAttr\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r1, r0, #0x10\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _08028EB2\n\
-	movs r0, #0xf\n\
-	ands r1, r0\n\
-	cmp r1, #1\n\
-	beq _08028F58\n\
-	adds r0, r7, #0\n\
-	mov r1, sb\n\
-	adds r2, r6, #0\n\
-	bl IsInHazard\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	bne _08028F58\n\
-_08028EB2:\n\
-	mov r3, r8\n\
-	movs r1, #2\n\
-	ldrsh r0, [r3, r1]\n\
-	ldr r1, [r7, #0x58]\n\
-	adds r1, r1, r0\n\
-	ldrh r0, [r3, #6]\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x11\n\
-	subs r6, r1, r0\n\
-	adds r0, r4, #0\n\
-	adds r1, r6, #0\n\
-	bl PushoutToLeft2\n\
-	cmp r0, #0\n\
-	blt _08028EDE\n\
-	adds r0, r7, #0\n\
-	adds r1, r4, #0\n\
-	adds r2, r6, #0\n\
-	bl hazard_0802802c\n\
-	cmp r0, #0\n\
-	bge _08028F0E\n\
-_08028EDE:\n\
-	adds r0, r0, r5\n\
-	mov r8, r0\n\
-	adds r1, r6, #0\n\
-	bl GetGroundMetatileAttr\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r1, r0, #0x10\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _08028F0E\n\
-	movs r0, #0xf\n\
-	ands r1, r0\n\
-	cmp r1, #1\n\
-	beq _08028F58\n\
-	adds r0, r7, #0\n\
-	mov r1, r8\n\
-	adds r2, r6, #0\n\
-	bl IsInHazard\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	bne _08028F58\n\
-_08028F0E:\n\
-	adds r0, r5, #0\n\
-	adds r1, r6, #0\n\
-	bl PushoutToRight2\n\
-	cmp r0, #0\n\
-	bgt _08028F28\n\
-	adds r0, r7, #0\n\
-	adds r1, r5, #0\n\
-	adds r2, r6, #0\n\
-	bl hazard_0802802c\n\
-	cmp r0, #0\n\
-	ble _08028F5C\n\
-_08028F28:\n\
-	adds r4, r0, r4\n\
-	adds r0, r4, #0\n\
-	adds r1, r6, #0\n\
-	bl GetGroundMetatileAttr\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r1, r0, #0x10\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _08028F5C\n\
-	movs r0, #0xf\n\
-	ands r1, r0\n\
-	cmp r1, #1\n\
-	beq _08028F58\n\
-	adds r0, r7, #0\n\
-	adds r1, r4, #0\n\
-	adds r2, r6, #0\n\
-	bl IsInHazard\n\
-	lsls r0, r0, #0x10\n\
-	cmp r0, #0\n\
-	beq _08028F5C\n\
-_08028F58:\n\
-	movs r0, #0\n\
-	b _08028F5E\n\
-_08028F5C:\n\
-	movs r0, #1\n\
-_08028F5E:\n\
-	pop {r3, r4}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r1}\n\
-	bx r1\n\
-   .syntax divided\n");
+// 0x08028db4
+NON_MATCH bool8 TryGroundDash(Player* z, const struct Rect* range) {
+#if MODERN
+  s32 x1, x2;
+  if ((z->s).flags & X_FLIP) {
+    x1 = (z->s).coord.x - range->x + (range->w >> 1);
+    x2 = (z->s).coord.x - range->x - (range->w >> 1);
+  } else {
+    x1 = (z->s).coord.x + range->x + (range->w >> 1);
+    x2 = (z->s).coord.x + range->x - (range->w >> 1);
+  }
+
+  {
+    s32 y;
+    if ((GetGroundMetatileAttr((z->s).coord.x, (z->s).coord.y + 1) & 0xF) == SHAPE_BLOCK) {
+      y = ((z->s).coord.y + range->y) + (range->h >> 1);
+    } else {
+      y = ((z->s).coord.y + range->y);
+    }
+    {
+      s32 dx = PushoutToLeft2(x1, y);
+      if (dx < 0 || hazard_0802802c(z, x1, y) < 0) {
+        metatile_attr_t attr = GetGroundMetatileAttr(dx + x2, y);
+        if (!(attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP))) {
+          if (((attr & 0x0F) == SHAPE_BLOCK) || IsInHazard(z, dx + x2, y)) {
+            return FALSE;
+          }
+        }
+      }
+    }
+    {
+      s32 dx = PushoutToRight2(x2, y);
+      if (dx > 0 || hazard_0802802c(z, x2, y) > 0) {
+        metatile_attr_t attr = GetGroundMetatileAttr(dx + x1, y);
+        if (!(attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP))) {
+          if (((attr & 0x0F) == SHAPE_BLOCK) || IsInHazard(z, dx + x1, y)) {
+            return FALSE;
+          }
+        }
+      }
+    }
+  }
+
+  {
+    s32 y = ((z->s).coord.y + range->y) - (range->h >> 1);
+    {
+      s32 dx = PushoutToLeft2(x1, y);
+      if (dx < 0 || hazard_0802802c(z, x1, y) < 0) {
+        metatile_attr_t attr = GetGroundMetatileAttr(dx + x2, y);
+        if (!(attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP))) {
+          if (((attr & 0x0F) == SHAPE_BLOCK) || IsInHazard(z, dx + x2, y)) {
+            return FALSE;
+          }
+        }
+      }
+    }
+    {
+      s32 dx = PushoutToRight2(x2, y);
+      if (dx > 0 || hazard_0802802c(z, x2, y) > 0) {
+        metatile_attr_t attr = GetGroundMetatileAttr(dx + x1, y);
+        if (!(attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP))) {
+          if (((attr & 0x0F) == SHAPE_BLOCK) || IsInHazard(z, dx + x1, y)) {
+            return FALSE;
+          }
+        }
+      }
+    }
+  }
+  return TRUE;
+
+#else
+  INCCODE("asm/wip/TryGroundDash.inc");
+#endif
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------

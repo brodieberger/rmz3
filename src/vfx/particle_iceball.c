@@ -23,12 +23,9 @@ const VFXRoutine gIceballParticleRoutine = {
 void CreateIceballParticle2(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 2; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_ICEBALL_PARTICLE);
-      p->tileNum = 0;
-      p->palID = 0;
       p->work[0] = 0;
       p->work[1] = i;
       p->coord.x = x;
@@ -41,12 +38,9 @@ void CreateIceballParticle2(s32 x, s32 y) {
 void CreateIceballParticle4(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_ICEBALL_PARTICLE);
-      p->tileNum = 0;
-      p->palID = 0;
       p->work[0] = 0;
       p->work[1] = i;
       p->coord.x = x;
@@ -101,7 +95,7 @@ static void _VFX45_Update(struct Entity* p) {
     case 0: {
       s32 dx;
       p->flags |= DISPLAY;
-      SetMotion(p, sMotions[idx]);
+      SetSpriteAnimation(p, sMotions[idx]);
 
       dx = (idx - 1) * PIXEL(1);
 

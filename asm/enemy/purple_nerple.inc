@@ -115,7 +115,7 @@ FUN_08075b74: @ 0x08075B74
 	lsrs r4, r1, #0x18
 	ldr r0, _08075BC8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08075BC2
@@ -167,7 +167,7 @@ FUN_08075bd0: @ 0x08075BD0
 _08075BDE:
 	ldr r0, _08075C3C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _08075C26
@@ -222,7 +222,7 @@ FUN_08075c40: @ 0x08075C40
 	adds r7, r3, #0
 	ldr r0, _08075CB8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08075CB0
@@ -288,7 +288,7 @@ summonPurpleNerple: @ 0x08075CCC
 	adds r5, r1, #0
 	ldr r0, _08075D2C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08075D26
@@ -466,7 +466,7 @@ _08075DE8:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08075E24:
 	movs r0, #1
 	b _08075E84
@@ -491,7 +491,7 @@ _08075E3A:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08075E58:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -633,7 +633,7 @@ _08075F56:
 	ldrb r1, [r0]
 	adds r0, r6, #0
 	bl FUN_08075b74
-	ldr r0, _08075F94 @ =gSystemSavedataManager
+	ldr r0, _08075F94 @ =gSystemSavedata
 	ldrb r1, [r0, #0x13]
 	movs r0, #8
 	ands r0, r1
@@ -658,7 +658,7 @@ _08075F56:
 	movs r3, #8
 	b _08075FB8
 	.align 2, 0
-_08075F94: .4byte gSystemSavedataManager
+_08075F94: .4byte gSystemSavedata
 _08075F98: .4byte gCurStory
 _08075F9C: .4byte sCollisions
 _08075FA0:
@@ -1035,7 +1035,7 @@ _0807624C:
 	strb r0, [r4, #0x12]
 _08076258:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x74
 	ldr r1, _080762E0 @ =0x08367168
@@ -1058,7 +1058,7 @@ _0807626E:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08076290:
 	adds r0, r4, #0
 	bl FUN_08075aa8
@@ -1203,7 +1203,7 @@ _0807639C:
 	strb r0, [r4, #0xe]
 _080763A2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080763EC
 	.align 2, 0
 _080763AC: .4byte 0x00002A02
@@ -1220,7 +1220,7 @@ _080763C0:
 	strb r0, [r4, #0xe]
 _080763CC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x58]
 	ldr r0, [r4, #0x60]
 	adds r1, r1, r0
@@ -1327,7 +1327,7 @@ _08076470:
 	str r4, [r6, #0x58]
 _0807649E:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0xb9
 	ldrb r0, [r0]
@@ -1336,7 +1336,7 @@ _0807649E:
 	ldr r0, _08076500 @ =gStageRun+232
 	adds r1, r6, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -1532,7 +1532,7 @@ _08076612:
 	strb r0, [r4, #0xd]
 _08076628:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807662E:
 	pop {r4}
 	pop {r0}
@@ -1585,7 +1585,7 @@ _08076676:
 	strb r0, [r4, #0xe]
 _08076688:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080766D8
 	.align 2, 0
 _08076690: .4byte sCollisions+(1*24)
@@ -1621,7 +1621,7 @@ _080766AA:
 	bl FUN_08075bd0
 _080766D2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080766D8:
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
@@ -1749,11 +1749,11 @@ _080767C0:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _08076828 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -1872,7 +1872,7 @@ _08076892:
 	strb r0, [r4, #0xd]
 _080768BC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080768C2:
 	pop {r4}
 	pop {r0}
@@ -1993,7 +1993,7 @@ _080769B4:
 	bl SetMotion
 _080769BC:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r6, #0x54]
 	ldr r1, [r6, #0x5c]
 	adds r0, r0, r1
@@ -2173,7 +2173,7 @@ _08076AEA:
 	str r0, [r4, #0x14]
 _08076B1E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08076B24:
 	pop {r4}
 	pop {r0}
@@ -2236,7 +2236,7 @@ _08076B98:
 	movs r0, #3
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _08076BD8 @ =gMission
+	ldr r2, _08076BD8 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08076BDC @ =0x0000270E
 	cmp r1, r0
@@ -2262,7 +2262,7 @@ _08076BB2:
 	bx r0
 	.align 2, 0
 _08076BD4: .4byte sMotions
-_08076BD8: .4byte gMission
+_08076BD8: .4byte gScore
 _08076BDC: .4byte 0x0000270E
 _08076BE0: .4byte gEnemyFnTable
 
@@ -2412,7 +2412,7 @@ _08076CEC:
 	adds r0, r0, r1
 	str r0, [r5, #0x54]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]

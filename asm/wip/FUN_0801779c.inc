@@ -3,7 +3,7 @@
 	adds r5, r4, #0
 	adds r5, #0x34
 	adds r0, #0x6c
-	bl UpdateMotionState
+	bl StepAnimState
 	adds r0, r4, #0
 	adds r0, #0x70
 	ldrb r1, [r0]

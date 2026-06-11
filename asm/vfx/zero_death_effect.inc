@@ -4,8 +4,8 @@
 	
 	.text
 
-	thumb_func_start FUN_080b36e0
-FUN_080b36e0: @ 0x080B36E0
+	thumb_func_start _ZeroDeathEffect_Update
+_ZeroDeathEffect_Update: @ 0x080B36E0
 	push {r4, lr}
 	adds r4, r0, #0
 	ldr r0, [r4, #0x54]
@@ -44,7 +44,7 @@ _080B370E:
 	strb r0, [r4, #0xd]
 _080B3726:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

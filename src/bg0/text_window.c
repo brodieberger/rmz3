@@ -302,11 +302,11 @@ extern const struct ColorGraphicV2 gDialogGraphics[];
 
 // 0x080ea930
 static void loadMugshot(struct TextWindowText* t, u8 mugshot) {
-  if (gSystemSavedataManager.msgbox == 0) {
+  if (gSystemSavedata.msgbox == 0) {
     RequestGraphicTransfer(DIALOG_GRAPHIC(0, 0), (void*)CHAR_BASE(0) + sVramOffsets[1]);
   } else {
-    RequestGraphicTransfer(DIALOG_GRAPHIC(57, gSystemSavedataManager.msgbox), (void*)CHAR_BASE(0) + sVramOffsets[1]);
-    LoadPalette(DIALOG_PALETTE(57, gSystemSavedataManager.msgbox), 0);
+    RequestGraphicTransfer(DIALOG_GRAPHIC(57, gSystemSavedata.msgbox), (void*)CHAR_BASE(0) + sVramOffsets[1]);
+    LoadPalette(DIALOG_PALETTE(57, gSystemSavedata.msgbox), 0);
   }
   if ((t->mugshot != NO_MUGSHOT) && (mugshot != 0)) {
     RequestGraphicTransfer(DIALOG_GRAPHIC(0, mugshot), (void*)CHAR_BASE(0) + sVramOffsets[0]);

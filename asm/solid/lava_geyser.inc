@@ -138,7 +138,7 @@ _080CC9E2:
 	strb r5, [r4, #0xe]
 _080CC9EC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CC9F2:
 	pop {r4, r5}
 	pop {r0}
@@ -240,7 +240,7 @@ _080CCA58:
 	strb r1, [r4, #0xe]
 _080CCABC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CCAC2:
 	pop {r4, r5}
 	pop {r0}
@@ -301,7 +301,7 @@ _080CCAFE:
 	strb r1, [r4, #0xe]
 _080CCB34:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CCB3A:
 	pop {r4, r5}
 	pop {r0}
@@ -398,7 +398,7 @@ _080CCBAA:
 	strb r0, [r4, #0xe]
 _080CCBF4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CCBFA:
 	pop {r4, r5}
 	pop {r0}
@@ -453,7 +453,7 @@ _080CCC2E:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0xd8
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -644,7 +644,7 @@ _080CCD84:
 	str r0, [r4, #0x14]
 _080CCDD8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CCDDE:
 	pop {r4, r5}
 	pop {r0}

@@ -5,7 +5,7 @@ import { BASE, ROM_PATH } from '../../common/index.ts';
 
 const SIZE = 4;
 
-type MotionCmd = {
+type AnimCmd = {
   frameIdx: number;
   duration: number;
 };
@@ -25,12 +25,12 @@ const main = async () => {
   const start = Number(args[0]);
   const length = (view.getUint32(start - BASE, true) - start) / SIZE;
 
-  const result: MotionCmd[][] = [];
+  const result: AnimCmd[][] = [];
   for (let i = 0; i < length; i++) {
     let idx = 0;
 
     const arr = view.getUint32((start + (SIZE * i)) - BASE, true) - BASE;
-    const seq: MotionCmd[] = [];
+    const seq: AnimCmd[] = [];
     for (;;) {
       const frameIdx = rom[arr + (idx * 2) + 0];
       const duration = rom[arr + (idx * 2) + 1];

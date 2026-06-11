@@ -10,10 +10,10 @@
 struct CyberElf0 {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  struct Coord coord_b4;  // 0xB4
-  struct Zero* player;    // 0xBC
-  u8 unk_c0;              // 0xC0
-  u8 unk_c1;              // 0xC1
+  Coords32 coord_b4;    // 0xB4
+  struct Zero* player;  // 0xBC
+  u8 unk_c0;            // 0xC0
+  u8 unk_c1;            // 0xC1
 };
 static_assert(sizeof(struct CyberElf0) == sizeof(struct Elf));
 
@@ -32,11 +32,9 @@ const ElfRoutine gElf0Routine = {
 // clang-format on
 
 struct Entity* CreateElf0(struct Zero* player, u8 breed, u8 availability, u8 _) {
-  struct CyberElf0* p = (struct CyberElf0*)AllocEntityFirst(gElfHeaderPtr);
+  struct CyberElf0* p = (struct CyberElf0*)AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 0);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     p->player = player;
     (p->s).work[0] = breed, (p->s).work[1] = availability;
   }
@@ -53,8 +51,8 @@ static void Elf0_Init(struct CyberElf0* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, GetElfMotion(0));
-  UpdateMotionGraphic(&p->s);
+  SetSpriteAnimation(p, GetElfMotion(0));
+  UpdateSpriteAnimation(p);
   (p->s).spr.xflip = FALSE;
   (p->s).spr.oam.xflip = FALSE;
   (p->s).flags &= ~X_FLIP;
@@ -87,7 +85,7 @@ static void Elf0_Update(struct CyberElf0* p) {
       (void*)FUN_080e1fe8,
   };  // 0x08371c80
 
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (sUpdates[(p->s).mode[1]])((void*)p);
   if ((p->s).mode[0] == ENTITY_UPDATE) {
     (p->s).coord.x = (p->s).unk_coord.x - PIXEL(120);
@@ -210,7 +208,7 @@ _080E1FB4: .4byte gSineTable\n\
 
 static void FUN_080e1fb8(struct Entity* p) {
   if (p->mode[2] == 0) {
-    p->unk_2c = (struct Entity*)FUN_080bfce8(&p->coord, 0);
+    p->unk_2c = FUN_080bfce8(&p->coord, 0);
     p->mode[2]++;
   }
   if ((p->unk_2c)->mode[0] >= ENTITY_DIE) p->mode[1]++;
@@ -249,7 +247,7 @@ _080E2012:\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r3, r0, #0x18\n\
 _080E2026:\n\
-	ldr r0, _080E2094 @ =gMission\n\
+	ldr r0, _080E2094 @ =gScore\n\
 	ldr r0, [r0]\n\
 	adds r1, r0, #0\n\
 	adds r1, #0x4c\n\
@@ -259,7 +257,7 @@ _080E2026:\n\
 	adds r0, #1\n\
 	strb r0, [r1]\n\
 _080E2038:\n\
-	ldr r1, _080E2098 @ =gUnlockedElfPtr\n\
+	ldr r1, _080E2098 @ =gElfAvailability\n\
 	ldr r2, _080E209C @ =0x00000121\n\
 	adds r0, r5, r2\n\
 	ldrb r0, [r0]\n\
@@ -303,8 +301,8 @@ _080E2074:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080E2094: .4byte gMission\n\
-_080E2098: .4byte gUnlockedElfPtr\n\
+_080E2094: .4byte gScore\n\
+_080E2098: .4byte gElfAvailability\n\
 _080E209C: .4byte 0x00000121\n\
 _080E20A0: .4byte gElfFnTable\n\
  .syntax divided\n");

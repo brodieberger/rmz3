@@ -238,7 +238,7 @@ _08034CFA:
 	movs r3, #4
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r1, #0
 	movs r0, #1
 	strb r0, [r5, #0xd]
@@ -251,7 +251,7 @@ _08034D28: .4byte 0x0000BC02
 _08034D2C: .4byte 0x0000BC03
 _08034D30:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08034D36:
 	pop {r3}
 	mov r8, r3
@@ -301,7 +301,7 @@ _08034D6A:
 	strb r0, [r4, #0xe]
 _08034D88:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrh r1, [r5, #0x10]
 	movs r0, #0x20
 	ands r0, r1
@@ -375,7 +375,7 @@ _08034E0A:
 	strb r1, [r4, #0xe]
 _08034E12:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrh r1, [r5, #0x10]
 	movs r0, #0x20
 	ands r0, r1
@@ -597,7 +597,7 @@ _08034FB2:
 	movs r3, #4
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r1, #0
 	movs r0, #1
 	strb r0, [r5, #0xd]
@@ -610,7 +610,7 @@ _08034FE0: .4byte 0x0000BC02
 _08034FE4: .4byte 0x0000BC03
 _08034FE8:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08034FEE:
 	pop {r3}
 	mov r8, r3

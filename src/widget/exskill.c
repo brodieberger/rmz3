@@ -22,18 +22,14 @@ const WidgetRoutine gExIconRoutine = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget* CreateExSkillIcon(struct GameState* g, u8 kind) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
-  if (w != NULL) {
-    (w->s).taskCol = 16;
-    INIT_WIDGET_ROUTINE(w, 6);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity*)g;
-    (w->s).work[0] = kind;
-    (w->s).work[1] = 0;
+struct Entity* CreateExSkillIcon(struct GameState* g, u8 kind) {
+  struct Entity* p = AllocEntityLast(gWidgetHeaderPtr);
+  if (p != NULL) {
+    INIT_WIDGET_ROUTINE(p, 6);
+    p->unk_28 = (void*)g;
+    p->work[0] = kind, p->work[1] = 0;
   }
-  return w;
+  return p;
 }
 
 NON_MATCH static void ExIcon_Init(struct Widget* w) {
@@ -67,13 +63,13 @@ static void ExIcon_Update(struct Widget* w) {
   if (((&z->unk_b4)->status.exSkill & (1 << KIND)) >> KIND) {
     (w->s).palID = 0;
     InitNonAffineMotion(&w->s);
-    SetMotion(&w->s, sExIconMotions[KIND]);
+    SetSpriteAnimation(w, sExIconMotions[KIND]);
   } else {
     (w->s).palID = 1;
     InitNonAffineMotion(&w->s);
-    SetMotion(&w->s, sExIconMotions[KIND]);
+    SetSpriteAnimation(w, sExIconMotions[KIND]);
   }
-  UpdateMotionGraphic(&w->s);
+  UpdateSpriteAnimation(w);
 }
 
 static void ExIcon_Die(struct Widget* w) {

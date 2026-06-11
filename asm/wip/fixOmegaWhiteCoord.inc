@@ -150,8 +150,8 @@ _0800BA84:
 _0800BACC: .4byte gVideoRegBuffer
 _0800BAD0: .4byte gOverworld
 _0800BAD4: .4byte 0x0002C002
-_0800BAD8: .4byte 0x08522348
-_0800BADC: .4byte 0x08522350
+_0800BAD8: .4byte gBgMapOffsets+(42*4)
+_0800BADC: .4byte gBgMapOffsets+(44*4)
 _0800BAE0: .4byte gVideoRegBuffer+4
 _0800BAE4: .4byte 0x06000800
 _0800BAE8: .4byte 0x0002D028

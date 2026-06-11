@@ -26,7 +26,10 @@ typedef u16 motion_t;
 typedef u8 weapon_t;       // WeaponID (0=バスター, 1=セイバー, 2=ロッド, 3=シールド)
 typedef u32 zero_input_t;  // ZERO_INPUT_XXX
 
-typedef u16 tileset_t;     // (StageID << 8) | TilesetIdx
+// (StageID << 8) | TilesetIdx, (TilesetIdx は 0..15)
+// SELF_REL_PTR(&gStageTilesetOffsets[StageID]) で、 ColorGraphicV2 の配列の先頭アドレス (e.g. gSnowTilesetGraphics) が得られ、TilesetIdx をその配列のインデックス として、タイルセットのグラフィックとパレットのアドレスが得られる
+typedef u16 tileset_t;
+
 typedef u8 tileset_ofs_t;  // ((TilesetIdx_0 << 4) | TilesetIdx_1), TilesetIdx_n = gOverworld.tilesets[n] の TilesetIdx
 
 #endif  // GUARD_RMZ3_TYPES_H

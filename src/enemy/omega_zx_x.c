@@ -7,14 +7,14 @@
 struct OmegaZX_X {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  struct Coord c;  // 0xB4
-  u8 unk_bc[8];    // 0xBC
+  Coords32 c;    // 0xB4
+  u8 unk_bc[8];  // 0xBC
 };
 static_assert(sizeof(struct OmegaZX_X) == sizeof(struct Enemy));
 
 static const struct Collision sCollisions[];
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void Enemy60_Init(struct OmegaZX_X* p);
 void Enemy60_Update(struct Enemy* p);
@@ -32,14 +32,10 @@ const EnemyRoutine gEnemy60Routine = {
 
 // --------------------------------------------
 
-struct Entity* FUN_08092444(struct Coord* c, u8 kind, struct Entity* boss) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+struct Entity* FUN_08092444(Coords32* c, u8 kind, struct Entity* boss) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_OMEGA_ZX_X);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = kind, p->work[1] = 0;
     p->unk_28 = (void*)boss;
@@ -48,13 +44,9 @@ struct Entity* FUN_08092444(struct Coord* c, u8 kind, struct Entity* boss) {
 }
 
 static struct Entity* unused_FUN_080924a8(struct Entity* e, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_OMEGA_ZX_X);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = kind, p->work[1] = 1;
     p->unk_28 = (void*)e;
   }
@@ -71,7 +63,7 @@ static void Enemy60_Init(struct OmegaZX_X* p) {
   (p->s).flags |= FLIPABLE;
   INIT_BODY(p, sCollisions, 1, onCollision);
   {
-    struct Coord* d = &(p->s).d;
+    Coords32* d = &(p->s).d;
     d->x = d->y = 0;
   }
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
@@ -86,7 +78,7 @@ static void Enemy60_Init(struct OmegaZX_X* p) {
   Enemy60_Update((void*)p);
 }
 
-INCASM("asm/enemy/unk_60.inc");
+INCASM("asm/enemy/omega_zx_x.inc");
 
 void FUN_08092980(struct Enemy* p);
 void FUN_080929c8(struct Enemy* p);
@@ -147,7 +139,7 @@ static const EnemyFunc sDeads[2] = {
 // --------------------------------------------
 
 // 0x08093578
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 static void FUN_0809357c(struct OmegaZX_X* p) {
   switch ((p->s).mode[2]) {
@@ -158,7 +150,7 @@ static void FUN_0809357c(struct OmegaZX_X* p) {
     case 1: {
       (p->s).coord.y = (p->c).y + (((p->s).unk_28)->coord).y;
       (p->s).coord.x = (p->c).x + (((p->s).unk_28)->coord).x;
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -395,7 +387,7 @@ static const struct Collision sCollisions[24] = {
 };
 
 // clang-format off
-static const struct Coord sPixelCoords[11] = {
+static const Coords32 sPixelCoords[11] = {
     {-25, -45},
     {-49, -22},
     {-64, 7},

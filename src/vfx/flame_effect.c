@@ -17,12 +17,10 @@ const VFXRoutine gFlameEffectRoutine = {
 };
 // clang-format on
 
-struct ElementEffect* CreateFlameEffect(struct Entity* e, struct Coord* c, u8 r2) {
-  struct ElementEffect* p = (struct ElementEffect*)AllocEntityFirst(gVFXHeaderPtr);
+struct ElementEffect* CreateFlameEffect(struct Entity* e, Coords32* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_FLAME_EFFECT);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).unk_28 = e;
     (p->c).x = c->x, (p->c).y = c->y;
     (p->s).work[2] = r2;
@@ -32,15 +30,13 @@ struct ElementEffect* CreateFlameEffect(struct Entity* e, struct Coord* c, u8 r2
 }
 
 static void FlameEffect_Init(struct Entity* p) {
-  struct Entity* owner = p->unk_28;
+  struct Entity* q = p->unk_28;
   InitNonAffineMotion(p);
-  if (owner->flags & OAM_PRIO) {
-    (p->spr).oam.priority = (owner->spr).oam.priority;
-  }
-  p->taskCol = 0;
+  if (q->flags & USE_COMMON_OAM_RENDERER) (p->spr).oam.priority = (q->spr).oam.priority;
+  p->renderPrio = 0;
   ForceEntityPalette(p, 14);
   SET_XFLIP(p, (RANDOM(RNG_0202f388) & 1));
-  SetMotion(p, MOTION(SM027_FLAME_EFFECT, 7));
+  SetSpriteAnimation(p, MOTION(SM027_FLAME_EFFECT, 7));
   p->flags |= DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   FlameEffect_Update((void*)p);
@@ -237,7 +233,7 @@ _080B4FD0:\n\
 	str r0, [r4, #0x58]\n\
 _080B4FD2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B4FE4\n\

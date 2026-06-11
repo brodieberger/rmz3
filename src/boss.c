@@ -81,7 +81,7 @@ static struct Entity* unused_0803d120(struct Entity* p) {
   return w;
 }
 
-static struct Coord* unused_0803d13c(struct Entity* p) {
+static Coords32* unused_0803d13c(struct Entity* p) {
   struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w != NULL) return &w->coord;
   return NULL;

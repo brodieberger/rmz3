@@ -285,7 +285,7 @@ const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: numb
       case 0x14: {
         switch (result.arg1) {
           case 0x00: {
-            sequence.push(`wait_screeneffect`);
+            sequence.push(`wait_transition_end`);
             break;
           }
           case 0x01: {
@@ -301,7 +301,7 @@ const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: numb
             break;
           }
           default: {
-            sequence.push(`screeneffect ${result.arg1}`);
+            sequence.push(`start_transition ${result.arg1}`);
             break;
           }
         }
@@ -474,11 +474,11 @@ const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: numb
       case 0x22: {
         switch (result.arg1) {
           case 0x00: {
-            sequence.push(`prepare_missionresult`);
+            sequence.push(`start_result_screen`);
             break;
           }
           case 0x01: {
-            sequence.push(`missionresult`);
+            sequence.push(`wait_for_result_screen_end`);
             break;
           }
           default: {
@@ -495,7 +495,7 @@ const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: numb
       }
 
       case 0x25: {
-        sequence.push(`cutscene ${result.arg1}`);
+        sequence.push(`play_movie ${result.arg1}`);
         break;
       }
 

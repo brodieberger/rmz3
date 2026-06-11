@@ -128,10 +128,10 @@ _080D8C0E:
 	strb r0, [r5, #0xd]
 	b _080D8C8C
 	.align 2, 0
-_080D8C54: .4byte 0x083710D8
+_080D8C54: .4byte sIceBlock_Size
 _080D8C58: .4byte 0x00003801
 _080D8C5C: .4byte 0x0000CB01
-_080D8C60: .4byte 0x083710C0
+_080D8C60: .4byte sCollisions+(24*1)
 _080D8C64:
 	movs r1, #0xcb
 	lsls r1, r1, #8
@@ -143,7 +143,7 @@ _080D8C64:
 	strb r0, [r5, #0xa]
 	adds r4, r5, #0
 	adds r4, #0x74
-	ldr r1, _080D8C9C @ =0x083710A8
+	ldr r1, _080D8C9C @ =sCollisions
 	adds r2, r5, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -161,4 +161,4 @@ _080D8C92:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080D8C9C: .4byte 0x083710A8
+_080D8C9C: .4byte sCollisions

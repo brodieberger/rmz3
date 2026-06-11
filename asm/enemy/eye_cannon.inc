@@ -41,7 +41,7 @@ _0808475C:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #1
 	b _080847B2
 	.align 2, 0
@@ -314,7 +314,7 @@ _08084984:
 	strb r0, [r4, #0xe]
 _0808499E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080849A4:
 	pop {r4}
 	pop {r0}
@@ -414,7 +414,7 @@ _08084A50:
 	strb r1, [r4, #0xe]
 _08084A64:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08084A6A:
 	pop {r4}
 	pop {r0}
@@ -452,7 +452,7 @@ _08084A9E:
 	strb r0, [r4, #0xe]
 _08084AAC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -502,7 +502,7 @@ _08084ADE:
 	strb r0, [r4, #0xe]
 _08084B0C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -555,7 +555,7 @@ _08084B56:
 	strb r0, [r4, #0xe]
 _08084B68:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08084C18
 _08084B70:
 	ldr r2, [r4, #0x54]
@@ -631,7 +631,7 @@ _08084BE0:
 	strb r0, [r4, #0xe]
 _08084C00:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -721,7 +721,7 @@ _08084CA0:
 	strb r4, [r2, #0xe]
 _08084CA6:
 	adds r0, r2, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08084CAC:
 	pop {r4}
 	pop {r0}
@@ -752,7 +752,7 @@ _08084CCC:
 	strb r0, [r4, #0xe]
 _08084CE2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -808,7 +808,7 @@ _killEyeCannon: @ 0x08084D04
 	movs r0, #3
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _08084DB4 @ =gMission
+	ldr r2, _08084DB4 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08084DB8 @ =0x0000270E
 	cmp r1, r0
@@ -854,7 +854,7 @@ _08084DA6:
 	bx r0
 	.align 2, 0
 _08084DB0: .4byte 0x08368374
-_08084DB4: .4byte gMission
+_08084DB4: .4byte gScore
 _08084DB8: .4byte 0x0000270E
 _08084DBC: .4byte gEnemyFnTable
 _08084DC0: .4byte gCurStory

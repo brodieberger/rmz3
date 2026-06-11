@@ -20,11 +20,9 @@ const ProjectileRoutine gProjectile20Routine = {
 // clang-format on
 
 void FUN_080a4ef8(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 20);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     p->unk_28 = (void*)e;
   }
@@ -136,7 +134,7 @@ _080A503C:\n\
 }
 
 // 0x080a5048
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 // --------------------------------------------
 

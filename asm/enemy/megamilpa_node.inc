@@ -63,7 +63,7 @@ MegamilpaNode_Init: @ 0x08065778
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080657F6:
 	ldrb r0, [r6, #0xb]
 	movs r1, #0x10
@@ -786,7 +786,7 @@ _08065D38:
 	bl GotoMotion
 _08065D54:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -825,7 +825,7 @@ _08065D98:
 	ldr r1, _08065DC4 @ =0x08365CC0
 	bl SetDDP
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0xa]
 	movs r0, #1
 	movs r3, #0
@@ -922,7 +922,7 @@ _08065E02:
 	strb r0, [r5, #0xe]
 _08065E5C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x71
 	movs r3, #0

@@ -86,16 +86,16 @@ sCursor:: @ 0x08372aa0
   .string "▷$"
   .string "データがありません$"
   .string "やめる$"
-  .byte 0xF2, 0x12, 0xFF
-  .byte 0xF2, 0x1F, 0xFF
+  .string "{RED}H$"
+  .string "{RED}U$"
   .string "X$"
   .string "/$"
   .string ":$"
   .byte 0xD0, 0xFF
   .byte 0xE9, 0xFF
 
-sPrologue:: @ 0x08372ac0
-  .include "src/data/strings/prologue.inc"
+sRecap:: @ 0x08372ac0
+  .include "src/data/strings/recap.inc"
   .string "あれから2ヶ月後$"
 
 sNumber:: @ 0x08372d60

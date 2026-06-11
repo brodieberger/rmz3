@@ -28,12 +28,10 @@ const VFXRoutine gVFX58Routine = {
 
 // --------------------------------------------
 
-struct Entity* FUN_080c1b98(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c1b98(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_058);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = n;
     p->coord.x = c->x, p->coord.y = c->y;
   }
@@ -41,12 +39,10 @@ struct Entity* FUN_080c1b98(struct Coord* c, u8 n) {
 }
 
 // 0x080c1bec
-static struct Entity* unused_FUN_080c1bec(struct Coord* c, u8 n, struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+static struct Entity* unused_FUN_080c1bec(Coords32* c, u8 n, struct Entity* e) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_058);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = n;
     p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = (void*)e;
@@ -54,24 +50,20 @@ static struct Entity* unused_FUN_080c1bec(struct Coord* c, u8 n, struct Entity* 
   return p;
 }
 
-static struct Entity* unused_FUN_080c1c44(struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+static struct Entity* unused_FUN_080c1c44(Coords32* c) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_058);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 4;
     p->coord.x = c->x, p->coord.y = c->y;
   }
   return p;
 }
 
-struct Entity* FUN_080c1c94(struct Coord* c, u8 n, motion_t param_3) {
-  struct VFX58* p = (struct VFX58*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c1c94(Coords32* c, u8 n, motion_t param_3) {
+  struct VFX58* p = (struct VFX58*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_058);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = 6;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     (p->s).work[1] = n;

@@ -100,7 +100,7 @@ _0803D234:\n\
 	adds r4, #1\n\
 	cmp r4, #0xa\n\
 	ble _0803D224\n\
-	ldr r0, _0803D260 @ =gSystemSavedataManager\n\
+	ldr r0, _0803D260 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x16]\n\
 	movs r0, #0x40\n\
 	ands r0, r1\n\
@@ -115,7 +115,7 @@ _0803D234:\n\
 _0803D254: .4byte gBossFnTable\n\
 _0803D258: .4byte u8_ARRAY_08361ab8\n\
 _0803D25C: .4byte 0xFFFFFC00\n\
-_0803D260: .4byte gSystemSavedataManager\n\
+_0803D260: .4byte gSystemSavedata\n\
 _0803D264: .4byte gMegamilpaCoreHitbox\n\
 _0803D268:\n\
 	ldr r1, _0803D2AC @ =gMegamilpaCoreHitbox\n\
@@ -190,7 +190,7 @@ static void Megamilpa_Update(struct Boss* p) {
   };
   // clang-format on
 
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     Megamilpa_Die(p);
     return;

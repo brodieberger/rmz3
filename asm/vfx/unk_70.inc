@@ -39,7 +39,7 @@ _080C57D6:
 	strb r0, [r4, #0xd]
 _080C57E0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x60]
 	ldr r0, _080C5858 @ =0x000006FF
 	cmp r1, r0
@@ -184,7 +184,7 @@ _080C58FA:
 	strb r0, [r7, #0xd]
 _080C5906:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x54]
 	ldr r1, [r7, #0x64]
 	adds r0, r0, r1
@@ -310,7 +310,7 @@ _080C59A2:
 	strb r0, [r7, #0xd]
 _080C59F4:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r2, [r7, #0x68]
 	adds r2, #0x80
 	str r2, [r7, #0x68]
@@ -581,7 +581,7 @@ _080C5BAA:
 	strb r0, [r7, #0xd]
 _080C5C10:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r7, #0x58]
 	ldr r0, [r7, #0x60]
 	subs r1, r1, r0
@@ -722,7 +722,7 @@ _080C5D32:
 	strb r0, [r7, #0xa]
 _080C5D34:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _080C5D5E

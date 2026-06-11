@@ -15,7 +15,7 @@ static metatile_attr_t FUN_080e1360(s32 x, s32 y);
 static s32 FUN_080e1394(s32 x, s32 y);
 static s32 FUN_080e13c4(s32 x, s32 y);
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void MapDisk_Init(struct Pickup* p);
 static void MapDisk_Update(struct Pickup* p);
@@ -31,17 +31,12 @@ const PickupRoutine gPickupDiskRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateMapDisk(u8 diskNo, struct Coord* _c, u8 r2) {
-  struct Coord c = {_c->x, _c->y};
+struct Entity* CreateMapDisk(u8 diskNo, Coords32* _c, u8 r2) {
+  Coords32 c = {_c->x, _c->y};
 
-  struct Entity* p = AllocEntityFirst(gPickupHeaderPtr);
+  struct Entity* p = AllocEntityLast(gPickupHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_ITEM_ROUTINE(p, ITEM_DISK);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
-
     if (p->work[1] >= 2) {
       (p->coord).x = c.x;
       (p->coord).y = FUN_080e1394(c.x, c.y);
@@ -73,8 +68,8 @@ static void MapDisk_Init(struct Pickup* p) {
   }
 
   InitNonAffineMotion(&p->s);
-  m = MOTION(SM176_RESULT_DISK, 11) + (((u16)gSystemSavedataManager.disk) << 8);
-  SetMotion(&p->s, m);
+  m = MOTION(SM176_RESULT_DISK, 11) + (((u16)gSystemSavedata.disk) << 8);
+  SetSpriteAnimation(p, m);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   INIT_BODY(p, &sCollision, 64, onCollision);
@@ -95,7 +90,7 @@ NAKED static void MapDisk_Update(struct Pickup* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x11]\n\
 	cmp r0, #0\n\
 	bne _080E1144\n\
@@ -174,7 +169,7 @@ _080E11A4:\n\
 	ldr r0, _080E11F4 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #8\n\
 	cmp r0, r1\n\
@@ -357,7 +352,7 @@ static void MapDisk_Die(struct Entity* p) {
 }
 
 // 0x080e1344
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Pickup* self = (struct Pickup*)body->parent;
   struct Entity* p = (struct Entity*)body->enemy->parent;
   if (p->kind == ENTITY_PLAYER) {

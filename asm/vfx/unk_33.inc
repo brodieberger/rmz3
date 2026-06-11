@@ -54,7 +54,7 @@ _080BBA62:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BBA78:
 	pop {r4}
 	pop {r0}
@@ -118,7 +118,7 @@ _080BBAB2:
 	adds r4, r4, r0
 	str r4, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -203,7 +203,7 @@ _080BBB56:
 	adds r4, r4, r0
 	str r4, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -341,7 +341,7 @@ _080BBC96:
 	adds r1, #0x40
 	str r1, [r7, #0x60]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x54]
 	ldr r1, [r7, #0x58]
 	bl FUN_080098a4

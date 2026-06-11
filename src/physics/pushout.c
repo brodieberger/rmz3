@@ -2,6 +2,7 @@
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
+#include "physics.h"
 #include "renderer.h"
 
 extern s32 gConveyor;
@@ -10,12 +11,10 @@ extern s32 gConveyor;
 metatile_attr_t FUN_080098a4(s32 x, s32 y) {
   const s32 mx = METACOORD(x);
   const s32 my = METACOORD(y);
-  if (((u32)mx >= 0x771) || ((u32)my >= 0x4F6)) {
+  if (((mx < 0) || (mx >= ((DISPLAY_WIDTH * 127) / 16))) || ((my < 0) || my >= ((DISPLAY_HEIGHT * 127) / 16))) {  // Chunk0..127 の範囲かチェック
     return 0x0A01;
   } else {
-    struct Terrain* terrain = &gOverworld.terrain;
-    const s32 offset = (terrain->tilemap[0] * my) + mx + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[terrain->tilemap[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, mx, my);
     if ((gShapeCheckerUp[attr & 0xF])(x & 0xFFF, y & 0xFFF)) {
       return attr;
     }
@@ -27,14 +26,11 @@ metatile_attr_t FUN_080098a4(s32 x, s32 y) {
 metatile_attr_t GetGroundMetatileAttr(s32 x, s32 y) {
   const s32 mx = METACOORD(x);
   const s32 my = METACOORD(y);
-
-  struct Terrain* terrain = &gOverworld.terrain;
-  s32 idx = (my * terrain->tilemap[0]) + mx + 2;
-  metatile_attr_t attr = (terrain->hdr).attrs[terrain->tilemap[idx]];
+  metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, mx, my);
   if ((attr & 0x0F) == 0) {
     return 0;
   }
-  if ((attr & 0x0F) == METATILE_GROUND) {
+  if ((attr & 0x0F) == SHAPE_BLOCK) {
     return attr;  // ここで間違えて0を返すと、ゼロが床をすり抜けて落下死した
   }
   if ((gShapeCheckerUp[attr & 0xF])(x & 0xFFF, y & 0xFFF) != 0) {  // (坂道の)空中部分
@@ -49,15 +45,11 @@ s32 PushoutToUp1(s32 x, s32 y) {
   s32 i;
   s32 prev_y = y;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
     if ((shape == 0) || (attr == 0x800F)) break;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       y = (y & 0xFFFFF000) - 1;
     } else {
       s32 tmp;
@@ -77,16 +69,12 @@ s32 PushoutToUp2(s32 x, s32 y) {
   s32 i;
   s32 prev_y = y;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
 
     if ((shape == 0) || (attr == 0x800F)) return y - prev_y;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       y = (y & 0xFFFFF000) - 1;
     } else {
       s32 tmp;
@@ -107,15 +95,11 @@ s32 PushoutToDown1(s32 x, s32 y) {
   s32 i;
   s32 prev_y = y;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
     if ((shape == 0) || (attr & 0x8400)) break;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       y = (y + PIXEL(16)) & 0xFFFFF000;
     } else {
       s32 tmp;
@@ -136,14 +120,12 @@ NON_MATCH s32 PushoutToDown2(s32 x, s32 y) {
   const s32 prev_y = y;
 
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    s32 offset = (terrain->tilemap[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[terrain->tilemap[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
 
     if ((shape == 0) || (attr & 0x8400)) return y - prev_y;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       y = (y + PIXEL(16)) & 0xFFFFF000;
     } else {
       s32 tmp;
@@ -167,15 +149,11 @@ s32 PushoutToLeft1(s32 x, s32 y) {
   s32 i;
   s32 prev_x = x;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
     if ((shape == 0) || (attr & 0x8400)) break;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       x = (x & 0xFFFFF000) - 1;
     } else {
       s32 tmp;
@@ -194,15 +172,11 @@ s32 PushoutToLeft2(s32 x, s32 y) {
   s32 i;
   s32 prev_x = x;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
     if ((shape == 0) || (attr & 0x8400)) return x - prev_x;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       x = (x & 0xFFFFF000) - 1;
     } else {
       s32 tmp;
@@ -223,15 +197,11 @@ s32 PushoutToRight1(s32 x, s32 y) {
   s32 i;
   s32 prev_x = x;
   for (i = 0; i < 16; i++) {
-    struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-
-    s32 offset = (map[0] * METACOORD(y)) + METACOORD(x) + 2;
-    metatile_attr_t attr = (terrain->hdr).attrs[map[offset]];
+    metatile_attr_t attr = MAP_ATTR(&gOverworld.terrain, METACOORD(x), METACOORD(y));
     u32 shape = attr & 0xF;
     if ((shape == 0) || (attr & 0x8400)) break;
 
-    if (shape == METATILE_GROUND) {
+    if (shape == SHAPE_BLOCK) {
       x = (x + PIXEL(16)) & 0xFFFFF000;
     } else {
       s32 tmp;
@@ -971,14 +941,12 @@ NON_MATCH s32 FUN_0800a40c(s32 x, s32 y) {
   const s32 my = METACOORD(y);
   if (((u32)mx < 0x771) && ((u32)my < 0x4F6)) {
     struct Terrain* terrain = &gOverworld.terrain;
-    const s32 idx = (terrain->tilemap[0] * my) + mx + 2;
-    u32 attr = (terrain->hdr).attrs[terrain->tilemap[idx]];
-
+    u32 attr = MAP_ATTR(terrain, mx, my);
     if ((gShapeCheckerUp[attr & 0xF])(x & 0xFFF, y & 0xFFF)) {
-      if (attr & METATILE_CONVEYOR1) return terrain->conveyor[1];
-      if (attr & METATILE_CONVEYOR0) return terrain->conveyor[0];
+      if (attr & MTATTR_CONVEYOR1) return terrain->conveyor[1];
+      if (attr & MTATTR_CONVEYOR0) return terrain->conveyor[0];
     }
-    if ((GetHazardMetatileAttr(x, y) & METATILE_CONVEYOR1)) return gConveyor;
+    if ((GetHazardMetatileAttr(x, y) & MTATTR_CONVEYOR1)) return gConveyor;
   }
 
   return 0;
@@ -992,12 +960,10 @@ s32 FUN_0800a4bc(s32 x, s32 y) {
   const s32 my = METACOORD(y);
   if (((u32)mx < 0x771) && ((u32)my < 0x4F6)) {
     struct Terrain* terrain = &gOverworld.terrain;
-    u16* map = terrain->tilemap;
-    const s32 offset = (map[0] * my) + mx + 2;
-    u32 attr = (terrain->hdr).attrs[map[offset]];
+    u32 attr = MAP_ATTR(terrain, mx, my);
     if ((gShapeCheckerUp[attr & 0xF])(x & 0xFFF, y & 0xFFF)) {
-      if (attr & METATILE_CONVEYOR1) return terrain->conveyor[1];
-      if (attr & METATILE_CONVEYOR0) return terrain->conveyor[0];
+      if (attr & MTATTR_CONVEYOR1) return terrain->conveyor[1];
+      if (attr & MTATTR_CONVEYOR0) return terrain->conveyor[0];
     }
   }
   return 0;
@@ -1008,7 +974,7 @@ static s32 unused_0800a550(s32 x, s32 y) { return isStageBlocking(-1, x, y); }
 // Used only in Phantom's minigame
 NAKED s32 isStageBlocking(s32 start, s32 x, s32 y) { INCCODE("asm/todo/isStageBlocking.inc"); }
 
-NON_MATCH void AppendHazard(u16 id, u16 attr, const struct Coord* c, const struct Rect* size) {
+NON_MATCH void AppendHazard(u16 id, u16 attr, const Coords32* c, const struct Rect* size) {
 #if MODERN
   s32 len = gOverworld.terrain.objectLen;
   if (len + 1 < 32) {
@@ -1041,5 +1007,3 @@ NON_MATCH void AppendHazard(u16 id, u16 attr, const struct Coord* c, const struc
   INCCODE("asm/wip/AppendHazard.inc");
 #endif
 }
-
-// TODO asm/hazard.o

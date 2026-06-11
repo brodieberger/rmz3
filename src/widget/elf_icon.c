@@ -19,12 +19,9 @@ const WidgetRoutine gElfIconRoutine = {
 // clang-format on
 
 struct Widget* CreateElfIcon(struct GameState* g) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 11);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = 0;
     (w->s).work[1] = 0;
@@ -38,7 +35,7 @@ static void ElfIcon_Init(struct Widget* w) {
   wStaticMotionPalIDs[143] = 11;
   InitNonAffineMotion(&w->s);
   (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, MOTION(0x8F, 0x00));
+  SetSpriteAnimation(w, MOTION(0x8F, 0x00));
   (w->s).spr.xflip = FALSE;
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;
@@ -143,7 +140,7 @@ _080E7FD6:\n\
 	adds r3, r0, #0\n\
 	ldr r2, _080E803C @ =u8_ARRAY_08372198\n\
 	adds r2, r3, r2\n\
-	ldr r0, _080E8040 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E8040 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r3\n\
 	ldr r1, [r0]\n\
@@ -189,7 +186,7 @@ _080E7FD6:\n\
 	.align 2, 0\n\
 _080E8038: .4byte 0x00000DFC\n\
 _080E803C: .4byte u8_ARRAY_08372198\n\
-_080E8040: .4byte gUnlockedElfPtr\n\
+_080E8040: .4byte gElfAvailability\n\
 _080E8044: .4byte gElfMugshotGraphics\n\
 _080E8048: .4byte 0x0000035F\n\
 _080E804C: .4byte gElfMugshotGraphics+12\n\
@@ -245,7 +242,7 @@ _080E80B2:\n\
 	ldrb r3, [r0]\n\
 	ldr r2, _080E8178 @ =u8_ARRAY_08372198\n\
 	adds r2, r3, r2\n\
-	ldr r0, _080E817C @ =gUnlockedElfPtr\n\
+	ldr r0, _080E817C @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r3\n\
 	ldr r1, [r0]\n\
@@ -296,7 +293,7 @@ _080E8118:\n\
 	orrs r1, r0\n\
 	strb r1, [r4, #0xa]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r7, #3]\n\
 	cmp r0, #3\n\
 	bne _080E819E\n\
@@ -308,7 +305,7 @@ _080E8118:\n\
 	ldr r0, _080E8178 @ =u8_ARRAY_08372198\n\
 	adds r0, r3, r0\n\
 	ldrb r1, [r0]\n\
-	ldr r0, _080E817C @ =gUnlockedElfPtr\n\
+	ldr r0, _080E817C @ =gElfAvailability\n\
 	ldr r2, [r0]\n\
 	adds r2, r2, r3\n\
 	ldr r0, [r2]\n\
@@ -338,7 +335,7 @@ _080E8118:\n\
 	b _080E8198\n\
 	.align 2, 0\n\
 _080E8178: .4byte u8_ARRAY_08372198\n\
-_080E817C: .4byte gUnlockedElfPtr\n\
+_080E817C: .4byte gElfAvailability\n\
 _080E8180: .4byte gElfMugshotGraphics\n\
 _080E8184: .4byte 0x0000035F\n\
 _080E8188: .4byte gElfMugshotGraphics+12\n\
@@ -361,7 +358,7 @@ _080E81A4:\n\
 	orrs r1, r0\n\
 	strb r1, [r4, #0xa]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r7, #3]\n\
 	cmp r0, #2\n\
 	bne _080E81DE\n\
@@ -376,7 +373,7 @@ _080E81C2:\n\
 	orrs r1, r0\n\
 	strb r1, [r4, #0xa]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x10]\n\
 	ldrb r5, [r5, #7]\n\
 	cmp r0, r5\n\

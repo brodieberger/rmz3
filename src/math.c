@@ -38,7 +38,7 @@ s32 CalcAngle(s32 x, s32 y) {
 
 s32 CalcAngleBetweenPoints(s32 x1, s32 y1, s32 x2, s32 y2) { return CalcAngle(x2 - x1, y2 - y1); }
 
-s32 CalcAngleBetweenCoords(struct Coord* c1, struct Coord* c2) { return CalcAngleBetweenPoints(c1->x, c1->y, c2->x, c2->y); }
+s32 CalcAngleBetweenCoords(Coords32* c1, Coords32* c2) { return CalcAngleBetweenPoints(c1->x, c1->y, c2->x, c2->y); }
 
 NAKED u8 FUN_080e964c(u32 r0, s32 r1, s32 r2) {
   asm(".syntax unified\n\

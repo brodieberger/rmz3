@@ -48,19 +48,19 @@ void FUN_08035e6c(struct Zero* p) {
   }
 }
 
-struct Zero* CreatePlayerLeviathan(void* q, s32 x, s32 y) {
-  Player* p = AllocPlayer();
+struct Entity* CreatePlayerLeviathan(void* q, s32 x, s32 y) {
+  struct Entity* p = AllocPlayer();
   if (p != NULL) {
-    (p->s).taskCol = 16;
+    p->renderPrio = 16;
     INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_LEVIATHAN);
-    (p->s).work[0] = 0;
-    (p->s).coord.x = x, (p->s).coord.y = y;
-    (p->s).unk_28 = q;
+    p->work[0] = 0;
+    p->coord.x = x, p->coord.y = y;
+    p->unk_28 = q;
   }
   return p;
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 static void Leviathan_Init(Player* p) {
   SET_PLAYER_ROUTINE(p, ENTITY_UPDATE);

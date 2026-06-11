@@ -2,6 +2,7 @@
 #include "motion.h"
 #include "overworld.h"
 #include "physics.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "vfx.h"
 #include "vfx/after_image.h"
@@ -18,9 +19,9 @@ enum ZeroAirKind {
 
 s16 getZeroJumpingPower(struct Zero* z);
 s16 getZeroRisingDy(struct Zero* z);
-void CreateDashDust(struct Coord* c, bool8 isRight);
-void FUN_080b388c(struct Coord* zc, bool8 isRight);
-void CreateCyberSpaceElf(struct Coord* c, u8 kind, u8 r2);
+void CreateDashDust(Coords32* c, bool8 isRight);
+void FUN_080b388c(Coords32* zc, bool8 isRight);
+void CreateCyberSpaceElf(Coords32* c, u8 kind, u8 r2);
 
 s16 FUN_08032bac(struct Zero* z);
 s16 GetRodJumpPower(struct Zero* z);
@@ -130,9 +131,9 @@ static void zeroIdle_0802a30c(struct Zero* z) {
 static void zeroIdleStep0(struct Zero* z) {
   struct Zero_b4* b4;
   if ((z->prevPosture == POSTURE_DASH) || (z->prevPosture == POSTURE_SHADOW)) {
-    SetMotion(&z->s, MOTION(DM003_ZERO_DASH, 1));
+    SetSpriteAnimation(z, MOTION(DM003_ZERO_DASH, 1));
   } else {
-    SetMotion(&z->s, GetDefaultMotion(z));
+    SetSpriteAnimation(z, GetDefaultMotion(z));
   }
 
   b4 = &(z->unk_b4);
@@ -154,9 +155,9 @@ static void zeroIdleStep1(struct Zero* z) {
   bool8 isIdle = TRUE;
   motion_t m = MOTION_VALUE(z);
   if (m == MOTION(DM003_ZERO_DASH, 1)) {
-    if ((z->s).motion.state == MOTION_END) {
+    if (IsSpriteAnimEnd(z)) {
       m = GetDefaultMotion(z);
-      SetMotion(&z->s, m);
+      SetSpriteAnimation(z, m);
     } else {
       isIdle = FALSE;
     }
@@ -169,14 +170,14 @@ static void zeroIdleStep1(struct Zero* z) {
         motion_t m;
         *dying = FALSE;
         m = GetDefaultMotion(z);
-        SetMotion(&z->s, m);
+        SetSpriteAnimation(z, m);
       }
     } else {
       if ((z->body).hp < 3) {
         motion_t m;
         *dying = TRUE;
         m = GetDefaultMotion(z);
-        SetMotion(&z->s, m);
+        SetSpriteAnimation(z, m);
       }
     }
   }
@@ -226,7 +227,7 @@ static void zeroStartWalk0(struct Zero* z) {
   }
 
   if ((z->s).d.x == 0) {
-    SetMotion(&z->s, MOTION(DM002_ZERO_RUN, 0));
+    SetSpriteAnimation(z, MOTION(DM002_ZERO_RUN, 0));
     (z->s).mode[3] = 1;
     zeroStartWalk1(z);
   } else {
@@ -327,7 +328,7 @@ static void zero_dash_step0(struct Zero* z) {
 
     b4->dashTimer = 28;
     z->dashDustTimer = 0;
-    SetMotion(&z->s, MOTION(DM003_ZERO_DASH, 0x00));
+    SetSpriteAnimation(z, MOTION(DM003_ZERO_DASH, 0x00));
     CreateParticle(&(z->s).coord, 0, ((z->s).flags >> 4) & 1);
 
     if (b4->shadow == NULL) {
@@ -431,7 +432,7 @@ static void initZeroJump(struct Zero* z) {
 
   switch ((z->s).mode[3]) {
     case NORMAL_JUMP: {
-      SetMotion(&z->s, MOTION(DM004_ZERO_AIR, 3));
+      SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 3));
       (z->s).d.y = -getZeroJumpingPower(z);
       if (abs((z->s).d.x) < CalcDx(z)) {
         (z->s).d.x = CalcDx(z);
@@ -441,7 +442,7 @@ static void initZeroJump(struct Zero* z) {
     }
 
     case DOUBLE_JUMP: {
-      SetMotion(&z->s, MOTION(DM004_ZERO_AIR, 0));
+      SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 0));
       (z->s).d.y = -getZeroRisingDy(z);
       if ((&z->unk_b4)->blownSpeed != 0) {
         (&z->unk_b4)->blownSpeed = 0;
@@ -456,7 +457,7 @@ static void initZeroJump(struct Zero* z) {
     case WALL_JUMP: {
       FUN_080b388c(&(z->s).coord, ((z->s).flags & X_FLIP) != 0);
       if ((&z->input)->val & ZERO_INPUT_DASH) {
-        SetMotion(&z->s, MOTION(DM006_ZERO_WALL_AIR, 1));
+        SetSpriteAnimation(z, MOTION(DM006_ZERO_WALL_AIR, 1));
         if ((z->s).flags & X_FLIP) {
           if ((&z->input)->val & DPAD_RIGHT) {
             (z->s).coord.x += PIXEL(16);
@@ -481,7 +482,7 @@ static void initZeroJump(struct Zero* z) {
           (&z->unk_b4)->shadow = CreateAfterImages(&z->s);
         }
       } else {
-        SetMotion(&z->s, MOTION(DM005_ZERO_WALL, 1));
+        SetSpriteAnimation(z, MOTION(DM005_ZERO_WALL, 1));
         if ((z->s).flags & X_FLIP) {
           dx = -CalcDx(z);
         } else {
@@ -560,7 +561,7 @@ NON_MATCH static void zeroNormalJumpRise(struct Zero* z) {
   bool8* dashable;
   metatile_attr_t attr;
   motion_t m = MOTION_VALUE(z);
-  if ((m != MOTION(DM004_ZERO_AIR, 3)) && ((z->s).motion.state == MOTION_END)) {
+  if ((m != MOTION(DM004_ZERO_AIR, 3)) && (IsSpriteAnimEnd(z))) {
     GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 3), 1, 4);
   }
 
@@ -626,7 +627,7 @@ static void zeroDoubleJumpRise(struct Zero* z) {
   s16 g;
   metatile_attr_t attr;
   motion_t m = MOTION_VALUE(z);
-  if ((m != MOTION(DM004_ZERO_AIR, 0)) && ((z->s).motion.state == MOTION_END)) {
+  if ((m != MOTION(DM004_ZERO_AIR, 0)) && (IsSpriteAnimEnd(z))) {
     GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 0), 1, 4);
   }
 
@@ -711,12 +712,12 @@ static void zeroWallJumpRise(struct Zero* z) {
 
     if ((&z->unk_b4)->shadow == NULL) {
       if (xflip != (((z->s).flags & X_FLIP) != 0)) {
-        SetMotion(&z->s, MOTION(DM005_ZERO_WALL, 2));
+        SetSpriteAnimation(z, MOTION(DM005_ZERO_WALL, 2));
         (z->s).mode[3] = 0;
       }
     } else {
       if (dx != (z->s).d.x) {
-        SetMotion(&z->s, MOTION(DM006_ZERO_WALL_AIR, 2));
+        SetSpriteAnimation(z, MOTION(DM006_ZERO_WALL_AIR, 2));
         (z->s).mode[3] = 0;
       }
     }
@@ -836,10 +837,10 @@ static void zeroJumpFallStep0(struct Zero* z) {
   if (z->airJumpped == 0) {
     motion_t m = MOTION_VALUE(z);
     if (m != MOTION(DM004_ZERO_AIR, 4)) {
-      SetMotion(&z->s, MOTION(DM004_ZERO_AIR, 4));
+      SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 4));
     }
   } else {
-    SetMotion(&z->s, MOTION(DM004_ZERO_AIR, 1));
+    SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 1));
   }
 
   old = (z->s).d.x;
@@ -947,7 +948,7 @@ void zeroWall2(struct Zero* z) {
 static void zeroWallSeq0(struct Zero* z) {
   struct Zero_b4* b4;
 
-  SetMotion(&z->s, MOTION(DM005_ZERO_WALL, 0x00));
+  SetSpriteAnimation(z, MOTION(DM005_ZERO_WALL, 0x00));
   b4 = &(z->unk_b4);
   if (b4->shadow != NULL) {
     b4->shadow->work[1] = 1;
@@ -968,7 +969,7 @@ NON_MATCH static void zeroWallSeq1(struct Zero* z) {
   z->posture = POSTURE_WALL;
 
   attr = GetWallMetatileAttr(z, &gZeroRanges[z->posture], FALSE);
-  if (attr & METATILE_SPIKE) {
+  if (attr & MTATTR_SPIKE) {
     InstantlyKilling(z);
     zeroDamaged(z);
     return;
@@ -1042,9 +1043,9 @@ static void zeroLadderUpStep0(struct Zero* z) {
   struct Zero_b4* b4;
 
   if ((z->unk_b4).prevMode == 0) {
-    SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0));
+    SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 0));
   } else {
-    SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 1));
+    SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 1));
   }
 
   b4 = &(z->unk_b4);
@@ -1070,8 +1071,8 @@ static void zeroLadderUpStep1(struct Zero* z) {
 
   m = MOTION_VALUE(z);
   if (m == MOTION(DM007_ZERO_LADDER, 0)) {
-    if ((z->s).motion.state == MOTION_END) {
-      SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 1));
+    if (IsSpriteAnimEnd(z)) {
+      SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 1));
     }
   } else if (!z->restriction.move) {
     if ((z->input).val & ZERO_INPUT_PRESS_DPAD_UP) {
@@ -1108,10 +1109,10 @@ static void zeroLadderUpStep2(struct Zero* z) {
   } else {
     motion_t m = MOTION_VALUE(z);
     if (m != MOTION(DM007_ZERO_LADDER, 2)) {
-      SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 2));
+      SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 2));
       (z->s).coord.y = ((z->s).coord.y & 0xFFFFF000U) - 1;
     }
-    if ((z->s).motion.state == MOTION_END) {
+    if (IsSpriteAnimEnd(z)) {
       (z->s).mode[1] = 0, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
     }
   }
@@ -1140,10 +1141,10 @@ static void zeroLadderDownStep0(struct Zero* z) {
   struct Zero_b4* b4;
 
   if ((z->unk_b4).prevMode == 0) {
-    SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 3));
+    SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 3));
     (z->s).mode[3] = 1;
   } else {
-    SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 4));
+    SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 4));
     (z->s).mode[3] = 2;
   }
 
@@ -1165,10 +1166,10 @@ static void zeroLadderDownStep0(struct Zero* z) {
 static void zeroLadderDownStep1(struct Zero* z) {
   motion_t m = MOTION_VALUE(z);
   if (m == MOTION(DM007_ZERO_LADDER, 3)) {
-    if ((z->s).motion.state != MOTION_END) {
+    if (!IsSpriteAnimEnd(z)) {
       return;
     }
-    SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 4));
+    SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 4));
   }
   (z->s).coord.y += COORD(1);
   (z->s).mode[3] = 2;
@@ -1215,11 +1216,11 @@ static void zeroLadderDownStep3(struct Zero* z) {
   if (!(z->restriction).move) {
     motion_t m = MOTION_VALUE(z);
     if (m != MOTION(DM007_ZERO_LADDER, 5)) {
-      SetMotion(&z->s, MOTION(DM007_ZERO_LADDER, 5));
+      SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 5));
       (z->s).coord.y = ((z->s).coord.y & 0xfffff000) + 0xfff;
       PushoutByFloor1(z, &gZeroRanges[z->posture], 1);
     }
-    if ((z->s).motion.state == MOTION_END) {
+    if (IsSpriteAnimEnd(z)) {
       (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
     }
   }
@@ -1284,7 +1285,7 @@ static void zeroStun(struct Zero* z) {
   s32 old, dx;
   (gZeroStunSeq[(z->s).mode[3]])(z);
 
-  if ((z->s).motion.state == MOTION_END) {
+  if (IsSpriteAnimEnd(z)) {
     if ((z->s).mode[3] == 2) {
       GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 4), 2, 1);
       (z->s).mode[1] = ZERO_AIR, (z->s).mode[2] = 2, (z->s).mode[3] = 1;
@@ -1295,7 +1296,7 @@ static void zeroStun(struct Zero* z) {
         (z->s).d.x = dx;
       }
     } else {
-      SetMotion(&z->s, GetDefaultMotion(z));
+      SetSpriteAnimation(z, GetDefaultMotion(z));
       (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 1;
       (z->s).d.x = 0;
     }
@@ -1329,9 +1330,9 @@ NON_MATCH static void zeroInitKnockBack(struct Zero* z) {
 
   xflip = (((z->s).flags >> 4) & 1);
   if (xflip != z->isRightDir) {
-    SetMotion(&z->s, MOTION(DM050_ZERO_STUN, 0));
+    SetSpriteAnimation(z, MOTION(DM050_ZERO_STUN, 0));
   } else {
-    SetMotion(&z->s, MOTION(DM049_ZERO_STUN, 0));
+    SetSpriteAnimation(z, MOTION(DM049_ZERO_STUN, 0));
   }
 
   b4 = &(z->unk_b4);
@@ -1445,15 +1446,15 @@ void FUN_0802c010(struct Zero* z) {
   bool8 xflip;
 
   gStageRun.missionStatus &= ~MISSION_STAY;
-  gStageRun.missionStatus |= MISSION_FAIL;
+  gStageRun.missionStatus |= MISSION_PLAYER_DEAD;
   EXIT_BODY(z);
   PlaySound(SE_ZERO_STUN);
 
   xflip = (((z->s).flags & X_FLIP) != 0);
   if (xflip != z->isRightDir) {
-    SetMotion(&z->s, MOTION(DM050_ZERO_STUN, 0));
+    SetSpriteAnimation(z, MOTION(DM050_ZERO_STUN, 0));
   } else {
-    SetMotion(&z->s, MOTION(DM049_ZERO_STUN, 0));
+    SetSpriteAnimation(z, MOTION(DM049_ZERO_STUN, 0));
   }
 
   (z->s).mode[3] = 1;
@@ -1499,10 +1500,10 @@ void zeroDoor2D(struct Zero* z) {
 // 0x0802c168
 static void door2D_0(struct Zero* z) {
   struct Zero_b4* b4;
-  struct Coord* velocity;
+  Coords32* velocity;
 
   if (z->unk_b4.prevMode == 0) {
-    SetMotion(&z->s, MOTION(DM002_ZERO_RUN, 0));  // Ground
+    SetSpriteAnimation(z, MOTION(DM002_ZERO_RUN, 0));  // Ground
   } else {
     GotoMotion(&z->s, MOTION(DM004_ZERO_AIR, 4), 2, 1);  // Air
   }
@@ -1577,7 +1578,7 @@ static void zero_door_0802c258(struct Zero* z) {
 static void zero_door3d_0802c2a4(struct Zero* z) {
   bool32 ok = FALSE;
   if ((z->s).mode[3] == 0) {
-    SetMotion(&z->s, MOTION(DM002_ZERO_RUN, 0x00));
+    SetSpriteAnimation(z, MOTION(DM002_ZERO_RUN, 0x00));
     if ((z->s).coord.x > z->door3d_x) {
       (z->s).spr.xflip = FALSE;
       (z->s).spr.oam.xflip = FALSE;
@@ -1605,14 +1606,14 @@ static void zero_door3d_0802c2a4(struct Zero* z) {
     }
   }
   if (ok) {
-    SetMotion(&z->s, MOTION(DM054_ZERO_DOOR_3D, 0));
+    SetSpriteAnimation(z, MOTION(DM054_ZERO_DOOR_3D, 0));
     (z->s).mode[2] = 2, (z->s).mode[3] = 0;
   }
 }
 
 static void zero_door_0802c364(struct Zero* z) {
   if ((z->s).mode[3] == 0) {
-    SetMotion(&z->s, MOTION(DM054_ZERO_DOOR_3D, 0));
+    SetSpriteAnimation(z, MOTION(DM054_ZERO_DOOR_3D, 0));
     (z->s).mode[3]++;
   }
   if (!gIsUsingDoor3D) {
@@ -1640,15 +1641,15 @@ void zeroMode7(struct Zero* z) {
 static void zeroMode7Phase0(struct Zero* z) {
   struct Zero_b4* b4;
   metatile_attr_t attr;
-  struct Coord* d;
+  Coords32* d;
 
-  if ((z->unk_143.raw & 0xF) != 0) {
-    if ((z->unk_143.raw & 0xF0) == 0) {
+  if (z->unk_143_lo != 0) {
+    if (z->unk_143_hi == 0) {
       GotoMotion(&z->s, MOTION(DM050_ZERO_STUN, 0), 3, 4);
     } else {
       GotoMotion(&z->s, MOTION(DM049_ZERO_STUN, 0), 3, 4);
     }
-    z->unk_143.lo = 0;
+    z->unk_143_lo = 0;
   } else {
     bool8 flip = (((z->s).flags >> 4) & 1);
     if (flip != z->isRightDir) {
@@ -2165,7 +2166,7 @@ void zeroTalk(struct Zero* z) {
 static void zeroTalk0(struct Zero* z) {
   struct Zero_b4* b4;
 
-  SetMotion(&z->s, MOTION(DM051_ZERO_UNK, 0));
+  SetSpriteAnimation(z, MOTION(DM051_ZERO_UNK, 0));
 
   b4 = &(z->unk_b4);
   if (b4->shadow != NULL) {
@@ -2184,8 +2185,8 @@ static void zeroTalk1(struct Zero* z) {
   struct Body* body = gCollisionManager.talkTo;  // 話し相手
   if (body != NULL) {
     if (body->parent != NULL) {
-      (z->s).spr.xflip = (((body->parent)->s).coord.x > (z->s).coord.x);
-      isRight = (z->s).spr.oam.xflip = ((body->parent)->s).coord.x > (z->s).coord.x;
+      (z->s).spr.xflip = (((body->parent)->coord).x > (z->s).coord.x);
+      isRight = (z->s).spr.oam.xflip = ((body->parent)->coord).x > (z->s).coord.x;
       if (isRight) {
         u8 flags = (z->s).flags | X_FLIP;
         (z->s).flags = flags;
@@ -2199,13 +2200,13 @@ static void zeroTalk1(struct Zero* z) {
   switch ((z->s).mode[3]) {
     case 0: {
       if (!gInChat) {
-        SetMotion(&z->s, MOTION(DM051_ZERO_UNK, 1));
+        SetSpriteAnimation(z, MOTION(DM051_ZERO_UNK, 1));
         (z->s).mode[3]++;
       }
       break;
     }
     default: {
-      if ((z->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(z)) {
         (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
         (z->s).d.x = 0;
       }
@@ -2251,13 +2252,13 @@ static void zeroTeleport0(struct Zero* z) {
 }
 
 static void zeroTeleport1(struct Entity* p) {
-  register Object* r3 asm("r3");
+  register struct Entity* r3 asm("r3");
   bool32 done = FALSE;
   if ((gCollisionManager.teleportal != NULL) && (r3 = ((gCollisionManager.teleportal)->parent), r3 != NULL)) {
-    struct Entity* q = (struct Entity*)r3;
+    struct Entity* q = r3;
     if (p->mode[3] == 0) {
       if ((p->coord).x != (q->coord).x) {  // ドアのところに駆け寄らせる
-        SetMotion(p, MOTION(DM002_ZERO_RUN, 0));
+        SetSpriteAnimation(p, MOTION(DM002_ZERO_RUN, 0));
         if ((p->coord).x > (q->coord).x) {
           (p->spr).xflip = FALSE, (p->spr).oam.xflip = FALSE;
           p->flags &= ~X_FLIP;
@@ -2280,7 +2281,7 @@ static void zeroTeleport1(struct Entity* p) {
           done = TRUE;
         }
       } else {
-        s32 qx = ((r3->s).coord).x;
+        s32 qx = (r3->coord).x;
         if ((p->coord).x < qx) {
           (p->coord).x = qx;
           done = TRUE;
@@ -2301,7 +2302,7 @@ static void zeroTeleport2(struct Zero* z) {
       break;
     }
     case 1: {
-      if ((z->s).motion.state != MOTION_NEXT) {
+      if ((z->s).motion.state != ANIM_NEXT_GOTO) {
         return;
       }
       m = MOTION(DM052_ZERO_TELEPORT_START, 0x00);
@@ -2312,23 +2313,22 @@ static void zeroTeleport2(struct Zero* z) {
       return;
     }
   }
-  SetMotion(&z->s, m);
+  SetSpriteAnimation(z, m);
   (z->s).mode[3]++;
 }
 
 static void zeroTeleport3(struct Zero* z) {
   switch ((z->s).mode[3]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM052_ZERO_TELEPORT_START, 1));
+      SetSpriteAnimation(z, MOTION(DM052_ZERO_TELEPORT_START, 1));
       (z->s).mode[3]++;
       break;
     }
     case 1: {
-      if ((z->s).motion.state != MOTION_END) {
-        return;
+      if (IsSpriteAnimEnd(z)) {
+        (z->s).flags &= ~DISPLAY;
+        (z->s).mode[3]++;
       }
-      (z->s).flags &= ~DISPLAY;
-      (z->s).mode[3]++;
       break;
     }
     case 2: {
@@ -2343,7 +2343,7 @@ static void zeroTeleport3(struct Zero* z) {
 static void zeroTeleport4(struct Zero* z) {
   switch ((z->s).mode[3]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM053_ZERO_TELEPORT_END, 2));
+      SetSpriteAnimation(z, MOTION(DM053_ZERO_TELEPORT_END, 2));
       (z->s).coord.y = FUN_0800a05c((z->s).coord.x, (z->s).coord.y);
       resetSateliteElfPosition(z);
       (z->s).mode[3]++;
@@ -2351,15 +2351,15 @@ static void zeroTeleport4(struct Zero* z) {
     }
     case 1: {
       (z->s).flags |= DISPLAY;
-      if ((z->s).motion.state != MOTION_NEXT) {
+      if ((z->s).motion.state != ANIM_NEXT_GOTO) {
         return;
       }
-      SetMotion(&z->s, MOTION(DM053_ZERO_TELEPORT_END, 1));
+      SetSpriteAnimation(z, MOTION(DM053_ZERO_TELEPORT_END, 1));
       (z->s).mode[3]++;
       break;
     }
     case 2: {
-      if ((z->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(z)) {
         (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
         (z->s).d.x = 0;
       }
@@ -2402,24 +2402,22 @@ static void zeroCyberDoor0(struct Zero* z) {
 
 // 0x0802cd60
 static void zeroCyberDoor1(struct Zero* z) {
-  s16 n;
   switch ((z->s).mode[3]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM054_ZERO_DOOR_3D, 1));
+      SetSpriteAnimation(z, MOTION(DM054_ZERO_DOOR_3D, 1));
       (z->s).mode[3]++;
       break;
     }
     case 1: {
-      if ((z->s).motion.state != MOTION_END) {
-        return;
+      if (IsSpriteAnimEnd(z)) {
+        s16 n = (s16)(z->unk_b4).sound;
+        if (n != MUS_NONE) {
+          StopSound(n);
+          (z->unk_b4).sound = MUS_NONE;
+        }
+        (z->s).flags &= ~DISPLAY;
+        (z->s).mode[3]++;
       }
-      n = (s16)(z->unk_b4).sound;
-      if (n != MUS_NONE) {
-        StopSound(n);
-        (z->unk_b4).sound = MUS_NONE;
-      }
-      (z->s).flags &= ~DISPLAY;
-      (z->s).mode[3]++;
       break;
     }
     case 2: {
@@ -2458,17 +2456,17 @@ static void zeroCyberDoor2(struct Zero* z) {
     }
     case 2: {
       (z->s).flags |= DISPLAY;
-      SetMotion(&z->s, MOTION(DM052_ZERO_TELEPORT_START, 2));
+      SetSpriteAnimation(z, MOTION(DM052_ZERO_TELEPORT_START, 2));
       (z->s).coord.y = FUN_0800a05c((z->s).coord.x, (z->s).coord.y);
       (z->s).mode[3]++;
       break;
     }
     case 3: {
-      if ((z->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(z)) {
         (z->s).work[2] = 0;
         if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
           if (FUN_08032880(z, 0xFF)) {
-            SetMotion(&z->s, MOTION(DM052_ZERO_TELEPORT_START, 0));
+            SetSpriteAnimation(z, MOTION(DM052_ZERO_TELEPORT_START, 0));
             (z->s).work[2] = 0, (z->s).work[3] = 0;
             (z->s).mode[3] = 4;
             break;
@@ -2500,13 +2498,13 @@ static void zeroCyberDoor2(struct Zero* z) {
     case 5: {
       if (--(z->s).work[2] == 0xFF) {
         if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) z->inCyberSpace = TRUE;
-        SetMotion(&z->s, MOTION(DM051_ZERO_UNK, 1));
+        SetSpriteAnimation(z, MOTION(DM051_ZERO_UNK, 1));
         (z->s).mode[3] = 10;
       }
       break;
     }
     case 10: {
-      if ((z->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(z)) {
         (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
         (z->s).d.x = 0;
       }

@@ -279,7 +279,7 @@ _080C3EAA:
 	strb r0, [r4, #0xe]
 _080C3EBE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -346,7 +346,7 @@ _080C3F2C:
 	strb r0, [r4, #0xe]
 _080C3F3A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r2, [r0]
@@ -396,7 +396,7 @@ _080C3F86:
 	strb r0, [r4, #0xe]
 _080C3F98:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -480,7 +480,7 @@ _080C401A:
 	bl ForceEntityPalette
 _080C403C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -543,7 +543,7 @@ _080C4092:
 	bl ForceEntityPalette
 _080C40B4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -590,7 +590,7 @@ _080C40FC:
 	strb r0, [r4, #0xe]
 _080C410A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r2, [r0]

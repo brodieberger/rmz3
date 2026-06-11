@@ -12,8 +12,7 @@
 #define ELF_AVABILITY_GROWUP1 (1 << 3)
 #define ELF_AVABILITY_GROWUP2 (1 << 4)
 
-extern u8 (*gUnlockedElfPtr)[CYBERELF_LENGTH];
-#define ELF_AVABILITY(id) ((*gUnlockedElfPtr)[id])
+extern u8* gElfAvailability;  // 多分常に GameState.save.elf
 
 // --------------------------------------------
 
@@ -21,7 +20,7 @@ typedef void (*ElfFunc)(struct Elf*);
 typedef ElfFunc ElfRoutine[5];
 extern const ElfRoutine* const gElfFnTable[13];
 
-#define INIT_ELF_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gElfFnTable, entity, entityID)
+#define INIT_ELF_ROUTINE(entity, entityID) INIT_RENDER_ENTITY(16, gElfFnTable, entity, entityID)
 #define SET_ELF_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gElfFnTable, entity, modeID)
 
 // --------------------------------------------

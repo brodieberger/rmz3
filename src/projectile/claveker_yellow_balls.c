@@ -1,5 +1,6 @@
 #include "collision.h"
 #include "global.h"
+#include "physics.h"
 #include "projectile.h"
 #include "story.h"
 
@@ -19,13 +20,10 @@ const ProjectileRoutine gClavekerYellowBallsRoutine = {
 };
 // clang-format on
 
-struct Projectile* FUN_080aed8c(struct Entity* boss, struct Coord* c1, struct Coord* c2, u8 n) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_080aed8c(struct Entity* boss, Coords32* c1, Coords32* c2, u8 n) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 39);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = n;
     (p->s).work[1] = 0;
     (p->s).coord.x = c1->x;
@@ -311,7 +309,7 @@ _080AF0C0:\n\
 	strb r0, [r4, #0xe]\n\
 _080AF0C6:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080AF0F4\n\
 _080AF0CE:\n\
 	ldr r0, [r4, #0x60]\n\
@@ -332,7 +330,7 @@ _080AF0DE:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080AF0F4:\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\

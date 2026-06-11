@@ -73,7 +73,7 @@ static void MenuLoop_InitMenu(struct GameState* g) {
 static void MenuLoop_OpenMenu(struct GameState* g) {
   g->frames++;
   if (g->frames >= 16) {
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
     g->mode[1] = 2;
     MenuLoop_Update(g);
   } else {
@@ -95,7 +95,7 @@ static void MenuLoop_Update(struct GameState* g) {
 static void MenuLoop_BlackOut(struct GameState* g) {
   g->frames--;
   if (g->frames == 0) {
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x0;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
     g->mode[1] = 4;
     MenuLoop_ExitMenu(g);
   } else {
@@ -130,7 +130,8 @@ const MenuElfFunc gExitMenuScripts[13] = {
 // clang-format on
 
 // 01 04 xx xx
-NAKED static void MenuLoop_ExitMenu(struct GameState* m) {
+// 0x080f37e8
+NAKED static void MenuLoop_ExitMenu(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -231,7 +232,7 @@ _080F3892:\n\
 	lsls r3, r3, #2\n\
 	adds r3, r3, r4\n\
 	ldrb r1, [r0, #2]\n\
-	ldr r0, _080F3938 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F3938 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r2\n\
 	ldr r2, [r0]\n\
@@ -288,7 +289,7 @@ _080F38F4:\n\
 _080F392C: .4byte 0x00000E15\n\
 _080F3930: .4byte gExitMenuScripts\n\
 _080F3934: .4byte gElfBreedInfo\n\
-_080F3938: .4byte gUnlockedElfPtr\n\
+_080F3938: .4byte gElfAvailability\n\
 _080F393C: .4byte gPause\n\
 _080F3940: .4byte sEachMenuLoops\n\
 _080F3944: .4byte FUN_080f3d44\n\
@@ -299,21 +300,21 @@ _080F3948: .4byte close_menu_080f3d64\n\
 // --------------------------------------------
 
 static void menu_080f394c(struct GameState* g) {
-  struct Coord* c = &g->unk_0dc4;
+  Coords32* c = &g->unk_0dc4;
   c->x = PIXEL(120);
   c->y = PIXEL(80);
   ResetPivot(&g->unk_0db8, c, 0, 0);
-  ResetTaskManager(&g->taskManager2);
-  SetTaskPivot(&g->taskManager2, &g->unk_0db8);
+  Renderer_Init(&g->rendererUI);
+  Renderer_SetPivot(&g->rendererUI, &g->unk_0db8);
   InitWidgetHeader(&g->entityHeaders[ENTITY_WIDGET], gWidgets, 64);
 }
 
 static void menu_080f39a8(struct GameState* g) {
   g->unk_0dc4.x = PIXEL(BGOFS(1)->x & 0x1FF) + PIXEL(120);
-  ClearTaskBuffer(&g->taskManager2);
+  Renderer_Clear(&g->rendererUI);
   UpdateEntities(gWidgetHeaderPtr);
-  DrawEntity(gWidgetHeaderPtr, &g->taskManager2);
-  RunAllTasks(&g->taskManager2);
+  DrawEntity(gWidgetHeaderPtr, &g->rendererUI);
+  Renderer_Flush(&g->rendererUI);
 }
 
 NAKED void menu_080f39fc(struct GameState* m) {
@@ -728,30 +729,31 @@ void FUN_080f3d44(struct Weapon* w) {
 // --------------------------------------------
 
 struct FollowerCyberElf;
+struct CyberElf10;
 
 void FUN_080e2510(struct Elf* e);
 void FUN_080e2b78(struct Elf* e);
 void MenuExit_FollowerElf(struct FollowerCyberElf* e);
 void MenuExit_SeaOtterElf(struct Elf* e);
-void FUN_080e4b88(struct Elf* e);
+void MenuExit_CyberElf10(struct CyberElf10* p);
 void FUN_080e58bc(struct Elf* e);
 
 void close_menu_080f3d64(struct Elf* e) {
   // clang-format off
   static const ElfFunc PTR_ARRAY_08386344[13] = {
-    [0]  = (ElfFunc)NULL, 
-    [1]  = (ElfFunc)NULL, 
-    [2]  = (ElfFunc)FUN_080e2510, 
-    [3]  = (ElfFunc)NULL, 
-    [4]  = (ElfFunc)FUN_080e2b78, 
-    [5]  = (ElfFunc)NULL, 
-    [6]  = (ElfFunc)NULL, 
-    [7]  = (ElfFunc)NULL, 
-    [8]  = (ElfFunc)MenuExit_FollowerElf, 
-    [9]  = (ElfFunc)MenuExit_SeaOtterElf, 
-    [10] = (ElfFunc)FUN_080e4b88, 
-    [11] = (ElfFunc)NULL, 
-    [12] = (ElfFunc)FUN_080e58bc,
+    [0]  = (void*)NULL, 
+    [1]  = (void*)NULL, 
+    [2]  = (void*)FUN_080e2510, 
+    [3]  = (void*)NULL, 
+    [4]  = (void*)FUN_080e2b78, 
+    [5]  = (void*)NULL, 
+    [6]  = (void*)NULL, 
+    [7]  = (void*)NULL, 
+    [8]  = (void*)MenuExit_FollowerElf, 
+    [9]  = (void*)MenuExit_SeaOtterElf, 
+    [10] = (void*)MenuExit_CyberElf10, 
+    [11] = (void*)NULL, 
+    [12] = (void*)FUN_080e58bc,
   }; // 0x08386344
   // clang-format on
   if (PTR_ARRAY_08386344[(e->s).id] != NULL) {

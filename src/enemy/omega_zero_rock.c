@@ -29,13 +29,9 @@ void CreateOzChargeSaberRock(s32 x, u8 r1) {
   y = ((&gStageRun.vm.camera)->viewport).y - PIXEL(112);
 
   {
-    struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+    struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 24;
       INIT_ENEMY_ROUTINE(p, ENEMY_OZ_ROCK);
-      p->tileNum = 0, p->palID = 0;
-      p->flags2 |= WHITE_PAINTABLE;
-      p->invincibleID = p->uniqueID;
       p->work[0] = 0;
       (p->coord).x = x, (p->coord).y = y;
       (p->unk_coord).x = prev_x;
@@ -45,7 +41,7 @@ void CreateOzChargeSaberRock(s32 x, u8 r1) {
 }
 
 // 0x0808B5E4
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 static bool8 FUN_0808b5e8(Object* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {

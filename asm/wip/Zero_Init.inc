@@ -31,7 +31,7 @@
 	movs r1, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x11]
 	cmp r0, #0
 	bne _08029034

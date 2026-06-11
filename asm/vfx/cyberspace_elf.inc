@@ -8,7 +8,7 @@
 CyberSpaceElf_Update: @ 0x080C73A0
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x11]
 	cmp r0, #1
 	beq _080C73FC

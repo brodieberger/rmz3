@@ -17,7 +17,7 @@
 	movs r1, #2
 	orrs r0, r1
 	strb r0, [r5, #0xa]
-	ldr r0, _08037168 @ =gSystemSavedataManager
+	ldr r0, _08037168 @ =gSystemSavedata
 	adds r0, #0x4d
 	ldrb r0, [r0]
 	cmp r0, #2
@@ -25,7 +25,7 @@
 	ldr r1, _0803716C @ =0x00008502
 	b _08037176
 	.align 2, 0
-_08037168: .4byte gSystemSavedataManager
+_08037168: .4byte gSystemSavedata
 _0803716C: .4byte 0x00008502
 _08037170:
 	cmp r0, #1

@@ -186,7 +186,7 @@ _0806E150:
 	ldr r0, _0806E1D4 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc8
 	lsls r1, r1, #9
 	cmp r0, r1
@@ -271,7 +271,7 @@ _0806E1F0:
 	movs r0, #4
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _0806E278 @ =gMission
+	ldr r2, _0806E278 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806E27C @ =0x0000270E
 	cmp r1, r0
@@ -307,7 +307,7 @@ _0806E25A:
 	bx r0
 	.align 2, 0
 _0806E274: .4byte 0xFFFFF000
-_0806E278: .4byte gMission
+_0806E278: .4byte gScore
 _0806E27C: .4byte 0x0000270E
 _0806E280: .4byte gEnemyFnTable
 
@@ -469,7 +469,7 @@ _0806E390:
 	strb r1, [r4, #0xe]
 _0806E3A0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806E3A6:
 	pop {r4, r5, r6}
 	pop {r0}

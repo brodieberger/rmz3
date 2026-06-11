@@ -1,7 +1,7 @@
-#include "blink.h"
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 #include "physics.h"
 #include "vfx.h"
 #include "zero.h"
@@ -22,20 +22,20 @@ const ZeroRoutine gCopyXMiniRoutine = {
 };
 // clang-format on
 
-struct Zero* CreatePlayerCopyX(struct MinigameState* q, struct Coord* c, u8 n) {
-  struct Zero* p = AllocPlayer();
+struct Entity* CreatePlayerCopyX(struct MinigameState* q, Coords32* c, u8 n) {
+  struct Entity* p = AllocPlayer();
   if (p != NULL) {
-    (p->s).taskCol = 16;
+    p->renderPrio = 16;
     INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_COPY_X);
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
-    (p->s).unk_28 = (struct Entity*)q;
+    p->coord = *c;
+    p->work[0] = n;
+    p->unk_28 = (void*)q;
   }
   return p;
 }
 
 static void CopyXMini_Init(struct Zero* p) {
-  struct Coord c;
+  Coords32 c;
 
   InitNonAffineMotion(&p->s);
   ResetDynamicMotion(&p->s);
@@ -97,12 +97,12 @@ static void CopyXMini_Update(struct Zero* p) {
     } else if ((p->mg).copyx.life == 1) {
       PlaySound(SE_COPYX_RECOVER_VOICE);  // ﾓｳﾕﾙｻﾝ!
     } else if ((p->mg).copyx.life == 0) {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 19));
-      UpdateMotionGraphic(&p->s);
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 19));
+      UpdateSpriteAnimation(p);
       PlaySound(SE_COPYX_STUN);
     }
   } else if ((p->mg).copyx.life == 0) {
-    UpdateMotionGraphic(&p->s);
+    UpdateSpriteAnimation(p);
   }
 }
 
@@ -119,15 +119,15 @@ static bool32 Update1_0(void* _) { return TRUE; }
 static void Update2_0(struct Zero* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 0));
       (p->mg).copyx.element = 0;  // flame
-      LoadBlink(93, 640);
+      StartPaletteAnimation(93, 640);
       (p->s).work[2] = 60;
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).work[2] == 0 || (--(p->s).work[2] == 0)) {
         (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
@@ -162,12 +162,12 @@ static bool32 Update1_1(struct Zero* p) {
 static void Update2_1(struct Zero* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 0));
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -228,11 +228,11 @@ _08035B68:\n\
 	movs r0, #1\n\
 	strb r0, [r1]\n\
 	movs r0, #0x5d\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5e\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	b _08035BD8\n\
 	.align 2, 0\n\
 _08035BA4: .4byte 0x0000B314\n\
@@ -241,11 +241,11 @@ _08035BA8:\n\
 	bne _08035BC0\n\
 	strb r5, [r1]\n\
 	movs r0, #0x5f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5d\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	b _08035BD8\n\
 _08035BC0:\n\
 	cmp r0, #1\n\
@@ -253,11 +253,11 @@ _08035BC0:\n\
 	movs r0, #2\n\
 	strb r0, [r1]\n\
 	movs r0, #0x5e\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5f\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _08035BD8:\n\
 	movs r1, #0xa1\n\
 	lsls r1, r1, #2\n\
@@ -276,11 +276,11 @@ _08035BE6:\n\
 	movs r0, #2\n\
 	strb r0, [r1]\n\
 	movs r0, #0x5d\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5f\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	b _08035C38\n\
 _08035C08:\n\
 	cmp r0, #2\n\
@@ -288,22 +288,22 @@ _08035C08:\n\
 	movs r0, #1\n\
 	strb r0, [r1]\n\
 	movs r0, #0x5f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5e\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	b _08035C38\n\
 _08035C22:\n\
 	cmp r0, #1\n\
 	bne _08035C38\n\
 	strb r5, [r1]\n\
 	movs r0, #0x5e\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5d\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _08035C38:\n\
 	movs r1, #0xa1\n\
 	lsls r1, r1, #2\n\
@@ -329,7 +329,7 @@ _08035C44:\n\
 	strb r0, [r4, #0xe]\n\
 _08035C62:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
@@ -348,7 +348,7 @@ _08035C62:\n\
 	b _08035CA4\n\
 _08035C8A:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
@@ -366,7 +366,7 @@ _08035CA4:\n\
 	b _08035CD0\n\
 _08035CAC:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	ldrb r0, [r4, #0x12]\n\
@@ -410,38 +410,34 @@ static bool32 Update1_3(struct Entity* p) {
   return TRUE;
 }
 
-void* FUN_080b18d4(struct Coord* c1, struct Coord* c2, u8 kind);
+struct Entity* FUN_080b18d4(Coords32* c1, Coords32* c2, u8 element);
 
 // 0x08035d2c
 static void Update2_3(struct Zero* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 1));
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 1));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
     case 2: {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 2));
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 2));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
     case 4: {
-      struct Coord coords;
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 3));
+      Coords32 coords;
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 3));
       if ((p->mg).copyx.element == 0) {
         PlaySound(SE_HANU_TAILFIRE_SE);
       } else if ((p->mg).copyx.element == 1) {
@@ -459,20 +455,18 @@ static void Update2_3(struct Zero* p) {
       FALLTHROUGH;
     }
     case 5: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
     case 6: {
-      SetMotion(&p->s, MOTION(DM179_COPY_X, 4));
+      SetSpriteAnimation(p, MOTION(DM179_COPY_X, 4));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 7: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
       break;

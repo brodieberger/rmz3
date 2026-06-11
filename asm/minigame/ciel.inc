@@ -154,7 +154,7 @@ initCielMinigame: @ 0x080F98A0
 	strb r3, [r1, #5]
 	movs r4, #0
 	str r4, [r1, #8]
-	ldr r0, _080F9C24 @ =gSystemSavedataManager
+	ldr r0, _080F9C24 @ =gSystemSavedata
 	ldr r0, [r0, #0x28]
 	str r0, [r1, #0xc]
 	strh r4, [r1, #6]
@@ -373,7 +373,7 @@ _080F9B1E:
 	strb r4, [r1]
 	movs r0, #0xd6
 	movs r1, #0
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldr r2, _080F9C70 @ =gWindowRegBuffer
 	ldrh r0, [r2]
 	movs r3, #0x80
@@ -428,7 +428,7 @@ _080F9C14: .4byte gStaticMotionGraphics+12
 _080F9C18: .4byte wStaticMotionPalIDs
 _080F9C1C: .4byte 0x00001248
 _080F9C20: .4byte 0x00000DCC
-_080F9C24: .4byte gSystemSavedataManager
+_080F9C24: .4byte gSystemSavedata
 _080F9C28: .4byte 0x00000DE4
 _080F9C2C: .4byte 0x00000DE9
 _080F9C30: .4byte 0x00000E04
@@ -473,7 +473,7 @@ cielMinigame: @ 0x080F9C80
 	rsbs r0, r0, #0
 	strh r0, [r1, #2]
 	movs r0, #0xd6
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldrb r0, [r4, #4]
 	cmp r0, #2
 	bhi _080F9CE0
@@ -514,7 +514,7 @@ _080F9CE0:
 	ldrb r0, [r4]
 	cmp r0, #0
 	bne _080F9D12
-	ldr r0, _080F9D4C @ =gSystemSavedataManager
+	ldr r0, _080F9D4C @ =gSystemSavedata
 	ldr r0, [r0, #0x28]
 	cmp r0, r1
 	bhs _080F9D12
@@ -554,7 +554,7 @@ _080F9D3E:
 	mov pc, r0
 	.align 2, 0
 _080F9D48: .4byte 0x00000E16
-_080F9D4C: .4byte gSystemSavedataManager
+_080F9D4C: .4byte gSystemSavedata
 _080F9D50: .4byte 0x00000DCC
 _080F9D54: .4byte 0x00000137
 _080F9D58: .4byte _080F9D5C

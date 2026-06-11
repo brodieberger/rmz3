@@ -18,8 +18,8 @@ Script_MissionFail: @ 0x0834d0b4
     failed_or_gameover_indicator
     wait_indicator_end
     fadeout_se SECOND SE_IN_SEA
-    screeneffect 10
-    wait_screeneffect
+    start_transition 10
+    wait_transition_end
     wait SECOND
     end
 
@@ -28,7 +28,7 @@ Script_MissionFail2: @ 0x0834d12c
     forcekeyinput 0xFFFF
     kill_message
     stop_bgm
-    wait_screeneffect
+    wait_transition_end
     normal_screen
     wait SECOND
     message 5 0 0
@@ -38,8 +38,8 @@ Script_MissionFail2: @ 0x0834d12c
     failed_or_gameover_indicator
     wait_indicator_end
     fadeout_se SECOND SE_IN_SEA
-    screeneffect 10
-    wait_screeneffect
+    start_transition 10
+    wait_transition_end
     wait SECOND
     end
 

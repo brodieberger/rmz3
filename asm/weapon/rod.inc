@@ -261,7 +261,7 @@ _0803984A:
 	orrs r0, r1
 	strb r0, [r3]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0x15
 	bne _080398AC

@@ -19,12 +19,9 @@ const WidgetRoutine gSubtankIconRoutine = {
 // clang-format on
 
 struct Widget* CreateSubtankIcon(struct GameState* g, u8 r1, u8 r2) {
-  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 3);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = r1;
     (w->s).work[1] = r2;
@@ -99,7 +96,7 @@ _080E6688:\n\
 	adds r1, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r2, [r4, #0xd]\n\
 	cmp r2, #1\n\
 	beq _080E66D4\n\

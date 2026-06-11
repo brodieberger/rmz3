@@ -27,39 +27,33 @@
 #include "stage/volcano/props.h"
 #include "stage/weil_labo/props.h"
 
-// gOverworldのデータレイアウトを変更したときの名残、後で消す
-#define W_TERRAIN_V2 gOverworld.terrain
-
 #define HAZARD(n) (&gOverworld.terrain.objects[n])
 
-// マップデータ(2KB単位)を置くブロック -> 0x0600_0000 + (0x800)*n
-#define BGMAP_BLOCK(n) (n << 8)
-
-// ステージのROMデータ
-struct TerrainROMPointer {
+// STAGE_LAYER_TERRAIN のマップデータのテンプレート (このレイヤは、ミッションなどの進行状況で変化することがあるが、これは静的なデータ)
+struct TerrainMapTemplate {
   metatile_attr_t* attrs;
   Metatile* tiles;
-  Screen* screens;             // TerrainHeader.screens
+  Chunk* chunks;               // MetatileMapSelfRelPtr.chunks
   const struct ChunkMap* map;  // ステージレイヤ0(STAGE_LAYER_TERRAIN)の ChunkMap = sChunkMap1
 };  // 16 bytes
+static_assert(sizeof(struct TerrainMapTemplate) == 16);
 
 // 物理判定を持つEntity (グランドキャノンや旧居住区の燃やせる木, アイスボンの氷など)
 // Objectに改名してもいいかも (GBAのスプライトをObjectって呼ぶこともあってややこしいと思って Hazard にした)
 struct Hazard {
   u16 id;
   metatile_attr_t attr;
-  u16 hw;               // 横幅の1/2 (Half-Width)
-  u16 hh;               // 高さの1/2 (Half-Height)
-  struct Coord center;  // 中心の座標
-  struct Coord unk_10;
+  u16 hw;           // 横幅の1/2 (Half-Width)
+  u16 hh;           // 高さの1/2 (Half-Height)
+  Coords32 center;  // 中心の座標
+  Coords32 unk_10;
 };  // 24 bytes
 static_assert(sizeof(struct Hazard) == 24);
 
-//
 struct Terrain {
-  struct TerrainROMPointer hdr;  // 0x020023b8, 現在のステージの地形ROMデータ
-  struct Coord viewport;         // 現在写っているの画面中央の座標
-  u16 id;                        // ステージID (Bit7(0x80)は、initRBaseとかの初期化関数が実行されていないことを示す)
+  struct TerrainMapTemplate hdr;  // 0x020023b8, 現在のステージの地形ROMデータ
+  Coords32 viewport;              // 現在写っているの画面中央の座標
+  u16 id;                         // ステージID (Bit7(0x80)は、 初期化関数 (sStageRoutine[0], e.g. initResistanceBase) が実行されていないことを示す)
 
   // 0x020023D2, 現在読み込まれている Entity　の中で物理判定を持つものの管理データ
   u8 objectLen;
@@ -67,28 +61,30 @@ struct Terrain {
   struct Hazard objects[32];
   struct Hazard objectsPrev[32];
 
-  tileset_t tilesets[2];
+  tileset_t tilesets[2];  // see tileset_t's comment
 
-  u16 enabledBg;  // DISPCNTの bit8..11 つまり BGn有効フラグ
-  struct BgCnt savedBgCnt[3];
+  u16 enabledBg;               // DISPCNTの bit8..11 つまり BGn有効フラグ
+  struct BgCnt savedBgCnt[3];  // 0x020029da (gOverworld + 0x7da), これはインデックスとBG番号が対応している = savedBgCnt[0]: BG1CNT, savedBgCnt[1]: BG2CNT, savedBgCnt[2]: BG3CNT
 
   MetatileMap tilemap;  // 0x020029e0 .layer[STAGE_LAYER_TERRAIN]のステージ全体のMetatileのマップ, 壁との押し出し判定などで参照される (他のステージレイヤは描画用で参照しないので STAGE_LAYER_TERRAIN だけでいい)
   bool16 tilemap_duty;  // 0x0202E200 tilemap がロード時以降書きかわった際にTRUEになるフラグ?
 
   bool16 reload_graphic;  // メニュー画面などに入って、ワールドで使っていたタイルデータやBGマップが破壊されたときに、ワールドから戻った後、それらを再ロードさせるためのフラグ
 
-  s32 conveyor[2];  // 0x0202E204 工場のベルトコンベアや砂漠の流砂などのスピード(どちらもX方向で基本的に正負が違うだけで同じ値) Stage.conveyor
+  s32 conveyor[2];  // 0x0202E204 conveyor[0]: MTATTR_CONVEYOR0 のメタタイルに乗っているときのX移動量, conveyor[1]: MTATTR_CONVEYOR1 のメタタイルに乗っているときのX移動量
 };
+static_assert(sizeof(struct Terrain) == 179796);
 
 // gOverworld, ステージの動的な地形情報
 struct Overworld {
   struct Task task;
   struct Task* p;
-  u8 unk_0c[20];
-  struct StageLayer layer[STAGE_LAYER_NUM];
-  struct Terrain terrain;  // 0x020023b8, 現在のステージの地形データ
+  u8 unk_0c[20];  // .task から ここまでが include/entity/entity.h の Sprite と同じサイズ(32バイト)になる...
 
-  s32 sea;  // 海面のY座標
+  struct StageLayer layer[STAGE_LAYER_NUM];
+  struct Terrain terrain;  // 0x1B8, 現在のステージの地形データ
+
+  s32 sea;  // 0x2C00C, 海面のY座標
   s32 unused_2c010;
 
   /*
@@ -97,7 +93,12 @@ struct Overworld {
       左: レジスタンスベースの4階左
       右: レジスタンスベースの1階の港
 */
-  struct Area32 range;
+  struct Area32 {
+    s32 left;
+    s32 top;
+    s32 right;
+    s32 bottom;
+  } range;
   u16 bgmap[2048];  // .tilemap をカメラ座標 に応じて (GBAのBGマップ形式に変換して)切り出したもの
 
   /*
@@ -129,24 +130,27 @@ struct Overworld {
     struct WeilLaboState weilLabo;
     struct ResistanceBaseState resistanceBase;
   } work;  // ステージごとに用途が変わる
-};  // 184360 bytes
+};  // 184624 bytes
+static_assert(sizeof(struct Overworld) == 184624);
 
-#define SEA (gOverworld.sea)
+#define MAP_OFFSET(map, mx, my) (((map)[0] * (my)) + (mx) + 2)
+#define GET_METATILE(terrain, mx, my) ((terrain)->tilemap[MAP_OFFSET((terrain)->tilemap, (mx), (my))])
+#define MAP_ATTR(terrain, mx, my) (((terrain)->hdr).attrs[(terrain)->tilemap[MAP_OFFSET((terrain)->tilemap, mx, my)]])
 
 extern struct Overworld gOverworld;
 extern const u8 gScreenY[2048];
 extern const u8 gScreenX[3072];
-extern const struct TerrainHeader gStageTerrains[STAGE_COUNT];
+extern const MetatileMapSelfRelPtr gStageTerrains[STAGE_COUNT];
 
-void ResetLandscape(s32 stageID, struct Coord* c);
-void UpdateStageLandscape(struct Coord* c);
-void DrawOverworld(struct TaskManager* p);
+void ResetLandscape(s32 stageID, Coords32* c);
+void UpdateStageLandscape(Coords32* c);
+void DrawOverworld(Renderer* r);
 void SaveDispRegister(void);
 void RestoreBackground(void);
 void ExitStageLandscape(void);
 bool8 IsVoidSpace(s32 x, s32 y);
-void LoadScreenIntoMetatileMap(s32 screenX, s32 screenY, u16 screenID);
-void AppendHazard(u16 id, u16 attr, const struct Coord* c, const struct Rect* size);
+void LoadChunk(s32 chunkX, s32 chunkY, u16 screenID);
+void AppendHazard(u16 id, u16 attr, const Coords32* c, const struct Rect* size);
 
 /**
  * @brief (x, y)がgStageのBlocking領域に含まれるかどうか

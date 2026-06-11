@@ -1,11 +1,11 @@
-#include "blink.h"
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 static const u8 u8_ARRAY_0833b200[6];
 
-static void initSpaceCraft(struct Coord* _ UNUSED) {
+static void initSpaceCraft(Coords32* _ UNUSED) {
   gOverworld.state[0] = 0;
   gOverworld.state[2] = 0;
   gOverworld.work.spacecraft.omega = NULL;
@@ -14,72 +14,72 @@ static void initSpaceCraft(struct Coord* _ UNUSED) {
   gOverworld.state[1] = 0;
   gOverworld.work.spacecraft.unk_00e = 0;
   if (!IS_MISSION) {
-    LoadScreenIntoMetatileMap(16, 1, 48);
+    LoadChunk(16, 1, 48);
   }
 }
 
 // 0x0800b27c
-static void updateSpaceCraft(struct Coord* _ UNUSED) {
+static void updateSpaceCraft(Coords32* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_SPACE_CRAFT) && (TILESET_IDX(0) == 0)) {
     if ((gOverworld.work.spacecraft.unk_00e & (1 << 0)) == 0) {
       gOverworld.work.spacecraft.unk_00e |= 1;
-      LoadBlink(5, 0);
+      StartPaletteAnimation(5, 0);
     }
-    UpdateBlinkMotionState(5);
+    StepPaletteAnimation(5);
   } else if (gOverworld.work.spacecraft.unk_00e & 1) {
     gOverworld.work.spacecraft.unk_00e ^= 1;
-    ClearBlink(5);
+    RemovePaletteAnimation(5);
   }
 
   if ((TILESET_ID(1) == STAGE_SPACE_CRAFT) && (TILESET_IDX(1) == 2)) {
     if ((gOverworld.work.spacecraft.unk_00e & (1 << 1)) == 0) {
       gOverworld.work.spacecraft.unk_00e |= (1 << 1);
-      LoadBlink(9, 0);
+      StartPaletteAnimation(9, 0);
     }
-    UpdateBlinkMotionState(9);
+    StepPaletteAnimation(9);
   } else if (gOverworld.work.spacecraft.unk_00e & (1 << 1)) {
     gOverworld.work.spacecraft.unk_00e ^= (1 << 1);
-    ClearBlink(9);
+    RemovePaletteAnimation(9);
   }
 
   if ((TILESET_ID(0) == STAGE_SPACE_CRAFT) && (TILESET_IDX(0) == 3)) {
     if ((gOverworld.work.spacecraft.unk_00e & (1 << 2)) == 0) {
       gOverworld.work.spacecraft.unk_00e |= (1 << 2);
-      LoadBlink(6, 0);
-      LoadBlink(8, 0);
+      StartPaletteAnimation(6, 0);
+      StartPaletteAnimation(8, 0);
     }
-    UpdateBlinkMotionState(6);
-    UpdateBlinkMotionState(8);
+    StepPaletteAnimation(6);
+    StepPaletteAnimation(8);
   } else if (gOverworld.work.spacecraft.unk_00e & (1 << 2)) {
     gOverworld.work.spacecraft.unk_00e ^= (1 << 2);
-    ClearBlink(6);
-    ClearBlink(8);
+    RemovePaletteAnimation(6);
+    RemovePaletteAnimation(8);
   }
 
   if ((TILESET_ID(1) == STAGE_SPACE_CRAFT) && (TILESET_IDX(1) == 4)) {
     if ((gOverworld.work.spacecraft.unk_00e & (1 << 3)) == 0) {
       gOverworld.work.spacecraft.unk_00e |= (1 << 3);
-      LoadBlink(7, 0);
-      LoadBlink(10, 0);
+      StartPaletteAnimation(7, 0);
+      StartPaletteAnimation(10, 0);
     }
-    UpdateBlinkMotionState(7);
-    UpdateBlinkMotionState(10);
+    StepPaletteAnimation(7);
+    StepPaletteAnimation(10);
   } else if (gOverworld.work.spacecraft.unk_00e & (1 << 3)) {
     gOverworld.work.spacecraft.unk_00e ^= (1 << 3);
-    ClearBlink(7);
-    ClearBlink(10);
+    RemovePaletteAnimation(7);
+    RemovePaletteAnimation(10);
   }
 }
 
-static void nop_0800b434(struct Coord* _ UNUSED) { return; }
+static void nop_0800b434(Coords32* _ UNUSED) { return; }
 
-static void exitSpaceCraft(struct Coord* _ UNUSED) {
-  ClearBlink(5);
-  ClearBlink(6);
-  ClearBlink(7);
-  ClearBlink(8);
-  ClearBlink(9);
-  ClearBlink(10);
+static void exitSpaceCraft(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(5);
+  RemovePaletteAnimation(6);
+  RemovePaletteAnimation(7);
+  RemovePaletteAnimation(8);
+  RemovePaletteAnimation(9);
+  RemovePaletteAnimation(10);
 }
 
 static void LayerUpdate_SpaceCraft_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
@@ -88,7 +88,7 @@ static void LayerUpdate_SpaceCraft_2(struct StageLayer* l, const struct Stage* _
     BGCNT16(n) = (l->prio | l->screenBase) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC;
     *(u32*)gVideoRegBuffer.bgofs[n] = 0;
     (l->work).spacecraft.frameCounter = 0;
-    CpuFastCopy(BGMAP(40), (void*)(VRAM + SCREEN_BASE_16(n)), 2048);
+    CpuFastCopy(BGMAP(40), SCREEN_ADDR(n), BG_SCREEN_SIZE);
     l->phase++;
   }
   (l->work).spacecraft.frameCounter++;
@@ -749,11 +749,11 @@ NON_MATCH static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const s
   }
 
   if (gOverworld.terrain.reload_graphic) {
-    CpuFastCopy(BGMAP(42), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
+    CpuFastCopy(BGMAP(42), SCREEN_ADDR(n >> 4), BG_SCREEN_SIZE);
     {
       u32 val = 0;
-      void* dst = (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4));
-      u32 bytesize = 2048;
+      void* dst = SCREEN_ADDR(n >> 4) + BG_SCREEN_SIZE;
+      u32 bytesize = BG_SCREEN_SIZE;
       _CpuFastFill(val, dst, bytesize);
     }
   }
@@ -768,8 +768,8 @@ NON_MATCH static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const s
       gPaletteManager.unk_406 = 0x20;
     }
   }
-  BGOFS(n >> 4)->x = (l->viewportCenterPixel).x - (gOverworld.work.spacecraft.omegaCoord.x >> 8) + 48 + ((l->drawPivotOffset).x >> 8);
-  gVideoRegBuffer.bgofs[n >> 4][1] = (l->viewportCenterPixel).y - (gOverworld.work.spacecraft.omegaCoord.y >> 8) + 144 + ((l->drawPivotOffset).y >> 8);
+  BGOFS(n >> 4)->x = (l->viewportLeftTopPixel).x - (gOverworld.work.spacecraft.omegaCoord.x >> 8) + 48 + ((l->drawPivotOffset).x >> 8);
+  gVideoRegBuffer.bgofs[n >> 4][1] = (l->viewportLeftTopPixel).y - (gOverworld.work.spacecraft.omegaCoord.y >> 8) + 144 + ((l->drawPivotOffset).y >> 8);
 #else
   INCCODE("asm/wip/fixOmegaWhiteCoord.inc");
 #endif
@@ -791,7 +791,7 @@ static void LayerUpdate_SnowFall(struct StageLayer* l, const struct Stage* _ UNU
   if (l->phase == 0) {
     BGCNT16(n >> 4) = l->screenBase | BGCNT_PRIORITY(1) | BGCNT_CHARBASE(1) | BGCNT_MOSAIC;
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
-    RequestBgMapTransfer(BGMAP(41), (void*)SCREEN_BASE_16(n >> 4), 2048);
+    RequestBgMapTransfer(BGMAP(41), (void*)SCREEN_BASE(n >> 4), 2048);
     gBlendRegBuffer.bldclt = ((BLDCNT_TGT1_BG2) | (BLDCNT_TGT2_BD | BLDCNT_TGT2_OBJ | BLDCNT_TGT2_BG3 | BLDCNT_TGT2_BG1 | BLDCNT_TGT2_BG0)) | BLDCNT_EFFECT_BLEND;
     if (gOverworld.state[0] == 0) {
       gBlendRegBuffer.bldalpha = BLDALPHA_BLEND(16, 16);
@@ -816,7 +816,7 @@ static void LayerUpdate_SnowFall(struct StageLayer* l, const struct Stage* _ UNU
 
 static void LayerDraw_SpaceCraft_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
   const u16 n = l->bgIdx;
-  ((struct BgOfs*)gVideoRegBuffer.bgofs[n >> 4])->x = (l->viewportCenterPixel).x;
+  ((struct BgOfs*)gVideoRegBuffer.bgofs[n >> 4])->x = (l->viewportLeftTopPixel).x;
   gVideoRegBuffer.bgofs[n >> 4][1] = l->unk_10 >> 2;
 
   RequestGraphicTransfer(&(TILESETS(18, 88)[u8_ARRAY_0833b200[(l->unk_12 >> 3) % 6]]).g, (void*)0x4000);
@@ -835,7 +835,7 @@ static void LayerUpdate_SpaceCraft_5(struct StageLayer* l, const struct Stage* _
       if (gOverworld.state[2] == 0) {
         return;
       }
-      LoadScreenIntoMetatileMap(16, 1, 52);
+      LoadChunk(16, 1, 52);
       l->phase++;
       FALLTHROUGH;
     }
@@ -843,7 +843,7 @@ static void LayerUpdate_SpaceCraft_5(struct StageLayer* l, const struct Stage* _
       if (gOverworld.state[2] == 1) {
         return;
       }
-      LoadScreenIntoMetatileMap(16, 1, 53);
+      LoadChunk(16, 1, 53);
       l->phase++;
       FALLTHROUGH;
     }
@@ -851,7 +851,7 @@ static void LayerUpdate_SpaceCraft_5(struct StageLayer* l, const struct Stage* _
       if (gOverworld.state[2] == 2) {
         return;
       }
-      LoadScreenIntoMetatileMap(16, 1, 54);
+      LoadChunk(16, 1, 54);
       l->phase++;
       FALLTHROUGH;
     }
@@ -859,7 +859,7 @@ static void LayerUpdate_SpaceCraft_5(struct StageLayer* l, const struct Stage* _
       if (gOverworld.state[2] == 3) {
         return;
       }
-      LoadScreenIntoMetatileMap(16, 1, 48);
+      LoadChunk(16, 1, 48);
       l->phase++;
       break;
     }

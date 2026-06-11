@@ -23,14 +23,9 @@ const EnemyRoutine gVolcanoBombRoutine = {
 // clang-format on
 
 struct Enemy* CreateVolcanoBomb(s32 x, s32 y) {
-  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_VOLCANO_BOMB);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
     (p->s).work[0] = 0;
@@ -40,7 +35,7 @@ struct Enemy* CreateVolcanoBomb(s32 x, s32 y) {
 #endif
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }
@@ -90,7 +85,7 @@ static void VolcanoBomb_Update(struct Enemy* p) {
 // --------------------------------------------
 
 static void VolcanoBomb_Die(struct Enemy* p) {
-  struct Coord c;
+  Coords32 c;
 
   EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;

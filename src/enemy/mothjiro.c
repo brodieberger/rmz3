@@ -18,15 +18,10 @@ const EnemyRoutine gMothjiroRoutine = {
 
 // --------------------------------------------
 
-struct Enemy* CreateMothjiro(struct Coord* c, u8 r1) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+struct Enemy* CreateMothjiro(Coords32* c, u8 r1) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_MOTHJIRO);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = r1;
   }
@@ -108,4 +103,4 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(4)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(4)};

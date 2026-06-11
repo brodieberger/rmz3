@@ -1,0 +1,741 @@
+	.include "asm/macros.inc"
+  .balign 4
+  .section .rodata
+
+.global gDynamicMotionMetaspriteTable
+gDynamicMotionMetaspriteTable:
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_dying
+  .word gMetaSprite_zero_run
+  .word gMetaSprite_zero_dash
+  .word gMetaSprite_zero_air
+  .word gMetaSprite_zero_wall
+  .word gMetaSprite_zero_wall_jump
+  .word gMetaSprite_zero_ladder
+  .word gMetaSprite_zero_buster_buster
+  .word gMetaSprite_zero_buster_run
+  .word gMetaSprite_zero_buster_dash
+  .word gMetaSprite_zero_buster_air
+  .word gMetaSprite_zero_buster_wall
+  .word gMetaSprite_zero_buster_ladder
+  .word gMetaSprite_zero_saber_triple_slash_1
+  .word gMetaSprite_zero_saber_triple_slash_2
+  .word gMetaSprite_zero_saber_triple_slash_3
+  .word gMetaSprite_zero_saber_slash_up
+  .word gMetaSprite_zero_saber_split_heaven
+  .word gMetaSprite_zero_saber_throw_blade
+  .word gMetaSprite_zero_saber_charge
+  .word gMetaSprite_zero_saber_run_1
+  .word gMetaSprite_zero_saber_run_2
+  .word gMetaSprite_zero_saber_dash
+  .word gMetaSprite_zero_saber_gale
+  .word gMetaSprite_zero_saber_air
+  .word gMetaSprite_zero_saber_air_rolling
+  .word gMetaSprite_zero_saber_smash
+  .word gMetaSprite_zero_saber_wall
+  .word gMetaSprite_zero_saber_ladder
+  .word gMetaSprite_zero_rod_rod
+  .word gMetaSprite_zero_rod_up
+  .word gMetaSprite_zero_rod_down
+  .word gMetaSprite_zero_rod_air
+  .word gMetaSprite_zero_rod_up_air
+  .word gMetaSprite_zero_rod_down_air
+  .word gMetaSprite_zero_rod_wall
+  .word gMetaSprite_zero_rod_ladder
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_shield_shield
+  .word gMetaSprite_zero_shield_throw
+  .word gMetaSprite_zero_shield_walk
+  .word gMetaSprite_zero_shield_air
+  .word gMetaSprite_zero_shield_throw_air
+  .word gMetaSprite_zero_shield_wall
+  .word gMetaSprite_zero_shield_throw_wall
+  .word gMetaSprite_zero_shield_ladder
+  .word gMetaSprite_zero_shield_throw_ladder
+  .word gMetaSprite_zero_stun_49
+  .word gMetaSprite_zero_stun_50
+  .word gMetaSprite_zero_unk_51
+  .word gMetaSprite_zero_teleport_start
+  .word gMetaSprite_zero_teleport_end
+  .word gMetaSprite_zero_door
+  .word gMetaSprite_zero_rod_charge
+  .word gMetaSprite_zero_rod_charge_up
+  .word gMetaSprite_zero_rod_charge_down
+  .word gMetaSprite_zero_rod_charge_air
+  .word gMetaSprite_zero_rod_charge_up_air
+  .word gMetaSprite_zero_rod_charge_down_air
+  .word gMetaSprite_zero_rod_charge_wall
+  .word gMetaSprite_zero_rod_charge_ladder
+  .word gMetaSprite_omega_zero
+  .word gMetaSprite_weapon_charge_saber_64
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_weapon_semi_buster
+  .word gMetaSprite_weapon_burst_shot_bullet
+  .word gMetaSprite_weapon_blizz_arrow
+  .word gMetaSprite_weapon_burst_shot_firework
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_weapon_triple_slash_1
+  .word gMetaSprite_weapon_triple_slash_2
+  .word gMetaSprite_weapon_triple_slash_3
+  .word gMetaSprite_weapon_slash_up
+  .word gMetaSprite_weapon_split_heaven
+  .word gMetaSprite_weapon_throw_blade
+  .word gMetaSprite_weapon_charge_saber_94
+  .word gMetaSprite_weapon_saber_walk
+  .word gMetaSprite_weapon_saber_dash
+  .word gMetaSprite_weapon_gale_attack
+  .word gMetaSprite_weapon_saber_98
+  .word gMetaSprite_weapon_saber_99
+  .word gMetaSprite_weapon_saber_smash
+  .word gMetaSprite_weapon_charge_saber_air_101
+  .word gMetaSprite_weapon_saber_102
+  .word gMetaSprite_weapon_soul_launchar_flame
+  .word gMetaSprite_weapon_unk_104
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_weapon_unk_108
+  .word gMetaSprite_weapon_unk_109
+  .word gMetaSprite_weapon_unk_110
+  .word gMetaSprite_weapon_unk_111
+  .word gMetaSprite_weapon_unk_112
+  .word gMetaSprite_weapon_unk_113
+  .word gMetaSprite_weapon_unk_114
+  .word gMetaSprite_weapon_unk_115
+  .word gMetaSprite_weapon_unk_116
+  .word gMetaSprite_weapon_unk_117
+  .word gMetaSprite_weapon_unk_118
+  .word gMetaSprite_weapon_unk_119
+  .word gMetaSprite_weapon_unk_120
+  .word gMetaSprite_weapon_unk_121
+  .word gMetaSprite_weapon_unk_122
+  .word gMetaSprite_weapon_unk_123
+  .word gMetaSprite_weapon_unk_124
+  .word gMetaSprite_weapon_unk_125
+  .word gMetaSprite_weapon_unk_126
+  .word gMetaSprite_weapon_unk_127
+  .word gMetaSprite_weapon_unk_128
+  .word gMetaSprite_weapon_unk_129
+  .word gMetaSprite_weapon_unk_130
+  .word gMetaSprite_weapon_unk_131
+  .word gMetaSprite_weapon_unk_132
+  .word gMetaSprite_weapon_lemon
+  .word gMetaSprite_weapon_unk_86
+  .word gMetaSprite_weapon_unk_87
+  .word gMetaSprite_weapon_unk_88
+  .word gMetaSprite_weapon_unk_89
+  .word gMetaSprite_weapon_unk_8a
+  .word gMetaSprite_weapon_unk_8b
+  .word gMetaSprite_weapon_unk_8c
+  .word gMetaSprite_weapon_unk_8d
+  .word gMetaSprite_weapon_unk_8e
+  .word gMetaSprite_zero_idle
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_animal
+  .word gMetaSprite_cyberelf_hacker
+  .word gMetaSprite_cyberelf_particle
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_cyberelf_nurse
+  .word gMetaSprite_megamilpa
+  .word gMetaSprite_fefnir
+  .word gMetaSprite_blazin_blazin
+  .word gMetaSprite_blazin_projectile
+  .word gMetaSprite_childre
+  .word gMetaSprite_volteel_volteel
+  .word gMetaSprite_volteel_tail
+  .word gMetaSprite_deathtanz
+  .word gMetaSprite_hellbat_hellbat
+  .word gMetaSprite_hellbat_laser
+  .word gMetaSprite_hellbat_bat
+  .word gMetaSprite_tretista_tretista
+  .word gMetaSprite_tretista_hell_bouncer
+  .word gMetaSprite_tretista_projectile
+  .word gMetaSprite_tretista_laser_claw
+  .word gMetaSprite_anubis
+  .word gMetaSprite_cubit_cubit
+  .word gMetaSprite_cubit_flame
+  .word gMetaSprite_glacierle
+  .word gMetaSprite_copy_x
+  .word gMetaSprite_blizzack
+  .word gMetaSprite_hanumachine
+  .word gMetaSprite_omega_zx_omega_zx
+  .word gMetaSprite_omega_zx_eye_glow
+  .word gMetaSprite_omega_zx_exceed_buster
+  .word gMetaSprite_omega_zx_binding_ball
+  .word gMetaSprite_omega_zx_spark_chaser
+  .word gMetaSprite_omega_zx_triple_laser
+  .word gMetaSprite_phantom
+  .word gMetaSprite_leviathan
+  .word gMetaSprite_harpuia
+  .word gMetaSprite_aztec_falcon
+  .word gMetaSprite_old_residential_door
+  .word gMetaSprite_resistance_base_door
+  .word gMetaSprite_ciel
+  .word gMetaSprite_unk_195
+  .word gMetaSprite_zero_walk
+  .word gMetaSprite_weil
+  .word gMetaSprite_cyberspace_door
+  .word gMetaSprite_boss_explosion
+
+
+.include "sprites/dynamic/zero/idle/metasprite.inc"
+.include "sprites/dynamic/zero/dying/metasprite.inc"
+.include "sprites/dynamic/zero/run/metasprite.inc"
+.include "sprites/dynamic/zero/dash/metasprite.inc"
+.include "sprites/dynamic/zero/air/metasprite.inc"
+.include "sprites/dynamic/zero/wall/metasprite.inc"
+.include "sprites/dynamic/zero/wall_jump/metasprite.inc"
+.include "sprites/dynamic/zero/ladder/metasprite.inc"
+.include "sprites/dynamic/zero/buster/buster/metasprite.inc"
+.include "sprites/dynamic/zero/buster/run/metasprite.inc"
+.include "sprites/dynamic/zero/buster/dash/metasprite.inc"
+.include "sprites/dynamic/zero/buster/air/metasprite.inc"
+.include "sprites/dynamic/zero/buster/wall/metasprite.inc"
+.include "sprites/dynamic/zero/buster/ladder/metasprite.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/1/metasprite.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/2/metasprite.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/3/metasprite.inc"
+.include "sprites/dynamic/zero/saber/slash_up/metasprite.inc"
+.include "sprites/dynamic/zero/saber/split_heaven/metasprite.inc"
+.include "sprites/dynamic/zero/saber/throw_blade/metasprite.inc"
+.include "sprites/dynamic/zero/saber/charge/metasprite.inc"
+.include "sprites/dynamic/zero/saber/run/1/metasprite.inc"
+.include "sprites/dynamic/zero/saber/run/2/metasprite.inc"
+.include "sprites/dynamic/zero/saber/dash/metasprite.inc"
+.include "sprites/dynamic/zero/saber/gale/metasprite.inc"
+.include "sprites/dynamic/zero/saber/air/metasprite.inc"
+.include "sprites/dynamic/zero/saber/air_rolling/metasprite.inc"
+.include "sprites/dynamic/zero/saber/smash/metasprite.inc"
+.include "sprites/dynamic/zero/saber/wall/metasprite.inc"
+.include "sprites/dynamic/zero/saber/ladder/metasprite.inc"
+.include "sprites/dynamic/zero/rod/rod/metasprite.inc"
+.include "sprites/dynamic/zero/rod/up/metasprite.inc"
+.include "sprites/dynamic/zero/rod/down/metasprite.inc"
+.include "sprites/dynamic/zero/rod/air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/up_air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/down_air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/wall/metasprite.inc"
+.include "sprites/dynamic/zero/rod/ladder/metasprite.inc"
+.include "sprites/dynamic/zero/shield/shield/metasprite.inc"
+.include "sprites/dynamic/zero/shield/throw/metasprite.inc"
+.include "sprites/dynamic/zero/shield/walk/metasprite.inc"
+.include "sprites/dynamic/zero/shield/air/metasprite.inc"
+.include "sprites/dynamic/zero/shield/throw_air/metasprite.inc"
+.include "sprites/dynamic/zero/shield/wall/metasprite.inc"
+.include "sprites/dynamic/zero/shield/throw_wall/metasprite.inc"
+.include "sprites/dynamic/zero/shield/ladder/metasprite.inc"
+.include "sprites/dynamic/zero/shield/throw_ladder/metasprite.inc"
+.include "sprites/dynamic/zero/stun/49/metasprite.inc"
+.include "sprites/dynamic/zero/stun/50/metasprite.inc"
+.include "sprites/dynamic/zero/unk_51/metasprite.inc"
+.include "sprites/dynamic/zero/teleport/start/metasprite.inc"
+.include "sprites/dynamic/zero/teleport/end/metasprite.inc"
+.include "sprites/dynamic/zero/door/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_up/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_down/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_up_air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_down_air/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_wall/metasprite.inc"
+.include "sprites/dynamic/zero/rod/charge_ladder/metasprite.inc"
+.include "sprites/dynamic/omega_zero/metasprite.inc"
+.include "sprites/dynamic/weapon/charge_saber_64/metasprite.inc"
+.include "sprites/dynamic/weapon/semi_buster/metasprite.inc"
+.include "sprites/dynamic/weapon/burst_shot/bullet/metasprite.inc"
+.include "sprites/dynamic/weapon/blizz_arrow/metasprite.inc"
+.include "sprites/dynamic/weapon/burst_shot/firework/metasprite.inc"
+.include "sprites/dynamic/weapon/triple_slash_1/metasprite.inc"
+.include "sprites/dynamic/weapon/triple_slash_2/metasprite.inc"
+.include "sprites/dynamic/weapon/triple_slash_3/metasprite.inc"
+.include "sprites/dynamic/weapon/slash_up/metasprite.inc"
+.include "sprites/dynamic/weapon/split_heaven/metasprite.inc"
+.include "sprites/dynamic/weapon/throw_blade/metasprite.inc"
+.include "sprites/dynamic/weapon/charge_saber_94/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_walk/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_dash/metasprite.inc"
+.include "sprites/dynamic/weapon/gale_attack/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_98/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_99/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_smash/metasprite.inc"
+.include "sprites/dynamic/weapon/charge_saber_air_101/metasprite.inc"
+.include "sprites/dynamic/weapon/saber_102/metasprite.inc"
+.include "sprites/dynamic/weapon/soul_launchar_flame/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_104/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_108/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_109/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_110/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_111/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_112/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_113/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_114/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_115/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_116/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_117/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_118/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_119/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_120/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_121/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_122/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_123/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_124/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_125/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_126/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_127/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_128/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_129/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_130/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_131/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_132/metasprite.inc"
+.include "sprites/dynamic/weapon/lemon/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_86/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_87/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_88/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_89/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_8a/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_8b/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_8c/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_8d/metasprite.inc"
+.include "sprites/dynamic/weapon/unk_8e/metasprite.inc"
+.include "sprites/dynamic/cyberelf/nurse/metasprite.inc"
+.include "sprites/dynamic/cyberelf/animal/metasprite.inc"
+.include "sprites/dynamic/cyberelf/hacker/metasprite.inc"
+.include "sprites/dynamic/cyberelf/particle/metasprite.inc"
+.include "sprites/dynamic/megamilpa/metasprite.inc"
+.include "sprites/dynamic/fefnir/metasprite.inc"
+.include "sprites/dynamic/blazin/blazin/metasprite.inc"
+.include "sprites/dynamic/blazin/projectile/metasprite.inc"
+.include "sprites/dynamic/childre/metasprite.inc"
+.include "sprites/dynamic/volteel/volteel/metasprite.inc"
+.include "sprites/dynamic/volteel/tail/metasprite.inc"
+.include "sprites/dynamic/deathtanz/metasprite.inc"
+.include "sprites/dynamic/hellbat/hellbat/metasprite.inc"
+.include "sprites/dynamic/hellbat/laser/metasprite.inc"
+.include "sprites/dynamic/hellbat/bat/metasprite.inc"
+.include "sprites/dynamic/tretista/tretista/metasprite.inc"
+.include "sprites/dynamic/tretista/hell_bouncer/metasprite.inc"
+.include "sprites/dynamic/tretista/projectile/metasprite.inc"
+.include "sprites/dynamic/tretista/laser_claw/metasprite.inc"
+.include "sprites/dynamic/anubis/metasprite.inc"
+.include "sprites/dynamic/cubit/cubit/metasprite.inc"
+.include "sprites/dynamic/cubit/flame/metasprite.inc"
+.include "sprites/dynamic/glacierle/metasprite.inc"
+.include "sprites/dynamic/copy_x/metasprite.inc"
+.include "sprites/dynamic/blizzack/metasprite.inc"
+.include "sprites/dynamic/hanumachine/metasprite.inc"
+.include "sprites/dynamic/omega_zx/omega_zx/metasprite.inc"
+.include "sprites/dynamic/omega_zx/eye_glow/metasprite.inc"
+.include "sprites/dynamic/omega_zx/exceed_buster/metasprite.inc"
+.include "sprites/dynamic/omega_zx/binding_ball/metasprite.inc"
+.include "sprites/dynamic/omega_zx/spark_chaser/metasprite.inc"
+.include "sprites/dynamic/omega_zx/triple_laser/metasprite.inc"
+.include "sprites/dynamic/phantom/metasprite.inc"
+.include "sprites/dynamic/leviathan/metasprite.inc"
+.include "sprites/dynamic/harpuia/metasprite.inc"
+.include "sprites/dynamic/aztec_falcon/metasprite.inc"
+.include "sprites/dynamic/old_residential_door/metasprite.inc"
+.include "sprites/dynamic/resistance_base_door/metasprite.inc"
+.include "sprites/dynamic/ciel/metasprite.inc"
+.include "sprites/dynamic/unk_195/metasprite.inc"
+.include "sprites/dynamic/zero/walk/metasprite.inc"
+.include "sprites/dynamic/weil/metasprite.inc"
+.include "sprites/dynamic/cyberspace_door/metasprite.inc"
+.include "sprites/dynamic/boss_explosion/metasprite.inc"
+
+  .balign 4
+.global gDynamicMotionCmdTable
+gDynamicMotionCmdTable:
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_dying
+  .word gAnimationSequence_zero_run
+  .word gAnimationSequence_zero_dash
+  .word gAnimationSequence_zero_air
+  .word gAnimationSequence_zero_wall
+  .word gAnimationSequence_zero_wall_jump
+  .word gAnimationSequence_zero_ladder
+  .word gAnimationSequence_zero_buster_buster
+  .word gAnimationSequence_zero_buster_run
+  .word gAnimationSequence_zero_buster_dash
+  .word gAnimationSequence_zero_buster_air
+  .word gAnimationSequence_zero_buster_wall
+  .word gAnimationSequence_zero_buster_ladder
+  .word gAnimationSequence_zero_saber_triple_slash_1
+  .word gAnimationSequence_zero_saber_triple_slash_2
+  .word gAnimationSequence_zero_saber_triple_slash_3
+  .word gAnimationSequence_zero_saber_slash_up
+  .word gAnimationSequence_zero_saber_split_heaven
+  .word gAnimationSequence_zero_saber_throw_blade
+  .word gAnimationSequence_zero_saber_charge
+  .word gAnimationSequence_zero_saber_run_1
+  .word gAnimationSequence_zero_saber_run_2
+  .word gAnimationSequence_zero_saber_dash
+  .word gAnimationSequence_zero_saber_gale
+  .word gAnimationSequence_zero_saber_air
+  .word gAnimationSequence_zero_saber_air_rolling
+  .word gAnimationSequence_zero_saber_smash
+  .word gAnimationSequence_zero_saber_wall
+  .word gAnimationSequence_zero_saber_ladder
+  .word gAnimationSequence_zero_rod_rod
+  .word gAnimationSequence_zero_rod_up
+  .word gAnimationSequence_zero_rod_down
+  .word gAnimationSequence_zero_rod_air
+  .word gAnimationSequence_zero_rod_up_air
+  .word gAnimationSequence_zero_rod_down_air
+  .word gAnimationSequence_zero_rod_wall
+  .word gAnimationSequence_zero_rod_ladder
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_shield_shield
+  .word gAnimationSequence_zero_shield_throw
+  .word gAnimationSequence_zero_shield_walk
+  .word gAnimationSequence_zero_shield_air
+  .word gAnimationSequence_zero_shield_throw_air
+  .word gAnimationSequence_zero_shield_wall
+  .word gAnimationSequence_zero_shield_throw_wall
+  .word gAnimationSequence_zero_shield_ladder
+  .word gAnimationSequence_zero_shield_throw_ladder
+  .word gAnimationSequence_zero_stun_49
+  .word gAnimationSequence_zero_stun_50
+  .word gAnimationSequence_zero_unk_51
+  .word gAnimationSequence_zero_teleport_start
+  .word gAnimationSequence_zero_teleport_end
+  .word gAnimationSequence_zero_door
+  .word gAnimationSequence_zero_rod_charge
+  .word gAnimationSequence_zero_rod_charge_up
+  .word gAnimationSequence_zero_rod_charge_down
+  .word gAnimationSequence_zero_rod_charge_air
+  .word gAnimationSequence_zero_rod_charge_up_air
+  .word gAnimationSequence_zero_rod_charge_down_air
+  .word gAnimationSequence_zero_rod_charge_wall
+  .word gAnimationSequence_zero_rod_charge_ladder
+  .word gAnimationSequence_omega_zero
+  .word gAnimationSequence_weapon_charge_saber_64
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_weapon_semi_buster
+  .word gAnimationSequence_weapon_burst_shot_bullet
+  .word gAnimationSequence_weapon_blizz_arrow
+  .word gAnimationSequence_weapon_burst_shot_firework
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_weapon_triple_slash_1
+  .word gAnimationSequence_weapon_triple_slash_2
+  .word gAnimationSequence_weapon_triple_slash_3
+  .word gAnimationSequence_weapon_slash_up
+  .word gAnimationSequence_weapon_split_heaven
+  .word gAnimationSequence_weapon_throw_blade
+  .word gAnimationSequence_weapon_charge_saber_94
+  .word gAnimationSequence_weapon_saber_walk
+  .word gAnimationSequence_weapon_saber_dash
+  .word gAnimationSequence_weapon_gale_attack
+  .word gAnimationSequence_weapon_saber_98
+  .word gAnimationSequence_weapon_saber_99
+  .word gAnimationSequence_weapon_saber_smash
+  .word gAnimationSequence_weapon_charge_saber_air_101
+  .word gAnimationSequence_weapon_saber_102
+  .word gAnimationSequence_weapon_soul_launchar_flame
+  .word gAnimationSequence_weapon_unk_104
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_weapon_unk_108
+  .word gAnimationSequence_weapon_unk_109
+  .word gAnimationSequence_weapon_unk_110
+  .word gAnimationSequence_weapon_unk_111
+  .word gAnimationSequence_weapon_unk_112
+  .word gAnimationSequence_weapon_unk_113
+  .word gAnimationSequence_weapon_unk_114
+  .word gAnimationSequence_weapon_unk_115
+  .word gAnimationSequence_weapon_unk_116
+  .word gAnimationSequence_weapon_unk_117
+  .word gAnimationSequence_weapon_unk_118
+  .word gAnimationSequence_weapon_unk_119
+  .word gAnimationSequence_weapon_unk_120
+  .word gAnimationSequence_weapon_unk_121
+  .word gAnimationSequence_weapon_unk_122
+  .word gAnimationSequence_weapon_unk_123
+  .word gAnimationSequence_weapon_unk_124
+  .word gAnimationSequence_weapon_unk_125
+  .word gAnimationSequence_weapon_unk_126
+  .word gAnimationSequence_weapon_unk_127
+  .word gAnimationSequence_weapon_unk_128
+  .word gAnimationSequence_weapon_unk_129
+  .word gAnimationSequence_weapon_unk_130
+  .word gAnimationSequence_weapon_unk_131
+  .word gAnimationSequence_weapon_unk_132
+  .word gAnimationSequence_weapon_lemon
+  .word gAnimationSequence_weapon_unk_86
+  .word gAnimationSequence_weapon_unk_87
+  .word gAnimationSequence_weapon_unk_88
+  .word gAnimationSequence_weapon_unk_89
+  .word gAnimationSequence_weapon_unk_8a
+  .word gAnimationSequence_weapon_unk_8b
+  .word gAnimationSequence_weapon_unk_8c
+  .word gAnimationSequence_weapon_unk_8d
+  .word gAnimationSequence_weapon_unk_8e
+  .word gAnimationSequence_zero_idle
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_animal
+  .word gAnimationSequence_cyberelf_hacker
+  .word gAnimationSequence_cyberelf_particle
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_cyberelf_nurse
+  .word gAnimationSequence_megamilpa
+  .word gAnimationSequence_fefnir
+  .word gAnimationSequence_blazin_blazin
+  .word gAnimationSequence_blazin_projectile
+  .word gAnimationSequence_childre
+  .word gAnimationSequence_volteel_volteel
+  .word gAnimationSequence_volteel_tail
+  .word gAnimationSequence_deathtanz
+  .word gAnimationSequence_hellbat_hellbat
+  .word gAnimationSequence_hellbat_laser
+  .word gAnimationSequence_hellbat_bat
+  .word gAnimationSequence_tretista_tretista
+  .word gAnimationSequence_tretista_hell_bouncer
+  .word gAnimationSequence_tretista_projectile
+  .word gAnimationSequence_tretista_laser_claw
+  .word gAnimationSequence_anubis
+  .word gAnimationSequence_cubit_cubit
+  .word gAnimationSequence_cubit_flame
+  .word gAnimationSequence_glacierle
+  .word gAnimationSequence_copy_x
+  .word gAnimationSequence_blizzack
+  .word gAnimationSequence_hanumachine
+  .word gAnimationSequence_omega_zx_omega_zx
+  .word gAnimationSequence_omega_zx_eye_glow
+  .word gAnimationSequence_omega_zx_exceed_buster
+  .word gAnimationSequence_omega_zx_binding_ball
+  .word gAnimationSequence_omega_zx_spark_chaser
+  .word gAnimationSequence_omega_zx_triple_laser
+  .word gAnimationSequence_phantom
+  .word gAnimationSequence_leviathan
+  .word gAnimationSequence_harpuia
+  .word gAnimationSequence_aztec_falcon
+  .word gAnimationSequence_old_residential_door
+  .word gAnimationSequence_resistance_base_door
+  .word gAnimationSequence_ciel
+  .word gAnimationSequence_unk_195
+  .word gAnimationSequence_zero_walk
+  .word gAnimationSequence_weil
+  .word gAnimationSequence_cyberspace_door
+  .word gAnimationSequence_boss_explosion
+
+
+.include "sprites/dynamic/zero/idle/sequence.inc"
+.include "sprites/dynamic/zero/dying/sequence.inc"
+.include "sprites/dynamic/zero/run/sequence.inc"
+.include "sprites/dynamic/zero/dash/sequence.inc"
+.include "sprites/dynamic/zero/air/sequence.inc"
+.include "sprites/dynamic/zero/wall/sequence.inc"
+.include "sprites/dynamic/zero/wall_jump/sequence.inc"
+.include "sprites/dynamic/zero/ladder/sequence.inc"
+.include "sprites/dynamic/zero/buster/buster/sequence.inc"
+.include "sprites/dynamic/zero/buster/run/sequence.inc"
+.include "sprites/dynamic/zero/buster/dash/sequence.inc"
+.include "sprites/dynamic/zero/buster/air/sequence.inc"
+.include "sprites/dynamic/zero/buster/wall/sequence.inc"
+.include "sprites/dynamic/zero/buster/ladder/sequence.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/1/sequence.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/2/sequence.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/3/sequence.inc"
+.include "sprites/dynamic/zero/saber/slash_up/sequence.inc"
+.include "sprites/dynamic/zero/saber/split_heaven/sequence.inc"
+.include "sprites/dynamic/zero/saber/throw_blade/sequence.inc"
+.include "sprites/dynamic/zero/saber/charge/sequence.inc"
+.include "sprites/dynamic/zero/saber/run/1/sequence.inc"
+.include "sprites/dynamic/zero/saber/run/2/sequence.inc"
+.include "sprites/dynamic/zero/saber/dash/sequence.inc"
+.include "sprites/dynamic/zero/saber/gale/sequence.inc"
+.include "sprites/dynamic/zero/saber/air/sequence.inc"
+.include "sprites/dynamic/zero/saber/air_rolling/sequence.inc"
+.include "sprites/dynamic/zero/saber/smash/sequence.inc"
+.include "sprites/dynamic/zero/saber/wall/sequence.inc"
+.include "sprites/dynamic/zero/saber/ladder/sequence.inc"
+.include "sprites/dynamic/zero/rod/rod/sequence.inc"
+.include "sprites/dynamic/zero/rod/up/sequence.inc"
+.include "sprites/dynamic/zero/rod/down/sequence.inc"
+.include "sprites/dynamic/zero/rod/air/sequence.inc"
+.include "sprites/dynamic/zero/rod/up_air/sequence.inc"
+.include "sprites/dynamic/zero/rod/down_air/sequence.inc"
+.include "sprites/dynamic/zero/rod/wall/sequence.inc"
+.include "sprites/dynamic/zero/rod/ladder/sequence.inc"
+.include "sprites/dynamic/zero/shield/shield/sequence.inc"
+.include "sprites/dynamic/zero/shield/throw/sequence.inc"
+.include "sprites/dynamic/zero/shield/walk/sequence.inc"
+.include "sprites/dynamic/zero/shield/air/sequence.inc"
+.include "sprites/dynamic/zero/shield/throw_air/sequence.inc"
+.include "sprites/dynamic/zero/shield/wall/sequence.inc"
+.include "sprites/dynamic/zero/shield/throw_wall/sequence.inc"
+.include "sprites/dynamic/zero/shield/ladder/sequence.inc"
+.include "sprites/dynamic/zero/shield/throw_ladder/sequence.inc"
+.include "sprites/dynamic/zero/stun/49/sequence.inc"
+.include "sprites/dynamic/zero/stun/50/sequence.inc"
+.include "sprites/dynamic/zero/unk_51/sequence.inc"
+.include "sprites/dynamic/zero/teleport/start/sequence.inc"
+.include "sprites/dynamic/zero/teleport/end/sequence.inc"
+.include "sprites/dynamic/zero/door/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_up/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_down/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_air/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_up_air/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_down_air/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_wall/sequence.inc"
+.include "sprites/dynamic/zero/rod/charge_ladder/sequence.inc"
+.include "sprites/dynamic/omega_zero/sequence.inc"
+.include "sprites/dynamic/weapon/charge_saber_64/sequence.inc"
+.include "sprites/dynamic/weapon/semi_buster/sequence.inc"
+.include "sprites/dynamic/weapon/burst_shot/bullet/sequence.inc"
+.include "sprites/dynamic/weapon/blizz_arrow/sequence.inc"
+.include "sprites/dynamic/weapon/burst_shot/firework/sequence.inc"
+.include "sprites/dynamic/weapon/triple_slash_1/sequence.inc"
+.include "sprites/dynamic/weapon/triple_slash_2/sequence.inc"
+.include "sprites/dynamic/weapon/triple_slash_3/sequence.inc"
+.include "sprites/dynamic/weapon/slash_up/sequence.inc"
+.include "sprites/dynamic/weapon/split_heaven/sequence.inc"
+.include "sprites/dynamic/weapon/throw_blade/sequence.inc"
+.include "sprites/dynamic/weapon/charge_saber_94/sequence.inc"
+.include "sprites/dynamic/weapon/saber_walk/sequence.inc"
+.include "sprites/dynamic/weapon/saber_dash/sequence.inc"
+.include "sprites/dynamic/weapon/gale_attack/sequence.inc"
+.include "sprites/dynamic/weapon/saber_98/sequence.inc"
+.include "sprites/dynamic/weapon/saber_99/sequence.inc"
+.include "sprites/dynamic/weapon/saber_smash/sequence.inc"
+.include "sprites/dynamic/weapon/charge_saber_air_101/sequence.inc"
+.include "sprites/dynamic/weapon/saber_102/sequence.inc"
+.include "sprites/dynamic/weapon/soul_launchar_flame/sequence.inc"
+.include "sprites/dynamic/weapon/unk_104/sequence.inc"
+.include "sprites/dynamic/weapon/unk_108/sequence.inc"
+.include "sprites/dynamic/weapon/unk_109/sequence.inc"
+.include "sprites/dynamic/weapon/unk_110/sequence.inc"
+.include "sprites/dynamic/weapon/unk_111/sequence.inc"
+.include "sprites/dynamic/weapon/unk_112/sequence.inc"
+.include "sprites/dynamic/weapon/unk_113/sequence.inc"
+.include "sprites/dynamic/weapon/unk_114/sequence.inc"
+.include "sprites/dynamic/weapon/unk_115/sequence.inc"
+.include "sprites/dynamic/weapon/unk_116/sequence.inc"
+.include "sprites/dynamic/weapon/unk_117/sequence.inc"
+.include "sprites/dynamic/weapon/unk_118/sequence.inc"
+.include "sprites/dynamic/weapon/unk_119/sequence.inc"
+.include "sprites/dynamic/weapon/unk_120/sequence.inc"
+.include "sprites/dynamic/weapon/unk_121/sequence.inc"
+.include "sprites/dynamic/weapon/unk_122/sequence.inc"
+.include "sprites/dynamic/weapon/unk_123/sequence.inc"
+.include "sprites/dynamic/weapon/unk_124/sequence.inc"
+.include "sprites/dynamic/weapon/unk_125/sequence.inc"
+.include "sprites/dynamic/weapon/unk_126/sequence.inc"
+.include "sprites/dynamic/weapon/unk_127/sequence.inc"
+.include "sprites/dynamic/weapon/unk_128/sequence.inc"
+.include "sprites/dynamic/weapon/unk_129/sequence.inc"
+.include "sprites/dynamic/weapon/unk_130/sequence.inc"
+.include "sprites/dynamic/weapon/unk_131/sequence.inc"
+.include "sprites/dynamic/weapon/unk_132/sequence.inc"
+.include "sprites/dynamic/weapon/lemon/sequence.inc"
+.include "sprites/dynamic/weapon/unk_86/sequence.inc"
+.include "sprites/dynamic/weapon/unk_87/sequence.inc"
+.include "sprites/dynamic/weapon/unk_88/sequence.inc"
+.include "sprites/dynamic/weapon/unk_89/sequence.inc"
+.include "sprites/dynamic/weapon/unk_8a/sequence.inc"
+.include "sprites/dynamic/weapon/unk_8b/sequence.inc"
+.include "sprites/dynamic/weapon/unk_8c/sequence.inc"
+.include "sprites/dynamic/weapon/unk_8d/sequence.inc"
+.include "sprites/dynamic/weapon/unk_8e/sequence.inc"
+.include "sprites/dynamic/cyberelf/nurse/sequence.inc"
+.include "sprites/dynamic/cyberelf/animal/sequence.inc"
+.include "sprites/dynamic/cyberelf/hacker/sequence.inc"
+.include "sprites/dynamic/cyberelf/particle/sequence.inc"
+.include "sprites/dynamic/megamilpa/sequence.inc"
+.include "sprites/dynamic/fefnir/sequence.inc"
+.include "sprites/dynamic/blazin/blazin/sequence.inc"
+.include "sprites/dynamic/blazin/projectile/sequence.inc"
+.include "sprites/dynamic/childre/sequence.inc"
+.include "sprites/dynamic/volteel/volteel/sequence.inc"
+.include "sprites/dynamic/volteel/tail/sequence.inc"
+.include "sprites/dynamic/deathtanz/sequence.inc"
+.include "sprites/dynamic/hellbat/hellbat/sequence.inc"
+.include "sprites/dynamic/hellbat/laser/sequence.inc"
+.include "sprites/dynamic/hellbat/bat/sequence.inc"
+.include "sprites/dynamic/tretista/tretista/sequence.inc"
+.include "sprites/dynamic/tretista/hell_bouncer/sequence.inc"
+.include "sprites/dynamic/tretista/projectile/sequence.inc"
+.include "sprites/dynamic/tretista/laser_claw/sequence.inc"
+.include "sprites/dynamic/anubis/sequence.inc"
+.include "sprites/dynamic/cubit/cubit/sequence.inc"
+.include "sprites/dynamic/cubit/flame/sequence.inc"
+.include "sprites/dynamic/glacierle/sequence.inc"
+.include "sprites/dynamic/copy_x/sequence.inc"
+.include "sprites/dynamic/blizzack/sequence.inc"
+.include "sprites/dynamic/hanumachine/sequence.inc"
+.include "sprites/dynamic/omega_zx/omega_zx/sequence.inc"
+.include "sprites/dynamic/omega_zx/eye_glow/sequence.inc"
+.include "sprites/dynamic/omega_zx/exceed_buster/sequence.inc"
+.include "sprites/dynamic/omega_zx/binding_ball/sequence.inc"
+.include "sprites/dynamic/omega_zx/spark_chaser/sequence.inc"
+.include "sprites/dynamic/omega_zx/triple_laser/sequence.inc"
+.include "sprites/dynamic/phantom/sequence.inc"
+.include "sprites/dynamic/leviathan/sequence.inc"
+.include "sprites/dynamic/harpuia/sequence.inc"
+.include "sprites/dynamic/aztec_falcon/sequence.inc"
+.include "sprites/dynamic/old_residential_door/sequence.inc"
+.include "sprites/dynamic/resistance_base_door/sequence.inc"
+.include "sprites/dynamic/ciel/sequence.inc"
+.include "sprites/dynamic/unk_195/sequence.inc"
+.include "sprites/dynamic/zero/walk/sequence.inc"
+.include "sprites/dynamic/weil/sequence.inc"
+.include "sprites/dynamic/cyberspace_door/sequence.inc"
+.include "sprites/dynamic/boss_explosion/sequence.inc"
+  .balign 4

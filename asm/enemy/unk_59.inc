@@ -13,7 +13,7 @@ FUN_080913c0: @ 0x080913C0
 	lsrs r5, r1, #0x18
 	ldr r0, _08091424 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0809141E
@@ -70,7 +70,7 @@ FUN_0809142c: @ 0x0809142C
 	lsrs r5, r1, #0x18
 	ldr r0, _0809148C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08091484
@@ -1342,7 +1342,7 @@ _08091E40:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08091E4E:
 	pop {r4}
 	pop {r0}
@@ -1402,7 +1402,7 @@ _08091E86:
 	strb r0, [r4, #0xe]
 _08091EB8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08091EF6
 	.align 2, 0
 _08091EC0: .4byte 0x00008802
@@ -1484,7 +1484,7 @@ _08091F38:
 	ldr r0, _08091FA0 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -1587,7 +1587,7 @@ _08091FE6:
 	strb r0, [r7, #0xe]
 _08092016:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	subs r0, #1
 	strb r0, [r7, #0x12]
@@ -1617,7 +1617,7 @@ _08092044:
 	strb r0, [r7, #0xe]
 _0809204E:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _08092060
@@ -1855,7 +1855,7 @@ _08092200:
 	strb r0, [r5, #0xe]
 _08092230:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -1883,7 +1883,7 @@ _0809225C:
 	strb r0, [r5, #0xe]
 _08092266:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	bne _08092278

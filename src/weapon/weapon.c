@@ -7,6 +7,8 @@
 #include "renderer.h"
 #include "zero.h"
 
+#define SLOT_4BPP 16
+
 static const struct PlttData gWeaponPalettes[5][SLOT_4BPP];
 
 void InitWeaponHeader(struct EntityHeader* h, struct Weapon* w, s16 len) {
@@ -24,7 +26,7 @@ void InitWeaponHeader(struct EntityHeader* h, struct Weapon* w, s16 len) {
   }
 }
 
-void DrawWeapon(struct TaskManager* tm) {
+void DrawWeapon(Renderer* r) {
   u16 i;
   for (i = 0; i < 4; i++) {
     if (gLastWeaponElements[i] != gWeaponElements[i]) {
@@ -32,7 +34,7 @@ void DrawWeapon(struct TaskManager* tm) {
       CpuFastCopy(gWeaponPalettes[gLastWeaponElements[i]], &gPaletteManager.buf[gWeaponPalIDs[i] * SLOT_4BPP + 256], 32);
     }
   }
-  DrawEntity(gWeaponHeaderPtr, tm);
+  DrawEntity(gWeaponHeaderPtr, r);
 }
 
 void DeleteWeapon(struct Entity* p) {
@@ -51,18 +53,13 @@ void SetWeaponElement(u16 weaponKind, u16 element) {
   return;
 }
 
-// run kill(w) for all weapon entities (mainly clean up all weapons)
+// run kill(p) for all weapon entities (mainly clean up all weapons)
 void KillAllWeapons(WeaponFunc kill) {
-  struct Entity* w;
-
   struct EntityHeader* h = gWeaponHeaderPtr;
-  ignoreEntityFn(h);
-
-  w = h->last = h->last->prev;
-  while (w != (struct Entity*)&h->next) {
-    kill((struct Weapon*)w);
-    w = h->last->prev;
-    h->last = w;
+  struct Entity* p = GetEntityList(h);
+  while (p != (struct Entity*)&h->tail) {
+    kill((struct Weapon*)p);
+    p = GetNextEntity(h);
   }
 }
 

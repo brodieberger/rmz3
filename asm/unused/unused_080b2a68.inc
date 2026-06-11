@@ -11,7 +11,7 @@
 	mov r8, r3
 	ldr r0, _080B2AD4 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080B2B34

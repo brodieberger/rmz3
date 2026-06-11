@@ -39,7 +39,7 @@ _080D7EC8:
 	strb r0, [r5, #0xe]
 _080D7EF8:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080D7EFE:
 	pop {r4, r5}
 	pop {r0}
@@ -124,7 +124,7 @@ _080D7F98:
 	strb r0, [r4, #0xe]
 _080D7FA4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0x1c
 	bne _080D7FB6
@@ -143,7 +143,7 @@ _080D7FB6:
 _080D7FC8: .4byte gCollisionManager
 _080D7FCC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r4, #0
 	adds r2, #0xb4
 	ldr r1, [r2]
@@ -199,7 +199,7 @@ _080D8034: .4byte gStageRun+232
 _080D8038: .4byte 0x00007803
 _080D803C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -310,7 +310,7 @@ _080D8118:
 	strb r0, [r4, #0xe]
 _080D8124:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0x1c
 	bne _080D8136
@@ -329,7 +329,7 @@ _080D8136:
 _080D8148: .4byte gCollisionManager
 _080D814C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r4, #0
 	adds r2, #0xb4
 	ldr r1, [r2]
@@ -388,7 +388,7 @@ _080D81B8: .4byte gStageRun+232
 _080D81BC: .4byte 0x00007803
 _080D81C0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -444,7 +444,7 @@ _080D8226:
 	strb r0, [r4, #0xe]
 _080D822A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -460,7 +460,7 @@ _080D822A:
 	b _080D8252
 _080D824C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080D8252:
 	pop {r4}
 	pop {r0}

@@ -4,6 +4,7 @@
 #include "constants/entity.h"
 #include "constants/song.h"
 #include "constants/flag.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -102,15 +103,15 @@ Entity_08350c78:
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_08350c88:
-  eventflag 0, 13, 0
+  cutscene_start CS_ORA_MISSION
   spawn 0, Entity_08350b98
   reset_camera Camera_08350b40
   lock
   normal_screen
   wait 1
   visible 0, FALSE
-  wait_screeneffect
-  play_bgm 331
+  wait_transition_end
+  play_bgm BGM_MISSION_INSTRUCTION
   wait 15
   force 6, 0, 0
   wait 60
@@ -118,10 +119,10 @@ Script_08350c88:
   wait_msgbox_end
   stop_bgm
   wait 15
-  eventflag 1, 0, 0
+  cutscene_end
   indicator 1, 2, 0
   wait 45
-  play_bgm 174
+  play_bgm BGM_OLD_LIFE_SPACE
   wait_indicator_end
   release
   resume 0
@@ -132,7 +133,7 @@ Script_08350d48:
   reset_camera Camera_08350b40
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm 174
@@ -145,8 +146,8 @@ Script_08350da8:
   spawn 0, Entity_08350b98
   reset_camera Camera_08350b40
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 174
   indicator 1, 0, 0
   wait_indicator_end
@@ -158,14 +159,14 @@ Script_08350e00:
   spawn 3, Entity_08350c18
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 14, 0
+  cutscene_start CS_ORA_FIND_BABY
   walkto 3168*PX
   lock
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   stop_bgm
   wait 120
   play_bgm 169
-  message 1, 0, 0x0704
+  message 1, 0, 0x0704 @ おかーさーん
   wait_msgbox_end
   wait 15
   play_se 276
@@ -173,7 +174,7 @@ Script_08350e00:
   wait 30
   entityflag 3, 6, FALSE
   wait 15
-  message 1, 0, 0x0705
+  message 1, 0, 0x0705 @ ねえ プリエ ここにも おかーさん いないね
   wait_msgbox_end
   wait 15
   play_se 277
@@ -219,7 +220,7 @@ Script_08350e00:
   wait_msgbox_end
   wait 15
   destroy 3
-  eventflag 1, 0, 0
+  cutscene_end
   release
   resume 0
   end
@@ -229,7 +230,7 @@ Script_08351020:
   reset_camera Camera_08350b40
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 174
   release
   resume 0
@@ -239,8 +240,8 @@ Script_08351068:
   spawn 0, Entity_08350bb8
   reset_camera Camera_08350b40
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 174
   indicator 1, 0, 0
   wait_indicator_end
@@ -256,10 +257,10 @@ Script_083510c0:
   turn_right 0
   force 1, 0, 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 1167360
   adjust_camera 12, 0, 1228800
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   stop_bgm
   wait 120
   entityflag 1, 0, TRUE
@@ -273,10 +274,10 @@ Script_08351150:
   stop_bgm
   wait 120
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 0
   adjust_camera 12, 0, 3932160
-  cmd08 1, 2
+  cmd08_wait_set 1
   destroy 1
   play_bgm 174
   release
@@ -287,8 +288,8 @@ Script_083511b8:
   spawn 0, Entity_08350bc8
   reset_camera Camera_08350b40
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 174
   indicator 1, 0, 0
   wait_indicator_end
@@ -300,8 +301,8 @@ Script_08351210:
   spawn 0, Entity_08350bd8
   reset_camera Camera_08350b40
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
@@ -311,18 +312,18 @@ Script_08351210:
   end
 
 Script_08351270:
-  eventflag 0, 15, 0
+  cutscene_start CS_ORA_BOSS
   spawn 3, Entity_08350c48
   spawn 4, Entity_08350c38
   stop_bgm
   lock
   force 0, 0, 0
   turn_right 0
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 60
   change_camera_mode 1
-  adjust_camera 1, 0, 2
-  adjust_camera 3, 0, 1935360
+  set_chase_mode 2
+  set_camera_target_x 1935360
   wait 120
   play_bgm 169
   play_se 276
@@ -330,7 +331,7 @@ Script_08351270:
   wait 30
   entityflag 4, 6, FALSE
   wait 15
-  message 1, 0, 0x070F
+  message 1, 0, 0x070F @ あなたは だあれ？ おかーさんと おなじニオイが するよ
   wait_msgbox_end
   wait 15
   play_se 277
@@ -341,7 +342,7 @@ Script_08351270:
   message 1, 0, 0x0710
   wait_msgbox_end
   wait 15
-  message 1, 0, 0x0711
+  message 1, 0, 0x0711 @ ギチギチギチ… コイツらがベビーエルフか…
   wait_msgbox_end
   wait 15
   force 1, 0, 0
@@ -433,17 +434,17 @@ Script_08351270:
   triumphant_message 0, 0x0701
   message 1, 0, 0x071B
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 210
   change_camera_mode 6
   adjust_camera 2, 0, 0
-  adjust_camera 1, 0, 2
+  set_chase_mode 2
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -452,10 +453,10 @@ Script_083516a8:
   forcekeyinput DPAD_RIGHT
   pause
   gameflag FLAG_2, TRUE
-  eventflag 0, 15, 0
+  cutscene_start CS_ORA_BOSS
   walkto 7488*PX
   lock
-  eventflag 1, 0, 0
+  cutscene_end
   triumphant_message 0, 0x0701
   entityflag 1, 0, TRUE
   stop_bgm
@@ -463,7 +464,7 @@ Script_083516a8:
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -474,7 +475,7 @@ Script_08351738:
   reset_camera Camera_08350b40
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0701
   entityflag 1, 0, TRUE
   stop_bgm
@@ -482,7 +483,7 @@ Script_08351738:
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -494,31 +495,31 @@ Script_083517c0:
   message 1, 0, 0x0702
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 2
-  screeneffect 6
-  wait_screeneffect
+  cmd08_wait_set 1
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   destroy 0
   lockmenu
   end
 
 Script_08351870:
   unlockmenu
-  eventflag 0, 16, 0
+  cutscene_start CS_ORA_AFTER_BOSS
   reset_camera Camera_08350b6c
   normal_screen
   wait 1
   spawn 3, Entity_08350c78
   spawn 4, Entity_08350c68
-  wait_screeneffect
+  wait_transition_end
   play_bgm 166
   wait 30
   play_se 276
@@ -526,7 +527,7 @@ Script_08351870:
   wait 30
   entityflag 4, 6, FALSE
   wait 15
-  message 1, 0, 0x071C
+  message 1, 0, 0x071C @ おじちゃんは だあれ？
   wait_msgbox_end
   wait 15
   play_se 277
@@ -604,7 +605,7 @@ Script_08351870:
   entityflag 4, 2, TRUE
   stop_bgm
   wait 150
-  play_bgm 167
+  play_bgm BGM_ANTAN
   message 1, 0, 0x0725
   wait_msgbox_end
   message 1, 0, 0x0726
@@ -619,8 +620,8 @@ Script_08351870:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
-  eventflag 1, 0, 0
+  wait_transition_end
+  cutscene_end
   destroy 3
   destroy 4
   destroy 0
@@ -630,7 +631,7 @@ Script_08351c00:
   spawn 0, Entity_08350c08
   reset_camera Camera_08350b40
   lock
-  screeneffect 9
+  start_transition 9
   play_bgm 174
   release
   resume 0
@@ -643,7 +644,7 @@ Script_08351c40:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 174
   indicator 1, 0, 0
   wait 15
@@ -665,7 +666,7 @@ Script_08351cb8:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

@@ -16,22 +16,18 @@ const VFXRoutine gGhost64Routine = {
 // clang-format on
 
 void oz_080c39a0(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = (void*)e;
     p->work[0] = 0;
   }
 }
 
 void FUN_080c39e8(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = (void*)e;
     p->work[0] = 1;
 
@@ -49,11 +45,9 @@ void FUN_080c39e8(struct Entity* e) {
 }
 
 void oz_Rekkoha_080c3a5c(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = (void*)e;
     p->work[0] = 3;
 
@@ -72,11 +66,9 @@ void oz_Rekkoha_080c3a5c(struct Entity* e) {
 
 // 0x080c3ad4
 void ozMessenkou2(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 2;
 
     // (p->coord).x = (e->coord).x + ((e->flags & X_FLIP) ? PIXEL(5) : -PIXEL(5));
@@ -93,11 +85,9 @@ void ozMessenkou2(struct Entity* e) {
 }
 
 void oz_080c3b44(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 4;
     (p->coord).x = (e->coord).x;
     (p->coord).y = (e->coord).y - PIXEL(22);
@@ -105,11 +95,9 @@ void oz_080c3b44(struct Entity* e) {
 }
 
 void oz_080c3b9c(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 5;
     (p->coord).x = (e->coord).x;
     (p->coord).y = (e->coord).y - PIXEL(22);
@@ -117,11 +105,9 @@ void oz_080c3b9c(struct Entity* e) {
 }
 
 void FUN_080c3bf4(s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_064);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 6;
     (p->coord).x = x, (p->coord).y = y;
   }

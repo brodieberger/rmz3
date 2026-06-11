@@ -19,14 +19,12 @@ const VFXRoutine gVFX62Routine = {
 
 // --------------------------------------------
 
-void CreateVFX62(struct Entity* e, struct Coord* c) {
+void CreateVFX62(struct Entity* e, Coords32* c) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_062);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 0, p->work[1] = i;
       p->unk_28 = e;
       (p->coord).x = c->x, (p->coord).y = c->y;
@@ -217,7 +215,7 @@ NAKED void _VFX62_Update(struct Entity* p) {
 	adds r1, #0x40\n\
 	str r1, [r4, #0x60]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x58]\n\
 	bl FUN_080098a4\n\

@@ -32,7 +32,7 @@ _080DEC6C:
 	adds r7, r5, #0
 	adds r7, #0x54
 	adds r1, r7, #0
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xb0
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -83,7 +83,7 @@ _080DEC82:
 	strb r0, [r5, #0xd]
 _080DECDC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x8c
 	ldr r1, [r0]
@@ -141,7 +141,7 @@ _080DED58:
 	ldr r0, _080DED98 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xb0
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -173,7 +173,7 @@ _080DED6C:
 _080DED98: .4byte gStageRun+232
 _080DED9C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x64]
 	cmp r0, #0
 	bge _080DEDB4
@@ -307,7 +307,7 @@ _080DEEAC:
 	b _080DEF2E
 _080DEEB0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r5, #0x60]
 	ldr r0, _080DEF3C @ =0x000006FF
 	cmp r1, r0
@@ -443,7 +443,7 @@ _080DEFB8:
 	adds r7, r5, #0
 	adds r7, #0x54
 	adds r1, r7, #0
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #5
 	cmp r0, r1
@@ -499,7 +499,7 @@ _080DEFCE:
 	strb r0, [r5, #0xd]
 _080DF032:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x8c
 	ldr r1, [r0]
@@ -616,7 +616,7 @@ _080DF126:
 	ldr r0, _080DF160 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #5
 	cmp r0, r1

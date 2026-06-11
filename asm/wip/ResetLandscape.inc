@@ -19,7 +19,7 @@
 	strh r0, [r2]
 	ldr r0, _08008B74 @ =0xFFFFFE38
 	adds r4, r5, r0
-	ldr r1, _08008B78 @ =TaskCB_UpdateOwGraphic
+	ldr r1, _08008B78 @ =RenderTask_Overworld
 	adds r0, r4, #0
 	str r3, [sp, #4]
 	bl SetTaskCallback
@@ -47,7 +47,7 @@
 	subs r0, #0x10
 	ldr r4, [r7, #0xc]
 	str r4, [sp]
-	bl ResetTerrain
+	bl ResetTerrainMapTemplate
 	ldr r3, _08008B84 @ =0x0000060C
 	adds r1, r5, r3
 	ldr r0, _08008B88 @ =0x0000FFFF
@@ -67,7 +67,7 @@
 	str r0, [r5]
 	ldr r1, [r7, #0xc]
 	adds r0, r7, #0
-	bl loadStageLandscape
+	bl LoadTerrainLayerAllChunks
 	movs r0, #0
 _08008AE8:
 	lsls r4, r0, #0x10
@@ -138,7 +138,7 @@ _08008B68: .4byte gStageLandscape
 _08008B6C: .4byte gVideoRegBuffer
 _08008B70: .4byte 0x0000C1FF
 _08008B74: .4byte 0xFFFFFE38
-_08008B78: .4byte TaskCB_UpdateOwGraphic
+_08008B78: .4byte RenderTask_Overworld
 _08008B7C: .4byte 0x0002BE3A
 _08008B80: .4byte gStageTerrains
 _08008B84: .4byte 0x0000060C

@@ -1,7 +1,7 @@
-#include "blink.h"
 #include "disk.h"
 #include "game.h"
 #include "global.h"
+#include "palette_animation.h"
 #include "text.h"
 #include "widget.h"
 
@@ -9,7 +9,7 @@
 
 typedef void (*DiskLoopFunc)(struct GameState*);
 
-void ResetPivot(struct Pivot* p, struct Coord* c, u32 _, void* nullVal);
+void ResetPivot(struct Pivot* p, Coords32* c, u32 _, void* nullVal);
 
 static const DiskLoopFunc sDiskLoops[5];
 
@@ -87,7 +87,7 @@ NAKED static void DiskLoop_Init(struct GameState* g) {
 	movs r2, #0\n\
 	movs r3, #0\n\
 	bl CopyBgMap\n\
-	ldr r0, _080F7E58 @ =gSystemSavedataManager\n\
+	ldr r0, _080F7E58 @ =gSystemSavedata\n\
 	adds r0, #0x4b\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #1\n\
@@ -114,7 +114,7 @@ _080F7E48: .4byte gGraphic_Capcom+(22*20)\n\
 _080F7E4C: .4byte gGraphic_Capcom+(22*20)+12\n\
 _080F7E50: .4byte 0x00000ED8\n\
 _080F7E54: .4byte gBgMapOffsets+(101*4)\n\
-_080F7E58: .4byte gSystemSavedataManager\n\
+_080F7E58: .4byte gSystemSavedata\n\
 _080F7E5C: .4byte gGraphic_Capcom+(36*20)\n\
 _080F7E60: .4byte gGraphic_Capcom+(36*20)+12\n\
 _080F7E64:\n\
@@ -186,10 +186,10 @@ _080F7E7E:\n\
 	bl LoadPalette\n\
 	adds r0, r7, #0\n\
 	movs r1, #3\n\
-	bl createMenuCursor\n\
+	bl CreateTriangleCursor\n\
 	adds r0, r7, #0\n\
 	movs r1, #4\n\
-	bl createMenuCursor\n\
+	bl CreateTriangleCursor\n\
 	adds r0, r7, #0\n\
 	movs r1, #0\n\
 	bl createSecretDiskModalBorder\n\
@@ -204,7 +204,7 @@ _080F7E7E:\n\
 	bl createSecretDiskModalBorder\n\
 	movs r0, #0x40\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r2, #0\n\
 	ldr r3, _080F7F94 @ =0x03002BE0\n\
 	adds r4, r3, #0\n\
@@ -259,7 +259,7 @@ _080F7F9C: .4byte gVideoRegBuffer+6\n\
 static void DiskLoop_OpenScreen(struct GameState* g) {
   g->frames++;
   if (g->frames >= 16) {
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
     g->mode[1] = 2;
     DiskLoop_Run(g);
   } else {
@@ -604,7 +604,7 @@ _080F82BC:\n\
 	strb r1, [r5, #0x12]\n\
 _080F82CE:\n\
 	movs r0, #0x40\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _080F82F8 @ =0x00000DCC\n\
 	add r0, sb\n\
 	ldrb r0, [r0, #0xc]\n\
@@ -629,7 +629,7 @@ _080F82F8: .4byte 0x00000DCC\n\
 static void DiskLoop_BlackOut(struct GameState* g) {
   g->frames--;
   if (g->frames == 0) {
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x0;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
     g->mode[1] = 4;
     DiskLoop_Exit(g);
   } else {
@@ -639,7 +639,7 @@ static void DiskLoop_BlackOut(struct GameState* g) {
 
 static void DiskLoop_Exit(struct GameState* g) {
   u8* s;
-  ClearBlink(64);
+  RemovePaletteAnimation(64);
   gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
   PALETTE16(0) = 0;
   s = (u8*)&(g->sceneState).menu;
@@ -650,23 +650,22 @@ static void DiskLoop_Exit(struct GameState* g) {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 static void sd_analysis_080f83ac(struct GameState* g) {
-  struct Coord* c = &g->unk_0dc4;
-  c->x = PIXEL(120);
-  c->y = PIXEL(80);
+  Coords32* c = &g->unk_0dc4;
+  c->x = PIXEL(120), c->y = PIXEL(80);
   ResetPivot(&g->unk_0db8, c, 0, 0);
-  ResetTaskManager(&g->taskManager2);
-  SetTaskPivot(&g->taskManager2, &g->unk_0db8);
+  Renderer_Init(&g->rendererUI);
+  Renderer_SetPivot(&g->rendererUI, &g->unk_0db8);
   InitWidgetHeader(&g->entityHeaders[ENTITY_WIDGET], gWidgets, 64);
 }
 
 static void sd_analysis_080f8408(struct GameState* g) {
-  struct Coord* c = &g->unk_0dc4;
+  Coords32* c = &g->unk_0dc4;
   const u16* bg1ofs = gVideoRegBuffer.bgofs[1];
   c->x = PIXEL(bg1ofs[0] & 0x1FF) + PIXEL(120);
-  ClearTaskBuffer(&g->taskManager2);
+  Renderer_Clear(&g->rendererUI);
   UpdateEntities(gWidgetHeaderPtr);
-  DrawEntity(gWidgetHeaderPtr, &g->taskManager2);
-  RunAllTasks(&g->taskManager2);
+  DrawEntity(gWidgetHeaderPtr, &g->rendererUI);
+  Renderer_Flush(&g->rendererUI);
 }
 
 NAKED static void setSecretDiskPalette(struct GameState* g) {
@@ -872,7 +871,7 @@ NAKED static void sd_analysis_080f85e0(struct GameState* g) {
 	adds r0, r6, #0\n\
 	movs r1, #0\n\
 	movs r2, #0\n\
-	bl CreateMenuComp2\n\
+	bl CreateSquareCursor\n\
 	adds r4, r0, #0\n\
 	str r4, [r5, #4]\n\
 	ldrb r0, [r5, #0xa]\n\
@@ -1547,7 +1546,7 @@ _080F8B48:\n\
 	bls _080F8B6C\n\
 	cmp r5, #0x5d\n\
 	bhi _080F8B68\n\
-	ldr r0, _080F8B64 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F8B64 @ =gElfAvailability\n\
 	ldr r1, [r0]\n\
 	adds r1, r5, r1\n\
 	subs r1, #0x14\n\
@@ -1557,7 +1556,7 @@ _080F8B48:\n\
 	strb r0, [r1]\n\
 	b _080F8B82\n\
 	.align 2, 0\n\
-_080F8B64: .4byte gUnlockedElfPtr\n\
+_080F8B64: .4byte gElfAvailability\n\
 _080F8B68:\n\
 	cmp r5, #0x6d\n\
 	bls _080F8B70\n\
@@ -1588,13 +1587,12 @@ _080F8B90: .4byte 0x0000010D\n\
 }
 
 /**
- * @param flagbits &SaveSlot.disk[0] (addr: 0x02036e78)
+ * @param flagbits &GameSavedata.disk[0] (addr: 0x02036e78)
  * @note 0x080f8b94
  */
 void clearSecretDiskData(u8* flagbits) {
   gStageDiskManager.disk = flagbits;
-  CpuFastFill(0, flagbits, 32);
-  CpuFill32(0, &flagbits[32], 16);
+  MemFill32(0, flagbits, 48);
   clearStageDisk();
 }
 
@@ -1604,8 +1602,7 @@ void clearSecretDiskData(u8* flagbits) {
  */
 void clearSecretDiskDataHard(u8* flagbits) {
   gStageDiskManager.disk = flagbits;
-  CpuFastFill(0, flagbits, 32);
-  CpuFill32(0, &flagbits[32], 16);
+  MemFill32(0, flagbits, 48);
   clearStageDisk();
 }
 

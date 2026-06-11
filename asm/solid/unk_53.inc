@@ -81,7 +81,7 @@ _080DFDD4:
 	strb r0, [r5, #0xd]
 _080DFE2A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r5, #0x60]
 	ldr r0, _080DFE98 @ =0x000006FF
 	cmp r1, r0
@@ -98,7 +98,7 @@ _080DFE3E:
 	ldr r0, _080DFE9C @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #6
 	cmp r0, r1

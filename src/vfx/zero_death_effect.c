@@ -6,13 +6,11 @@
   ゼロ死亡時のティウンティウンエフェクト(花火)
 */
 
-// clang-format off
-
 static void ZeroDeathEffect_Init(struct VFX* p);
 static void ZeroDeathEffect_Update(struct VFX* p);
 static void ZeroDeathEffect_Die(struct VFX* p);
 
-// xx nn nn nn
+// clang-format off
 const VFXRoutine gZeroDeathEffectRoutine = {
     [ENTITY_INIT] =      (void*)ZeroDeathEffect_Init,
     [ENTITY_UPDATE] =    (void*)ZeroDeathEffect_Update,
@@ -38,7 +36,7 @@ NAKED void CreateFirework(s32 x, s32 y, bool8 r2) {
 _080B358E:\n\
 	ldr r0, _080B35C8 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r3, r0, #0\n\
 	cmp r3, #0\n\
 	beq _080B362E\n\
@@ -136,27 +134,23 @@ _080B3644: .4byte gSineTable\n\
 
 // --------------------------------------------
 
-static void FUN_080b3698(struct VFX* p);
+static void _ZeroDeathEffect_Init(struct VFX* p);
 
 static void ZeroDeathEffect_Init(struct VFX* p) {
   static const VFXFunc sInitializers[1] = {
-      FUN_080b3698,
+      _ZeroDeathEffect_Init,
   };
   (sInitializers[(p->s).work[0]])(p);
 }
 
-// --------------------------------------------
-
-void FUN_080b36e0(struct VFX* p);
+void _ZeroDeathEffect_Update(struct VFX* p);
 
 static void ZeroDeathEffect_Update(struct VFX* p) {
   static const VFXFunc sUpdates[1] = {
-      FUN_080b36e0,
+      _ZeroDeathEffect_Update,
   };
   (sUpdates[(p->s).work[0]])(p);
 }
-
-// --------------------------------------------
 
 static void ZeroDeathEffect_Die(struct VFX* p) {
   (p->s).flags &= ~DISPLAY;
@@ -165,7 +159,8 @@ static void ZeroDeathEffect_Die(struct VFX* p) {
 
 // --------------------------------------------
 
-static void FUN_080b3698(struct VFX* p) {
+// 0x080b3698
+static void _ZeroDeathEffect_Init(struct VFX* p) {
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
   (p->s).spr.oam.priority = 0;

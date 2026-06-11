@@ -68,13 +68,9 @@ static void Solid44_Update(struct Solid* p) {
     (GetMetatileAttr((p->s).coord.x - PIXEL(17), (p->s).coord.y + 1) == 0)
   ) {
     // clang-format on
-    struct Entity* q = AllocEntityFirst(gSolidHeaderPtr);
+    struct Entity* q = AllocEntityLast(gSolidHeaderPtr);
     if (q != NULL) {
-      q->taskCol = 30;
       INIT_SOLID_ROUTINE(q, SOLID_UNK_044);
-      q->tileNum = 0, q->palID = 0;
-      q->flags2 |= WHITE_PAINTABLE;
-      q->invincibleID = q->uniqueID;
       q->work[0] = 1, q->work[1] = 0;
       q->coord.x = (p->s).coord.x + PIXEL(8);
       q->coord.y = (p->s).coord.y;
@@ -235,7 +231,7 @@ _080DE48E:\n\
 	cmp r0, #8\n\
 	ble _080DE526\n\
 	adds r0, r1, #0\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r3, r0, #0\n\
 	cmp r3, #0\n\
 	beq _080DE526\n\
@@ -296,7 +292,7 @@ _080DE53A:\n\
 	strb r0, [r6, #0xd]\n\
 _080DE558:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r1, [r6, #0x60]\n\
 	ldr r0, _080DE5E8 @ =0x000006FF\n\
 	cmp r1, r0\n\
@@ -313,7 +309,7 @@ _080DE56C:\n\
 	ldr r0, _080DE5EC @ =gStageRun+232\n\
 	adds r1, r6, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0xa0\n\
 	lsls r1, r1, #4\n\
 	cmp r0, r1\n\

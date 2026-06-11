@@ -16,7 +16,7 @@
 	cmp r0, #0xff
 	beq _08018E06
 	movs r3, #1
-	ldr r7, _08018D60 @ =0x0202FDBA
+	ldr r7, _08018D60 @ =gSpawnManager+0x22A
 	ldr r0, _08018D64 @ =wStaticGraphicTilenums
 	mov sb, r0
 	ldr r1, _08018D68 @ =wStaticMotionPalIDs
@@ -39,7 +39,7 @@ _08018D3E:
 	b _08018D78
 	.align 2, 0
 _08018D5C: .4byte sStagePreloadEntities
-_08018D60: .4byte 0x0202FDBA
+_08018D60: .4byte gSpawnManager+0x22A
 _08018D64: .4byte wStaticGraphicTilenums
 _08018D68: .4byte wStaticMotionPalIDs
 _08018D6C: .4byte gSpawnManager

@@ -1,12 +1,12 @@
-#include "blink.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 #include "solid.h"
 
-static void initAnatreForest(struct Coord* _ UNUSED);
-static void FUN_080101f0(struct Coord* _ UNUSED);
-static void FUN_08010444(struct Coord* _ UNUSED);
-static void FUN_080104d4(struct Coord* _ UNUSED);
+static void initAnatreForest(Coords32* _ UNUSED);
+static void FUN_080101f0(Coords32* _ UNUSED);
+static void FUN_08010444(Coords32* _ UNUSED);
+static void FUN_080104d4(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initAnatreForest,
@@ -15,7 +15,7 @@ static const StageFunc sStageRoutine[4] = {
     FUN_080104d4,
 };
 
-static void initAnatreForest(struct Coord* _ UNUSED) {
+static void initAnatreForest(Coords32* _ UNUSED) {
   gOverworld.work.anatreForest.leaf = NULL;
   gOverworld.work.anatreForest.unk_004 = 0;
   gOverworld.work.anatreForest.unk_008 = NULL;
@@ -23,7 +23,7 @@ static void initAnatreForest(struct Coord* _ UNUSED) {
   gOverworld.work.anatreForest.unk_00d = 0;
 }
 
-static void FUN_080101f0(struct Coord* _ UNUSED) {
+static void FUN_080101f0(Coords32* _ UNUSED) {
   if (gOverworld.work.anatreForest.leaf == NULL) {
     gOverworld.work.anatreForest.leaf = CreateLeafBurn(1);
   }
@@ -31,47 +31,47 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
   if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 0)) {
     if ((gOverworld.work.anatreForest.unk_00c & 1) == 0) {
       gOverworld.work.anatreForest.unk_00c |= 1;
-      LoadBlink(218, 0);
-      LoadBlink(219, 0);
-      LoadBlink(220, 0);
+      StartPaletteAnimation(218, 0);
+      StartPaletteAnimation(219, 0);
+      StartPaletteAnimation(220, 0);
     }
-    UpdateBlinkMotionState(218);
-    UpdateBlinkMotionState(219);
-    UpdateBlinkMotionState(220);
+    StepPaletteAnimation(218);
+    StepPaletteAnimation(219);
+    StepPaletteAnimation(220);
 
   } else if ((gOverworld.work.anatreForest.unk_00c & 1)) {
     gOverworld.work.anatreForest.unk_00c ^= 1;
-    ClearBlink(218);
-    ClearBlink(219);
-    ClearBlink(220);
+    RemovePaletteAnimation(218);
+    RemovePaletteAnimation(219);
+    RemovePaletteAnimation(220);
   }
 
   if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 1)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 1)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 1);
-      LoadBlink(221, 0);
+      StartPaletteAnimation(221, 0);
     }
-    UpdateBlinkMotionState(221);
+    StepPaletteAnimation(221);
 
   } else if ((gOverworld.work.anatreForest.unk_00c & (1 << 1))) {
     gOverworld.work.anatreForest.unk_00c ^= (1 << 1);
-    ClearBlink(221);
+    RemovePaletteAnimation(221);
   }
 
   if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 2)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 2)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 2);
-      LoadBlink(222, 0);
-      LoadBlink(223, 0);
-      LoadBlink(224, 0);
-      LoadBlink(225, 0);
-      LoadBlink(226, 0);
+      StartPaletteAnimation(222, 0);
+      StartPaletteAnimation(223, 0);
+      StartPaletteAnimation(224, 0);
+      StartPaletteAnimation(225, 0);
+      StartPaletteAnimation(226, 0);
     }
-    UpdateBlinkMotionState(222);
-    UpdateBlinkMotionState(223);
-    UpdateBlinkMotionState(224);
-    UpdateBlinkMotionState(225);
-    UpdateBlinkMotionState(226);
+    StepPaletteAnimation(222);
+    StepPaletteAnimation(223);
+    StepPaletteAnimation(224);
+    StepPaletteAnimation(225);
+    StepPaletteAnimation(226);
     gOverworld.work.anatreForest.unk_00d++;
     if (gOverworld.work.anatreForest.unk_00d == 190) {
       gOverworld.work.anatreForest.unk_00d = 0;
@@ -79,32 +79,33 @@ static void FUN_080101f0(struct Coord* _ UNUSED) {
 
   } else if ((gOverworld.work.anatreForest.unk_00c & (1 << 2))) {
     gOverworld.work.anatreForest.unk_00c ^= (1 << 2);
-    ClearBlink(222);
-    ClearBlink(223);
-    ClearBlink(224);
-    ClearBlink(225);
-    ClearBlink(226);
+    RemovePaletteAnimation(222);
+    RemovePaletteAnimation(223);
+    RemovePaletteAnimation(224);
+    RemovePaletteAnimation(225);
+    RemovePaletteAnimation(226);
   }
 
   if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 3)) {
     if ((gOverworld.work.anatreForest.unk_00c & (1 << 3)) == 0) {
       gOverworld.work.anatreForest.unk_00c |= (1 << 3);
-      LoadBlink(227, 0);
-      LoadBlink(228, 0);
+      StartPaletteAnimation(227, 0);
+      StartPaletteAnimation(228, 0);
     }
-    UpdateBlinkMotionState(227);
-    UpdateBlinkMotionState(228);
+    StepPaletteAnimation(227);
+    StepPaletteAnimation(228);
 
   } else if ((gOverworld.work.anatreForest.unk_00c & (1 << 3))) {
     gOverworld.work.anatreForest.unk_00c ^= (1 << 3);
-    ClearBlink(227);
-    ClearBlink(228);
+    RemovePaletteAnimation(227);
+    RemovePaletteAnimation(228);
   }
 }
 
 static const u8 u8_ARRAY_ARRAY_08340128[6][2];
 
-NON_MATCH static void FUN_08010444(struct Coord* _ UNUSED) {
+// 0x08010444
+NON_MATCH static void FUN_08010444(Coords32* _ UNUSED) {
 #if MODERN
   if (((gOverworld.terrain.tilesets[0] >> 8) == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 2)) {
     u16 i;
@@ -119,7 +120,7 @@ NON_MATCH static void FUN_08010444(struct Coord* _ UNUSED) {
 #endif
 }
 
-static void FUN_080104d4(struct Coord* _ UNUSED) {
+static void FUN_080104d4(Coords32* _ UNUSED) {
   struct Solid* leaf;
   if (leaf = gOverworld.work.anatreForest.leaf, leaf != NULL) {
     (leaf->s).flags &= ~DISPLAY;
@@ -127,17 +128,17 @@ static void FUN_080104d4(struct Coord* _ UNUSED) {
     EXIT_BODY(leaf);
     SET_SOLID_ROUTINE(leaf, ENTITY_DISAPPEAR);
   }
-  ClearBlink(218);
-  ClearBlink(219);
-  ClearBlink(220);
-  ClearBlink(221);
-  ClearBlink(222);
-  ClearBlink(223);
-  ClearBlink(224);
-  ClearBlink(225);
-  ClearBlink(226);
-  ClearBlink(227);
-  ClearBlink(228);
+  RemovePaletteAnimation(218);
+  RemovePaletteAnimation(219);
+  RemovePaletteAnimation(220);
+  RemovePaletteAnimation(221);
+  RemovePaletteAnimation(222);
+  RemovePaletteAnimation(223);
+  RemovePaletteAnimation(224);
+  RemovePaletteAnimation(225);
+  RemovePaletteAnimation(226);
+  RemovePaletteAnimation(227);
+  RemovePaletteAnimation(228);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -212,8 +213,7 @@ static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
 static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) &= 0xFFFC;
-    BGCNT16(n >> 4) |= BGCNT_PRIORITY(1);
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(1);
     l->phase++;
   }
 }
@@ -367,7 +367,7 @@ const struct Stage gAnatreForestLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {3, 3, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x80, 0x80}},
   scroll : {{0, 0}, {0, 0}, {120, 256}},
   tilesetOffset : sTilesetOffset,
@@ -381,7 +381,7 @@ static const u8 u8_ARRAY_ARRAY_08340128[6][2] = {
 };
 
 // clang-format off
-static const struct Coord Coord_ARRAY_ARRAY_08340134[10][2] = {
+static const Coords32 Coord_ARRAY_ARRAY_08340134[10][2] = {
     [0] = {{PIXEL(2912), PIXEL(480)}, {PIXEL(3008), PIXEL(592)}},
     [1] = {{PIXEL(3264), PIXEL(480)}, {PIXEL(3360), PIXEL(608)}},
     [2] = {{PIXEL(3600), PIXEL(512)}, {PIXEL(3696), PIXEL(640)}},
@@ -405,7 +405,7 @@ static const struct Rect Rect_ARRAY_083401e8[3] = {
     {PIXEL(48), PIXEL(48), PIXEL(96), PIXEL(96)},
 };
 
-static const struct Coord Coord_ARRAY_08340200[4] = {
+static const Coords32 Coord_ARRAY_08340200[4] = {
     {PIXEL(3152), PIXEL(560)},
     {PIXEL(3472), PIXEL(592)},
     {PIXEL(4160), PIXEL(608)},
@@ -413,7 +413,7 @@ static const struct Coord Coord_ARRAY_08340200[4] = {
 };
 
 // clang-format off
-static const struct Coord Coord_ARRAY_08340220[10] = {
+static const Coords32 Coord_ARRAY_08340220[10] = {
     {PIXEL(2872), PIXEL(560)},
     {PIXEL(3192), PIXEL(592)},
     {PIXEL(3544), PIXEL(608)},

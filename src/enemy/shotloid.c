@@ -102,7 +102,7 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(10)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(10)};
 static const u8 sInitModes[2] = {5, 6};
 
 // clang-format off

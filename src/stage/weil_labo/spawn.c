@@ -60,22 +60,22 @@ const struct SpawnTemplate gWeilLaboEntity[50] =
         [11] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 0, 1),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 0, 1),
             },
         [12] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 1, 1),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 1, 1),
             },
         [13] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 2, 1),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 2, 1),
             },
         [14] =
             {
                 .flag = SF_RESPAWN,
-                .kind = SpawnEntity(ENTITY_SOLID, SOLID_UNK_025, 3, 1),
+                .kind = SpawnEntity(ENTITY_SOLID, SOLID_PLATFORM_AREAX2_WEILLABO, 3, 1),
             },
         [15] =
             {

@@ -56,7 +56,7 @@ Solid43_Update: @ 0x080DE038
 _080DE0A0:
 	ldr r0, _080DE130 @ =gSolidHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r2, r0, #0
 	lsls r3, r5, #0x10
 	cmp r2, #0
@@ -171,7 +171,7 @@ Solid43_Die: @ 0x080DE13C
 	strb r0, [r6, #0xd]
 _080DE18A:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r6, #0x60]
 	ldr r0, _080DE1EC @ =0x000006FF
 	cmp r1, r0
@@ -188,7 +188,7 @@ _080DE19E:
 	ldr r0, _080DE1F0 @ =gStageRun+232
 	adds r1, r6, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #6
 	cmp r0, r1

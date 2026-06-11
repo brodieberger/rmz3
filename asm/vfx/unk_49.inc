@@ -88,7 +88,7 @@ _080C049E:
 	strb r0, [r4, #0xa]
 _080C04A0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	bne _080C04CA
@@ -148,9 +148,9 @@ _080C04F4:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x57
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0x57
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	movs r0, #0x1e
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -168,11 +168,11 @@ _080C0528:
 	strb r0, [r4, #0xe]
 _080C053A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080C059A
 _080C0542:
 	movs r0, #0x57
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	adds r2, r5, #0
 	adds r2, #0xb4
 	ldr r0, [r2]
@@ -187,7 +187,7 @@ _080C0542:
 	strb r0, [r4, #0xe]
 _080C0562:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r3, [r0]
@@ -283,7 +283,7 @@ _080C061E:
 	strb r0, [r4, #0xa]
 _080C0620:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -321,7 +321,7 @@ FUN_080c065c: @ 0x080C065C
 	cmp r0, #4
 	bne _080C068C
 	movs r0, #0x57
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -366,9 +366,9 @@ _080C06A6:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x57
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0x57
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	movs r0, #2
 	strb r0, [r4, #0x12]
 	ldr r0, [r5, #0x54]
@@ -385,19 +385,19 @@ _080C06E0:
 	cmp r0, #1
 	bne _080C06F0
 	movs r0, #0x57
-	bl ClearBlink
+	bl RemovePaletteAnimation
 _080C06F0:
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
 _080C06F6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0xc]
 	cmp r0, #1
 	bls _080C072C
 	movs r0, #0x57
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -436,7 +436,7 @@ _080C0744:
 	strb r0, [r4, #0xe]
 _080C0752:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r2, [r0]

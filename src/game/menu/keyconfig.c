@@ -1,13 +1,13 @@
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "menu.h"
+#include "palette_animation.h"
 
-static void KcMenuLoop_Init(struct GameState *g);
-static void KcMenuLoop_Update(struct GameState *g);
-static void KcMenuLoop_SlideOut(struct GameState *g);
-static void KcMenuLoop_Exit(struct GameState *g);
+static void KcMenuLoop_Init(struct GameState* g);
+static void KcMenuLoop_Update(struct GameState* g);
+static void KcMenuLoop_SlideOut(struct GameState* g);
+static void KcMenuLoop_Exit(struct GameState* g);
 
 // 01 02 xx xx (BYTE[0x02031978] = 2)
 const MenuLoopFunc KeyConfigMenuLoops[4] = {
@@ -29,90 +29,32 @@ const u8 u8_ARRAY_ARRAY_08386459[6][4] = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-void EachMenuLoop_KeyConfig(struct GameState *g) {
+void EachMenuLoop_KeyConfig(struct GameState* g) {
   (KeyConfigMenuLoops[g->mode[2]])(g);
   return;
 }
 
-NAKED static void KcMenuLoop_Init(struct GameState *g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	mov r6, r8\n\
-	push {r6}\n\
-	adds r5, r0, #0\n\
-	ldr r0, _080F5B6C @ =0x00000DF8\n\
-	adds r0, r0, r5\n\
-	mov r8, r0\n\
-	movs r0, #0\n\
-	mov r1, r8\n\
-	strb r0, [r1]\n\
-	ldr r0, _080F5B70 @ =gGraphic_Capcom+(22*20)\n\
-	ldr r6, _080F5B74 @ =gVideoRegBuffer+6\n\
-	ldrh r2, [r6]\n\
-	movs r1, #0xc\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	bl LoadGraphic\n\
-	ldr r0, _080F5B78 @ =gGraphic_Capcom+(22*20)+12\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-	ldr r0, _080F5B7C @ =0x085222F8\n\
-	ldr r0, [r0]\n\
-	ldr r1, _080F5B80 @ =gBgMapOffsets+(24*4)\n\
-	adds r0, r0, r1\n\
-	ldr r1, _080F5B84 @ =0x00000ED8\n\
-	adds r4, r5, r1\n\
-	movs r2, #0xf0\n\
-	lsls r2, r2, #1\n\
-	adds r1, r4, #0\n\
-	bl CpuFastSet\n\
-	adds r0, r5, #0\n\
-	adds r1, r4, #0\n\
-	bl FUN_080f614c\n\
-	movs r0, #0x43\n\
-	movs r1, #0\n\
-	bl LoadBlink\n\
-	movs r0, #0x43\n\
-	bl UpdateBlinkMotionState\n\
-	movs r0, #0x43\n\
-	bl ClearBlink\n\
-	movs r0, #0x44\n\
-	movs r1, #0\n\
-	bl LoadBlink\n\
-	movs r0, #0x40\n\
-	movs r1, #0\n\
-	bl LoadBlink\n\
-	movs r0, #0x40\n\
-	mov r1, r8\n\
-	strb r0, [r1, #1]\n\
-	ldrh r0, [r6]\n\
-	movs r1, #0xf8\n\
-	lsls r1, r1, #5\n\
-	ands r1, r0\n\
-	lsls r1, r1, #3\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #5\n\
-	adds r0, r4, #0\n\
-	bl RequestBgMapTransfer\n\
-	movs r0, #2\n\
-	strb r0, [r5, #2]\n\
-	pop {r3}\n\
-	mov r8, r3\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F5B6C: .4byte 0x00000DF8\n\
-_080F5B70: .4byte gGraphic_Capcom+(22*20)\n\
-_080F5B74: .4byte gVideoRegBuffer+6\n\
-_080F5B78: .4byte gGraphic_Capcom+(22*20)+12\n\
-_080F5B7C: .4byte gBgMapOffsets+(22*4)\n\
-_080F5B80: .4byte gBgMapOffsets+(24*4)\n\
-_080F5B84: .4byte 0x00000ED8\n\
- .syntax divided\n");
+static void FUN_080f614c(struct GameState* g, u16* r1);
+
+// 0x080f5ad4
+static void KcMenuLoop_Init(struct GameState* g) {
+  struct KeyConfigMenuState* kc = &((g->sceneState).menu).kc;
+  kc->y = 0;
+  LoadGraphic(BG_GRAPHIC(BG_MISC_MENU), (void*)CHAR_BASE(1));
+  LoadPalette(BG_PALETTE(BG_MISC_MENU), 0);
+  CpuFastCopy(BGMAP(BG_MISC_MENU), g->menuBgMap1, 960 * 2);
+  FUN_080f614c(g, g->menuBgMap1);
+  StartPaletteAnimation(67, 0);
+  StepPaletteAnimation(67);
+  RemovePaletteAnimation(67);
+  StartPaletteAnimation(68, 0);
+  StartPaletteAnimation(64, 0);
+  kc->plttAnimID = 64;
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
+  g->mode[2] = 2;
 }
 
-NAKED static void KcMenuLoop_Update(struct GameState *g) {
+NAKED static void KcMenuLoop_Update(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -657,17 +599,17 @@ _080F5F8A:\n\
 	cmp r0, #5\n\
 	bne _080F5FD0\n\
 	ldrb r0, [r4, #1]\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x42\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x42\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x42\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x41\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x41\n\
 	b _080F5FFA\n\
 	.align 2, 0\n\
@@ -678,27 +620,27 @@ _080F5FD0:\n\
 	cmp r3, #5\n\
 	bne _080F5FFC\n\
 	ldrb r0, [r4, #1]\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x43\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x43\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x43\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x40\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x40\n\
 _080F5FFA:\n\
 	strb r0, [r4, #1]\n\
 _080F5FFC:\n\
 	movs r0, #0x44\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _080F6030 @ =0x00000DF8\n\
 	add r0, r8\n\
 	ldrb r0, [r0, #1]\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _080F6034 @ =0x00000ED8\n\
 	add r0, r8\n\
 	ldr r1, _080F6038 @ =gVideoRegBuffer+6\n\
@@ -724,7 +666,7 @@ _080F6038: .4byte gVideoRegBuffer+6\n\
  .syntax divided\n");
 }
 
-static void KcMenuLoop_SlideOut(struct GameState *g) {
+static void KcMenuLoop_SlideOut(struct GameState* g) {
   if (MENU->unk_4d == 3) {
     BGOFS(1)->x += 16;
   } else {
@@ -738,15 +680,15 @@ static void KcMenuLoop_SlideOut(struct GameState *g) {
   }
 }
 
-static void KcMenuLoop_Exit(struct GameState *g) {
-  struct KeyConfigMenuState *m;
-  ClearBlink(68);
+static void KcMenuLoop_Exit(struct GameState* g) {
+  struct KeyConfigMenuState* m;
+  RemovePaletteAnimation(68);
 
   m = &((g->sceneState).menu).kc;
-  ClearBlink(m->blinkID);
+  RemovePaletteAnimation(m->plttAnimID);
 }
 
-NAKED void FUN_080f60bc(u16 *p, KEY_INPUT key, u16 r2, u8 r3) {
+NAKED void FUN_080f60bc(u16* p, KEY_INPUT key, u16 r2, u8 r3) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r7, r0, #0\n\
@@ -831,7 +773,8 @@ _080F6148: .4byte 0x0000013F\n\
  .syntax divided\n");
 }
 
-NAKED void FUN_080f614c(struct GameState *g, u16 *r1) {
+// 0x080f614c
+NAKED static void FUN_080f614c(struct GameState* g, u16* r1) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\

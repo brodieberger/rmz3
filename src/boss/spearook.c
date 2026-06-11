@@ -283,7 +283,7 @@ static const u8 u8_ARRAY_0836591c[16] = {
     7, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9, 9, 9, 9, 9, 9,
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(16)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(16)};
 static const u8 sInitModes[4] = {1, 2, 3, 16};
 
 static const u8 u8_ARRAY_08365938[16] = {

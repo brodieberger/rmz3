@@ -16,15 +16,10 @@ const EnemyRoutine gCapsuleCannonRoutine = {
 };
 // clang-format on
 
-struct Enemy* CreateCapsuleCannon(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+struct Enemy* CreateCapsuleCannon(Coords32* c, u8 n) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CAPSULE_CANNON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -108,4 +103,4 @@ static const struct Collision sCollisions[4] = {
     },
 };
 
-static const struct Coord sElementCoord = {-PIXEL(8), PIXEL(0)};
+static const Coords32 sElementCoord = {-PIXEL(8), PIXEL(0)};

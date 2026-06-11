@@ -5,6 +5,8 @@
 #include "sprite.h"
 #include "story.h"
 
+static void RenderTask_CyberSpaceDoor(struct Sprite* s, struct DrawPivot* dp);
+
 struct CyberDoorObject {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
@@ -22,11 +24,11 @@ static void CyberSpaceDoor_Disappear(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gCyberSpaceDoorRoutine = {
-    [ENTITY_INIT] =      (SolidFunc)CyberSpaceDoor_Init,
-    [ENTITY_UPDATE] =    (SolidFunc)CyberSpaceDoor_Update,
-    [ENTITY_DIE] =       (SolidFunc)CyberSpaceDoor_Die,
-    [ENTITY_DISAPPEAR] = (SolidFunc)CyberSpaceDoor_Disappear,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)CyberSpaceDoor_Init,
+    [ENTITY_UPDATE] =    (void*)CyberSpaceDoor_Update,
+    [ENTITY_DIE] =       (void*)CyberSpaceDoor_Die,
+    [ENTITY_DISAPPEAR] = (void*)CyberSpaceDoor_Disappear,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -158,11 +160,11 @@ _080DBB34: .4byte gSolidFnTable\n\
  .syntax divided\n");
 }
 
-static void FUN_080dbbd4(struct Solid* p);
+static void _CyberSpaceDoor_Update(struct Solid* p);
 
 static void CyberSpaceDoor_Update(struct Solid* p) {
   static const SolidFunc sUpdates[1] = {
-      FUN_080dbbd4,
+      _CyberSpaceDoor_Update,
   };
   (sUpdates[(p->s).mode[1]])(p);
 }
@@ -191,7 +193,8 @@ static void CyberSpaceDoor_Disappear(struct Solid* p) {
 
 // --------------------------------------------
 
-NAKED static void FUN_080dbbd4(struct Solid* p) {
+// 0x080dbbd4
+NAKED static void _CyberSpaceDoor_Update(struct Solid* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r4, r0, #0\n\
@@ -220,7 +223,7 @@ _080DBBF0:\n\
 	str r0, [r1]\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x34\n\
-	ldr r1, _080DBC8C @ =TaskCB_080dbdf4\n\
+	ldr r1, _080DBC8C @ =RenderTask_CyberSpaceDoor\n\
 	bl SetTaskCallback\n\
 	str r4, [r4, #0x3c]\n\
 	ldrb r1, [r4, #0xa]\n\
@@ -290,7 +293,7 @@ _080DBC62:\n\
 	str r0, [r5, #0x60]\n\
 	b _080DBCB4\n\
 	.align 2, 0\n\
-_080DBC8C: .4byte TaskCB_080dbdf4\n\
+_080DBC8C: .4byte RenderTask_CyberSpaceDoor\n\
 _080DBC90: .4byte sCollisions\n\
 _080DBC94: .4byte gStageRun+232\n\
 _080DBC98: .4byte 0xFFFF5800\n\
@@ -460,7 +463,8 @@ _080DBDF0: .4byte gStageRun\n\
  .syntax divided\n");
 }
 
-void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
+// 0x080dbdf4
+static void RenderTask_CyberSpaceDoor(struct Sprite* s, struct DrawPivot* dp) {
   struct CyberDoorObject* p = (struct CyberDoorObject*)s->sprites;
   if (!FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
     if ((p->s).work[0] != 0) {
@@ -473,10 +477,10 @@ void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
   }
 
   (p->s).spr.sprites = p->sprites;
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   TaskCB_DrawNoAffineSprite(s, dp);
   p->sprites = (p->s).spr.sprites;
-  (p->s).spr.sprites = (struct MetaspriteHeader*)p;
+  (p->s).spr.sprites = (void*)p;
 }
 
 static const struct Collision sCollisions[2] = {

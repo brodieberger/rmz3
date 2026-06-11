@@ -23,12 +23,10 @@ const VFXRoutine gVFX46Routine = {
 // --------------------------------------------
 
 // 0x080bec34
-struct Entity* FUN_080bec34(struct Entity* e, struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bec34(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_046);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 0;
     p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = (void*)e;
@@ -37,12 +35,10 @@ struct Entity* FUN_080bec34(struct Entity* e, struct Coord* c, u8 kind) {
 }
 
 // 0x080bec8c
-struct Entity* FUN_080bec8c(struct Coord* c, u8 kind, motion_t m, u32 n) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bec8c(Coords32* c, u8 kind, motion_t m, u32 n) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_046);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind, (p->s).work[1] = 1;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     p->m_74 = m;
@@ -52,12 +48,10 @@ struct Entity* FUN_080bec8c(struct Coord* c, u8 kind, motion_t m, u32 n) {
 }
 
 // 0x080becf8
-struct Entity* FUN_080becf8(struct Coord* c, u8 kind, motion_t m, u32 n) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080becf8(Coords32* c, u8 kind, motion_t m, u32 n) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_046);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind, (p->s).work[1] = 2;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     p->m_74 = m;
@@ -67,12 +61,10 @@ struct Entity* FUN_080becf8(struct Coord* c, u8 kind, motion_t m, u32 n) {
 }
 
 // 0x080bed5c
-struct Entity* FUN_080bed5c(struct Entity* e, struct Coord* c, u8 kind, u8 param_4) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bed5c(struct Entity* e, Coords32* c, u8 kind, u8 param_4) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_046);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind;
     p->unk_7c = param_4;
     (p->s).work[1] = 2;

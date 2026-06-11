@@ -18,7 +18,7 @@ PillerCannon_Init: @ 0x0806832C
 	orrs r2, r0
 	orrs r2, r3
 	strb r2, [r6, #0xa]
-	ldr r0, _08068378 @ =gSystemSavedataManager
+	ldr r0, _08068378 @ =gSystemSavedata
 	ldrb r1, [r0, #0x14]
 	movs r0, #0x10
 	ands r0, r1
@@ -44,7 +44,7 @@ PillerCannon_Init: @ 0x0806832C
 	movs r3, #0xc
 	b _0806839C
 	.align 2, 0
-_08068378: .4byte gSystemSavedataManager
+_08068378: .4byte gSystemSavedata
 _0806837C: .4byte gCurStory
 _08068380: .4byte sCollisions
 _08068384:
@@ -133,7 +133,7 @@ _0806841A:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08068438:
 	adds r0, r6, #0
 	bl PillerCannon_Update
@@ -335,7 +335,7 @@ _080685A4:
 	movs r0, #4
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _08068600 @ =gMission
+	ldr r2, _08068600 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08068604 @ =0x0000270E
 	cmp r1, r0
@@ -366,7 +366,7 @@ _080685F6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068600: .4byte gMission
+_08068600: .4byte gScore
 _08068604: .4byte 0x0000270E
 _08068608: .4byte gEnemyFnTable
 
@@ -437,7 +437,7 @@ _08068672:
 	strb r0, [r5, #0xe]
 _08068678:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080686AC @ =pZero2
 	ldr r0, [r0]
 	ldr r0, [r0, #0x54]
@@ -526,7 +526,7 @@ _08068718:
 	strb r0, [r5, #0xe]
 _0806871E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0806874C @ =pZero2
 	ldr r0, [r0]
 	ldr r0, [r0, #0x54]
@@ -549,7 +549,7 @@ _08068748: .4byte gVFXFnTable
 _0806874C: .4byte pZero2
 _08068750:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0806877C @ =pZero2
 	ldr r0, [r0]
 	ldr r0, [r0, #0x54]
@@ -932,7 +932,7 @@ _08068A3C:
 	strb r0, [r4, #0xe]
 _08068A50:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08068AC8
 _08068A58:
 	movs r1, #0x80
@@ -976,7 +976,7 @@ _08068A9E:
 	strb r0, [r4, #0xe]
 _08068AA8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08068AC8
@@ -1056,7 +1056,7 @@ _08068B30:
 	strb r0, [r5, #0xe]
 _08068B50:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1141,7 +1141,7 @@ _08068BE4:
 	strb r0, [r5, #0x13]
 _08068C04:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x13]
 	b _08068C2A
 _08068C0E:
@@ -1152,7 +1152,7 @@ _08068C0E:
 	strb r0, [r5, #0xe]
 _08068C18:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08068C1E:
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
@@ -1179,7 +1179,7 @@ _08068C36:
 	strb r0, [r5, #0xe]
 _08068C4A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1370,7 +1370,7 @@ _08068D9C:
 	bl SetDDP
 _08068DCC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08068E50
 	.align 2, 0
 _08068DD4: .4byte sMotions
@@ -1418,7 +1418,7 @@ _08068E26:
 	strb r0, [r4, #0xe]
 _08068E30:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08068E50

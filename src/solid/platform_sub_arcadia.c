@@ -26,7 +26,7 @@ const SolidRoutine gSubArcadiaPlatformRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 // 0x080cf098
-NAKED static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+NAKED static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r3, r0, #0\n\
@@ -85,25 +85,18 @@ _080CF0F8: .4byte 0x00001106\n\
 // --------------------------------------------
 
 static void Solid17_Init(Object* p) {
-  struct Body* body;
-
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = sInitMode[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
-
-  (p->s).flags |= COLLIDABLE;
-  body = &p->body;
-  InitBody(body, sCollisions, &(p->s).coord, 1);
-  body->parent = (Object*)p;
-  body->fn = NULL;  // ???
+  _INIT_BODY(p, sCollisions, 1);
   (p->s).flags2 &= ~WHITE_PAINTABLE;
   (p->s).invincibleID = (p->s).uniqueID;
-  body->fn = onCollision;  // ???
-  (p->s).flags2 |= ENTITY_HAZARD;
+  SET_BODY_INTERSECT_HANDLER(p, onCollision);
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &sSize;
-  (p->s).hazardAttr = 0x2001;
+  (p->s).physicsAttr = MTATTR_CONVEYOR1 | SHAPE_BLOCK;
   (p->s).coord.x -= PIXEL(8);
   (p->s).coord.y -= PIXEL(8);
   (p->s).unk_coord.x = (p->s).coord.x;
@@ -135,7 +128,7 @@ static void Solid17_Update(struct Entity* p) {
 }
 
 static void Solid17_Die(struct Entity* p) {
-  p->flags2 &= ~ENTITY_HAZARD;
+  p->flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 

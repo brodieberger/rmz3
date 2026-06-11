@@ -4,7 +4,7 @@
 #include "physics.h"
 #include "zero.h"
 
-struct Enemy* FUN_0809af20(struct Zero* z, struct Coord* c, u8 n);
+struct Enemy* FUN_0809af20(struct Zero* z, Coords32* c, u8 n);
 
 static const struct Collision sCollisions[7];
 
@@ -22,20 +22,20 @@ const ZeroRoutine gHarpuiaRoutine = {
 };
 // clang-format on
 
-struct Zero* CreatePlayerHarpuia(void* q, struct Coord* c, u8 n) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_HARPUIA);
-    (z->s).coord = *c;
-    (z->s).work[0] = n;
-    (z->s).unk_28 = q;
+struct Entity* CreatePlayerHarpuia(void* q, Coords32* c, u8 n) {
+  struct Entity* p = AllocPlayer();
+  if (p != NULL) {
+    p->renderPrio = 16;
+    INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_HARPUIA);
+    p->coord = *c;
+    p->work[0] = n;
+    p->unk_28 = q;
   }
-  return z;
+  return p;
 }
 
 static void Harpuia_Init(struct Zero* z) {
-  struct Coord c, *d, *uc;
+  Coords32 c, *d, *uc;
   s32 x, y;
 
   InitNonAffineMotion(&z->s);

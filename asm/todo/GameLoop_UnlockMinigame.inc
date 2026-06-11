@@ -41,7 +41,7 @@ _080EF968:
 	lsls r1, r1, #3
 	adds r0, r5, r1
 	str r4, [r0]
-	bl ClearBlinkings
+	bl RemoveAllPaletteAnimations
 	ldr r0, _080EFC18 @ =gBlendRegBuffer
 	strh r4, [r0]
 	ldr r1, _080EFC1C @ =gWindowRegBuffer
@@ -66,7 +66,7 @@ _080EF968:
 	bl FUN_080e981c
 	ldr r0, _080EFC30 @ =gGameState+16
 	bl ClearTextWindow
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x18]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x10]
@@ -90,7 +90,7 @@ _080EF9EA:
 	beq _080EF9F4
 	b _080EFCE6
 _080EF9F4:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x19]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x12]
@@ -118,7 +118,7 @@ _080EFA24:
 	beq _080EFA2E
 	b _080EFCE6
 _080EFA2E:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1a]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x14]
@@ -142,14 +142,14 @@ _080EFA54:
 	beq _080EFA5E
 	b _080EFCE6
 _080EFA5E:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1b]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x16]
 	ldrb r0, [r0, #0x16]
 	cmp r1, r0
 	beq _080EFA88
-	ldr r0, _080EFC40 @ =gMission
+	ldr r0, _080EFC40 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #6
@@ -171,7 +171,7 @@ _080EFA8E:
 	beq _080EFA98
 	b _080EFCE6
 _080EFA98:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1c]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x18]
@@ -200,14 +200,14 @@ _080EFAC8:
 	beq _080EFAD2
 	b _080EFCE6
 _080EFAD2:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1e]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x1c]
 	ldrb r0, [r0, #0x1c]
 	cmp r1, r0
 	beq _080EFB04
-	ldr r0, _080EFC40 @ =gMission
+	ldr r0, _080EFC40 @ =gScore
 	ldr r1, [r0]
 	movs r2, #0xa
 	ldrsh r0, [r1, r2]
@@ -232,14 +232,14 @@ _080EFB0A:
 	beq _080EFB14
 	b _080EFCE6
 _080EFB14:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1f]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x1e]
 	ldrb r0, [r0, #0x1e]
 	cmp r1, r0
 	beq _080EFB46
-	ldr r0, _080EFC40 @ =gMission
+	ldr r0, _080EFC40 @ =gScore
 	ldr r1, [r0]
 	movs r3, #0xa
 	ldrsh r0, [r1, r3]
@@ -264,14 +264,14 @@ _080EFB4C:
 	beq _080EFB56
 	b _080EFCE6
 _080EFB56:
-	ldr r5, _080EFC34 @ =gSystemSavedataManager
+	ldr r5, _080EFC34 @ =gSystemSavedata
 	ldrb r1, [r5, #0x1d]
 	ldr r0, _080EFC38 @ =gSineTable
 	ldrh r4, [r0, #0x1a]
 	ldrb r0, [r0, #0x1a]
 	cmp r1, r0
 	beq _080EFB8C
-	ldr r0, _080EFC40 @ =gMission
+	ldr r0, _080EFC40 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #6
@@ -299,7 +299,7 @@ _080EFB92:
 	beq _080EFB9C
 	b _080EFCE6
 _080EFB9C:
-	ldr r0, _080EFC34 @ =gSystemSavedataManager
+	ldr r0, _080EFC34 @ =gSystemSavedata
 	adds r5, r0, #0
 	adds r5, #0x20
 	ldrb r1, [r5]
@@ -309,7 +309,7 @@ _080EFB9C:
 	ands r0, r4
 	cmp r1, r0
 	beq _080EFBD8
-	ldr r0, _080EFC40 @ =gMission
+	ldr r0, _080EFC40 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #6
@@ -366,10 +366,10 @@ _080EFC24: .4byte gVideoRegBuffer
 _080EFC28: .4byte 0x0000FFF8
 _080EFC2C: .4byte 0x0000F0FF
 _080EFC30: .4byte gGameState+16
-_080EFC34: .4byte gSystemSavedataManager
+_080EFC34: .4byte gSystemSavedata
 _080EFC38: .4byte gSineTable
 _080EFC3C: .4byte gTextWindow+8
-_080EFC40: .4byte gMission
+_080EFC40: .4byte gScore
 _080EFC44: .4byte 0x0000625C
 _080EFC48: .4byte gCurStory
 _080EFC4C: .4byte 0x00006270
@@ -421,14 +421,14 @@ _080EFC9E:
 	ldr r0, _080EFCF4 @ =0x00006270
 	adds r1, r6, r0
 	movs r0, #1
-	bl resetCurStory
+	bl LoadStoryData
 	ldr r1, _080EFCF8 @ =0x00006410
 	adds r4, r6, r1
 	ldr r5, [r4, #0xc]
 	adds r0, r4, #0
 	bl ClearPlayInfo
 	str r5, [r4, #0xc]
-	ldr r0, _080EFCFC @ =gMission
+	ldr r0, _080EFCFC @ =gScore
 	ldr r1, [r0]
 	movs r0, #2
 	strb r0, [r1]
@@ -438,12 +438,12 @@ _080EFC9E:
 	ldr r3, _080EFD04 @ =0x00006460
 	adds r4, r6, r3
 	adds r1, r4, #0
-	bl CopyZeroStatus
+	bl StoreZeroStatus
 	adds r0, r4, #0
 	bl FUN_080321d4
 	ldr r0, [r5]
 	adds r1, r4, #0
-	bl SaveZeroStatus
+	bl LoadZeroStatus
 	movs r1, #0xc0
 	lsls r1, r1, #4
 	adds r0, r6, #0
@@ -457,6 +457,6 @@ _080EFCE6:
 _080EFCF0: .4byte gCurStory
 _080EFCF4: .4byte 0x00006270
 _080EFCF8: .4byte 0x00006410
-_080EFCFC: .4byte gMission
+_080EFCFC: .4byte gScore
 _080EFD00: .4byte 0x000064AC
 _080EFD04: .4byte 0x00006460

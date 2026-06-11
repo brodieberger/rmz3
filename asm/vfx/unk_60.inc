@@ -151,7 +151,7 @@ _080C2E58:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2E6E:
 	pop {r3, r4}
 	mov r8, r3

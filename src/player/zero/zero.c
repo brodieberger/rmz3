@@ -3,10 +3,11 @@
 #include "cyberelf.h"
 #include "element.h"
 #include "global.h"
-#include "mission.h"
 #include "motion.h"
 #include "overworld.h"
 #include "physics.h"
+#include "player/zero.h"
+#include "score.h"
 #include "sound.h"
 #include "vfx.h"
 #include "weapon.h"
@@ -15,7 +16,7 @@ static const ZeroFunc sHandlePlayerInputs[12];
 static const ZeroFunc sZeroUpdates[12];
 static const ZeroFunc sZeroAttacks[4];
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 void InitPlayerKeyMap(struct Zero* z);
 void FUN_08033ed4(struct Zero* z);
@@ -36,8 +37,8 @@ NON_MATCH static void Zero_Init(struct Zero* z) {
   ResetDynamicMotion(&z->s);
   (z->s).flags |= DISPLAY;
   (z->s).flags |= FLIPABLE;
-  SetMotion(&z->s, MOTION(DM000_ZERO_NEUTRAL, 0x00));
-  UpdateMotionGraphic(&z->s);
+  SetSpriteAnimation(z, MOTION(DM000_ZERO_NEUTRAL, 0x00));
+  UpdateSpriteAnimation(z);
   if ((z->s).work[1] == 0) {
     (z->s).coord.y = FUN_0800a05c((z->s).coord.x, (z->s).coord.y);
   }
@@ -125,24 +126,21 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
   s32 x = (z->s).coord.x;
   s32 y = (z->s).coord.y;
 
-  if (!((z->s).flags & DISPLAY)) {
-    resetSateliteElfPosition(z);
-  }
+  if (!((z->s).flags & DISPLAY)) resetSateliteElfPosition(z);
+
   if (z->subtankFilledFrame > 0) {
     z->subtankFilledFrame--;
-    if (z->subtankFilledFrame == 0) {
-      PlaySound(SE_SUBTANK_FILLED);
-    }
+    if (z->subtankFilledFrame == 0) PlaySound(SE_SUBTANK_FILLED);
     return;
   }
 
-  if ((z->unk_b4).sound == MUS_NONE) {
-    if (((z->s).mode[1] != ZERO_CYBER) && (SEA < (z->s).coord.y - PIXEL(30))) {
+  if ((z->unk_b4).sound == -1) {
+    if (((z->s).mode[1] != ZERO_CYBER) && (gOverworld.sea < (z->s).coord.y - PIXEL(30))) {
       (z->unk_b4).sound = PlaySound(SE_IN_SEA);
     }
-  } else if ((z->s).coord.y < SEA) {
+  } else if ((z->s).coord.y < gOverworld.sea) {
     StopSound((z->unk_b4).sound);
-    (z->unk_b4).sound = MUS_NONE;
+    (z->unk_b4).sound = -1;
   }
 
   (z->unk_b4).prevMode = (z->s).mode[1];
@@ -155,7 +153,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
         break;
       }
       case 2: {
-        z->isRightDir = ((z->s).flags >> 4) & 1;
+        z->isRightDir = ((z->s).flags & X_FLIP) != 0;
         (z->body).hp = 0;
         (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
         break;
@@ -165,7 +163,7 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
     if ((z->body).hp != 0) {
       switch (RecoilFromHazards(z, &gZeroRanges[z->posture])) {
         case 1: {
-          z->isRightDir = ((z->s).flags >> 4) & 1;
+          z->isRightDir = ((z->s).flags & X_FLIP) != 0;
           (z->body).hp = 0;
           (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
           break;
@@ -211,10 +209,10 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
       if (((z->border).bottom < y2) || (IsVoidSpace((z->s).coord.x, y1) && IsVoidSpace((z->s).coord.x, y2))) {
         metatile_attr_t attr = GetGroundMetatileAttr((z->s).coord.x, (z->s).coord.y - PIXEL(30));
         // Bird elf doesn't work for antlion
-        if ((!(attr & METATILE_ANTTRAP)) && ((SATELITE_1 == ELF_BIRAID) || (SATELITE_1 == ELF_BIRLEAF) || (SATELITE_2 == ELF_BIRAID) || (SATELITE_2 == ELF_BIRLEAF))) {
+        if ((!(attr & MTATTR_ANTTRAP)) && ((SATELITE_1 == ELF_BIRAID) || (SATELITE_1 == ELF_BIRLEAF) || (SATELITE_2 == ELF_BIRAID) || (SATELITE_2 == ELF_BIRLEAF))) {
           (z->s).mode[1] = ZERO_FLOAT, (z->s).mode[2] = 0;
         } else {
-          z->isRightDir = ((z->s).flags >> 4) & 1;
+          z->isRightDir = ((z->s).flags & X_FLIP) != 0;
           (z->body).hp = 0;
           (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
         }
@@ -246,7 +244,8 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
   }
 
   if ((z->s).mode[1] != ZERO_BINDED) {
-    z->unk_143.raw = 0;
+    z->unk_143_lo = 0;
+    z->unk_143_hi = 0;
   }
   if (((z->s).mode[1] != ZERO_DAMAGED) && ((z->body).hp == 0)) {
     (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
@@ -255,28 +254,26 @@ NON_MATCH static void Zero_Update(struct Zero* z) {
   (sZeroUpdates[(z->s).mode[1]])(z);
   z->unk_12e = 0xFF;
 
-  bool8 tmp = FALSE;
-  if ((z->restriction).shield) {
-    if ((z->s).mode[1] == (z->unk_b4).prevMode) {
-      if (((z->s).mode[1] != ZERO_GROUND) || ((z->s).mode[2] == (z->unk_b4).prevPhase)) goto LAB_080296fe;
+  {
+    bool8 tmp = FALSE;
+    if ((z->restriction).shield) {
+      if (((z->s).mode[1] != (z->unk_b4).prevMode) || (((z->s).mode[1] == ZERO_GROUND) && ((z->s).mode[2] != (z->unk_b4).prevPhase))) {
+        if (z->chargeSaber != 0) {
+          tmp = TRUE;
+        } else {
+          (z->unk_b4).attackState8[0] = 0;  // Cancel Attack (e.g. Air saber at landing)
+        }
+      }
     }
-    if (z->chargeSaber != 0) {
-      tmp = TRUE;
-    } else {
-      (z->unk_b4).attackState8[0] = 0;  // Cancel Attack (e.g. Air saber at landing)
-    }
-  }
-LAB_080296fe:
-  (z->restriction).move = FALSE;
-  (z->restriction).dash = FALSE;
-  (z->restriction).shield = FALSE;
-  (z->restriction).b3 = FALSE;
-  z->chargeSaber = 0;
-  (z->restriction).b6 = tmp;
-  z->rodID = 0xFF;
-  z->unk_127 = 0xFF;
-  if (z->rodToggle != 0) {
-    z->rodToggle--;
+    (z->restriction).move = FALSE;
+    (z->restriction).dash = FALSE;
+    (z->restriction).shield = FALSE;
+    (z->restriction).b3 = FALSE;
+    z->chargeSaber = 0;
+    (z->restriction).b6 = tmp;
+    z->rodID = 0xFF;
+    z->unk_127 = 0xFF;
+    if (z->rodToggle != 0) z->rodToggle--;
   }
 
   if ((((z->posture == POSTURE_DASH) && (!((z->input).raw & INPUT_DISABLED))) && (((FOOT == FOOT_CHIP_SHADOW) || (FOOT == FOOT_CHIP_ULTIMA)))) && (z->prevPosture == POSTURE_SHADOW)) {
@@ -309,7 +306,7 @@ LAB_080296fe:
 
   if (((z->s).mode[1] != ZERO_DOOR_2D) && ((z->s).mode[1] != ZERO_DOOR_3D) && ((z->s).mode[1] != ZERO_TELEPORT)) {
     if (PushoutByBorder(z, &gZeroRanges[z->posture], TRUE)) {
-      z->isRightDir = ((z->s).flags >> 4) & 1;
+      z->isRightDir = ((z->s).flags & X_FLIP) != 0;
       (z->body).hp = 0;
       (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
       (z->s).coord.x = x, (z->s).coord.y = y;
@@ -317,11 +314,11 @@ LAB_080296fe:
   }
 
   if (!z->ripple) {
-    if (SEA < (z->s).coord.y - (gZeroRanges[z->posture].h / 2)) {
-      if ((z->s).coord.y - gZeroRanges[z->posture].h < SEA) {
+    if (gOverworld.sea < (z->s).coord.y - (gZeroRanges[z->posture].h / 2)) {
+      if ((z->s).coord.y - gZeroRanges[z->posture].h < gOverworld.sea) {
         CreateRipple(z, 1);
       }
-    } else if (SEA < (z->s).coord.y) {
+    } else if (gOverworld.sea < (z->s).coord.y) {
       CreateRipple(z, 0);
     }
   }
@@ -329,7 +326,7 @@ LAB_080296fe:
   if ((((z->input).raw & INPUT_DISABLED) == 0) && ((z->body).hp != 0)) {
     s32 dx = abs(x - (z->s).coord.x);
     if (dx > PIXEL(16)) {
-      z->isRightDir = ((z->s).flags >> 4) & 1;
+      z->isRightDir = ((z->s).flags & X_FLIP) != 0;
       (z->body).hp = 0;
       (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
       (z->s).coord.x = x, (z->s).coord.y = y;
@@ -338,21 +335,21 @@ LAB_080296fe:
   if (z->pushedOut && ((z->body).hp != 0)) {
     s32 dy = abs(y - (z->s).coord.y);
     if (dy > PIXEL(16)) {
-      z->isRightDir = ((z->s).flags >> 4) & 1;
+      z->isRightDir = ((z->s).flags & X_FLIP) != 0;
       (z->body).hp = 0;
       (z->s).mode[1] = ZERO_DAMAGED, (z->s).mode[2] = 0;
       (z->s).coord.x = x, (z->s).coord.y = y;
     }
   }
 
-  if (!z->animDisabled) UpdateMotionGraphic(&z->s);
+  if (!z->animDisabled) UpdateSpriteAnimation(z);
   setStageElfFlags(z);
   z->unk_149 = 0;
   (z->unk_b4).deltaX = (z->s).coord.x - x;
 #else
   INCCODE("asm/wip/Zero_Update.inc");
 #endif
-};
+}
 
 // 0x080299dc
 static void Zero_Die(void* _) {}
@@ -369,7 +366,7 @@ static void Zero_Disappear(struct Zero* z) {
 
 // 0x08029a10
 // Zero take damages
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Zero* z = (struct Zero*)body->parent;
   struct Entity* q = (struct Entity*)body->enemy->parent;
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
@@ -447,10 +444,15 @@ static const ZeroFunc sZeroUpdates[12] = {
     [ZERO_TALK] =      zeroTalk,
     [ZERO_TELEPORT] =  zeroTeleport,
     [ZERO_CYBER] =     zeroCyberDoor,
-};
+}; // 0x0835e420
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
+
+void ZeroAttack_Ground(struct Zero* z);
+void ZeroAttack_Air(struct Zero* z);
+void ZeroAttack_Wall(struct Zero* z);
+void ZeroAttack_Ladder(struct Zero* z);
 
 // clang-format off
 // 01 xx nn nn
@@ -461,6 +463,8 @@ static const ZeroFunc sZeroAttacks[4] = {
     [ZERO_LADDER] =    ZeroAttack_Ladder,
 };
 // clang-format on
+
+// --------------------------------------------
 
 // clang-format off
 const ZeroRoutine gZeroRoutine = {

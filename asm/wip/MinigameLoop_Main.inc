@@ -51,8 +51,8 @@ _080F8FB4:
 	movs r3, #0x9a
 	lsls r3, r3, #4
 	adds r0, r6, r3
-	bl ClearTaskBuffer
-	ldr r1, _080F917C @ =0x0202F354
+	bl Renderer_Clear
+	ldr r1, _080F917C @ =gMatrixCount
 	movs r0, #0
 	strb r0, [r1]
 	ldr r1, _080F9180 @ =gWhitePaintFlags
@@ -129,7 +129,7 @@ _080F9058:
 	ldr r7, _080F9198 @ =gEnemyHeaderPtr
 	ldr r0, [r7]
 	bl UpdateHazardEntities
-	ldr r3, _080F919C @ =0x0203029C
+	ldr r3, _080F919C @ =gZeroHeaderPtr
 	mov r8, r3
 	ldr r0, [r3]
 	bl UpdateEntities
@@ -211,8 +211,8 @@ _080F90CA:
 	bl DrawOverworld
 _080F913A:
 	adds r0, r4, #0
-	bl RunAllTasks
-	ldr r0, _080F91B4 @ =0x0202F330
+	bl Renderer_Flush
+	ldr r0, _080F91B4 @ =gIsPlayDamageSE
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _080F915A
@@ -225,7 +225,7 @@ _080F913A:
 	movs r0, #0x29
 	bl PlaySound
 _080F915A:
-	ldr r1, _080F91B4 @ =0x0202F330
+	ldr r1, _080F91B4 @ =gIsPlayDamageSE
 	movs r0, #0
 	strb r0, [r1]
 	add sp, #8
@@ -240,19 +240,19 @@ _080F915A:
 _080F9170: .4byte gPaletteManager
 _080F9174: .4byte 0x00000402
 _080F9178: .4byte 0x00001ED8
-_080F917C: .4byte 0x0202F354
+_080F917C: .4byte gMatrixCount
 _080F9180: .4byte gWhitePaintFlags
 _080F9184: .4byte 0x001FFFFF
 _080F9188: .4byte 0x01000008
 _080F918C: .4byte sEachMinigameLoops
-_080F9190: .4byte 0x020023D4
+_080F9190: .4byte gOverworld+0x1D4
 _080F9194: .4byte gSolidHeaderPtr
 _080F9198: .4byte gEnemyHeaderPtr
-_080F919C: .4byte 0x0203029C
+_080F919C: .4byte gZeroHeaderPtr
 _080F91A0: .4byte gWeaponHeaderPtr
 _080F91A4: .4byte gPickupHeaderPtr
 _080F91A8: .4byte gProjectileHeaderPtr
 _080F91AC: .4byte 0x00000DC4
 _080F91B0: .4byte gVFXHeaderPtr
-_080F91B4: .4byte 0x0202F330
+_080F91B4: .4byte gIsPlayDamageSE
 _080F91B8: .4byte gCollisionManager

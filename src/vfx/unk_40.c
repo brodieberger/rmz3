@@ -21,12 +21,9 @@ const VFXRoutine gVFX40Routine = {
 // --------------------------------------------
 
 void FUN_080bdaf8(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_040);
-    p->tileNum = 0;
-    p->palID = 0;
     p->coord.x = x;
     p->coord.y = y;
     p->work[0] = 0;
@@ -36,12 +33,9 @@ void FUN_080bdaf8(s32 x, s32 y) {
 void FUN_080bdb44(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_040);
-      p->tileNum = 0;
-      p->palID = 0;
       p->work[0] = 1;
       p->work[1] = i;
       p->coord.x = x;
@@ -81,13 +75,13 @@ static void VFX40_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 static void FUN_080bdc1c(struct Entity* p) {
   switch (p->mode[2]) {
     case 0: {
-      SetMotion(p, MOTION(SM055_DEATHTANZ_PROJECTILE, 0));
+      SetSpriteAnimation(p, MOTION(SM055_DEATHTANZ_PROJECTILE, 0));
       p->mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
-      if ((p->motion).state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
@@ -115,7 +109,7 @@ static void FUN_080bdc74(struct Entity* p) {
       u32 dx;
       p->flags |= DISPLAY;
       ResetDynamicMotion(p);
-      SetMotion(p, sMotions[idx]);
+      SetSpriteAnimation(p, sMotions[idx]);
 
       dx = (idx - 1) * PIXEL(1);
 

@@ -1,0 +1,58 @@
+#include "collision.h"
+#include "global.h"
+#include "projectile.h"
+
+// CopyX (Reflect Laser?)
+
+void Projectile29_Init(struct Projectile* p);
+void Projectile29_Update(struct Projectile* p);
+static void Projectile29_Die(struct Entity* p);
+
+// clang-format off
+const ProjectileRoutine gProjectile29Routine = {
+    [ENTITY_INIT] =      (void*)Projectile29_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile29_Update,
+    [ENTITY_DIE] =       (void*)Projectile29_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
+};
+// clang-format on
+
+void copyx_080aa24c(struct Entity* q, u8 kind1, u8 kind2) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 29);
+    p->unk_28 = q;
+    p->work[0] = kind1, p->work[1] = kind2;
+  }
+}
+
+INCASM("asm/projectile/copy_x_29.inc");
+
+static void Projectile29_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
+}
+
+// --------------------------------------------
+
+// 0x0836C2A0
+static const struct Collision sCollisions[2] = {
+    {
+      kind : DDP,
+      faction : FACTION_ENEMY,
+      damage : 5,
+      remaining : 0,
+      layer : 0x00000001,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ENEMY,
+      damage : 5,
+      LAYER(0xFFFFFFFF),
+      hitzone : 0,
+      remaining : 0,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+};

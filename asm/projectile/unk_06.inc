@@ -185,7 +185,7 @@ _0809DE94:
 	strb r0, [r4, #0xe]
 _0809DEB4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -217,7 +217,7 @@ _0809DEF0: .4byte sCollisions+(1*24)
 _0809DEF4: .4byte sCollisions+(2*24)
 _0809DEF8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

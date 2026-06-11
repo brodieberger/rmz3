@@ -1,0 +1,370 @@
+	.include "asm/macros.inc"
+  .balign 4
+  .section .rodata
+
+.global gDynamicMotionGraphicOffsets
+gDynamicMotionGraphicOffsets:
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_dying-.
+  .4byte gGraphicHeader_Sprite_zero_run-.
+  .4byte gGraphicHeader_Sprite_zero_dash-.
+  .4byte gGraphicHeader_Sprite_zero_air-.
+  .4byte gGraphicHeader_Sprite_zero_wall-.
+  .4byte gGraphicHeader_Sprite_zero_wall_jump-.
+  .4byte gGraphicHeader_Sprite_zero_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_buster_buster-.
+  .4byte gGraphicHeader_Sprite_zero_buster_run-.
+  .4byte gGraphicHeader_Sprite_zero_buster_dash-.
+  .4byte gGraphicHeader_Sprite_zero_buster_air-.
+  .4byte gGraphicHeader_Sprite_zero_buster_wall-.
+  .4byte gGraphicHeader_Sprite_zero_buster_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_saber_triple_slash_1-.
+  .4byte gGraphicHeader_Sprite_zero_saber_triple_slash_2-.
+  .4byte gGraphicHeader_Sprite_zero_saber_triple_slash_3-.
+  .4byte gGraphicHeader_Sprite_zero_saber_slash_up-.
+  .4byte gGraphicHeader_Sprite_zero_saber_split_heaven-.
+  .4byte gGraphicHeader_Sprite_zero_saber_throw_blade-.
+  .4byte gGraphicHeader_Sprite_zero_saber_charge-.
+  .4byte gGraphicHeader_Sprite_zero_saber_run_1-.
+  .4byte gGraphicHeader_Sprite_zero_saber_run_2-.
+  .4byte gGraphicHeader_Sprite_zero_saber_dash-.
+  .4byte gGraphicHeader_Sprite_zero_saber_gale-.
+  .4byte gGraphicHeader_Sprite_zero_saber_air-.
+  .4byte gGraphicHeader_Sprite_zero_saber_air_rolling-.
+  .4byte gGraphicHeader_Sprite_zero_saber_smash-.
+  .4byte gGraphicHeader_Sprite_zero_saber_wall-.
+  .4byte gGraphicHeader_Sprite_zero_saber_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_rod_rod-.
+  .4byte gGraphicHeader_Sprite_zero_rod_up-.
+  .4byte gGraphicHeader_Sprite_zero_rod_down-.
+  .4byte gGraphicHeader_Sprite_zero_rod_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_up_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_down_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_wall-.
+  .4byte gGraphicHeader_Sprite_zero_rod_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_shield_shield-.
+  .4byte gGraphicHeader_Sprite_zero_shield_throw-.
+  .4byte gGraphicHeader_Sprite_zero_shield_walk-.
+  .4byte gGraphicHeader_Sprite_zero_shield_air-.
+  .4byte gGraphicHeader_Sprite_zero_shield_throw_air-.
+  .4byte gGraphicHeader_Sprite_zero_shield_wall-.
+  .4byte gGraphicHeader_Sprite_zero_shield_throw_wall-.
+  .4byte gGraphicHeader_Sprite_zero_shield_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_shield_throw_ladder-.
+  .4byte gGraphicHeader_Sprite_zero_stun_49-.
+  .4byte gGraphicHeader_Sprite_zero_stun_50-.
+  .4byte gGraphicHeader_Sprite_zero_unk_51-.
+  .4byte gGraphicHeader_Sprite_zero_teleport_start-.
+  .4byte gGraphicHeader_Sprite_zero_teleport_end-.
+  .4byte gGraphicHeader_Sprite_zero_door-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_up-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_down-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_up_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_down_air-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_wall-.
+  .4byte gGraphicHeader_Sprite_zero_rod_charge_ladder-.
+  .4byte gGraphicHeader_Sprite_omega_zero-.
+  .4byte gGraphicHeader_Sprite_weapon_charge_saber_64-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_weapon_semi_buster-.
+  .4byte gGraphicHeader_Sprite_weapon_burst_shot_bullet-.
+  .4byte gGraphicHeader_Sprite_weapon_blizz_arrow-.
+  .4byte gGraphicHeader_Sprite_weapon_burst_shot_firework-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_weapon_triple_slash_1-.
+  .4byte gGraphicHeader_Sprite_weapon_triple_slash_2-.
+  .4byte gGraphicHeader_Sprite_weapon_triple_slash_3-.
+  .4byte gGraphicHeader_Sprite_weapon_slash_up-.
+  .4byte gGraphicHeader_Sprite_weapon_split_heaven-.
+  .4byte gGraphicHeader_Sprite_weapon_throw_blade-.
+  .4byte gGraphicHeader_Sprite_weapon_charge_saber_94-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_walk-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_dash-.
+  .4byte gGraphicHeader_Sprite_weapon_gale_attack-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_98-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_99-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_smash-.
+  .4byte gGraphicHeader_Sprite_weapon_charge_saber_air_101-.
+  .4byte gGraphicHeader_Sprite_weapon_saber_102-.
+  .4byte gGraphicHeader_Sprite_weapon_soul_launchar_flame-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_104-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_108-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_109-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_110-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_111-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_112-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_113-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_114-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_115-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_116-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_117-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_118-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_119-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_120-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_121-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_122-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_123-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_124-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_125-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_126-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_127-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_128-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_129-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_130-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_131-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_132-.
+  .4byte gGraphicHeader_Sprite_weapon_lemon-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_86-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_87-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_88-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_89-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_8a-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_8b-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_8c-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_8d-.
+  .4byte gGraphicHeader_Sprite_weapon_unk_8e-.
+  .4byte gGraphicHeader_Sprite_zero_idle-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_animal-.
+  .4byte gGraphicHeader_Sprite_cyberelf_hacker-.
+  .4byte gGraphicHeader_Sprite_cyberelf_particle-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_cyberelf_nurse-.
+  .4byte gGraphicHeader_Sprite_megamilpa-.
+  .4byte gGraphicHeader_Sprite_fefnir-.
+  .4byte gGraphicHeader_Sprite_blazin_blazin-.
+  .4byte gGraphicHeader_Sprite_blazin_projectile-.
+  .4byte gGraphicHeader_Sprite_childre-.
+  .4byte gGraphicHeader_Sprite_volteel_volteel-.
+  .4byte gGraphicHeader_Sprite_volteel_tail-.
+  .4byte gGraphicHeader_Sprite_deathtanz-.
+  .4byte gGraphicHeader_Sprite_hellbat_hellbat-.
+  .4byte gGraphicHeader_Sprite_hellbat_laser-.
+  .4byte gGraphicHeader_Sprite_hellbat_bat-.
+  .4byte gGraphicHeader_Sprite_tretista_tretista-.
+  .4byte gGraphicHeader_Sprite_tretista_hell_bouncer-.
+  .4byte gGraphicHeader_Sprite_tretista_projectile-.
+  .4byte gGraphicHeader_Sprite_tretista_laser_claw-.
+  .4byte gGraphicHeader_Sprite_anubis-.
+  .4byte gGraphicHeader_Sprite_cubit_cubit-.
+  .4byte gGraphicHeader_Sprite_cubit_flame-.
+  .4byte gGraphicHeader_Sprite_glacierle-.
+  .4byte gGraphicHeader_Sprite_copy_x-.
+  .4byte gGraphicHeader_Sprite_blizzack-.
+  .4byte gGraphicHeader_Sprite_hanumachine-.
+  .4byte gGraphicHeader_Sprite_omega_zx_omega_zx-.
+  .4byte gGraphicHeader_Sprite_omega_zx_eye_glow-.
+  .4byte gGraphicHeader_Sprite_omega_zx_exceed_buster-.
+  .4byte gGraphicHeader_Sprite_omega_zx_binding_ball-.
+  .4byte gGraphicHeader_Sprite_omega_zx_spark_chaser-.
+  .4byte gGraphicHeader_Sprite_omega_zx_triple_laser-.
+  .4byte gGraphicHeader_Sprite_phantom-.
+  .4byte gGraphicHeader_Sprite_leviathan-.
+  .4byte gGraphicHeader_Sprite_harpuia-.
+  .4byte gGraphicHeader_Sprite_aztec_falcon-.
+  .4byte gGraphicHeader_Sprite_old_residential_door-.
+  .4byte gGraphicHeader_Sprite_resistance_base_door-.
+  .4byte gGraphicHeader_Sprite_ciel-.
+  .4byte gGraphicHeader_Sprite_unk_195-.
+  .4byte gGraphicHeader_Sprite_zero_walk-.
+  .4byte gGraphicHeader_Sprite_weil-.
+  .4byte gGraphicHeader_Sprite_cyberspace_door-.
+  .4byte gGraphicHeader_Sprite_boss_explosion-.
+
+.include "sprites/dynamic/zero/idle/sheet/header.inc"
+.include "sprites/dynamic/zero/dying/sheet/header.inc"
+.include "sprites/dynamic/zero/run/sheet/header.inc"
+.include "sprites/dynamic/zero/dash/sheet/header.inc"
+.include "sprites/dynamic/zero/air/sheet/header.inc"
+.include "sprites/dynamic/zero/wall/sheet/header.inc"
+.include "sprites/dynamic/zero/wall_jump/sheet/header.inc"
+.include "sprites/dynamic/zero/ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/buster/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/run/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/dash/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/air/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/wall/sheet/header.inc"
+.include "sprites/dynamic/zero/buster/ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/1/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/2/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/triple_slash/3/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/slash_up/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/split_heaven/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/throw_blade/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/charge/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/run/1/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/run/2/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/dash/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/gale/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/air/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/air_rolling/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/smash/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/wall/sheet/header.inc"
+.include "sprites/dynamic/zero/saber/ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/rod/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/up/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/down/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/up_air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/down_air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/wall/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/shield/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/throw/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/walk/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/air/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/throw_air/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/wall/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/throw_wall/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/shield/throw_ladder/sheet/header.inc"
+.include "sprites/dynamic/zero/stun/49/sheet/header.inc"
+.include "sprites/dynamic/zero/stun/50/sheet/header.inc"
+.include "sprites/dynamic/zero/unk_51/sheet/header.inc"
+.include "sprites/dynamic/zero/teleport/start/sheet/header.inc"
+.include "sprites/dynamic/zero/teleport/end/sheet/header.inc"
+.include "sprites/dynamic/zero/door/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_up/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_down/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_up_air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_down_air/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_wall/sheet/header.inc"
+.include "sprites/dynamic/zero/rod/charge_ladder/sheet/header.inc"
+.include "sprites/dynamic/omega_zero/sheet/header.inc"
+.include "sprites/dynamic/weapon/charge_saber_64/sheet/header.inc"
+.include "sprites/dynamic/weapon/semi_buster/sheet/header.inc"
+.include "sprites/dynamic/weapon/burst_shot/bullet/sheet/header.inc"
+.include "sprites/dynamic/weapon/blizz_arrow/sheet/header.inc"
+.include "sprites/dynamic/weapon/burst_shot/firework/sheet/header.inc"
+.include "sprites/dynamic/weapon/triple_slash_1/sheet/header.inc"
+.include "sprites/dynamic/weapon/triple_slash_2/sheet/header.inc"
+.include "sprites/dynamic/weapon/triple_slash_3/sheet/header.inc"
+.include "sprites/dynamic/weapon/slash_up/sheet/header.inc"
+.include "sprites/dynamic/weapon/split_heaven/sheet/header.inc"
+.include "sprites/dynamic/weapon/throw_blade/sheet/header.inc"
+.include "sprites/dynamic/weapon/charge_saber_94/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_walk/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_dash/sheet/header.inc"
+.include "sprites/dynamic/weapon/gale_attack/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_98/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_99/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_smash/sheet/header.inc"
+.include "sprites/dynamic/weapon/charge_saber_air_101/sheet/header.inc"
+.include "sprites/dynamic/weapon/saber_102/sheet/header.inc"
+.include "sprites/dynamic/weapon/soul_launchar_flame/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_104/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_108/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_109/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_110/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_111/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_112/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_113/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_114/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_115/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_116/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_117/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_118/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_119/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_120/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_121/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_122/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_123/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_124/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_125/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_126/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_127/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_128/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_129/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_130/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_131/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_132/sheet/header.inc"
+.include "sprites/dynamic/weapon/lemon/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_86/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_87/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_88/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_89/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_8a/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_8b/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_8c/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_8d/sheet/header.inc"
+.include "sprites/dynamic/weapon/unk_8e/sheet/header.inc"
+.include "sprites/dynamic/cyberelf/nurse/sheet/header.inc"
+.include "sprites/dynamic/cyberelf/animal/sheet/header.inc"
+.include "sprites/dynamic/cyberelf/hacker/sheet/header.inc"
+.include "sprites/dynamic/cyberelf/particle/sheet/header.inc"
+.include "sprites/dynamic/megamilpa/sheet/header.inc"
+.include "sprites/dynamic/fefnir/sheet/header.inc"
+.include "sprites/dynamic/blazin/blazin/sheet/header.inc"
+.include "sprites/dynamic/blazin/projectile/sheet/header.inc"
+.include "sprites/dynamic/childre/sheet/header.inc"
+.include "sprites/dynamic/volteel/volteel/sheet/header.inc"
+.include "sprites/dynamic/volteel/tail/sheet/header.inc"
+.include "sprites/dynamic/deathtanz/sheet/header.inc"
+.include "sprites/dynamic/hellbat/hellbat/sheet/header.inc"
+.include "sprites/dynamic/hellbat/laser/sheet/header.inc"
+.include "sprites/dynamic/hellbat/bat/sheet/header.inc"
+.include "sprites/dynamic/tretista/tretista/sheet/header.inc"
+.include "sprites/dynamic/tretista/hell_bouncer/sheet/header.inc"
+.include "sprites/dynamic/tretista/projectile/sheet/header.inc"
+.include "sprites/dynamic/tretista/laser_claw/sheet/header.inc"
+.include "sprites/dynamic/anubis/sheet/header.inc"
+.include "sprites/dynamic/cubit/cubit/sheet/header.inc"
+.include "sprites/dynamic/cubit/flame/sheet/header.inc"
+.include "sprites/dynamic/glacierle/sheet/header.inc"
+.include "sprites/dynamic/copy_x/sheet/header.inc"
+.include "sprites/dynamic/blizzack/sheet/header.inc"
+.include "sprites/dynamic/hanumachine/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/omega_zx/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/eye_glow/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/exceed_buster/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/binding_ball/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/spark_chaser/sheet/header.inc"
+.include "sprites/dynamic/omega_zx/triple_laser/sheet/header.inc"
+.include "sprites/dynamic/phantom/sheet/header.inc"
+.include "sprites/dynamic/leviathan/sheet/header.inc"
+.include "sprites/dynamic/harpuia/sheet/header.inc"
+.include "sprites/dynamic/aztec_falcon/sheet/header.inc"
+.include "sprites/dynamic/old_residential_door/sheet/header.inc"
+.include "sprites/dynamic/resistance_base_door/sheet/header.inc"
+.include "sprites/dynamic/ciel/sheet/header.inc"
+.include "sprites/dynamic/unk_195/sheet/header.inc"
+.include "sprites/dynamic/zero/walk/sheet/header.inc"
+.include "sprites/dynamic/weil/sheet/header.inc"
+.include "sprites/dynamic/cyberspace_door/sheet/header.inc"
+.include "sprites/dynamic/boss_explosion/sheet/header.inc"

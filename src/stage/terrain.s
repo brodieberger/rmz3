@@ -3,6 +3,13 @@
   .balign 4, 0
   .section .rodata
 
+@ 各ステージの メタタイル、メタタイルの属性、チャンク のデータがあるアドレスへの オフセット
+@ なんで直接ポインタを使わんのかは不明 (チート対策？)
+@ metatile.bin: メタタイル を構成する 4枚の GBAタイル　の ID が入っている
+@ metatile_attr.bin: メタタイル の属性 (物理的な形状 や 即死やすべるなどの属性)
+@ screen.bin: チャンク を構成する 150枚のメタタイル の ID が入っている
+@ NOTE: このテーブルから得られるアドレスのデータ　には タイルデータ (4bpp) は含まれていない
+@ TODO: gStageMetatileDataOffsets とかに名前変更する予定
 .global gStageTerrains
 gStageTerrains: @ 0x0863c578
     @ struct TerrainHeader

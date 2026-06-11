@@ -9,7 +9,7 @@ struct BallChain {
   // props (16bytes, offset: 0x74..)
   u8 unk_74;
   s32 unk_78_y;
-  struct Coord c;  // 0x7C
+  Coords32 c;  // 0x7C
 };
 static_assert(sizeof(struct BallChain) == sizeof(struct VFX));
 
@@ -28,13 +28,10 @@ const VFXRoutine gBallChainRoutine = {
 // clang-format on
 
 // ボールチェーンは7つの玉が繋がっているけど、1つ生成すれば、再帰的に次の玉を生成していく
-struct Entity* CreateBallChain(struct Coord* c, struct Entity* e, u8 n) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateBallChain(Coords32* c, struct Entity* e, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_BALLCHAIN);
-    p->tileNum = 0;
-    p->palID = 0;
     p->work[0] = 0;
     p->work[1] = n;
     p->unk_28 = e;
@@ -50,15 +47,15 @@ static void BallChain_Init(struct BallChain* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  (p->s).taskCol = 24;
+  (p->s).renderPrio = 24;
   {
     // ???
-    struct Coord* c = &(p->s).d;
+    Coords32* c = &(p->s).d;
     (p->s).d.y = c->y = 0;  // 1つ は d.x の間違いじゃね？
   }
   p->unk_74 = 0;
   if ((p->s).work[1] < 7) {
-    struct Coord c = (p->s).coord;
+    Coords32 c = (p->s).coord;
     c.y -= PIXEL(8);
     CreateBallChain(&c, (void*)p, (p->s).work[1] + 1);
   }
@@ -167,7 +164,7 @@ _080BBE62:\n\
 	adds r1, #0x24\n\
 	strb r0, [r1]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080BBEB6:\n\
 	pop {r4, r5, r6, r7}\n\
 	pop {r0}\n\

@@ -250,7 +250,7 @@ _0801D0A4:\n\
 	ldr r4, _0801D0D4 @ =gStageRun+232\n\
 	adds r0, r4, #0\n\
 	movs r1, #6\n\
-	bl SetCameraMode\n\
+	bl Camera_SetMode\n\
 	movs r1, #0\n\
 	movs r0, #4\n\
 	strb r0, [r4, #0x19]\n\
@@ -705,7 +705,7 @@ s16 MissileFactory_FreeUpdate(struct StageRun* p) {
     p->stageEventPhase = 2;
 
   } else if (p->stageEventPhase == 2) {
-    if ((z->coord).x >= 0x78000) {
+    if ((z->coord).x >= PIXEL(1920)) {
       SetScript(&gStageRun.vm, gStageScriptList[STAGE_MISSILE_FACTORY][15]);
       gStageRun.missionStatus &= ~MISSION_STAY;
       p->stageEventPhase = 3;

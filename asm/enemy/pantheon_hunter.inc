@@ -213,7 +213,7 @@ FUN_08064c38: @ 0x08064C38
 	strb r0, [r4, #0xe]
 _08064C54:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x60]
 	adds r0, #0x40
 	str r0, [r4, #0x60]
@@ -385,7 +385,7 @@ _08064D8E:
 	strb r0, [r5, #0xe]
 _08064DA6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r3, [r5, #0x5c]
 	adds r0, r0, r3
@@ -447,7 +447,7 @@ FUN_08064e0c: @ 0x08064E0C
 	strb r0, [r4, #0xe]
 _08064E24:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -478,7 +478,7 @@ FUN_08064e38: @ 0x08064E38
 	strb r0, [r4, #0xe]
 _08064E58:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -568,7 +568,7 @@ _08064EF4:
 	str r0, [r4, #0x54]
 _08064EFC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	movs r2, #0x80
@@ -727,7 +727,7 @@ phunterRaiseArm: @ 0x08065018
 	strb r0, [r4, #0xe]
 _08065034:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -762,7 +762,7 @@ phunterShotBuster: @ 0x0806505C
 	strb r0, [r4, #0xe]
 _08065076:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #5
 	beq _0806509A
@@ -853,7 +853,7 @@ FUN_08065104: @ 0x08065104
 	strb r0, [r4, #0xe]
 _08065122:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _08065184 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
 	movs r1, #0xa
@@ -957,7 +957,7 @@ _080651DC:
 	strb r0, [r4, #0xe]
 _080651EA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -997,7 +997,7 @@ phunter_08065218: @ 0x08065218
 	strb r0, [r4, #0xe]
 _08065234:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	ldr r0, _08065258 @ =pZero2
 	ldr r0, [r0]
@@ -1117,7 +1117,7 @@ _08065310:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1177,7 +1177,7 @@ explodePHunter: @ 0x08065370
 	strb r0, [r7, #0xf]
 _0806538E:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1334,7 +1334,7 @@ _08065426:
 	movs r0, #4
 	adds r1, r4, #0
 	bl TryDropItem
-	ldr r2, _0806551C @ =gMission
+	ldr r2, _0806551C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08065520 @ =0x0000270E
 	cmp r1, r0
@@ -1366,7 +1366,7 @@ _0806550C: .4byte 0xFFFFF000
 _08065510: .4byte RNG_0202f388
 _08065514: .4byte 0x000343FD
 _08065518: .4byte 0x00269EC3
-_0806551C: .4byte gMission
+_0806551C: .4byte gScore
 _08065520: .4byte 0x0000270E
 _08065524: .4byte gEnemyFnTable
 
@@ -1443,7 +1443,7 @@ _080655AA:
 	strb r0, [r5, #0xf]
 _080655B6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x60]
 	adds r0, #0x40
 	str r0, [r5, #0x60]
@@ -1544,7 +1544,7 @@ _0806566A:
 	movs r0, #4
 	adds r1, r4, #0
 	bl TryDropItem
-	ldr r2, _080656C0 @ =gMission
+	ldr r2, _080656C0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080656C4 @ =0x0000270E
 	cmp r1, r0
@@ -1571,7 +1571,7 @@ _080656B4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080656C0: .4byte gMission
+_080656C0: .4byte gScore
 _080656C4: .4byte 0x0000270E
 _080656C8: .4byte gEnemyFnTable
 

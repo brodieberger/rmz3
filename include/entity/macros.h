@@ -22,6 +22,23 @@
   }
 #endif
 
+// Weapon 以外の Entity を生成するときに必ずこの書き方がされているので、マクロとして定義されてる可能性が高い
+#define INIT_RENDER_ENTITY(render_prio, functable, entity, entityID)            \
+  {                                                                             \
+    ((struct Entity*)entity)->renderPrio = (render_prio);                       \
+    INIT_ENTITY_ROUTINE(functable, entity, entityID);                           \
+    ((struct Entity*)entity)->tileNum = 0, ((struct Entity*)entity)->palID = 0; \
+  }
+
+#define INIT_OBJECT_ENTITY(render_prio, functable, entity, entityID)             \
+  {                                                                              \
+    ((struct Entity*)entity)->renderPrio = (render_prio);                        \
+    INIT_ENTITY_ROUTINE(functable, entity, entityID);                            \
+    ((struct Entity*)entity)->tileNum = 0, ((struct Entity*)entity)->palID = 0;  \
+    ((struct Entity*)entity)->flags2 |= WHITE_PAINTABLE;                         \
+    ((struct Entity*)entity)->invincibleID = ((struct Entity*)entity)->uniqueID; \
+  }
+
 #if MODERN
 #define SET_ENTITY_ROUTINE(functable, entity, modeID)                                                 \
   {                                                                                                   \
@@ -66,14 +83,27 @@
     (((struct Entity*)enti)->spr).oam.yflip = __yflip__; \
   }
 
-#define INIT_BODY(p, collisions, hp, onCollision)  \
+// initGyroCannonMainBody のコードを見るに、マクロはこれが正しいと思われる
+#define _INIT_BODY(obj, collisions, hp)                           \
+  {                                                               \
+    struct Body* body;                                            \
+    (((Object*)(obj))->s).flags |= COLLIDABLE;                    \
+    body = &(((Object*)(obj))->body);                             \
+    InitBody(body, collisions, &(((Object*)(obj))->s).coord, hp); \
+    body->parent = (void*)(obj);                                  \
+    body->fn = NULL;                                              \
+  }
+
+#define SET_BODY_INTERSECT_HANDLER(obj, handler)   \
   {                                                \
-    struct Body* body;                             \
-    (p->s).flags |= COLLIDABLE;                    \
-    body = &p->body;                               \
-    InitBody(body, collisions, &(p->s).coord, hp); \
-    body->parent = (struct CollidableEntity*)p;    \
-    body->fn = onCollision;                        \
+    struct Body* body = &(((Object*)(obj))->body); \
+    body->fn = handler;                            \
+  }
+
+#define INIT_BODY(obj, collisions, hp, onCollision) \
+  {                                                 \
+    _INIT_BODY(obj, collisions, hp);                \
+    SET_BODY_INTERSECT_HANDLER(obj, onCollision);   \
   }
 
 // この書き方が非常によく使われるので、マクロとして定義されてる可能性がありそう

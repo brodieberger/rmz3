@@ -4,12 +4,10 @@
 #include "motion.h"
 #include "vfx.h"
 
-/*
-  ダッシュの残像
-*/
+// ダッシュの残像
 
 static void AfterImage_Init(struct AfterImage* p);
-static void AfterImage_Update(struct VFX* p);
+static void AfterImage_Update(struct AfterImage* p);
 static void AfterImage_Die(struct Entity* p);
 
 // clang-format off
@@ -23,30 +21,24 @@ const VFXRoutine gDashAfterImageRoutine = {
 // clang-format on
 
 struct Entity* CreateAfterImages(struct Entity* p) {
-  struct Entity *s1, *s2, *s3;
-  s1 = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity *s1, *s2, *s3;  // 残像は3つ作られる
+  s1 = AllocEntityLast(gVFXHeaderPtr);
   if (s1 != NULL) {
-    s1->taskCol = 1;
     INIT_VFX_ROUTINE(s1, VFX_AFTER_IMAGE);
-    s1->tileNum = 0, s1->palID = 0;
     s1->work[0] = 0, s1->work[1] = 0;
     s1->unk_28 = p;
     s1->unk_2c = p;
   }
-  s2 = AllocEntityFirst(gVFXHeaderPtr);
+  s2 = AllocEntityLast(gVFXHeaderPtr);
   if (s2 != NULL) {
-    s2->taskCol = 1;
     INIT_VFX_ROUTINE(s2, VFX_AFTER_IMAGE);
-    s2->tileNum = 0, s2->palID = 0;
     s2->work[0] = 1, s2->work[1] = 0;
     s2->unk_28 = (void*)s1;
     s2->unk_2c = (void*)p;
   }
-  s3 = AllocEntityFirst(gVFXHeaderPtr);
+  s3 = AllocEntityLast(gVFXHeaderPtr);
   if (s3 != NULL) {
-    s3->taskCol = 1;
     INIT_VFX_ROUTINE(s3, VFX_AFTER_IMAGE);
-    s3->tileNum = 0, s3->palID = 0;
     s3->work[0] = 2, s3->work[1] = 0;
     s3->unk_28 = (void*)s2;
     s3->unk_2c = (void*)p;
@@ -57,44 +49,40 @@ struct Entity* CreateAfterImages(struct Entity* p) {
 // --------------------------------------------
 
 static void AfterImage_Init(struct AfterImage* p) {
-  struct Entity *e1, *e2;
-  struct Coord *c1, *c2;
-  s32 i;
-  struct Coord* c;
+  struct Entity* q = (p->s).unk_28;
+  struct Entity* parent = (p->s).unk_2c;  // この残像を作った Entity, Zero or OmegaZero のどちらか
 
-  e1 = (p->s).unk_28;
-  e2 = (p->s).unk_2c;
+  Coords32* c1 = &p->c;
+  Coords32* c2 = &(p->s).coord;
 
-  c1 = &p->c;
-  c2 = &(p->s).coord;
-
-  if (e1->mode[0] != 0) {
+  if (q->mode[0] != 0) {
+    s32 i;
     InitNonAffineMotion(&p->s);
     (p->s).flags |= DISPLAY;
     (p->s).spr.c = c1;
 
-    if (e2->kind != ENTITY_BOSS) {
+    if (parent->kind != ENTITY_BOSS) {
       // Zero
-      (p->s).taskCol = (p->s).work[0] + 17;
+      (p->s).renderPrio = (p->s).work[0] + 17;
       ForceEntityPalette(&p->s, 12);
     } else {
       // Omega Zero
-      (p->s).taskCol = (p->s).work[0] + 25;
+      (p->s).renderPrio = (p->s).work[0] + 25;
       ForceEntityPalette(&p->s, 8);
     }
 
     for (i = 0; i < 3; i++) {
-      c2[i].x = (e2->coord).x;
-      c2[i].y = (e2->coord).y;
+      c2[i].x = (parent->coord).x;
+      c2[i].y = (parent->coord).y;
     }
     (p->s).work[2] = 3;
 
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-    AfterImage_Update((void*)p);
+    AfterImage_Update(p);
   }
 }
 
-NAKED static void AfterImage_Update(struct VFX* p) {
+NAKED static void AfterImage_Update(struct AfterImage* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	mov ip, r0\n\

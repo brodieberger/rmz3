@@ -12,7 +12,7 @@ CreatePantheonBomber: @ 0x08085D0C
 	lsrs r4, r1, #0x18
 	ldr r0, _08085D64 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08085D5A
@@ -67,7 +67,7 @@ PantheonBomber_Init: @ 0x08085D6C
 	orrs r2, r0
 	orrs r2, r3
 	strb r2, [r6, #0xa]
-	ldr r0, _08085DB8 @ =gSystemSavedataManager
+	ldr r0, _08085DB8 @ =gSystemSavedata
 	ldrb r1, [r0, #0x12]
 	movs r0, #8
 	ands r0, r1
@@ -93,7 +93,7 @@ PantheonBomber_Init: @ 0x08085D6C
 	movs r3, #0xc
 	b _08085DDC
 	.align 2, 0
-_08085DB8: .4byte gSystemSavedataManager
+_08085DB8: .4byte gSystemSavedata
 _08085DBC: .4byte gCurStory
 _08085DC0: .4byte 0x08368534
 _08085DC4:
@@ -160,7 +160,7 @@ _08085DDC:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08085E4A:
 	adds r0, r6, #0
 	adds r0, #0xba
@@ -374,7 +374,7 @@ _08085FE6:
 	b _080860DC
 _08086008:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -388,7 +388,7 @@ _0808601C:
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	strb r0, [r7, #0x13]
 	str r0, [r7, #0x60]
@@ -487,7 +487,7 @@ _080860DC:
 _080860E4: .4byte 0xFFFFFE80
 _080860E8:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]
@@ -558,7 +558,7 @@ _080860FE:
 	bl FUN_080c273c
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _080861B4 @ =gMission
+	ldr r2, _080861B4 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080861B8 @ =0x0000270E
 	cmp r1, r0
@@ -577,7 +577,7 @@ _080861A4: .4byte 0x00269EC3
 _080861A8: .4byte 0x00006908
 _080861AC: .4byte 0x00006909
 _080861B0: .4byte 0x0000690A
-_080861B4: .4byte gMission
+_080861B4: .4byte gScore
 _080861B8: .4byte 0x0000270E
 _080861BC:
 	ldrb r0, [r7, #0x12]
@@ -636,7 +636,7 @@ _080861D0:
 	bl FUN_080c273c
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _08086260 @ =gMission
+	ldr r2, _08086260 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08086264 @ =0x0000270E
 	cmp r1, r0
@@ -655,7 +655,7 @@ _08086250: .4byte 0x00269EC3
 _08086254: .4byte 0x00006908
 _08086258: .4byte 0x00006909
 _0808625C: .4byte 0x0000690A
-_08086260: .4byte gMission
+_08086260: .4byte gScore
 _08086264: .4byte 0x0000270E
 _08086268:
 	ldr r0, [r7, #0x54]
@@ -708,7 +708,7 @@ _08086268:
 	adds r0, r6, #0
 	adds r3, r4, #0
 	bl FUN_080c273c
-	ldr r2, _0808632C @ =gMission
+	ldr r2, _0808632C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08086330 @ =0x0000270E
 	cmp r1, r0
@@ -748,7 +748,7 @@ _0808631C: .4byte 0x00269EC3
 _08086320: .4byte 0x00006908
 _08086324: .4byte 0x00006909
 _08086328: .4byte 0x0000690A
-_0808632C: .4byte gMission
+_0808632C: .4byte gScore
 _08086330: .4byte 0x0000270E
 _08086334: .4byte gEnemyFnTable
 
@@ -787,7 +787,7 @@ _0808634C:
 	strb r0, [r4, #0xe]
 _08086372:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08086388
@@ -838,7 +838,7 @@ _080863B4:
 	strb r0, [r4, #0xe]
 _080863CC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x70]
 	ldr r1, _0808640C @ =0x00FFFF00
 	ands r0, r1
@@ -924,7 +924,7 @@ _08086460:
 	strb r0, [r4, #0xe]
 _08086480:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x70]
 	ldr r1, _080864B4 @ =0x00FFFF00
 	ands r0, r1
@@ -972,7 +972,7 @@ _080864D2:
 	strb r0, [r4, #0xe]
 _080864E4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -1057,7 +1057,7 @@ _08086596:
 	strb r0, [r4, #0xe]
 _0808659E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _080865B4

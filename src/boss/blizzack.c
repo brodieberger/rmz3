@@ -16,14 +16,10 @@ const BossRoutine gBlizzackRoutine = {
 };
 // clang-format on
 
-void CreateBlizzack(struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gBossHeaderPtr);
+void CreateBlizzack(Coords32* c) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_BLIZZACK);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = 0, p->work[1] = 0;
   }
@@ -143,4 +139,4 @@ static const struct Collision sCollisions[4] = {
 };
 
 // 0x08364c10
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(24)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(24)};

@@ -28,17 +28,17 @@ void MenuExit_SoulLauncher(struct SoulLauncher* p) {
 }
 
 struct Entity* CreateSoulLauncher(struct Zero* z, u8 r1, u8 r2) {
-  struct SoulLauncher* p = (struct SoulLauncher*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct SoulLauncher* p = (struct SoulLauncher*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_ROD) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SOUL_LANCHER);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SOUL_LANCHER);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
     }
     (p->s).unk_28 = (void*)z;

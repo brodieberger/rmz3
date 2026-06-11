@@ -44,7 +44,7 @@ _0803CFC2:
 	ldr r0, [r1, #0x58]
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x11]
 	cmp r0, #5
 	bhi _0803CFEC

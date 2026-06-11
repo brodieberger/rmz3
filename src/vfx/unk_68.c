@@ -43,22 +43,18 @@ const VFXRoutine gGhost68Routine = {
 // clang-format on
 
 void FUN_080c4be0(s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_068);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     (p->coord).x = x, (p->coord).y = y;
   }
 }
 
 void FUN_080c4c2c(s32 x, s32 y, s32 amplitude, u8 theta) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_068);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 1;
     (p->coord).x = x, (p->coord).y = y;
     (p->d).x = Cos(theta, amplitude);
@@ -93,13 +89,13 @@ static void FUN_080c4d30(struct Entity* p) {
 static void FUN_080c4d60(struct Entity* p) {
   switch (p->mode[1]) {
     case 0: {
-      SetMotion(p, MOTION(SM135_UNK, 0));
+      SetSpriteAnimation(p, MOTION(SM135_UNK, 0));
       p->mode[1]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
-      if ((p->motion).state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
@@ -119,7 +115,7 @@ static void FUN_080c4de8(struct Entity* p) {
   struct Entity* q = (struct Entity*)(p->unk_2c);
   switch (p->mode[1]) {
     case 0: {
-      SetMotion(p, MOTION(SM135_UNK, 1));
+      SetSpriteAnimation(p, MOTION(SM135_UNK, 1));
       p->mode[1]++;
       FALLTHROUGH;
     }
@@ -128,8 +124,8 @@ static void FUN_080c4de8(struct Entity* p) {
       (p->coord).y += (p->d).y;
       (q->coord).x = (p->coord).x;
       (q->coord).y = (p->coord).y;
-      UpdateMotionGraphic(p);
-      if ((p->motion).state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);

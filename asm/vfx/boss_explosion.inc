@@ -78,7 +78,7 @@ FUN_080c7a90: @ 0x080C7A90
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r2, _080C7AE0 @ =RNG_0202f388
 	ldr r1, [r2]
 	ldr r0, _080C7AE4 @ =0x000343FD
@@ -220,7 +220,7 @@ FUN_080c7bc4: @ 0x080C7BC4
 	movs r1, #1
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, _080C7C24 @ =gSineTable
 	ldrb r0, [r4, #0x11]
 	adds r0, #0x40

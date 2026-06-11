@@ -91,7 +91,7 @@ _08075656:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080756DA:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -429,7 +429,7 @@ _08075962:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08075A22
 	.align 2, 0
 _0807597C: .4byte 0xFFFFF800
@@ -501,7 +501,7 @@ _080759F2:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08075A1A

@@ -18,7 +18,7 @@ FUN_080a5bb4: @ 0x080A5BB4
 _080A5BC6:
 	ldr r0, _080A5C0C @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r1, r0, #0
 	cmp r1, #0
 	beq _080A5BF8
@@ -205,7 +205,7 @@ _080A5D0C:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x57
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldr r2, _080A5D9C @ =gSineTable
 	ldrb r1, [r4, #0x12]
 	lsls r1, r1, #5
@@ -276,7 +276,7 @@ _080A5DA6:
 	strb r0, [r4, #0xe]
 _080A5DC8:
 	movs r0, #0x57
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -286,7 +286,7 @@ _080A5DC8:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	bl FUN_080098a4
@@ -331,9 +331,9 @@ _080A5E10:
 	strb r0, [r4, #0xe]
 _080A5E34:
 	movs r0, #0x57
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	subs r0, #1
 	strb r0, [r4, #0x13]
@@ -403,7 +403,7 @@ _080A5EAE:
 	cmp r5, #0
 	bne _080A5EF6
 	movs r0, #0x57
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1

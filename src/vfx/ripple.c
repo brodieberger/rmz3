@@ -26,12 +26,9 @@ const VFXRoutine gRippleRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct VFX* CreateRipple(struct Zero* z, bool8 outOfSea) {
-  struct VFX* vfx = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* vfx = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (vfx != NULL) {
-    (vfx->s).taskCol = 1;
     INIT_VFX_ROUTINE(vfx, VFX_RIPPLE);
-    (vfx->s).tileNum = 0;
-    (vfx->s).palID = 0;
     (vfx->s).unk_28 = &z->s;
     {
       bool8 yflip = outOfSea;
@@ -54,7 +51,7 @@ static void Ripple_Init(struct VFX* p) {
   struct Zero* z = (struct Zero*)(p->s).unk_28;
   InitNonAffineMotion(&p->s);
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 0x13));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 0x13));
   (p->s).flags |= DISPLAY;
   {
     bool8 xflip = FALSE;
@@ -70,7 +67,7 @@ static void Ripple_Init(struct VFX* p) {
     PlaySound(SE_WATER_SURFACE);
   }
   (p->s).coord.x = (z->s).coord.x;
-  (p->s).coord.y = SEA;
+  (p->s).coord.y = gOverworld.sea;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ripple_Update(p);
 }

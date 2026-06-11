@@ -15,7 +15,7 @@ const GameLoopFunc ZeroMinigameLoops[3] = {
 };
 
 // clang-format off
-const struct Coord Coord_ARRAY_08386af8[6] = {
+const Coords32 Coord_ARRAY_08386af8[6] = {
     {-0x2000, 0x1000}, {+0x2000, 0x1000},
     {-0x2000, 0x4800}, {+0x2000, 0x4800},
     {-0x2000, 0x8000}, {+0x2000, 0x8000},
@@ -23,7 +23,7 @@ const struct Coord Coord_ARRAY_08386af8[6] = {
 // clang-format on
 
 // clang-format off
-const struct Coord Coord_ARRAY_08386b28[6] = {
+const Coords32 Coord_ARRAY_08386b28[6] = {
     {+0x2800, 0x1000}, {-0x2800, 0x1000},
     {+0x1800, 0x4800}, {-0x1800, 0x4800},
     {+0x2800, 0x8000}, {-0x2800, 0x8000},
@@ -40,8 +40,8 @@ bool32 exitZeroMinigame(struct GameState* g) {
   }
   if (s->unk_06 == 1) {
     if ((*((s16*)s->unk_00) <= 0 || (--(*((s16*)s->unk_00)) <= 0))) {
-      if (s->unk_3c > gSystemSavedataManager.minigameHiscores[MINIGAME_ZERO]) {
-        gSystemSavedataManager.minigameHiscores[MINIGAME_ZERO] = s->unk_3c;
+      if (s->unk_3c > gSystemSavedata.minigameHiscores[MINIGAME_ZERO]) {
+        gSystemSavedata.minigameHiscores[MINIGAME_ZERO] = s->unk_3c;
         SaveSystemData();
       }
       return FALSE;

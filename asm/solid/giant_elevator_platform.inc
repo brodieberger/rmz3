@@ -8,7 +8,7 @@
 Solid46_Update: @ 0x080DE914
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r6, #0x11]
 	ldr r0, _080DE984 @ =gCurStory
 	ldrb r0, [r0, #8]

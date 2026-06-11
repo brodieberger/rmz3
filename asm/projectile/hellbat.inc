@@ -15,7 +15,7 @@ createBat: @ 0x080A141C
 	lsrs r5, r3, #0x18
 	ldr r0, _080A1478 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A146E
@@ -64,7 +64,7 @@ createEchoWave: @ 0x080A1480
 	lsrs r4, r2, #0x18
 	ldr r0, _080A14D4 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A14CC
@@ -112,7 +112,7 @@ FUN_080a14dc: @ 0x080A14DC
 	lsrs r4, r2, #0x18
 	ldr r0, _080A1530 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A1528
@@ -160,7 +160,7 @@ FUN_080a1538: @ 0x080A1538
 	lsrs r4, r2, #0x18
 	ldr r0, _080A158C @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A1584
@@ -208,7 +208,7 @@ FUN_080a1594: @ 0x080A1594
 	lsrs r4, r2, #0x18
 	ldr r0, _080A15E8 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080A15E0
@@ -725,7 +725,7 @@ _080A198C:
 	strb r0, [r6, #0x13]
 _080A19B2:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -764,7 +764,7 @@ _080A19D8:
 	strb r0, [r6, #0x13]
 _080A19FE:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A1A04:
 	add sp, #8
 	pop {r4, r5, r6}
@@ -1377,11 +1377,11 @@ _080A1EA2:
 	bl FUN_080bde9c
 _080A1EC8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080A1F04
 _080A1ED0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x64]
 	adds r1, r4, #0
 	adds r1, #0x50
@@ -1553,7 +1553,7 @@ _080A1FFA:
 	str r0, [r4, #0x5c]
 _080A2012:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A2018:
 	pop {r4}
 	pop {r0}
@@ -1648,7 +1648,7 @@ _080A209E:
 	orrs r0, r2
 	strb r0, [r3]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, _080A20E8 @ =0xFFFFFF00
 	adds r0, r0, r1
@@ -1667,7 +1667,7 @@ _080A20EC:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
 	movs r2, #0x80
@@ -1803,7 +1803,7 @@ _080A21E4:
 	str r1, [r0, #0x5c]
 _080A2206:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x13]
 	cmp r0, #1
 	bne _080A222C
@@ -1842,7 +1842,7 @@ _080A2254:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	ldr r0, _080A22A0 @ =gStageRun+232
 	ldr r0, [r0, #0x3c]
@@ -1883,7 +1883,7 @@ _080A22A0: .4byte gStageRun+232
 _080A22A4: .4byte 0xFFFFB000
 _080A22A8:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x64]
 	adds r1, r5, #0
 	adds r1, #0x50
@@ -2051,7 +2051,7 @@ _080A23CC:
 	str r1, [r0, #0x5c]
 _080A23EE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x5c]
 	cmp r0, #0
 	ble _080A240A
@@ -2090,7 +2090,7 @@ _080A2438:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080A2446:
 	pop {r4, r5}
 	pop {r0}

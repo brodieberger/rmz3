@@ -112,14 +112,14 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
     gCollisionManager.sweep |= (1 << FACTION_ENEMY);
     SetScript(&gStageRun.vm, gStageScriptList[STAGE_AREA_X2][8]);
     gStageRun.missionStatus &= ~MISSION_SUCCESS;
-    gStageRun.vm.active &= 0xFD;
+    gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= STOP_TIME_COUNT;
     gStageRun.missionStatus |= MISSION_STAY;
     setStageCheckpoint2(6);
     p->stageEventPhase = 8;
 
   } else if (p->stageEventPhase == 8) {
-    gCollisionManager.disabled &= 0x7F;
+    gCollisionManager.disabled &= ~(1 << 7);
     gCollisionManager.sweep = 0;
     SetScript(&gStageRun.vm, gStageScriptList[STAGE_AREA_X2][10]);
     setStageCheckpoint(7);

@@ -22,7 +22,7 @@ const SolidRoutine gOceanRodWallRoutine = {
 // clang-format on
 
 static void Solid53_Init(struct Solid* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
 
   if (GetMetatileAttr((p->s).coord.x, (p->s).coord.y) == 0) {
     (p->s).flags &= ~DISPLAY;
@@ -48,7 +48,7 @@ static void Solid53_Update(struct Solid* p) {
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM182_UNK, 1));
+      SetSpriteAnimation(p, MOTION(SM182_UNK, 1));
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Solid53_Die(p);
     }

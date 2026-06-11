@@ -28,18 +28,18 @@ void SetWeaponElement(u16 n, u16 val);
 void KillAllWeapons(WeaponFunc fn);
 u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon);
 
-struct Weapon* CreateBlizzardArrow(struct Zero* z, struct Coord* c, u8 n, bool8 xflip);
+struct Weapon* CreateBlizzardArrow(struct Zero* z, Coords32* c, u8 n, bool8 xflip);
 
 void DeleteSaber(struct Weapon* w);
 void DeleteFlyingShield(Object* p);
 
-struct Weapon* CreateWeaponBuster(struct Zero* z, struct Coord* c, u8 n, bool8 xflip, bool8 yflip);
+struct Weapon* CreateWeaponBuster(struct Zero* z, Coords32* c, u8 n, bool8 xflip, bool8 yflip);
 struct Weapon* CreateWeaponSaber(struct Zero* z, u8 r1);
 struct Weapon* CreateBuster(struct Zero* z, s32 x, s32 y, bool8 isDirRight);
 struct Entity* CreateWeaponShieldGuard(struct Zero* z, u8 n);
 struct Weapon* CreateWeaponRod(struct Zero* z);
 struct Entity* CreateWeaponShieldFly(struct Zero* z, u8 n);
-struct Entity* CreateSmashElec(struct Zero* z, struct Coord* c, u8 leftOrRight);
+struct Entity* CreateSmashElec(struct Zero* z, Coords32* c, u8 leftOrRight);
 struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* w, bool8 isIce);
 struct Entity* CreateSaberWave(struct Zero* z, struct Weapon* w, bool8 r2);
 void CreateWeapon6(s32 x, s32 y);

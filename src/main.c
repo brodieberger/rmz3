@@ -1,9 +1,9 @@
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "gpu_regs.h"
 #include "intro.h"
+#include "palette_animation.h"
 #include "system.h"
 
 void ClearMemory(void);
@@ -30,14 +30,14 @@ NON_MATCH void AgbMain(void) {
   REG_DISPCNT = DISPCNT_FORCED_BLANK;
   ClearVRAM();
   InitPaletteManager();
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   ResetVideoRegister();
   ResetOAM();
   ClearBLDCLT_1();
   ResetWindow();
   ClearMOSAIC();
   InitSound();
-  EnableBG0(gGameState.bg0, SCREEN_BASE_16(0), 1408, RGB(0, 30, 0));
+  EnableBG0(gGameState.bg0, SCREEN_BASE(0), 1408, RGB(0, 30, 0));
   InitTextPrinter(gGameState.bg0);
   PALETTE16(0) = RGB_WHITE;
   gIntrManager.slowGameRatio = 1;

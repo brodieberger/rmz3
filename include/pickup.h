@@ -6,6 +6,7 @@
 
 struct Zero;
 
+// Entity.kind = 7, アイテム
 struct Pickup {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
@@ -27,14 +28,14 @@ extern const PickupRoutine* const gPickupFnTable[2];
 
 // --------------------------------------------
 
-#define INIT_ITEM_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gPickupFnTable, entity, entityID)
+#define INIT_ITEM_ROUTINE(entity, entityID) INIT_OBJECT_ENTITY(1, gPickupFnTable, entity, entityID)
 #define SET_ITEM_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gPickupFnTable, entity, modeID)
 
 // --------------------------------------------
 
 void DeletePickup(struct Entity* p);
 
-struct Entity* CreatePickupItem(u8 itemID, struct Coord* c, u8 param_3);
-struct Entity* CreateMapDisk(u8 diskNo, struct Coord* c, u8 r2);
+struct Entity* CreatePickupItem(u8 itemID, Coords32* c, u8 param_3);
+struct Entity* CreateMapDisk(u8 diskNo, Coords32* c, u8 r2);
 
 #endif  // GUARD_RMZ3_MAP_ITEM_H

@@ -382,7 +382,7 @@ _080A2BB0:
 	adds r0, r0, r1
 	str r0, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x13]
 	cmp r0, #0
 	beq _080A2BD2
@@ -445,7 +445,7 @@ _080A2C22:
 	adds r0, r0, r2
 	str r0, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r4, #0
 	ldr r1, [r6, #0x58]
 	ldr r0, [r6, #0x5c]
@@ -588,7 +588,7 @@ _080A2D40:
 	strb r0, [r6, #0xe]
 _080A2D5E:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -634,7 +634,7 @@ _080A2DAC:
 	strb r0, [r4, #0xe]
 _080A2DBA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -692,7 +692,7 @@ _080A2E20:
 	subs r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _080A2E3E
@@ -725,7 +725,7 @@ _080A2E62:
 	subs r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _080A2E80

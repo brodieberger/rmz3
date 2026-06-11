@@ -17,11 +17,9 @@ const VFXRoutine gGhost70Routine = {
 // clang-format on
 
 struct VFX* FUN_080c5628(u8 r0, u8 r1, s32 x, s32 y) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_070);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = r0, (p->s).work[1] = r1;
     (p->s).coord.x = x, (p->s).coord.y = y;
     (p->s).d.x = 0, (p->s).d.y = 0;
@@ -30,11 +28,9 @@ struct VFX* FUN_080c5628(u8 r0, u8 r1, s32 x, s32 y) {
 }
 
 struct VFX* FUN_080c5684(u8 r0, u8 r1, s32 x, s32 y, s32 dx, s32 dy) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_070);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = r0, (p->s).work[1] = r1;
     (p->s).coord.x = x, (p->s).coord.y = y;
     (p->s).d.x = dx, (p->s).d.y = dy;

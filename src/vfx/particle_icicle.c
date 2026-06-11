@@ -19,11 +19,9 @@ const VFXRoutine gIcicleParticleRoutine = {
 
 // 0x080c0f2c
 void CreateIcicleParticle(s32 x, s32 y, s32 dy) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_ICICLE_PARTICLE);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     p->coord.x = x, p->coord.y = y;
     p->d.y = dy;
@@ -162,7 +160,7 @@ _080C10AC:\n\
 	adds r0, r0, r1\n\
 	str r0, [r7, #0x58]\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r7, #0x54]\n\
 	ldr r1, [r7, #0x58]\n\
 	bl FUN_080098a4\n\
@@ -172,7 +170,7 @@ _080C10AC:\n\
 	ldr r0, _080C1100 @ =gStageRun+232\n\
 	adds r1, r7, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #6\n\
 	cmp r0, r1\n\

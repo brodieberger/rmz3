@@ -16,13 +16,10 @@ const VFXRoutine gMinigameIconRoutine = {
 };
 // clang-format on
 
-struct VFX* CreateMinigameIcon_1(struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* CreateMinigameIcon_1(Coords32* c, u8 n) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_MINIGAME_ICON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).work[1] = n;
     (p->s).coord.x = c->x;

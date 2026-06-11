@@ -15,23 +15,16 @@ void InitVFXHeader(struct EntityHeader* h, struct VFX* p, s16 len) {
 }
 
 void UpdateVFXs(void) {
-  struct Entity* p;
   struct EntityHeader* h = gVFXHeaderPtr;
-  setCurProcessedEntityHeader(h);
+  struct Entity* p = StartEntityListIteration(h);
 
-  while (TRUE) {
-    p = h->last = h->last->prev;
-    if (p == (struct Entity*)&h->next) {
-      break;
-    }
-
+  while (p != ((void*)&h->tail)) {
     if (gPause) {
-      if (p->id == 48) {
-        ((EntityFunc)(p->onUpdate))(p);
-      }
+      if (p->id == VFX_ELF_PARTICLE) ((EntityFunc)(p->onUpdate))(p);
     } else {
       ((EntityFunc)(p->onUpdate))(p);
     }
+    p = GetNextEntity(h);
   }
 }
 
@@ -69,7 +62,7 @@ extern const VFXRoutine gVFX25Routine;
 extern const VFXRoutine gIcebonIcedustRoutine;
 extern const VFXRoutine gGhost27Routine;
 extern const VFXRoutine gGhost28Routine;
-extern const VFXRoutine gGhost29Routine;
+extern const VFXRoutine gBurningFlameFXRoutine;
 extern const VFXRoutine gGhost30Routine;
 extern const VFXRoutine gGhost31Routine;
 extern const VFXRoutine gGhost32Routine;
@@ -157,7 +150,7 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_UNK_026] = &gIcebonIcedustRoutine,
     [VFX_UNK_027] = &gGhost27Routine,
     [VFX_UNK_028] = &gGhost28Routine,
-    [VFX_UNK_029] = &gGhost29Routine,
+    [VFX_BURNING_FLAME_FX] = &gBurningFlameFXRoutine,
     [VFX_UNK_030] = &gGhost30Routine,
     [VFX_UNK_031] = &gGhost31Routine,
     [VFX_P_AQUA] = &gGhost32Routine,
@@ -184,7 +177,7 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_UNK_053] = &gVFX53Routine,
     [VFX_ICICLE_PARTICLE] = &gIcicleParticleRoutine,
     [VFX_UNK_055] = &gVFX55Routine,
-    [VFX_UNK_056] = &gVFX56Routine,
+    [VFX_COPYX_REFLECTLASER] = &gVFX56Routine,
     [VFX_UNK_057] = &gVFX57Routine,
     [VFX_UNK_058] = &gVFX58Routine,
     [VFX_UNK_059] = &gVFX59Routine,

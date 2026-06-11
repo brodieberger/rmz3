@@ -7,8 +7,8 @@
 struct CyberSpaceElf {
   struct Entity s;
   // props (16bytes, offset: 0x74..)
-  struct Coord c74;  // 0x74
-  u8 unk_7c[8];      // 0x7C
+  Coords32 c74;  // 0x74
+  u8 unk_7c[8];  // 0x7C
 };
 static_assert(sizeof(struct CyberSpaceElf) == sizeof(struct VFX));
 
@@ -26,12 +26,10 @@ const VFXRoutine gCyberSpaceElfRoutine = {
 };
 // clang-format on
 
-void CreateCyberSpaceElf(struct Coord* c, u8 kind, u8 r2) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+void CreateCyberSpaceElf(Coords32* c, u8 kind, u8 r2) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_CS_ELF);
-    p->tileNum = 0, p->palID = 0;
     p->coord = *c;
     p->work[0] = kind, p->work[1] = r2;
   }
@@ -44,7 +42,7 @@ static void CyberSpaceElf_Init(struct CyberSpaceElf* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, GetElfMotion((p->s).work[0]));
+  SetSpriteAnimation(p, GetElfMotion((p->s).work[0]));
   SET_XFLIP(p, FALSE);
   y = (p->s).coord.y - PIXEL(18);
   (p->s).coord.y = y;

@@ -90,14 +90,14 @@ void MenuExit_ThrowBlade(struct Weapon* w) {
 }
 
 struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIce) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     struct ThrowBladeProps* s;
 
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_ZANEIDAN);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[0];
       (w->s).palID = gWeaponPalIDs[0];
       if (isIce) {
@@ -107,7 +107,7 @@ struct Weapon* CreateThrowBlade(struct Zero* z, struct Weapon* saber, bool8 isIc
     } else {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_ZANEIDAN);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[1];
       (w->s).palID = gWeaponPalIDs[1];
       if (isIce) {

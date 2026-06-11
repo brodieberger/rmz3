@@ -35,10 +35,10 @@ static_assert(sizeof(struct BossOmegaZero) == sizeof(struct Boss));
 static const u8 sModes[48];
 static const u8 sInitModes[4];
 static const struct Collision sCollisions[6];
-static const struct Coord sExplosionCoords[2];
+static const Coords32 sExplosionCoords[2];
 
 void CreateOzChargeSaberRock(s32 x, u8 r1);
-void oz_080b3820(struct Coord* c, bool8 isRight);
+void oz_080b3820(Coords32* c, bool8 isRight);
 void oz_080c3b44(struct Entity* p);
 void oz_080c3b9c(struct Entity* p);
 struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind);
@@ -114,7 +114,7 @@ static void oz_0805d6a8(struct BossOmegaZero* p) {
 }
 
 // 0x0805d6d8
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   struct Entity* other = (struct Entity*)body->enemy->parent;
   struct BossOmegaZero* self = (struct BossOmegaZero*)body->parent;
 
@@ -126,7 +126,7 @@ static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
 static bool8 tryKillOmegaZero(struct BossOmegaZero* p) {
   u32* status = &(p->body).status;
 
-  if (((*status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && ((gStageRun.missionStatus & MISSION_FAIL) == 0)) {
+  if (((*status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     struct Entity* shadow = (struct Entity*)p->vfx;
     if (shadow != NULL) {
       shadow->work[1] = 1;
@@ -304,7 +304,7 @@ static void ozNeutral(struct Boss* p) {
       } else {
         (p->s).work[2] = 24;
       }
-      SetMotion(&p->s, MOTION(DM000_ZERO_NEUTRAL, 0));
+      SetSpriteAnimation(p, MOTION(DM000_ZERO_NEUTRAL, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -322,7 +322,7 @@ static void ozNeutral(struct Boss* p) {
       if (!((pZero2->body).status & BODY_STATUS_DEAD) && ((pZero2->body).hp != 0) && ((p->s).work[2] == 0)) {
         calcNextOmegaZeroAction((void*)p);
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -375,7 +375,7 @@ _0805DAA2:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DAB4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805DB2A\n\
 	.align 2, 0\n\
 _0805DABC: .4byte 0x00003F02\n\
@@ -398,7 +398,7 @@ _0805DAD8:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DAE4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -431,7 +431,7 @@ _0805DB0E:\n\
 	strb r0, [r4, #0x12]\n\
 _0805DB24:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0805DB2A:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -537,7 +537,7 @@ _0805DBCE:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DBEE:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805DC40\n\
 	.align 2, 0\n\
 _0805DBF8: .4byte sCollisions+72\n\
@@ -565,7 +565,7 @@ _0805DC1C:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DC2A:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -646,7 +646,7 @@ _0805DCB6:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805DD12\n\
 	.align 2, 0\n\
 _0805DCC8: .4byte 0xFFFFFE00\n\
@@ -683,7 +683,7 @@ _0805DD04:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0805DD12:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -697,7 +697,7 @@ _0805DD18: .4byte 0xFFFFFC00\n\
 static void ozDoubleJump2(struct BossOmegaZero* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(DM004_ZERO_AIR, 1));
+      SetSpriteAnimation(p, MOTION(DM004_ZERO_AIR, 1));
       (p->s).mode[2]++;
       break;
     }
@@ -722,7 +722,7 @@ static void ozDoubleJump2(struct BossOmegaZero* p) {
     (p->s).coord.y = p->y;
     (p->s).mode[1] = 0, (p->s).mode[2] = 0;
   }
-  UpdateMotionGraphic((void*)p);
+  UpdateSpriteAnimation(p);
 }
 
 // 01 05 xx --
@@ -731,7 +731,7 @@ static void ozTripleSlash1(struct Boss* p) {
     case 0: {
       PlaySound(SE_OMEGAZERO_VOICE_ea);
       CreateOmegaZeroSaber((struct Entity*)p, 0);
-      SetMotion(&p->s, MOTION(DM014_ZERO_SABER_TRIPLE1, 0));
+      SetSpriteAnimation(p, MOTION(DM014_ZERO_SABER_TRIPLE1, 0));
       (p->s).mode[2]++;
       break;
     }
@@ -743,8 +743,8 @@ static void ozTripleSlash1(struct Boss* p) {
     }
   }
 
-  UpdateMotionGraphic(&p->s);
-  if ((p->s).motion.state == MOTION_END) {
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) {
     (p->s).mode[1] = 6, (p->s).mode[2] = 0;
   }
 }
@@ -755,7 +755,7 @@ static void ozTripleSlash2(struct Boss* p) {
     case 0: {
       PlaySound(SE_OMEGAZERO_VOICE_eb);
       CreateOmegaZeroSaber((struct Entity*)p, 1);
-      SetMotion(&p->s, MOTION(DM015_ZERO_SABER_TRIPLE2, 0));
+      SetSpriteAnimation(p, MOTION(DM015_ZERO_SABER_TRIPLE2, 0));
       (p->s).mode[2]++;
       break;
     }
@@ -767,8 +767,8 @@ static void ozTripleSlash2(struct Boss* p) {
     }
   }
 
-  UpdateMotionGraphic(&p->s);
-  if ((p->s).motion.state == MOTION_END) {
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) {
     (p->s).mode[1] = 7, (p->s).mode[2] = 0;
   }
 }
@@ -779,7 +779,7 @@ static void ozTripleSlash3(struct Boss* p) {
     case 0: {
       PlaySound(SE_OMEGAZERO_VOICE_ec);
       CreateOmegaZeroSaber((struct Entity*)p, 2);
-      SetMotion(&p->s, MOTION(DM016_ZERO_SABER_TRIPLE3, 0));
+      SetSpriteAnimation(p, MOTION(DM016_ZERO_SABER_TRIPLE3, 0));
       (p->s).mode[2]++;
       break;
     }
@@ -791,8 +791,8 @@ static void ozTripleSlash3(struct Boss* p) {
     }
   }
 
-  UpdateMotionGraphic(&p->s);
-  if ((p->s).motion.state == MOTION_END) {
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) {
     (p->s).mode[1] = 0, (p->s).mode[2] = 0;
   }
 }
@@ -812,18 +812,18 @@ static void double_charge_wave_1(struct Boss* p) {
       if ((p->s).work[2] == 0) {
         (p->s).mode[2]++;
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
 
     case 2: {
-      SetMotion(&p->s, MOTION(DM008_ZERO_BUSTER, 3));
+      SetSpriteAnimation(p, MOTION(DM008_ZERO_BUSTER, 3));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 9, (p->s).mode[2] = 0;
       }
       break;
@@ -879,7 +879,7 @@ _0805DF38:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DF4A:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805DFAE\n\
 _0805DF52:\n\
 	movs r0, #0xed\n\
@@ -895,7 +895,7 @@ _0805DF5E:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DF6C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -916,7 +916,7 @@ _0805DF88:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DF96:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -975,7 +975,7 @@ _0805DFE8:\n\
 	strb r0, [r4, #0xe]\n\
 _0805DFFA:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E060\n\
 _0805E002:\n\
 	movs r0, #0xee\n\
@@ -991,7 +991,7 @@ _0805E002:\n\
 	strb r0, [r4, #0xe]\n\
 _0805E01C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x71\n\
 	movs r1, #0\n\
@@ -1143,7 +1143,7 @@ _0805E13C:\n\
 	strb r0, [r4, #0xe]\n\
 _0805E142:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E1AE\n\
 	.align 2, 0\n\
 _0805E14C: .4byte sCollisions+72\n\
@@ -1179,7 +1179,7 @@ _0805E186:\n\
 	strb r0, [r4, #0xe]\n\
 _0805E196:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1293,7 +1293,7 @@ _0805E25C:\n\
 	strb r1, [r4, #0xe]\n\
 _0805E264:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0805E26A:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -1314,7 +1314,7 @@ static void ozRyuenjin3(struct BossOmegaZero* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       CreateOmegaZeroSaber((struct Entity*)p, 6);
-      SetMotion(&p->s, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 2));
+      SetSpriteAnimation(p, MOTION(DM018_ZERO_SABER_TENRETSUJIN, 2));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -1330,7 +1330,7 @@ static void ozRyuenjin3(struct BossOmegaZero* p) {
         (p->s).coord.y = p->y;
         (p->s).mode[1] = 0, (p->s).mode[2] = 0;
       }
-      UpdateMotionGraphic((void*)p);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -1402,7 +1402,7 @@ _0805E33C:\n\
 	strb r0, [r4, #0x13]\n\
 _0805E366:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E392\n\
 _0805E36E:\n\
 	ldr r1, _0805E398 @ =0x00003F01\n\
@@ -1413,7 +1413,7 @@ _0805E36E:\n\
 	strb r0, [r4, #0xe]\n\
 _0805E37C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1506,7 +1506,7 @@ _0805E40E:\n\
 	strb r0, [r5, #0x13]\n\
 _0805E422:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E454\n\
 	.align 2, 0\n\
 _0805E42C: .4byte sCollisions+(24*5)\n\
@@ -1519,7 +1519,7 @@ _0805E430:\n\
 	strb r0, [r5, #0xe]\n\
 _0805E43E:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1552,20 +1552,20 @@ static void charge_saber(struct Boss* p) {
       if ((p->s).work[2] == 0) {
         (p->s).mode[2]++;
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
     case 2: {
       (p->s).work[2] = 0;
       PlaySound(SE_OMEGAZERO_CHARGE_SABER);
       CreateOmegaZeroSaber((struct Entity*)p, 7);
-      SetMotion(&p->s, MOTION(DM020_ZERO_SABER_CHARGE, 0));
+      SetSpriteAnimation(p, MOTION(DM020_ZERO_SABER_CHARGE, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(&p->s);
-      if ((*(u32*)&(p->s).motion.step & 0xffff00) == 0x10300) {
+      UpdateSpriteAnimation(p);
+      if ((*(u32*)&(p->s).motion.id & 0xffff00) == 0x10300) {
         s32 x = (p->s).coord.x - PIXEL(48);
         if ((p->s).flags & X_FLIP) {
           x = (p->s).coord.x + PIXEL(48);
@@ -1574,9 +1574,8 @@ static void charge_saber(struct Boss* p) {
         oz_080b3820(&(p->s).coord, (p->s).flags >> 4 & 1);
         AppendQuake(3, &(p->s).coord);
       }
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[1] = 0;
-        (p->s).mode[2] = 0;
+      if (IsSpriteAnimEnd(p)) {
+        (p->s).mode[1] = 0, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -1645,7 +1644,7 @@ _0805E5A2:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E5FE\n\
 	.align 2, 0\n\
 _0805E5B4: .4byte 0xFFFFFE00\n\
@@ -1682,7 +1681,7 @@ _0805E5F0:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0805E5FE:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -1746,7 +1745,7 @@ _0805E666:\n\
 	subs r0, #1\n\
 	strb r0, [r4, #0x12]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1776,7 +1775,7 @@ _0805E69E:\n\
 	adds r1, r1, r0\n\
 	str r1, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1865,7 +1864,7 @@ _0805E73E:\n\
 	adds r0, r4, #0\n\
 	bl oz_0805d6a8\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0805E794\n\
 _0805E754:\n\
 	ldr r0, [r4, #0x54]\n\
@@ -1875,7 +1874,7 @@ _0805E754:\n\
 	adds r0, r4, #0\n\
 	bl oz_0805d6a8\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1890,7 +1889,7 @@ _0805E77A:\n\
 	movs r1, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0\n\
 	strb r0, [r4, #0xd]\n\
 	movs r0, #1\n\
@@ -2009,7 +2008,7 @@ _0805E850:\n\
 	strb r1, [r4, #0xe]\n\
 _0805E85C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0805E862:\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\
@@ -2113,7 +2112,7 @@ _0805E918:\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -2142,7 +2141,7 @@ _0805E95A:\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -2201,7 +2200,7 @@ _0805E9C6:\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x71\n\
 	movs r1, #0\n\
@@ -2242,7 +2241,7 @@ _0805EA1E:\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -2273,36 +2272,33 @@ static void ozRanbu4(struct Boss* p) {
     case 0: {
       PlaySound(SE_OMEGAZERO_VOICE_ec);
       CreateOmegaZeroSaber((struct Entity*)p, 14);
-      SetMotion(&p->s, MOTION(DM016_ZERO_SABER_TRIPLE3, 0));
+      SetSpriteAnimation(p, MOTION(DM016_ZERO_SABER_TRIPLE3, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
       FUN_0801779c(&p->s);
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
 
     case 2: {
       PlaySound(SE_OMEGAZERO_CHARGE_SABER);
-      SetMotion(&p->s, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
+      SetSpriteAnimation(p, MOTION(DM017_ZERO_SABER_SLASH_UP, 0));
       (p->s).work[2] = 0;
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
       FUN_0801779c(&p->s);
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).motion.cmdIdx == 1) && ((p->s).work[2] == 0)) {
         (p->s).work[2] = 1;
         CreateOmegaZeroSaber((struct Entity*)p, 15);
       }
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[1] = 11;
-        (p->s).mode[2] = 0;
+      if (IsSpriteAnimEnd(p)) {
+        (p->s).mode[1] = 11, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -2321,17 +2317,17 @@ static void ozDeath0(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       EXIT_BODY(p);
-      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1)) {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
       (p->s).work[2] = 80;
-      SetMotion(&p->s, MOTION(DM050_ZERO_STUN, 1));
+      SetSpriteAnimation(p, MOTION(DM050_ZERO_STUN, 1));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).work[2]--;
       if ((p->s).scriptEntity->flags & (1 << 7)) {
         (p->s).mode[2]++;
@@ -2340,13 +2336,13 @@ static void ozDeath0(struct Boss* p) {
     }
 
     case 2: {
-      (p->s).unk_2c = CreateBossExplosion((struct Entity*)p, (struct Coord*)sExplosionCoords);
+      (p->s).unk_2c = CreateBossExplosion((struct Entity*)p, (Coords32*)sExplosionCoords);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
       if (((p->s).unk_2c)->mode[0] >= 2) {
-        gStageRun.vm.active |= (1 << 1);
+        gStageRun.vm.active |= VM_FLAG1;
         (p->s).mode[2]++;
       }
       break;
@@ -2363,17 +2359,17 @@ static void ozDeath1(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       EXIT_BODY(p);
-      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1)) {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
       (p->s).work[2] = 80;
-      SetMotion(&p->s, MOTION(DM050_ZERO_STUN, 1));
+      SetSpriteAnimation(p, MOTION(DM050_ZERO_STUN, 1));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).work[2]--;
       if ((p->s).scriptEntity->flags & (1 << 7)) {
         (p->s).mode[2]++;
@@ -2382,13 +2378,13 @@ static void ozDeath1(struct Boss* p) {
     }
 
     case 2: {
-      (p->s).unk_2c = CreateBossExplosion((struct Entity*)p, (struct Coord*)&sExplosionCoords[1]);
+      (p->s).unk_2c = CreateBossExplosion((struct Entity*)p, (Coords32*)&sExplosionCoords[1]);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 3: {
       if (((p->s).unk_2c)->mode[0] >= 2) {
-        gStageRun.vm.active |= (1 << 1);
+        gStageRun.vm.active |= VM_FLAG1;
         (p->s).mode[2]++;
       }
       break;
@@ -2481,7 +2477,7 @@ static const u8 sModes[16 * 3] = {
 static const u8 sInitModes[4] = {1, 0, 0, 0};
 
 // 0x083651f0
-static const struct Coord sExplosionCoords[2] = {
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(28)},
     {PIXEL(0), -PIXEL(28)},
 };

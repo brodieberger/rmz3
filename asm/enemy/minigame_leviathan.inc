@@ -13,7 +13,7 @@ FUN_08099f54: @ 0x08099F54
 	adds r7, r3, #0
 	ldr r0, _08099FB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08099FA8
@@ -66,7 +66,7 @@ FUN_08099fb8: @ 0x08099FB8
 	lsrs r5, r3, #0x18
 	ldr r0, _0809A024 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0809A01E
@@ -123,7 +123,7 @@ FUN_0809a02c: @ 0x0809A02C
 	lsrs r5, r1, #0x18
 	ldr r0, _0809A0A8 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0809A0A0
@@ -269,7 +269,7 @@ LeviathanMinigameEnemy_Init: @ 0x0809A108
 	bl SetMotion
 _0809A152:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0xa]
 	movs r1, #4
 	orrs r0, r1
@@ -451,7 +451,7 @@ _0809A292:
 	movs r4, #0
 	strb r0, [r5, #0x13]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, _0809A314 @ =0xFFFF3000
 	adds r0, r0, r1
@@ -635,7 +635,7 @@ _0809A422:
 	adds r0, #0x10
 	str r0, [r4, #0x60]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -807,7 +807,7 @@ _0809A55C:
 	movs r5, #0
 	strb r0, [r4, #0x13]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, _0809A5D8 @ =0xFFFF3000
 	adds r0, r0, r1
@@ -952,7 +952,7 @@ _0809A694:
 	movs r5, #0
 	strb r0, [r4, #0x13]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, _0809A6F8 @ =0xFFFF3000
 	adds r0, r0, r1
@@ -1072,7 +1072,7 @@ _0809A782:
 	strb r0, [r6, #0xe]
 _0809A794:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0809A8F4
 	.align 2, 0
 _0809A79C: .4byte RNG_0202f388
@@ -1246,7 +1246,7 @@ _0809A8AC:
 	str r0, [r6, #0x14]
 _0809A8EE:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0809A8F4:
 	pop {r3}
 	mov r8, r3
@@ -1383,7 +1383,7 @@ _0809A9B2:
 	str r0, [r4, #0x14]
 _0809A9FC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0809AA02:
 	pop {r4}
 	pop {r0}

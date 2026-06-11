@@ -74,7 +74,7 @@ _080DF748:
 	ldr r0, [r4, #0x68]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080DF760:
 	pop {r4}
 	pop {r0}
@@ -286,7 +286,7 @@ _080DF8F0:
 _080DF8F2:
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080DF8FA:
 	pop {r4, r5, r6, r7}
 	pop {r0}

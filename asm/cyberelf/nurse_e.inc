@@ -16,7 +16,7 @@ CreateNurseEElf: @ 0x080E2BE4
 	lsrs r5, r3, #0x18
 	ldr r0, _080E2C3C @ =gElfHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080E2C4C
@@ -112,7 +112,7 @@ NurseE_Init: @ 0x080E2C54
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x4c
 	strb r6, [r0]
@@ -173,7 +173,7 @@ _080E2D34:
 	mov r2, sb
 	ldrb r1, [r2, #1]
 _080E2D38:
-	ldr r0, _080E2D54 @ =gUnlockedElfPtr
+	ldr r0, _080E2D54 @ =gElfAvailability
 	ldr r0, [r0]
 	adds r0, r0, r1
 	ldrb r1, [r0]
@@ -187,7 +187,7 @@ _080E2D38:
 	lsls r0, r0, #2
 	b _080E2D60
 	.align 2, 0
-_080E2D54: .4byte gUnlockedElfPtr
+_080E2D54: .4byte gElfAvailability
 _080E2D58:
 	adds r1, r7, #0
 	adds r1, #0xba
@@ -244,7 +244,7 @@ NurseE_Update: @ 0x080E2D94
 	str r1, [sp, #0x24]
 	str r2, [sp, #0x28]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080E2E14 @ =gPause
 	ldrb r2, [r0]
 	cmp r2, #0
@@ -949,7 +949,7 @@ _080E32FC:
 	adds r0, #0xb4
 	ldrb r2, [r0, #1]
 _080E3302:
-	ldr r0, _080E3318 @ =gUnlockedElfPtr
+	ldr r0, _080E3318 @ =gElfAvailability
 	ldr r0, [r0]
 	adds r0, r0, r2
 	ldrb r1, [r0]
@@ -961,7 +961,7 @@ _080E3302:
 	lsls r0, r0, #2
 	b _080E3320
 	.align 2, 0
-_080E3318: .4byte gUnlockedElfPtr
+_080E3318: .4byte gElfAvailability
 _080E331C:
 	movs r0, #0xe1
 	lsls r0, r0, #2

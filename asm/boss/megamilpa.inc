@@ -574,7 +574,7 @@ _0803DACE:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x74
 	ldr r1, _0803DB24 @ =0x08361AD0
@@ -769,7 +769,7 @@ _0803DC70:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r5, #0
 	adds r2, #0xc0
 	ldr r0, [r2]

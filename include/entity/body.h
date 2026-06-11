@@ -42,50 +42,39 @@
 struct Collision;
 struct Body;
 
-typedef void (*BodyFunc)(struct Body*, struct Coord*, struct Coord*);
+typedef void (*BodyFunc)(struct Body*, Coords32*, Coords32*);
 
-/**
- * @brief Physics Body (Ja: 肉体)
- */
 struct Body {
-  const struct Collision* collisions;  // Collision chain start
-  const struct Collision* processing;  // .collisions は Bodyが持ってる当たり判定のリスト、 .processing は オーバーラップした時に、解決処理の間、Collisionリストの先頭を指す
-  struct Coord* coord;
-  struct Body* enemy;     // 接触ダメージを受ける時は接触相手
-  struct Body* bindPair;  // 拘束技(オメガZXのバインディングボールなど)を食らった時の相手(e.g. Zero ⇆ Binding ball)
+  const struct Collision* collisions;  // 0x00, 自分の当たり判定を表す Hitboxのリスト
+  const struct Collision* processing;  // 0x04, .collisions のどれかが別のBodyと交差したときに、該当の Collisionをセットする
+  Coords32* coord;                     // 0x08, = &Entity.coord
+  struct Body* enemy;                  // 0x0C, 交差した相手のBody
+  struct Body* bindPair;               // 0x10, 拘束技(オメガZXのバインディングボールなど)を食らった時の相手(e.g. Zero ⇆ Binding ball)
 
-  u32 hitboxFlags;  // .status と同じ内容？
+  u32 hitboxFlags;  // 0x14, .status と同じ内容？
+  u32 status;       // 0x18
+  u32 prevStatus;   // 0x1C
 
-  u32 status;
-  u32 prevStatus;
+  u8 invincibleTime;      // 0x20, bit0..6: 無敵時間(フレーム数), bit7: このbitがセットされている場合は、bit0..6の値に関係なく無敵
+  u8 unk_21;              // 0x21
+  u8 invincibleLv;        // 0x22, 無敵レベル(防御側の連鎖値)
+  u8 unk_23 : 4;          // 0x23.0-3
+  u8 elemented : 4;       // 0x23.4-7, Element damaged?
+  BodyFunc fn;            // 0x24, ダメージを与えた時 or 食らった時 に呼び出される
+  u32 unk_28;             // 0x28
+  struct Entity* parent;  // 0x2C, Objectの親ステート
+  s16 hp;                 // 0x30
+  s16 unk_32[2];          // 0x32
 
-  u8 invincibleTime;  // bit0..6: 無敵時間(フレーム数), bit7: このbitがセットされている場合は、bit0..6の値に関係なく無敵
-  u8 unk_21;
-  u8 invincibleLv;  // 無敵レベル(防御側の連鎖値)
-  u8 unk_23 : 4;
-  u8 elemented : 4;  // Element damaged?
-  BodyFunc fn;       // ダメージを与えた時 or 食らった時 に呼び出される
-  u32 unk_28;
-  struct CollidableEntity* parent;  // 0x2C, Objectの親ステート
-  s16 hp;
-  s16 unk_32[2];
+  u8 forceFlags;  // 0x36, ダメージや属性、連鎖値などでCollisionの値ではなくプログラムで指定した値を強制する
+  u8 atk;         // 0x37, 攻撃力(何の？)
+  u8 element;     // 0x38
+  u8 nature;      // 0x39, 豆をかき消せるなどの特性
+  u8 comboLv;     // 0x3a, 連鎖値(無敵レベル)
 
-  u8 forceFlags;  // ダメージや属性、連鎖値などでCollisionの値ではなくプログラムで指定した値を強制する
-  u8 atk;         // 攻撃力(何の？)
-  u8 element;
-  u8 nature;   // 豆をかき消せるなどの特性
-  u8 comboLv;  // 連鎖値(無敵レベル)
-
-  /*
-    攻撃を喰らう際に  自分の processing->unk_09 と ORしたものをフラグとして使っている
-    bit 0: 1にすると、攻撃が当たった時に金属音がなり、バスターが貫通しなくなる(ダメージは通る, 関数の0x08007e28参照)
-    bit 1: ダメージを0に
-    bit 2: ダメージを2/3に
-    bit 3: ???
-    bit 4: ダメージを2倍に
-  */
-  u8 hardness;
-  u32 collisionLayer;
+  u8 hardness;         // 0x3b, Collision.hardness と内容は同じ、 (Body.hardness | Collision.hardness) で処理を行う
+  u32 collisionLayer;  // 0x3c
 };  // 64 bytes
+static_assert(sizeof(struct Body) == 64);
 
 #endif  // GUARD_RMZ3_PHYSICS_BODY_H

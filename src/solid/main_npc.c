@@ -104,7 +104,7 @@ static void FUN_080daee8(struct Solid* p) {
 static void deleteMainNPC(struct Solid* p) {
   (p->s).flags &= ~DISPLAY;
   EXIT_BODY(p);
-  (p->s).flags2 &= ~ENTITY_HAZARD;
+  (p->s).flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -238,7 +238,7 @@ static void UpdateSearchConsole(Object* p) {
 static void FUN_080db930(Object* p) {
   switch ((p->s).mode[1]) {
     case 0: {
-      if (FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE) || !FLAG(gCurStory.s.gameflags, FLAG_12)) {
+      if (FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE) || !FLAG(gCurStory.s.gameflags, FLAG_MISSILE_DONE)) {
         (p->s).flags &= ~DISPLAY;
         (p->s).flags &= ~FLIPABLE;
         EXIT_BODY(p);
@@ -254,7 +254,7 @@ static void FUN_080db930(Object* p) {
     }
     case 1: {
       if (((p->body).status & BODY_STATUS_CHAT) && gInChat && (gCollisionManager.talkTo == &p->body)) {
-        PrintNormalMessage(0x1333);
+        PrintNormalMessage(0x1333);  // メンテナンス・ルーム 使用中…
         (p->s).mode[1]++;
       }
       break;

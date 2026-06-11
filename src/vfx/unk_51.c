@@ -16,11 +16,9 @@ const VFXRoutine gVFX51Routine = {
 // clang-format on
 
 void CreateVFX51(struct Entity* e, s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_051);
-    p->tileNum = 0, p->palID = 0;
     p->coord.x = x, p->coord.y = y;
     p->unk_28 = (void*)e;
   }
@@ -142,7 +140,7 @@ _080C0C10:\n\
 	adds r0, r0, r1\n\
 	str r0, [r5, #0x58]\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r5, #0x54]\n\
 	ldr r1, [r5, #0x58]\n\
 	bl FUN_080098a4\n\

@@ -19,11 +19,11 @@ const WeaponRoutine gMinigameRodRoutine = {
 // clang-format on
 
 struct Weapon* CreateWeaponMinigameRod(struct Entity* p, u8 r1, u8 r2) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_MINIGAME_ROD);
     (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-    (w->s).taskCol = 16;
+    (w->s).renderPrio = 16;
     (w->s).tileNum = gWeaponTileNum[0];
     (w->s).palID = gWeaponPalIDs[0];
     (w->s).work[0] = r2;

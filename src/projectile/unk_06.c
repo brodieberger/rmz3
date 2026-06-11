@@ -24,12 +24,10 @@ const ProjectileRoutine gProjectile6Routine = {
 };
 // clang-format on
 
-struct Projectile* CreateProjectile6(struct Entity* e, struct Coord* c, u8 r2, u8 r3) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* CreateProjectile6(struct Entity* e, Coords32* c, u8 r2, u8 r3) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 6);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = r2, (p->s).work[1] = r3;
     (p->s).d = *c;
     (p->s).unk_28 = e;
@@ -106,14 +104,14 @@ static void FUN_0809dfb8(Object* p) {
   SET_XFLIP(p, (l->flags & X_FLIP) != 0);
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(SM025_LAMPLORT, 9));
+      SetSpriteAnimation(p, MOTION(SM025_LAMPLORT, 9));
       SetDDP(&p->body, &sCollisions[5]);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
         (p->s).mode[1] = 0, (p->s).mode[2] = 0;
       }
       break;

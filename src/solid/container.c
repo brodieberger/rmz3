@@ -1,6 +1,7 @@
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "physics.h"
 #include "pickup.h"
 #include "solid.h"
 #include "vfx.h"
@@ -32,12 +33,12 @@ static void Container_Init(struct Solid* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 0));
+  SetSpriteAnimation(p, MOTION(SM226_CRASH_CONTAINER, 0));
   SET_XFLIP(p, FALSE);
   INIT_BODY(p, &sCollision, 6, NULL);
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &sSize;
-  (p->s).hazardAttr = METATILE_GROUND;
+  (p->s).physicsAttr = SHAPE_BLOCK;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
 
   if (FUN_080098a4((p->s).coord.x - PIXEL(12), (p->s).coord.y) != 0) {
@@ -56,7 +57,7 @@ static void Solid35_Update(struct Solid* p) {
     Solid35_Die(p);
     return;
   }
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 }
 
 static void FUN_080dc434(struct Solid* p);
@@ -75,14 +76,14 @@ static void Solid35_Die(struct Solid* p) {
       (p->s).mode[1] = 0;
     }
     EXIT_BODY(p);
-    (p->s).flags2 &= ~ENTITY_HAZARD;
+    (p->s).flags2 &= ~ENTI_PHYSICS;
   }
   (sDeads[(p->s).mode[1]])(p);
 }
 
 static void FUN_080dc434(struct Solid* p) {
   u8 diskNo;
-  struct Coord c;
+  Coords32 c;
 
   c.x = (p->s).coord.x - PIXEL(4);
   c.y = (p->s).coord.y - PIXEL(15);
@@ -96,7 +97,7 @@ static void FUN_080dc434(struct Solid* p) {
   c.x = (p->s).coord.x;
   c.y = (p->s).coord.y - PIXEL(12);
   CreateSmoke(1, &c);
-  if ((p->s).coord.y > SEA) {
+  if ((p->s).coord.y > gOverworld.sea) {
     PlaySound(SE_UNK_31);
   } else {
     PlaySound(SE_ZAKO_EXPLODE);
@@ -114,16 +115,16 @@ static void FUN_080dc434(struct Solid* p) {
 
 static void FUN_080dc524(struct Solid* p) {
   u8 diskNo;
-  struct Coord c;
+  Coords32 c;
 
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 2));
+    SetSpriteAnimation(p, MOTION(SM226_CRASH_CONTAINER, 2));
     (p->s).work[2] = 32;
     CreateSlashedEnemy(&(p->s).coord, &sSlashedEnemies[3], 0, 0);
     (p->s).mode[2]++;
   }
 
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).work[2]--;
   if ((p->s).work[2] == 0xFF) {
     c.x = (p->s).coord.x + PIXEL(11);
@@ -138,7 +139,7 @@ static void FUN_080dc524(struct Solid* p) {
     c.x = (p->s).coord.x + PIXEL(10);
     c.y = (p->s).coord.y - PIXEL(8);
     CreateSmoke(1, &c);
-    if ((p->s).coord.y > SEA) {
+    if ((p->s).coord.y > gOverworld.sea) {
       PlaySound(SE_UNK_31);
     } else {
       PlaySound(SE_ZAKO_EXPLODE);

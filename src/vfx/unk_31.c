@@ -1,6 +1,8 @@
 #include "global.h"
 #include "vfx.h"
 
+// Childre Inarabitta
+
 static const u8 sInitModes[2];
 static const motion_t sMotions[4];
 
@@ -10,20 +12,18 @@ static void Ghost31_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost31Routine = {
-    [ENTITY_INIT] =      Ghost31_Init,
-    [ENTITY_UPDATE] =    Ghost31_Update,
-    [ENTITY_DIE] =       Ghost31_Die,
+    [ENTITY_INIT] =      (void*)Ghost31_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost31_Update,
+    [ENTITY_DIE] =       (void*)Ghost31_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 void CreateVFX31_1(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, 31);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     p->coord.x = x, p->coord.y = y;
   }
@@ -32,11 +32,9 @@ void CreateVFX31_1(s32 x, s32 y) {
 void CreateVFX31_2(s32 x, s32 y) {
   s32 i;
   for (i = 0; i < 4; i++) {
-    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, 31);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 1, p->work[1] = i;
       p->coord.x = x, p->coord.y = y;
     }
@@ -72,15 +70,13 @@ static void Ghost31_Die(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 static void FUN_080ba658(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(SM038_UNK, 0x00));
+      SetSpriteAnimation(p, MOTION(SM038_UNK, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      if ((p->s).motion.state == MOTION_END) {
-        SET_VFX_ROUTINE(p, ENTITY_DIE);
-      }
-      UpdateMotionGraphic(&p->s);
+      if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
+      UpdateSpriteAnimation(p);
       break;
     }
   }

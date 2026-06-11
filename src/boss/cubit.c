@@ -18,15 +18,10 @@ const BossRoutine gCubitRoutine = {
 };
 // clang-format on
 
-struct Boss* CreateCubit(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Boss* CreateCubit(Coords32* c, u8 n) {
+  struct Boss* p = (struct Boss*)AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_CUBIT);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -168,12 +163,12 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoords[2] = {
+static const Coords32 sElementCoords[2] = {
     {PIXEL(0), -PIXEL(24)},
     {PIXEL(0), PIXEL(10)},
 };
 
-static const struct Coord sExplosionCoords[4] = {
+static const Coords32 sExplosionCoords[4] = {
     {PIXEL(6), -PIXEL(33)},
     {PIXEL(6), -PIXEL(33)},
     {PIXEL(10), -PIXEL(33)},

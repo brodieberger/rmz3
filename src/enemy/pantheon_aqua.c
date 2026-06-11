@@ -18,14 +18,10 @@ const EnemyRoutine gPantheonAquaRoutine = {
 };
 // clang-format on
 
-struct Entity* CreatePantheonAqua(struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+struct Entity* CreatePantheonAqua(Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = kind;
   }
@@ -162,4 +158,4 @@ static const struct Collision sCollisions[] = {
 };
 
 // 0x08366ce8
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(23)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(23)};

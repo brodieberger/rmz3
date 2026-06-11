@@ -297,7 +297,7 @@ _080CBD50:
 	adds r0, r2, r0
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CBD5C:
 	pop {r4}
 	pop {r0}
@@ -339,7 +339,7 @@ _080CBD96:
 	str r0, [r4, #0x58]
 _080CBDA6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CBDAC:
 	pop {r4}
 	pop {r0}

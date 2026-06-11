@@ -33,7 +33,7 @@ enum VirusID {
   VIRUS_PUFFY = (ENEMY_PUFFY - 29),      // = 3, プクール
 };
 
-typedef u8 (*AreaChecker)(struct Coord*);
+typedef u8 (*AreaChecker)(Coords32*);
 
 // SpawnTemplate.kind, SpawnTemplate.id, SpawnTemplate.work0, SpawnTemplate.work1 を .kind[4] にまとめるべきだと思うが、 まだ UpdateSpawnManager のdecompができていないため、レイアウトが確定していない
 // ただ、スポーンテーブルで 1行で記述したいので一旦このマクロでお茶をを濁す
@@ -56,6 +56,7 @@ struct SpawnTemplate {
   u8 mettaurID;  // 0x06, メットールに置き換える際に、どのタイプのメットールにするかを表すID (0 なら置き換え対象ではない)
   u8 virusID;    // 0x07, MMBN4のウィルスに置き換える対象かを示す (0 なら置き換え対象ではない)
 };  // 8 bytes
+static_assert(sizeof(struct SpawnTemplate) == 8);
 
 /*
   SpawnTemplate をどこに生成するかを表す
@@ -66,6 +67,7 @@ struct SpawnPoint {
   s16 y;    // .y * PIXEL(16) が実際の座標になる
   u16 idx;  // SpawnManager.template のインデックス, この SpawnPoint からスポーンする Entity を指定する
 };  // 8 bytes
+static_assert(sizeof(struct SpawnPoint) == 8);
 
 // Entityのグラフィックデータ (現在のエリアに対応する .areas のビットが立っているときだけロードする)
 struct PreloadEntity {
@@ -77,6 +79,7 @@ struct PreloadEntity {
   u8 unk_06;         // bit0: ??, bit1: ??, bit2..7: 不使用
   bool8 cyberColor;  // サイバー空間にいるときに、緑色にするパレットエフェクト(PostProcess_CyberSpaceColorFilter)の対象かを表すフラグ
 };  // 8 bytes
+static_assert(sizeof(struct PreloadEntity) == 8);
 
 // Entity + スポーン情報
 struct SpawnedEntity {
@@ -85,6 +88,7 @@ struct SpawnedEntity {
   s16 sid;  // この SpawnedEntity が どの SpawnPoint からスポーンしたかを表す (SpawnManager.points の index)
   u16 flag;
 };  // 12 bytes
+static_assert(sizeof(struct SpawnedEntity) == 12);
 
 /*
   0x0202fb90
@@ -115,8 +119,8 @@ struct SpawnManager {
   bool8 inCyberSpace;         // 0x228: サイバー空間からの出入りを検知するためのフラグ, 雑魚敵をMMBN4のウィルスにする or 元に戻す処理のトリガーとして使われる
   bool8 mmbn4EnemiesEnabled;  // 0x229: 敵がMMBN4の雑魚敵に置き換えられているかを表すフラグ
   u16 cyberOBPs;              // 0x22A, (スプライトの)パレットID のビットフィールドで、サイバー空間のパレットエフェクトの対象を示す?
-  u32 _;
-};  // 560 bytes
+};  // 556 bytes
+static_assert(sizeof(struct SpawnManager) == 556);
 
 // --------------------------------------------
 

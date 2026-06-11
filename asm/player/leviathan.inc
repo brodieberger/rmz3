@@ -65,7 +65,7 @@ _080360B4:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080360C2:
 	pop {r4, r5}
 	pop {r0}
@@ -189,7 +189,7 @@ _080361A6:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080361F6
 _080361B6:
 	ldr r1, _080361E4 @ =0x0000BD01
@@ -204,7 +204,7 @@ _080361C4:
 	ldr r0, [r4, #0x64]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrh r0, [r6, #0x10]
 	movs r1, #0x30
 	ands r1, r0
@@ -259,7 +259,7 @@ _0803621C:
 	strb r0, [r4, #0xe]
 _08036230:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -359,7 +359,7 @@ _080362E6:
 	strb r0, [r4, #0xe]
 _080362F8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080362FE:
 	movs r5, #0
 	ldrh r1, [r6, #0x10]

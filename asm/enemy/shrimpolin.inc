@@ -362,7 +362,7 @@ _08069EFE:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #6
 	strb r0, [r4, #0xd]
 	strb r5, [r4, #0xe]
@@ -410,7 +410,7 @@ _08069F7A:
 	movs r3, #1
 	bl GotoMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x10
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -510,7 +510,7 @@ _0806A03C:
 	strb r1, [r4, #0xe]
 _0806A05C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806A062:
 	pop {r4}
 	pop {r0}
@@ -539,7 +539,7 @@ _0806A080:
 	strb r0, [r4, #0xe]
 _0806A090:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -743,7 +743,7 @@ _0806A20A:
 	strb r0, [r5, #0xd]
 _0806A220:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806A226:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -957,7 +957,7 @@ explodeShrimpolin: @ 0x0806A370
 	movs r0, #2
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _0806A400 @ =gMission
+	ldr r2, _0806A400 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806A404 @ =0x0000270E
 	cmp r1, r0
@@ -984,7 +984,7 @@ _0806A3D4:
 	.align 2, 0
 _0806A3F8: .4byte 0xFFFFF000
 _0806A3FC: .4byte sMotions
-_0806A400: .4byte gMission
+_0806A400: .4byte gScore
 _0806A404: .4byte 0x0000270E
 _0806A408: .4byte gEnemyFnTable
 
@@ -1075,7 +1075,7 @@ _0806A4AA:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -1163,7 +1163,7 @@ _0806A554:
 	movs r3, #1
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0806A5C4 @ =pZero2
 	ldr r2, [r0]
 	ldr r1, [r5, #0x54]

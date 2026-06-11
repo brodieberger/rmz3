@@ -22,16 +22,10 @@ const EnemyRoutine gShotcounterRoutine = {
 // clang-format on
 
 // Unused
-static struct Entity* CreateShotcounter(struct Coord* c, u8 r1) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+static struct Entity* CreateShotcounter(Coords32* c, u8 r1) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    s32 x, y;
-    p->taskCol = 0x18;
     INIT_ENEMY_ROUTINE(p, ENEMY_SHOTCOUNTER);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = r1;
   }
@@ -52,7 +46,7 @@ NAKED static void Shotcounter_Init(struct Enemy* p) {
 	orrs r2, r0\n\
 	orrs r2, r3\n\
 	strb r2, [r6, #0xa]\n\
-	ldr r0, _0806602C @ =gSystemSavedataManager\n\
+	ldr r0, _0806602C @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x14]\n\
 	movs r0, #1\n\
 	ands r0, r1\n\
@@ -78,7 +72,7 @@ NAKED static void Shotcounter_Init(struct Enemy* p) {
 	movs r3, #0xc\n\
 	b _08066050\n\
 	.align 2, 0\n\
-_0806602C: .4byte gSystemSavedataManager\n\
+_0806602C: .4byte gSystemSavedata\n\
 _08066030: .4byte gCurStory\n\
 _08066034: .4byte sCollisions\n\
 _08066038:\n\
@@ -142,7 +136,7 @@ _0806608E:\n\
 	adds r0, r6, #0\n\
 	bl SetMotion\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r2, [r4]\n\
 	cmp r2, #0\n\
 	bne _080660E4\n\
@@ -268,14 +262,14 @@ static void Shotcounter_Update(struct Enemy* p) {
   };
   // clang-format on
 
-  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || IsFrozen((void*)p))) {
+  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || IsFrozen(p))) {
     SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     Shotcounter_Die(p);
     return;
   }
   (sUpdates1[(p->s).mode[1]])((void*)p);
   shotcounter_08066da0(p);
-  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !IsFrozen((void*)p)) {
+  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !IsFrozen(p)) {
     (sUpdates2[(p->s).mode[1]])((void*)p);
   }
 }
@@ -393,7 +387,7 @@ _0806629E:\n\
 	b _08066388\n\
 _080662C0:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r7, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -407,7 +401,7 @@ _080662D4:\n\
 	adds r0, r7, #0\n\
 	bl SetMotion\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0\n\
 	strb r0, [r7, #0x13]\n\
 	str r0, [r7, #0x60]\n\
@@ -496,7 +490,7 @@ _08066388:\n\
 	b _080665B0\n\
 _08066390:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r7, #0x60]\n\
 	adds r0, #0x10\n\
 	str r0, [r7, #0x60]\n\
@@ -567,7 +561,7 @@ _080663A6:\n\
 	bl FUN_080b721c\n\
 	movs r0, #0x2a\n\
 	bl PlaySound\n\
-	ldr r2, _0806645C @ =gMission\n\
+	ldr r2, _0806645C @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _08066460 @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -586,7 +580,7 @@ _0806644C: .4byte 0x00269EC3\n\
 _08066450: .4byte 0x00000409\n\
 _08066454: .4byte 0x0000040A\n\
 _08066458: .4byte 0x0000040B\n\
-_0806645C: .4byte gMission\n\
+_0806645C: .4byte gScore\n\
 _08066460: .4byte 0x0000270E\n\
 _08066464:\n\
 	ldrb r0, [r7, #0x12]\n\
@@ -645,7 +639,7 @@ _08066478:\n\
 	bl FUN_080b721c\n\
 	movs r0, #0x2a\n\
 	bl PlaySound\n\
-	ldr r2, _08066508 @ =gMission\n\
+	ldr r2, _08066508 @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _0806650C @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -664,7 +658,7 @@ _080664F8: .4byte 0x00269EC3\n\
 _080664FC: .4byte 0x00000409\n\
 _08066500: .4byte 0x0000040A\n\
 _08066504: .4byte 0x0000040B\n\
-_08066508: .4byte gMission\n\
+_08066508: .4byte gScore\n\
 _0806650C: .4byte 0x0000270E\n\
 _08066510:\n\
 	ldr r0, [r7, #0x54]\n\
@@ -717,7 +711,7 @@ _08066510:\n\
 	adds r0, r6, #0\n\
 	adds r3, r4, #0\n\
 	bl FUN_080b721c\n\
-	ldr r2, _080665D4 @ =gMission\n\
+	ldr r2, _080665D4 @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _080665D8 @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -757,7 +751,7 @@ _080665C4: .4byte 0x00269EC3\n\
 _080665C8: .4byte 0x00000409\n\
 _080665CC: .4byte 0x0000040A\n\
 _080665D0: .4byte 0x0000040B\n\
-_080665D4: .4byte gMission\n\
+_080665D4: .4byte gScore\n\
 _080665D8: .4byte 0x0000270E\n\
 _080665DC: .4byte gEnemyFnTable\n\
  .syntax divided\n");
@@ -878,4 +872,4 @@ static const struct Collision sCollisions[12] = {
     },
 };
 
-const struct Coord Coord_08365e84 = {0, 0};
+const Coords32 Coord_08365e84 = {0, 0};

@@ -15,7 +15,7 @@ FUN_080bedc0: @ 0x080BEDC0
 	lsrs r6, r3, #0x18
 	ldr r0, _080BEE1C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BEE14
@@ -378,7 +378,7 @@ _080BF07C:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BF092:
 	pop {r3, r4}
 	mov r8, r3
@@ -453,7 +453,7 @@ _080BF0FA:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x28]
 	ldrb r1, [r0, #0xa]
 	movs r0, #1
@@ -680,7 +680,7 @@ _080BF2CC:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BF2E2:
 	pop {r3, r4, r5}
 	mov r8, r3
@@ -772,7 +772,7 @@ _080BF36E:
 	str r0, [r3, #0x14]
 _080BF380:
 	adds r0, r3, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BF386:
 	pop {r0}
 	bx r0

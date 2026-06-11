@@ -1,0 +1,70 @@
+#ifndef __INCLUDE_CONSTANTS_CUTSCENE_H__
+#define __INCLUDE_CONSTANTS_CUTSCENE_H__
+
+// SystemSavedata.flags bit0..62
+// CS_ = CutScene
+#define CS_RECAP 0     // あらすじ
+#define CS_PROLOGUE 1  // あれから2ヶ月後..
+#define CS_OMEGA_CALL 2
+#define CS_SPACECRAFT_BOSS 3
+#define CS_SPACECRAFT_AFTER_BOSS 4
+#define CS_VOLCANO_MISSION 5
+#define CS_VOLCANO_BOSS 6
+#define CS_OCEAN_MISSION 7
+#define CS_MEET_CHILDRE 8
+#define CS_OCEAN_MIDBOSS 9
+#define CS_OCEAN_BOSS 10
+#define CS_REFACTORY_MISSION 11
+#define CS_REFACTORY_BOSS 12
+#define CS_ORA_MISSION 13
+#define CS_ORA_FIND_BABY 14
+#define CS_ORA_BOSS 15
+#define CS_ORA_AFTER_BOSS 16
+#define CS_HARPUIA_FIRED 17
+#define CS_MISSILE_ALERT 18
+#define CS_MISSILE_MISSION 19
+#define CS_MISSILE_LAUNCH 20
+#define CS_MISSILE_21 21
+#define CS_MISSILE_22 22
+#define CS_MISSILE_23 23
+#define CS_RBASE_24 24
+#define CS_DESERT_BOSS 25
+#define CS_ANATRE_BOSS 26
+#define CS_ICEBASE_BOSS 27
+#define CS_AREAX2_BOSS 28
+#define CS_AREAX2_29 29
+#define CS_AREAX2_30 30
+#define CS_EFACILITY_MISSION 31
+#define CS_EFACILITY_BOSS 32
+#define CS_SNOWY_PLAINS_MISSION 33
+#define CS_SNOWY_PLAINS_BOSS 34
+#define CS_SNOWY_PLAINS_AFTER_BOSS 35
+#define CS_SUNKEN_LIB_MISSION 36
+#define CS_SUNKEN_LIB_SEARCH 37
+#define CS_SUNKEN_LIB_38 38  // cutscene_start の引数としては使われてない
+#define CS_SUNKEN_LIB_39 39  // cutscene_start の引数としては使われてない
+#define CS_SUNKEN_LIB_40 40  // cutscene_start の引数としては使われてない
+#define CS_SUNKEN_LIB_41 41  // cutscene_start の引数としては使われてない
+#define CS_SUNKEN_LIB_BOSS 42
+#define CS_GELEVATOR_BOSS 43
+#define CS_RBASE_44 44
+#define CS_RBASE_45 45
+#define CS_SUBARCADIA_46 46
+#define CS_SUBARCADIA_47 47
+#define CS_UNK_48 48
+#define CS_WEIL_LABO_49 49
+#define CS_WEIL_LABO_50 50
+#define CS_WEIL_LABO_51 51
+#define CS_WEIL_LABO_52 52
+#define CS_WEIL_LABO_53 53
+#define CS_WEIL_LABO_54 54
+#define CS_WEIL_LABO_55 55
+#define CS_WEIL_LABO_56 56
+#define CS_WEIL_LABO_57 57
+#define CS_WEIL_LABO_58 58
+#define CS_WEIL_LABO_59 59
+#define CS_WEIL_LABO_AFTER_OZ_BATTLE 60
+#define CS_ENDING 61
+#define CS_STAFFROLL 62
+
+#endif  // __INCLUDE_CONSTANTS_CUTSCENE_H__

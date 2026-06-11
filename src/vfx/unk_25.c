@@ -5,16 +5,16 @@
 struct VFX25 {
   struct Entity s;
   // props (16bytes, offset: 0x74..)
-  struct Coord c;  // 0x74
+  Coords32 c;  // 0x74
   u8 unk_7c[4];
   u16 unk_80;
   u16 unk_82;
 };
 static_assert(sizeof(struct VFX25) == sizeof(struct VFX));
 
-static void VFX25_Init(struct VFX25* vfx);
-static void VFX25_Update(struct VFX* vfx);
-static void VFX25_Die(struct VFX* vfx);
+static void VFX25_Init(struct VFX25* p);
+static void VFX25_Update(struct Entity* p);
+static void VFX25_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gVFX25Routine = {
@@ -26,24 +26,20 @@ const VFXRoutine gVFX25Routine = {
 };
 // clang-format on
 
-struct Entity* FUN_080b9184(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080b9184(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_025);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = n;
     (p->coord).x = c->x, (p->coord).y = c->y;
   }
   return p;
 }
 
-struct Entity* omegaWhite_080b91d4(struct Coord* c, u8 n, struct Entity* omega) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* omegaWhite_080b91d4(Coords32* c, u8 n, struct Entity* omega) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_025);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = n;
     (p->coord).x = c->x, (p->coord).y = c->y;
     p->unk_28 = (void*)omega;
@@ -51,12 +47,10 @@ struct Entity* omegaWhite_080b91d4(struct Coord* c, u8 n, struct Entity* omega) 
   return p;
 }
 
-struct Entity* FUN_080b9228(struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080b9228(Coords32* c) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_025);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 4;
     (p->coord).x = c->x, (p->coord).y = c->y;
   }
@@ -89,7 +83,7 @@ static void VFX25_Init(struct VFX25* p) {
     (p->c).x = 0, (p->c).y = 0;
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     (p->s).mode[1] = 2, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
-    (p->s).taskCol = 24;
+    (p->s).renderPrio = 24;
 
   } else if ((p->s).work[0] == 3) {
     InitNonAffineMotion(&p->s);
@@ -98,7 +92,7 @@ static void VFX25_Init(struct VFX25* p) {
     (p->c).x = 0, (p->c).y = 0;
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     (p->s).mode[1] = 3, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
-    (p->s).taskCol = 24;
+    (p->s).renderPrio = 24;
     (p->s).work[2] = 160;
 
   } else if ((p->s).work[0] == 4) {
@@ -107,11 +101,9 @@ static void VFX25_Init(struct VFX25* p) {
     (p->s).work[2] = 60;
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     (p->s).mode[1] = 4, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
-    q = (struct VFX25*)AllocEntityFirst(gVFXHeaderPtr);
+    q = (struct VFX25*)AllocEntityLast(gVFXHeaderPtr);
     if (q != NULL) {
-      (q->s).taskCol = 1;
       INIT_VFX_ROUTINE(q, VFX_UNK_025);
-      (q->s).tileNum = 0, (q->s).palID = 0;
       (q->s).work[0] = 5;
       (q->s).coord = (p->s).coord;
       (q->s).d.x = 0;
@@ -120,7 +112,7 @@ static void VFX25_Init(struct VFX25* p) {
     }
 
   } else if ((p->s).work[0] == 5) {
-    InitScalerotMotion1(&p->s);
+    EnableSpriteAnimation_Affine(p);
     (p->s).flags |= DISPLAY;
     (p->s).flags |= FLIPABLE;
     (p->s).work[2] = (RANDOM(RNG_0202f388) & 0x7) + 60;
@@ -139,28 +131,28 @@ void FUN_080b9530(struct VFX* vfx);
 void FUN_080b963c(struct VFX* vfx);
 void FUN_080b970c(struct VFX* vfx);
 void FUN_080b9738(struct VFX* vfx);
-void FUN_080b97f4(struct VFX* vfx);
+static void FUN_080b97f4(struct Entity* p);
 
-static void VFX25_Update(struct VFX* vfx) {
+static void VFX25_Update(struct Entity* p) {
   // clang-format off
-  static const VFXFunc sUpdates[7] = {
-      (VFXFunc)FUN_080b9494,
-      (VFXFunc)FUN_080b94dc,
-      (VFXFunc)FUN_080b9530,
-      (VFXFunc)FUN_080b963c,
-      (VFXFunc)FUN_080b970c,
-      (VFXFunc)FUN_080b9738,
-      (VFXFunc)FUN_080b97f4,
+  static const EntityFunc sUpdates[7] = {
+      (void*)FUN_080b9494,
+      (void*)FUN_080b94dc,
+      (void*)FUN_080b9530,
+      (void*)FUN_080b963c,
+      (void*)FUN_080b970c,
+      (void*)FUN_080b9738,
+      (void*)FUN_080b97f4,
   };
   // clang-format on
-  (sUpdates[(vfx->s).mode[1]])(vfx);
+  (sUpdates[p->mode[1]])(p);
 }
 
 // --------------------------------------------
 
-static void VFX25_Die(struct VFX* vfx) {
-  (vfx->s).flags &= ~DISPLAY;
-  SET_VFX_ROUTINE(vfx, ENTITY_EXIT);
+static void VFX25_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
@@ -175,15 +167,38 @@ static void FUN_080b9494(struct Entity* p) {
 
   switch (p->mode[2]) {
     case 0: {
-      SetMotion(p, MOTION(SM010_OMEGA_RING, 8));
+      SetSpriteAnimation(p, MOTION(SM010_OMEGA_RING, 8));
       p->mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
 }
 
 INCASM("asm/vfx/unk_25.inc");
+
+static void FUN_080b97f4(struct Entity* p) {
+  switch (p->mode[2]) {
+    case 0: {
+      SetSpriteAnimation(p, MOTION(SM224_RUBBLE, 0));
+      p->work[2] = 40;
+      p->mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateSpriteAnimation(p);
+      if (p->work[2] & 1) {
+        p->flags |= DISPLAY;
+      } else {
+        p->flags &= ~DISPLAY;
+      }
+      if (p->work[2] > 0) {
+        if (--p->work[2] == 0) SET_VFX_ROUTINE(p, ENTITY_DIE);
+      }
+      break;
+    }
+  }
+}

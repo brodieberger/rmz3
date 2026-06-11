@@ -3,7 +3,7 @@
 #include "global.h"
 
 static const struct Collision sCollisions[];
-static const struct Coord sElementCoord;
+static const Coords32 sElementCoord;
 
 INCASM("asm/boss/hanumachine.inc");
 
@@ -374,4 +374,4 @@ static const struct Collision sCollisions[22] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(14)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(14)};

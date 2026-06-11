@@ -20,11 +20,9 @@ const ProjectileRoutine gOmegaZeroProjectileRoutine = {
 // --------------------------------------------
 
 void CreateOzArcBlade(struct Entity* e, u8 n) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 2;
     (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
     p->work[2] = n;
@@ -35,11 +33,9 @@ void CreateOzArcBlade(struct Entity* e, u8 n) {
 void CreateMessenkou(struct Entity* e) {
   s32 i;
   for (i = 0; i < 5; i++) {
-    struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+    struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 8;
       INIT_PROJECTILE_ROUTINE(p, 38);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 1;
       (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
       p->work[2] = i;
@@ -48,11 +44,9 @@ void CreateMessenkou(struct Entity* e) {
 }
 
 struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0, p->work[1] = kind;
     p->unk_28 = e;
   }
@@ -61,11 +55,9 @@ struct Projectile* CreateOmegaZeroSaber(struct Entity* e, u8 kind) {
 
 // 0x080ae300
 void CreateRekkoha(struct Entity* e, u8 n) {
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 3;
     p->work[2] = n * 51;
     p->unk_28 = e;
@@ -75,11 +67,9 @@ void CreateRekkoha(struct Entity* e, u8 n) {
 
 void CreateDoubleChargeWave1(struct Entity* e) {
   s32 ex, x;
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 4;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -97,11 +87,9 @@ void CreateDoubleChargeWave1(struct Entity* e) {
 
 void CreateDoubleChargeWave2(struct Entity* e) {
   s32 ex, x;
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 5;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -119,11 +107,9 @@ void CreateDoubleChargeWave2(struct Entity* e) {
 
 void CreateDoubleChargeWave3(struct Entity* e) {
   s32 ex, x;
-  struct Entity* p = AllocEntityFirst(gProjectileHeaderPtr);
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 38);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 6;
     p->work[2] = (e->flags >> 4) & 1;
 
@@ -145,7 +131,7 @@ static const u8 sOmegaZeroProjectileInitModes[8];
 static const struct Collision gOmegaZeroProjectileCollisions_0836c9c0[41];
 
 // 0x080ae4d8
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {}
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {}
 
 static void OmegaZeroProjectile_Init(struct Projectile* p) {
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
@@ -281,11 +267,11 @@ _080AE630:\n\
 	adds r0, r4, #0\n\
 	bl FUN_0801779c\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080AE652\n\
 _080AE64C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080AE652:\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x74\n\
@@ -437,7 +423,7 @@ _080AE760:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080AE786\n\
@@ -450,7 +436,7 @@ _080AE786:\n\
 	ldr r0, _080AE7E0 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\
@@ -582,7 +568,7 @@ _080AE87C:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x58]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080AE8A2\n\
@@ -595,7 +581,7 @@ _080AE8A2:\n\
 	ldr r0, _080AE8FC @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\
@@ -690,7 +676,7 @@ _080AE940:\n\
 	adds r2, r2, r0\n\
 	str r2, [r4, #0x54]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x71\n\
 	ldrb r0, [r0]\n\
@@ -770,7 +756,7 @@ _080AE9D4:\n\
 	strb r0, [r4, #0xe]\n\
 _080AE9FA:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r3, [r0]\n\
@@ -820,16 +806,16 @@ static void DoubleChargeWave1_Update(Object* p) {
       SET_XFLIP(p, (p->s).work[2]);
       (p->s).d.x = (p->s).work[2] * PIXEL(9) - PIXEL(9) / 2;
       (p->s).work[2] = 128;  // lifetime
-      SetMotion(&p->s, MOTION(SM128_UNK, 7));
+      SetSpriteAnimation(p, MOTION(SM128_UNK, 7));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).motion.cmdIdx > 2) (p->s).coord.x += (p->s).d.x;
       // 128フレーム経過 or 画面外に出たら消える
       if ((p->s).work[2] == 0 || (--(p->s).work[2] == 0)) {
-        if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
+        if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
           (p->s).flags &= ~DISPLAY;
           (p->s).flags &= ~FLIPABLE;
           EXIT_BODY(p);
@@ -939,7 +925,7 @@ _080AEBC0:\n\
 	bl FUN_080c3bf4\n\
 _080AEC00:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x71\n\
 	ldrb r0, [r0]\n\
@@ -963,7 +949,7 @@ _080AEC2A:\n\
 	ldr r0, _080AEC90 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\
@@ -1019,16 +1005,16 @@ static void DoubleChargeWave3_Update(Object* p) {
       (p->s).d.x = (p->s).work[2] * PIXEL(9) - PIXEL(9) / 2;
       (p->s).unk_coord.x = 128;  // lifetime
       (p->s).work[3] = 0;
-      SetMotion(&p->s, MOTION(SM128_UNK, 5));
+      SetSpriteAnimation(p, MOTION(SM128_UNK, 5));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).coord.x += (p->s).d.x;
       // 128フレーム経過 or 画面外に出たら消える
       if ((p->s).unk_coord.x == 0 || (--(p->s).unk_coord.x == 0)) {
-        if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
+        if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(64)) {
           (p->s).flags &= ~DISPLAY;
           (p->s).flags &= ~FLIPABLE;
           EXIT_BODY(p);

@@ -275,7 +275,7 @@ _080ECF34:
 	movs r0, #3
 _080ECF3C:
 	str r0, [r1]
-	ldr r1, _080ECF74 @ =gSystemSavedataManager
+	ldr r1, _080ECF74 @ =gSystemSavedata
 	ldr r2, _080ECF78 @ =0x08385F9C
 	movs r3, #0x93
 	lsls r3, r3, #2
@@ -302,7 +302,7 @@ _080ECF3C:
 	bl EReader_SioAbortSession
 	b _080ECFCC
 	.align 2, 0
-_080ECF74: .4byte gSystemSavedataManager
+_080ECF74: .4byte gSystemSavedata
 _080ECF78: .4byte u8_ARRAY_08385f9c
 _080ECF7C: .4byte gSineTable
 _080ECF80:

@@ -38,7 +38,7 @@ const u8 u8_ARRAY_08386bc0[16] = {
 
 bool32 exitLeviathanMinigame(struct GameState* g) {
   struct MinigameState* s = (struct MinigameState*)(g->sceneState).raw;
-  gSystemSavedataManager.minigameHiscores[MINIGAME_LEVIATHAN] = s->unk_2c;
+  gSystemSavedata.minigameHiscores[MINIGAME_LEVIATHAN] = s->unk_2c;
   SaveSystemData();
   return FALSE;
 }

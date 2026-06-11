@@ -17,12 +17,10 @@ const VFXRoutine gThunderEffectRoutine = {
 };
 // clang-format on
 
-struct ElementEffect* CreateThunderEffect(struct Entity* e, struct Coord* c, u8 r2) {
-  struct ElementEffect* p = (struct ElementEffect*)AllocEntityFirst(gVFXHeaderPtr);
+struct ElementEffect* CreateThunderEffect(struct Entity* e, Coords32* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_THUNDER_EFFECT);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).unk_28 = e;
     (p->c).x = c->x, (p->c).y = c->y;
     (p->s).work[2] = r2;
@@ -33,7 +31,7 @@ struct ElementEffect* CreateThunderEffect(struct Entity* e, struct Coord* c, u8 
 
 static void Ghost9_Init(struct Entity* p) {
   InitNonAffineMotion(p);
-  SetMotion(p, MOTION(SM026_THUNDER_EFFECT, 5));
+  SetSpriteAnimation(p, MOTION(SM026_THUNDER_EFFECT, 5));
   p->flags |= DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost9_Update((void*)p);
@@ -244,7 +242,7 @@ _080B4D00:\n\
 	str r0, [r4, #0x58]\n\
 _080B4D02:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B4D14\n\

@@ -7,12 +7,9 @@
 */
 
 struct Widget* CreateMenuComp1(struct GameState* m, u8 kind, u8 r2) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 1);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)m;
     (w->s).work[0] = kind;
     (w->s).work[1] = r2;
@@ -181,7 +178,7 @@ _080E63C8:\n\
 	strb r0, [r4, #0x12]\n\
 _080E63D0:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x58]\n\
 	str r0, [r4, #0x64]\n\

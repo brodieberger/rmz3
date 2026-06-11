@@ -12,7 +12,7 @@ enum ElevatorSkin {
 struct ElevatorObject {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  struct Coord c;
+  Coords32 c;
   u8 unk_bc;
   u8 skin;  // 1: Wood, 2: MMX
   SoundIDS16 se;
@@ -34,42 +34,32 @@ static void BaseElevator_Disappear(struct ElevatorObject* p);
 
 // clang-format off
 const SolidRoutine gBaseElevatorRoutine = {
-    [ENTITY_INIT] =      (SolidFunc)BaseElevator_Init,
-    [ENTITY_UPDATE] =    (SolidFunc)BaseElevator_Update,
-    [ENTITY_DIE] =       (SolidFunc)BaseElevator_Die,
-    [ENTITY_DISAPPEAR] = (SolidFunc)BaseElevator_Disappear,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)BaseElevator_Init,
+    [ENTITY_UPDATE] =    (void*)BaseElevator_Update,
+    [ENTITY_DIE] =       (void*)BaseElevator_Die,
+    [ENTITY_DISAPPEAR] = (void*)BaseElevator_Disappear,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct Solid* CreateResistanceBaseElevator(u8 lv) {
-  struct ElevatorObject* p = (struct ElevatorObject*)AllocEntityFirst(gSolidHeaderPtr);
+  struct ElevatorObject* p = (struct ElevatorObject*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_BASE_ELEVATOR);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).level = lv;
-    p->skin = gSystemSavedataManager.elevator;
+    p->skin = gSystemSavedata.elevator;
   }
   return (void*)p;
 }
 
 // 0x080cfc40
 static void CreateResistanceBaseElevator2(struct Entity* e, u8 r1, u8 lv) {
-  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
+  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_BASE_ELEVATOR);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->unk_28 = e;
     p->work[0] = r1;
     p->level = lv;
@@ -121,28 +111,21 @@ static void BaseElevator_Disappear(struct ElevatorObject* p) {
 
 // 0x080cfd4c
 static void rBase_080cfd4c(struct ElevatorObject* p) {
-  if (p->skin == ELEVATOR_DEFAULT) {
-    LOAD_STATIC_GRAPHIC(SM115_ELEVATOR);
-  }
-  if (p->skin == ELEVATOR_WOOD) {
-    LOAD_STATIC_GRAPHIC(SM137_ELEVATOR_WOOD);
-  }
-  if (p->skin == ELEVATOR_MMX) {
-    LOAD_STATIC_GRAPHIC(SM138_ELEVATOR_MMX);
-  }
+  if (p->skin == ELEVATOR_DEFAULT) LOAD_STATIC_GRAPHIC(SM115_ELEVATOR);
+  if (p->skin == ELEVATOR_WOOD) LOAD_STATIC_GRAPHIC(SM137_ELEVATOR_WOOD);
+  if (p->skin == ELEVATOR_MMX) LOAD_STATIC_GRAPHIC(SM138_ELEVATOR_MMX);
 
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   SET_XFLIP(p, FALSE);
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &Rect_08370728;
-  (p->s).hazardAttr = 0x2001;
+  (p->s).physicsAttr = MTATTR_CONVEYOR1 | SHAPE_BLOCK;
   INIT_BODY(p, sCollisions, 0, NULL);
-  p->c.x = 0x65000;
-  p->c.y = 0x26000;
-  (p->s).coord.x = p->c.x;
-  (p->s).coord.y = p->c.y + (p->s).level * PIXEL(160);
+  (p->c).x = PIXEL(1616), (p->c).y = PIXEL(608);
+  (p->s).coord.x = (p->c).x;
+  (p->s).coord.y = (p->c).y + (p->s).level * PIXEL(160);
 
   p->se = MUS_NONE;
   CreateResistanceBaseElevator2((void*)p, 1, 0);

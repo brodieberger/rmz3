@@ -20,10 +20,10 @@ void DeleteEnemy(struct Entity* p) {
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 
-// 0x0806364c
-bool32 IsFrozen(struct Entity* p) {
+// 0x0806364c, 本当は引数の型は (struct Enemy*) だけど cast面倒くさいから void* で
+bool32 IsFrozen(void* enemy_entity) {
   bool32 result = FALSE;
-  if (FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED) || (p->flags2 & STOPPED)) {
+  if (FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED) || (((struct Entity*)enemy_entity)->flags2 & STOPPED)) {
     result = TRUE;
   }
   return result;
@@ -37,18 +37,13 @@ static struct Enemy* unused_08063674(struct Entity* e) {
   return p;
 }
 
-static struct Enemy* unused_08063690(u8 n) {
-  struct Entity* p;
+static struct Entity* Unused_08063690(u8 n) {
   struct EntityHeader* h = gZeroHeaderPtr;
-  ignoreEntityFn(h);
+  struct Entity* p = GetEntityList(h);
 
-  p = h->last = h->last->prev;
-  while (p != (struct Entity*)(&h->next)) {  // &h->next = EntityHeader linklist end
-    if (p->work[0] == n) {
-      return (struct Enemy*)p;
-    }
-
-    p = h->last = h->last->prev;
+  while (p != (struct Entity*)(&h->tail)) {
+    if (p->work[0] == n) return p;
+    p = GetNextEntity(h);
   }
   return NULL;
 }
@@ -61,7 +56,7 @@ static struct Weapon* unused_080636d4(struct Entity* e) {
   return p;
 }
 
-static struct Coord* unused_080636f0(struct Entity* p) {
+static Coords32* unused_080636f0(struct Entity* p) {
   struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w != NULL) return &w->coord;
   return NULL;
@@ -157,7 +152,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_PILLER_CANNON] =  &gPillerCannonRoutine,
   [ENEMY_GRAND_CANNON] =  &gGrandCannonRoutine,
   [ENEMY_SHRIMPORIN] =  &gShrimporinRoutine,
-  [ENEMY_OMEGA_WHITE_HAND] =  &gOmegaWhiteHandRoutine,
+  [ENEMY_OMEGA1W_HAND] =  &gOmegaWhiteHandRoutine,
   [ENEMY_FLOPPER] =  &gFlopperRoutine,
   [ENEMY_LAMPLORT] = &gLamplortRoutine,
   [ENEMY_GYRO_CANNON] = &gGyroCannonRoutine,
@@ -189,7 +184,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_P_ZOMBIE] = &gPantheonZombieRoutine,
   [ENEMY_P_AQUA_MOD_OBJ] = &gPantheonAquaModObjRoutine,
   [ENEMY_GLACIERLE_ARM] = &gGlacierleAtkArmRoutine,
-  [ENEMY_OMEGA_GOLD_HAND] = &gOmegaGoldHandRoutine,
+  [ENEMY_OMEGA1G_HAND] = &gOmegaGoldHandRoutine,
   [ENEMY_EYE_CANNON] = &gEyeCannonRoutine,
   [ENEMY_42] = &gEnemy42Routine,
   [ENEMY_CAPSULE_CANNON] = &gCapsuleCannonRoutine,
@@ -202,7 +197,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_HANUMACHINE_NECRO] = &gHanumachineNecroRoutine,
   [ENEMY_CARRYBEE_G] = &gCarrybeeGRoutine,
   [ENEMY_OZ_ROCK] = &gOmegaZeroRockRoutine,
-  [ENEMY_OMEGA_GOLD_SWORD] = &gOmegaGoldSwordRoutine,
+  [ENEMY_OMEGA1G_SWORD] = &gOmegaGoldSwordRoutine,
   [ENEMY_GENERATOR_CANNON] = &gGeneratorCannonRoutine,
   [ENEMY_DEATHLOCK] = &gDeathlockRoutine,
   [ENEMY_CLAVEKER] = &gClavekerRoutine,

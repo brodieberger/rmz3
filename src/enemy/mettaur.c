@@ -21,13 +21,9 @@ const EnemyRoutine gMettaurRoutine = {
 // clang-format on
 
 struct Entity* FUN_08088b4c(s32 x, s32 y, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_METTAUR);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     (p->coord).x = x, (p->coord).y = y;
     p->work[0] = kind;
   }
@@ -213,7 +209,7 @@ static const EnemyFunc sDeads[3] = {
 static void FUN_0808a068(struct Enemy* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      struct Coord c;
+      Coords32 c;
       (p->s).flags &= ~DISPLAY;
       EXIT_BODY(p);
       c.x = (p->s).coord.x, c.y = (p->s).coord.y - PIXEL(8);

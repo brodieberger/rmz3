@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -55,7 +56,7 @@ Script_08354214:
   normal_screen
   wait 1
   visible 0, FALSE
-  wait_screeneffect
+  wait_transition_end
   wait 15
   force 6, 0, 0
   wait 15
@@ -72,7 +73,7 @@ Script_0835429c:
   reset_camera Camera_0835416c
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm 178
@@ -85,8 +86,8 @@ Script_083542fc:
   spawn 0, Entity_083541c4
   reset_camera Camera_0835416c
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 178
   indicator 1, 0, 0
   wait_indicator_end
@@ -98,8 +99,8 @@ Script_08354354:
   spawn 0, Entity_083541d4
   reset_camera Camera_0835416c
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 178
   indicator 1, 0, 0
   wait_indicator_end
@@ -112,8 +113,8 @@ Script_083543ac:
   spawn 0, Entity_083541e4
   reset_camera Camera_0835416c
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
@@ -125,28 +126,28 @@ Script_0835440c:
   spawn 1, Entity_08354204
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 27, 0
+  cutscene_start CS_ICEBASE_BOSS
   walkto 8568*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8520*PX
   wait 75
   triumphant_message 0, 0x0B01
   message 1, 0, 0x0B00
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 90
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8400*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -154,26 +155,26 @@ Script_083544e4:
   spawn 1, Entity_08354204
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 27, 0
+  cutscene_start CS_ICEBASE_BOSS
   walkto 8568*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8520*PX
   wait 75
   triumphant_message 0, 0x0B01
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 90
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8400*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -184,7 +185,7 @@ Script_083545ac:
   reset_camera Camera_08354198
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0B01
   entityflag 1, 0, TRUE
   stop_bgm
@@ -192,11 +193,11 @@ Script_083545ac:
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8400*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -208,22 +209,22 @@ Script_08354654:
   message 1, 0, 0x0B02
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 2
+  cmd08_wait_set 1
   force 4, 0, 0
   wait 8
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   destroy 0
   load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 Script_08354714:
@@ -233,7 +234,7 @@ Script_08354714:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 178
   indicator 1, 0, 0
   wait 15
@@ -255,7 +256,7 @@ Script_0835478c:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

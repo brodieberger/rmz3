@@ -1,6 +1,7 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -165,7 +166,7 @@ static void buster_0(struct Zero* z) {
   if (w == NULL) {
     (z->unk_b4).attackState8[0] = 0;
   } else {
-    SetMotion(&z->s, MOTION(DM010_ZERO_BUSTER_DASH, 1));
+    SetSpriteAnimation(z, MOTION(DM010_ZERO_BUSTER_DASH, 1));
     z->atkCooltime = 2;
     (z->unk_b4).attackState8[1] = ok;
     buster_1(z);
@@ -237,7 +238,7 @@ static void buster_3(struct Zero* z) {
   z->atkCooltime--;
   if (z->atkCooltime == 0xFF) {
     (z->unk_b4).attackState8[0] = 0;
-    SetMotion(&z->s, MOTION(DM003_ZERO_DASH, 0x00));
+    SetSpriteAnimation(z, MOTION(DM003_ZERO_DASH, 0x00));
   }
 
   ok = IsAttackOK(z, &z->usingWeapon);
@@ -334,7 +335,7 @@ static void handle_saber_input(struct Zero* z) {
 NON_MATCH static void dash_saber(struct Zero* z) {
 #if MODERN
   if ((z->unk_b4).attackState8[2] == 0) {
-    SetMotion(&z->s, MOTION(DM023_ZERO_SABER_DASH, 0x00));
+    SetSpriteAnimation(z, MOTION(DM023_ZERO_SABER_DASH, 0x00));
     z->atkCooltime = 16;
     (z->unk_b4).attackState8[2]++;
 
@@ -345,7 +346,7 @@ NON_MATCH static void dash_saber(struct Zero* z) {
         CreateWeaponSaber(z, 4);
         (z->unk_b4).attackState8[2]++;
       }
-    } else if ((z->s).motion.state == MOTION_END) {
+    } else if (IsSpriteAnimEnd(z)) {
       z->restriction.move = FALSE;
       (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
       (z->unk_b4).attackState8[0] = 0;
@@ -376,7 +377,7 @@ NON_MATCH static void gale_attack(struct Zero* z) {
 #if MODERN
   switch ((z->unk_b4).attackState8[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM024_ZERO_GALE, 0));
+      SetSpriteAnimation(z, MOTION(DM024_ZERO_GALE, 0));
       z->atkCooltime = 24;
       (z->unk_b4).attackState8[2]++;
       FALLTHROUGH;
@@ -395,13 +396,13 @@ NON_MATCH static void gale_attack(struct Zero* z) {
     case 2: {
       KeepMotion(z, MOTION(DM024_ZERO_GALE, 0));
       if (z->atkCooltime < 9) {
-        SetMotion(&z->s, MOTION(DM024_ZERO_GALE, 1));
+        SetSpriteAnimation(z, MOTION(DM024_ZERO_GALE, 1));
         (z->unk_b4).attackState8[2]++;
       }
       break;
     }
     case 3: {
-      if ((z->s).motion.state == MOTION_END) {
+      if (IsSpriteAnimEnd(z)) {
         z->restriction.move = FALSE;
         (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
         (z->unk_b4).attackState8[0] = 0;

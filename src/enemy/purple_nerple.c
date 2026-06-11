@@ -156,7 +156,7 @@ static const struct Collision sCollisions[] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 
 static const u8 sInitModes[4] = {1, 3, 7, 0};
 

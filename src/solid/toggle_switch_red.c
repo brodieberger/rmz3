@@ -45,21 +45,21 @@ static void Solid34_Update(Object* p) {
     case 0: {
       (p->s).work[0] = gOverworld.state[0];
       if ((p->s).work[0] == 0) {
-        SetMotion(&p->s, MOTION(SM118_LEVER_SWITCH_RED, 1));
+        SetSpriteAnimation(p, MOTION(SM118_LEVER_SWITCH_RED, 1));
       } else {
-        SetMotion(&p->s, MOTION(SM118_LEVER_SWITCH_RED, 2));
+        SetSpriteAnimation(p, MOTION(SM118_LEVER_SWITCH_RED, 2));
       }
       (p->s).mode[3]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->body).status & BODY_STATUS_B3) gOverworld.state[0] ^= 1;
       if ((p->s).work[0] != gOverworld.state[0]) {
         if ((p->s).work[0] == 0) {
-          SetMotion(&p->s, MOTION(SM118_LEVER_SWITCH_RED, 3));
+          SetSpriteAnimation(p, MOTION(SM118_LEVER_SWITCH_RED, 3));
         } else {
-          SetMotion(&p->s, MOTION(SM118_LEVER_SWITCH_RED, 4));
+          SetSpriteAnimation(p, MOTION(SM118_LEVER_SWITCH_RED, 4));
         }
         (p->s).work[2] = 30;
         (p->s).mode[3]++;
@@ -67,7 +67,7 @@ static void Solid34_Update(Object* p) {
       break;
     }
     case 2: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (--(p->s).work[2] == 0) {
         (p->s).mode[3] = 0;
       }

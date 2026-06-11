@@ -16,22 +16,18 @@ const VFXRoutine gVFX49Routine = {
 // clang-format on
 
 void FUN_080c025c(s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_049);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     p->coord.x = x, p->coord.y = y;
   }
 }
 
 void createLaserSign(struct Entity* e, s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_049);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 1;
     p->coord.x = x, p->coord.y = y;
     p->unk_28 = (void*)e;
@@ -39,22 +35,18 @@ void createLaserSign(struct Entity* e, s32 x, s32 y) {
 }
 
 void FUN_080c02f4(s32 x, s32 y) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_049);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 2;
     p->coord.x = x, p->coord.y = y;
   }
 }
 
 void FUN_080c0340(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_049);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 3;
     p->unk_28 = (void*)e;
   }

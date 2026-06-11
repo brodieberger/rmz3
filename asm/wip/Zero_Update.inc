@@ -876,7 +876,7 @@ _080299A2:
 	cmp r0, #0
 	bne _080299B0
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080299B0:
 	adds r0, r6, #0
 	bl setStageElfFlags

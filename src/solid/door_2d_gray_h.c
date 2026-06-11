@@ -63,7 +63,7 @@ static void Solid22_Die(struct Solid* p) {
 
 // --------------------------------------------
 
-NAKED void FUN_080d7e5c(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+NAKED void FUN_080d7e5c(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	ldr r3, [r0, #0x2c]\n\

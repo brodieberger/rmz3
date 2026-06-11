@@ -8,35 +8,27 @@ void PantheonAquaModObj_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gPantheonAquaModObjRoutine = {
-    [ENTITY_INIT] =      PantheonAquaModObj_Init,
-    [ENTITY_UPDATE] =    PantheonAquaModObj_Update,
-    [ENTITY_DIE] =       PantheonAquaModObj_Die,
+    [ENTITY_INIT] =      (void*)PantheonAquaModObj_Init,
+    [ENTITY_UPDATE] =    (void*)PantheonAquaModObj_Update,
+    [ENTITY_DIE] =       (void*)PantheonAquaModObj_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 void createPAquaModRubble(s32 x) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 8;
     (p->coord).x = x;
   }
 }
 
 void FUN_08080858(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 6;
     (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
     p->unk_28 = (void*)e;
@@ -44,26 +36,18 @@ void FUN_08080858(struct Entity* e) {
 }
 
 void FUN_080808b4(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 3;
     p->unk_28 = (void*)e;
   }
 }
 
 void FUN_08080908(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 0;
     (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
     p->unk_28 = (void*)e;
@@ -71,13 +55,9 @@ void FUN_08080908(struct Entity* e) {
 }
 
 void FUN_08080964(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 1;
     (p->coord).x = e->coord.x, (p->coord).y = e->coord.y;
     p->unk_28 = (void*)e;
@@ -85,13 +65,9 @@ void FUN_08080964(struct Entity* e) {
 }
 
 void createLaserSign2(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 2, p->work[1] = 1;
     (p->coord).x = e->coord.x, (p->coord).y = e->coord.y - PIXEL(12);
     p->unk_28 = (void*)e;
@@ -99,16 +75,68 @@ void createLaserSign2(struct Entity* e) {
 }
 
 void createSweepLaserSign(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 2, p->work[1] = 1;
     (p->coord).x = e->coord.x, (p->coord).y = e->coord.y - PIXEL(12);
     p->unk_28 = (void*)e;
+  }
+}
+
+void createStretchedGrabArm(struct Entity* e, bool8 is_right_arm) {
+  s32 i;
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);  // hand
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->work[0] = 5, p->work[1] = is_right_arm;
+    (p->coord).x = (e->coord).x - PIXEL(23);
+    (p->coord).x += is_right_arm * PIXEL(46);
+    (p->coord).y = (e->coord).y - PIXEL(4);
+    p->unk_28 = (void*)e;
+  }
+  for (i = 0; i < 6; i++) {
+    // joints
+    struct Entity* q = AllocEntityLast(gEnemyHeaderPtr);
+    if (q != NULL) {
+      INIT_ENEMY_ROUTINE(q, ENEMY_P_AQUA_MOD_OBJ);
+      q->work[0] = 4, q->work[1] = is_right_arm;
+      q->unk_28 = (void*)e, q->unk_2c = (void*)p;
+      q->work[2] = i + 1;
+    }
+  }
+}
+
+void createStretchedArms(struct Entity* e) {
+  s32 i, j;
+  for (i = 0; i < 2; i++) {
+    struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);  // hand
+    if (p != NULL) {
+      INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+      p->work[0] = 7, p->work[1] = i;
+      (p->coord).x = (e->coord).x - PIXEL(23);
+      (p->coord).x += i * PIXEL(46);
+      (p->coord).y = (e->coord).y + PIXEL(4);
+      p->unk_28 = (void*)e;
+    }
+    for (j = 0; j < 6; j++) {
+      struct Entity* q = AllocEntityLast(gEnemyHeaderPtr);  // joints
+      if (q != NULL) {
+        INIT_ENEMY_ROUTINE(q, ENEMY_P_AQUA_MOD_OBJ);
+        q->work[0] = 4, q->work[1] = i;
+        q->unk_28 = (void*)e, q->unk_2c = (void*)p;
+        q->work[2] = j + 1;
+      }
+    }
+  }
+}
+
+void FUN_08080c64(s32 x, s32 y) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_AQUA_MOD_OBJ);
+    p->work[0] = 9;
+    (p->coord).x = x, (p->coord).y = y;
   }
 }
 

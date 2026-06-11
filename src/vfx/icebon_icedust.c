@@ -19,22 +19,18 @@ const VFXRoutine gIcebonIcedustRoutine = {
 // clang-format on
 
 void createIcebonIce(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_026);
-    p->tileNum = 0, p->palID = 0;
     p->coord.x = x, p->coord.y = y;
     p->work[0] = 0;
   }
 }
 
 void FUN_080b98ac(s32 x, s32 y) {
-  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_026);
-    p->tileNum = 0, p->palID = 0;
     p->coord.x = x, p->coord.y = y;
     p->work[0] = 1;
   }
@@ -71,7 +67,7 @@ static void IcebonIcedust_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT
 static void ice_080b996c(struct Entity* p) {
   switch (p->mode[2]) {
     case 0: {
-      SetMotion(p, MOTION(SM017_ICEBON_ICE, 9));
+      SetSpriteAnimation(p, MOTION(SM017_ICEBON_ICE, 9));
       (p->d).x = (RANDOM(RNG_0202f388) & 0x1FF) - PIXEL(1);
       (p->d).y = (RANDOM(RNG_0202f388) & 0x7F) + (PIXEL(1) / 2);
       p->mode[2]++;
@@ -80,10 +76,8 @@ static void ice_080b996c(struct Entity* p) {
     case 1: {
       (p->coord).x += (p->d).x;
       (p->coord).y += (p->d).y;
-      UpdateMotionGraphic(p);
-      if ((p->motion).state == MOTION_END) {
-        SET_VFX_ROUTINE(p, ENTITY_DIE);
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
       break;
     }
   }
@@ -92,15 +86,13 @@ static void ice_080b996c(struct Entity* p) {
 static void ice_080b9a0c(struct Entity* p) {
   switch (p->mode[2]) {
     case 0: {
-      SetMotion(p, MOTION(SM017_ICEBON_ICE, 9));
+      SetSpriteAnimation(p, MOTION(SM017_ICEBON_ICE, 9));
       p->mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
-      if ((p->motion).state == MOTION_END) {
-        SET_VFX_ROUTINE(p, ENTITY_DIE);
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
       break;
     }
   }

@@ -34,7 +34,7 @@ BeeServer_Init: @ 0x0804CE68
 	strb r0, [r7, #0xa]
 	adds r0, r7, #0
 	bl InitNonAffineMotion
-	ldr r0, _0804CEC4 @ =gSystemSavedataManager
+	ldr r0, _0804CEC4 @ =gSystemSavedata
 	ldrb r1, [r0, #0x16]
 	movs r0, #0x20
 	ands r0, r1
@@ -48,7 +48,7 @@ BeeServer_Init: @ 0x0804CE68
 	.align 2, 0
 _0804CEBC: .4byte gBossFnTable
 _0804CEC0: .4byte 0x08363318
-_0804CEC4: .4byte gSystemSavedataManager
+_0804CEC4: .4byte gSystemSavedata
 _0804CEC8: .4byte sCollisions
 _0804CECC:
 	ldr r1, _0804CFB8 @ =sCollisions
@@ -254,7 +254,7 @@ _0804D046:
 	adds r0, r4, #0
 	bl _call_via_r1
 	movs r0, #0x45
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 _0804D078:
 	pop {r4, r5}
 	pop {r0}
@@ -403,7 +403,7 @@ _0804D174:
 	strb r1, [r4, #0xe]
 _0804D188:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0804D18E:
 	pop {r4}
 	pop {r0}
@@ -449,13 +449,13 @@ _0804D1CA:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x45
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _0804D1F4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x18]
 	ldrb r1, [r0, #9]
 	movs r0, #1
@@ -476,7 +476,7 @@ _0804D20E:
 	strb r0, [r4, #0xe]
 _0804D21E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0804D23C @ =gStageRun
 	ldrb r0, [r0, #0x12]
 	movs r1, #1
@@ -682,7 +682,7 @@ _0804D384:
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -711,7 +711,7 @@ _0804D3DC:
 	strb r0, [r6, #0xe]
 _0804D3EE:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -772,7 +772,7 @@ _0804D444:
 	adds r1, r1, r2
 	bl SetDDP
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -808,7 +808,7 @@ _0804D4A6:
 	b _0804D5D0
 _0804D4AC:
 	movs r0, #0x45
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldr r3, _0804D58C @ =gStageRun
 	ldrh r2, [r3, #8]
 	movs r4, #1
@@ -850,7 +850,7 @@ _0804D4D4:
 	strb r0, [r7, #0xe]
 _0804D4FE:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	subs r0, #1
 	strb r0, [r7, #0x12]

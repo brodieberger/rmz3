@@ -17,7 +17,7 @@ typedef void (*BossFunc)(struct Boss*);
 typedef BossFunc BossRoutine[5];
 extern const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT];
 
-#define INIT_BOSS_ROUTINE(entity, entityID) INIT_ENTITY_ROUTINE(gBossFnTable, entity, entityID)
+#define INIT_BOSS_ROUTINE(entity, entityID) INIT_OBJECT_ENTITY(24, gBossFnTable, entity, entityID)
 #define SET_BOSS_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gBossFnTable, entity, modeID)
 
 // --------------------------------------------

@@ -16,14 +16,10 @@ const EnemyRoutine gPuffyRoutine = {
 };
 // clang-format on
 
-struct Entity* CreatePuffy(struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+struct Entity* CreatePuffy(Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_PUFFY);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord = *c;
     p->work[0] = kind;
   }
@@ -85,4 +81,4 @@ static const struct Collision sCollisions[2] = {
 };
 
 // 0x08367b3c
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};

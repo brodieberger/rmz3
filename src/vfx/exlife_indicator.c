@@ -22,11 +22,9 @@ const VFXRoutine gExlifeIndicatorRoutine = {
 // clang-format on
 
 struct VFX* CreateExlifeIndicator(u8 extraLife) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_EXLIFE_INDICATOR);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = extraLife;
   }
   return p;
@@ -35,11 +33,10 @@ struct VFX* CreateExlifeIndicator(u8 extraLife) {
 static void ExlifeIndicator_Init(struct Entity* p) {
   SetTaskCallback((struct Task*)&p->spr, TaskCB_080be5d0);
   (p->spr).sprites = (struct MetaspriteHeader*)p;
-  p->flags &= ~OAM_PRIO;
+  p->flags &= ~USE_COMMON_OAM_RENDERER;
   p->flags |= DISPLAY;
   LOAD_STATIC_GRAPHIC(SM060_EXLIFE_INDICATOR);
-  (p->coord).x = PIXEL(0);
-  (p->coord).y = PIXEL(148);
+  (p->coord).x = PIXEL(0), (p->coord).y = PIXEL(148);
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   p->work[2] = 0;
   ExlifeIndicator_Update((void*)p);
@@ -130,18 +127,18 @@ static void TaskCB_080be5d0(struct Sprite* s, struct DrawPivot* c) {
   };
   // clang-format on
   struct VFX* p = (struct VFX*)s->sprites;
-  struct Coord coord;
+  Coords32 coord;
   coord.x = (p->s).coord.x - PIXEL(120);
   coord.x += (c->coord).x;
   coord.y = (p->s).coord.y - PIXEL(80);
   coord.y += (c->coord).y;
   InitNonAffineMotion((struct Entity*)p);
-  SetMotion((struct Entity*)p, sMotions[(p->s).work[0]]);
+  SetSpriteAnimation(p, sMotions[(p->s).work[0]]);
   (p->s).spr.oam.priority = 0;
-  UpdateMotionGraphic((struct Entity*)p);
+  UpdateSpriteAnimation(p);
   (p->s).spr.c = &coord;
   (s->fn)(s, c);
   SetTaskCallback((struct Task*)&(p->s).spr, TaskCB_080be5d0);
   (p->s).spr.sprites = (struct MetaspriteHeader*)p;
-  (p->s).flags &= ~OAM_PRIO;
+  (p->s).flags &= ~USE_COMMON_OAM_RENDERER;
 }

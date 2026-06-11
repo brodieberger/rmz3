@@ -1,8 +1,8 @@
 #include "collision.h"
 #include "global.h"
-#include "mission.h"
 #include "motion.h"
 #include "overworld.h"
+#include "score.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -12,7 +12,7 @@ static const motion_t gShieldGuardMotions[5];
 static const struct Collision sShieldGuardCollisions[2][5];
 static const s16 sCoords[11][2];
 
-static void onCollision(struct Body* body, struct Coord* r1, struct Coord* r2);
+static void onCollision(struct Body* body, Coords32* r1, Coords32* r2);
 static void ShieldGuard_Update(struct Weapon* w);
 
 void MenuExit_ShieldGuard(struct WeaponCommon* p) {
@@ -29,19 +29,19 @@ struct Entity* CreateWeaponShieldGuard(struct Zero* z, u8 n) {
   u8 element;
 
   KillAllWeapons(DeleteSaber);
-  p = (struct WeaponCommon*)AllocEntityFirst(gWeaponHeaderPtr);
+  p = (struct WeaponCommon*)AllocEntityLast(gWeaponHeaderPtr);
   if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SHIELD) {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_GUARD);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(0, element);
     } else {
       INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SHIELD_GUARD);
       (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (p->s).taskCol = 16;
+      (p->s).renderPrio = 16;
       (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
       element = sElements[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
@@ -59,7 +59,7 @@ static void ShieldGuard_Init(struct WeaponCommon* p) {
   ResetDynamicMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, gShieldGuardMotions[(p->s).work[0]]);
+  SetSpriteAnimation(p, gShieldGuardMotions[(p->s).work[0]]);
 
   if (isElfUsed_2(z, ELF_ENETHAS)) {
     ((&p->props)->props)[1][0] = 1;
@@ -348,7 +348,7 @@ _080392BE:\n\
 	orrs r0, r1\n\
 	strb r0, [r3]\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r1, _08039304 @ =sUpdates\n\
 	ldr r2, [sp, #4]\n\
 	ldrb r0, [r2]\n\
@@ -377,7 +377,7 @@ static void ShieldGuard_Die(struct Weapon* w) {
   return;
 }
 
-static void onCollision(struct Body* body, struct Coord* c1 UNUSED, struct Coord* c2 UNUSED) {
+static void onCollision(struct Body* body, Coords32* c1 UNUSED, Coords32* c2 UNUSED) {
   if (body->hitboxFlags & BODY_STATUS_B6) {
     struct Entity* q;
     if ((q = (struct Entity*)body->enemy->parent, q->kind == ENTITY_PROJECTILE) && (q->id == PROJECTILE_LEMON)) {

@@ -46,7 +46,7 @@ _0806D360:
 	cmp r0, #0
 	bne _0806D396
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0806D396
 	.align 2, 0
 _0806D388: .4byte sCollisions+(24*2)
@@ -123,7 +123,7 @@ _0806D410: .4byte 0xFFFFE800
 _0806D414: .4byte gEnemyFnTable
 _0806D418:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x58]
 	ldr r2, _0806D464 @ =0xFFFFFE00
 	adds r0, r1, r2
@@ -564,7 +564,7 @@ _0806D762:
 	strb r0, [r5, #0xe]
 _0806D77A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r3, [r5, #0x5c]
 	adds r0, r0, r3
@@ -1077,7 +1077,7 @@ _0806DB52:
 FUN_0806db58: @ 0x0806DB58
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, _0806DB88 @ =0xFFFFFE00
 	adds r0, r0, r1
@@ -1229,7 +1229,7 @@ _0806DC78:
 	adds r1, r5, #0
 	movs r0, #4
 	bl TryDropItem
-	ldr r2, _0806DCC0 @ =gMission
+	ldr r2, _0806DCC0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806DCC4 @ =0x0000270E
 	cmp r1, r0
@@ -1255,7 +1255,7 @@ _0806DC9C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806DCC0: .4byte gMission
+_0806DCC0: .4byte gScore
 _0806DCC4: .4byte 0x0000270E
 _0806DCC8: .4byte gEnemyFnTable
 
@@ -1288,7 +1288,7 @@ gyroCannon_0806dccc: @ 0x0806DCCC
 	strb r0, [r4, #0xf]
 _0806DD02:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x2c]
 	cmp r1, #0
 	beq _0806DD2E
@@ -1380,7 +1380,7 @@ _0806DDB0:
 	bl TryDropItem
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0806DDF0 @ =gMission
+	ldr r2, _0806DDF0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806DDF4 @ =0x0000270E
 	cmp r1, r0
@@ -1407,7 +1407,7 @@ _0806DDE6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806DDF0: .4byte gMission
+_0806DDF0: .4byte gScore
 _0806DDF4: .4byte 0x0000270E
 _0806DDF8: .4byte gEnemyFnTable
 

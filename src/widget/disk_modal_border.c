@@ -26,12 +26,9 @@ const WidgetRoutine gDiskModalBorderRoutine = {
 // clang-format on
 
 struct Widget* createSecretDiskModalBorder(struct GameState* g, u8 n) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 12);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = n;
     (w->s).work[1] = 0;
@@ -171,7 +168,7 @@ _080E833C:\n\
 	orrs r0, r1\n\
 	strb r0, [r4, #0xa]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x10]\n\
 	cmp r0, #1\n\
 	beq _080E837C\n\

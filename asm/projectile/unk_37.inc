@@ -349,7 +349,7 @@ _080ADDAE:
 	strb r0, [r4, #0xe]
 _080ADDD4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080AE138
 	.align 2, 0
 _080ADDDC: .4byte 0x00006F08
@@ -381,7 +381,7 @@ _080ADE02:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	movs r1, #3
 	bl __umodsi3
@@ -795,7 +795,7 @@ _080AE122:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080AE138:
 	add sp, #0x10
 	pop {r4, r5, r6, r7}
@@ -862,7 +862,7 @@ _080AE1A2:
 	str r0, [r4, #0x54]
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x28]
 	ldrb r0, [r0, #0xc]
 	cmp r0, #1
@@ -897,7 +897,7 @@ _080AE1E8:
 _080AE1EE:
 	strb r0, [r4, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080AE1F6:
 	pop {r4, r5}
 	pop {r0}

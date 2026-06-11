@@ -14,7 +14,7 @@ FUN_0809bdd4: @ 0x0809BDD4
 	lsrs r4, r2, #0x18
 	ldr r0, _0809BE2C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0809BE24
@@ -81,7 +81,7 @@ CielMinigameEnemy_Init: @ 0x0809BE34
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x11]
 	adds r1, #5
 	lsls r1, r1, #0x18

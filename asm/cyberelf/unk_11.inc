@@ -4,96 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080e5048
-FUN_080e5048: @ 0x080E5048
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	adds r6, r1, #0
-	lsls r2, r2, #0x18
-	lsrs r4, r2, #0x18
-	ldr r0, _080E5094 @ =gElfHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080E508C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x10
-	strb r0, [r1]
-	ldr r1, _080E5098 @ =gElfFnTable
-	movs r0, #0xb
-	strb r0, [r3, #9]
-	ldr r0, [r1, #0x2c]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r1, #0
-	strh r2, [r3, #0x20]
-	adds r0, r3, #0
-	adds r0, #0x22
-	strb r1, [r0]
-	adds r0, #0x92
-	str r5, [r0]
-	adds r0, #4
-	str r6, [r0]
-	strb r4, [r3, #0x10]
-	strb r1, [r3, #0x11]
-_080E508C:
-	adds r0, r3, #0
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080E5094: .4byte gElfHeaderPtr
-_080E5098: .4byte gElfFnTable
-
-	thumb_func_start Elf11_Init
-Elf11_Init: @ 0x080E509C
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	ldr r1, _080E50F4 @ =gElfFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #1
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r4, #0x14]
-	adds r0, r4, #0
-	adds r0, #0x22
-	movs r5, #1
-	strb r1, [r0]
-	adds r0, r4, #0
-	bl InitNonAffineMotion
-	adds r0, r4, #0
-	bl ResetDynamicMotion
-	ldrb r1, [r4, #0xb]
-	movs r0, #0xfb
-	ands r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0xa]
-	orrs r0, r5
-	movs r1, #2
-	orrs r0, r1
-	strb r0, [r4, #0xa]
-	ldr r1, _080E50F8 @ =sInitializers
-	ldrb r0, [r4, #0x10]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	adds r0, r4, #0
-	bl Elf11_Update
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080E50F4: .4byte gElfFnTable
-_080E50F8: .4byte sInitializers
-
 	thumb_func_start Elf11_Update
 Elf11_Update: @ 0x080E50FC
 	push {r4, r5, lr}
@@ -101,7 +11,7 @@ Elf11_Update: @ 0x080E50FC
 	adds r0, #0xb4
 	ldr r5, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080E5154 @ =gPause
 	ldrb r2, [r0]
 	cmp r2, #0
@@ -312,7 +222,7 @@ _080E529A:
 	strb r0, [r6, #0xa]
 _080E529C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	bl GetBeeAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
@@ -397,7 +307,7 @@ FUN_080e5300: @ 0x080E5300
 	ands r0, r1
 	strb r0, [r7, #0xa]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	bl GetBeeAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
@@ -701,7 +611,7 @@ _080E5596:
 	strb r0, [r6, #0xa]
 _080E5598:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	bl GetArchimAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
@@ -794,7 +704,7 @@ _080E564A:
 _080E5650:
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	bl GetArchimAtkBoost
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
@@ -1093,7 +1003,7 @@ _080E5898:
 	ldr r0, _080E58B0 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #5
 	cmp r0, r1

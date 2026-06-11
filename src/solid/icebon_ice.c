@@ -30,14 +30,9 @@ const SolidRoutine gIcebonIceRoutine = {
 // clang-format on
 
 void icebon_080ca550(struct Entity* e, u8 n) {
-  struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
+  struct Entity* p = AllocEntityFirst(gSolidHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_ICEBON_ICE);
-    p->tileNum = 0;
-    p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->coord.x = (e->coord).x;
     p->coord.y = (e->coord).y - PIXEL(21);
     p->work[0] = n;
@@ -47,10 +42,7 @@ void icebon_080ca550(struct Entity* e, u8 n) {
 
 // --------------------------------------------
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
-  // nop
-  return;
-}
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 static void IcebonIce_Init(struct IcebonIceObject* p) {
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
@@ -62,8 +54,6 @@ static void IcebonIce_Init(struct IcebonIceObject* p) {
   p->y = (p->s).coord.y;
   IcebonIce_Update((void*)p);
 }
-
-// --------------------------------------------
 
 void FUN_080ca700(struct Solid* p);
 static void nop_080ca6fc(struct Solid* p);
@@ -100,7 +90,7 @@ static void IcebonIce_Update(struct Solid* p) {
   // clang-format on
 
   if ((p->body).status & BODY_STATUS_DEAD) {
-    (p->s).flags2 &= ~ENTITY_HAZARD;
+    (p->s).flags2 &= ~ENTI_PHYSICS;
     SET_SOLID_ROUTINE(p, ENTITY_DIE);
     IcebonIce_Die((void*)p);
     return;
@@ -110,10 +100,8 @@ static void IcebonIce_Update(struct Solid* p) {
   (sUpdates2[(p->s).mode[1]])(p);
 }
 
-// --------------------------------------------
-
 static void IcebonIce_Die(Object* p) {
-  struct Coord c;
+  Coords32 c;
 
   PlaySound(SE_ICE_BREAK);
   EXIT_BODY(p);
@@ -127,10 +115,7 @@ static void IcebonIce_Die(Object* p) {
 
 // --------------------------------------------
 
-static void nop_080ca6fc(struct Solid* p) {
-  // nop
-  return;
-}
+static void nop_080ca6fc(struct Solid* p) { return; }
 
 // --------------------------------------------
 

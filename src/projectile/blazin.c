@@ -20,13 +20,10 @@ const ProjectileRoutine gBlazinProjectileRoutine = {
 
 // --------------------------------------------
 
-struct Projectile* FUN_0809e4b0(struct Entity* e, struct Coord* c) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_0809e4b0(struct Entity* e, Coords32* c) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 9);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).coord = *c;
     (p->s).unk_28 = e;
@@ -34,13 +31,10 @@ struct Projectile* FUN_0809e4b0(struct Entity* e, struct Coord* c) {
   return p;
 }
 
-struct Projectile* FUN_0809e500(struct Entity* e, struct Coord* c, struct Coord* d) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_0809e500(struct Entity* e, Coords32* c, Coords32* d) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 9);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 1;
     (p->s).d = *d;
     (p->s).coord = *c;
@@ -49,13 +43,10 @@ struct Projectile* FUN_0809e500(struct Entity* e, struct Coord* c, struct Coord*
   return p;
 }
 
-struct Projectile* FUN_0809e55c(struct Entity* e, struct Coord* c, struct Coord* c2) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* FUN_0809e55c(struct Entity* e, Coords32* c, Coords32* c2) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 9);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 2;
     (p->s).coord = *c;
     (p->s).unk_coord = *c2;
@@ -64,15 +55,12 @@ struct Projectile* FUN_0809e55c(struct Entity* e, struct Coord* c, struct Coord*
   return p;
 }
 
-struct Projectile* _createBlazinEXFireBall(struct Entity* e, struct Coord* c, struct Coord* d, u8 angle) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* _createBlazinEXFireBall(struct Entity* e, Coords32* c, Coords32* d, u8 angle) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 9);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 3;
-    p->work[0] = angle;
+    p->buffer[0] = angle;
     (p->s).coord = *c;
     (p->s).d = *d;
     (p->s).unk_28 = e;
@@ -80,13 +68,10 @@ struct Projectile* _createBlazinEXFireBall(struct Entity* e, struct Coord* c, st
   return p;
 }
 
-struct Projectile* blazin_0809e620(struct Entity* e, struct Coord* c, struct Coord* d) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* blazin_0809e620(struct Entity* e, Coords32* c, Coords32* d) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 9);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 4;
     (p->s).d = *d;
     (p->s).coord = *c;

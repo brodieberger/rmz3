@@ -168,7 +168,7 @@ _080C1ABA:
 FUN_080c1aec: @ 0x080C1AEC
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -206,7 +206,7 @@ _080C1B30: .4byte gVFXFnTable
 FUN_080c1b34: @ 0x080C1B34
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1

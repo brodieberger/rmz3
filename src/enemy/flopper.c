@@ -5,7 +5,7 @@
 struct FlopperObject {
   OBJECT_HDR;
   // props (16bytes, offset: 0xB4..)
-  struct Coord c;
+  Coords32 c;
   u32 unk_08;
   u8 unk_0c[4];
 };
@@ -14,7 +14,7 @@ static_assert(sizeof(struct FlopperObject) == sizeof(struct Enemy));
 static const struct Collision sCollisions[2];
 static const EnemyFunc sUpdates[4];
 
-void Flopper_onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED);
+void Flopper_onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void Flopper_Init(struct FlopperObject* p);
 static void Flopper_Update(struct FlopperObject* p);
@@ -39,7 +39,7 @@ static void Flopper_Init(struct FlopperObject* p) {
   (p->s).mode[1] = (p->s).work[0];
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(SM022_FLOPPER, 0x00));
+  SetSpriteAnimation(p, MOTION(SM022_FLOPPER, 0x00));
   Flopper_Update((void*)p);
 }
 
@@ -55,18 +55,16 @@ static void Flopper_Update(struct FlopperObject* p) {
     return;
   }
 
-  if ((p->s).mode[3] == 0) {
-    if (IsFrozen((void*)p)) {
-      (p->s).mode[3] = 1;
-    }
+  if ((p->s).mode[3] == 0 && IsFrozen(p)) {
+    (p->s).mode[3] = 1;
   }
 
   if ((p->s).mode[3] != 0) {
     if ((p->s).mode[3] == 1) {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).mode[3] = 2;
     }
-    if (!IsFrozen((void*)p)) {
+    if (!IsFrozen(p)) {
       (p->s).mode[3] = 0;
     }
     return;

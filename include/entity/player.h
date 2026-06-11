@@ -18,7 +18,7 @@ union State32 {
   u16 EC;      /* E-Crystal, 0x02037d1a */                    \
   u8 subtankHP[4];
 
-// LoadStageRun(address: 0x08019ea4) での初期化の仕方 や SaveSlot のレイアウト的に　これで1つの構造体として扱うのが正解と思われる
+// LoadStageRun(address: 0x08019ea4) での初期化の仕方 や GameSavedata のレイアウト的に　これで1つの構造体として扱うのが正解と思われる
 // サイバーエルフや、サブタンクなどの外付けパーツ的な強化要素　をまとめている構造体なので、名前をそれっぽい名前に変更したい
 struct ZeroAsset {
   STAT_HDR;
@@ -40,7 +40,7 @@ struct KeyConfig {
   u8 _;
 };
 
-// ClearZeroStatus(address: 0x0803204c) や CopyZeroStatus (0x08032274) の内容的に、これで1つの構造体として扱うのが正解と思われる
+// ClearZeroStatus(address: 0x0803204c) や StoreZeroStatus (0x08032274) の内容的に、これで1つの構造体として扱うのが正解と思われる
 // 名前を変更する予定
 struct ZeroStatus {
   STAT_HDR;
@@ -84,10 +84,10 @@ struct Zero_b4 {
   struct Entity* shadow;  // 0x40 (-> 0xF4), afterimage on dash(ダッシュ時の残像)
 
   u8 wallDustTimer;  // 0x44 (-> 0xF8), 壁ずり中に毎フレーム減っていって0xFFになったら土煙
-  SoundID ALIGNED(2) sound;
+  s16 sound;         // 0x46 (-> 0xFA)
 
   u8 unk_fc[4];
-  struct Coord prevCoord;
+  Coords32 prevCoord;
   s32 blownSpeed;  // パンテオンフィストに吹っ飛ばされた時用(ジャンプ時のX速度にふっ飛ばしを加えるため)
   s32 deltaX;      // 前のフレームからゼロがどれだけX方向に移動したか
   u8 dashTimer;
@@ -113,7 +113,7 @@ struct PlayerInputState {
   u8 ultimateCommand_227[3];
   u8 ultimateCommand_22a[2];
   u8 ultimateCommand_22c[3];
-  u8 commandDashTimer;  // コマンドによるダッシュのダッシュ継続時間を表すタイマー
+  u8 commandDashTimer;  // コマンドダッシュ(十字キー2回押し)に関係するタイマー
 };  // 156 bytes
 static_assert(sizeof(struct PlayerInputState) == 156);
 
@@ -223,20 +223,22 @@ typedef struct Zero {
   u8 motionCmdIdx;
   u8 motionDuration;
   bool8 animDisabled;  // ゼロの見た目が固定される
-  union {
-    u8 raw;
-    u8 lo : 4;
-    u8 hi : 4;
-  } ALIGNED(1) PACKED unk_143;
+  u8 unk_143_lo : 4;
+  u8 unk_143_hi : 4;
   u8 ALIGNED(1) unk_144[3];
   u8 posture;      // 0x147
   u8 prevPosture;  // 0x148, bit0: dash now?, bit1: is shadow dash?
   u8 unk_149;
 
-  struct Border border;  // 0x14C, ゼロが侵入不可能な境界座標を表す
-  u8 hazard[16];         // ゼロと干渉するHazardのidx(Overworld.hazard.dataのidx)が入る
-  u16 hazardIDs[16];     // ゼロと干渉するHazardのEntityIDが入る
-  u8 hazardCount;        // .hazard の長さ
+  struct {
+    s32 left;
+    s32 right;
+    s32 top;
+    s32 bottom;
+  } border;           // 0x14C, ゼロが侵入不可能な境界座標を表す
+  u8 hazard[16];      // ゼロと干渉するHazardのidx(Overworld.hazard.dataのidx)が入る
+  u16 hazardIDs[16];  // ゼロと干渉するHazardのEntityIDが入る
+  u8 hazardCount;     // .hazard の長さ
   bool8 isGround;
   bool8 antlion;
   bool8 pushedOut;                // 0x18F, 壁にめり込んで押し出されたときにTRUE

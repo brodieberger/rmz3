@@ -6,7 +6,7 @@
 // ファントムの出すオブジェクト?
 
 void FUN_080c4c2c(s32 x, s32 y, s32 amplitude, u8 theta);
-void CreateGhost18(struct Coord* c, u8 kind, bool8 xflip, u8 r3);
+void CreateGhost18(Coords32* c, u8 kind, bool8 xflip, u8 r3);
 
 void Enemy59_Init(struct Enemy* p);
 void Enemy59_Update(struct Enemy* p);
@@ -33,13 +33,9 @@ void FUN_08091280(struct Entity* p) {
 }
 
 void FUN_0809130c(struct Entity* e, u8 idx) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_59);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
     if (idx < 4) {
       s32 x = (idx - 2) * PIXEL(48) + PIXEL(24);
@@ -300,13 +296,13 @@ NON_MATCH static void FUN_080922e0(struct Entity* p) {
     case 0: {
       InitNonAffineMotion(p);
       SET_XFLIP(p, p->work[3]);
-      SetMotion(p, MOTION(SM019_PANTHEON_HUNTER, 3));  // 分身のハズレ枠
+      SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 3));  // 分身のハズレ枠
       p->work[2] = 18;
       p->mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       p->work[2]--;
       if ((p->work[2] & 3) == 0) FUN_08091280(p);
       if (p->work[2] == 0) p->mode[2]++;
@@ -319,11 +315,11 @@ NON_MATCH static void FUN_080922e0(struct Entity* p) {
       FALLTHROUGH;
     }
     case 3: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       if (p->work[2] == 0) PlaySound(SE_ZAKO_EXPLODE);
       p->work[2]++;
       {
-        register struct Coord* c asm("r4") = &p->coord;
+        register Coords32* c asm("r4") = &p->coord;
         CreateGhost18(c, 0, (p->flags & X_FLIP) != 0, p->work[3]);
         {
           register const struct SlashedEnemy* tmp asm("r6") = &sSlashedEnemies[3];
@@ -345,7 +341,7 @@ NON_MATCH static void FUN_080922e0(struct Entity* p) {
 }
 
 static void FUN_080923ec(Object* p) {
-  struct Coord c;
+  Coords32 c;
   EXIT_BODY(p);
   c.x = (p->s).coord.x;
   c.y = (p->s).coord.y - PIXEL(8);

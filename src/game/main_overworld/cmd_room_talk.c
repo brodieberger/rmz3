@@ -9,7 +9,8 @@ static const u8 u8_ARRAY_0838623c[16];
 static const TextID FreeRunStageTextIDs[FREE_STAGE_COUNT];
 static const TextID FreeRunStageConfirmTextIDs[FREE_STAGE_COUNT];
 
-NAKED void OverworldLoop_CmdRoomTalk(struct GameState *p) {
+// 0x080F10B8
+NAKED void OverworldLoop_CmdRoomTalk(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -533,7 +534,7 @@ _080F153E:\n\
 	beq _080F154E\n\
 	bl _080F1D84\n\
 _080F154E:\n\
-	ldr r0, _080F158C @ =gMission\n\
+	ldr r0, _080F158C @ =gScore\n\
 	ldr r2, [r0]\n\
 	ldr r0, _080F1590 @ =MissionBitfields_083861e8\n\
 	movs r6, #4\n\
@@ -562,7 +563,7 @@ _080F154E:\n\
 	b _080F15B2\n\
 	.align 2, 0\n\
 _080F1588: .4byte gTextWindow+8\n\
-_080F158C: .4byte gMission\n\
+_080F158C: .4byte gScore\n\
 _080F1590: .4byte MissionBitfields_083861e8\n\
 _080F1594: .4byte StringOfsTable\n\
 _080F1598: .4byte StageNameIdxs\n\
@@ -590,7 +591,7 @@ _080F15BE:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	beq _080F1620\n\
-	ldr r0, _080F15FC @ =gMission\n\
+	ldr r0, _080F15FC @ =gScore\n\
 	ldr r2, [r0]\n\
 	ldr r1, _080F1600 @ =MissionBitfields_083861e8\n\
 	movs r4, #4\n\
@@ -610,7 +611,7 @@ _080F15BE:\n\
 _080F15F0: .4byte StringOfsTable\n\
 _080F15F4: .4byte gStringData\n\
 _080F15F8: .4byte gJoypad\n\
-_080F15FC: .4byte gMission\n\
+_080F15FC: .4byte gScore\n\
 _080F1600: .4byte MissionBitfields_083861e8\n\
 _080F1604:\n\
 	movs r0, #2\n\
@@ -714,7 +715,7 @@ _080F16C8:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _080F170C\n\
-	ldr r0, _080F1708 @ =gMission\n\
+	ldr r0, _080F1708 @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldr r2, [r0, #0x14]\n\
 	lsrs r1, r2, #2\n\
@@ -738,13 +739,13 @@ _080F16C8:\n\
 	b _080F1784\n\
 	.align 2, 0\n\
 _080F1704: .4byte gCurStory\n\
-_080F1708: .4byte gMission\n\
+_080F1708: .4byte gScore\n\
 _080F170C:\n\
 	movs r0, #0x80\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _080F1740\n\
-	ldr r0, _080F1738 @ =gMission\n\
+	ldr r0, _080F1738 @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldr r1, [r0, #0x14]\n\
 	lsrs r0, r1, #7\n\
@@ -763,7 +764,7 @@ _080F170C:\n\
 	lsls r0, r0, #0x10\n\
 	b _080F1782\n\
 	.align 2, 0\n\
-_080F1738: .4byte gMission\n\
+_080F1738: .4byte gScore\n\
 _080F173C:\n\
 	lsls r0, r2, #0x10\n\
 	b _080F1782\n\
@@ -773,7 +774,7 @@ _080F1740:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	beq _080F1786\n\
-	ldr r0, _080F177C @ =gMission\n\
+	ldr r0, _080F177C @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldr r2, [r0, #0x14]\n\
 	lsrs r1, r2, #0xb\n\
@@ -798,7 +799,7 @@ _080F1740:\n\
 	lsls r0, r0, #0x10\n\
 	b _080F1782\n\
 	.align 2, 0\n\
-_080F177C: .4byte gMission\n\
+_080F177C: .4byte gScore\n\
 _080F1780:\n\
 	lsls r0, r1, #0x10\n\
 _080F1782:\n\
@@ -871,13 +872,13 @@ _080F17F0:\n\
 	strh r0, [r4]\n\
 	ldr r6, _080F182C @ =0x00006270\n\
 	adds r0, r5, r6\n\
-	bl saveCurStory\n\
+	bl StoreStoryData\n\
 	ldr r1, _080F1830 @ =0x000064AC\n\
 	adds r0, r5, r1\n\
 	ldr r0, [r0]\n\
 	ldr r2, _080F1834 @ =0x00006460\n\
 	adds r1, r5, r2\n\
-	bl CopyZeroStatus\n\
+	bl StoreZeroStatus\n\
 	ldrb r0, [r4]\n\
 	ldr r3, _080F1838 @ =0x00006410\n\
 	adds r1, r5, r3\n\
@@ -913,7 +914,7 @@ _080F1854:\n\
 _080F1862:\n\
 	movs r4, #0\n\
 	movs r2, #0\n\
-	ldr r0, _080F1A40 @ =gMission\n\
+	ldr r0, _080F1A40 @ =gScore\n\
 	ldr r6, [r0]\n\
 	ldr r7, _080F1A44 @ =u8_ARRAY_0838623c\n\
 	movs r0, #1\n\
@@ -1162,7 +1163,7 @@ _080F1A2A:\n\
 	b _080F1D84\n\
 	.align 2, 0\n\
 _080F1A3C: .4byte gTextWindow+8\n\
-_080F1A40: .4byte gMission\n\
+_080F1A40: .4byte gScore\n\
 _080F1A44: .4byte u8_ARRAY_0838623c\n\
 _080F1A48: .4byte gJoypad\n\
 _080F1A4C: .4byte StringOfsTable\n\
@@ -1270,13 +1271,13 @@ _080F1B14:\n\
 	strh r0, [r4]\n\
 	ldr r6, _080F1B50 @ =0x00006270\n\
 	adds r0, r5, r6\n\
-	bl saveCurStory\n\
+	bl StoreStoryData\n\
 	ldr r1, _080F1B54 @ =0x000064AC\n\
 	adds r0, r5, r1\n\
 	ldr r0, [r0]\n\
 	ldr r2, _080F1B58 @ =0x00006460\n\
 	adds r1, r5, r2\n\
-	bl CopyZeroStatus\n\
+	bl StoreZeroStatus\n\
 	ldrb r0, [r4]\n\
 	ldr r3, _080F1B5C @ =0x00006410\n\
 	adds r1, r5, r3\n\
@@ -1477,18 +1478,18 @@ _080F1CC0:\n\
 	strh r0, [r4]\n\
 	ldr r1, _080F1D10 @ =0x00006270\n\
 	adds r0, r5, r1\n\
-	bl saveCurStory\n\
+	bl StoreStoryData\n\
 	ldr r2, _080F1D14 @ =0x000064AC\n\
 	adds r0, r5, r2\n\
 	ldr r0, [r0]\n\
 	ldr r3, _080F1D18 @ =0x00006460\n\
 	adds r1, r5, r3\n\
-	bl CopyZeroStatus\n\
+	bl StoreZeroStatus\n\
 	ldrb r0, [r4]\n\
 	ldr r6, _080F1D1C @ =0x00006410\n\
 	adds r1, r5, r6\n\
 _080F1CF0:\n\
-	bl InitMissionInfo\n\
+	bl ResetMissionScore\n\
 	ldrb r0, [r4]\n\
 	bl InitStageRun\n\
 	movs r1, #0xc0\n\
@@ -1535,17 +1536,17 @@ _080F1D40:\n\
 	strh r0, [r4]\n\
 	ldr r1, _080F1D9C @ =0x00006270\n\
 	adds r0, r5, r1\n\
-	bl saveCurStory\n\
+	bl StoreStoryData\n\
 	ldr r2, _080F1DA0 @ =0x000064AC\n\
 	adds r0, r5, r2\n\
 	ldr r0, [r0]\n\
 	ldr r3, _080F1DA4 @ =0x00006460\n\
 	adds r1, r5, r3\n\
-	bl CopyZeroStatus\n\
+	bl StoreZeroStatus\n\
 	ldrb r0, [r4]\n\
 	ldr r6, _080F1DA8 @ =0x00006410\n\
 	adds r1, r5, r6\n\
-	bl InitMissionInfo\n\
+	bl ResetMissionScore\n\
 	ldrb r0, [r4]\n\
 	bl InitStageRun\n\
 	movs r1, #0xc0\n\

@@ -11,9 +11,9 @@
 typedef s32 (*ShapeChecker)(s32 x, s32 y);
 
 // bitfield
-#define FLAG(gameflags, n) (gameflags[n >> 3] & (1 << (n & 7)))
-#define SET_FLAG(gameflags, n) (gameflags[n >> 3] |= (1 << (n & 7)))
-#define CLEAR_FLAG(gameflags, n) (gameflags[n >> 3] &= ~(1 << (n & 7)))
+#define FLAG(gameflags, n) (gameflags[(n) >> 3] & (1 << ((n) & 7)))
+#define SET_FLAG(gameflags, n) (gameflags[(n) >> 3] |= (1 << ((n) & 7)))
+#define CLEAR_FLAG(gameflags, n) (gameflags[(n) >> 3] &= ~(1 << ((n) & 7)))
 
 #define FLAG32(bitfield32, n) ((bitfield32)[(n) >> 5] & (1 << ((n) & 31)))
 #define SET_FLAG32(bitfield32, n) (((bitfield32)[(n) >> 5]) |= (1 << ((n) & 31)))
@@ -27,13 +27,6 @@ void CreateFirework(s32 x, s32 y, bool8 r2);
 void ResetEntityEnvironment(void);
 void clearStageDisk(void);
 u32 TryDropItem(u32 table, struct Coord* c);
-
-// --------------------------------------------
-
-s32 PushoutToLeft1(s32 x, s32 y);
-s32 PushoutToLeft2(s32 x, s32 y);
-s32 PushoutToRight1(s32 x, s32 y);
-s32 PushoutToRight2(s32 x, s32 y);
 
 // --------------------------------------------
 
@@ -89,7 +82,7 @@ void* memcpy(void* buf1, const void* buf2, u32 n);
 
 // sym_ewram.txt, sym_iwram.txt
 extern bool8 gIsPlayDamageSE;
-extern u8 wPauseFrame;
+extern bool8 gInHitStopFrames;
 extern u32 gWhitePaintFlags[256 / 32];  // 被ダメ無敵時の白塗り(ビットフィールド)
 extern u32 gLifeRecoverAmount;
 extern u32 gSubtankRecoverAmount;

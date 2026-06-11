@@ -35,11 +35,9 @@ const WidgetRoutine gArmorIconsRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct Entity* CreateArmorIcons(struct GameState* g, u8 r1, u8 r2) {
-  struct Entity* p = AllocEntityFirst(gWidgetHeaderPtr);
+  struct Entity* p = AllocEntityLast(gWidgetHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 16;
     INIT_WIDGET_ROUTINE(p, 5);
-    p->tileNum = 0, p->palID = 0;
     p->unk_28 = (void*)g;
     p->work[0] = r1, p->work[1] = r2;
   }
@@ -47,11 +45,9 @@ struct Entity* CreateArmorIcons(struct GameState* g, u8 r1, u8 r2) {
 }
 
 struct Entity* CreateArmorIcons2(struct GameState* g, struct Widget* p, u8 r2, u8 r3) {
-  struct ArmorIcons* w = (struct ArmorIcons*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct ArmorIcons* w = (struct ArmorIcons*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 5);
-    (w->s).tileNum = 0, (w->s).palID = 0;
     (w->s).unk_28 = (void*)g;
     w->parent = p;
     (w->s).work[0] = 1, (w->s).work[1] = r2;
@@ -344,7 +340,7 @@ NAKED static void FUN_080e6c94(struct Widget* w) {
 	add r0, r8\n\
 	ldr r4, [r0]\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r2, _080E6CDC @ =0x00000DCC\n\
 	add r2, r8\n\
 	ldrb r0, [r2, #4]\n\
@@ -675,7 +671,7 @@ _080E6F24:\n\
 	bl ForceEntityPalette\n\
 _080E6F40:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0xd]\n\
 	adds r0, #1\n\
 	b _080E6F60\n\
@@ -709,7 +705,7 @@ NAKED static void FUN_080e6f6c(struct Widget* w) {
 	adds r5, r0, #0\n\
 	ldr r4, [r5, #0x28]\n\
 	ldr r6, [r5, #0x74]\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r5, #0xd]\n\
 	cmp r0, #4\n\
 	bls _080E6F84\n\

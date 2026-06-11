@@ -19,12 +19,10 @@ const VFXRoutine gVFX36Routine = {
 
 // --------------------------------------------
 
-struct Entity* FUN_080bc058(struct Entity* e, struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080bc058(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_036);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 0;
     p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = e;
@@ -32,12 +30,10 @@ struct Entity* FUN_080bc058(struct Entity* e, struct Coord* c, u8 kind) {
   return p;
 }
 
-struct Entity* volteel_080bc0b0(struct Entity* e, struct Coord* c, u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* volteel_080bc0b0(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_036);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 1;
     p->coord.x = c->x, p->coord.y = c->y;
     p->unk_28 = e;

@@ -2,7 +2,7 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/unk_61.inc");
+// ReactorCoreに関連
 
 void Enemy61_Init(struct Enemy* p);
 void Enemy61_Update(struct Enemy* p);
@@ -10,13 +10,30 @@ void Enemy61_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gEnemy61Routine = {
-    [ENTITY_INIT] =      Enemy61_Init,
-    [ENTITY_UPDATE] =    Enemy61_Update,
-    [ENTITY_DIE] =       Enemy61_Die,
+    [ENTITY_INIT] =      (void*)Enemy61_Init,
+    [ENTITY_UPDATE] =    (void*)Enemy61_Update,
+    [ENTITY_DIE] =       (void*)Enemy61_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void FUN_080935b4(struct Entity* q, u8 idx, u8 val) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_61);
+    p->work[0] = 0;
+    (p->coord).x = (q->coord).x;
+    (p->coord).y = (FUN_08009f6c((q->coord).x, (q->coord).y) - PIXEL(16 * (u32)val)) - PIXEL(28);
+    p->work[2] = idx;
+    p->unk_28 = (void*)q;
+  }
+}
+
+// 0x0809362C
+static void onCollision(struct Body* body UNUSED, Coords32* c1 UNUSED, Coords32* c2 UNUSED) {}
+
+INCASM("asm/enemy/unk_61.inc");
 
 void FUN_08093754(struct Enemy* p);
 

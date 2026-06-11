@@ -22,12 +22,9 @@ const ProjectileRoutine gEarShotRoutine = {
 // --------------------------------------------
 
 void createEarShot(s32 x, s32 y, u8 n, bool8 is_big) {
-  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
+  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 11);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = !!is_big;
     (p->s).work[2] = n;
     (p->s).coord.x = x;
@@ -36,7 +33,7 @@ void createEarShot(s32 x, s32 y, u8 n, bool8 is_big) {
 }
 
 // 0x0809f2f0
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 // --------------------------------------------
 
@@ -145,11 +142,11 @@ _0809F44A:\n\
 	adds r0, r0, r1\n\
 	str r0, [r4, #0x54]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _0809F484 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\

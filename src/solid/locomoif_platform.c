@@ -34,15 +34,9 @@ const SolidRoutine gLocomoIFPlatformRoutine = {
 void CreateLocomoIFPlatform(struct Boss* locomoif) {
   s32 i;
   for (i = 0; i < 2; i++) {
-    struct LocomoIFPlatformObject* p = (struct LocomoIFPlatformObject*)AllocEntityFirst(gSolidHeaderPtr);
+    struct LocomoIFPlatformObject* p = (struct LocomoIFPlatformObject*)AllocEntityLast(gSolidHeaderPtr);
     if (p != NULL) {
-      u16 val;
-      (p->s).taskCol = 30;
       INIT_SOLID_ROUTINE(p, SOLID_LOCOMOIF_PLATFORM);
-      (p->s).tileNum = 0;
-      (p->s).palID = 0;
-      (p->s).flags2 |= WHITE_PAINTABLE;
-      (p->s).invincibleID = (p->s).uniqueID;
       (p->s).work[0] = 0;
       p->unk_00 = (i << 15);
       (p->s).unk_28 = &locomoif->s;

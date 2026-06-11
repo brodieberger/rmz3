@@ -29,7 +29,7 @@ const SolidRoutine gSolid10Routine = {
 // clang-format on
 
 static void Solid10_Init(struct Solid* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
 
   if (GetMetatileAttr((p->s).coord.x, (p->s).coord.y) == 0) {
     (p->s).flags &= ~DISPLAY;
@@ -58,7 +58,7 @@ static void Solid10_Update(struct Solid* p) {
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM068_OLD_RESIDENTIAL_FALL_ROCK, 0) | (p->s).work[0]);
+      SetSpriteAnimation(p, MOTION(SM068_OLD_RESIDENTIAL_FALL_ROCK, 0) | (p->s).work[0]);
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Solid10_Die(p);
     }
@@ -116,7 +116,7 @@ _080CD96A:\n\
 	strb r0, [r5, #0xd]\n\
 _080CD974:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080CD9CC @ =s32_ARRAY_08370170\n\
 	ldrb r2, [r5, #0x12]\n\
 	movs r1, #7\n\
@@ -276,7 +276,7 @@ _080CDABA:\n\
 	strb r0, [r5, #0xa]\n\
 _080CDABC:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r1, [r5, #0x60]\n\
 	ldr r0, _080CDB30 @ =0x000006FF\n\
 	cmp r1, r0\n\
@@ -293,7 +293,7 @@ _080CDAD0:\n\
 	ldr r0, _080CDB34 @ =gStageRun+232\n\
 	adds r1, r5, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #6\n\
 	cmp r0, r1\n\

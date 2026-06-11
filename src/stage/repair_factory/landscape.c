@@ -1,15 +1,17 @@
-#include "blink.h"
 #include "gfx.h"
 #include "global.h"
-#include "mission.h"
 #include "overworld.h"
+#include "palette_animation.h"
+#include "score.h"
 
 #define STAGE (gOverworld.work.repairFactory)
 
-static void initRepairFactory(struct Coord* _ UNUSED);
-static void repairFactory_0800d6b4(struct Coord* c);
-static void repairFactory_0800d8c0(struct Coord* _ UNUSED);
-static void exitRepairFactory(struct Coord* _ UNUSED);
+#define CONVEYOR_SPEED (PIXEL(85) / 64)
+
+static void initRepairFactory(Coords32* _ UNUSED);
+static void repairFactory_0800d6b4(Coords32* c);
+static void repairFactory_0800d8c0(Coords32* _ UNUSED);
+static void exitRepairFactory(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initRepairFactory,
@@ -18,84 +20,75 @@ static const StageFunc sStageRoutine[4] = {
     exitRepairFactory,
 };
 
-static void initRepairFactory(struct Coord* _ UNUSED) {
+static void initRepairFactory(Coords32* _ UNUSED) {
   gOverworld.state[0] = 0;
   STAGE.unk_000 = 0;
   STAGE.unk_001 = 0;
   STAGE.unk_002 = 0;
-  LoadBlink(0x2B, 0);
-  LoadBlink(0x2C, 0);
+  StartPaletteAnimation(43, 0);
+  StartPaletteAnimation(44, 0);
 }
 
-static void repairFactory_0800d6b4(struct Coord* c) {
+// 0x0800D6B4
+static void repairFactory_0800d6b4(Coords32* c) {
   if ((TILESET_ID(1) == STAGE_REPAIR_FACTORY) && (TILESET_IDX(1) == 1)) {
     if ((STAGE.unk_000 & (1 << 0)) == 0) {
       STAGE.unk_000 |= (1 << 0);
-      LoadBlink(45, 0);
+      StartPaletteAnimation(45, 0);
     }
-    UpdateBlinkMotionState(45);
+    StepPaletteAnimation(45);
 
   } else if (STAGE.unk_000 & (1 << 0)) {
     STAGE.unk_000 ^= (1 << 0);
-    ClearBlink(45);
+    RemovePaletteAnimation(45);
   }
 
   if ((TILESET_ID(1) == STAGE_REPAIR_FACTORY) && (TILESET_IDX(1) == 4)) {
     if ((STAGE.unk_000 & (1 << 1)) == 0) {
       STAGE.unk_000 |= (1 << 1);
-      LoadBlink(46, 0);
-      LoadBlink(47, 0);
-      LoadBlink(48, 0);
+      StartPaletteAnimation(46, 0);
+      StartPaletteAnimation(47, 0);
+      StartPaletteAnimation(48, 0);
     }
-    UpdateBlinkMotionState(46);
-    UpdateBlinkMotionState(47);
-    UpdateBlinkMotionState(48);
+    StepPaletteAnimation(46);
+    StepPaletteAnimation(47);
+    StepPaletteAnimation(48);
 
   } else if (STAGE.unk_000 & (1 << 1)) {
     STAGE.unk_000 ^= (1 << 1);
-    ClearBlink(46);
-    ClearBlink(47);
-    ClearBlink(48);
+    RemovePaletteAnimation(46);
+    RemovePaletteAnimation(47);
+    RemovePaletteAnimation(48);
   }
 
-  UpdateBlinkMotionState(43);
-  UpdateBlinkMotionState(44);
+  StepPaletteAnimation(43);
+  StepPaletteAnimation(44);
 
   // Toggle Conveyor Direction
   if (gOverworld.state[0] == 0) {
-    gOverworld.terrain.conveyor[0] = -0x155;
-    gOverworld.terrain.conveyor[1] = 0x155;
+    gOverworld.terrain.conveyor[0] = -(CONVEYOR_SPEED + 1);
+    gOverworld.terrain.conveyor[1] = CONVEYOR_SPEED + 1;
     STAGE.unk_001++;
-    if (STAGE.unk_001 == 6) {
-      STAGE.unk_001 = gOverworld.state[0];
-    }
+    if (STAGE.unk_001 == 6) STAGE.unk_001 = 0;
   } else {
-    gOverworld.terrain.conveyor[0] = 0x155;
-    gOverworld.terrain.conveyor[1] = -0x155;
+    gOverworld.terrain.conveyor[0] = CONVEYOR_SPEED + 1;
+    gOverworld.terrain.conveyor[1] = -(CONVEYOR_SPEED + 1);
     STAGE.unk_001--;
-    if (STAGE.unk_001 < 0) {
-      STAGE.unk_001 = 5;
-    }
+    if (STAGE.unk_001 < 0) STAGE.unk_001 = 5;
   }
 
   STAGE.unk_002++;
-  if (STAGE.unk_002 == 45) {
-    STAGE.unk_002 = 0;
-  }
+  if (STAGE.unk_002 == 45) STAGE.unk_002 = 0;
 
-  if ((c->x - 0x10D001U < 0x5AFFF) || ((c->x < 0x1E000 && (c->y < 0x14000)))) {
-    if (!isSoundPlaying(SE_UNK_10b)) {
-      PlaySound(SE_UNK_10b);
-    }
+  if ((c->x > PIXEL(4304) && c->x < PIXEL(5760)) || (c->x < PIXEL(480) && c->y < PIXEL(320))) {
+    if (!isSoundPlaying(SE_UNK_10b)) PlaySound(SE_UNK_10b);
     SetStageNoiseVolume(SE_UNK_10b);
   } else {
-    if (isSoundPlaying(SE_UNK_10b)) {
-      StopSound(SE_UNK_10b);
-    }
+    if (isSoundPlaying(SE_UNK_10b)) StopSound(SE_UNK_10b);
   }
 }
 
-static void repairFactory_0800d8c0(struct Coord* _ UNUSED) {
+static void repairFactory_0800d8c0(Coords32* _ UNUSED) {
   RequestGraphicTransfer(&(TILESETS(18, 33)[(STAGE.unk_001 << 1) / 3]).g, (void*)0x4000);
   LoadPalette(&(TILESETS(18, 33)[(STAGE.unk_001 << 1) / 3]).pal, 0);
 
@@ -103,23 +96,21 @@ static void repairFactory_0800d8c0(struct Coord* _ UNUSED) {
   LoadPalette(&(TILESETS(18, 37)[STAGE.unk_002 / 9]).pal, 0);
 
   if ((TILESET_ID(1) == STAGE_REPAIR_FACTORY) && (TILESET_IDX(1) == 4)) {
-    if ((gMission.unk_00)->missionDones & (1 << STAGE_MISSILE_FACTORY)) {
+    if (gMissionDones & (1 << STAGE_MISSILE_FACTORY)) {
       RequestGraphicTransfer(&(TILESETS(18, 0)[92]).g, (void*)0x4000);
       LoadPalette(&(TILESETS(18, 0)[92]).pal, 0);
     }
   }
 }
 
-static void exitRepairFactory(struct Coord* _ UNUSED) {
-  ClearBlink(43);
-  ClearBlink(44);
-  ClearBlink(45);
-  ClearBlink(46);
-  ClearBlink(47);
-  ClearBlink(48);
-  if (isSoundPlaying(SE_UNK_10b)) {
-    StopSound(SE_UNK_10b);
-  }
+static void exitRepairFactory(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(43);
+  RemovePaletteAnimation(44);
+  RemovePaletteAnimation(45);
+  RemovePaletteAnimation(46);
+  RemovePaletteAnimation(47);
+  RemovePaletteAnimation(48);
+  if (isSoundPlaying(SE_UNK_10b)) StopSound(SE_UNK_10b);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -152,24 +143,26 @@ static const StageLayerRoutine sLayerRoutine[4] = {
 };
 // clang-format on
 
+// 0x0800da04
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* stage) {
-  s32 x;
+  s32 chunkX;
 
   if (l->phase == 0) {
-    BGCNT16((l->bgIdx << 16) >> 20) = (BGCNT16((l->bgIdx << 16) >> 20) & 0xFFFC) | BGCNT_PRIORITY(2);
+    const u16 n = l->bgIdx;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(2);
     (l->scrollPower).x = 0xC0;
     (l->scrollPower).y = 0xC0;
     l->phase++;
   }
 
-  x = gScreenX[(l->viewportCenterPixel).x >> 4];
-  if (x < 6) {
+  chunkX = gScreenX[(l->viewportLeftTopPixel).x >> 4];
+  if (chunkX < 6) {
     (l->scrollPower).y = 0x100;
     (l->scroll).x = 120;
-  } else if (x < 17) {
+  } else if (chunkX < 17) {
     (l->scroll).x = 960;
     (l->scroll).y = 200;
-  } else if (x < 20) {
+  } else if (chunkX < 20) {
     (l->scroll).x = 1080;
     (l->scroll).y = 140;
   } else {
@@ -178,8 +171,9 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* stage) {
   }
 }
 
+// 0x0800da80
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* stage) {
-  s32 x = gScreenX[(l->viewportCenterPixel).x >> 4];
+  s32 x = gScreenX[(l->viewportLeftTopPixel).x >> 4];
   if (x < 6) {
     (l->scrollPower).x = 0x40;
     (l->scrollPower).y = 0x100;
@@ -204,81 +198,24 @@ static void LayerUpdate_3(struct StageLayer* l, const struct Stage* stage) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-NAKED bool8 FUN_0800daec(s32 x, s32 y) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	sub sp, #8\n\
-	adds r5, r0, #0\n\
-	adds r6, r1, #0\n\
-	ldr r0, _0800DB4C @ =0xFFF97000\n\
-	adds r1, r5, r0\n\
-	ldr r0, _0800DB50 @ =0x0001DFFF\n\
-	cmp r1, r0\n\
-	bhi _0800DB7A\n\
-	ldr r0, _0800DB54 @ =0xFFFD8000\n\
-	adds r7, r6, r0\n\
-	ldr r0, _0800DB58 @ =0x00013FFF\n\
-	cmp r7, r0\n\
-	bhi _0800DB7A\n\
-	ldr r2, _0800DB5C @ =gOverworld\n\
-	movs r0, #0xfc\n\
-	lsls r0, r0, #3\n\
-	adds r2, r2, r0\n\
-	ldrh r4, [r2]\n\
-	asrs r0, r6, #0xc\n\
-	adds r1, r4, #0\n\
-	muls r1, r0, r1\n\
-	asrs r3, r5, #0xc\n\
-	adds r1, r1, r3\n\
-	adds r1, #2\n\
-	lsls r1, r1, #1\n\
-	adds r1, r1, r2\n\
-	asrs r0, r7, #0xc\n\
-	muls r0, r4, r0\n\
-	adds r0, r0, r3\n\
-	adds r0, #2\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r2\n\
-	ldrh r1, [r1]\n\
-	ldrh r0, [r0]\n\
-	cmp r1, r0\n\
-	beq _0800DB7A\n\
-	str r5, [sp]\n\
-	str r6, [sp, #4]\n\
-	ldr r0, _0800DB60 @ =0x00077FFF\n\
-	cmp r5, r0\n\
-	bgt _0800DB64\n\
-	movs r0, #7\n\
-	movs r1, #4\n\
-	movs r2, #0x36\n\
-	bl LoadScreenIntoMetatileMap\n\
-	b _0800DB6E\n\
-	.align 2, 0\n\
-_0800DB4C: .4byte 0xFFF97000\n\
-_0800DB50: .4byte 0x0001DFFF\n\
-_0800DB54: .4byte 0xFFFD8000\n\
-_0800DB58: .4byte 0x00013FFF\n\
-_0800DB5C: .4byte gOverworld\n\
-_0800DB60: .4byte 0x00077FFF\n\
-_0800DB64:\n\
-	movs r0, #8\n\
-	movs r1, #4\n\
-	movs r2, #0x37\n\
-	bl LoadScreenIntoMetatileMap\n\
-_0800DB6E:\n\
-	movs r0, #8\n\
-	mov r1, sp\n\
-	bl AppendQuake\n\
-	movs r0, #1\n\
-	b _0800DB7C\n\
-_0800DB7A:\n\
-	movs r0, #0\n\
-_0800DB7C:\n\
-	add sp, #8\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
+// 0x0800DAEC
+bool16 FUN_0800daec(s32 x, s32 y) {
+  if (x >= PIXEL(1680) && x < PIXEL(1680 + 480)) {
+    if (y >= PIXEL(640) && y < PIXEL(960)) {
+      struct Overworld* ow = &gOverworld;
+      if (GET_METATILE(&ow->terrain, x >> 12, y >> 12) != GET_METATILE(&ow->terrain, x >> 12, (y - PIXEL(640)) >> 12)) {
+        Coords32 c = {x, y};
+        if (x < PIXEL(1680 + 240)) {
+          LoadChunk(7, 4, 54);
+        } else {
+          LoadChunk(8, 4, 55);
+        }
+        AppendQuake(8, &c);
+        return TRUE;
+      }
+    }
+  }
+  return FALSE;
 }
 
 #undef STAGE

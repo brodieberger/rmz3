@@ -47,7 +47,7 @@ void OverworldLoop_080f2f44(struct GameState* g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      SetGameMode(g, 0xC0400);
+      SetGameMode(g, GAMEMODE(MAINGAME, OVERWORLD, 12, 0));
       break;
     }
 

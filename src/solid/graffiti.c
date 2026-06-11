@@ -1,5 +1,6 @@
 #include "collision.h"
 #include "global.h"
+#include "mod.h"
 #include "solid.h"
 
 // 改造カードでベースに出現する 絵 と 落書き
@@ -26,6 +27,7 @@ const SolidRoutine gGraffitiRoutine = {
 };
 // clang-format on
 
+// 0x080df420
 static void Graffiti_Init(Object* p) {
   static const motion_t sMotions[5] = {
       MOTION(SM162_PAINTING_MMBN, 0), MOTION(SM163_GRAFFITI_ZERO1, 0), MOTION(SM164_GRAFFITI_CIEL, 0), MOTION(SM165_GRAFFITI_ZERO2, 0), MOTION(SM166_PAINTING_CIEL, 0),
@@ -33,15 +35,15 @@ static void Graffiti_Init(Object* p) {
 
   // clang-format off
   static const u16 sFlags[] = {
-      [GRAFFITI_MMBN] = 91,
-      [GRAFFITI_ZERO1] = 108,
-      [GRAFFITI_CIEL1] = 108,
-      [GRAFFITI_ZERO2] = 108,
-      [GRAFFITI_CIEL2] = 91,
+      [GRAFFITI_MMBN]  = MOD_POSTER,
+      [GRAFFITI_ZERO1] = MOD_GRAFFITI,
+      [GRAFFITI_CIEL1] = MOD_GRAFFITI,
+      [GRAFFITI_ZERO2] = MOD_GRAFFITI,
+      [GRAFFITI_CIEL2] = MOD_POSTER,
   };  // 0x08371892
   // clang-format on
 
-  if (!FLAG(gSystemSavedataManager.flags, sFlags[(p->s).work[0]])) {
+  if (!FLAG(gSystemSavedata.flags, sFlags[(p->s).work[0]])) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
     EXIT_BODY(p);
@@ -52,9 +54,9 @@ static void Graffiti_Init(Object* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, sMotions[(p->s).work[0]]);
+  SetSpriteAnimation(p, sMotions[(p->s).work[0]]);
   SET_XFLIP(p, FALSE);
-  (p->s).taskCol = 31;
+  (p->s).renderPrio = 31;
   if ((p->s).work[0] == GRAFFITI_CIEL2) {
     (p->s).coord.x -= PIXEL(4);
     (p->s).coord.y -= PIXEL(4);
@@ -63,6 +65,6 @@ static void Graffiti_Init(Object* p) {
   Graffiti_Update((void*)p);
 }
 
-static void Graffiti_Update(struct Entity* p) { UpdateMotionGraphic(p); }
+static void Graffiti_Update(struct Entity* p) { UpdateSpriteAnimation(p); }
 
 static void Graffiti_Die(struct Entity* p) { SET_SOLID_ROUTINE(p, ENTITY_EXIT); }

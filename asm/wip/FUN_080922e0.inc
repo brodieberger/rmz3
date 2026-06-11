@@ -54,7 +54,7 @@ _08092318:
 	strb r0, [r5, #0xe]
 _08092348:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -82,7 +82,7 @@ _08092374:
 	strb r0, [r5, #0xe]
 _0809237E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	bne _08092390

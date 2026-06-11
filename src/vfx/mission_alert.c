@@ -1,7 +1,7 @@
-#include "blink.h"
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
+#include "palette_animation.h"
 #include "renderer.h"
 #include "vfx.h"
 
@@ -34,11 +34,9 @@ const VFXRoutine gMissionAlertRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct VFX* CreateMissionAlert(u8 kind) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_MISSION_ALERT);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 0;
   } else {
     return NULL;
@@ -75,14 +73,13 @@ static void updateGameOver(struct VFX* p);
 static void MissionAlert_Update(struct VFX* p) {
   // clang-format off
   static VFXFunc const sUpdates[] = {
-      [MISSION_START] =     updateMissionXXX,
-      [MISSION_FAILED] =    updateMissionXXX,
-      [MISSION_COMPLETED] = updateMissionXXX,
-      [WARNING] =           updateWarning,
-      [GAME_OVER] =         updateGameOver,
+      [MISSION_START] =     (void*)updateMissionXXX,
+      [MISSION_FAILED] =    (void*)updateMissionXXX,
+      [MISSION_COMPLETED] = (void*)updateMissionXXX,
+      [WARNING] =           (void*)updateWarning,
+      [GAME_OVER] =         (void*)updateGameOver,
   };
   // clang-format on
-
   (sUpdates[(p->s).work[0]])(p);
 }
 
@@ -100,7 +97,7 @@ static void TaskCB_Unk080b5890(struct Sprite* p, struct DrawPivot* _ UNUSED);
 static void initMissionXXX(struct VFX* p) {
   SetTaskCallback((struct Task*)&(p->s).spr, TaskCB_Unk080b5890);
   (p->s).spr.sprites = (struct MetaspriteHeader*)p;
-  (p->s).flags &= ~OAM_PRIO;
+  (p->s).flags &= ~USE_COMMON_OAM_RENDERER;
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   (p->s).work[2] = 0;
@@ -109,48 +106,46 @@ static void initMissionXXX(struct VFX* p) {
   MissionAlert_Update(p);
 }
 
-static void updateMissionXXX(struct VFX* vfx) {
-  switch ((vfx->s).mode[2]) {
+static void updateMissionXXX(struct VFX* p) {
+  switch ((p->s).mode[2]) {
     case 0: {
-      (vfx->s).work[2]++;
-      if ((vfx->s).work[2] == 39) {
-        LoadBlink(u8_ARRAY_0836e810[(vfx->s).work[0]], 32);
-        (vfx->s).work[2] = 38;
-        (vfx->s).mode[2]++;
+      (p->s).work[2]++;
+      if ((p->s).work[2] == 39) {
+        StartPaletteAnimation(u8_ARRAY_0836e810[(p->s).work[0]], 32);
+        (p->s).work[2] = 38;
+        (p->s).mode[2]++;
       }
       break;
     }
 
     case 1: {
-      UpdateBlinkMotionState(u8_ARRAY_0836e810[(vfx->s).work[0]]);
-      (vfx->s).work[2]--;
-      if ((vfx->s).work[2] == 0xFF) {
-        if ((vfx->s).work[0] != 0) {
-          PlaySound(MUS_DUMMY);
-        }
-        (vfx->s).work[2] = 24;
-        (vfx->s).mode[2]++;
+      StepPaletteAnimation(u8_ARRAY_0836e810[(p->s).work[0]]);
+      (p->s).work[2]--;
+      if ((p->s).work[2] == 0xFF) {
+        if ((p->s).work[0] != 0) PlaySound(MUS_DUMMY);
+        (p->s).work[2] = 24;
+        (p->s).mode[2]++;
       }
       break;
     }
 
     case 2: {
-      UpdateBlinkMotionState(u8_ARRAY_0836e810[(vfx->s).work[0]]);
-      (vfx->s).work[2]--;
-      if ((vfx->s).work[2] == 0xFF) {
-        (vfx->s).mode[2]++;
-        (vfx->s).work[2] = 0;
+      StepPaletteAnimation(u8_ARRAY_0836e810[(p->s).work[0]]);
+      (p->s).work[2]--;
+      if ((p->s).work[2] == 0xFF) {
+        (p->s).mode[2]++;
+        (p->s).work[2] = 0;
       }
       break;
     }
 
     case 3: {
-      UpdateBlinkMotionState(u8_ARRAY_0836e810[(vfx->s).work[0]]);
-      (vfx->s).work[2]++;
-      if ((vfx->s).work[2] == 33) {
-        ClearBlink(u8_ARRAY_0836e810[(vfx->s).work[0]]);
-        SET_VFX_ROUTINE(vfx, ENTITY_DIE);
-        MissionAlert_Die(vfx);
+      StepPaletteAnimation(u8_ARRAY_0836e810[(p->s).work[0]]);
+      (p->s).work[2]++;
+      if ((p->s).work[2] == 33) {
+        RemovePaletteAnimation(u8_ARRAY_0836e810[(p->s).work[0]]);
+        SET_VFX_ROUTINE(p, ENTITY_DIE);
+        MissionAlert_Die(p);
       }
       break;
     }
@@ -441,7 +436,7 @@ static void TaskCB_Unk080b5b90(struct Sprite* p, struct DrawPivot* _ UNUSED);
 static void initWarning(struct Entity* p) {
   SetTaskCallback((struct Task*)&p->spr, TaskCB_Unk080b5b90);
   p->spr.sprites = (struct MetaspriteHeader*)p;
-  p->flags &= ~OAM_PRIO;
+  p->flags &= ~USE_COMMON_OAM_RENDERER;
   p->flags |= DISPLAY;
   p->flags |= FLIPABLE;
   p->work[2] = 0;

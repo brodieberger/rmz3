@@ -4,7 +4,7 @@
 #include "gba/gba.h"
 #include "types.h"
 
-#define KEY_NEW() ({ (*(u16 *)REG_ADDR_KEYINPUT); })
+#define KEY_NEW() ({ (*(u16*)REG_ADDR_KEYINPUT); })
 
 // Unlike IO registers, bits stand when they are pressed.
 struct KeyState {
@@ -20,6 +20,7 @@ struct KeyState {
   u8 field8_0x16;
   u8 field9_0x17;
 };
+static_assert(sizeof(struct KeyState) == 24);
 
 extern struct KeyState gJoypad[2];
 

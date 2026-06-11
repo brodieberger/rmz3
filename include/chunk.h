@@ -3,22 +3,17 @@
 
 #include "metatile.h"
 
-// Chunk: 15x10 metatiles = 240x160 px = GBA screen
-
+// Chunk: 15x10 metatiles = 240x160 px = GBA display
 // Metatile(のID)を 15x10ブロック集めて画面全体のグラフィックを表すようにしたもの
-// TODO: チャンクに名前変える予定
-typedef metatile_id_t Screen[15 * 10];
+typedef metatile_id_t Chunk[15 * 10];
 
-/*
-  MetatileのTileMapである、Overworld.map(0x020029e4)に チャンク をどう配置するかのデータ
-*/
 // ステージ全体 の　チャンクマップ
 struct ChunkMap {
   // Layout
-  u8 realWidth;
-  u8 skip;    // そのステージでのSKIP値を格納する
-  u8 width;   // ステージの横幅が画面何枚分か
-  u8 height;  // ステージの縦幅が画面何枚分か
+  u8 realWidth;    // チャンクマップの配列の1行あたりのチャンク数 (何かしらの理由でチャンクマップの長さを32の倍数にしないといけない理由があった？(昔は CpuFastSet を使っていたとか？), 名前が不適当なので後で変える)
+  u8 nullChunkID;  // チャンクマップ上のチャンクIDがこの値のときは、そのチャンクは存在しないものとして扱う
+  u8 width;        // ステージの横幅が画面何枚分か (実際のステージ幅)
+  u8 height;       // ステージの縦幅が画面何枚分か
 
   // ここからチャンクマップデータ
   // u8 data[height][realWidth];

@@ -5,7 +5,7 @@
 
 extern const WidgetRoutine gMenuWeaponIconRoutine;
 extern const WidgetRoutine gMenuComp1Routine;
-extern const WidgetRoutine gMenuComp2Routine;
+extern const WidgetRoutine gSquareCursorRoutine;
 extern const WidgetRoutine gSubtankIconRoutine;
 extern const WidgetRoutine gMenuHPRoutine;
 extern const WidgetRoutine gArmorIconsRoutine;
@@ -22,7 +22,7 @@ extern const WidgetRoutine gMenuComp13Routine;
 const WidgetRoutine *const gWidgetFnTable[14] = {
   [0]  = &gMenuWeaponIconRoutine,
   [1]  = &gMenuComp1Routine,
-  [2]  = &gMenuComp2Routine,
+  [2]  = &gSquareCursorRoutine,
   [3]  = &gSubtankIconRoutine,
   [4]  = &gMenuHPRoutine,
   [5]  = &gArmorIconsRoutine,

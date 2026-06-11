@@ -24,8 +24,8 @@ bool32 exitHarpuiaMinigame(struct GameState* g) {
   }
   if (s->unk_06 == 1) {
     if ((*((s16*)s->unk_00) <= 0 || (--(*((s16*)s->unk_00)) <= 0))) {
-      if (s->unk_3c > gSystemSavedataManager.minigameHiscores[MINIGAME_HARPUIA]) {
-        gSystemSavedataManager.minigameHiscores[MINIGAME_HARPUIA] = s->unk_3c;
+      if (s->unk_3c > gSystemSavedata.minigameHiscores[MINIGAME_HARPUIA]) {
+        gSystemSavedata.minigameHiscores[MINIGAME_HARPUIA] = s->unk_3c;
         SaveSystemData();
       }
       return FALSE;

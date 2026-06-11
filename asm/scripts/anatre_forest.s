@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -55,13 +56,13 @@ Script_08353b28:
   normal_screen
   wait 1
   visible 0, FALSE
-  wait_screeneffect
+  wait_transition_end
   wait 15
   force 6, 0, 0
   wait 15
   indicator 1, 2, 0
   wait 45
-  play_bgm 177
+  play_bgm BGM_FOREST
   wait_indicator_end
   release
   resume 0
@@ -72,10 +73,10 @@ Script_08353bb0:
   reset_camera Camera_08353a80
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
-  play_bgm 177
+  play_bgm BGM_FOREST
   wait_indicator_end
   release
   resume 0
@@ -85,9 +86,9 @@ Script_08353c10:
   spawn 0, Entity_08353ad8
   reset_camera Camera_08353a80
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 177
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_FOREST
   indicator 1, 0, 0
   wait_indicator_end
   release
@@ -98,9 +99,9 @@ Script_08353c68:
   spawn 0, Entity_08353ae8
   reset_camera Camera_08353a80
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 177
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_FOREST
   indicator 1, 0, 0
   wait_indicator_end
   release
@@ -111,9 +112,9 @@ Script_08353cc0:
   spawn 0, Entity_08353af8
   reset_camera Camera_08353a80
   lock
-  screeneffect 9
-  wait_screeneffect
-  play_bgm 161
+  start_transition 9
+  wait_transition_end
+  play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
   release
@@ -124,30 +125,30 @@ Script_08353d18:
   spawn 1, Entity_08353b18
   lock
   pause
-  eventflag 0, 26, 0
+  cutscene_start CS_ANATRE_BOSS
   walkto 7528*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 7480*PX
   adjust_camera 12, 0 7760*PX
   wait 75
   triumphant_message 0, 0x0A01
   message 1, 0, 0x0A00
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 60
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 7440*PX
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -155,28 +156,28 @@ Script_08353e00:
   spawn 1, Entity_08353b18
   lock
   pause
-  eventflag 0, 26, 0
+  cutscene_start CS_ANATRE_BOSS
   walkto 7528*PX
   lock
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 7480*PX
   adjust_camera 12, 0 7760*PX
   wait 75
-  triumphant_message 0, 0x0A01
-  eventflag 1, 0, 0
+  triumphant_message 0, 0x0A01 @ セイギは、われら
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 60
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 7440*PX
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -188,18 +189,18 @@ Script_08353ed8:
   adjust_camera 12, 0 7760*PX
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0A01
   entityflag 1, 0, TRUE
   wait 60
   warning_indicator
   wait 90
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 7440*PX
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -211,22 +212,22 @@ Script_08353f80:
   message 1, 0, 0x0A02
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 2
+  cmd08_wait_set 1
   force 4, 0, 0
   wait 8
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   destroy 0
   load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 60
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 Script_08354040:
@@ -236,8 +237,8 @@ Script_08354040:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
-  play_bgm 177
+  wait_transition_end
+  play_bgm BGM_FOREST
   indicator 1, 0, 0
   wait 15
   force 6, 0, 0
@@ -258,7 +259,7 @@ Script_083540b8:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

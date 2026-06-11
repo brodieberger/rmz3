@@ -196,7 +196,7 @@ _0803CA40: .4byte onCollision
 SmashElec_Update: @ 0x0803CA44
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x11]
 	cmp r0, #0
 	bne _0803CA94
@@ -253,7 +253,7 @@ _0803CAB4:
 	ldr r0, _0803CAE4 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #6
 	cmp r0, r1

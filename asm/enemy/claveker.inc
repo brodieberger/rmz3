@@ -18,7 +18,7 @@ Claveker_Init: @ 0x0808E52C
 	orrs r2, r0
 	orrs r2, r3
 	strb r2, [r6, #0xa]
-	ldr r0, _0808E578 @ =gSystemSavedataManager
+	ldr r0, _0808E578 @ =gSystemSavedata
 	ldrb r1, [r0, #0x13]
 	movs r0, #0x80
 	ands r0, r1
@@ -44,7 +44,7 @@ Claveker_Init: @ 0x0808E52C
 	movs r3, #0xe
 	b _0808E59C
 	.align 2, 0
-_0808E578: .4byte gSystemSavedataManager
+_0808E578: .4byte gSystemSavedata
 _0808E57C: .4byte gCurStory
 _0808E580: .4byte 0x08369388
 _0808E584:
@@ -101,7 +101,7 @@ _0808E59C:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0808E5F8:
 	adds r0, r6, #0
 	adds r0, #0xbb
@@ -346,7 +346,7 @@ _0808E7D2:
 	b _0808E8C8
 _0808E7F4:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -360,7 +360,7 @@ _0808E808:
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	strb r0, [r7, #0x13]
 	str r0, [r7, #0x60]
@@ -457,7 +457,7 @@ _0808E8C8:
 	b _0808EAF0
 _0808E8D0:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]
@@ -528,7 +528,7 @@ _0808E8E6:
 	bl FUN_080c44a8
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0808E99C @ =gMission
+	ldr r2, _0808E99C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0808E9A0 @ =0x0000270E
 	cmp r1, r0
@@ -547,7 +547,7 @@ _0808E98C: .4byte 0x00269EC3
 _0808E990: .4byte 0x00007507
 _0808E994: .4byte 0x00007508
 _0808E998: .4byte 0x00007509
-_0808E99C: .4byte gMission
+_0808E99C: .4byte gScore
 _0808E9A0: .4byte 0x0000270E
 _0808E9A4:
 	ldrb r0, [r7, #0x12]
@@ -606,7 +606,7 @@ _0808E9B8:
 	bl FUN_080c44a8
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0808EA48 @ =gMission
+	ldr r2, _0808EA48 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0808EA4C @ =0x0000270E
 	cmp r1, r0
@@ -625,7 +625,7 @@ _0808EA38: .4byte 0x00269EC3
 _0808EA3C: .4byte 0x00007507
 _0808EA40: .4byte 0x00007508
 _0808EA44: .4byte 0x00007509
-_0808EA48: .4byte gMission
+_0808EA48: .4byte gScore
 _0808EA4C: .4byte 0x0000270E
 _0808EA50:
 	ldr r0, [r7, #0x54]
@@ -678,7 +678,7 @@ _0808EA50:
 	adds r0, r6, #0
 	adds r3, r4, #0
 	bl FUN_080c44a8
-	ldr r2, _0808EB14 @ =gMission
+	ldr r2, _0808EB14 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0808EB18 @ =0x0000270E
 	cmp r1, r0
@@ -718,7 +718,7 @@ _0808EB04: .4byte 0x00269EC3
 _0808EB08: .4byte 0x00007507
 _0808EB0C: .4byte 0x00007508
 _0808EB10: .4byte 0x00007509
-_0808EB14: .4byte gMission
+_0808EB14: .4byte gScore
 _0808EB18: .4byte 0x0000270E
 _0808EB1C: .4byte gEnemyFnTable
 
@@ -759,11 +759,11 @@ _0808EB3E:
 	strb r0, [r4, #0xe]
 _0808EB5C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0808EB88 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	ldr r1, _0808EB8C @ =0x00003FFF
 	cmp r0, r1
 	bhi _0808EBAA
@@ -781,7 +781,7 @@ _0808EB88: .4byte gStageRun+232
 _0808EB8C: .4byte 0x00003FFF
 _0808EB90:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1277,7 +1277,7 @@ _0808EF48:
 	bl SetMotion
 _0808EF66:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0808EFEE
 _0808EF6E:
 	adds r5, r4, #0
@@ -1287,7 +1287,7 @@ _0808EF6E:
 	cmp r1, #0
 	beq _0808EFE8
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	ldrsb r0, [r5, r0]
 	cmp r0, #7
@@ -1298,7 +1298,7 @@ _0808EF8A:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
@@ -1311,7 +1311,7 @@ _0808EFA4:
 	strb r0, [r4, #0xe]
 _0808EFAA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r2, [r0]
@@ -1405,7 +1405,7 @@ _0808F05A:
 	strb r0, [r4, #0xe]
 _0808F068:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1449,7 +1449,7 @@ _0808F092:
 	strb r0, [r4, #0xe]
 _0808F0C4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	subs r0, #1
 	strb r0, [r4, #0x13]
@@ -1478,7 +1478,7 @@ _0808F0F4:
 	strb r0, [r4, #0xe]
 _0808F102:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1500,7 +1500,7 @@ _0808F124:
 	strb r0, [r4, #0xe]
 _0808F12C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]

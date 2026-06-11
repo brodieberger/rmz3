@@ -9,7 +9,7 @@ struct Boss;
 // 0x0202f228
 struct SpaceCraftState {
   struct Boss* omega;
-  struct Coord omegaCoord;
+  Coords32 omegaCoord;
   u8 unk_00c[2];
   u16 unk_00e;
   u8 unk_010[248];

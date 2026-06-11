@@ -17,15 +17,10 @@ const EnemyRoutine gCarrybeeGRoutine = {
 };
 // clang-format on
 
-struct Enemy* FUN_0808a854(struct Coord* c) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+struct Enemy* FUN_0808a854(Coords32* c) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CARRYBEE_G);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = 0;
   }
@@ -33,14 +28,9 @@ struct Enemy* FUN_0808a854(struct Coord* c) {
 }
 
 struct Enemy* FUN_0808a8b0(struct Entity* e) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_CARRYBEE_G);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 1;
     (p->s).unk_28 = e;
   }

@@ -72,7 +72,7 @@ Swordy_Init: @ 0x0807BF04
 	adds r0, r7, #0
 	bl SetMotion
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807BF94:
 	adds r0, r7, #0
 	bl Swordy_Update
@@ -172,7 +172,7 @@ Swordy_Die: @ 0x0807C03C
 	bl TryDropItem
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807C074 @ =gMission
+	ldr r2, _0807C074 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C078 @ =0x0000270E
 	cmp r1, r0
@@ -185,7 +185,7 @@ _0807C06A:
 	b _0807C1FE
 	.align 2, 0
 _0807C070: .4byte gStageRun
-_0807C074: .4byte gMission
+_0807C074: .4byte gScore
 _0807C078: .4byte 0x0000270E
 _0807C07C:
 	ldrb r0, [r4, #0xe]
@@ -272,7 +272,7 @@ _0807C110:
 	movs r0, #5
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _0807C150 @ =gMission
+	ldr r2, _0807C150 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C154 @ =0x0000270E
 	cmp r1, r0
@@ -285,11 +285,11 @@ _0807C144:
 	b _0807C1FE
 	.align 2, 0
 _0807C14C: .4byte 0xFFFFFA00
-_0807C150: .4byte gMission
+_0807C150: .4byte gScore
 _0807C154: .4byte 0x0000270E
 _0807C158:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -367,7 +367,7 @@ _0807C1D4:
 _0807C1E4:
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807C224 @ =gMission
+	ldr r2, _0807C224 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807C228 @ =0x0000270E
 	cmp r1, r0
@@ -399,7 +399,7 @@ _0807C21C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807C224: .4byte gMission
+_0807C224: .4byte gScore
 _0807C228: .4byte 0x0000270E
 _0807C22C: .4byte gEnemyFnTable
 
@@ -554,7 +554,7 @@ _0807C33E:
 	strb r0, [r3]
 _0807C358:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0807C46E
 _0807C360:
 	ldr r0, _0807C388 @ =pZero2
@@ -644,7 +644,7 @@ _0807C3EA:
 	strb r0, [r4, #0xe]
 _0807C3FC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0807C412
@@ -698,7 +698,7 @@ _0807C454:
 	str r0, [r4, #0x58]
 _0807C468:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807C46E:
 	pop {r4}
 	pop {r0}

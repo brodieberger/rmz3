@@ -27,13 +27,10 @@ const VFXRoutine gBossExplosionRoutine = {
 };
 // clang-format on
 
-struct Entity* CreateBossExplosion(struct Entity* boss, struct Coord* c) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateBossExplosion(struct Entity* boss, Coords32* c) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_BOSS_EXPLOSION);
-    p->tileNum = 0;
-    p->palID = 0;
     p->unk_28 = (void*)boss;
     p->d = *c;
     p->work[0] = 0;
@@ -42,13 +39,10 @@ struct Entity* CreateBossExplosion(struct Entity* boss, struct Coord* c) {
   return p;
 }
 
-static void FUN_080c7984(struct Entity* e, struct Coord* c, u8 kind1, u8 kind2) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+static void FUN_080c7984(struct Entity* e, Coords32* c, u8 kind1, u8 kind2) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_BOSS_EXPLOSION);
-    p->tileNum = 0;
-    p->palID = 0;
     p->unk_28 = (void*)e;
     p->coord = *c;
     p->work[0] = kind1;
@@ -108,12 +102,12 @@ static void BossExplosion_Die(struct Entity* p) {
 INCASM("asm/vfx/boss_explosion.inc");
 
 static void initFireball(struct Entity* p) {
-  InitScalerotMotion1(p);
+  EnableSpriteAnimation_Affine(p);
   p->flags |= DISPLAY;
   ResetDynamicMotion(p);
   p->flags |= FLIPABLE;
-  SetMotion(p, MOTION(DM199_BOSS_EXPLOSION, 0));
-  UpdateMotionGraphic(p);
+  SetSpriteAnimation(p, MOTION(DM199_BOSS_EXPLOSION, 0));
+  UpdateSpriteAnimation(p);
   SET_XFLIP(p, FALSE);
   (p->spr).oam.priority = 1;
   (p->spr).mag.y = (p->spr).mag.x = 0x10;
@@ -468,7 +462,7 @@ NAKED static void FUN_080c7f78(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r2, [r4, #0x64]\n\
 	movs r5, #0xff\n\
 	subs r1, r5, r2\n\
@@ -532,12 +526,10 @@ _080C7FEC: .4byte gVFXFnTable\n\
 }
 
 static void FUN_080c7ff0(struct VFX* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
-  if ((p->s).motion.state == MOTION_END) {
-    SET_VFX_ROUTINE(p, ENTITY_DIE);
-  }
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 NAKED static void updateFireball(struct VFX* p) {
@@ -545,7 +537,7 @@ NAKED static void updateFireball(struct VFX* p) {
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
 	ldr r5, [r4, #0x28]\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r2, r4, #0\n\
 	adds r2, #0x50\n\
 	ldrh r1, [r2]\n\

@@ -1,6 +1,6 @@
-#include "blink.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 #include "story.h"
 
 #define HEIGHT 14
@@ -8,10 +8,10 @@
 
 static const struct MetatileShift sMetatileShift;
 
-static void initMissileFactory(struct Coord* _ UNUSED);
-static void FUN_0800e460(struct Coord* c);
-static void FUN_0800e6f8(struct Coord* _ UNUSED);
-static void exitMissileFactory(struct Coord* _ UNUSED);
+static void initMissileFactory(Coords32* _ UNUSED);
+static void FUN_0800e460(Coords32* c);
+static void FUN_0800e6f8(Coords32* _ UNUSED);
+static void exitMissileFactory(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initMissileFactory,
@@ -20,7 +20,7 @@ static const StageFunc sStageRoutine[4] = {
     exitMissileFactory,
 };
 
-static void initMissileFactory(struct Coord* _ UNUSED) {
+static void initMissileFactory(Coords32* _ UNUSED) {
   gOverworld.state[0] = 0;
   gOverworld.work.missileFactory.unk_000 = 0;
   gOverworld.work.missileFactory.unk_001 = 0;
@@ -35,18 +35,18 @@ static void initMissileFactory(struct Coord* _ UNUSED) {
   ShiftMetatile(0xFF, 100, &sMetatileShift);
 }
 
-static void FUN_0800e460(struct Coord* c) {
+static void FUN_0800e460(Coords32* c) {
   gOverworld.work.missileFactory.unk_004++;
 
   if ((TILESET_ID(0) == STAGE_MISSILE_FACTORY) && (TILESET_IDX(0) == 0)) {
     if ((gOverworld.work.missileFactory.unk_000 & (1 << 0)) == 0) {
       gOverworld.work.missileFactory.unk_000 |= (1 << 0);
-      LoadBlink(211, 0);
-      LoadBlink(212, 0);
+      StartPaletteAnimation(211, 0);
+      StartPaletteAnimation(212, 0);
       gOverworld.work.missileFactory.unk_001 = 0;
     }
-    UpdateBlinkMotionState(211);
-    UpdateBlinkMotionState(212);
+    StepPaletteAnimation(211);
+    StepPaletteAnimation(212);
     gOverworld.work.missileFactory.unk_001++;
     if (gOverworld.work.missileFactory.unk_001 == 20) {
       gOverworld.work.missileFactory.unk_001 = 0;
@@ -54,32 +54,32 @@ static void FUN_0800e460(struct Coord* c) {
 
   } else if (gOverworld.work.missileFactory.unk_000 & (1 << 0)) {
     gOverworld.work.missileFactory.unk_000 ^= (1 << 0);
-    ClearBlink(211);
-    ClearBlink(212);
+    RemovePaletteAnimation(211);
+    RemovePaletteAnimation(212);
   }
 
   if ((TILESET_ID(1) == STAGE_MISSILE_FACTORY) && (TILESET_IDX(1) == 4)) {
     if ((gOverworld.work.missileFactory.unk_000 & (1 << 1)) == 0) {
       gOverworld.work.missileFactory.unk_000 |= (1 << 1);
-      LoadBlink(209, 0);
+      StartPaletteAnimation(209, 0);
     }
-    UpdateBlinkMotionState(209);
+    StepPaletteAnimation(209);
 
   } else if (gOverworld.work.missileFactory.unk_000 & (1 << 1)) {
     gOverworld.work.missileFactory.unk_000 ^= (1 << 1);
-    ClearBlink(209);
+    RemovePaletteAnimation(209);
   }
 
   if ((TILESET_ID(0) == STAGE_MISSILE_FACTORY) && (TILESET_IDX(0) == 5)) {
     if ((gOverworld.work.missileFactory.unk_000 & (1 << 2)) == 0) {
       gOverworld.work.missileFactory.unk_000 |= (1 << 2);
-      LoadBlink(210, 0);
+      StartPaletteAnimation(210, 0);
     }
-    UpdateBlinkMotionState(210);
+    StepPaletteAnimation(210);
 
   } else if (gOverworld.work.missileFactory.unk_000 & (1 << 2)) {
     gOverworld.work.missileFactory.unk_000 ^= (1 << 2);
-    ClearBlink(210);
+    RemovePaletteAnimation(210);
   }
 
   if ((TILESET_ID(1) == STAGE_MISSILE_FACTORY) && (TILESET_IDX(1) == 1)) {
@@ -122,7 +122,7 @@ static void FUN_0800e460(struct Coord* c) {
   }
 }
 
-static void FUN_0800e6f8(struct Coord* _ UNUSED) {
+static void FUN_0800e6f8(Coords32* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_MISSILE_FACTORY) && (TILESET_IDX(0) == 0)) {
     RequestGraphicTransfer(&(TILESETS(18, 136)[gOverworld.work.missileFactory.unk_001 / 5]).g, (void*)0x4000);
     LoadPalette(&(TILESETS(18, 136)[gOverworld.work.missileFactory.unk_001 / 5]).pal, 0);
@@ -144,13 +144,13 @@ static void FUN_0800e6f8(struct Coord* _ UNUSED) {
   }
 }
 
-static void exitMissileFactory(struct Coord* _ UNUSED) {
-  ClearBlink(207);
-  ClearBlink(208);
-  ClearBlink(209);
-  ClearBlink(210);
-  ClearBlink(211);
-  ClearBlink(212);
+static void exitMissileFactory(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(207);
+  RemovePaletteAnimation(208);
+  RemovePaletteAnimation(209);
+  RemovePaletteAnimation(210);
+  RemovePaletteAnimation(211);
+  RemovePaletteAnimation(212);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -234,20 +234,18 @@ static const StageLayerRoutine sLayerRoutine[11] = {
 // 0x0800e8b8
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* stage) {
   if (l->phase == 0) {
-    if ((l->viewportCenterPixel).y > 1680) {
+    if ((l->viewportLeftTopPixel).y > 1680) {
       (l->scrollPower).x = 0xc0;
       (l->scrollPower).y = 0xc0;
       (l->scroll).x = 0x3c;
       (l->scroll).y = 0x1e0;
     } else {
-      if ((l->viewportCenterPixel).x < 1920) {
+      if ((l->viewportLeftTopPixel).x < 1920) {
         (l->scrollPower).x = 0xe0;
         (l->scrollPower).y = 0xe0;
         (l->scroll).x = 0xd2;
         (l->scroll).y = 0x3c;
-        if (FLAG(gCurStory.s.gameflags, FLAG_12)) {
-          (l->scroll).x = 0x672;
-        }
+        if (FLAG(gCurStory.s.gameflags, FLAG_MISSILE_DONE)) (l->scroll).x = 0x672;
       } else {
         (l->scrollPower).x = 0x100;
         (l->scrollPower).y = 0x100;
@@ -277,13 +275,13 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* stage) {
 // 0x0800e974
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
-    if ((l->viewportCenterPixel).y > 1680) {
+    if ((l->viewportLeftTopPixel).y > 1680) {
       (l->scrollPower).x = 0x80;
       (l->scrollPower).y = 0x80;
       (l->scroll).x = 0x78;
       (l->scroll).y = 0x3C0;
     } else {
-      if ((l->viewportCenterPixel).x < 1920) {
+      if ((l->viewportLeftTopPixel).x < 1920) {
         (l->scrollPower).x = 0x20;
         (l->scrollPower).y = 0x20;
         (l->scroll).x = 0x276;
@@ -305,8 +303,8 @@ static void LayerUpdate_4(struct StageLayer* l, const struct Stage* _ UNUSED) {
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) = l->prio | l->screenBase | (BGCNT_CHARBASE(1) | BGCNT_MOSAIC | BGCNT_AFF256x256);
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
-    CpuFastCopy(BGMAP(81), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
-    CpuFastCopy(BGMAP(82), (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4)), 2048);
+    CpuFastCopy(BGMAP(81), SCREEN_ADDR(n >> 4), BG_SCREEN_SIZE);
+    CpuFastCopy(BGMAP(82), SCREEN_ADDR(n >> 4) + BG_SCREEN_SIZE, BG_SCREEN_SIZE);
     l->unk_10 = 0;
     l->phase++;
   }
@@ -337,7 +335,7 @@ const struct Stage gMissileFactoryLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {2, 2, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
   scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,
@@ -360,7 +358,7 @@ const struct Rect Rect_ARRAY_0833ecec[6] = {
 // clang-format on
 
 struct Struct_0833ed1c {
-  struct Coord c;
+  Coords32 c;
   s32 unk_8;
   s32 unk_c;
 };

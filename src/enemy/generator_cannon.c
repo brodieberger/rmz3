@@ -18,19 +18,15 @@ const EnemyRoutine gGeneratorCannonRoutine = {
 
 // 0x0808c388
 static void CreateGeneratorCannon(s32 x, s32 y, u8 n) {
-  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 24;
     INIT_ENEMY_ROUTINE(p, ENEMY_GENERATOR_CANNON);
-    p->tileNum = 0, p->palID = 0;
-    p->flags2 |= WHITE_PAINTABLE;
-    p->invincibleID = p->uniqueID;
     p->work[0] = 1, p->work[2] = n;
     (p->coord).x = x, (p->coord).y = y;
   }
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 INCASM("asm/enemy/generator_cannon.inc");
 
@@ -285,7 +281,7 @@ static const struct Collision sCollisions[18] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 
 static const u8 sInitModes[4] = {1, 5, 0, 0};
 

@@ -60,18 +60,22 @@ type Subsprite = {
 };
 
 const main = async () => {
-  const { args, options } = await new Command()
+  const { args } = await new Command()
     .name('metasprite.ts')
     .version('1.0.0')
-    .description('開始アドレス(start) から 長さNだけ、 JSONのSubsprite構造体としてダンプします。')
-    .arguments('<start>')
-    .option('-l, --label=[s:string]', 'label name')
+    .description('開始アドレス(start) から metasprite.json を標準出力に表示')
+    .argument('<start:string>', '開始アドレス')
     .usage('0x083a0ee0')
     .parse(Deno.args);
 
+  const start = Number(args[0]);
+
+  console.log(dump(start));
+};
+
+const dump = (start: number): string => {
   const rom = Deno.readFileSync(ROM_PATH);
   const view = new DataView(rom.buffer);
-  const start = Number(args[0]);
 
   // MetaspriteHeader0 (最初の2バイトが Metasprite0 へのオフセット つまり, MetaspriteHeader[] のバイト数)
   // MetaspriteHeader1
@@ -111,6 +115,10 @@ const main = async () => {
     });
   }
 
+  return dumpJson(metasprites);
+};
+
+const dumpJson = (metasprites: Metasprite[]): string => {
   // xflip と yflip が false のときは JSON に出力しないようにするための replacer
   const replacer = (key: string, value: unknown) => {
     if (key === 'xflip' || key === 'yflip') {
@@ -119,12 +127,7 @@ const main = async () => {
     return value;
   };
 
-  let output: string;
-  if (options.label && options.label !== '') {
-    output = JSON.stringify({ label: options.label, data: metasprites }, replacer, '\t');
-  } else {
-    output = JSON.stringify({ data: metasprites }, replacer, '\t');
-  }
+  let output: string = JSON.stringify({ data: metasprites }, replacer, '\t');
 
   /*
   "size": [
@@ -140,7 +143,7 @@ const main = async () => {
     '"size": [$1, $2]',
   );
 
-  console.log(output);
+  return output;
 };
 
 main();

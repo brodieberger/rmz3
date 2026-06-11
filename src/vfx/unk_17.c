@@ -20,25 +20,21 @@ const VFXRoutine gGhost17Routine = {
 // clang-format on
 
 struct Entity* CreateGhost17_1(struct Entity* e) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_017);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = 0;
     p->unk_28 = e;
   }
   return p;
 }
 
-void CreateGhost17_2(struct Entity* e, struct Coord* c) {
+void CreateGhost17_2(struct Entity* e, Coords32* c) {
   s32 i;
   for (i = 0; i < 3; i++) {
-    struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+    struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     if (p != NULL) {
-      p->taskCol = 1;
       INIT_VFX_ROUTINE(p, VFX_UNK_017);
-      p->tileNum = 0, p->palID = 0;
       p->work[0] = 1, p->work[1] = i;
       p->unk_28 = e;
       p->coord.x = c->x, p->coord.y = c->y;
@@ -111,7 +107,7 @@ NAKED static void FUN_080b6970(struct VFX* p) {
 	adds r0, r4, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r2, r5, #0\n\
 	cmp r5, #0\n\
 	beq _080B69B8\n\
@@ -203,7 +199,7 @@ NAKED static void FUN_080b6a38(struct VFX* p) {
 	adds r1, #0x10\n\
 	str r1, [r5, #0x60]\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r5, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r5, #0x12]\n\
@@ -253,8 +249,8 @@ static void FUN_080b6a9c(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, sMotions[idx]);
-  UpdateMotionGraphic(&p->s);
+  SetSpriteAnimation(p, sMotions[idx]);
+  UpdateSpriteAnimation(p);
   SET_XFLIP(&p->s, xflip);
 
   if (xflip) idx = 2 - idx;
@@ -271,7 +267,7 @@ static void FUN_080b6b8c(struct Entity* p) {
   (p->coord).x += (p->d).x;
   (p->coord).y += (p->d).y;
   (p->d).y += PIXEL(1) / 4;
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   if (FUN_080098a4((p->coord).x, (p->coord).y)) {
     CreateSmoke(3, &p->coord);
     SET_VFX_ROUTINE(p, ENTITY_DIE);

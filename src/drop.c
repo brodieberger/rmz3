@@ -21,7 +21,7 @@ static const u16 sItemDropRates[ITEM_COUNT][7];
 static const ALIGNED(2) struct DiskDrop sEnemyDiskDrops[42];
 static const u8 sStageEnemyDiskDrops[STAGE_COUNT];
 
-u32 TryDropItem(u32 table, struct Coord* c) {
+u32 TryDropItem(u32 table, Coords32* c) {
   u16 n;
   const u16* tbl;
 
@@ -56,7 +56,7 @@ u32 TryDropItem(u32 table, struct Coord* c) {
   return n;
 }
 
-NAKED void TryDropZakoDisk(struct Enemy* p, struct Coord* c) {
+NAKED void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -453,7 +453,7 @@ static const ALIGNED(2) struct DiskDrop sEnemyDiskDrops[42] = {
       diskNo : DISK_PANTHEON_GUARDIAN,
     },
 
-    // TODO:
+    // TODO: label these properly
     {0x0006, 0x0006, 0x002E, 0x0003, 0x0036, 0x0000, 0x0003, 0x008A},
     {0x0006, 0x0006, 0x002F, 0x0003, 0x0029, 0xFFFF, 0x0004, 0x008B},
     {0x0007, 0x0007, 0x0030, 0x0003, 0x0033, 0xFFFF, 0x0002, 0x0041},

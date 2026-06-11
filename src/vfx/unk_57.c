@@ -19,12 +19,10 @@ const VFXRoutine gVFX57Routine = {
 
 // --------------------------------------------
 
-void CreateVFX57(struct Coord* c, u8 kind1, u8 kind2, s16 dx, s16 dy) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+void CreateVFX57(Coords32* c, u8 kind1, u8 kind2, s16 dx, s16 dy) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_057);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind1, p->work[1] = kind2;
     (p->d).x = dx, (p->d).y = dy;
     p->coord = *c;

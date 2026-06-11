@@ -109,4 +109,4 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(9)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(9)};

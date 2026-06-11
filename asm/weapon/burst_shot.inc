@@ -100,7 +100,7 @@ _0803B6E4: .4byte FUN_0803b73c
 BurstShot_Update: @ 0x0803B6E8
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -151,7 +151,7 @@ FUN_0803b73c: @ 0x0803B73C
 	ands r0, r1
 	cmp r0, #0
 	beq _0803B756
-	ldr r2, _0803B75C @ =gMission
+	ldr r2, _0803B75C @ =gScore
 	ldrh r1, [r2, #0x1c]
 	ldr r0, _0803B760 @ =0x0000FFFE
 	cmp r1, r0
@@ -162,5 +162,5 @@ _0803B756:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803B75C: .4byte gMission
+_0803B75C: .4byte gScore
 _0803B760: .4byte 0x0000FFFE

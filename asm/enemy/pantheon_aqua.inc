@@ -18,7 +18,7 @@ PantheonAqua_Init: @ 0x08071CE4
 	orrs r2, r0
 	orrs r2, r3
 	strb r2, [r6, #0xa]
-	ldr r0, _08071D30 @ =gSystemSavedataManager
+	ldr r0, _08071D30 @ =gSystemSavedata
 	ldrb r1, [r0, #0x11]
 	movs r0, #1
 	ands r0, r1
@@ -44,7 +44,7 @@ PantheonAqua_Init: @ 0x08071CE4
 	movs r3, #0x10
 	b _08071D54
 	.align 2, 0
-_08071D30: .4byte gSystemSavedataManager
+_08071D30: .4byte gSystemSavedata
 _08071D34: .4byte gCurStory
 _08071D38: .4byte sCollisions
 _08071D3C:
@@ -187,7 +187,7 @@ _08071DFA:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08071E5C:
 	adds r0, r6, #0
 	adds r0, #0xbb
@@ -298,7 +298,7 @@ _08071F0E:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	str r5, [r4, #0x60]
 _08071F3C:
 	movs r0, #1
@@ -463,7 +463,7 @@ _08072072:
 	str r1, [r7, #0x5c]
 _08072092:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080721F2
 _0807209A:
 	movs r0, #0
@@ -630,7 +630,7 @@ _080721B2:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x44
 _080721F0:
 	strb r0, [r7, #0x12]
@@ -651,7 +651,7 @@ _08072214:
 	adds r0, #1
 	strb r0, [r7, #0x13]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	movs r1, #3
 	mov sb, r1
@@ -812,7 +812,7 @@ _080722B6:
 	bl FUN_080ba81c
 	movs r0, #0x31
 	bl PlaySound
-	ldr r2, _080723B8 @ =gMission
+	ldr r2, _080723B8 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080723BC @ =0x0000270E
 	cmp r1, r0
@@ -836,7 +836,7 @@ _080723A8: .4byte 0x00002712
 _080723AC: .4byte 0x00002713
 _080723B0: .4byte 0x00002714
 _080723B4: .4byte 0x00002715
-_080723B8: .4byte gMission
+_080723B8: .4byte gScore
 _080723BC: .4byte 0x0000270E
 _080723C0:
 	ldrb r0, [r7, #0x12]
@@ -921,7 +921,7 @@ _080723D4:
 	bl FUN_080ba81c
 	movs r0, #0x31
 	bl PlaySound
-	ldr r2, _080724AC @ =gMission
+	ldr r2, _080724AC @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080724B0 @ =0x0000270E
 	cmp r1, r0
@@ -943,7 +943,7 @@ _0807249C: .4byte 0x00002712
 _080724A0: .4byte 0x00002713
 _080724A4: .4byte 0x00002714
 _080724A8: .4byte 0x00002715
-_080724AC: .4byte gMission
+_080724AC: .4byte gScore
 _080724B0: .4byte 0x0000270E
 _080724B4:
 	movs r0, #0
@@ -1046,7 +1046,7 @@ _0807256E:
 	strb r0, [r7, #0xe]
 _08072574:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0807266A
 	.align 2, 0
 _0807257C: .4byte RNG_0202f388
@@ -1131,7 +1131,7 @@ _08072590:
 	adds r0, r5, #0
 	adds r3, r4, #0
 	bl FUN_080ba81c
-	ldr r2, _0807269C @ =gMission
+	ldr r2, _0807269C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080726A0 @ =0x0000270E
 	cmp r1, r0
@@ -1175,7 +1175,7 @@ _0807268C: .4byte 0x00002712
 _08072690: .4byte 0x00002713
 _08072694: .4byte 0x00002714
 _08072698: .4byte 0x00002715
-_0807269C: .4byte gMission
+_0807269C: .4byte gScore
 _080726A0: .4byte 0x0000270E
 _080726A4: .4byte gEnemyFnTable
 
@@ -1301,7 +1301,7 @@ _08072772:
 	bl FUN_080733b4
 _08072790:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0xba
 	ldrb r0, [r1]
@@ -1528,7 +1528,7 @@ _08072900:
 	bl FUN_080733b4
 _0807294C:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r7, #0
 	adds r1, #0xba
 	ldrb r0, [r1]
@@ -1773,7 +1773,7 @@ _08072B12:
 	adds r0, r7, #0
 	bl FUN_08073610
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _08072B4C
@@ -1832,7 +1832,7 @@ _08072B8C:
 	adds r0, r7, #0
 	bl FUN_08073610
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _08072BC6
@@ -2016,7 +2016,7 @@ _08072D06:
 	adds r0, r7, #0
 	bl FUN_08073610
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2066,7 +2066,7 @@ _08072D70:
 	adds r0, r7, #0
 	bl FUN_08073610
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r7, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2287,7 +2287,7 @@ _08072F1A:
 	bl FUN_080733b4
 _08072F4E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08072F64

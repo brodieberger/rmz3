@@ -4,136 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080b221c
-FUN_080b221c: @ 0x080B221C
-	push {r4, r5, r6, lr}
-	adds r6, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	lsls r2, r2, #0x18
-	lsrs r4, r2, #0x18
-	ldr r0, _080B2268 @ =gProjectileHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080B225E
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #8
-	strb r0, [r1]
-	ldr r0, _080B226C @ =gProjectileFnTable
-	movs r1, #0x2e
-	strb r1, [r3, #9]
-	adds r0, #0xb8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	str r6, [r3, #0x28]
-	strb r5, [r3, #0x10]
-	strb r4, [r3, #0x11]
-_080B225E:
-	adds r0, r3, #0
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080B2268: .4byte gProjectileHeaderPtr
-_080B226C: .4byte gProjectileFnTable
-
-	thumb_func_start FUN_080b2270
-FUN_080b2270: @ 0x080B2270
-	push {r4, r5, r6, r7, lr}
-	adds r6, r0, #0
-	adds r7, r1, #0
-	lsls r2, r2, #0x18
-	lsrs r5, r2, #0x18
-	lsls r3, r3, #0x18
-	lsrs r4, r3, #0x18
-	ldr r0, _080B22C0 @ =gProjectileHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080B22B6
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #8
-	strb r0, [r1]
-	ldr r0, _080B22C4 @ =gProjectileFnTable
-	movs r1, #0x2e
-	strb r1, [r3, #9]
-	adds r0, #0xb8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	str r6, [r3, #0x28]
-	str r7, [r3, #0x2c]
-	strb r5, [r3, #0x10]
-	strb r4, [r3, #0x11]
-_080B22B6:
-	adds r0, r3, #0
-	pop {r4, r5, r6, r7}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080B22C0: .4byte gProjectileHeaderPtr
-_080B22C4: .4byte gProjectileFnTable
-
-	thumb_func_start FUN_080b22c8
-FUN_080b22c8: @ 0x080B22C8
-	push {lr}
-	ldr r2, _080B22DC @ =0x0836D8B0
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080B22DC: .4byte 0x0836D8B0
-
-	thumb_func_start FUN_080b22e0
-FUN_080b22e0: @ 0x080B22E0
-	push {lr}
-	ldr r2, _080B22F4 @ =0x0836D8BC
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080B22F4: .4byte 0x0836D8BC
-
-	thumb_func_start FUN_080b22f8
-FUN_080b22f8: @ 0x080B22F8
-	push {lr}
-	ldr r2, _080B230C @ =0x0836D8C8
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080B230C: .4byte 0x0836D8C8
-
 	thumb_func_start FUN_080b2310
 FUN_080b2310: @ 0x080B2310
 	push {r4, lr}
@@ -150,7 +20,7 @@ FUN_080b2310: @ 0x080B2310
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -207,7 +77,7 @@ FUN_080b2384: @ 0x080B2384
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x11]
 	adds r1, #5
 	lsls r1, r1, #0x18
@@ -284,7 +154,7 @@ FUN_080b2428: @ 0x080B2428
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x11]
 	adds r1, #5
 	lsls r1, r1, #0x18
@@ -433,7 +303,7 @@ _080B2578:
 	strb r0, [r4, #0xd]
 _080B257A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -445,7 +315,7 @@ FUN_080b258c: @ 0x080B258C
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	ldr r5, [r4, #0x28]
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, _080B25B0 @ =0x00000DCC
 	adds r0, r5, r1
 	ldrb r0, [r0, #4]
@@ -475,7 +345,7 @@ _080B25BA:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080B2604
 	.align 2, 0
 _080B25D4: .4byte 0x0000E903
@@ -492,7 +362,7 @@ _080B25D8:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x9d
 	lsls r0, r0, #1
 	bl PlaySound
@@ -517,7 +387,7 @@ _080B2614:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	strb r2, [r4, #0xd]
 	ldrb r0, [r4, #0x12]
@@ -544,7 +414,7 @@ FUN_080b2654: @ 0x080B2654
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	ldr r5, [r4, #0x28]
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xd]
 	cmp r0, #1
 	beq _080B26B8
@@ -655,7 +525,7 @@ _080B2724:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	strb r0, [r4, #0xd]
 	strb r0, [r4, #0x12]

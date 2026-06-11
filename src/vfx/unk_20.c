@@ -18,24 +18,20 @@ const VFXRoutine gGhost20Routine = {
 };
 // clang-format on
 
-struct Entity* CreateGhost20(struct Coord* c, u8 n) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateGhost20(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_020);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = n, p->work[1] = 0;
     p->coord.x = c->x, p->coord.y = c->y;
   }
   return p;
 }
 
-struct Entity* FUN_080b721c(struct Coord* c, u8 kind, motion_t m, u32 val) {
-  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080b721c(Coords32* c, u8 kind, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_020);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).work[0] = kind, (p->s).work[1] = 1;
     (p->s).coord.x = c->x, (p->s).coord.y = c->y;
     p->m_74 = m;

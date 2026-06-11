@@ -25,12 +25,10 @@ const VFXRoutine gSnowRoutine = {
 };
 // clang-format on
 
-void CreateSnow(struct Coord* c, u32 n) {
-  struct SnowVFX* p = (struct SnowVFX*)AllocEntityFirst(gVFXHeaderPtr);
+void CreateSnow(Coords32* c, u32 n) {
+  struct SnowVFX* p = (struct SnowVFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_080);
-    (p->s).tileNum = 0, (p->s).palID = 0;
     (p->s).coord = *c;
     p->unk_0 = n;
     (p->s).work[0] = 0, (p->s).work[1] = 0;
@@ -66,7 +64,7 @@ NAKED static void Snow_Init(struct VFX* p) {
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r2, _080C91F8 @ =RNG_0202f388\n\
 	ldr r1, [r2]\n\
 	ldr r0, _080C91FC @ =0x000343FD\n\
@@ -165,7 +163,7 @@ _080C925E:\n\
 
 static void Snow_Update(struct SnowVFX* p) {
   u32 unk_0;
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).coord.y += (p->s).d.y;
   (p->s).coord.x = (p->s).unk_coord.x + SINX((p->s).work[2], 8);
   (p->s).work[2] += 3;

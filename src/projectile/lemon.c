@@ -3,6 +3,15 @@
 #include "global.h"
 #include "projectile.h"
 
+// 敵が撃ってくる Lemon(豆)
+struct ProjectileLemon {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  s32 amplitude;  // 0xB4
+  u8 unk_b8[12];  // 0xB8
+};
+static_assert(sizeof(struct ProjectileLemon) == sizeof(struct Projectile));
+
 static const struct Collision sCollisions[6];
 
 static void Lemon_Init(struct Projectile* p);
@@ -11,104 +20,39 @@ static void Lemon_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gLemonRoutine = {
-    [ENTITY_INIT] =      Lemon_Init,
-    [ENTITY_UPDATE] =    Lemon_Update,
-    [ENTITY_DIE] =       Lemon_Die,
+    [ENTITY_INIT] =      (void*)Lemon_Init,
+    [ENTITY_UPDATE] =    (void*)Lemon_Update,
+    [ENTITY_DIE] =       (void*)Lemon_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-NAKED struct Projectile* CreateLemon(struct Coord* c, s32 r1, u8 r2) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	adds r5, r1, #0\n\
-	lsls r2, r2, #0x18\n\
-	lsrs r4, r2, #0x18\n\
-	ldr r0, _0809CA28 @ =gProjectileHeaderPtr\n\
-	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
-	adds r3, r0, #0\n\
-	cmp r3, #0\n\
-	beq _0809CA1E\n\
-	adds r2, r3, #0\n\
-	adds r2, #0x25\n\
-	movs r1, #0\n\
-	movs r0, #8\n\
-	strb r0, [r2]\n\
-	ldr r0, _0809CA2C @ =gProjectileFnTable\n\
-	strb r1, [r3, #9]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0]\n\
-	str r0, [r3, #0x14]\n\
-	movs r0, #0\n\
-	strh r1, [r3, #0x20]\n\
-	adds r1, r3, #0\n\
-	adds r1, #0x22\n\
-	strb r0, [r1]\n\
-	ldr r0, [r6]\n\
-	str r0, [r3, #0x54]\n\
-	ldr r0, [r6, #4]\n\
-	str r0, [r3, #0x58]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x80\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	adds r4, r0, #0\n\
-	adds r0, r3, #0\n\
-	adds r0, #0xb4\n\
-	str r5, [r0]\n\
-	ldr r2, _0809CA30 @ =gSineTable\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x40\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x17\n\
-	adds r0, r0, r2\n\
-	movs r1, #0\n\
-	ldrsh r0, [r0, r1]\n\
-	muls r0, r5, r0\n\
-	cmp r0, #0\n\
-	bge _0809CA02\n\
-	adds r0, #0xff\n\
-_0809CA02:\n\
-	asrs r0, r0, #8\n\
-	str r0, [r3, #0x5c]\n\
-	lsls r0, r4, #1\n\
-	adds r0, r0, r2\n\
-	movs r1, #0\n\
-	ldrsh r0, [r0, r1]\n\
-	muls r0, r5, r0\n\
-	cmp r0, #0\n\
-	bge _0809CA16\n\
-	adds r0, #0xff\n\
-_0809CA16:\n\
-	asrs r0, r0, #8\n\
-	str r0, [r3, #0x60]\n\
-	movs r0, #1\n\
-	strb r0, [r3, #0x10]\n\
-_0809CA1E:\n\
-	adds r0, r3, #0\n\
-	pop {r4, r5, r6}\n\
-	pop {r1}\n\
-	bx r1\n\
-	.align 2, 0\n\
-_0809CA28: .4byte gProjectileHeaderPtr\n\
-_0809CA2C: .4byte gProjectileFnTable\n\
-_0809CA30: .4byte gSineTable\n\
- .syntax divided\n");
+// 0x0809c99c
+struct Projectile* CreateLemon(Coords32* c, s32 amplitude, u8 r2) {
+  struct ProjectileLemon* p = (struct ProjectileLemon*)AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 0);
+    (p->s).coord.x = c->x, (p->s).coord.y = c->y;
+    r2 += 0x80;
+    p->amplitude = amplitude;
+    (p->s).d.x = Cos(r2, amplitude);
+    (p->s).d.y = Sin(r2, amplitude);
+    (p->s).work[0] = 1;
+  }
+  return (void*)p;
 }
 
-NAKED static struct Projectile* unused_0809ca34(struct Coord* c, s32 r1, u8 r2) { INCCODE("asm/unused/unused_0809ca34.inc"); }
+NAKED static struct Projectile* unused_0809ca34(Coords32* c, s32 r1, u8 r2) { INCCODE("asm/unused/unused_0809ca34.inc"); }
 
 static void Lemon_Init(struct Projectile* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   INIT_BODY(p, sCollisions, 0, NULL);
-  SetMotion(&p->s, MOTION(SM002_LEMON, 0));
+  SetSpriteAnimation(p, MOTION(SM002_LEMON, 0));
   (p->s).work[2] = 0xFF;
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
   Lemon_Update(p);
@@ -118,7 +62,7 @@ NAKED static void Lemon_Update(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x8c\n\
 	ldr r0, [r0]\n\

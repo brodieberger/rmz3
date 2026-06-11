@@ -108,7 +108,7 @@ _080C77CA:
 	adds r0, r0, r1
 	str r0, [r6, #0x54]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C77E0:
 	add sp, #8
 	pop {r4, r5, r6}
@@ -151,7 +151,7 @@ _080C7826:
 	adds r4, r7, #0
 	adds r4, #0x54
 	adds r1, r4, #0
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -261,7 +261,7 @@ _080C78FA:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C7910:
 	pop {r3, r4}
 	mov r8, r3

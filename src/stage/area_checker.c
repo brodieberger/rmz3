@@ -1,17 +1,17 @@
 #include "global.h"
 #include "spawn.h"
 
-static u32 getStage0Area(struct Coord* _) { return 0; }
+static u32 getStage0Area(Coords32* _) { return 0; }
 
 // 0x080190fc
-static u32 getSpaceCraftArea(struct Coord* c) {
+static u32 getSpaceCraftArea(Coords32* c) {
   if (c->x < PIXEL(1200)) return 7;
   if ((c->x > PIXEL(3120)) && (c->x < PIXEL(3360))) return 7;
   if ((c->y < PIXEL(320)) && (c->x > PIXEL(3600))) return 7;
   return 0;
 }
 
-NAKED static u32 getVolcanoArea(struct Coord* c) {
+NAKED static u32 getVolcanoArea(Coords32* c) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r3, r0, #0\n\
@@ -83,7 +83,7 @@ _080191BE:\n\
  .syntax divided\n");
 }
 
-static u32 getOceanArea(struct Coord* c) {
+static u32 getOceanArea(Coords32* c) {
   s32 x = c->x;
   if (x > 0x2B9000) return 7;
   if (x > 0x1B3000) return 2;
@@ -92,7 +92,7 @@ static u32 getOceanArea(struct Coord* c) {
   return 0;
 }
 
-static u32 getRepairFactoryArea(struct Coord* c) {
+static u32 getRepairFactoryArea(Coords32* c) {
   s32 x = c->x;
   if (x < 0x1AB001) {
     if (x < 0xF0000) return 0;
@@ -101,7 +101,7 @@ static u32 getRepairFactoryArea(struct Coord* c) {
   return 7;
 }
 
-static u32 getOldLifeSpaceArea(struct Coord* c) {
+static u32 getOldLifeSpaceArea(Coords32* c) {
   if (c->x > 0x1c9000) return 7;
   if (c->y <= 0x13FFF && ((c->x - 0xC3001U) <= 0xEFFE)) return 7;
   if ((c->x - 0x11D001U) <= 0xEFFE) return 7;
@@ -113,13 +113,13 @@ static u32 getOldLifeSpaceArea(struct Coord* c) {
   return 0;
 }
 
-static u32 getMissileFactoryArea(struct Coord* c) {
+static u32 getMissileFactoryArea(Coords32* c) {
   if (c->x > 0x195000) return 7;
   if (c->x > 0x87000) return 1;
   return 0;
 }
 
-static u32 getTwilightDesertArea(struct Coord* c) {
+static u32 getTwilightDesertArea(Coords32* c) {
   s32 x = c->x;
   if (x < 0x21C001) {
     if (x > 0x11D000) return 1;
@@ -128,13 +128,13 @@ static u32 getTwilightDesertArea(struct Coord* c) {
   return 7;
 }
 
-static u32 getForestArea(struct Coord* c) {
+static u32 getForestArea(Coords32* c) {
   if (c->x > 0x1BA7FF) return 7;
   if (c->x > 0x9D7FF) return 1;
   return 0;
 }
 
-static u32 getIceBaseArea(struct Coord* c) {
+static u32 getIceBaseArea(Coords32* c) {
   if ((c->x >= 0x205800) && (c->y <= 0x1DFFF)) return 7;
   if (c->x >= 0x16F800) return 2;
   if ((c->x >= 0x124800) && (c->y >= 0x32001)) return 1;
@@ -142,13 +142,13 @@ static u32 getIceBaseArea(struct Coord* c) {
   return 0;
 }
 
-static u32 getAreaX2Area(struct Coord* c) {
+static u32 getAreaX2Area(Coords32* c) {
   if ((c->x > 0xF7000) && (c->y <= 0x1DFFF)) return 7;
   if (c->y <= 0x87000) return 1;
   return 0;
 }
 
-NAKED static u32 getEnergyFactoryArea(struct Coord* c) {
+NAKED static u32 getEnergyFactoryArea(Coords32* c) {
   asm(".syntax unified\n\
 	push {lr}\n\
 	ldr r1, [r0]\n\
@@ -206,7 +206,7 @@ _08019426:\n\
  .syntax divided\n");
 }
 
-static u32 getSnowyPlainsArea(struct Coord* c) {
+static u32 getSnowyPlainsArea(Coords32* c) {
   const s32 x = c->x;
   if (x > 0x348000) return 7;
   if (x > 0x20d000) return 1;
@@ -215,7 +215,7 @@ static u32 getSnowyPlainsArea(struct Coord* c) {
   return 7;
 }
 
-static u32 getSubmergedLibArea(struct Coord* c) {
+static u32 getSubmergedLibArea(Coords32* c) {
   if (c->y > 0x3BFFF) {
     if (c->x > 0xc3000) return 1;
     return 7;
@@ -226,14 +226,14 @@ static u32 getSubmergedLibArea(struct Coord* c) {
   return 0;
 }
 
-static u32 getGiantElevatorArea(struct Coord* c) {
+static u32 getGiantElevatorArea(Coords32* c) {
   if (c->x > 0x12C000) return 7;
   if (c->x > 0xFF000) return 1;
   if (c->x > 0xD2000) return 6;
   return 0;
 }
 
-static u32 getSubArcadiaArea(struct Coord* c) {
+static u32 getSubArcadiaArea(Coords32* c) {
   if ((c->y < 0x1e000) && (c->x > 0x69000)) {
     return 6;
   }
@@ -242,7 +242,7 @@ static u32 getSubArcadiaArea(struct Coord* c) {
   return 0;
 }
 
-static u32 getWeilLaboArea(struct Coord* c) {
+static u32 getWeilLaboArea(Coords32* c) {
   if ((c->y >= 0x32000) || (c->x > 0x1ba800)) return 7;
   if (c->x > 0x170000) return 2;
 
@@ -254,7 +254,7 @@ static u32 getWeilLaboArea(struct Coord* c) {
 }
 
 // 0x08019578
-static u32 getBaseArea(struct Coord* c) {
+static u32 getBaseArea(Coords32* c) {
   s32 x = c->x;
   if (x < PIXEL(480)) {
     if (c->y < PIXEL(480)) return 0;

@@ -16,12 +16,9 @@ const VFXRoutine gGhost73Routine = {
 // clang-format on
 
 struct VFX* FUN_080c6e24(struct Entity* e) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_073);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).unk_28 = e;
   }

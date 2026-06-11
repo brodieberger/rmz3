@@ -5,26 +5,19 @@
 
 // 改造カード
 
-// SystemSavedataManager.mods
+#define MOD_FLAG_START ((7 << 3) + 7)
+
+// SystemSavedata.flags の bit63 以降
 enum ModID {
-  // 0..
-  MOD_00 = 0,
-  MOD_01,
-  MOD_02,
-  MOD_03,
-  MOD_04,
-  MOD_05,
-  MOD_06,
-  MOD_07,
-  // 8..
-  MOD_PLANT,           // 8: ベースに鉢植えが置かれる
-  MOD_09,              // 9: ???
-  MOD_SABER_ATK1,      // 10: Saber atk +1
-  MOD_11,              // 11: ???
-  MOD_P_GUARDIAN_HP4,  // 12: Pantheon Guardian HP +4
-  MOD_13,              // 13: ???
-  MOD_14,              // 14: ???
-  MOD_15,              // 15: ???
+  MOD_0 = MOD_FLAG_START,  // flags[7] bit7
+  MOD_PLANT,               // 8: ベースに鉢植えが置かれる
+  MOD_09,                  // 9: ???
+  MOD_SABER_ATK1,          // 10: Saber atk +1
+  MOD_11,                  // 11: ???
+  MOD_P_GUARDIAN_HP4,      // 12: Pantheon Guardian HP +4
+  MOD_13,                  // 13: ???
+  MOD_14,                  // 14: ???
+  MOD_15,                  // 15: ???
   // 16..
   MOD_16,              // 16: ???
   MOD_ALOUETTE_DRESS,  // 17: Alouette dress
@@ -102,10 +95,10 @@ enum ModID {
   MOD_81,
   MOD_82,  // Lilies
   MOD_83,
-  MOD_84,        // Fish
-  MOD_ROD_ATK3,  // 85: Rod atk +3
-  MOD_86,        // 32EC(Room 3A)
-  MOD_87,        // 52EC(Room 3B)
+  MOD_FLYING_FISH,  // 84: Fish
+  MOD_ROD_ATK3,     // 85: Rod atk +3
+  MOD_86,           // 32EC(Room 3A)
+  MOD_87,           // 52EC(Room 3B)
   // 88..
   MOD_ARCHIM_ATK4,  // 88: Archim atk +4
   MOD_SABER_ATK2,   // 89: Saber atk +2
@@ -151,11 +144,6 @@ enum ModID {
   MOD_125,  //  bit 5: BeeServer HP +16
   MOD_126,  //  bit 6: Megamilpa HP +16
   MOD_127,
-  //
-  MOD_COUNT,
 };
-static_assert(MOD_COUNT == 128);
-
-#define MOD_ENABLED(bitflags, mod_id) ((bitflags)[(mod_id) >> 3] & (1 << ((mod_id) & 7)))
 
 #endif  // GUARD_RMZ3_MOD_H

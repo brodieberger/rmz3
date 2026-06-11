@@ -27,13 +27,10 @@ const VFXRoutine gVFX39Routine = {
 // clang-format on
 
 // 0x080bd3bc
-struct Entity* CreateVFX39(struct Coord* c, u8 r1, u8 r2) {
-  struct VFX39* p = (struct VFX39*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateVFX39(Coords32* c, u8 r1, u8 r2) {
+  struct VFX39* p = (struct VFX39*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_039);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).coord = *c;
     (p->s).work[0] = r1;
     (p->s).work[1] = r2;
@@ -50,7 +47,7 @@ void TaskCB_080bd610(struct Sprite* s, struct DrawPivot* c);
 static void VFX39_Init(struct VFX39* p) {
   SetTaskCallback((struct Task*)&(p->s).spr, TaskCB_080bd610);
   (p->s).spr.sprites = (struct MetaspriteHeader*)p;
-  (p->s).flags &= ~OAM_PRIO;
+  (p->s).flags &= ~USE_COMMON_OAM_RENDERER;
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   p->unk_74[3] = 0;

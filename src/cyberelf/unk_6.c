@@ -30,12 +30,9 @@ const ElfRoutine gElf6Routine = {
 // clang-format on
 
 struct Entity* CreateElf6(struct Zero* z, u8 breed, u8 availability, u8 _) {
-  struct CyberElf6* p = (struct CyberElf6*)AllocEntityFirst(gElfHeaderPtr);
+  struct CyberElf6* p = (struct CyberElf6*)AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 6);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     p->player = z;
     (p->s).work[0] = breed;
     (p->s).work[1] = availability;
@@ -155,7 +152,7 @@ NAKED static void Elf6_Update(struct Elf* e) {
 	ldr r6, [r0]\n\
 	ldr r7, [r0, #4]\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x8c\n\
 	ldr r0, [r0]\n\
@@ -332,7 +329,7 @@ _080E38AE:\n\
 	subs r0, #0x60\n\
 	movs r1, #0\n\
 	bl FUN_080bfce8\n\
-	ldr r1, _080E394C @ =gUnlockedElfPtr\n\
+	ldr r1, _080E394C @ =gElfAvailability\n\
 	adds r3, r5, #0\n\
 	adds r3, #0xb4\n\
 	ldr r2, _080E3950 @ =0x00000121\n\
@@ -355,7 +352,7 @@ _080E38AE:\n\
 	adds r0, r0, r1\n\
 	strh r0, [r3, #4]\n\
 _080E38E2:\n\
-	ldr r1, _080E3958 @ =gMission\n\
+	ldr r1, _080E3958 @ =gScore\n\
 	ldr r0, [r1]\n\
 	adds r2, r0, #0\n\
 	adds r2, #0x4c\n\
@@ -410,10 +407,10 @@ _080E392C:\n\
 	adds r0, r1, #0\n\
 	b _080E3980\n\
 	.align 2, 0\n\
-_080E394C: .4byte gUnlockedElfPtr\n\
+_080E394C: .4byte gElfAvailability\n\
 _080E3950: .4byte 0x00000121\n\
 _080E3954: .4byte sFusionPenalties\n\
-_080E3958: .4byte gMission\n\
+_080E3958: .4byte gScore\n\
 _080E395C: .4byte u16_ARRAY_08371d5c\n\
 _080E3960: .4byte gCurStory\n\
 _080E3964: .4byte gGameState+25200\n\

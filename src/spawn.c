@@ -17,7 +17,7 @@
 // Entity のスポーン管理
 // Entity の生成は
 //   1. 手動で作成 (例: プレイヤーがダッシュした際には CreateAfterImages が呼ばれて残像が生成される)
-//   2. ステージスクリプト の spawn コマンド (ハンドラ: Cmd_spawn) で生成
+//   2. ゲームスクリプト の spawn コマンド (ハンドラ: Cmd_spawn) で生成
 //   3. viewport (≒ プレイヤーの座標) が SpawnPoint に 入ったら 自動で生成 (逆に離れたら消す)
 // の3通りある
 // SpawnManager は このうち 3. の管理をしている
@@ -185,7 +185,7 @@ void InitSpawnManager(u8 stageID, bool8 missionDone) {
 }
 
 // DEKASUGI!!!
-WIP void UpdateSpawnManager(struct Coord* viewport) {
+WIP void UpdateSpawnManager(Coords32* viewport) {
 #ifdef ALWAYS_FALSE
   s32 mx, my;
   s32 left;
@@ -245,8 +245,8 @@ WIP void UpdateSpawnManager(struct Coord* viewport) {
     bool32 val;
     gSpawnManager.inCyberSpace = TRUE;
     val = 0;
-    if (gSystemSavedataManager.mmbn4 != 0x32DA) {
-      val = gSystemSavedataManager.mmbn4 != 0;  // val = (-gSystemSavedataManager.mmbn4 | gSystemSavedataManager.mmbn4) >> 0x1F;
+    if (gSystemSavedata.mmbn4 != 0x32DA) {
+      val = gSystemSavedata.mmbn4 != 0;  // val = (-gSystemSavedata.mmbn4 | gSystemSavedata.mmbn4) >> 0x1F;
     }
     gSpawnManager.mmbn4EnemiesEnabled = val;
     if (val) FUN_08018d10(stageID, area);
@@ -438,87 +438,65 @@ WIP void UpdateSpawnManager(struct Coord* viewport) {
 #endif
 }
 
-// Create VolatileEntity or ScriptEntity
+// Create SpawnedEntity or ScriptEntity
 struct Entity* CreateStageEntity(u8 kind, u8 id) {
   struct Entity* p;
 
   switch (kind) {
     case ENTITY_PLAYER: {
-      p = (struct Entity*)AllocPlayer();
+      p = AllocPlayer();
       if (p != NULL) {
-        p->taskCol = 16;
+        p->renderPrio = 16;
         INIT_PLAYER_ROUTINE((struct Zero*)p, id);
       }
       break;
     }
     case ENTITY_BOSS: {
-      p = AllocEntityFirst(gBossHeaderPtr);
+      p = AllocEntityLast(gBossHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 24;
         INIT_BOSS_ROUTINE((struct Boss*)p, id);
-        p->tileNum = 0, p->palID = 0;
-        p->flags2 |= WHITE_PAINTABLE;
-        p->invincibleID = p->uniqueID;
       }
       break;
     }
     case ENTITY_ENEMY: {
-      p = AllocEntityFirst(gEnemyHeaderPtr);
+      p = AllocEntityLast(gEnemyHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 24;
-        INIT_ENEMY_ROUTINE((struct Enemy*)p, id);
-        p->tileNum = 0, p->palID = 0;
-        p->flags2 |= WHITE_PAINTABLE;
-        p->invincibleID = p->uniqueID;
+        INIT_ENEMY_ROUTINE(p, id);
       }
       break;
     }
     case ENTITY_PROJECTILE: {
-      p = AllocEntityFirst(gProjectileHeaderPtr);
+      p = AllocEntityLast(gProjectileHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 8;
-        INIT_PROJECTILE_ROUTINE((struct Projectile*)p, id);
-        p->tileNum = 0, p->palID = 0;
+        INIT_PROJECTILE_ROUTINE(p, id);
       }
       break;
     }
     case ENTITY_VFX: {
-      p = AllocEntityFirst(gVFXHeaderPtr);
+      p = AllocEntityLast(gVFXHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 1;
-        INIT_VFX_ROUTINE((struct VFX*)p, id);
-        p->tileNum = 0, p->palID = 0;
+        INIT_VFX_ROUTINE(p, id);
       }
       break;
     }
     case ENTITY_SOLID: {
-      p = AllocEntityLast(gSolidHeaderPtr);
+      p = AllocEntityFirst(gSolidHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 30;
-        INIT_SOLID_ROUTINE((struct Solid*)p, id);
-        p->tileNum = 0, p->palID = 0;
-        p->flags2 |= WHITE_PAINTABLE;
-        p->invincibleID = p->uniqueID;
+        INIT_SOLID_ROUTINE(p, id);
       }
       break;
     }
     case ENTITY_ITEM: {
-      p = AllocEntityFirst(gPickupHeaderPtr);
+      p = AllocEntityLast(gPickupHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 1;
-        INIT_ITEM_ROUTINE((struct Pickup*)p, id);
-        p->tileNum = 0, p->palID = 0;
-        p->flags2 |= WHITE_PAINTABLE;
-        p->invincibleID = p->uniqueID;
+        INIT_ITEM_ROUTINE(p, id);
       }
       break;
     }
     case ENTITY_ELF: {
-      p = AllocEntityFirst(gElfHeaderPtr);
+      p = AllocEntityLast(gElfHeaderPtr);
       if (p != NULL) {
-        p->taskCol = 16;
         INIT_ELF_ROUTINE(p, id);
-        p->tileNum = 0, p->palID = 0;
       }
       break;
     }
@@ -681,10 +659,10 @@ NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
     LOAD_STATIC_GRAPHIC(SM002_LEMON);
     LOAD_STATIC_GRAPHIC(SM003_EMOTION_BUBBLE);
     LOAD_STATIC_GRAPHIC(SM209_NUMBER);
-    LOAD_STATIC_GRAPHIC(SM167_LIFE_ENERGY + gSystemSavedataManager.lifeEnergy);
-    LOAD_STATIC_GRAPHIC(SM170_ECRYSTAL + gSystemSavedataManager.crystal);
-    LOAD_STATIC_GRAPHIC(SM173_EXLIFE + gSystemSavedataManager.extraLife);
-    LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedataManager.disk);
+    LOAD_STATIC_GRAPHIC(SM167_LIFE_ENERGY + gSystemSavedata.lifeEnergy);
+    LOAD_STATIC_GRAPHIC(SM170_ECRYSTAL + gSystemSavedata.crystal);
+    LOAD_STATIC_GRAPHIC(SM173_EXLIFE + gSystemSavedata.extraLife);
+    LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
     CpuFastFill(0xFFFFFFFF, (void*)&gPaletteManager.buf[(16 + 13) * 16], 32);  // fill OBP13 with white
     gSpawnManager.area = 0xFE;
   }
@@ -805,46 +783,40 @@ static void RemoveZ3EnemyChildEntityForSwapMMBN4Virus(void) {
   struct Entity* p;
   {
     struct EntityHeader* h = gVFXHeaderPtr;
-    ignoreEntityFn(h);
+    p = GetEntityList(h);
 
-    p = h->last = h->last->prev;
-
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if ((p->mode[0] < ENTITY_DISAPPEAR) && (p->id == VFX_P_AQUA)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 
   {
     struct EntityHeader* h = gProjectileHeaderPtr;
-    ignoreEntityFn(h);
+    p = GetEntityList(h);
 
-    p = h->last = h->last->prev;
-
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if ((p->mode[0] < ENTITY_DISAPPEAR) && ((p->id >= 1 && p->id <= 3) || (p->id == 6) || (p->id == 8))) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         EXIT_BODY(((Object*)p));
         SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 
   {
     struct EntityHeader* h = gEnemyHeaderPtr;
-    ignoreEntityFn(h);
-
-    p = h->last = h->last->prev;
+    p = GetEntityList(h);
 
     // 敵によっては1体で複数のEntityを生成する場合があるので、それらを削除
     // 例: ジャイロキャノン は 本体+プロペラ で 2Entity (置き換えるのは本体なので、プロペラは削除)
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if (p->mode[0] < ENTITY_DISAPPEAR) {
         u32 id;
         if (
@@ -862,7 +834,7 @@ static void RemoveZ3EnemyChildEntityForSwapMMBN4Virus(void) {
           SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
         }
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 }
@@ -872,51 +844,45 @@ static void RemoveMMBN4Entities(void) {
   struct Entity* p;
   {
     struct EntityHeader* h = gVFXHeaderPtr;
-    ignoreEntityFn(h);
+    p = GetEntityList(h);
 
-    p = h->last = h->last->prev;
-
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if ((p->mode[0] < ENTITY_DISAPPEAR) && (p->id == VFX_UNK_MMBN4_044)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 
   {
     struct EntityHeader* h = gProjectileHeaderPtr;
-    ignoreEntityFn(h);
+    p = GetEntityList(h);
 
-    p = h->last = h->last->prev;
-
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if ((p->mode[0] < ENTITY_DISAPPEAR) && (p->id >= 16 && p->id <= 17)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         EXIT_BODY(((Object*)p));
         SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 
   {
     struct EntityHeader* h = gEnemyHeaderPtr;
-    ignoreEntityFn(h);
+    p = GetEntityList(h);
 
-    p = h->last = h->last->prev;
-
-    while (p != ((void*)&h->next)) {
+    while (p != ((void*)&h->tail)) {
       if ((p->mode[0] < ENTITY_DISAPPEAR) && (p->id >= ENEMY_BEETANK && p->id <= ENEMY_PUFFY)) {
         p->flags &= ~DISPLAY;
         p->flags &= ~FLIPABLE;
         EXIT_BODY(((Object*)p));
         SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
       }
-      p = h->last = h->last->prev;
+      p = GetNextEntity(h);
     }
   }
 }

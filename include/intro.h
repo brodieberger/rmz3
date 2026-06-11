@@ -46,6 +46,7 @@ struct Intro {
   u8 unk_252;
   u8 unk_253;
 };  // 596 bytes
+static_assert(sizeof(struct Intro) == 596);
 
 extern struct Intro gIntro;
 

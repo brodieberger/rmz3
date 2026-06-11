@@ -29,7 +29,7 @@ const GameLoopFunc FefnirMinigameLoops[3] = {
 
 bool32 exitFefnirMinigame(struct GameState* g) {
   struct MinigameState* s = (struct MinigameState*)(g->sceneState).raw;
-  gSystemSavedataManager.minigameHiscores[MINIGAME_FEFNIR] = s->unk_28;
+  gSystemSavedata.minigameHiscores[MINIGAME_FEFNIR] = s->unk_28;
   SaveSystemData();
   return FALSE;
 }

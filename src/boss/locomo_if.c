@@ -100,7 +100,7 @@ static const struct Collision sCollisions[3] = {
 };
 
 static const u8 sInitModes[2] = {1, 0};
-static const struct Coord sElementCoord = {0, 0};
+static const Coords32 sElementCoord = {0, 0};
 
 static const motion_t sMotions[3] = {
     MOTION(0x54, 0x9),

@@ -7,19 +7,18 @@
 
 static void drawZeroHPWeaponIcon(void* p);
 static void FUN_080ea3c8(void* p);
-static void drawLeftTime(struct HUD* p);
 
 void ResetHUD(u16* bg0) {
   gHUD.bg0 = bg0;
-  gHUD.unk_02 = 0;
+  gHUD.offset_y = 0;
   gHUD.z = NULL;
   gHUD.unk_0c = NULL;
   gHUD.timeLeft = NULL;
 }
 
 void DrawStatus(void) {
-  gWindowRegBuffer.winin[2] |= 1;
-  if (gHUD.unk_02 == 0) {
+  gWindowRegBuffer.winin[2] |= WINOUT_WIN01_BG0;
+  if (gHUD.offset_y == 0) {
     if (!FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
       LoadGraphic(BG_GRAPHIC(BG_UNK_17), (void*)CHAR_BASE(0));
       LoadPalette(BG_PALETTE(BG_UNK_17), 0);
@@ -29,7 +28,7 @@ void DrawStatus(void) {
       LoadGraphic(BG_GRAPHIC(BG_TITLE_LOGO), (void*)CHAR_BASE(0));
       LoadPalette(BG_PALETTE(BG_TITLE_LOGO), 0);
     }
-    gHUD.unk_02 = 1;
+    gHUD.offset_y = 1;
   }
 
   if (!FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
@@ -37,18 +36,18 @@ void DrawStatus(void) {
     FUN_080ea3c8(&gHUD.bg0);
   } else {
     gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
-    if (gHUD.unk_02 < 32) {
-      gHUD.unk_02++;
-    }
-    BGOFS(0)->y = 32 - gHUD.unk_02;
-    loadBgMap_08004248(gHUD.bg0, gBgMapOffsets, 18, 0, 0);
+    if (gHUD.offset_y < 32) gHUD.offset_y++;
+    BGOFS(0)->y = 32 - gHUD.offset_y;
+    loadBgMap_08004248(gHUD.bg0, gBgMapOffsets, BG_TITLE_LOGO, 0, 0);  // デモプレイ中はタイトルロゴを左上に表示
   }
 }
 
+static void _DrawLeftTime(struct HUD* p);
+
 void DrawLeftTime(void) {
   if (gHUD.timeLeft != NULL) {
-    gWindowRegBuffer.winin[2] |= 1;
-    drawLeftTime(&gHUD);
+    gWindowRegBuffer.winin[2] |= WINOUT_WIN01_BG0;
+    _DrawLeftTime(&gHUD);
   }
 }
 
@@ -181,7 +180,7 @@ _080EA2CC:\n\
 	cmp r0, r4\n\
 	bgt _080EA336\n\
 	movs r2, #0\n\
-	ldr r1, _080EA314 @ =gMission\n\
+	ldr r1, _080EA314 @ =gScore\n\
 	mov r8, r1\n\
 	cmp r2, r4\n\
 	bge _080EA38C\n\
@@ -207,7 +206,7 @@ _080EA2FC:\n\
 _080EA308: .4byte 0x120E120D\n\
 _080EA30C: .4byte 0x124E124D\n\
 _080EA310: .4byte 0x122E122D\n\
-_080EA314: .4byte gMission\n\
+_080EA314: .4byte gScore\n\
 _080EA318: .4byte 0x12A112A0\n\
 _080EA31C: .4byte 0x12211220\n\
 _080EA320:\n\
@@ -229,7 +228,7 @@ _080EA336:\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r7, r0, #0x10\n\
 	movs r2, #0\n\
-	ldr r3, _080EA36C @ =gMission\n\
+	ldr r3, _080EA36C @ =gScore\n\
 	mov r8, r3\n\
 	cmp r2, r4\n\
 	bge _080EA38C\n\
@@ -253,7 +252,7 @@ _080EA35E:\n\
 	str r2, [r5]\n\
 	b _080EA382\n\
 	.align 2, 0\n\
-_080EA36C: .4byte gMission\n\
+_080EA36C: .4byte gScore\n\
 _080EA370: .4byte 0x12A312A2\n\
 _080EA374: .4byte 0x12231222\n\
 _080EA378:\n\
@@ -462,7 +461,8 @@ _080EA4EC: .4byte 0x12031202\n\
  .syntax divided\n");
 }
 
-static void drawLeftTime(struct HUD* hud) {
+// 0x080ea4f0
+static void _DrawLeftTime(struct HUD* hud) {
   s32 timeLeft;
   s32 a, b, c, d;
   u16* bg0 = hud->bg0;

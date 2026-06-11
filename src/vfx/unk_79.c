@@ -43,7 +43,7 @@ NAKED void CreateGhost79_1(s32 x, s32 y, struct Entity* p, void* param_4, void* 
 	mov r8, r2\n\
 	ldr r0, _080C8EC0 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r6, r0, #0\n\
 	cmp r6, #0\n\
 	beq _080C8EAC\n\
@@ -145,7 +145,7 @@ NAKED void CreateGhost79_2(struct Entity* p, u8 r1, u8 r2) {
 	lsrs r5, r2, #0x18\n\
 	ldr r0, _080C8F28 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	mov ip, r0\n\
 	cmp r0, #0\n\
 	beq _080C8F22\n\
@@ -383,7 +383,7 @@ _080C90DA:\n\
 	adds r0, r4, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	mov r0, sb\n\
 	ldrb r1, [r0]\n\
 	lsls r1, r1, #0xb\n\

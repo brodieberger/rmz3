@@ -15,7 +15,8 @@
 #define BPP4 0x0020
 #define RLU (1 << (4 + 8))
 
-#define PALETTE16(n) (*(u16*)(&gPaletteManager.buf[0]))
+// 元々 gPaletteManager.buf を PlttData[512] にしてたから必要だったけど、もう u16[512] にしたので不要
+#define PALETTE16(n) (*(u16*)(&gPaletteManager.buf[n]))
 
 // おそらく、アセンブリで定義されたテーブルを変にCで定義してしまったせいで、アクセスする処理のコンパイル結果が変わってしまっていると思われる
 #if MODERN
@@ -30,6 +31,11 @@
 #define BG_PALETTE(n) ((const struct Palette*)((void*)(0x0854728C) + ((n) * (sizeof(struct ColorGraphic)))))
 #endif
 
+// PaletteManager.filter
+#define FILTER_BLACK 0x00
+#define FILTER_NONE 0x20
+#define FILTER_WHITE 0x40
+
 /**
  * @brief 0x080036cc の関数で src -> dst に転送が行われる (Transfer gfx data from src to dest by 0x080036cc)
  * @details
@@ -41,12 +47,14 @@ struct GraphicTransfer {
   void* dst;
   void* src;
 };
+static_assert(sizeof(struct GraphicTransfer) == 12);
 
 // 0x02001f00
 struct GraphicTransferManager {
-  s32 len;  // .tasks のうち、有効なタスク数(.tasks length)
-  struct GraphicTransfer tasks[16];
+  s32 len;                           // 0x00, .tasks のうち、有効なタスク数(.tasks length)
+  struct GraphicTransfer tasks[16];  // 0x04
 
+  // 0xC4
   struct BG0Manager {
     u32 bytesize;  // buffer のサイズ
     void* buffer;  // BGマップのバッファ
@@ -54,15 +62,17 @@ struct GraphicTransferManager {
     u32 backdrop;  // BG0に何も描画されないときのデフォルトカラー
   } bg0;           // 0x02001fc4
 };
+static_assert(sizeof(struct GraphicTransferManager) == 212);
 
 // 0x03002ac0
 struct PaletteManager {
-  struct PlttData buf[512];
+  u16 buf[512];
   u8 filter[3];  // Fadeレベル (0x0: 真っ黒, 0x20: フェードなし, 0x40: 真っ白), [0] = Red, [1] = Green, [2] = Blue
   u16 unk_404;
   u16 unk_406;
   void (*post_process)(void);  // 最終的なパレットに対して、適用される関数, このゲームでは、サイバー空間 で画面を緑っぽくする用途でのみ使われている
 };  // 1036 bytes
+static_assert(sizeof(struct PaletteManager) == 1036);
 
 // 0x03002ed0
 struct OamManager {
@@ -70,6 +80,7 @@ struct OamManager {
   struct OamData* p;
   u32 dispcnt;
 };  // 1032 bytes
+static_assert(sizeof(struct OamManager) == 1032);
 
 struct GraphicV2 {
   u32 src;          // 0x0: SELF_REL_PTR(&src)
@@ -85,6 +96,7 @@ struct GraphicV2 {
   u16 rlu : 1;       // bit12, RLU compressed
   u16 prop_b13 : 3;  // bit13..15: ???
 };
+static_assert(sizeof(struct GraphicV2) == 12);
 
 // グラフィックデータ(タイルデータ)の情報を持った構造体(ヘッダみたいなもの)
 // GraphicV2 と同じ意味だけど、 LoadGraphic のコンパイル結果が GraphicV2 でないと一致しないため、GraphicV2 で全部置き換えた後に、この構造体は削除する予定
@@ -105,6 +117,7 @@ struct Graphic {
   // props & 0x7F8 is ofsUnit (4BPP: 32, 8BPP: 64)
   u16 props;
 };
+static_assert(sizeof(struct Graphic) == 12);
 
 // パレットの情報を持った構造体(ヘッダみたいなもの)
 struct Palette {
@@ -113,16 +126,20 @@ struct Palette {
   bool8 lz77;  // lz77 compressed?
   u8 dst;      // PaletteID (0..15)
 };
+static_assert(sizeof(struct Palette) == 8);
 
+// あとで ColorGraphicV2 で統一する予定
 struct ColorGraphic {
   struct Graphic g;
   struct Palette pal;
 };
+static_assert(sizeof(struct ColorGraphic) == 20);
 
 struct ColorGraphicV2 {
   struct GraphicV2 g;
   struct Palette pal;
 };
+static_assert(sizeof(struct ColorGraphicV2) == 20);
 
 // --------------------------------------------
 
@@ -153,10 +170,10 @@ extern const struct ColorGraphic gMiscTilesetGraphics[177];
 
 // --------------------------------------------
 
-void LoadGraphic(const struct GraphicV2* g, void* dst);
+void LoadGraphic(const struct GraphicV2* g, void* dst_vram_offset);
 void LoadPalette(const struct Palette* p, u32 r1);
-s32 RequestGraphicTransfer(const struct Graphic* g, void* dst);
-s32 RequestBgMapTransfer(u16* src, void* dst, s32 bytesize);
+s32 RequestGraphicTransfer(const struct Graphic* g, void* dst_vram_offset);
+s32 RequestBgMapTransfer(u16* src, void* dst_vram_offset, s32 bytesize);
 void EnableBG0(u32* buffer, u32 dst, u32 bytesize, u16 backdrop);
 void DisableBG0(void);
 

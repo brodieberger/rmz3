@@ -222,7 +222,7 @@ static const struct Collision sCollisions[16] = {
 
 // clang-format off
 // 0x0836bd24
-static const struct Coord sCoords[30] = {
+static const Coords32 sCoords[30] = {
     {PIXEL(0), PIXEL(0)},
     {-PIXEL(13), -PIXEL(9)},
     {PIXEL(11), -PIXEL(17)},

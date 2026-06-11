@@ -54,7 +54,7 @@ _08017CC0:
 	movs r0, #1
 	strb r0, [r1]
 	movs r2, #0
-	ldr r0, _08017D38 @ =gSystemSavedataManager
+	ldr r0, _08017D38 @ =gSystemSavedata
 	ldr r1, [r0, #0x40]
 	ldr r0, _08017D3C @ =0x000032DA
 	cmp r1, r0
@@ -110,7 +110,7 @@ _08017CFE:
 _08017D2C: .4byte gSpawnManager
 _08017D30: .4byte gAreaCheckers
 _08017D34: .4byte gCurStory
-_08017D38: .4byte gSystemSavedataManager
+_08017D38: .4byte gSystemSavedata
 _08017D3C: .4byte 0x000032DA
 _08017D40: .4byte 0x00000229
 _08017D44:

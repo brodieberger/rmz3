@@ -17,7 +17,7 @@ FUN_0809c3b4: @ 0x0809C3B4
 	lsrs r5, r3, #0x18
 	ldr r0, _0809C428 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0809C41A
@@ -74,7 +74,7 @@ FUN_0809c430: @ 0x0809C430
 	adds r5, r1, #0
 	ldr r0, _0809C48C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0809C484
@@ -338,7 +338,7 @@ _0809C614:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0809C65A
 	.align 2, 0
 _0809C638: .4byte 0xFFFFF400
@@ -613,7 +613,7 @@ _0809C82C:
 	str r0, [r4, #0x54]
 _0809C84C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0809C852:
 	add sp, #8
 	pop {r4, r5}

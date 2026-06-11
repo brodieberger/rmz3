@@ -4,8 +4,6 @@
 #include "constants/armor.h"
 #include "constants/bg.h"
 #include "constants/charcode.h"
-#include "constants/codename.h"
-#include "constants/collision.h"
 #include "constants/cyberelf.h"
 #include "constants/diskno.h"
 #include "constants/entity.h"
@@ -16,7 +14,6 @@
 #include "constants/minigame.h"
 #include "constants/mod.h"
 #include "constants/motion.h"
-#include "constants/size.h"
 #include "constants/song.h"
 #include "constants/sound.h"
 #include "constants/stage_id.h"
@@ -43,7 +40,7 @@
 // KEY_INPUT(gStageRun.input, z->last)
 #define INPUT_DISABLED 0x8000
 
-// Rank
+// Rank, ResultState.rank, TotalScore.rank
 #define RANK_F 0
 #define RANK_E 1
 #define RANK_D 2

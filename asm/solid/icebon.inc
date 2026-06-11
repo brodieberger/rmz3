@@ -32,7 +32,7 @@ _080CA174:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	strb r5, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -344,7 +344,7 @@ _080CA408:
 	adds r0, r0, r6
 	mov sl, r0
 _080CA426:
-	ldr r2, _080CA478 @ =0x0836FC92
+	ldr r2, _080CA478 @ =motion_t_ARRAY_0836fc92
 	adds r0, r6, #0
 	mov r1, sp
 	movs r3, #3
@@ -352,7 +352,7 @@ _080CA426:
 	mov r1, sl
 	movs r0, #3
 	bl TryDropItem
-	ldr r2, _080CA47C @ =gMission
+	ldr r2, _080CA47C @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080CA480 @ =0x0000270E
 	cmp r1, r0
@@ -382,8 +382,8 @@ _080CA448:
 	bx r0
 	.align 2, 0
 _080CA474: .4byte 0xFFFFF000
-_080CA478: .4byte 0x0836FC92
-_080CA47C: .4byte gMission
+_080CA478: .4byte motion_t_ARRAY_0836fc92
+_080CA47C: .4byte gScore
 _080CA480: .4byte 0x0000270E
 _080CA484: .4byte gSolidFnTable
 
@@ -444,7 +444,7 @@ _080CA4B4:
 	str r4, [sp, #0xc]
 	adds r1, r5, #0
 	adds r1, #0x54
-	ldr r0, _080CA54C @ =0x0836FC98
+	ldr r0, _080CA54C @ =motion_t_ARRAY_0836fc92+(2*3)
 	str r0, [sp]
 	movs r4, #0x18
 	str r4, [sp, #4]
@@ -466,7 +466,7 @@ _080CA51A:
 	adds r0, r0, r1
 	str r0, [r5, #0x54]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -483,5 +483,5 @@ _080CA53A:
 	.align 2, 0
 _080CA544: .4byte pZero2
 _080CA548: .4byte 0x00001001
-_080CA54C: .4byte 0x0836FC98
+_080CA54C: .4byte motion_t_ARRAY_0836fc92+(2*3)
 

@@ -237,7 +237,7 @@ Weapon5_Update: @ 0x0803A8CC
 _0803A91C: .4byte gWeaponFnTable
 _0803A920:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0
 	bne _0803A9E0
@@ -411,7 +411,7 @@ hitZSaber: @ 0x0803AA64
 	ands r0, r1
 	cmp r0, #0
 	beq _0803AA7E
-	ldr r2, _0803AA84 @ =gMission
+	ldr r2, _0803AA84 @ =gScore
 	ldrh r1, [r2, #0x1e]
 	ldr r0, _0803AA88 @ =0x0000FFFE
 	cmp r1, r0
@@ -422,5 +422,5 @@ _0803AA7E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803AA84: .4byte gMission
+_0803AA84: .4byte gScore
 _0803AA88: .4byte 0x0000FFFE

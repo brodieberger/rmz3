@@ -1,7 +1,7 @@
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
+#include "palette_animation.h"
 #include "widget.h"
 
 // サテライト1、サテライト2、フュージョン、Eクリスタル、リスト
@@ -25,12 +25,9 @@ const WidgetRoutine gElfMenuItemRoutine = {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 struct Widget* CreateElfMenuItem(struct GameState* g, u8 row, u8 r2) {
-  struct Widget* w = (struct Widget*)AllocEntityFirst(gWidgetHeaderPtr);
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 7);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = row;
     (w->s).work[1] = r2;
@@ -121,7 +118,7 @@ _080E7332:\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0x5b\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _080E7360:\n\
 	adds r0, r4, #0\n\
 	bl ElfMenuItem_Update\n\
@@ -155,7 +152,7 @@ NAKED static void ElfMenuItem_Update(struct Widget* w) {
 	cmp r0, #0\n\
 	bne _080E739C\n\
 	movs r0, #0x5b\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 _080E739C:\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0xfe\n\
@@ -182,7 +179,7 @@ _080E73C8:\n\
 	cmp r0, #0\n\
 	bne _080E73D4\n\
 	movs r0, #0x5b\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 _080E73D4:\n\
 	ldr r0, [r4, #0x64]\n\
 	ldr r1, [r4, #0x68]\n\
@@ -369,7 +366,7 @@ _080E7534:\n\
 	str r0, [r4, #0x58]\n\
 _080E753A:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080E7540:\n\
 	pop {r3}\n\
 	mov r8, r3\n\

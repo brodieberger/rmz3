@@ -7,9 +7,9 @@ type JsonData = {
   data: Sequence[];
 };
 
-type Sequence = MotionCmd[];
+type Sequence = AnimCmd[];
 
-type MotionCmd = {
+type AnimCmd = {
   frameIdx: number;
   duration: number;
 };

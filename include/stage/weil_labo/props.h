@@ -12,12 +12,12 @@ struct WeilLaboState {
   u16 unk_008;
   u16 unk_00a;
   u32 unk_00c;
-  struct Coord unk_010;
+  Coords32 unk_010;
   u32 unk_018;
   u32 unk_01c;
   u32 unk_020;
-  struct Coord unk_024;
-  struct Coord unk_02c;
+  Coords32 unk_024;
+  Coords32 unk_02c;
   u8 unk_34[212];
 };
 static_assert(sizeof(struct WeilLaboState) == 264);

@@ -14,7 +14,7 @@ createCielMiniObj: @ 0x080DDD04
 	lsrs r4, r2, #0x18
 	ldr r0, _080DDD58 @ =gSolidHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080DDD52
@@ -126,7 +126,7 @@ FUN_080dddb0: @ 0x080DDDB0
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -198,7 +198,7 @@ FUN_080dde48: @ 0x080DDE48
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -236,7 +236,7 @@ FUN_080ddec0: @ 0x080DDEC0
 	push {r4, r5, lr}
 	adds r5, r0, #0
 	ldr r4, [r5, #0x28]
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x11]
 	lsls r0, r0, #1
 	movs r1, #0xdf
@@ -304,7 +304,7 @@ _080DDF40:
 	strb r5, [r4, #0xd]
 _080DDF48:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4, r5}
 	pop {r0}
 	bx r0

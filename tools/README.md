@@ -28,7 +28,7 @@ $ ./tools/scaninc/scaninc -I include -M test.d src/stage/ocean/landscape.c
 
 ```c
 // src/stage/ocean/landscape.c
-#include "blink.h"
+#include "palette_animation.h"
 #include "global.h"
 #include "overworld.h"
 #include "solid.h"

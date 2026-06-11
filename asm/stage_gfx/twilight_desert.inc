@@ -265,7 +265,7 @@ _0800FC70:
 	movs r0, #0x24
 	movs r1, #3
 	movs r2, #0x26
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldr r0, _0800FCA0 @ =gOverworld
 	ldr r1, _0800FCA4 @ =0x0002D02A
 	adds r0, r0, r1
@@ -371,7 +371,7 @@ _0800FD34:
 	adds r2, #0x43
 	movs r0, #0x24
 	movs r1, #3
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrh r0, [r4, #0x10]
 	adds r0, #1
 	strh r0, [r4, #0x10]
@@ -436,7 +436,7 @@ _0800FDAC:
 	adds r2, #0x43
 	movs r0, #0x24
 	movs r1, #3
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrh r0, [r4, #0x10]
 	cmp r0, #0
 	beq _0800FDD4
@@ -453,7 +453,7 @@ _0800FDE0:
 	adds r2, #0x48
 	movs r0, #0x24
 	movs r1, #3
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrh r0, [r4, #0x10]
 	adds r0, #1
 	strh r0, [r4, #0x10]
@@ -518,7 +518,7 @@ _0800FE58:
 	adds r2, #0x48
 	movs r0, #0x24
 	movs r1, #3
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrh r0, [r4, #0x10]
 	cmp r0, #0
 	beq _0800FE80
@@ -555,7 +555,7 @@ _0800FE8C:
 	movs r0, #0x24
 	movs r1, #3
 	movs r2, #0x4c
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	strh r5, [r6, #2]
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -608,7 +608,7 @@ _0800FF28:
 	movs r0, #0x24
 	movs r1, #3
 	movs r2, #0x26
-	bl LoadScreenIntoMetatileMap
+	bl LoadChunk
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]

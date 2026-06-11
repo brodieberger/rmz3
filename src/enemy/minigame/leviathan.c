@@ -150,5 +150,4 @@ static const motion_t sMotions[12] = {
     MOTION(SM053_SHELLUNO, 7),
     MOTION(SM053_SHELLUNO, 8),
 };
-
-
+// clang-format on

@@ -51,7 +51,7 @@ initPhantomMinigame: @ 0x080FBE20
 	strh r0, [r7, #0x2c]
 	str r2, [r7, #0x34]
 	str r2, [r7, #0x38]
-	ldr r0, _080FC064 @ =gSystemSavedataManager
+	ldr r0, _080FC064 @ =gSystemSavedata
 	ldr r0, [r0, #0x3c]
 	str r0, [r7, #0x3c]
 	str r2, [r7, #0x30]
@@ -281,7 +281,7 @@ _080FBED2:
 _080FC058: .4byte 0x00000DCC
 _080FC05C: .4byte 0x00000DC4
 _080FC060: .4byte 0x0009D800
-_080FC064: .4byte gSystemSavedataManager
+_080FC064: .4byte gSystemSavedata
 _080FC068: .4byte 0x00000EA1
 _080FC06C: .4byte 0x00000EA2
 _080FC070: .4byte gStaticMotionGraphics

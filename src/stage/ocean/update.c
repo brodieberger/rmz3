@@ -622,7 +622,7 @@ _0801BF98:\n\
 	lsrs r3, r3, #0x1b\n\
 	bics r1, r3\n\
 	adds r2, r2, r1\n\
-	ldr r1, _0801BFEC @ =gMission\n\
+	ldr r1, _0801BFEC @ =gScore\n\
 	movs r3, #7\n\
 	ldrsb r3, [r1, r3]\n\
 	mov r0, ip\n\
@@ -640,7 +640,7 @@ _0801BF98:\n\
 	.align 2, 0\n\
 _0801BFE4: .4byte gStageRun\n\
 _0801BFE8: .4byte gCurStory\n\
-_0801BFEC: .4byte gMission\n\
+_0801BFEC: .4byte gScore\n\
 _0801BFF0:\n\
 	lsls r0, r2, #2\n\
 	adds r0, r0, r2\n\

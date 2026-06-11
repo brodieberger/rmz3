@@ -36,12 +36,10 @@ const VFXRoutine gParticleRoutine = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-void CreateParticle(struct Coord* c, u8 kind, bool8 isRight) {
-  struct Entity* p = AllocEntityFirst(gVFXHeaderPtr);
+void CreateParticle(Coords32* c, u8 kind, bool8 isRight) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    p->taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_PARTICLE);
-    p->tileNum = 0, p->palID = 0;
     p->work[0] = kind, p->work[1] = 0;
     p->coord = *c;
     SET_XFLIP(p, isRight);
@@ -50,8 +48,8 @@ void CreateParticle(struct Coord* c, u8 kind, bool8 isRight) {
 
 // 0x080b3820
 // チャージセイバーで発生するエフェクトをまとめて生成
-void oz_080b3820(struct Coord* base, bool8 isRight) {
-  struct Coord c;
+void oz_080b3820(Coords32* base, bool8 isRight) {
+  Coords32 c;
   if (isRight) {
     c.x = base->x + PIXEL(34);
   } else {
@@ -66,8 +64,8 @@ void oz_080b3820(struct Coord* base, bool8 isRight) {
   CreateParticle(&c, 5, isRight);  // 石ころ小2
 }
 
-void FUN_080b388c(struct Coord* zc, bool8 isRight) {
-  struct Coord c;
+void FUN_080b388c(Coords32* zc, bool8 isRight) {
+  Coords32 c;
   if (isRight) {
     c.x = zc->x + PIXEL(16);
   } else {
@@ -79,8 +77,8 @@ void FUN_080b388c(struct Coord* zc, bool8 isRight) {
   }
 }
 
-void CreateDashDust(struct Coord* c, bool8 isRight) {
-  if (c->y > SEA) {
+void CreateDashDust(Coords32* c, bool8 isRight) {
+  if (c->y > gOverworld.sea) {
     CreateParticle(c, 9, isRight);
   } else {
     CreateParticle(c, 1, isRight);
@@ -88,8 +86,8 @@ void CreateDashDust(struct Coord* c, bool8 isRight) {
 }
 
 // 壁ずりの土煙
-void CreateWallDust(struct Coord* c, bool8 isRight) {
-  if (c->y > SEA) {
+void CreateWallDust(Coords32* c, bool8 isRight) {
+  if (c->y > gOverworld.sea) {
     CreateParticle(c, 10, isRight);
   } else {
     CreateParticle(c, 2, isRight);
@@ -169,10 +167,10 @@ static void Ghost5_Die(struct Entity* p) {
 // --------------------------------------------
 
 static void initDashDust(struct VFX* p) {
-  InitScalerotMotion1(&p->s);
+  EnableSpriteAnimation_Affine(p);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 11));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 11));
   (p->s).spr.mag.x = 0x200;
   (p->s).spr.mag.y = 0x200;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
@@ -183,7 +181,7 @@ static void FUN_080b39dc(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 17));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 17));
   if ((p->s).flags & X_FLIP) {
     (p->s).coord.x -= PIXEL(20);
   } else {
@@ -218,17 +216,17 @@ static void FUN_080b3a3c(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 17));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 17));
   (p->s).work[2] = 0;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
 }
 
 static void FUN_080b3b20(struct VFX* p) {
-  InitScalerotMotion1(&p->s);
+  EnableSpriteAnimation_Affine(p);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 11));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 11));
   (p->s).spr.mag.x = 0x110;
   (p->s).spr.mag.y = 0x110;
   if ((p->s).flags & X_FLIP) {
@@ -244,7 +242,7 @@ static void FUN_080b3b8c(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 15));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 15));
 
   if ((p->s).flags & X_FLIP) {
     (p->s).d.x = RANDOM(RNG_0202f388) & 0x1FF;
@@ -261,7 +259,7 @@ static void FUN_080b3c40(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 16));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 16));
 
   if ((p->s).flags & X_FLIP) {
     (p->s).d.x = RANDOM(RNG_0202f388) & 0x1FF;
@@ -278,7 +276,7 @@ static void initRicochet(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 9));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 9));
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
 }
@@ -289,7 +287,7 @@ static void initWallDust(struct VFX* p) {
   (p->s).flags |= FLIPABLE;
 
   RANDOM(RNG_0202f388);
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 27));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 27));
   RANDOM(RNG_0202f388);
 
   SET_YFLIP(p, FALSE);
@@ -305,7 +303,7 @@ static void FUN_080b3e08(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 5));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 5));
   (p->s).work[2] = 4;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
@@ -315,7 +313,7 @@ static void FUN_080b3e4c(struct VFX* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 13));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 13));
 
   (p->s).work[2] = 60 + (RANDOM(RNG_0202f388) & 7);
   (p->s).coord.x += PIXEL((RANDOM(RNG_0202f388) & 3) - 2);
@@ -353,7 +351,7 @@ static void FUN_080b3ee0(struct Entity* p) {
   InitNonAffineMotion(p);
   p->flags |= DISPLAY;
   p->flags |= FLIPABLE;
-  SetMotion(p, MOTION(SM000_BATTLE_EFFECT, 13));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 13));
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   Ghost5_Update((void*)p);
 }
@@ -362,31 +360,31 @@ static void FUN_080b3ee0(struct Entity* p) {
 
 // 0x080b3fe8
 static void FUN_080b3fe8(struct Entity* p) {
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   if ((p->work[2]++) & 1) {
     p->flags &= ~DISPLAY;
   } else {
     p->flags |= DISPLAY;
   }
   (p->coord).y -= (PIXEL(1) * 3) / 4;
-  if ((p->motion).state == MOTION_END) SET_VFX_ROUTINE(p, ENTITY_DIE);
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 // 0x080b403c
 static void FUN_080b403c(struct Entity* p) {
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   if ((p->work[2]++) & 1) {
     p->flags &= ~DISPLAY;
   } else {
     p->flags |= DISPLAY;
   }
   (p->coord).y -= (PIXEL(1) * 3) / 4;
-  if ((p->motion).state == MOTION_END) SET_VFX_ROUTINE(p, ENTITY_DIE);
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 // 0x080b4090
 static void FUN_080b4090(struct Entity* p) {
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   (p->coord).x += (p->d).x;
   (p->coord).y += (p->d).y;
   (p->d).y += PIXEL(1) / 4;
@@ -397,16 +395,14 @@ static void FUN_080b4090(struct Entity* p) {
 
 // 0x080b40d4
 static void StepAnimation(struct Entity* p) {
-  UpdateMotionGraphic(p);
-  if ((p->motion).state == MOTION_END) {
-    SET_VFX_ROUTINE(p, ENTITY_DIE);
-  }
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) SET_VFX_ROUTINE(p, ENTITY_DIE);
 }
 
 static void FUN_080b4104(struct Entity* p) {
   u32 idx;
   s32 y;
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   if (p->work[2] < 30) {
     if (p->work[2] & 1) {
       p->flags &= ~DISPLAY;
@@ -428,7 +424,7 @@ static void FUN_080b4104(struct Entity* p) {
 }
 
 static void FUN_080b4198(struct Entity* p) {
-  UpdateMotionGraphic(p);
+  UpdateSpriteAnimation(p);
   if ((--p->work[2]) == 0xFF) {
     SET_VFX_ROUTINE(p, ENTITY_DIE);
   }

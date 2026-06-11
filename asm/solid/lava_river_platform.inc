@@ -26,7 +26,7 @@ _080CCF0E:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
 	strb r0, [r5, #0xe]
@@ -94,7 +94,7 @@ _080CCF90:
 	ldr r0, _080CD018 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	ldr r1, _080CD01C @ =0x000007FF
 	cmp r0, r1
 	bhi _080CCFF2
@@ -221,7 +221,7 @@ _080CD09C:
 	strb r0, [r4, #0xe]
 _080CD0AC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CD0B2:
 	pop {r4}
 	pop {r0}

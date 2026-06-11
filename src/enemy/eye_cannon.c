@@ -16,7 +16,7 @@ const EnemyRoutine gEyeCannonRoutine = {
 };
 // clang-format on
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }
@@ -109,7 +109,7 @@ static const u32 u32_ARRAY_08368358[4] = {
     48,
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(18)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(18)};
 
 static const u8 u8_ARRAY_08368370[4] = {
     249,

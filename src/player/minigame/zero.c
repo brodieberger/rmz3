@@ -23,22 +23,22 @@ const ZeroRoutine gZeroMiniRoutine = {
 };
 // clang-format on
 
-struct Zero* CreateZeroMini(void* q, struct Coord* c, u8 n) {
-  struct Zero* z = AllocPlayer();
-  if (z != NULL) {
-    (z->s).taskCol = 16;
-    INIT_PLAYER_ROUTINE(z, PLAYER_MINIGAME_ZERO);
-    (z->s).coord = *c;
-    (z->s).work[0] = n;
-    (z->s).unk_28 = q;
+struct Entity* CreateZeroMini(void* q, Coords32* c, u8 n) {
+  struct Entity* p = AllocPlayer();
+  if (p != NULL) {
+    p->renderPrio = 16;
+    INIT_PLAYER_ROUTINE(p, PLAYER_MINIGAME_ZERO);
+    p->coord = *c;
+    p->work[0] = n;
+    p->unk_28 = q;
   }
-  return z;
+  return p;
 }
 
 // --------------------------------------------
 
 static void ZeroMini_Init(struct Zero* z) {
-  struct Coord* c;
+  Coords32* c;
   InitNonAffineMotion(&z->s);
   ResetDynamicMotion(&z->s);
   (z->s).flags |= DISPLAY;
@@ -57,7 +57,7 @@ static void ZeroMini_Init(struct Zero* z) {
   (z->mg).zero.unk_284 = 0, (z->mg).zero.unk_285 = 0;
 
   {
-    struct Coord* c;
+    Coords32* c;
     c = &(z->s).d;
     c->x = c->y = 0;
     c = &(z->s).unk_coord;
@@ -149,13 +149,13 @@ static bool32 nop_0803658c(void* _) { return TRUE; }
 static void zeroMini_08036590(struct Zero* z) {
   switch ((z->s).mode[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM000_ZERO_NEUTRAL, 0));
+      SetSpriteAnimation(z, MOTION(DM000_ZERO_NEUTRAL, 0));
       (z->s).work[2] = 60;
       (z->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&z->s);
+      UpdateSpriteAnimation(z);
       if (((z->s).work[2] == 0) || (--(z->s).work[2] == 0)) {
         (z->s).mode[1] = 1, (z->s).mode[2] = 0;
       }
@@ -175,7 +175,7 @@ static bool32 FUN_08036b94(void* _) { return TRUE; }
 static void zeroMini_08036b98(struct Zero* z) {
   switch ((z->s).mode[2]) {
     case 0: {
-      SetMotion(&z->s, MOTION(DM001_ZERO_DYING, 0));
+      SetSpriteAnimation(z, MOTION(DM001_ZERO_DYING, 0));
       (z->s).mode[2]++;
       FALLTHROUGH;
     }
@@ -192,7 +192,7 @@ static void zeroMini_08036b98(struct Zero* z) {
         (z->s).d.y = 0;
         (z->s).coord.y += dy;
       }
-      UpdateMotionGraphic(&z->s);
+      UpdateSpriteAnimation(z);
       break;
     }
   }
