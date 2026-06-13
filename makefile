@@ -238,4 +238,4 @@ $(STRINGS_OBJS): $(BUILD_DIR)/%.o: %.s
 	$(PREPROC) $< charmap.txt | $(AS) $(ASFLAGS) -o $@ -
 
 $(ASM_SCRIPTS_OBJS): $(BUILD_DIR)/%.o: %.s
-	$(CPP) $(CPPFLAGS) $< | $(AS) $(ASFLAGS) -o $@ -
+	$(CPP) -x assembler-with-cpp $(CPPFLAGS) $< | $(AS) $(ASFLAGS) -o $@ -
