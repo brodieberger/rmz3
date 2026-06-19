@@ -254,8 +254,18 @@ typedef struct Zero {
   s32 door3d_x;                  // 0x238, Door3D で x座標を保存するのに使われているが、その関数が使われていなさそうに見えるので、この変数も使われていない可能性がある
   u8 unk_23c[64];                // 0x23C (addr = 0x2037e9c), 使われているか不明
   union MinigamePlayerState mg;  // 0x27C (ミニゲーム以外では使わない)
-} Player;                        // 652 bytes
+
+#if MODERN
+  // Just Guard: シールドガード開始直後に攻撃を防ぐとラクサイガで反撃する
+  u8 justGuardTimer;        // ガード開始時にセットされ、0になるまで減っていく。0より大きい間にガードに攻撃が当たるとJust Guard成立
+  bool8 justGuardTriggered;  // ShieldGuardのonCollisionでJust Guardが成立した際にセットされる
+#endif
+} Player;                        // 652 bytes (656 bytes when MODERN)
+#if MODERN
+static_assert(sizeof(struct Zero) == 656);
+#else
 static_assert(sizeof(struct Zero) == 652);
+#endif
 
 typedef void (*ZeroFunc)(struct Zero*);
 

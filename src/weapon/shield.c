@@ -385,6 +385,15 @@ static void onCollision(struct Body* body, Coords32* c1 UNUSED, Coords32* c2 UNU
       (p->s).unk_coord = q->coord;
       (&p->props)->props[1][1]++;
     }
+#if MODERN
+    else {
+      struct WeaponCommon* p = (struct WeaponCommon*)body->parent;
+      struct Zero* z = (p->props).z;
+      if (z->justGuardTimer > 0) {
+        z->justGuardTriggered = TRUE;
+      }
+    }
+#endif
   }
 }
 

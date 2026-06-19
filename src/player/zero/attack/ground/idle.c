@@ -885,6 +885,12 @@ NON_MATCH static void rod_1000slash(struct Zero* z) {
 static void shield_0(struct Zero* z);
 static void shield_1(struct Zero* z);
 static void shield_2(struct Zero* z);
+#if MODERN
+static void shield_counter(struct Zero* z);
+
+#define JUST_GUARD_WINDOW 10
+#define COUNTER_INVINCIBILITY_FRAMES 24
+#endif
 
 void shieldAttack(struct Zero* z) {
   // clang-format off
@@ -895,6 +901,9 @@ void shieldAttack(struct Zero* z) {
       shield_throw,
       shield_0802e1c8,
       zero_shield_0802e268,
+#if MODERN
+      shield_counter,
+#endif
   };
   // clang-format on
   struct Zero_b4* b4 = &(z->unk_b4);
@@ -1086,8 +1095,24 @@ static void shield_1(struct Zero* z) {
   z->unk_12e = 0;
   if ((z->unk_b4).attackState8[2] == 0) {
     CreateWeaponShieldGuard(z, 0);
+#if MODERN
+    z->justGuardTimer = JUST_GUARD_WINDOW;
+    z->justGuardTriggered = FALSE;
+#endif
     (z->unk_b4).attackState8[2]++;
   } else {
+#if MODERN
+    if (z->justGuardTimer > 0) {
+      z->justGuardTimer--;
+    }
+    if (z->justGuardTriggered) {
+      z->justGuardTriggered = FALSE;
+      (z->unk_b4).attackState8[1] = 6;
+      (z->unk_b4).attackState8[2] = 0;
+      shield_counter(z);
+      return;
+    }
+#endif
     u8 ok = IsAttackOK(z, &z->usingWeapon);
     if (ok == 1) {
       (z->unk_b4).attackState8[0] = 3;
@@ -1100,6 +1125,31 @@ static void shield_1(struct Zero* z) {
     }
   }
 }
+
+#if MODERN
+static void shield_counter(struct Zero* z) {
+  struct Zero_b4* b4 = &(z->unk_b4);
+
+  if ((z->unk_b4).attackState8[2] == 0) {
+    SetSpriteAnimation(z, MOTION(DM027_ZERO_SABER_SMASH, 0x00));
+    if ((b4->status).element == ELEMENT_THUNDER) {
+      CreateWeaponSaber(z, SABER_SMASH_ELEC);
+    } else {
+      CreateWeaponSaber(z, SABER_SMASH);
+    }
+    z->body.invincibleTime = COUNTER_INVINCIBILITY_FRAMES;
+    (z->unk_b4).attackState8[2]++;
+    return;
+  }
+
+  KeepMotion(z, MOTION(DM027_ZERO_SABER_SMASH, 0x00));
+  if (IsSpriteAnimEnd(z)) {
+    (z->unk_b4).attackState8[0] = 0;
+    (z->unk_b4).attackState8[1] = 0;
+    SetSpriteAnimation(z, GetDefaultMotion(z));
+  }
+}
+#endif
 
 static void shield_2(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
