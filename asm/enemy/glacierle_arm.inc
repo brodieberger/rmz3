@@ -10,9 +10,9 @@ createGlacierleAtkHand: @ 0x08082194
 	mov r7, r8
 	push {r7}
 	mov r8, r0
-	ldr r0, _08082210 @ =gZakoHeaderPtr
+	ldr r0, _08082210 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r7, r0, #0
 	cmp r7, #0
 	beq _08082204
@@ -68,7 +68,7 @@ _08082204:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08082210: .4byte gZakoHeaderPtr
+_08082210: .4byte gEnemyHeaderPtr
 _08082214: .4byte gEnemyFnTable
 
 	thumb_func_start createGlacierleJoint
@@ -78,9 +78,9 @@ createGlacierleJoint: @ 0x08082218
 	push {r7}
 	adds r7, r0, #0
 	mov r8, r1
-	ldr r0, _080822A4 @ =gZakoHeaderPtr
+	ldr r0, _080822A4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080822D8
@@ -144,7 +144,7 @@ _0808229A:
 	str r0, [r3, #0x68]
 	b _080822B0
 	.align 2, 0
-_080822A4: .4byte gZakoHeaderPtr
+_080822A4: .4byte gEnemyHeaderPtr
 _080822A8: .4byte gEnemyFnTable
 _080822AC:
 	str r2, [r3, #0x5c]
@@ -183,9 +183,9 @@ createGlacierleSucker: @ 0x080822E4
 	push {r4, r5, lr}
 	adds r5, r0, #0
 	adds r4, r1, #0
-	ldr r0, _08082340 @ =gZakoHeaderPtr
+	ldr r0, _08082340 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08082336
@@ -226,7 +226,7 @@ _08082336:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08082340: .4byte gZakoHeaderPtr
+_08082340: .4byte gEnemyHeaderPtr
 _08082344: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08082348
@@ -1176,7 +1176,7 @@ _08082A30:
 	cmp r0, #0
 	bne _08082A58
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082A58:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -1192,7 +1192,7 @@ _08082A68:
 	cmp r0, #0
 	beq _08082A78
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082A78:
 	ldr r0, [r6, #0x28]
 	ldrb r0, [r0, #0xc]
@@ -1236,7 +1236,7 @@ _08082AB0:
 	strb r0, [r4, #0xe]
 _08082AC4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082ACA:
 	adds r0, r4, #0
 	adds r0, #0xbc
@@ -1286,7 +1286,7 @@ _08082B08:
 	strb r0, [r6, #0xe]
 _08082B24:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08082B2A:
 	adds r0, r6, #0
 	adds r0, #0xbc

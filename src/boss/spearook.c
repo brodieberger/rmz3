@@ -10,10 +10,10 @@ void Spearook_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gSpearookRoutine = {
-    [ENTITY_INIT] =      Spearook_Init,
-    [ENTITY_UPDATE] =    Spearook_Update,
-    [ENTITY_DIE] =       Spearook_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Spearook_Init,
+    [ENTITY_UPDATE] =    (void*)Spearook_Update,
+    [ENTITY_DIE] =       (void*)Spearook_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -107,6 +107,7 @@ static const BossFunc sDeads[5] = {
 
 // --------------------------------------------
 
+// 0x08365784
 static const struct Collision sCollisions[17] = {
     {
       kind : DRP,
@@ -282,7 +283,7 @@ static const u8 u8_ARRAY_0836591c[16] = {
     7, 7, 7, 7, 7, 7, 7, 7, 9, 9, 9, 9, 9, 9, 9, 9,
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(16)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(16)};
 static const u8 sInitModes[4] = {1, 2, 3, 16};
 
 static const u8 u8_ARRAY_08365938[16] = {

@@ -15,18 +15,15 @@ const ProjectileRoutine gGrandCannonBombRoutine = {
     [ENTITY_INIT] =      GrandCannonBomb_Init,
     [ENTITY_UPDATE] =    GrandCannonBomb_Update,
     [ENTITY_DIE] =       GrandCannonBomb_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
 
-void CreateGrandCannonBomb(struct Coord* c, s32 amplitude, u8 angle) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+void CreateGrandCannonBomb(Coords32* c, s32 amplitude, u8 angle) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 3);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
     (p->s).d.x = Cos(angle, amplitude);
@@ -58,10 +55,7 @@ static void GrandCannonBomb_Update(struct Projectile* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
@@ -71,10 +65,7 @@ static void GrandCannonBomb_Update(struct Projectile* p) {
 // --------------------------------------------
 
 static void GrandCannonBomb_Die(struct Projectile* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   CreateSmoke(3, &(p->s).coord);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
@@ -101,7 +92,7 @@ _0809D3C4:\n\
 	strb r0, [r4, #0xe]\n\
 _0809D3D4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x5c]\n\
 	adds r0, r0, r1\n\

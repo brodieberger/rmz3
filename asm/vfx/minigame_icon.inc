@@ -13,7 +13,7 @@ CreateCopyXIcon: @ 0x080C81AC
 	lsrs r6, r2, #0x18
 	ldr r0, _080C81FC @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080C81F4
@@ -58,7 +58,7 @@ FUN_080c8204: @ 0x080C8204
 	lsrs r5, r1, #0x18
 	ldr r0, _080C8254 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C824C
@@ -105,7 +105,7 @@ FUN_080c825c: @ 0x080C825C
 	lsrs r5, r2, #0x18
 	ldr r0, _080C82B0 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C82A8
@@ -159,7 +159,7 @@ FUN_080c82b8: @ 0x080C82B8
 	lsrs r6, r0, #0x18
 	ldr r0, _080C8328 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C831A
@@ -385,7 +385,7 @@ _080C844C:
 	strb r0, [r4, #0xe]
 _080C847A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C8480:
 	pop {r4}
 	pop {r0}
@@ -529,7 +529,7 @@ _080C8586:
 	strb r0, [r5, #0xe]
 _080C858C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080C861C
 _080C8594:
 	adds r0, r5, #0
@@ -587,7 +587,7 @@ _080C85F0:
 	adds r6, #0x50
 	strh r0, [r6]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	beq _080C860E
@@ -638,7 +638,7 @@ _080C8638:
 	strb r0, [r4, #0xe]
 _080C8658:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -733,7 +733,7 @@ _080C86F6:
 	bl ForceEntityPalette
 _080C870E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080C873C @ =gJoypad
 	ldrh r1, [r0]
 	movs r2, #2
@@ -848,7 +848,7 @@ _080C87A6:
 	str r0, [r4, #0x54]
 _080C87E8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5]
 	ldrb r6, [r6]
 	cmp r0, r6

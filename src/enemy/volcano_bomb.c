@@ -17,20 +17,15 @@ const EnemyRoutine gVolcanoBombRoutine = {
     [ENTITY_INIT] =      VolcanoBomb_Init,
     [ENTITY_UPDATE] =    VolcanoBomb_Update,
     [ENTITY_DIE] =       VolcanoBomb_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 struct Enemy* CreateVolcanoBomb(s32 x, s32 y) {
-  struct Enemy* p = (struct Enemy*)AllocEntityLast(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_VOLCANO_BOMB);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
+    INIT_ENEMY_ROUTINE(p, ENEMY_VOLCANO_BOMB);
     (p->s).coord.x = x;
     (p->s).coord.y = y;
     (p->s).work[0] = 0;
@@ -40,14 +35,14 @@ struct Enemy* CreateVolcanoBomb(s32 x, s32 y) {
 #endif
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }
 
 bool8 FUN_08071298(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     VolcanoBomb_Die(p);
     return TRUE;
   }
@@ -57,7 +52,7 @@ bool8 FUN_08071298(struct Enemy* p) {
 // --------------------------------------------
 
 static void VolcanoBomb_Init(struct Enemy* p) {
-  SET_ZAKO_ROUTINE(p, ENTITY_UPDATE);
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = sInitModes[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
@@ -90,18 +85,15 @@ static void VolcanoBomb_Update(struct Enemy* p) {
 // --------------------------------------------
 
 static void VolcanoBomb_Die(struct Enemy* p) {
-  struct Coord c;
+  Coords32 c;
 
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   c.x = (p->s).coord.x;
   c.y = (p->s).coord.y;
-  FUN_080b7ffc((struct CollidableEntity*)p, &c, (motion_t*)sMotions, 4);
+  FUN_080b7ffc((struct Entity*)p, &c, (motion_t*)sMotions, 4);
   PlaySound(SE_UNK_41);
-  SET_ZAKO_ROUTINE(p, ENTITY_EXIT);
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------

@@ -574,7 +574,7 @@ _0803DACE:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x74
 	ldr r1, _0803DB24 @ =0x08361AD0
@@ -648,7 +648,7 @@ _0803DB64:
 	cmp r4, #0
 	bne _0803DB88
 	ldr r0, _0803DB9C @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	movs r0, #1
 	strb r0, [r6, #0xd]
 	strb r4, [r6, #0xe]
@@ -769,7 +769,7 @@ _0803DC70:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r5, #0
 	adds r2, #0xc0
 	ldr r0, [r2]
@@ -992,7 +992,7 @@ _0803DE0E:
 	b _0803DE2C
 _0803DE20:
 	ldr r0, _0803DE50 @ =0x0000010D
-	bl stopSound
+	bl StopSound
 	movs r0, #1
 	strb r0, [r5, #0xd]
 	strb r4, [r5, #0xe]

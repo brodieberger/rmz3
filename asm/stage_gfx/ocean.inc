@@ -577,7 +577,7 @@ _0800D594:
 	cmp r0, #0
 	beq _0800D5A4
 	movs r0, #0xe1
-	bl stopSound
+	bl StopSound
 _0800D5A4:
 	pop {r0}
 	bx r0

@@ -214,7 +214,7 @@ _0803C078: .4byte zsaber_0803c0f4
 ThrowBlade_Update: @ 0x0803C07C
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -283,7 +283,7 @@ zsaber_0803c0f4: @ 0x0803C0F4
 	ands r0, r1
 	cmp r0, #0
 	beq _0803C10E
-	ldr r2, _0803C114 @ =gMission
+	ldr r2, _0803C114 @ =gScore
 	ldrh r1, [r2, #0x1e]
 	ldr r0, _0803C118 @ =0x0000FFFE
 	cmp r1, r0
@@ -294,5 +294,5 @@ _0803C10E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803C114: .4byte gMission
+_0803C114: .4byte gScore
 _0803C118: .4byte 0x0000FFFE

@@ -1,6 +1,14 @@
+import { BitField } from './types.ts';
+
 export * from './load.ts';
 export * from './parser.ts';
 export * from './types.ts';
+export * from './entity.ts';
+
+export const ROM_PATH = 'baserom.gba';
+export const VRAM = 0x0600_0000;
+export const BASE = 0x0800_0000;
+export const SEPARATOR = '@;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
 
 export const toHex = (val: number, maxLength: number, prefix = ''): string => {
   const abs = Math.abs(val);
@@ -22,4 +30,19 @@ export const Coord = (c: number): string => {
   const tmp = c >> 8;
   const result = (tmp >= 0) ? `${tmp}*PX` : `-${-tmp}*PX`;
   return result;
+};
+
+export const dumpBitField = (val: number, bitField: BitField): string => {
+  const flags: string[] = [];
+  Object.entries(bitField).forEach(([key, name]) => {
+    const bit = Number(key);
+    if (val & (1 << bit)) {
+      flags.push(name);
+      val &= ~(1 << bit);
+    }
+  });
+  if (val !== 0) {
+    console.warn(`Warning: Unknown bit(s) set: 0x${toHex(val, 8)}`);
+  }
+  return flags.join(' | ') || '0';
 };

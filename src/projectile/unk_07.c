@@ -12,22 +12,19 @@ const ProjectileRoutine gProjectile7Routine = {
     [ENTITY_INIT] =      Projectile7_Init,
     [ENTITY_UPDATE] =    Projectile7_Update,
     [ENTITY_DIE] =       Projectile7_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Projectile* CreateProjectile7(struct Coord* c, s32 amplitude, u8 angle) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* CreateProjectile7(Coords32* c, s32 amplitude, u8 angle) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 7);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
     angle += 0x80;
-    *(s32*)p->work = amplitude;
+    *(s32*)p->buffer = amplitude;
     (p->s).d.x = Cos(angle, amplitude);
     (p->s).d.y = Sin(angle, amplitude);
   }
@@ -41,7 +38,7 @@ static void Projectile7_Init(struct Projectile* p) {
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
   INIT_BODY(p, &sCollisions[0], 0, NULL);
-  SetMotion(&p->s, MOTION(SM000_BATTLE_EFFECT, 1));
+  SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 1));
   (p->s).work[2] = 0xFF;
   (p->s).spr.oam.priority = 1;
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
@@ -52,32 +49,23 @@ static void Projectile7_Update(struct Projectile* p) {
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
   (p->s).coord.x += (p->s).d.x;
   (p->s).coord.y += (p->s).d.y;
-  UpdateMotionGraphic(&p->s);
-  if ((p->s).motion.state == MOTION_END) {
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+  UpdateSpriteAnimation(p);
+  if (IsSpriteAnimEnd(p)) {
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
   }
 }
 
 static void Projectile7_Die(struct Projectile* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

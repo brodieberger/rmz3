@@ -17,50 +17,38 @@ const SolidRoutine gDoor2DBlueRoutine = {
     [ENTITY_INIT] =      Door2DBlue_Init,
     [ENTITY_UPDATE] =    Door2DBlue_Update,
     [ENTITY_DIE] =       Door2DBlue_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 NON_MATCH static void Door2DBlue_Init(struct Solid* p) {
 #if MODERN
-  bool8 xflip;
-
   InitNonAffineMotion(&p->s);
   if ((p->s).work[1] == 0) {
-    struct Solid* otherside = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
-    if (otherside == NULL) {
+    // Otherside
+    struct Entity* q = AllocEntityLast(gSolidHeaderPtr);
+    if (q == NULL) {
       return;
     }
     (p->s).coord.x += PIXEL(8);
     (p->s).coord.y += PIXEL(9);
-    (otherside->s).taskCol = 30;
-    INIT_SOLID_ROUTINE(otherside, SOLID_DOOR_2D_BLUE);
-    (otherside->s).tileNum = 0;
-    (otherside->s).palID = 0;
-    (otherside->s).flags2 |= WHITE_PAINTABLE;
-    (otherside->s).invincibleID = (otherside->s).uniqueID;
-    (otherside->s).work[1] = 1;
-    (otherside->s).unk_28 = &p->s;
-    (otherside->s).coord.x = (p->s).coord.x - PIXEL(1);
-    (otherside->s).coord.y = (p->s).coord.y;
-    if ((gOverworld.id & 0x7F) == STAGE_OCEAN) {
-      wStaticMotionPalIDs[SM018_DOOR_2D_BLUE] = 10;
-    }
+    INIT_SOLID_ROUTINE(q, SOLID_DOOR_2D_BLUE);
+    q->work[1] = 1;
+    q->unk_28 = (void*)p;
+    (q->coord).x = (p->s).coord.x - PIXEL(1);
+    (q->coord).y = (p->s).coord.y;
+    if ((gOverworld.terrain.id & 0x7F) == STAGE_OCEAN) wStaticMotionPalIDs[SM018_DOOR_2D_BLUE] = 10;
     LOAD_STATIC_GRAPHIC(SM018_DOOR_2D_BLUE);
   } else {
-    SetMotion(&p->s, MOTION(SM018_DOOR_2D_BLUE, 0));
-    xflip = TRUE;
-    (p->s).flags |= X_FLIP;
-    (p->s).spr.xflip = xflip;
-    (p->s).spr.oam.xflip |= TRUE;
+    SetSpriteAnimation(p, MOTION(SM018_DOOR_2D_BLUE, 0));
+    SET_XFLIP(p, TRUE);
   }
 
   (p->s).spr.oam.priority = 1;
   (p->s).flags |= DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 0;
-  (p->s).mode[2] = 0;
+  (p->s).mode[1] = 0, (p->s).mode[2] = 0;
   Door2DBlue_Update(p);
 #else
   INCCODE("asm/wip/Door2DBlue_Init.inc");
@@ -97,15 +85,12 @@ static void Door2DBlue_Update(struct Solid* p) {
 }
 
 static void Door2DBlue_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
-NAKED static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+NAKED static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	ldr r3, [r0, #0x2c]\n\
@@ -199,13 +184,13 @@ _080CAF78: .4byte gStageRun\n\
 static void FUN_080caf7c(struct Solid* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(SM018_DOOR_2D_BLUE, 0));
+      SetSpriteAnimation(p, MOTION(SM018_DOOR_2D_BLUE, 0));
       INIT_BODY(p, &sCollisions[0], 0, onCollision);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }

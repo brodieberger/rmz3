@@ -4,148 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080e20a4
-FUN_080e20a4: @ 0x080E20A4
-	push {r4, r5, r6, lr}
-	adds r6, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	lsls r2, r2, #0x18
-	lsrs r4, r2, #0x18
-	ldr r0, _080E20F0 @ =gElfHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080E20E8
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x10
-	strb r0, [r1]
-	ldr r1, _080E20F4 @ =gElfFnTable
-	movs r0, #1
-	strb r0, [r3, #9]
-	ldr r0, [r1, #4]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	adds r0, r3, #0
-	adds r0, #0xb4
-	str r6, [r0]
-	strb r5, [r3, #0x10]
-	strb r4, [r3, #0x11]
-_080E20E8:
-	adds r0, r3, #0
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080E20F0: .4byte gElfHeaderPtr
-_080E20F4: .4byte gElfFnTable
-
-	thumb_func_start Elf1_Init
-Elf1_Init: @ 0x080E20F8
-	push {r4, r5, r6, r7, lr}
-	mov r7, sb
-	mov r6, r8
-	push {r6, r7}
-	adds r7, r0, #0
-	adds r0, #0xb4
-	ldr r0, [r0]
-	mov sb, r0
-	ldr r1, _080E21B8 @ =gZeroRanges
-	ldr r0, _080E21BC @ =0x00000147
-	add r0, sb
-	ldrb r0, [r0]
-	lsls r0, r0, #3
-	adds r0, r0, r1
-	ldr r5, [r0]
-	ldr r6, [r0, #4]
-	ldr r0, _080E21C0 @ =gPause
-	movs r4, #1
-	strb r4, [r0]
-	adds r0, r7, #0
-	bl InitNonAffineMotion
-	adds r0, r7, #0
-	bl ResetDynamicMotion
-	ldrb r0, [r7, #0xa]
-	movs r1, #0
-	mov r8, r1
-	orrs r4, r0
-	movs r0, #2
-	orrs r4, r0
-	strb r4, [r7, #0xa]
-	movs r0, #0
-	bl GetElfMotion
-	adds r1, r0, #0
-	lsls r1, r1, #0x10
-	lsrs r1, r1, #0x10
-	adds r0, r7, #0
-	bl SetMotion
-	adds r0, r7, #0
-	adds r0, #0x4c
-	mov r2, r8
-	strb r2, [r0]
-	adds r2, r7, #0
-	adds r2, #0x4a
-	ldrb r1, [r2]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	strb r0, [r2]
-	ldrb r1, [r7, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-	strb r0, [r7, #0xa]
-	lsls r1, r5, #0x10
-	asrs r1, r1, #0x10
-	mov r2, sb
-	ldr r0, [r2, #0x54]
-	adds r0, r0, r1
-	str r0, [r7, #0x54]
-	asrs r5, r5, #0x10
-	ldr r0, [r2, #0x58]
-	adds r0, r0, r5
-	str r0, [r7, #0x58]
-	adds r0, r7, #0
-	adds r0, #0xbc
-	mov r1, r8
-	str r1, [r0]
-	str r1, [r0, #4]
-	subs r0, #4
-	strb r1, [r0]
-	adds r1, r7, #0
-	adds r1, #0xb9
-	movs r0, #0x20
-	strb r0, [r1]
-	ldr r1, _080E21C4 @ =gElfFnTable
-	ldrb r0, [r7, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #1
-	str r1, [r7, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r7, #0x14]
-	adds r0, r7, #0
-	bl Elf1_Update
-	pop {r3, r4}
-	mov r8, r3
-	mov sb, r4
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080E21B8: .4byte gZeroRanges
-_080E21BC: .4byte 0x00000147
-_080E21C0: .4byte gPause
-_080E21C4: .4byte gElfFnTable
-
 	thumb_func_start Elf1_Update
 Elf1_Update: @ 0x080E21C8
 	push {r4, r5, r6, r7, lr}
@@ -161,7 +19,7 @@ Elf1_Update: @ 0x080E21C8
 	ldr r4, [r0]
 	ldr r5, [r0, #4]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	lsls r1, r4, #0x10
 	asrs r1, r1, #0x10
 	ldr r0, [r6, #0x54]
@@ -249,7 +107,7 @@ _080E2286:
 	.align 2, 0
 _080E228C: .4byte gZeroRanges
 _080E2290: .4byte 0x00000147
-_080E2294: .4byte 0x08371CA0
+_080E2294: .4byte sElf1Updates
 _080E2298: .4byte gSineTable
 
 	thumb_func_start Elf1_Die
@@ -261,7 +119,7 @@ Elf1_Die: @ 0x080E229C
 	ldr r1, _080E22FC @ =gPause
 	movs r0, #0
 	strb r0, [r1]
-	ldr r1, _080E2300 @ =gUnlockedElfPtr
+	ldr r1, _080E2300 @ =gElfAvailability
 	adds r3, r2, #0
 	adds r3, #0xb4
 	ldr r5, _080E2304 @ =0x00000121
@@ -276,7 +134,7 @@ Elf1_Die: @ 0x080E229C
 	ldrh r0, [r3, #4]
 	adds r0, #1
 	strh r0, [r3, #4]
-	ldr r0, _080E2308 @ =gMission
+	ldr r0, _080E2308 @ =gScore
 	ldr r0, [r0]
 	adds r1, r0, #0
 	adds r1, #0x4c
@@ -304,9 +162,9 @@ _080E22DA:
 	bx r0
 	.align 2, 0
 _080E22FC: .4byte gPause
-_080E2300: .4byte gUnlockedElfPtr
+_080E2300: .4byte gElfAvailability
 _080E2304: .4byte 0x00000121
-_080E2308: .4byte gMission
+_080E2308: .4byte gScore
 _080E230C: .4byte gElfFnTable
 
 	thumb_func_start FUN_080e2310

@@ -1,7 +1,7 @@
 #include "entity.h"
 #include "gfx.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 /*
 work[0]:
@@ -15,17 +15,20 @@ work[0]:
 #define BOSS_MUGSHOT 1
 #define MISSION_LOCATION 3
 
-static void Ghost71_Init(struct VFX* p);
-static void Ghost71_Update(struct VFX* p);
-static void Ghost71_Die(struct VFX* p);
+static const Coords32 sMissionLocation[];
+static const u8 MissionBitfields_0836f81c[];
+
+static void VFX71_Init(struct Entity* p);
+static void VFX71_Update(struct Entity* p);
+static void VFX71_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gGhost71Routine = {
-    [ENTITY_INIT] =      Ghost71_Init,
-    [ENTITY_UPDATE] =    Ghost71_Update,
-    [ENTITY_DIE] =       Ghost71_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)VFX71_Init,
+    [ENTITY_UPDATE] =    (void*)VFX71_Update,
+    [ENTITY_DIE] =       (void*)VFX71_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -98,7 +101,7 @@ NAKED struct VFX* CreateStageBossMugshots(void* p) {
 	bl LoadPalette\n\
 	ldr r0, _080C5E64 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r6, r0, #0\n\
 	cmp r6, #0\n\
 	beq _080C5E30\n\
@@ -251,7 +254,7 @@ _080C5F1E:\n\
 _080C5F38:\n\
 	ldr r0, _080C5F94 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r1, r0, #0\n\
 	cmp r1, #0\n\
 	beq _080C5F64\n\
@@ -297,82 +300,79 @@ _080C5F94: .4byte gVFXHeaderPtr\n\
  .syntax divided\n");
 }
 
-void FUN_080c5f98(struct VFX* p) {
-  SET_VFX_ROUTINE(p, ENTITY_DIE);
-  return;
-}
+void FUN_080c5f98(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_DIE); }
 
 // --------------------------------------------
 
-static void FUN_080c5ff8(struct VFX* p);
-static void FUN_080c6778(struct VFX* p);
+static void FUN_080c5ff8(struct Entity* p);
+static void FUN_080c6778(struct Entity* p);
 
-static void Ghost71_Init(struct VFX* p) {
+static void VFX71_Init(struct Entity* p) {
   // clang-format off
-  static const VFXFunc sInitializers[] = {
-      FUN_080c5ff8,
-      FUN_080c5ff8,
-      FUN_080c5ff8,
-      FUN_080c5ff8,
-      FUN_080c6778,
+  static const EntityFunc sInitializers[] = {
+      (void*)FUN_080c5ff8,
+      (void*)FUN_080c5ff8,
+      (void*)FUN_080c5ff8,
+      (void*)FUN_080c5ff8,
+      (void*)FUN_080c6778,
   };
   // clang-format on
-  (sInitializers[(p->s).work[0]])(p);
+  (sInitializers[p->work[0]])(p);
 }
 
 // --------------------------------------------
 
-static void FUN_080c6018(struct VFX* p);
+static void FUN_080c6018(struct Entity* p);
 static void updateBossMugshot(struct VFX* p);
 static void FUN_080c647c(struct VFX* p);
 static void updateMissionPoint(struct VFX* p);
-static void nop_080c687c(struct VFX* p);
+static void nop_080c687c(void* _ UNUSED);
 
-void Ghost71_Update(struct VFX* p) {
+void VFX71_Update(struct Entity* p) {
   // clang-format off
-  static const VFXFunc sUpdates[] = {
-      FUN_080c6018,
-      updateBossMugshot,
-      FUN_080c647c,
-      updateMissionPoint,
-      nop_080c687c,
+  static const EntityFunc sUpdates[] = {
+    (void*)FUN_080c6018,
+    (void*)updateBossMugshot,
+    (void*)FUN_080c647c,
+    (void*)updateMissionPoint,
+    (void*)nop_080c687c,
   };
   // clang-format on
-  (sUpdates[(p->s).work[0]])(p);
+  (sUpdates[p->work[0]])(p);
 }
 
 // --------------------------------------------
 
-static void FUN_080c6038(struct VFX* p);
+static void FUN_080c6038(struct Entity* p);
 static void FUN_080c65ac(struct VFX* p);
 
-static void Ghost71_Die(struct VFX* p) {
+static void VFX71_Die(struct Entity* p) {
   // clang-format off
-  static const VFXFunc sDeinitializers[] = {
-      FUN_080c6038,
-      FUN_080c6038,
-      FUN_080c65ac,
-      FUN_080c6038,
-      FUN_080c6038,
+  static const EntityFunc sDeinitializers[] = {
+      (void*)FUN_080c6038,
+      (void*)FUN_080c6038,
+      (void*)FUN_080c65ac,
+      (void*)FUN_080c6038,
+      (void*)FUN_080c6038,
   };
   // clang-format on
-  (sDeinitializers[(p->s).work[0]])(p);
+  (sDeinitializers[p->work[0]])(p);
 }
 
 // --------------------------------------------
 
-static void FUN_080c5ff8(struct VFX* p) {
+static void FUN_080c5ff8(struct Entity* p) {
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  Ghost71_Update(p);
+  VFX71_Update(p);
 }
 
-static void FUN_080c6018(struct VFX* p) {
+static void FUN_080c6018(struct Entity* p) {
   SET_VFX_ROUTINE(p, ENTITY_DIE);
-  Ghost71_Die(p);
+  VFX71_Die(p);
 }
 
-static void FUN_080c6038(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void FUN_080c6038(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -427,7 +427,7 @@ _080C608C:\n\
 	adds r0, #0x25\n\
 	movs r1, #1\n\
 	strb r1, [r0]\n\
-	ldr r0, _080C60E4 @ =gMission\n\
+	ldr r0, _080C60E4 @ =gScore\n\
 	ldr r2, [r0]\n\
 	ldr r0, _080C60E8 @ =MissionBitfields_0836f81c\n\
 	ldrb r3, [r5, #0x11]\n\
@@ -443,7 +443,7 @@ _080C608C:\n\
 	str r1, [r5, #0x5c]\n\
 	b _080C6118\n\
 	.align 2, 0\n\
-_080C60E4: .4byte gMission\n\
+_080C60E4: .4byte gScore\n\
 _080C60E8: .4byte MissionBitfields_0836f81c\n\
 _080C60EC:\n\
 	adds r0, r3, #0\n\
@@ -500,7 +500,7 @@ _080C6140:\n\
 	strb r0, [r5, #0xd]\n\
 _080C614E:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r5, #0x11]\n\
 	cmp r0, #3\n\
 	bhi _080C6194\n\
@@ -699,7 +699,7 @@ _080C62C0:\n\
 	lsrs r1, r1, #0x10\n\
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
-	ldr r0, _080C6320 @ =gMission\n\
+	ldr r0, _080C6320 @ =gScore\n\
 	ldr r2, [r0]\n\
 	ldr r1, _080C6324 @ =MissionBitfields_0836f81c\n\
 	ldrb r0, [r5, #0x11]\n\
@@ -720,7 +720,7 @@ _080C62FE:\n\
 	strb r0, [r5, #0xd]\n\
 _080C6304:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r5, #0x28]\n\
 	ldrb r0, [r0, #0xc]\n\
 	cmp r0, #1\n\
@@ -733,7 +733,7 @@ _080C6316:\n\
 	strb r0, [r5, #0xd]\n\
 	b _080C63BC\n\
 	.align 2, 0\n\
-_080C6320: .4byte gMission\n\
+_080C6320: .4byte gScore\n\
 _080C6324: .4byte MissionBitfields_0836f81c\n\
 _080C6328:\n\
 	adds r0, r5, #0\n\
@@ -763,7 +763,7 @@ _080C6328:\n\
 	strb r0, [r5, #0xd]\n\
 _080C635E:\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r5, #0x12]\n\
 	adds r0, #1\n\
 	strb r0, [r5, #0x12]\n\
@@ -810,7 +810,7 @@ _080C6398:\n\
 	ldr r0, [r0, #0xc]\n\
 	str r0, [r5, #0x14]\n\
 _080C63BC:\n\
-	ldr r0, _080C63F8 @ =gMission\n\
+	ldr r0, _080C63F8 @ =gScore\n\
 	ldr r2, [r0]\n\
 	ldr r1, _080C63FC @ =MissionBitfields_0836f81c\n\
 	ldrb r0, [r5, #0x11]\n\
@@ -838,7 +838,7 @@ _080C63BC:\n\
 	.align 2, 0\n\
 _080C63F0: .4byte gSineTable\n\
 _080C63F4: .4byte gVFXFnTable\n\
-_080C63F8: .4byte gMission\n\
+_080C63F8: .4byte gScore\n\
 _080C63FC: .4byte MissionBitfields_0836f81c\n\
 _080C6400:\n\
 	ldrb r1, [r5, #0xa]\n\
@@ -1026,7 +1026,7 @@ _080C64FA:\n\
 	strb r0, [r4, #0xd]\n\
 _080C6558:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r3, _080C6594 @ =gBlendRegBuffer\n\
 	ldrb r2, [r4, #0x12]\n\
 	movs r0, #0x20\n\
@@ -1058,7 +1058,7 @@ _080C6598:\n\
 	b _080C65A6\n\
 _080C65A0:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080C65A6:\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\
@@ -1197,7 +1197,7 @@ _080C663A:\n\
 	strb r0, [r4, #0xd]\n\
 _080C66A2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080C6724 @ =gOverworld\n\
 	ldr r3, _080C6728 @ =0x0002D025\n\
 	adds r0, r0, r3\n\
@@ -1302,7 +1302,7 @@ _080C6774: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void FUN_080c6778(struct VFX* g) {
+NAKED static void FUN_080c6778(struct Entity* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -1387,7 +1387,7 @@ _080C67FC:\n\
 _080C6810:\n\
 	ldr r0, _080C6874 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r1, r0, #0\n\
 	cmp r1, #0\n\
 	beq _080C6842\n\
@@ -1442,12 +1442,12 @@ _080C6878: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void nop_080c687c(struct VFX* p) { return; }
+static void nop_080c687c(void* _) { return; }
 
 // --------------------------------------------
 
 // clang-format off
-const struct Coord sMissionLocation[12] = {
+static const Coords32 sMissionLocation[MISSION_COUNT] = {
   {0x5300, 0x2F00},
   {0x8400, 0x3800},
   {0x7D00, 0x2D00},
@@ -1460,9 +1460,9 @@ const struct Coord sMissionLocation[12] = {
   {0x6B00, 0x1C00},
   {0x6D00, 0x3100},
   {0x9900, 0x2600},
-};
+}; // 0x0836f7bc
 // clang-format on
 
-const u8 MissionBitfields_0836f81c[12] = {
+static const u8 MissionBitfields_0836f81c[MISSION_COUNT] = {
     2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14,
-};
+};  // 0x0836f81c

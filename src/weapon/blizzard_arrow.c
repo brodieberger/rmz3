@@ -35,11 +35,11 @@ void BlizzardArrow_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gBlizzardArrowRoutine = {
-    [ENTITY_INIT] =      BlizzardArrow_Init,
-    [ENTITY_UPDATE] =    BlizzardArrow_Update,
-    [ENTITY_DIE] =       BlizzardArrow_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)BlizzardArrow_Init,
+    [ENTITY_UPDATE] =    (void*)BlizzardArrow_Update,
+    [ENTITY_DIE] =       (void*)BlizzardArrow_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
@@ -50,20 +50,14 @@ void MenuExit_BlizzardArrow(struct Weapon* w) {
   if (((&z->unk_b4)->status).element != ELEMENT_ICE) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
     return;
   }
   if (z->unk_136 & (1 << 0)) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }

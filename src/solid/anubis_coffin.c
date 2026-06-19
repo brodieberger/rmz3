@@ -13,7 +13,7 @@ const SolidRoutine gAnubisCoffinRoutine = {
     [ENTITY_INIT] =      AnubisCoffin_Init,
     [ENTITY_UPDATE] =    AnubisCoffin_Update,
     [ENTITY_DIE] =       AnubisCoffin_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -22,14 +22,9 @@ void CreateAnubisCoffins(struct Entity* anubis, bool8 r1) {
   s32 i;
   struct Solid* another = NULL;
   for (i = 0; i < 2; i++) {
-    struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+    struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
     if (p != NULL) {
-      (p->s).taskCol = 30;
       INIT_SOLID_ROUTINE(p, SOLID_ANUBIS_COFFIN);
-      (p->s).tileNum = 0;
-      (p->s).palID = 0;
-      (p->s).flags2 |= WHITE_PAINTABLE;
-      (p->s).invincibleID = (p->s).uniqueID;
       (p->s).work[0] = 0;
       (p->s).work[2] = i;
       (p->s).work[3] = r1;

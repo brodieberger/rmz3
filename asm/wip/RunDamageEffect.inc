@@ -1,6 +1,6 @@
 	push {r4, r5, r6, r7, lr}
 	adds r4, r0, #0
-	bl setCurProcessedEntityHeader
+	bl _StartEntityListIteration
 	ldr r0, [r4, #0xc]
 	ldr r0, [r0, #4]
 	str r0, [r4, #0xc]
@@ -10,10 +10,10 @@
 	cmp r3, r0
 	beq _08016F8C
 	ldr r5, _08016F94 @ =0x00001004
-	ldr r0, _08016F98 @ =0x0202F360
+	ldr r0, _08016F98 @ =gWhitePaintFlags
 	mov ip, r0
-	ldr r7, _08016F9C @ =0x0202F344
-	ldr r6, _08016FA0 @ =0x0202F330
+	ldr r7, _08016F9C @ =gInHitStopFrames
+	ldr r6, _08016FA0 @ =gIsPlayDamageSE
 _08016F16:
 	ldrh r1, [r3, #0xa]
 	adds r0, r5, #0
@@ -83,6 +83,6 @@ _08016F8C:
 	bx r0
 	.align 2, 0
 _08016F94: .4byte 0x00001004
-_08016F98: .4byte 0x0202F360
-_08016F9C: .4byte 0x0202F344
-_08016FA0: .4byte 0x0202F330
+_08016F98: .4byte gWhitePaintFlags
+_08016F9C: .4byte gInHitStopFrames
+_08016FA0: .4byte gIsPlayDamageSE

@@ -2,9 +2,19 @@
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "zero.h"
 
-static const struct Collision sCollisions[29];
-static const struct Coord sExplosionCoords[2];
+struct Hellbat {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  u8 unk_b4[32];
+  s32 unk_d4;
+  u8 unk_d8[12];
+};
+static_assert(sizeof(struct Hellbat) == sizeof(struct Boss));
+
+static const struct Collision sCollisions[];
+static const Coords32 sExplosionCoords[2];
 
 void hellbat_0804cbe4(struct Boss* p);
 
@@ -14,27 +24,20 @@ static void Hellbat_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gHellbatRoutine = {
-    [ENTITY_INIT] =      Hellbat_Init,
-    [ENTITY_UPDATE] =    Hellbat_Update,
-    [ENTITY_DIE] =       Hellbat_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Hellbat_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Hellbat_Update,
+    [ENTITY_DIE] =       (BossFunc)Hellbat_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateHellbat(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateHellbat(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-
     INIT_BOSS_ROUTINE(p, BOSS_HELLBAT);
-
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
+    p->coord = *c;
+    p->work[0] = n;
   }
   return p;
 }
@@ -178,7 +181,7 @@ _0804B150: .4byte gBossFnTable\n\
 static bool32 nop_0804b520(struct Boss* p);
 static bool32 nop_0804b56c(struct Boss* p);
 static bool32 nop_0804b5e8(struct Boss* p);
-static bool32 nop_0804b6b4(struct Boss* p);
+static bool32 nop_0804b6b4(void* _ UNUSED);
 void FUN_0804b900(struct Boss* p);
 void FUN_0804ba40(struct Boss* p);
 void FUN_0804bcf4(struct Boss* p);
@@ -190,7 +193,7 @@ void FUN_0804caa0(struct Boss* p);
 
 static void hellbatMode0(struct Boss* p);
 static void hellbatMode1(struct Boss* p);
-static void hellbatMode2(struct Boss* p);
+static void hellbatMode2(struct Hellbat* p);
 void hellbatNeutral(struct Boss* p);
 void hellbatMode4(struct Boss* p);
 void hellbatDisappear(struct Boss* p);
@@ -221,23 +224,23 @@ static void Hellbat_Update(struct Boss* p) {
 
   // clang-format off
   static const BossFunc sUpdates2[12] = {
-      hellbatMode0,
-      hellbatMode1,
-      hellbatMode2,
-      hellbatNeutral,
-      hellbatMode4,
-      hellbatDisappear,
-      hellbatBatShower,
-      hellbatEchoWave,
-      hellbatThunderRevorb,
-      hellbatEX,
-      hellbatDamage,
-      hellbatKnockBackDamage,
+      (void*)hellbatMode0,
+      (void*)hellbatMode1,
+      (void*)hellbatMode2,
+      (void*)hellbatNeutral,
+      (void*)hellbatMode4,
+      (void*)hellbatDisappear,
+      (void*)hellbatBatShower,
+      (void*)hellbatEchoWave,
+      (void*)hellbatThunderRevorb,
+      (void*)hellbatEX,
+      (void*)hellbatDamage,
+      (void*)hellbatKnockBackDamage,
   };
   // clang-format on
 
   if (((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) {
-    if (!(gStageRun.missionStatus & MISSION_FAIL)) {
+    if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
       SET_BOSS_ROUTINE(p, ENTITY_DIE);
       PlaySound(SE_HELLBAT_DEATH);
       if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -475,7 +478,7 @@ _0804B394:\n\
 	str r1, [r4, #0x5c]\n\
 _0804B3B4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0804B4DC\n\
 	.align 2, 0\n\
 _0804B3BC: .4byte 0x0000A80B\n\
@@ -552,7 +555,7 @@ _0804B436:\n\
 	adds r0, r4, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0x44\n\
 	strb r0, [r4, #0x12]\n\
 	b _0804B4DC\n\
@@ -561,7 +564,7 @@ _0804B460: .4byte 0x0000A80D\n\
 _0804B464: .4byte 0x0000A80C\n\
 _0804B468:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _0804B47E\n\
@@ -666,24 +669,20 @@ _0804B51C: .4byte gStageRun\n\
 
 // --------------------------------------------
 
-static bool32 nop_0804b520(struct Boss* p) {
-  // nop
-  return TRUE;
-}
+static bool32 nop_0804b520(struct Boss* p) { return TRUE; }
 
 static void hellbatMode0(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).flags |= DISPLAY;
-      SetMotion(&p->s, MOTION(DM168_HELLBAT, 0));
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).scriptEntity)->flags & (1 << 0)) {
-        (p->s).mode[1] = 1;
-        (p->s).mode[2] = 0;
+        (p->s).mode[1] = 1, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -692,25 +691,20 @@ static void hellbatMode0(struct Boss* p) {
 
 // --------------------------------------------
 
-static bool32 nop_0804b56c(struct Boss* p) {
-  // nop
-  return TRUE;
-}
+static bool32 nop_0804b56c(struct Boss* p) { return TRUE; }
 
 static void hellbatMode1(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).work[2] = 60;
-      SetMotion(&p->s, MOTION(DM168_HELLBAT, 8));
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 8));
       PlaySound(SE_HELLBAT_PREBATTLE);
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
 
@@ -722,9 +716,8 @@ static void hellbatMode1(struct Boss* p) {
     }
 
     case 3: {
-      UpdateMotionGraphic(&p->s);
-      (p->s).mode[1] = 2;
-      (p->s).mode[2] = 0;
+      UpdateSpriteAnimation(p);
+      (p->s).mode[1] = 2, (p->s).mode[2] = 0;
       break;
     }
   }
@@ -732,31 +725,26 @@ static void hellbatMode1(struct Boss* p) {
 
 // --------------------------------------------
 
-static bool32 nop_0804b5e8(struct Boss* p) {
-  // nop
-  return TRUE;
-}
+static bool32 nop_0804b5e8(struct Boss* p) { return TRUE; }
 
-static void hellbatMode2(struct Boss* p) {
+static void hellbatMode2(struct Hellbat* p) {
   switch ((p->s).mode[2]) {
     case 0: {
-      SetMotion(&p->s, MOTION(DM168_HELLBAT, 1));
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 1));
       (p->s).work[2] = 60;
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
-      if ((p->s).motion.state == MOTION_END) {
-        (p->s).mode[2]++;
-      }
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) (p->s).mode[2]++;
       break;
     }
 
     case 2: {
-      s32 unk_d4 = (p->props.hellbat).unk_d4 - PIXEL(72);
+      s32 unk_d4 = p->unk_d4 - PIXEL(72);
       (p->s).coord.y += (((unk_d4 - (p->s).coord.y)) << 5) >> 8;
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).work[2] == 0) || (--(p->s).work[2]) == 0) {
         (p->s).mode[2]++;
       }
@@ -764,15 +752,14 @@ static void hellbatMode2(struct Boss* p) {
     }
 
     case 3: {
-      SetMotion(&p->s, MOTION(DM168_HELLBAT, 2));
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 2));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 4: {
-      UpdateMotionGraphic(&p->s);
-      if (((p->s).motion.state == MOTION_END) && ((gStageRun.vm.active & 1) == 0)) {
-        (p->s).mode[1] = 3;
-        (p->s).mode[2] = 0;
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p) && !(gStageRun.vm.active & VM_ACTIVE)) {
+        (p->s).mode[1] = 3, (p->s).mode[2] = 0;
       }
       break;
     }
@@ -784,13 +771,71 @@ static void hellbatMode2(struct Boss* p) {
 
 // --------------------------------------------
 
-static bool32 nop_0804b6b4(struct Boss* p) {
-  // nop
-  return TRUE;
-}
+static bool32 nop_0804b6b4(void* _) { return TRUE; }
 
 INCASM("asm/boss/hellbat.inc");
 
+extern const u16 u16_ARRAY_080feedc[6];
+
+u16 FUN_0804cccc(void* _, u32 a, bool32 rankAS) {
+  s32 i;
+  if (rankAS == 1) {
+    for (i = 0; i < (s32)ARRAY_COUNT(u16_ARRAY_080feedc); i++) {
+      if (u16_ARRAY_080feedc[i] == a) {
+        return u16_ARRAY_080feedc[(i + 1) % 6];
+      }
+    }
+  } else {
+    for (i = 0; i < (s32)ARRAY_COUNT(u16_ARRAY_080feedc) - 1; i++) {
+      if (u16_ARRAY_080feedc[i] == a) {
+        return u16_ARRAY_080feedc[(i + 1) % 5];
+      }
+    }
+  }
+}
+
+// プレイヤーとヘルバットが 80px 以上離れているなら TRUE を返す
+bool32 isHellbatFarAway(struct Boss* p) {
+  s32 zx = (pZero2->s).coord.x;
+  s32 hellbat_x = (p->s).coord.x;
+  if ((zx - hellbat_x) > 0) {
+    if ((zx - hellbat_x) < PIXEL(80)) {
+      return FALSE;
+    }
+    return TRUE;
+  } else {
+    if ((hellbat_x - zx) >= PIXEL(80)) {
+      return TRUE;
+    }
+    return FALSE;
+  }
+}
+
+void hellbat_0804cd5c(struct Boss* p) {
+  // const motion_t m = ((p->s).motionID << 8) | (p->s).motion.id;
+  if ((((p->s).motionID << 8) | (p->s).motion.id) == MOTION(DM168_HELLBAT, 14)) {
+    if (IsSpriteAnimEnd(p)) {
+      if (((p->s).flags & X_FLIP) == 0) {
+        (p->s).spr.xflip = TRUE;
+        (p->s).spr.oam.xflip = TRUE;
+        (p->s).flags |= X_FLIP;
+      } else {
+        (p->s).spr.xflip = FALSE;
+        (p->s).spr.oam.xflip = FALSE;
+        (p->s).flags &= ~X_FLIP;
+      }
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 0));
+    }
+  } else if ((pZero2->s).coord.x > (p->s).coord.x) {
+    if (!((p->s).flags & X_FLIP)) {
+      SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 14));
+    }
+  } else if ((p->s).flags & X_FLIP) {
+    SetSpriteAnimation(p, MOTION(DM168_HELLBAT, 14));
+  }
+}
+
+// 0x08362f50
 static const struct Collision sCollisions[29] = {
     [0] = {
       kind : DRP,
@@ -1068,9 +1113,11 @@ static const struct Collision sCollisions[29] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(32)};
+// 0x08363208
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(32)};
 
-static const struct Coord sExplosionCoords[2] = {
+// 0x08363210
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(32)},
     {PIXEL(0), -PIXEL(32)},
 };

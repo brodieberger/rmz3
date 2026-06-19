@@ -2,7 +2,7 @@
 
 import { Command } from '@cliffy/command';
 import { Parser } from '@binary-parser';
-import { join } from 'https://deno.land/std/path/mod.ts';
+import { join } from '@std/path';
 
 // All tileset dump are completed, so this tool is no longer needed.
 

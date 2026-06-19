@@ -1,15 +1,16 @@
-#include "blink.h"
 #include "gfx.h"
 #include "global.h"
+#include "mod.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 #define HEIGHT 14
 #define WIDTH 16
 
-static void initResistanceBase(struct Coord* _ UNUSED);
-static void updateResistanceBase(struct Coord* c);
-static void nop_08016378(struct Coord* _ UNUSED);
-static void exitResistanceBase(struct Coord* _ UNUSED);
+static void initResistanceBase(Coords32* _ UNUSED);
+static void updateResistanceBase(Coords32* c);
+static void nop_08016378(Coords32* _ UNUSED);
+static void exitResistanceBase(Coords32* _ UNUSED);
 
 enum ResistanceBaseWeather {
   SUNNY,
@@ -18,59 +19,60 @@ enum ResistanceBaseWeather {
   SUNSET,
 };
 
-void CreateSnow(struct Coord* c, u32 n);
+void CreateSnow(Coords32* c, u32 n);
 
 static const StageFunc sStageRoutine[4] = {
     initResistanceBase,
     updateResistanceBase,
     nop_08016378,
     exitResistanceBase,
-};
+};  // 0x083472E8
 
-static void initResistanceBase(struct Coord* _ UNUSED) {
+// 0x080160BC
+static void initResistanceBase(Coords32* _ UNUSED) {
   gOverworld.state[0] = 0;
   gOverworld.state[1] = 0;
 
   gOverworld.work.resistanceBase.unk_000 = 0;
-  gOverworld.work.resistanceBase.weather = gSystemSavedataManager.weather;
+  gOverworld.work.resistanceBase.weather = gSystemSavedata.weather;
   gOverworld.work.resistanceBase.unk_002 = 0;
   if (gStageRun.id == STAGE_WEILS_LABO) {
     gOverworld.work.resistanceBase.weather = SUNSET;  // sunset
   }
 
-  if ((gSystemSavedataManager.mods[4] & (1 << 4)) != 0) {
-    LoadScreenIntoMetatileMap(5, 6, 7);
+  if (FLAG(gSystemSavedata.flags, MOD_ANDREW_1UP)) {
+    LoadChunk(5, 6, 7);
   }
-  if ((gSystemSavedataManager.mods[5] & (1 << 1)) != 0) {
-    LoadScreenIntoMetatileMap(6, 2, 86);
-    LoadScreenIntoMetatileMap(6, 3, 87);
-    LoadScreenIntoMetatileMap(7, 3, 88);
+  if (FLAG(gSystemSavedata.flags, MOD_FLOWER)) {
+    LoadChunk(6, 2, 86);
+    LoadChunk(6, 3, 87);
+    LoadChunk(7, 3, 88);
   }
 };
 
 // 0x08016154
-static void updateResistanceBase(struct Coord* c) {
+static void updateResistanceBase(Coords32* c) {
   if ((TILESET_ID(0) == STAGE_BASE) && (TILESET_IDX(0) == 1)) {
     if ((gOverworld.work.resistanceBase.unk_000 & 1) == 0) {
       gOverworld.work.resistanceBase.unk_000 |= 1;
-      LoadBlink(0x6a, 0);
+      StartPaletteAnimation(106, 0);
     }
-    UpdateBlinkMotionState(0x6a);
+    StepPaletteAnimation(106);
 
   } else if (gOverworld.work.resistanceBase.unk_000 & 1) {
-    ClearBlink(0x6a);
+    RemovePaletteAnimation(106);
     gOverworld.work.resistanceBase.unk_000 ^= 1;
   }
 
   if ((TILESET_ID(0) == STAGE_BASE) && (TILESET_IDX(0) == 4)) {
     if ((gOverworld.work.resistanceBase.unk_000 & 2) == 0) {
       gOverworld.work.resistanceBase.unk_000 |= 2;
-      LoadBlink(0x68, 0);
+      StartPaletteAnimation(104, 0);
     }
-    UpdateBlinkMotionState(0x68);
+    StepPaletteAnimation(104);
 
   } else if (gOverworld.work.resistanceBase.unk_000 & 2) {
-    ClearBlink(0x68);
+    RemovePaletteAnimation(104);
     gOverworld.work.resistanceBase.unk_000 ^= 2;
   }
 
@@ -79,37 +81,34 @@ static void updateResistanceBase(struct Coord* c) {
 
     if (((c->y < PIXEL(800)) && (PIXEL(480) <= c->x)) && (c->x <= PIXEL(2160))) {
       if ((gOverworld.work.resistanceBase.unk_002 & 0xF) == 0) {
-        struct Coord c;
-        RNG_0202f388 = LCG(RNG_0202f388);
-        c.x = PIXEL((RNG_0202f388 >> 16) % 960) + PIXEL(1200);
+        Coords32 c;
+        c.x = PIXEL(RANDOM(RNG_0202f388) % 960) + PIXEL(1200);
         c.y = PIXEL(160);
         CreateSnow(&c, 0x380);
       }
 
     } else if (c->y < PIXEL(1120)) {
       if ((gOverworld.work.resistanceBase.unk_002 & 0x3F) == 0) {
-        struct Coord c;
-        RNG_0202f388 = LCG(RNG_0202f388);
-        c.x = PIXEL((RNG_0202f388 >> 16) % 240) + PIXEL(720);
+        Coords32 c;
+        c.x = PIXEL(RANDOM(RNG_0202f388) % 240) + PIXEL(720);
         c.y = PIXEL(800);
         CreateSnow(&c, 0x140);
       }
 
     } else if ((gOverworld.work.resistanceBase.unk_002 & 0x1F) == 0) {
-      struct Coord c;
-      RNG_0202f388 = LCG(RNG_0202f388);
-      c.x = PIXEL((RNG_0202f388 >> 16) % 480) + PIXEL(2160);
+      Coords32 c;
+      c.x = PIXEL(RANDOM(RNG_0202f388) % 480) + PIXEL(2160);
       c.y = PIXEL(1280);
       CreateSnow(&c, 0x140);
     }
   }
 }
 
-static void nop_08016378(struct Coord* _ UNUSED) { return; }
+static void nop_08016378(Coords32* _ UNUSED) { return; }
 
-static void exitResistanceBase(struct Coord* _ UNUSED) {
-  ClearBlink(0x68);
-  ClearBlink(0x6a);
+static void exitResistanceBase(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(104);
+  RemovePaletteAnimation(106);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -159,31 +158,31 @@ _080163C0:\n\
 	strh r0, [r1]\n\
 	movs r0, #0x6b\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x6c\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x6d\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x6e\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x6f\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x70\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x74\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x75\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x76\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	strh r4, [r5, #0x10]\n\
 	ldrb r0, [r5, #0xe]\n\
 	adds r0, #1\n\
@@ -197,13 +196,13 @@ _08016438:\n\
 	beq _080164D2\n\
 	movs r0, #0x72\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r5, #0xe]\n\
 	adds r0, #1\n\
 	strb r0, [r5, #0xe]\n\
 _08016452:\n\
 	movs r0, #0x72\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r0, r0, #0x18\n\
 	cmp r0, #4\n\
@@ -215,22 +214,22 @@ _08016452:\n\
 	cmp r0, #2\n\
 	bne _080164D2\n\
 	movs r0, #0x72\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x73\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r5, #0xe]\n\
 	adds r0, #1\n\
 	strb r0, [r5, #0xe]\n\
 _08016480:\n\
 	movs r0, #0x73\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r0, r0, #0x18\n\
 	cmp r0, #3\n\
 	bne _080164D2\n\
 	movs r0, #0x73\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x78\n\
 	strh r0, [r5, #0x12]\n\
 	ldrb r0, [r5, #0xe]\n\
@@ -263,23 +262,23 @@ _080164D2:\n\
 	adds r0, #1\n\
 	strh r0, [r5, #0x10]\n\
 	movs r0, #0x6b\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x6c\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x6d\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x6e\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x6f\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x70\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x74\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x75\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x76\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	pop {r4, r5}\n\
 	pop {r0}\n\
 	bx r0\n\
@@ -344,17 +343,17 @@ _08016580: .4byte gMiscTilesetGraphics+(58*20)-0xd1534\n\
 
 static void rbase_08016584(struct StageLayer* l UNUSED, const struct Stage* _ UNUSED) {
   gBlendRegBuffer.bldclt = 0;
-  ClearBlink(0x6b);
-  ClearBlink(0x6c);
-  ClearBlink(0x6d);
-  ClearBlink(0x6e);
-  ClearBlink(0x6f);
-  ClearBlink(0x70);
-  ClearBlink(0x74);
-  ClearBlink(0x75);
-  ClearBlink(0x76);
-  ClearBlink(0x72);
-  ClearBlink(0x73);
+  RemovePaletteAnimation(0x6b);
+  RemovePaletteAnimation(0x6c);
+  RemovePaletteAnimation(0x6d);
+  RemovePaletteAnimation(0x6e);
+  RemovePaletteAnimation(0x6f);
+  RemovePaletteAnimation(0x70);
+  RemovePaletteAnimation(0x74);
+  RemovePaletteAnimation(0x75);
+  RemovePaletteAnimation(0x76);
+  RemovePaletteAnimation(0x72);
+  RemovePaletteAnimation(0x73);
 }
 
 void setBgPrio3(struct StageLayer* l, const struct Stage* _) {
@@ -375,11 +374,11 @@ void rbase_0801660c(struct StageLayer* l, const struct Stage* _ UNUSED) {
     *bgcnt &= 0xFFFC;
     *bgcnt |= 3;
 
-    (l->prevViewportCenterPixel).y = 0;
-    (l->prevViewportCenterPixel).x = 0;
+    (l->prevViewportLeftTopPixel).y = 0;
+    (l->prevViewportLeftTopPixel).x = 0;
     (l->scrollPower).x = 0x80;
     (l->scrollPower).y = 0x80;
-    if ((l->viewportCenterPixel).x < 1440) {
+    if ((l->viewportLeftTopPixel).x < 1440) {
       (l->scroll).x = 0x168;
       (l->scroll).y = 400;
     } else {
@@ -392,12 +391,12 @@ void rbase_0801660c(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
 static void rbase_0801666c(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
-    BGCNT16(l->bgIdx >> 4) = (BGCNT16(l->bgIdx >> 4) & 0xFFFC) | 3;
-    (l->prevViewportCenterPixel).y = 0;
-    (l->prevViewportCenterPixel).x = 0;
+    BGCNT16(l->bgIdx >> 4) = (BGCNT16(l->bgIdx >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
+    (l->prevViewportLeftTopPixel).y = 0;
+    (l->prevViewportLeftTopPixel).x = 0;
     (l->scrollPower).x = 0x20;
     (l->scrollPower).y = 0x20;
-    if ((l->viewportCenterPixel).x < 1440) {
+    if ((l->viewportLeftTopPixel).x < 1440) {
       (l->scroll).x = 0x276;
       (l->scroll).y = 0x2BC;
       gOverworld.range.left = 0x34000;
@@ -410,15 +409,15 @@ static void rbase_0801666c(struct StageLayer* l, const struct Stage* _ UNUSED) {
     }
 
     if (gOverworld.work.resistanceBase.weather == SUNNY) {
-      LoadBlink(105, 0);
+      StartPaletteAnimation(105, 0);
     } else if (gOverworld.work.resistanceBase.weather == NIGHT) {
       (l->scroll).y -= 0x140;
-      LoadBlink(120, 0);
-      LoadBlink(121, 0);
-      LoadBlink(122, 0);
+      StartPaletteAnimation(120, 0);
+      StartPaletteAnimation(121, 0);
+      StartPaletteAnimation(122, 0);
     } else if (gOverworld.work.resistanceBase.weather == SNOWY) {
-      LoadBlink(201, 0);
-      LoadBlink(202, 0);
+      StartPaletteAnimation(201, 0);
+      StartPaletteAnimation(202, 0);
     }
 
     l->unk_10 = 0;
@@ -426,23 +425,23 @@ static void rbase_0801666c(struct StageLayer* l, const struct Stage* _ UNUSED) {
   }
 
   if (gOverworld.work.resistanceBase.weather == SUNNY) {
-    UpdateBlinkMotionState(105);
+    StepPaletteAnimation(105);
 
   } else if (gOverworld.work.resistanceBase.weather == NIGHT) {
-    UpdateBlinkMotionState(120);
-    UpdateBlinkMotionState(121);
-    UpdateBlinkMotionState(122);
-    UpdateBlinkMotionState(123);
+    StepPaletteAnimation(120);
+    StepPaletteAnimation(121);
+    StepPaletteAnimation(122);
+    StepPaletteAnimation(123);
     l->unk_10++;
     if (l->unk_10 == 3600) {
-      ClearBlink(123);
-      LoadBlink(123, 0);
+      RemovePaletteAnimation(123);
+      StartPaletteAnimation(123, 0);
       l->unk_10 = 0;
     }
 
   } else if (gOverworld.work.resistanceBase.weather == SNOWY) {
-    UpdateBlinkMotionState(201);
-    UpdateBlinkMotionState(202);
+    StepPaletteAnimation(201);
+    StepPaletteAnimation(202);
   }
 }
 
@@ -451,13 +450,13 @@ static void rbase_080167dc(struct StageLayer* l, const struct Stage* _ UNUSED) {
   gOverworld.range.top = 0;
   gOverworld.range.right = MAX_X;
   gOverworld.range.bottom = MAX_Y;
-  ClearBlink(0x69);
-  ClearBlink(0x78);
-  ClearBlink(0x79);
-  ClearBlink(0x7a);
-  ClearBlink(0x7b);
-  ClearBlink(0xc9);
-  ClearBlink(0xca);
+  RemovePaletteAnimation(0x69);
+  RemovePaletteAnimation(0x78);
+  RemovePaletteAnimation(0x79);
+  RemovePaletteAnimation(0x7a);
+  RemovePaletteAnimation(0x7b);
+  RemovePaletteAnimation(0xc9);
+  RemovePaletteAnimation(0xca);
 }
 
 static void setBgPrio1(struct StageLayer* l, const struct Stage* _ UNUSED) {
@@ -477,23 +476,24 @@ static void rbase_08016878(struct StageLayer* l, const struct Stage* _ UNUSED) {
     (l->work).resistanceBase.frameCounter = 2;
     l->phase++;
   }
-  if ((l->viewportCenterPixel).x - 0x571U < 0xEF) {
-    b = (l->viewportCenterPixel).y < 560;
+
+  if ((l->viewportLeftTopPixel).x > 1392 && (l->viewportLeftTopPixel).x < (1392 + DISPLAY_WIDTH)) {
+    b = (l->viewportLeftTopPixel).y < 560;
     if (b != (l->work).resistanceBase.frameCounter) {
       if (b) {
-        LoadScreenIntoMetatileMap(5, 2, 21);
-        LoadScreenIntoMetatileMap(5, 3, 22);
-        LoadScreenIntoMetatileMap(5, 4, 82);
-        LoadScreenIntoMetatileMap(8, 2, 23);
-        LoadScreenIntoMetatileMap(8, 3, 24);
-        LoadScreenIntoMetatileMap(8, 4, 83);
+        LoadChunk(5, 2, 21);
+        LoadChunk(5, 3, 22);
+        LoadChunk(5, 4, 82);
+        LoadChunk(8, 2, 23);
+        LoadChunk(8, 3, 24);
+        LoadChunk(8, 4, 83);
       } else {
-        LoadScreenIntoMetatileMap(5, 2, 17);
-        LoadScreenIntoMetatileMap(5, 3, 33);
-        LoadScreenIntoMetatileMap(5, 4, 49);
-        LoadScreenIntoMetatileMap(8, 2, 20);
-        LoadScreenIntoMetatileMap(8, 3, 36);
-        LoadScreenIntoMetatileMap(8, 4, 52);
+        LoadChunk(5, 2, 17);
+        LoadChunk(5, 3, 33);
+        LoadChunk(5, 4, 49);
+        LoadChunk(8, 2, 20);
+        LoadChunk(8, 3, 36);
+        LoadChunk(8, 4, 52);
       }
       (l->work).resistanceBase.frameCounter = b;
     }
@@ -567,7 +567,7 @@ _08016952:\n\
 	bne _080169F0\n\
 	movs r0, #0xc7\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0xc8\n\
 	b _08016A00\n\
 	.align 2, 0\n\
@@ -586,11 +586,11 @@ _080169F0:\n\
 	movs r0, #0x89\n\
 	lsls r0, r0, #1\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldr r0, _08016A08 @ =0x00000113\n\
 _08016A00:\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	b _08016A46\n\
 	.align 2, 0\n\
 _08016A08: .4byte 0x00000113\n\
@@ -621,7 +621,7 @@ _08016A0C:\n\
 	bl CpuFastSet\n\
 	movs r0, #0x77\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _08016A46:\n\
 	mov r1, sb\n\
 	lsrs r0, r1, #4\n\
@@ -642,9 +642,9 @@ _08016A5C:\n\
 	cmp r0, #2\n\
 	bne _08016A90\n\
 	movs r0, #0xc7\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0xc8\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	b _08016AA2\n\
 	.align 2, 0\n\
 _08016A78: .4byte gVideoRegBuffer+4\n\
@@ -658,9 +658,9 @@ _08016A90:\n\
 	bne _08016AA2\n\
 	movs r0, #0x89\n\
 	lsls r0, r0, #1\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _08016AB4 @ =0x00000113\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 _08016AA2:\n\
 	ldr r0, [r7, #0x68]\n\
 	adds r0, #1\n\
@@ -964,7 +964,7 @@ _08016CD8:\n\
 	ble _08016CD8\n\
 _08016CE0:\n\
 	movs r0, #0x77\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 _08016CE6:\n\
 	add sp, #4\n\
 	pop {r3, r4, r5}\n\
@@ -981,11 +981,11 @@ _08016CFC: .4byte 0xFFFF0000\n\
 }
 
 static void rbase_08016d00(struct StageLayer* l, const struct Stage* _ UNUSED) {
-  ClearBlink(119);
-  ClearBlink(199);
-  ClearBlink(200);
-  ClearBlink(274);
-  ClearBlink(275);
+  RemovePaletteAnimation(119);
+  RemovePaletteAnimation(199);
+  RemovePaletteAnimation(200);
+  RemovePaletteAnimation(274);
+  RemovePaletteAnimation(275);
 }
 
 static void rbase_08016d2c(struct StageLayer* l, const struct Stage* _ UNUSED) {
@@ -1076,7 +1076,7 @@ static const StageLayerRoutine sLayerRoutine[11] = {
 
 static const struct ChunkMap sChunkMap1 = {
   realWidth : WIDTH,
-  skip : 1,
+  nullChunkID : 1,
   width : 16,
   height : HEIGHT,
 };
@@ -1102,7 +1102,7 @@ static const u8 sScreenMapData1[HEIGHT][WIDTH] = {
 
 static const struct ChunkMap sChunkMap2 = {
   realWidth : WIDTH,
-  skip : 1,
+  nullChunkID : 1,
   width : 16,
   height : HEIGHT,
 };
@@ -1128,7 +1128,7 @@ static const u8 sScreenMapData2[HEIGHT][WIDTH] = {
 
 static const struct ChunkMap sChunkMap3 = {
   realWidth : WIDTH,
-  skip : 1,
+  nullChunkID : 1,
   width : 16,
   height : HEIGHT,
 };
@@ -1153,7 +1153,9 @@ static const u8 sScreenMapData3[HEIGHT][WIDTH] = {
 
 // clang-format off
 static const tileset_ofs_t sTilesetOffset[4+(HEIGHT * WIDTH)] = {
-  4, 15, WIDTH, HEIGHT,
+  4, // 1 << sTilesetOffset[0] で WIDTH に等しい？
+  15,
+  WIDTH, HEIGHT,
 
   0x02, 0x02, 0x02, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x42, 0x42, 0x02, 0x02, 0x02,
   0x02, 0x02, 0x02, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x12, 0x42, 0x42, 0x02, 0x02, 0x02,
@@ -1172,9 +1174,12 @@ static const tileset_ofs_t sTilesetOffset[4+(HEIGHT * WIDTH)] = {
 };
 // clang-format on
 
+// 0x0834770c
 // clang-format off
-static const u16 u16_ARRAY_0834770c[4+(HEIGHT * WIDTH)] = {
-  4, 15, WIDTH, HEIGHT,
+static const u16 sScreenBehavior[4+(HEIGHT * WIDTH)] = {
+  4, // 1 << sTilesetOffset[0] で WIDTH に等しい？
+  15,
+  WIDTH, HEIGHT,
 
   0xF123, 0xF100, 0xF100, 0xF100, 0xF108, 0xF108, 0xF108, 0xF108, 0xF108, 0xF100, 0xF100, 0xF119, 0xF119, 0xF123, 0xF123, 0xF100,
   0xF123, 0xE123, 0xF100, 0xF100, 0xF108, 0x2108, 0x2108, 0x2108, 0x2108, 0xF100, 0xF100, 0xF119, 0x0119, 0xF123, 0x0123, 0xF100,
@@ -1200,12 +1205,11 @@ const struct Stage gResistanceBaseLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {3, 2, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
-  scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,
   bgFns : sLayerRoutine,
-  behavior : u16_ARRAY_0834770c,
+  behavior : sScreenBehavior,
 };
 
 #undef HEIGHT

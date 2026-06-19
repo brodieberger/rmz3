@@ -1,7 +1,7 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run --unstable
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run
 
 import { Command } from '@cliffy/command';
-import { loadU16, loadU32 } from '../common/index.ts';
+import { BASE, ROM_PATH } from '../common/index.ts';
 
 /*
   xxx.lz.png:        LZ77 compressed image
@@ -12,6 +12,11 @@ import { loadU16, loadU32 } from '../common/index.ts';
 
 const GBAGFX = './tools/gbagfx/gbagfx';
 
+// e.g. ./tools/dumper/gfx.ts -w=9 0x08547514 tmp/output.png
+// 処理の流れ
+// 1. 引数で渡したアドレスの指すGraphic構造体を読み取って、グラフィックデータ(.bpp) と パレットデータ(.gbapal) をダンプ
+// 2. それを使って、GBAGFXを呼び出して、pngを作成
+// 3. GBAGFX に渡すために用意した グラフィックデータ(.bpp) と パレットデータ(.gbapal) を削除
 const main = async () => {
   const { args, options } = await new Command()
     .name('gfx.ts')
@@ -22,24 +27,27 @@ LZ77圧縮されている場合は、output に .lz   をつけてください e
 8BPPフォーマットの場合は、output に .8bpp をつけてください e.g. output.lz.8bpp.png`,
     )
     .option('-w, --width=[n]', 'image width(not px but tile)', { default: 1 })
-    .option('--nopal', 'no dump palette')
+    .option('--nodiscard', '中間生成物(.bpp, .gbapal)を削除しない', { default: false })
     .option('-p, --pal=[s:string]', 'use specified gbapal')
     .option('-g, --grayscale', 'use grayscale palettes')
     .option('-z, --zero', 'use zero palettes')
     .option('-W, --weapon', 'use weapon palettes')
-    .arguments('<addr:string> <output:string>')
+    .argument('<addr:string>', 'Graphic or ColorGraphic 構造体のアドレス')
+    .argument('<output:string>', '出力先のpngファイルパス')
     .usage('0x08547550 output.png')
     .parse(Deno.args);
 
-  const base = 0x0800_0000;
-  const rom = Deno.readFileSync('baserom.gba');
+  const rom = Deno.readFileSync(ROM_PATH);
+  const view = new DataView(rom.buffer);
+
   const addr = Number(args[0]);
+  const offset = addr - BASE;
 
   const gfx = {
-    src: loadU32(rom, addr, 0x0800_0000) + addr,
-    size: loadU16(rom, addr + 4, 0x0800_0000),
-    pal: loadU32(rom, addr + 12, 0x0800_0000) + (addr + 12),
-    palSize: loadU16(rom, addr + 16, 0x0800_0000),
+    src: view.getUint32(offset, true) + addr,
+    size: view.getUint16(offset + 4, true),
+    pal: view.getUint32(offset + 12, true) + (addr + 12),
+    palSize: view.getUint16(offset + 16, true),
   };
 
   const outputPath = args[1];
@@ -47,20 +55,25 @@ LZ77圧縮されている場合は、output に .lz   をつけてください e
   const bpp = outputPath.includes('.8bpp.') ? 8 : 4; // e.g. ".lz.8bpp.png"
   const bppPath = args[1].replaceAll('.png', `.${bpp}bpp`);
 
-  // dump gbapal
+  // GBAGFX に必要な パレットデータ をROMから取り出す
   let pal: Uint8Array;
   let palPath: string;
+  let usePredefPalettes = false;
   if (options.grayscale) {
     palPath = './tools/dumper/grayscale.gbapal';
+    usePredefPalettes = true;
   } else if (options.zero) {
     palPath = './tools/dumper/zero.gbapal';
+    usePredefPalettes = true;
   } else if (options.weapon) {
     palPath = './tools/dumper/weapon.gbapal';
+    usePredefPalettes = true;
   } else if (options.pal) {
     palPath = options.pal as string;
+    usePredefPalettes = true;
   } else {
     palPath = args[1].replaceAll('.png', '.gbapal');
-    pal = rom.slice(gfx.pal - base, gfx.pal - base + gfx.palSize);
+    pal = rom.slice(gfx.pal - BASE, gfx.pal - BASE + gfx.palSize);
     switch (bpp) {
       case 4: {
         if (pal.byteLength > 16 * 2) {
@@ -89,39 +102,29 @@ LZ77圧縮されている場合は、output に .lz   をつけてください e
   if (isLz77) {
     // dump as LZ77
     const lz77Path = args[1].replaceAll('.png', '.lz');
-    const lz77 = rom.slice(gfx.src - base, gfx.src - base + gfx.size);
+    const lz77 = rom.slice(gfx.src - BASE, gfx.src - BASE + gfx.size);
     Deno.writeFileSync(lz77Path, lz77);
 
     // decompress LZ77 into 4bpp
-    await Deno.run({ cmd: [GBAGFX, lz77Path, bppPath] }).status(); // $ gbagfx xxx.lz xxx.4bpp
+    const cmd = new Deno.Command(GBAGFX, { args: [lz77Path, bppPath] }); // $ gbagfx xxx.lz xxx.4bpp
+    await cmd.output();
     Deno.removeSync(lz77Path);
   } else {
     // dump as 4BPP
-    Deno.writeFileSync(
-      bppPath,
-      rom.slice(gfx.src - base, gfx.src - base + gfx.size),
-    );
+    const data = rom.slice(gfx.src - BASE, gfx.src - BASE + gfx.size);
+    Deno.writeFileSync(bppPath, data);
   }
 
   // create png
-  // $ gbagfx xxx.4bpp xxx.png -width 6 -palette xxx.gbapal
-  await Deno.run({
-    cmd: [
-      GBAGFX,
-      bppPath,
-      args[1],
-      '-width',
-      `${options.width}`,
-      '-palette',
-      palPath,
-    ],
-  }).status();
-  Deno.removeSync(bppPath);
-  if (
-    options.nopal && !options.grayscale && !options.zero && !options.weapon &&
-    !options.pal
-  ) {
-    Deno.removeSync(palPath);
+  const cmd = new Deno.Command(GBAGFX, { args: [bppPath, args[1], `-width ${options.width}`, `-palette ${palPath}`] }); // $ gbagfx xxx.4bpp xxx.png -width 6 -palette xxx.gbapal
+  await cmd.output();
+
+  // 中間ファイルの削除
+  if (!options.nodiscard) {
+    Deno.removeSync(bppPath); // .bpp ファイルは GBAGFXでpngを作成した後は不要
+    if (!usePredefPalettes) {
+      Deno.removeSync(palPath);
+    }
   }
 };
 

@@ -143,7 +143,7 @@ _080D9354:
 	strb r0, [r4, #0xb]
 _080D935C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080D9362:
 	pop {r4, r5}
 	pop {r0}
@@ -265,7 +265,7 @@ _080D943C:
 	strb r0, [r5, #0xb]
 _080D9444:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080D944A:
 	pop {r3}
 	mov r8, r3

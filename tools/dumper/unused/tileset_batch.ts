@@ -2,8 +2,8 @@
 
 import { Command } from '@cliffy/command';
 import { toHex } from '../../common/index.ts';
-import { join } from 'https://deno.land/std/path/mod.ts';
-import { existsSync } from 'https://deno.land/std/fs/exists.ts';
+import { join } from '@std/path';
+import { existsSync } from '@std/fs';
 
 // All tileset dump are completed, so this tool is no longer needed.
 

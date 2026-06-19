@@ -155,7 +155,7 @@ FUN_08061c74: @ 0x08061C74
 	adds r4, r0, #0
 	ldr r0, _08061CC4 @ =gBossHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08061CBA
@@ -201,7 +201,7 @@ FUN_08061ccc: @ 0x08061CCC
 	adds r5, r1, #0
 	ldr r0, _08061D1C @ =gBossHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08061D16
@@ -570,7 +570,7 @@ _08061F9C:
 	adds r0, r7, #0
 	bl InitNonAffineMotion
 _08061FA2:
-	ldr r1, _0806208C @ =0x08365784
+	ldr r1, _0806208C @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x60
 	bl ResetBossBody
@@ -681,7 +681,7 @@ _0806205C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806208C: .4byte 0x08365784
+_0806208C: .4byte sCollisions
 _08062090: .4byte FUN_08061d24
 _08062094: .4byte 0x000010B8
 _08062098: .4byte gStaticMotionGraphics
@@ -1047,7 +1047,7 @@ _08062348:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
@@ -1192,7 +1192,7 @@ _08062456:
 	strb r0, [r4, #0xe]
 _08062480:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080624A6
 	.align 2, 0
 _08062488: .4byte gStageRun+232
@@ -1262,7 +1262,7 @@ _080624E2:
 	bl FUN_08061b68
 _08062504:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r6, [r5, #0x54]
 	str r6, [r4, #0x54]
 	ldr r0, [r5, #0x58]
@@ -1402,7 +1402,7 @@ _080625F8:
 	strb r4, [r5, #0x13]
 _08062614:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r6]
 	movs r0, #1
 	ands r0, r1
@@ -1559,7 +1559,7 @@ _08062738:
 	strb r1, [r4, #0xe]
 _0806273C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	bl FUN_08009f6c
@@ -1606,7 +1606,7 @@ _08062786:
 	strb r0, [r4, #0xe]
 _08062794:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1682,7 +1682,7 @@ _08062814:
 	strb r0, [r4, #0xe]
 _08062824:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1758,7 +1758,7 @@ _080628A6:
 	strb r0, [r6, #0xe]
 _080628B4:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1811,7 +1811,7 @@ _0806290C:
 	strb r0, [r6, #0xe]
 _0806291C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -1955,7 +1955,7 @@ _08062A26:
 	strb r0, [r4, #0xe]
 _08062A2C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08062A84
 _08062A34:
 	ldr r0, [r4, #0x5c]
@@ -2070,7 +2070,7 @@ _08062AF2:
 	strb r0, [r4, #0xe]
 _08062AFE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08062B60
 	.align 2, 0
 _08062B08: .4byte 0x0000D602
@@ -2115,7 +2115,7 @@ _08062B46:
 	strb r2, [r4, #0xe]
 _08062B5A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08062B60:
 	pop {r4, r5}
 	pop {r0}
@@ -2213,7 +2213,7 @@ _08062BD8:
 	strb r0, [r4, #0xe]
 _08062C12:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2404,7 +2404,7 @@ _08062D84:
 	strb r0, [r4, #0xe]
 _08062D90:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2473,7 +2473,7 @@ _08062E16:
 	strb r3, [r4, #0xe]
 _08062E18:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08062E1E:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -2623,7 +2623,7 @@ _08062F32:
 	strb r0, [r4, #0xe]
 _08062F3E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2692,7 +2692,7 @@ _08062FC6:
 	strb r3, [r4, #0xe]
 _08062FC8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08062FCE:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -2749,7 +2749,7 @@ _0806301E:
 	bl FUN_08061b68
 _0806303C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2864,7 +2864,7 @@ _0806310C:
 	strb r0, [r4, #0xe]
 _08063112:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0806315C
 _0806311A:
 	ldr r0, [r4, #0x5c]

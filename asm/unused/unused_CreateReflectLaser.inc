@@ -11,7 +11,7 @@
 	lsrs r5, r0, #0x18
 	ldr r0, _0803ADF0 @ =gWeaponHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _0803AE3A

@@ -16,9 +16,9 @@ FUN_08071470: @ 0x08071470
 	ldr r0, [sp, #0x18]
 	lsls r0, r0, #0x18
 	lsrs r5, r0, #0x18
-	ldr r0, _080714E0 @ =gZakoHeaderPtr
+	ldr r0, _080714E0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _080714FA
@@ -61,7 +61,7 @@ FUN_08071470: @ 0x08071470
 	strb r0, [r1]
 	b _080714F2
 	.align 2, 0
-_080714E0: .4byte gZakoHeaderPtr
+_080714E0: .4byte gEnemyHeaderPtr
 _080714E4: .4byte gEnemyFnTable
 _080714E8:
 	str r4, [r2, #0x2c]
@@ -89,9 +89,9 @@ FUN_08071508: @ 0x08071508
 	adds r6, r0, #0
 	adds r4, r1, #0
 	adds r5, r2, #0
-	ldr r0, _08071560 @ =gZakoHeaderPtr
+	ldr r0, _08071560 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _08071558
@@ -130,7 +130,7 @@ _08071558:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08071560: .4byte gZakoHeaderPtr
+_08071560: .4byte gEnemyHeaderPtr
 _08071564: .4byte gEnemyFnTable
 
 	thumb_func_start nop_08071568
@@ -405,7 +405,7 @@ _0807173C:
 	strb r1, [r4, #0xe]
 _08071766:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807176C:
 	pop {r4}
 	pop {r0}
@@ -552,7 +552,7 @@ _08071876:
 	strb r1, [r3, #0xe]
 _0807187C:
 	adds r0, r3, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08071882:
 	pop {r4, r5}
 	pop {r0}
@@ -668,7 +668,7 @@ _0807192C:
 	strb r1, [r5, #0xe]
 _08071956:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807195C:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -776,7 +776,7 @@ _08071A10:
 	str r1, [r4, #0x60]
 _08071A1A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08071A20:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -880,7 +880,7 @@ _08071AD2:
 	str r1, [r4, #0x54]
 _08071ADC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	cmp r5, #0
 	beq _08071AF4
 	ldr r0, [r4, #0x54]
@@ -1009,7 +1009,7 @@ FUN_08071b88: @ 0x08071B88
 	str r0, [r3, #0x14]
 _08071BDC:
 	adds r0, r3, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r0}
 	bx r0
 	.align 2, 0

@@ -1,8 +1,12 @@
 #include "collision.h"
 #include "enemy.h"
 #include "global.h"
+#include "vfx.h"
 
-INCASM("asm/enemy/unk_59.inc");
+// ファントムの出すオブジェクト?
+
+void FUN_080c4c2c(s32 x, s32 y, s32 amplitude, u8 theta);
+void CreateGhost18(Coords32* c, u8 kind, bool8 xflip, u8 r3);
 
 void Enemy59_Init(struct Enemy* p);
 void Enemy59_Update(struct Enemy* p);
@@ -13,11 +17,49 @@ const EnemyRoutine gEnemy59Routine = {
     [ENTITY_INIT] =      Enemy59_Init,
     [ENTITY_UPDATE] =    Enemy59_Update,
     [ENTITY_DIE] =       Enemy59_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
+void FUN_08091280(struct Entity* p) {
+  s32 x, y, amplitude;
+  u8 theta;
+  x = (p->coord).x + PIXEL((RANDOM(RNG_0202f388) & 0x1F) - 16);
+  y = (p->coord).y - PIXEL(-RANDOM(RNG_0202f388) % 48);
+  amplitude = 0x100;
+  theta = 0x80 | (RANDOM(RNG_0202f388) & 0x7F);
+  FUN_080c4c2c(x, y, amplitude, theta);
+}
+
+void FUN_0809130c(struct Entity* e, u8 idx) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_59);
+    (p->coord).x = (e->coord).x, (p->coord).y = (e->coord).y;
+    if (idx < 4) {
+      s32 x = (idx - 2) * PIXEL(48) + PIXEL(24);
+      (p->unk_coord).x = (e->coord).x + x;
+    }
+    if (idx > 4) {
+      s32 x = (idx - 7) * PIXEL(48) + PIXEL(24);
+      (p->coord).x = (e->coord).x + x;
+    }
+    p->unk_28 = e;
+    InitNonAffineMotion(p);
+    ResetDynamicMotion(p);
+    (p->spr).sprites = (*(void**)&e->kind);
+    {
+      u8 palID = *((u8*)e + 0x15);
+      (p->spr).oam.paletteNum = palID >> 4;
+    }
+    p->work[0] = idx;
+  }
+}
+
+INCASM("asm/enemy/unk_59.inc");
+
+// 0x083697F4
 static const struct SlashedEnemy sSlashedEnemies[4] = {
     {
       m : 0x1306,
@@ -57,6 +99,7 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
     },
 };
 
+// 0x08369864
 static const struct Collision sCollisions[14] = {
     {
       kind : DRP,
@@ -237,18 +280,79 @@ static const EnemyFunc sUpdates2[10] = {
 
 void FUN_08091fa8(struct Enemy* p);
 void FUN_080921c8(struct Enemy* p);
-void FUN_080922e0(struct Enemy* p);
-void FUN_080923ec(struct Enemy* p);
+static void FUN_080922e0(struct Entity* p);
+static void FUN_080923ec(Object* p);
 
 static const EnemyFunc sDeads[4] = {
-    FUN_08091fa8,
-    FUN_080921c8,
-    FUN_080922e0,
-    FUN_080923ec,
+    (void*)FUN_08091fa8,
+    (void*)FUN_080921c8,
+    (void*)FUN_080922e0,
+    (void*)FUN_080923ec,
 };
+
+NON_MATCH static void FUN_080922e0(struct Entity* p) {
+#if MODERN
+  switch (p->mode[2]) {
+    case 0: {
+      InitNonAffineMotion(p);
+      SET_XFLIP(p, p->work[3]);
+      SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 3));  // 分身のハズレ枠
+      p->work[2] = 18;
+      p->mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateSpriteAnimation(p);
+      p->work[2]--;
+      if ((p->work[2] & 3) == 0) FUN_08091280(p);
+      if (p->work[2] == 0) p->mode[2]++;
+      break;
+    }
+
+    case 2: {
+      p->work[2] = 0;
+      p->mode[2]++;
+      FALLTHROUGH;
+    }
+    case 3: {
+      UpdateSpriteAnimation(p);
+      if (p->work[2] == 0) PlaySound(SE_ZAKO_EXPLODE);
+      p->work[2]++;
+      {
+        register Coords32* c asm("r4") = &p->coord;
+        CreateGhost18(c, 0, (p->flags & X_FLIP) != 0, p->work[3]);
+        {
+          register const struct SlashedEnemy* tmp asm("r6") = &sSlashedEnemies[3];
+          u8 work3 = p->work[3];
+          if (p->flags & X_FLIP) work3 |= p->flags & X_FLIP;
+          CreateSlashedEnemy(c, tmp, 0, work3);
+        }
+      }
+      SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+#else
+  INCCODE("asm/wip/FUN_080922e0.inc");
+#endif
+}
+
+static void FUN_080923ec(Object* p) {
+  Coords32 c;
+  EXIT_BODY(p);
+  c.x = (p->s).coord.x;
+  c.y = (p->s).coord.y - PIXEL(8);
+  CreateSmoke(1, &c);
+  PlaySound(SE_ZAKO_EXPLODE);
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
+}
 
 // --------------------------------------------
 
+// 0x08369a14
 static const u8 u8_ARRAY_08369a14[16] = {
     1, 1, 1, 1, 2, 5, 5, 5, 5, 0, 1, 2, 6, 0, 0, 0,
 };

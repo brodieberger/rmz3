@@ -5,7 +5,7 @@
 	push {r5, r6, r7}
 	sub sp, #0x44
 	adds r5, r0, #0
-	ldr r1, _080291EC @ =gZeroFnTable
+	ldr r1, _080291EC @ =gPlayerFnTable
 	ldrb r0, [r5, #9]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -31,7 +31,7 @@
 	movs r1, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x11]
 	cmp r0, #0
 	bne _08029034
@@ -261,7 +261,7 @@ _080291B6:
 	strb r0, [r2]
 	b _0802922C
 	.align 2, 0
-_080291EC: .4byte gZeroFnTable
+_080291EC: .4byte gPlayerFnTable
 _080291F0: .4byte gZeroCollisions
 _080291F4: .4byte onCollision
 _080291F8: .4byte 0x0000FFFF
@@ -335,7 +335,7 @@ _08029262:
 	adds r0, r5, #0
 	bl LoadZeroPalette
 	ldrb r0, [r4, #0xe]
-	bl setWramElement
+	bl RequestElementEffectGraphic
 	adds r0, r5, #0
 	bl Zero_Update
 	add sp, #0x44

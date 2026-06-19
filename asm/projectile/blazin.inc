@@ -252,7 +252,7 @@ _0809E988:
 	str r0, [r4, #0x54]
 _0809E9A8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0809E9AE:
 	add sp, #8
 	pop {r4, r5}
@@ -379,7 +379,7 @@ _0809EA92:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	beq _0809EAB8
@@ -469,7 +469,7 @@ _0809EB3E:
 	adds r0, r0, r2
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0809EB6A
@@ -539,7 +539,7 @@ _0809EBC6:
 	strb r0, [r4, #0xe]
 _0809EBE2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -711,7 +711,7 @@ _0809ED14:
 	beq _0809EDD4
 _0809ED2E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0809EDF0
 _0809ED36:
 	adds r1, r5, #0
@@ -753,7 +753,7 @@ _0809ED48:
 	str r0, [r5, #0x58]
 _0809ED7E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
 	beq _0809EDDE
@@ -891,7 +891,7 @@ _0809EE6E:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r6, #0
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
@@ -1063,7 +1063,7 @@ _0809EFC4:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r5, #0
 	adds r2, #0xbc
 	adds r1, r5, #0

@@ -1,37 +1,36 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
-struct Ghost18 {
+// パンテオン(ハンター)が粉々になって飛び散るときのエフェクト(これもパーティクルと言えなくもない...？)
+
+struct VFX18 {
   struct Entity s;
-  struct Coord c;
+  Coords32 c;
   bool8 xflip;
   u8 unk_7d;
   u16 unk_7e;
   u8 work[4];
 };
 
-static void Ghost18_Init(struct VFX* p);
+static void Ghost18_Init(struct VFX18* p);
 static void Ghost18_Update(struct VFX* p);
 static void Ghost18_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gGhost18Routine = {
-    [ENTITY_INIT] =      Ghost18_Init,
-    [ENTITY_UPDATE] =    Ghost18_Update,
-    [ENTITY_DIE] =       Ghost18_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)Ghost18_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)Ghost18_Update,
+    [ENTITY_DIE] =       (VFXFunc)Ghost18_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-void CreateGhost18(struct Coord* c, u8 kind, bool8 xflip, u8 r3) {
-  struct Ghost18* g = (struct Ghost18*)AllocEntityFirst(gVFXHeaderPtr);
+void CreateGhost18(Coords32* c, u8 kind, bool8 xflip, u8 r3) {
+  struct VFX18* g = (struct VFX18*)AllocEntityLast(gVFXHeaderPtr);
   if (g != NULL) {
-    (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_UNK_018);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
     (g->s).coord = *c;
     (g->s).work[0] = kind;
     (g->s).work[1] = 0;
@@ -40,86 +39,21 @@ void CreateGhost18(struct Coord* c, u8 kind, bool8 xflip, u8 r3) {
   }
 }
 
-NAKED static void Ghost18_Init(struct VFX* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r5, r0, #0\n\
-	bl InitRotatableMotion\n\
-	ldrb r1, [r5, #0xa]\n\
-	movs r0, #1\n\
-	movs r4, #0\n\
-	orrs r0, r1\n\
-	movs r1, #2\n\
-	orrs r0, r1\n\
-	strb r0, [r5, #0xa]\n\
-	ldr r1, _080B6C80 @ =0x00001305\n\
-	adds r0, r5, #0\n\
-	bl SetMotion\n\
-	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
-	adds r0, r5, #0\n\
-	adds r0, #0x7c\n\
-	ldrb r2, [r0]\n\
-	cmp r2, #0\n\
-	beq _080B6C84\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #0x10\n\
-	orrs r0, r1\n\
-	b _080B6C8A\n\
-	.align 2, 0\n\
-_080B6C80: .4byte 0x00001305\n\
-_080B6C84:\n\
-	ldrb r1, [r5, #0xa]\n\
-	movs r0, #0xef\n\
-	ands r0, r1\n\
-_080B6C8A:\n\
-	strb r0, [r5, #0xa]\n\
-	movs r3, #1\n\
-	adds r1, r3, #0\n\
-	ands r1, r2\n\
-	adds r0, r5, #0\n\
-	adds r0, #0x4c\n\
-	movs r4, #0\n\
-	strb r1, [r0]\n\
-	movs r0, #0x4a\n\
-	adds r0, r0, r5\n\
-	mov ip, r0\n\
-	lsls r1, r1, #4\n\
-	ldrb r2, [r0]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r2\n\
-	orrs r0, r1\n\
-	mov r1, ip\n\
-	strb r0, [r1]\n\
-	adds r1, r5, #0\n\
-	adds r1, #0x25\n\
-	movs r0, #0x19\n\
-	strb r0, [r1]\n\
-	ldr r0, [r5, #0x54]\n\
-	str r0, [r5, #0x74]\n\
-	ldr r0, [r5, #0x58]\n\
-	adds r0, #1\n\
-	str r0, [r5, #0x78]\n\
-	strb r4, [r5, #0x12]\n\
-	strb r3, [r5, #0x13]\n\
-	str r4, [r5, #0x60]\n\
-	ldr r1, _080B6CE4 @ =gVFXFnTable\n\
-	ldrb r0, [r5, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	str r3, [r5, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r5, #0x14]\n\
-	adds r0, r5, #0\n\
-	bl Ghost18_Update\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080B6CE4: .4byte gVFXFnTable\n\
- .syntax divided\n");
+static void Ghost18_Init(struct VFX18* p) {
+  InitRotatableMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 5));
+  UpdateSpriteAnimation(p);
+  SET_XFLIP(&p->s, p->xflip);
+  (p->s).renderPrio = 25;
+  (p->c).x = (p->s).coord.x;
+  (p->c).y = (p->s).coord.y + 1;
+  (p->s).work[2] = 0;
+  (p->s).work[3] = 1;
+  (p->s).d.y = 0;
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  Ghost18_Update((void*)p);
 }
 
 NAKED static void Ghost18_Update(struct VFX* p) {
@@ -153,7 +87,7 @@ _080B6D18: .4byte gCurStory\n\
 _080B6D1C: .4byte gVFXFnTable\n\
 _080B6D20:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0xd]\n\
 	cmp r0, #0\n\
 	beq _080B6D32\n\

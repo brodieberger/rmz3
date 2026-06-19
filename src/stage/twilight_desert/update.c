@@ -252,7 +252,7 @@ _0801D6FA:\n\
 	beq _0801D716\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r6]\n\
 _0801D716:\n\
 	ldr r2, _0801D72C @ =gCollisionManager\n\
@@ -327,7 +327,7 @@ _0801D794:\n\
 	beq _0801D7BC\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r6]\n\
 _0801D7BC:\n\
 	ldr r2, _0801D7D4 @ =gCollisionManager\n\

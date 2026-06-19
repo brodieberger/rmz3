@@ -2,6 +2,8 @@
 #include "enemy.h"
 #include "global.h"
 
+INCASM("asm/enemy/cattatank.inc");
+
 void Cattatank_Init(struct Enemy* p);
 void Cattatank_Update(struct Enemy* p);
 void Cattatank_Die(struct Enemy* p);
@@ -11,7 +13,7 @@ const EnemyRoutine gCattatankRoutine = {
     [ENTITY_INIT] =      Cattatank_Init,
     [ENTITY_UPDATE] =    Cattatank_Update,
     [ENTITY_DIE] =       Cattatank_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -72,6 +74,7 @@ static const EnemyFunc sUpdates2[10] = {
 
 // --------------------------------------------
 
+// 0x0836A4C0
 static const struct Collision sCollisions[18] = {
     {
       kind : DRP,
@@ -225,6 +228,7 @@ static const struct Collision sCollisions[18] = {
     },
 };
 
-static const struct Coord sElementCoords[1] = {
+// 0x0836a670
+static const Coords32 sElementCoords[1] = {
     {PIXEL(0), -PIXEL(18)},
 };

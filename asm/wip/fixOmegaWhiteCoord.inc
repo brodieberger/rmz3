@@ -87,7 +87,7 @@ _0800BA3A:
 	adds r1, r5, r0
 	ldr r0, [r2, #0x58]
 	str r0, [r1]
-	ldr r0, _0800BAF4 @ =0x0202F360
+	ldr r0, _0800BAF4 @ =gWhitePaintFlags
 	ldrb r1, [r2, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -150,14 +150,14 @@ _0800BA84:
 _0800BACC: .4byte gVideoRegBuffer
 _0800BAD0: .4byte gOverworld
 _0800BAD4: .4byte 0x0002C002
-_0800BAD8: .4byte 0x08522348
-_0800BADC: .4byte 0x08522350
+_0800BAD8: .4byte gBgMapOffsets+(42*4)
+_0800BADC: .4byte gBgMapOffsets+(44*4)
 _0800BAE0: .4byte gVideoRegBuffer+4
 _0800BAE4: .4byte 0x06000800
 _0800BAE8: .4byte 0x0002D028
 _0800BAEC: .4byte 0x0002D02C
 _0800BAF0: .4byte 0x0002D030
-_0800BAF4: .4byte 0x0202F360
+_0800BAF4: .4byte gWhitePaintFlags
 _0800BAF8: .4byte gPaletteManager
 _0800BAFC: .4byte 0x00000404
 _0800BB00: .4byte 0x00000406

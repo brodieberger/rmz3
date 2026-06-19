@@ -2,7 +2,17 @@
 #include "global.h"
 #include "weapon.h"
 
-#define PROP (w->props.common)
+struct ReflectLaser {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct ReflectLaserProps {
+    struct Entity* q;  // 0xB4
+    Coords32 c_b8;     // 0xB8
+    u8 unk_c0;         // 0xC0
+    u8 unk_c1[43];     // 0xC1
+  } props;
+};
+static_assert(sizeof(struct ReflectLaser) == sizeof(struct Weapon));
 
 static const struct Collision sCollisions[2];
 static const motion_t sMotions[8];
@@ -14,8 +24,6 @@ static const struct Collision sCollisions[2] = {
       special : HALFABLE,
       damage : 10,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
       comboLv : 1,
       hitzone : 0,
       remaining : 1,
@@ -34,78 +42,77 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
-void ReflectLaser_Init(struct Weapon* w);
-void ReflectLaser_Update(struct Weapon* w);
-void ReflectLaser_Die(struct Weapon* w);
+void ReflectLaser_Init(struct Weapon* p);
+void ReflectLaser_Update(struct Weapon* p);
+static void ReflectLaser_Die(Object* p);
 
 // clang-format off
 const WeaponRoutine gReflectLaserRoutine = {
-    [ENTITY_INIT] =      ReflectLaser_Init,
-    [ENTITY_UPDATE] =    ReflectLaser_Update,
-    [ENTITY_DIE] =       ReflectLaser_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)ReflectLaser_Init,
+    [ENTITY_UPDATE] =    (void*)ReflectLaser_Update,
+    [ENTITY_DIE] =       (void*)ReflectLaser_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
-NON_MATCH void MenuExit_ReflectLaser(struct Weapon* w) {
-#if MODERN
-  struct Zero* z = (struct Zero*)(w->s).unk_28;
-  if ((((&z->unk_b4)->status).element != 0) || (z->unk_136 & (1 << 0))) {
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+void MenuExit_ReflectLaser(struct Weapon* p) {
+  struct Zero* z = (struct Zero*)(p->s).unk_28;
+  if (P_ELEMENT(z) != 0) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
+    return;
   }
-#else
-  INCCODE("asm/wip/MenuExit_ReflectLaser.inc");
-#endif
+  if (z->unk_136 & (1 << 0)) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
+  }
 }
 
-struct Weapon* CreateReflectLaser(struct Zero* z, struct Entity* p, u8 n) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
+struct Entity* CreateReflectLaser(struct Zero* z, struct Entity* q, u8 n) {
+  struct ReflectLaser* p = (struct ReflectLaser*)AllocEntityLast(gWeaponHeaderPtr);
+  if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_BUSTER) {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_REFLECT_LASER);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = gWeaponPalIDs[0];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_REFLECT_LASER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
     } else {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_REFLECT_LASER);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = gWeaponPalIDs[1];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_REFLECT_LASER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
     }
-    (w->s).unk_28 = &z->s;
-    (&PROP)->z = (struct Zero*)p;
-    (w->s).work[0] = n;
-    (w->s).work[1] = 0;
+    (p->s).unk_28 = (void*)z;
+    (p->props).q = q;
+    (p->s).work[0] = n, (p->s).work[1] = 0;
   }
-  return w;
+  return (void*)p;
 }
 
-#if MODERN == 0
 NAKED static struct Weapon* unused_CreateReflectLaser(struct Zero* z, struct Entity* p, void* r2, u8 r3, u8 r4) { INCCODE("asm/unused/unused_CreateReflectLaser.inc"); }
-#endif
 
 INCASM("asm/weapon/reflect_laser.inc");
 
+static void ReflectLaser_Die(Object* p) {
+  EXIT_BODY(p);
+  (p->s).flags &= ~DISPLAY;
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
+}
+
 // clang-format off
 static const motion_t sMotions[8] = {
-    MOTION(DM080_SEMI_BUSTER, 0x00),
-    MOTION(DM080_SEMI_BUSTER, 0x00),
-    MOTION(DM080_SEMI_BUSTER, 0x00),
-    MOTION(DM080_SEMI_BUSTER, 0x01),
-    MOTION(DM080_SEMI_BUSTER, 0x01),
-    MOTION(DM080_SEMI_BUSTER, 0x02),
-    MOTION(DM080_SEMI_BUSTER, 0x02),
-    MOTION(DM080_SEMI_BUSTER, 0x02),
+    MOTION(DM080_SEMI_BUSTER, 0),
+    MOTION(DM080_SEMI_BUSTER, 0),
+    MOTION(DM080_SEMI_BUSTER, 0),
+    MOTION(DM080_SEMI_BUSTER, 1),
+    MOTION(DM080_SEMI_BUSTER, 1),
+    MOTION(DM080_SEMI_BUSTER, 2),
+    MOTION(DM080_SEMI_BUSTER, 2),
+    MOTION(DM080_SEMI_BUSTER, 2),
 };
 // clang-format on
-
-#undef PROP

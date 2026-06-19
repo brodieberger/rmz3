@@ -3,8 +3,23 @@
 #include "entity.h"
 #include "global.h"
 #include "overworld.h"
+#include "zero.h"
 
 extern const motion_t ElfActions[3];
+
+extern const ElfRoutine gElf0Routine;
+extern const ElfRoutine gElf1Routine;
+extern const ElfRoutine gNurseBRoutine;
+extern const ElfRoutine gElf3Routine;
+extern const ElfRoutine gNurseERoutine;
+extern const ElfRoutine gElf5Routine;
+extern const ElfRoutine gElf6Routine;
+extern const ElfRoutine gElf7Routine;
+extern const ElfRoutine gFollowerElfRoutine;
+extern const ElfRoutine gSeaOtterElfRoutine;
+extern const ElfRoutine gElf10Routine;
+extern const ElfRoutine gElf11Routine;
+extern const ElfRoutine gBirdElfRoutine;
 
 // clang-format off
 const ElfRoutine *const gElfFnTable[13] = {
@@ -24,7 +39,7 @@ const ElfRoutine *const gElfFnTable[13] = {
 };
 // clang-format on
 
-void InitElfHeader(struct EntityHeader *h, struct Elf *p, s16 len) {
+void InitElfHeader(struct EntityHeader* h, struct Elf* p, s16 len) {
   s16 i;
 
   InitEntityHeader(h, ENTITY_ELF, &p->s, sizeof(struct Elf), len);
@@ -35,48 +50,40 @@ void InitElfHeader(struct EntityHeader *h, struct Elf *p, s16 len) {
   gElfHeaderPtr = h;
 }
 
-void DeleteElf(struct Elf *p) {
-  (p->s).flags &= ~DISPLAY;
+void DeleteElf(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_ELF_ROUTINE(p, ENTITY_EXIT);
 }
 
-#if MODERN == 0
-NAKED static struct Elf *unused_080e14d4(u8 r0, struct Entity *e) { INCCODE("asm/unused/unused_080e14d4.inc"); }
-#endif
+NAKED static struct Entity* unused_080e14d4(u8 r0, struct Entity* e) { INCCODE("asm/unused/unused_080e14d4.inc"); }
 
-static struct Enemy *getNearestEnemy(struct Coord *c) {
-  struct Enemy *p = (struct Enemy *)GetNearestEntity(gZakoHeaderPtr, c);
+static struct Enemy* getNearestEnemy(Coords32* c) {
+  struct Enemy* p = (struct Enemy*)GetNearestEntity(gEnemyHeaderPtr, c);
   if (p == NULL) {
     return NULL;
   }
   return p;
 }
 
-#if MODERN == 0
-static struct Boss *getNearestBoss(struct Coord *c) {
-  struct Boss *p = (struct Boss *)GetNearestEntity(gBossHeaderPtr, c);
+static struct Entity* unused_GetNearestBoss(Coords32* c) {
+  struct Entity* p = GetNearestEntity(gBossHeaderPtr, c);
   if (p == NULL) {
     return NULL;
   }
   return p;
 }
-#endif
 
 void close_menu_080e1540(ElfFunc fn) {
-  struct Entity *p;
-  struct EntityHeader *h = gElfHeaderPtr;
-  ignoreEntityFn(h);
+  struct EntityHeader* h = gElfHeaderPtr;
+  struct Entity* p = GetEntityList(h);
 
-  h->last = h->last->prev;
-  p = h->last;
-  while (p != (struct Entity *)&h->next) {
-    fn((struct Elf *)p);
-    p = h->last->prev;
-    h->last = p;
+  while (p != (struct Entity*)&h->tail) {
+    fn((struct Elf*)p);
+    p = GetNextEntity(h);
   }
 }
 
-NAKED bool8 FUN_080e1578(struct Coord *c1, struct Coord *c2, struct Coord *c3, u8 *param_4, s16 param_5) {
+NAKED bool8 FUN_080e1578(Coords32* c1, Coords32* c2, Coords32* c3, u8* param_4, s16 param_5) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r5, r0, #0\n\
@@ -154,7 +161,7 @@ _080E1604: .4byte gSineTable\n\
  .syntax divided\n");
 }
 
-NAKED struct Enemy *FUN_080e1608(struct Coord *c) {
+NAKED struct Enemy* FUN_080e1608(Coords32* c) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	sub sp, #8\n\
@@ -196,7 +203,7 @@ _080E1632:\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
 	ldr r0, _080E167C @ =gStageRun+232\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	cmp r0, #0\n\
 	bne _080E1690\n\
 	ldrb r1, [r4, #9]\n\
@@ -261,7 +268,7 @@ _080E16B8:\n\
  .syntax divided\n");
 }
 
-NAKED void FUN_080e16c4(struct Coord *c, struct CollidableEntity *p) {
+NAKED void FUN_080e16c4(Coords32* c, struct CollidableEntity* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov ip, r0\n\
@@ -346,7 +353,7 @@ _080E174A:\n\
  .syntax divided\n");
 }
 
-NAKED void CreateSateliteElf(struct Zero *z, cyberelf_t e, bool8 isSatelite2) {
+NAKED void CreateSateliteElf(struct Zero* z, cyberelf_t e, bool8 isSatelite2) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r3, r0, #0\n\
@@ -367,7 +374,7 @@ NAKED void CreateSateliteElf(struct Zero *z, cyberelf_t e, bool8 isSatelite2) {
 _080E1778:\n\
 	cmp r1, #0x18\n\
 	bhi _080E1798\n\
-	ldr r0, _080E1794 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E1794 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r1\n\
 	ldr r2, [r0]\n\
@@ -379,9 +386,9 @@ _080E1778:\n\
 	bl CreateNurseBElf\n\
 	b _080E1822\n\
 	.align 2, 0\n\
-_080E1794: .4byte gUnlockedElfPtr\n\
+_080E1794: .4byte gElfAvailability\n\
 _080E1798:\n\
-	ldr r0, _080E17B0 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E17B0 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r1\n\
 	ldr r2, [r0]\n\
@@ -393,7 +400,7 @@ _080E1798:\n\
 	bl CreateNurseEElf\n\
 	b _080E1822\n\
 	.align 2, 0\n\
-_080E17B0: .4byte gUnlockedElfPtr\n\
+_080E17B0: .4byte gElfAvailability\n\
 _080E17B4:\n\
 	cmp r1, #0x27\n\
 	bhi _080E1816\n\
@@ -427,7 +434,7 @@ _080E17DC:\n\
 _080E17EE:\n\
 	cmp r6, #0x25\n\
 	bhi _080E1808\n\
-	ldr r0, _080E1804 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E1804 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r6\n\
 	ldr r2, [r0]\n\
@@ -437,7 +444,7 @@ _080E17EE:\n\
 	movs r1, #0\n\
 	b _080E180E\n\
 	.align 2, 0\n\
-_080E1804: .4byte gUnlockedElfPtr\n\
+_080E1804: .4byte gElfAvailability\n\
 _080E1808:\n\
 	adds r0, r3, #0\n\
 	movs r1, #2\n\
@@ -459,10 +466,10 @@ _080E1822:\n\
  .syntax divided\n");
 }
 
-bool8 IsAllElfUnlocked(void) {
+bool8 IsAllElfUnlocked(Player* _) {
   u8 i;
   for (i = 0; i < CYBERELF_LENGTH; i++) {
-    if ((((*gUnlockedElfPtr)[i]) & ELF_AVABILITY_UNLOCKED) == 0) {
+    if (!(gElfAvailability[i] & ELF_AVABILITY_UNLOCKED)) {
       return FALSE;
     }
   }
@@ -470,12 +477,12 @@ bool8 IsAllElfUnlocked(void) {
 }
 
 // 全部のエルフを育てきってるか(称号エルフブリーダーの条件を満たしているか)
-NAKED bool8 IsElfBreeder(void) {
+NAKED bool8 IsElfBreeder(Player* _) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	movs r4, #0\n\
 	ldr r6, _080E1894 @ =gElfBreedInfo\n\
-	ldr r0, _080E1898 @ =gUnlockedElfPtr\n\
+	ldr r0, _080E1898 @ =gElfAvailability\n\
 	ldr r5, [r0]\n\
 _080E1866:\n\
 	lsls r0, r4, #2\n\
@@ -503,7 +510,7 @@ _080E188E:\n\
 	b _080E18A8\n\
 	.align 2, 0\n\
 _080E1894: .4byte gElfBreedInfo\n\
-_080E1898: .4byte gUnlockedElfPtr\n\
+_080E1898: .4byte gElfAvailability\n\
 _080E189C:\n\
 	adds r0, r4, #1\n\
 	lsls r0, r0, #0x18\n\
@@ -519,40 +526,40 @@ _080E18A8:\n\
 }
 
 // リザルトでのエルフ減点を計算
-u8 CalcElfPenalty(struct Zero *z) {
+u8 CalcElfPenalty(struct Zero* z) {
   u16 penalty = 0;
 
   if (((&z->unk_b4)->status).menuZeroColor == MZC_ULTIMATE) {
-    penalty = ((&z->unk_b4)->status).asset.fusions;
-    ((&z->unk_b4)->status).asset.fusions = 0;
+    penalty = ((&z->unk_b4)->status).fusions;
+    ((&z->unk_b4)->status).fusions = 0;
   } else {
-    if ((*gUnlockedElfPtr)[0] & ELF_AVABILITY_USED) penalty = 5;
-    if ((*gUnlockedElfPtr)[1] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[2] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[3] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[4] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[5] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[6] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[27] & ELF_AVABILITY_USED) penalty += 5;
-    if ((*gUnlockedElfPtr)[28] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[29] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[30] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[31] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[40] & ELF_AVABILITY_USED) penalty += 5;
-    if ((*gUnlockedElfPtr)[41] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[42] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[43] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[44] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[45] & ELF_AVABILITY_USED) penalty += 2;
-    if ((*gUnlockedElfPtr)[46] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[47] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[48] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[49] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[50] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[51] & ELF_AVABILITY_USED) penalty += 1;
-    if ((*gUnlockedElfPtr)[52] & ELF_AVABILITY_USED) penalty += 1;
-    penalty += ((&z->unk_b4)->status).asset.fusions;
-    ((&z->unk_b4)->status).asset.fusions = 0;
+    if (gElfAvailability[0] & ELF_AVABILITY_USED) penalty = 5;
+    if (gElfAvailability[1] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[2] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[3] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[4] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[5] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[6] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[27] & ELF_AVABILITY_USED) penalty += 5;
+    if (gElfAvailability[28] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[29] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[30] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[31] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[40] & ELF_AVABILITY_USED) penalty += 5;
+    if (gElfAvailability[41] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[42] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[43] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[44] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[45] & ELF_AVABILITY_USED) penalty += 2;
+    if (gElfAvailability[46] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[47] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[48] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[49] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[50] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[51] & ELF_AVABILITY_USED) penalty += 1;
+    if (gElfAvailability[52] & ELF_AVABILITY_USED) penalty += 1;
+    penalty += ((&z->unk_b4)->status).fusions;
+    ((&z->unk_b4)->status).fusions = 0;
   }
 
   if (penalty > 115) {
@@ -569,10 +576,10 @@ u8 CalcElfPenalty(struct Zero *z) {
 */
 motion_t GetElfMotion(u8 category) {
   u16 buf[4];
-  u8 *flags;
+  u8* flags;
 
   memcpy(buf, ElfActions, 6);
-  flags = gSystemSavedataManager.flags;
+  flags = gSystemSavedata.flags;
   if ((flags[buf[category] >> 3] >> (buf[category] & 7)) & 1) {
     return ((u16)category << 8) + 0x9001;
   } else {
@@ -581,26 +588,24 @@ motion_t GetElfMotion(u8 category) {
 }
 
 // 立ち止まっていると回復するエルフのためのチェック関数
-bool8 CheckPlayerStandStill(struct Zero *z) {
-  if (!(z->last & 0x8000) && ((gOverworld.id & 0x7F) != STAGE_BASE)) {
+bool8 CheckPlayerStandStill(struct Zero* z) {
+  if (!((z->input).raw & INPUT_DISABLED) && ((gOverworld.terrain.id & 0x7F) != STAGE_BASE)) {
     return TRUE;
   }
   return FALSE;
 }
 
-void clearUnlockedCyberElfData(u8 *p) {
-  gUnlockedElfPtr = (void *)p;
-  CpuFastFill16(0, p, 64);
-  CpuFill32(0, &p[64], 12);
+void clearUnlockedCyberElfData(u8* p) {
+  gElfAvailability = p;
+  MemFill32(0, p, 76);
 }
 
-void clearUnlockedCyberElfDataHard(u8 *p) {
-  gUnlockedElfPtr = (void *)p;
-  CpuFastFill16(0, p, 64);
-  CpuFill32(0, &p[64], 12);
+void clearUnlockedCyberElfDataHard(u8* p) {
+  gElfAvailability = p;
+  MemFill32(0, p, 76);
 }
 
-NAKED void unlockAllElvesForUltimate(u8 *p) {
+NAKED void unlockAllElvesForUltimate(u8* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -608,7 +613,7 @@ NAKED void unlockAllElvesForUltimate(u8 *p) {
 	push {r6, r7}\n\
 	sub sp, #8\n\
 	adds r4, r0, #0\n\
-	ldr r6, _080E1C9C @ =gUnlockedElfPtr\n\
+	ldr r6, _080E1C9C @ =gElfAvailability\n\
 	str r4, [r6]\n\
 	movs r5, #0\n\
 	str r5, [sp]\n\
@@ -713,7 +718,7 @@ _080E1C84:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080E1C9C: .4byte gUnlockedElfPtr\n\
+_080E1C9C: .4byte gElfAvailability\n\
 _080E1CA0: .4byte 0x01000010\n\
 _080E1CA4: .4byte 0x05000003\n\
 _080E1CA8: .4byte gElfBreedInfo\n\
@@ -722,7 +727,7 @@ _080E1CA8: .4byte gElfBreedInfo\n\
 
 bool8 FUN_080e1cac(cyberelf_t n) {
   register u8 m asm("r3") = n;  // m = n;
-  const struct ElfBreedInfo *infos = gElfBreedInfo;
+  const struct ElfBreedInfo* infos = gElfBreedInfo;
   if (((infos[n].unk_0 >> 7) == 0) && (n != ELF_ARTAN) && (m != ELF_ZICTAN)) {
     return FALSE;
   }

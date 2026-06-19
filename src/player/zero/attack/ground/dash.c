@@ -1,6 +1,7 @@
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
+#include "player/zero.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
@@ -17,14 +18,15 @@ void ZeroAttackGround_Dash(struct Zero* z) {
       nop_0802ec78,
       FUN_0802ec7c,
   };
-  (PTR_ARRAY_0835e678[(z->unk_b4).attackMode[0]])(z);
+  (PTR_ARRAY_0835e678[(z->unk_b4).attackState8[0]])(z);
 }
 
 static void dash_saber_0(struct Zero* z) {
-  (z->unk_b4).attackMode[0] = 1;
+  (z->unk_b4).attackState8[0] = 1;
   dash_saber_1(z);
 }
 
+// 0x0802ebbc
 NAKED static void dash_saber_1(struct Zero* z) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
@@ -152,7 +154,7 @@ static void onBuster(struct Zero* z) {
       buster_2,
       buster_3,
   };
-  (seq[(z->unk_b4).attackMode[1]])(z);
+  (seq[(z->unk_b4).attackState8[1]])(z);
 }
 
 static void buster_0(struct Zero* z) {
@@ -162,11 +164,11 @@ static void buster_0(struct Zero* z) {
   u8 ok = TRUE;
   struct Weapon* w = CreateBuster(z, x, y, xflip & ok);
   if (w == NULL) {
-    (z->unk_b4).attackMode[0] = 0;
+    (z->unk_b4).attackState8[0] = 0;
   } else {
-    SetMotion(&z->s, MOTION(DM010_ZERO_BUSTER_DASH, 1));
+    SetSpriteAnimation(z, MOTION(DM010_ZERO_BUSTER_DASH, 1));
     z->atkCooltime = 2;
-    (z->unk_b4).attackMode[1] = ok;
+    (z->unk_b4).attackState8[1] = ok;
     buster_1(z);
   }
 }
@@ -176,7 +178,7 @@ static void buster_1(struct Zero* z) {
   motion_t m, expected;
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((b4->status).mainWeapon == WEAPON_BUSTER) {
+  if ((b4->status).weapons[0] == WEAPON_BUSTER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
@@ -193,7 +195,7 @@ static void buster_1(struct Zero* z) {
   if ((z->s).motion.duration < 2) {
     GotoMotion(&z->s, expected, 1, 4);
     *ct = 4;
-    (z->unk_b4).attackMode[1] = 2;
+    (z->unk_b4).attackState8[1] = 2;
   }
 }
 
@@ -202,7 +204,7 @@ static void buster_2(struct Zero* z) {
   motion_t m, expected;
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((b4->status).mainWeapon == WEAPON_BUSTER) {
+  if ((b4->status).weapons[0] == WEAPON_BUSTER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
@@ -219,7 +221,7 @@ static void buster_2(struct Zero* z) {
   if ((z->s).motion.duration < 2) {
     GotoMotion(&z->s, expected, 2, 16);
     *ct = 16;
-    (z->unk_b4).attackMode[1] = 3;
+    (z->unk_b4).attackState8[1] = 3;
   }
 }
 
@@ -235,19 +237,19 @@ static void buster_3(struct Zero* z) {
   b4 = &(z->unk_b4);
   z->atkCooltime--;
   if (z->atkCooltime == 0xFF) {
-    (z->unk_b4).attackMode[0] = 0;
-    SetMotion(&z->s, MOTION(DM003_ZERO_DASH, 0x00));
+    (z->unk_b4).attackState8[0] = 0;
+    SetSpriteAnimation(z, MOTION(DM003_ZERO_DASH, 0x00));
   }
 
   ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {
     u8 foot;
-    if (((z->last & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, (foot == FOOT_CHIP_SHADOW) || (foot == FOOT_CHIP_ULTIMA)))) {
+    if ((((z->input).raw & INPUT_DISABLED) == 0) && ((foot = (b4->status).foot, (foot == FOOT_CHIP_SHADOW) || (foot == FOOT_CHIP_ULTIMA)))) {
       LoadZeroPalette(&z->s, GetZeroColor(z));
       z->posture = POSTURE_DASH;
     }
-    (z->unk_b4).attackMode[0] = 3;
-    (z->unk_b4).attackMode[1] = 0;
+    (z->unk_b4).attackState8[0] = 3;
+    (z->unk_b4).attackState8[1] = 0;
     FUN_0802ec7c(z);
   }
 }
@@ -278,25 +280,26 @@ static void onSaber(struct Zero* z) {
 
   (z->restriction).move = TRUE;
   (z->restriction).shield = TRUE;
-  if ((b4->status).mainWeapon == WEAPON_SABER) {
+  if ((b4->status).weapons[0] == WEAPON_SABER) {
     (z->restriction).mainCharge = TRUE;
   } else {
     (z->restriction).subCharge = TRUE;
   }
-  (seq[(z->unk_b4).attackMode[1]])(z);
+  (seq[(z->unk_b4).attackState8[1]])(z);
 }
 
+// 0x0802ef2c
 static void handle_saber_input(struct Zero* z) {
   u8 c;
   struct Zero_b4* b4 = &(z->unk_b4);
 
-  if ((b4->status).mainWeapon == WEAPON_SABER) {
+  if ((b4->status).weapons[0] == WEAPON_SABER) {
     c = GetWeaponCharge(z, FALSE);
   } else {
     c = GetWeaponCharge(z, TRUE);
   }
 
-  if (z->ultimateCommand_22c[1] == 3) {
+  if ((z->input).ultimateCommand_22c[1] == 3) {
     c = FULL_CHARGE;
   }
 
@@ -305,23 +308,23 @@ static void handle_saber_input(struct Zero* z) {
     (z->restriction).shield = TRUE;
     (z->s).mode[2] = 0;
     (z->s).mode[3] = 0;
-    (z->unk_b4).attackMode[1] = 4;
-    (z->unk_b4).attackMode[2] = 0;
+    (z->unk_b4).attackState8[1] = 4;
+    (z->unk_b4).attackState8[2] = 0;
     charge_saber_ground(z);
   } else {
-    if ((z->zeroInput & (DPAD_UP | DPAD_DOWN)) && (isElfUsed_2(z, ELF_MALTHAS))) {
-      (z->unk_b4).attackMode[1] = 3;
-      (z->unk_b4).attackMode[2] = 0;
+    if (((z->input).val & (DPAD_UP | DPAD_DOWN)) && (isElfUsed_2(z, ELF_MALTHAS))) {
+      (z->unk_b4).attackState8[1] = 3;
+      (z->unk_b4).attackState8[2] = 0;
       dash_rolling_saber(z);
     } else {
       struct Zero_b4* b4 = &(z->unk_b4);
       if (((b4->status).exSkill & (1 << EXSKILL_ID_GALE)) >> EXSKILL_ID_GALE) {
-        (z->unk_b4).attackMode[1] = 2;
-        (z->unk_b4).attackMode[2] = 0;
+        (z->unk_b4).attackState8[1] = 2;
+        (z->unk_b4).attackState8[2] = 0;
         gale_attack(z);
       } else {
-        (z->unk_b4).attackMode[1] = 1;
-        (z->unk_b4).attackMode[2] = 0;
+        (z->unk_b4).attackState8[1] = 1;
+        (z->unk_b4).attackState8[2] = 0;
         dash_saber(z);
       }
     }
@@ -329,26 +332,24 @@ static void handle_saber_input(struct Zero* z) {
 }
 
 // 0x0802f008
-WIP static void dash_saber(struct Zero* z) {
+NON_MATCH static void dash_saber(struct Zero* z) {
 #if MODERN
-  if ((z->unk_b4).attackMode[2] == 0) {
-    SetMotion(&z->s, MOTION(DM023_ZERO_SABER_DASH, 0x00));
+  if ((z->unk_b4).attackState8[2] == 0) {
+    SetSpriteAnimation(z, MOTION(DM023_ZERO_SABER_DASH, 0x00));
     z->atkCooltime = 16;
-    (z->unk_b4).attackMode[2]++;
+    (z->unk_b4).attackState8[2]++;
 
   } else {
     KeepMotion(z, MOTION(DM023_ZERO_SABER_DASH, 0x00));
-    if ((z->unk_b4).attackMode[2] == 1) {
+    if ((z->unk_b4).attackState8[2] == 1) {
       if ((z->s).motion.duration < 2) {
         CreateWeaponSaber(z, 4);
-        (z->unk_b4).attackMode[2]++;
+        (z->unk_b4).attackState8[2]++;
       }
-    } else if ((z->s).motion.state == MOTION_END) {
+    } else if (IsSpriteAnimEnd(z)) {
       z->restriction.move = FALSE;
-      (z->s).mode[1] = ZERO_GROUND;
-      (z->s).mode[2] = 0;
-      (z->s).mode[3] = 0;
-      (z->unk_b4).attackMode[0] = 0;
+      (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
+      (z->unk_b4).attackState8[0] = 0;
     }
   }
 
@@ -370,188 +371,56 @@ WIP static void dash_saber(struct Zero* z) {
 #endif
 }
 
-NAKED static void gale_attack(struct Zero* z) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, r8\n\
-	push {r7}\n\
-	adds r6, r0, #0\n\
-	adds r4, r6, #0\n\
-	adds r4, #0xee\n\
-	ldrb r0, [r4]\n\
-	cmp r0, #1\n\
-	beq _0802F188\n\
-	cmp r0, #1\n\
-	bgt _0802F15C\n\
-	cmp r0, #0\n\
-	beq _0802F170\n\
-	ldr r0, _0802F158 @ =0x00000129\n\
-	adds r0, r0, r6\n\
-	mov r8, r0\n\
-	b _0802F21A\n\
-	.align 2, 0\n\
-_0802F158: .4byte 0x00000129\n\
-_0802F15C:\n\
-	cmp r0, #2\n\
-	beq _0802F1BC\n\
-	cmp r0, #3\n\
-	beq _0802F1EC\n\
-	ldr r1, _0802F16C @ =0x00000129\n\
-	adds r1, r1, r6\n\
-	mov r8, r1\n\
-	b _0802F21A\n\
-	.align 2, 0\n\
-_0802F16C: .4byte 0x00000129\n\
-_0802F170:\n\
-	movs r1, #0xc0\n\
-	lsls r1, r1, #5\n\
-	adds r0, r6, #0\n\
-	bl SetMotion\n\
-	ldr r0, _0802F1B8 @ =0x00000129\n\
-	adds r1, r6, r0\n\
-	movs r0, #0x18\n\
-	strb r0, [r1]\n\
-	ldrb r0, [r4]\n\
-	adds r0, #1\n\
-	strb r0, [r4]\n\
-_0802F188:\n\
-	movs r1, #0xc0\n\
-	lsls r1, r1, #5\n\
-	adds r0, r6, #0\n\
-	bl KeepMotion\n\
-	adds r0, r6, #0\n\
-	adds r0, #0x72\n\
-	ldrb r0, [r0]\n\
-	lsls r0, r0, #0x18\n\
-	asrs r0, r0, #0x18\n\
-	ldr r1, _0802F1B8 @ =0x00000129\n\
-	adds r1, r1, r6\n\
-	mov r8, r1\n\
-	cmp r0, #1\n\
-	bgt _0802F21A\n\
-	adds r0, r6, #0\n\
-	movs r1, #0x12\n\
-	bl CreateWeaponSaber\n\
-	adds r1, r6, #0\n\
-	adds r1, #0xee\n\
-	ldrb r0, [r1]\n\
-	adds r0, #1\n\
-	b _0802F218\n\
-	.align 2, 0\n\
-_0802F1B8: .4byte 0x00000129\n\
-_0802F1BC:\n\
-	movs r1, #0xc0\n\
-	lsls r1, r1, #5\n\
-	adds r0, r6, #0\n\
-	bl KeepMotion\n\
-	ldr r0, _0802F1E4 @ =0x00000129\n\
-	adds r1, r6, r0\n\
-	ldrb r0, [r1]\n\
-	mov r8, r1\n\
-	cmp r0, #8\n\
-	bhi _0802F21A\n\
-	ldr r1, _0802F1E8 @ =0x00001801\n\
-	adds r0, r6, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r4]\n\
-	adds r0, #1\n\
-	strb r0, [r4]\n\
-	b _0802F21A\n\
-	.align 2, 0\n\
-_0802F1E4: .4byte 0x00000129\n\
-_0802F1E8: .4byte 0x00001801\n\
-_0802F1EC:\n\
-	adds r0, r6, #0\n\
-	adds r0, #0x73\n\
-	ldrb r0, [r0]\n\
-	ldr r1, _0802F264 @ =0x00000129\n\
-	adds r1, r1, r6\n\
-	mov r8, r1\n\
-	cmp r0, #3\n\
-	bne _0802F21A\n\
-	movs r0, #0x92\n\
-	lsls r0, r0, #1\n\
-	adds r2, r6, r0\n\
-	ldrb r1, [r2]\n\
-	movs r0, #2\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r1\n\
-	strb r0, [r2]\n\
-	movs r0, #0\n\
-	strb r0, [r6, #0xd]\n\
-	strb r0, [r6, #0xe]\n\
-	strb r0, [r6, #0xf]\n\
-	adds r1, r6, #0\n\
-	adds r1, #0xec\n\
-_0802F218:\n\
-	strb r0, [r1]\n\
-_0802F21A:\n\
-	mov r7, r8\n\
-	ldrb r0, [r7]\n\
-	cmp r0, #0\n\
-	beq _0802F29E\n\
-	subs r0, #1\n\
-	strb r0, [r7]\n\
-	ldrb r1, [r6, #0xa]\n\
-	movs r0, #0x10\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _0802F268\n\
-	adds r0, r6, #0\n\
-	bl CalcDx\n\
-	adds r5, r0, #0\n\
-	adds r0, r6, #0\n\
-	bl GetDashSpeed\n\
-	adds r4, r0, #0\n\
-	adds r0, r6, #0\n\
-	bl CalcDx\n\
-	lsls r5, r5, #0x10\n\
-	asrs r5, r5, #0x10\n\
-	lsls r4, r4, #0x10\n\
-	asrs r4, r4, #0x10\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x10\n\
-	subs r4, r4, r0\n\
-	ldrb r0, [r7]\n\
-	muls r0, r4, r0\n\
-	movs r1, #0x18\n\
-	bl __divsi3\n\
-	adds r5, r5, r0\n\
-	b _0802F29C\n\
-	.align 2, 0\n\
-_0802F264: .4byte 0x00000129\n\
-_0802F268:\n\
-	adds r0, r6, #0\n\
-	bl CalcDx\n\
-	adds r5, r0, #0\n\
-	adds r0, r6, #0\n\
-	bl GetDashSpeed\n\
-	adds r4, r0, #0\n\
-	adds r0, r6, #0\n\
-	bl CalcDx\n\
-	lsls r5, r5, #0x10\n\
-	asrs r5, r5, #0x10\n\
-	rsbs r5, r5, #0\n\
-	lsls r4, r4, #0x10\n\
-	asrs r4, r4, #0x10\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x10\n\
-	subs r4, r4, r0\n\
-	mov r1, r8\n\
-	ldrb r0, [r1]\n\
-	muls r0, r4, r0\n\
-	movs r1, #0x18\n\
-	bl __divsi3\n\
-	subs r5, r5, r0\n\
-_0802F29C:\n\
-	str r5, [r6, #0x5c]\n\
-_0802F29E:\n\
-	pop {r3}\n\
-	mov r8, r3\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+// 0x0802f134
+// atkCooltime へのアクセスがおかしい (それ以外は大丈夫そう)
+NON_MATCH static void gale_attack(struct Zero* z) {
+#if MODERN
+  switch ((z->unk_b4).attackState8[2]) {
+    case 0: {
+      SetSpriteAnimation(z, MOTION(DM024_ZERO_GALE, 0));
+      z->atkCooltime = 24;
+      (z->unk_b4).attackState8[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      s32 duration;
+      KeepMotion(z, MOTION(DM024_ZERO_GALE, 0));
+      duration = (z->s).motion.duration;
+      if (duration < 2) {
+        CreateWeaponSaber(z, 18);
+        (z->unk_b4).attackState8[2]++;
+      }
+      break;
+    }
+
+    case 2: {
+      KeepMotion(z, MOTION(DM024_ZERO_GALE, 0));
+      if (z->atkCooltime < 9) {
+        SetSpriteAnimation(z, MOTION(DM024_ZERO_GALE, 1));
+        (z->unk_b4).attackState8[2]++;
+      }
+      break;
+    }
+    case 3: {
+      if (IsSpriteAnimEnd(z)) {
+        z->restriction.move = FALSE;
+        (z->s).mode[1] = ZERO_GROUND, (z->s).mode[2] = 0, (z->s).mode[3] = 0;
+        (z->unk_b4).attackState8[0] = 0;
+      }
+      break;
+    }
+  }
+  if (z->atkCooltime > 0) {
+    z->atkCooltime--;
+    if ((z->s).flags & X_FLIP) {
+      (z->s).d.x = CalcDx(z) + ((GetDashSpeed(z) - CalcDx(z)) * (s32)(z->atkCooltime)) / 24;
+    } else {
+      (z->s).d.x = -CalcDx(z) - ((GetDashSpeed(z) - CalcDx(z)) * (s32)(z->atkCooltime)) / 24;
+    }
+  }
+#else
+  INCCODE("asm/wip/gale_attack.inc");
+#endif
 }
 
 NAKED static void dash_rolling_saber(struct Zero* z) {

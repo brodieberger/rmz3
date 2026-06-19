@@ -1,40 +1,43 @@
+#include "projectile/unk_06.h"
+
 #include "collision.h"
 #include "global.h"
 #include "projectile.h"
+#include "story.h"
+
+// ランプロートの炎
 
 static const ProjectileFunc sUpdates[4];
 static const struct Collision sCollisions[6];
 
-static void Projectile6_Init(struct Projectile* p);
-void Projectile6_Update(struct Projectile* p);
-void Projectile6_Die(struct Projectile* p);
+static void Projectile6_Init(Object* p);
+static void Projectile6_Update(Object* p);
+static void Projectile6_Die(Object* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile6Routine = {
-    [ENTITY_INIT] =      Projectile6_Init,
-    [ENTITY_UPDATE] =    Projectile6_Update,
-    [ENTITY_DIE] =       Projectile6_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile6_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile6_Update,
+    [ENTITY_DIE] =       (void*)Projectile6_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Projectile* CreateProjectile6(struct Entity* e, struct Coord* c, u8 r2, u8 r3) {
-  struct Projectile* p = (struct Projectile*)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* CreateProjectile6(struct Entity* e, Coords32* c, u8 r2, u8 r3) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, 6);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = r2;
-    (p->s).work[1] = r3;
+    (p->s).work[0] = r2, (p->s).work[1] = r3;
     (p->s).d = *c;
     (p->s).unk_28 = e;
   }
   return p;
 }
 
-static void Projectile6_Init(struct Projectile* p) {
+// --------------------------------------------
+
+static void Projectile6_Init(Object* p) {
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
@@ -42,26 +45,83 @@ static void Projectile6_Init(struct Projectile* p) {
   (p->s).coord.x = (((p->s).unk_28)->coord).x;
   (p->s).coord.y = (((p->s).unk_28)->coord).y;
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
-  (p->s).mode[1] = 1;
-  (p->s).mode[2] = 0;
-  (p->s).mode[3] = 0;
-  Projectile6_Update(p);
+  (p->s).mode[1] = 1, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
+  Projectile6_Update((void*)p);
 }
-
-INCASM("asm/projectile/unk_06.inc");
 
 void FUN_0809dd60(struct Projectile* p);
 void FUN_0809de04(struct Projectile* p);
 void FUN_0809df14(struct Projectile* p);
-void FUN_0809dfb8(struct Projectile* p);
+static void FUN_0809dfb8(Object* p);
 
-static const ProjectileFunc sUpdates[4] = {
-    FUN_0809dd60,
-    FUN_0809de04,
-    FUN_0809df14,
-    FUN_0809dfb8,
-};
+// ランプロート本体が死んでる or メットールなら、こいつも消える, そうでないなら、通常の更新(本体と左右を揃える)
+static void Projectile6_Update(Object* p) {
+  // 0x0836abe8
+  static const ProjectileFunc sUpdates[4] = {
+      (void*)FUN_0809dd60,
+      (void*)FUN_0809de04,
+      (void*)FUN_0809df14,
+      (void*)FUN_0809dfb8,
+  };
 
+  struct Entity* l = (p->s).unk_28;
+  if (l->mode[0] < ENTITY_DIE) {
+    if (IS_METTAUR) {
+      (p->s).flags &= ~DISPLAY;
+      EXIT_BODY(p);
+    } else {
+      goto _UPDATE;
+    }
+  }
+
+  SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
+  Projectile6_Die((void*)p);
+  return;
+
+_UPDATE:
+  SET_XFLIP(p, (l->flags & X_FLIP) != 0);
+  (sUpdates[(p->s).mode[1]])((void*)p);
+}
+
+static void Projectile6_Die(Object* p) {
+  (p->s).flags &= ~DISPLAY;
+  EXIT_BODY(p);
+  SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
+}
+
+// --------------------------------------------
+
+INCASM("asm/projectile/unk_06.inc");
+
+static void FUN_0809dfb8(Object* p) {
+  struct Entity* l = (p->s).unk_28;
+  if (l->mode[0] >= ENTITY_DIE) {
+    SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
+    Projectile6_Die((void*)p);
+    return;
+  }
+
+  SET_XFLIP(p, (l->flags & X_FLIP) != 0);
+  switch ((p->s).mode[2]) {
+    case 0: {
+      SetSpriteAnimation(p, MOTION(SM025_LAMPLORT, 9));
+      SetDDP(&p->body, &sCollisions[5]);
+      (p->s).mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateSpriteAnimation(p);
+      if (IsSpriteAnimEnd(p)) {
+        (p->s).mode[1] = 0, (p->s).mode[2] = 0;
+      }
+      break;
+    }
+  }
+}
+
+// --------------------------------------------
+
+// 0x0836ABF8
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,

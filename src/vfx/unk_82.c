@@ -1,226 +1,112 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/unk_common.h"
 
-static void Ghost82_Init(struct VFX* p);
-static void Ghost82_Update(struct VFX* p);
-static void Ghost82_Die(struct VFX* p);
+// Mellnet の残骸
+// VFX75 のほぼコピペ
+
+static void Ghost82_Init(struct Entity* p);
+static void VFX82_Update(struct Entity* p);
+static void Ghost82_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gGhost82Routine = {
-    [ENTITY_INIT] =      Ghost82_Init,
-    [ENTITY_UPDATE] =    Ghost82_Update,
-    [ENTITY_DIE] =       Ghost82_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost82_Init,
+    [ENTITY_UPDATE] =    (void*)VFX82_Update,
+    [ENTITY_DIE] =       (void*)Ghost82_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 // Unused
-static struct VFX* CreateGhost82_1(struct Coord* c, u8 r1) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_082);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).work[0] = r1;
-    (g->s).work[1] = 0;
-    (g->s).coord.x = c->x;
-    (g->s).coord.y = c->y;
+static struct Entity* CreateGhost82_1(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_UNK_082);
+    p->work[0] = n, p->work[1] = 0;
+    p->coord.x = c->x, p->coord.y = c->y;
   }
-  return g;
+  return p;
 }
 
-struct VFX* CreateGhost82_2(struct Coord* c, u8 r1, u16 r2, s32 y) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_082);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).work[0] = r1;
-    (g->s).work[1] = 1;
-    (g->s).coord.x = c->x;
-    (g->s).coord.y = c->y;
-    (g->props).unk28.unk_0 = r2;
-    (g->props).unk28.unk_4 = y;
+struct Entity* CreateGhost82_2(Coords32* c, u8 n, motion_t m, u32 val) {
+  struct VFXUnkCommon* p = (struct VFXUnkCommon*)AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_UNK_082);
+    (p->s).work[0] = n, (p->s).work[1] = 1;
+    (p->s).coord.x = c->x, (p->s).coord.y = c->y;
+    p->m_74 = m;
+    p->unk_78 = val;
   }
-  return g;
+  return (void*)p;
 }
 
 // --------------------------------------------
 
-NAKED static void Ghost82_Init(struct VFX* p) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	bl InitNonAffineMotion\n\
-	ldrb r1, [r4, #0xa]\n\
-	movs r0, #1\n\
-	movs r3, #0\n\
-	adds r2, r0, #0\n\
-	orrs r2, r1\n\
-	movs r0, #2\n\
-	orrs r2, r0\n\
-	orrs r2, r3\n\
-	strb r2, [r4, #0xa]\n\
-	ldrb r1, [r4, #0x10]\n\
-	cmp r1, #0\n\
-	bne _080C96FC\n\
-	movs r0, #0xef\n\
-	ands r2, r0\n\
-	strb r2, [r4, #0xa]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	adds r2, r4, #0\n\
-	adds r2, #0x4a\n\
-	ldrb r1, [r2]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r1\n\
-	strb r0, [r2]\n\
-	b _080C971C\n\
-_080C96FC:\n\
-	movs r1, #1\n\
-	movs r0, #0x10\n\
-	orrs r2, r0\n\
-	strb r2, [r4, #0xa]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x4c\n\
-	strb r1, [r0]\n\
-	adds r3, r4, #0\n\
-	adds r3, #0x4a\n\
-	movs r2, #0x10\n\
-	ldrb r1, [r3]\n\
-	movs r0, #0x11\n\
-	rsbs r0, r0, #0\n\
-	ands r0, r1\n\
-	orrs r0, r2\n\
-	strb r0, [r3]\n\
-_080C971C:\n\
-	ldrb r0, [r4, #0x10]\n\
-	adds r1, r0, #0\n\
-	cmp r1, #0\n\
-	bne _080C972A\n\
-	movs r0, #0x80\n\
-	rsbs r0, r0, #0\n\
-	b _080C972C\n\
-_080C972A:\n\
-	movs r0, #0x80\n\
-_080C972C:\n\
-	str r0, [r4, #0x5c]\n\
-	movs r2, #0\n\
-	str r2, [r4, #0x60]\n\
-	ldrb r0, [r4, #0x11]\n\
-	cmp r0, #0\n\
-	bne _080C9758\n\
-	movs r0, #0xff\n\
-	strb r0, [r4, #0x12]\n\
-	ldr r1, _080C9754 @ =gVFXFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r4, #0x14]\n\
-	strb r1, [r4, #0xd]\n\
-	b _080C97B0\n\
-	.align 2, 0\n\
-_080C9754: .4byte gVFXFnTable\n\
-_080C9758:\n\
-	lsls r0, r1, #0x18\n\
-	lsrs r1, r0, #0x18\n\
-	cmp r1, #2\n\
-	bne _080C9766\n\
-	movs r0, #1\n\
-	strb r0, [r4, #0x11]\n\
-	b _080C976C\n\
-_080C9766:\n\
-	cmp r1, #1\n\
-	bne _080C9774\n\
-	strb r1, [r4, #0x11]\n\
-_080C976C:\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x22\n\
-	strb r1, [r0]\n\
-	b _080C977C\n\
-_080C9774:\n\
-	strb r2, [r4, #0x11]\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x22\n\
-	strb r2, [r0]\n\
-_080C977C:\n\
-	ldr r2, _080C97C0 @ =RNG_0202f388\n\
-	ldr r1, [r2]\n\
-	ldr r0, _080C97C4 @ =0x000343FD\n\
-	muls r0, r1, r0\n\
-	ldr r1, _080C97C8 @ =0x00269EC3\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #1\n\
-	lsrs r1, r0, #1\n\
-	str r1, [r2]\n\
-	lsrs r0, r0, #0x11\n\
-	movs r1, #7\n\
-	ands r0, r1\n\
-	adds r0, #0x7f\n\
-	movs r2, #0\n\
-	strb r0, [r4, #0x12]\n\
-	ldr r1, _080C97CC @ =gVFXFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #4]\n\
-	str r0, [r4, #0x14]\n\
-	movs r0, #2\n\
-	strb r0, [r4, #0xd]\n\
-_080C97B0:\n\
-	strb r2, [r4, #0xe]\n\
-	strb r2, [r4, #0xf]\n\
-	adds r0, r4, #0\n\
-	bl Ghost82_Update\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080C97C0: .4byte RNG_0202f388\n\
-_080C97C4: .4byte 0x000343FD\n\
-_080C97C8: .4byte 0x00269EC3\n\
-_080C97CC: .4byte gVFXFnTable\n\
-   .syntax divided\n");
+static void Ghost82_Init(struct Entity* p) {
+  InitNonAffineMotion(p);
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
+  if (p->work[0] == 0) {
+    SET_XFLIP(p, FALSE);
+  } else {
+    SET_XFLIP(p, TRUE);
+  }
+
+  if (p->work[0] == 0) {
+    (p->d).x = -PIXEL(1) / 2;
+  } else {
+    (p->d).x = PIXEL(1) / 2;
+  }
+  (p->d).y = 0;
+
+  if (p->work[1] == 0) {
+    p->work[2] = 0xFF;
+    SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+    p->mode[1] = 1, p->mode[2] = 0, p->mode[3] = 0;
+  } else {
+    if (p->work[0] == 2) {
+      p->work[1] = 1, p->palID = 2;
+    } else if (p->work[0] == 1) {
+      p->work[1] = 1, p->palID = 1;
+    } else {
+      p->work[1] = 0, p->palID = 0;
+    }
+    p->work[2] = 0x7F + (RANDOM(RNG_0202f388) & 7);
+    SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+    p->mode[1] = 2, p->mode[2] = 0, p->mode[3] = 0;
+  }
+
+  VFX82_Update((void*)p);
 }
 
 // --------------------------------------------
 
-static void FUN_080c9808(struct VFX* p);
+static void FUN_080c9808(void* _ UNUSED);
 static void FUN_080c980c(struct VFX* p);
 static void FUN_080c98e8(struct VFX* p);
 
-void Ghost82_Update(struct VFX* vfx) {
+void VFX82_Update(struct Entity* p) {
   static VFXFunc const sUpdates[] = {
-      FUN_080c9808,
-      FUN_080c980c,
-      FUN_080c98e8,
+      (void*)FUN_080c9808,
+      (void*)FUN_080c980c,
+      (void*)FUN_080c98e8,
   };
-  (sUpdates[(vfx->s).mode[1]])(vfx);
+  (sUpdates[p->mode[1]])((void*)p);
 }
 
 // --------------------------------------------
 
-static void Ghost82_Die(struct VFX* p) {
-  (p->s).flags &= ~DISPLAY;
+static void Ghost82_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
 
-static void FUN_080c9808(struct VFX* p) { return; }
+static void FUN_080c9808(void* _) {}
 
 NAKED static void FUN_080c980c(struct VFX* p) {
   asm(".syntax unified\n\
@@ -321,7 +207,7 @@ _080C98C6:\n\
 	adds r0, r0, r1\n\
 	str r0, [r6, #0x54]\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080C98DC:\n\
 	add sp, #8\n\
 	pop {r4, r5, r6}\n\
@@ -471,7 +357,7 @@ _080C99E4:\n\
 	adds r0, r0, r1\n\
 	str r0, [r7, #0x54]\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080C99FA:\n\
 	pop {r3, r4}\n\
 	mov r8, r3\n\

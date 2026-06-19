@@ -394,7 +394,7 @@ _080CE054:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x46
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r4, #0x12]
 	lsls r0, r0, #2
 	adds r0, #0x16
@@ -435,9 +435,9 @@ _080CE098:
 	strb r1, [r4, #0xe]
 _080CE0B8:
 	movs r0, #0x46
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CE0C4:
 	pop {r4, r5}
 	pop {r0}
@@ -469,7 +469,7 @@ _080CE0F4:
 	movs r0, #0x80
 	bl PlaySound
 	movs r0, #0x46
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	adds r0, r4, #0
 	bl GetEntityPalID
 	adds r1, r0, #0
@@ -480,7 +480,7 @@ _080CE0F4:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x47
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0x10
 	strb r0, [r4, #0x13]
 	ldrb r0, [r4, #0xe]
@@ -510,7 +510,7 @@ _080CE13E:
 	strb r0, [r4, #0xe]
 _080CE150:
 	movs r0, #0x47
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	b _080CE1F2
 _080CE158:
 	movs r0, #0
@@ -586,9 +586,9 @@ _080CE1CC:
 	strb r1, [r4, #0xe]
 _080CE1E6:
 	movs r0, #0x47
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CE1F2:
 	ldrb r0, [r4, #0x12]
 	cmp r0, #1
@@ -612,7 +612,7 @@ coffin_080ce204: @ 0x080CE204
 	b _080CE2D4
 _080CE214:
 	movs r0, #0x47
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	adds r0, r4, #0
 	bl GetEntityPalID
 	adds r1, r0, #0
@@ -623,7 +623,7 @@ _080CE214:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x46
-	bl LoadBlink
+	bl StartPaletteAnimation
 	strb r5, [r4, #0x13]
 	str r5, [r4, #0x60]
 	ldrb r0, [r4, #0xe]
@@ -695,15 +695,15 @@ _080CE26C:
 	ldr r0, [r0, #0xc]
 	str r0, [r4, #0x14]
 	movs r0, #0x46
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	b _080CE2E0
 	.align 2, 0
 _080CE2C4: .4byte gSolidFnTable
 _080CE2C8:
 	movs r0, #0x46
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CE2D4:
 	ldrb r0, [r4, #0x13]
 	cmp r0, #0

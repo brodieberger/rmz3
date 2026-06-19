@@ -13,7 +13,7 @@ const EnemyRoutine gShotloidRoutine = {
     [ENTITY_INIT] =      Shotloid_Init,
     [ENTITY_UPDATE] =    Shotloid_Update,
     [ENTITY_DIE] =       Shotloid_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -102,7 +102,7 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(10)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(10)};
 static const u8 sInitModes[2] = {5, 6};
 
 // clang-format off

@@ -155,7 +155,7 @@ _0809CF7C:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0809CF92:
 	pop {r4}
 	pop {r0}

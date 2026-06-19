@@ -3,38 +3,41 @@
 #include "vfx.h"
 
 // レジスタンスベースに振ってくる雪1つ1つ
+struct SnowVFX {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u32 unk_0;      // 0x74
+  u8 unk_78[12];  // 0x78
+};
+static_assert(sizeof(struct SnowVFX) == sizeof(struct VFX));
 
-static void Snow_Init(struct VFX *p);
-static void Snow_Update(struct VFX *p);
-static void Snow_Die(struct VFX *p);
+static void Snow_Init(struct VFX* p);
+static void Snow_Update(struct SnowVFX* p);
+static void Snow_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gSnowRoutine = {
-    [ENTITY_INIT] =      Snow_Init,
-    [ENTITY_UPDATE] =    Snow_Update,
-    [ENTITY_DIE] =       Snow_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Snow_Init,
+    [ENTITY_UPDATE] =    (void*)Snow_Update,
+    [ENTITY_DIE] =       (void*)Snow_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreateSnow(struct Coord *c, u32 n) {
-  struct VFX *g = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_UNK_080);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).coord = *c;
-    (g->props).snow.unk_0 = n;
-    (g->s).work[0] = 0;
-    (g->s).work[1] = 0;
+void CreateSnow(Coords32* c, u32 n) {
+  struct SnowVFX* p = (struct SnowVFX*)AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_UNK_080);
+    (p->s).coord = *c;
+    p->unk_0 = n;
+    (p->s).work[0] = 0, (p->s).work[1] = 0;
   }
 }
 
 // --------------------------------------------
 
-NAKED static void Snow_Init(struct VFX *p) {
+NAKED static void Snow_Init(struct VFX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r5, r0, #0\n\
@@ -61,7 +64,7 @@ NAKED static void Snow_Init(struct VFX *p) {
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r2, _080C91F8 @ =RNG_0202f388\n\
 	ldr r1, [r2]\n\
 	ldr r0, _080C91FC @ =0x000343FD\n\
@@ -158,28 +161,22 @@ _080C925E:\n\
  .syntax divided\n");
 }
 
-// --------------------------------------------
-
-NON_MATCH static void Snow_Update(struct VFX *p) {
-#if MODERN
-  UpdateMotionGraphic(&p->s);
+static void Snow_Update(struct SnowVFX* p) {
+  u32 unk_0;
+  UpdateSpriteAnimation(p);
   (p->s).coord.y += (p->s).d.y;
-  (p->s).coord.x = gSineTable[(p->s).work[2]] * 8;
-  (p->s).coord.x += (p->s).unk_coord.x;
-  (p->s).coord.x += (p->s).d.x;
+  (p->s).coord.x = (p->s).unk_coord.x + SINX((p->s).work[2], 8);
   (p->s).work[2] += 3;
+  (p->s).coord.x += (p->s).d.x;
 
-  RNG_0202f388 = LCG(RNG_0202f388);
-  (p->s).d.x += 0x100 - (RNG_0202f388 >> 16);
-  if ((p->props).snow.unk_0-- == 0) {
+  (p->s).d.x += PIXEL(1);
+  (p->s).d.x -= RANDOM(RNG_0202f388) & 0x1FF;
+
+  unk_0 = p->unk_0--;
+  if (unk_0 == 0) {
     SET_VFX_ROUTINE(p, ENTITY_DIE);
-    Snow_Die(p);
+    Snow_Die((void*)p);
   }
-#else
-  INCCODE("asm/wip/Snow_Update.inc");
-#endif
 }
 
-// --------------------------------------------
-
-static void Snow_Die(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void Snow_Die(struct Entity* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }

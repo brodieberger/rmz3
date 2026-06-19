@@ -11,25 +11,18 @@ static void Tretista_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gTretistaRoutine = {
-    [ENTITY_INIT] =      Tretista_Init,
-    [ENTITY_UPDATE] =    Tretista_Update,
-    [ENTITY_DIE] =       Tretista_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Tretista_Init,
+    [ENTITY_UPDATE] =    (void*)Tretista_Update,
+    [ENTITY_DIE] =       (void*)Tretista_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateTretista(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Boss* CreateTretista(Coords32* c, u8 n) {
+  struct Boss* p = (struct Boss*)AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-
     INIT_BOSS_ROUTINE(p, BOSS_TRETISTA);
-
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -234,7 +227,7 @@ static void Tretista_Update(struct Boss* p) {
   };
   // clang-format on
 
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     PlaySound(SE_TRETISTA_DEATH);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -265,6 +258,7 @@ static void Tretista_Die(struct Boss* p) {
 
 INCASM("asm/boss/tretista.inc");
 
+// 0x083633b0
 static const struct Collision sCollisions[13] = {
     [0] = {
       kind : DRP,
@@ -394,7 +388,7 @@ static const struct Collision sCollisions[13] = {
     },
 };
 
-static const struct Coord sExplosionCoords[2] = {
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(48)},
     {PIXEL(0), -PIXEL(48)},
 };

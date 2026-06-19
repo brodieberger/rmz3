@@ -8,7 +8,7 @@
 
 /*
   Actor:
-  Solid.id が 21 の Entity は 基本的にフィールドスクリプト(Script)によって生成される、スクリプトの登場人物のようなもの
+  Solid.id が 21 の Entity は 基本的にスクリプト(GameCommand*)によって生成される、スクリプトの登場人物のようなもの
   どの種類のActorかは Solid.s.work[0] に格納される (constants/entity/solid.h の ACTOR_XXXX を参照)
 */
 
@@ -21,20 +21,15 @@ const SolidRoutine gScriptActorRoutine = {
     [ENTITY_INIT] =      Actor_Init,
     [ENTITY_UPDATE] =    Actor_Update,
     [ENTITY_DIE] =       Actor_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 struct Solid* CreateScriptActor(struct Solid* e, u8 kind) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_SCRIPT_ACTOR);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = kind;
     (p->s).coord.x = (e->s).coord.x;
     (p->s).coord.y = (e->s).coord.y;
@@ -368,7 +363,7 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
       p->mode[3]++;
     }
     case 1: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       if (p->work[2] & 1) {
         PaintEntityWhite(p);
       } else {
@@ -382,15 +377,15 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
       break;
     }
     case 2: {
-      InitScalerotMotion1(p);
+      EnableSpriteAnimation_Affine(p);
       if (r2 != 0) {
         ResetDynamicMotion(p);
       }
-      SetMotion(p, m);
+      SetSpriteAnimation(p, m);
       p->mode[3]++;
     }
     case 3: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       PaintEntityWhite(p);
       (p->spr).mag.x = p->work[2] * -4 + 0x120;
       (p->spr).mag.y = p->work[2] * 4 + 0xe0;
@@ -402,7 +397,7 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
       break;
     }
     case 4: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       PaintEntityWhite(p);
       (p->spr).mag.x = p->work[2] * 0x40 + 0x20;
       (p->spr).mag.y = p->work[2] * -0x20 + 0x160;
@@ -415,12 +410,12 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
       break;
     }
     case 5: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       PaintEntityWhite(p);
       (p->spr).mag.x = 0x20;
       (p->d).y -= 0x40;
       (p->coord).y += (p->d).y * 2;
-      if (0x3000 < CalcFromCamera(&gStageRun.vm.camera, &p->coord)) {
+      if (0x3000 < Camera_GetDistance(&gStageRun.vm.camera, &p->coord)) {
         p->flags &= ~DISPLAY;
         p->mode[3] = 0;
         return 1;
@@ -433,15 +428,15 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
 }
 
 // ピシュンと音を立ててキャラクターを転送させる処理？(召喚)
-WIP u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
+NON_MATCH u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
 #if MODERN
   switch (p->mode[3]) {
     case 0: {
-      InitScalerotMotion1(p);
+      EnableSpriteAnimation_Affine(p);
       if (r2 != 0) {
         ResetDynamicMotion(p);
       }
-      SetMotion(p, m);
+      SetSpriteAnimation(p, m);
       (p->spr).mag.x = 0x20;
       (p->spr).mag.y = 0x200;
       PaintEntityWhite(p);
@@ -450,7 +445,7 @@ WIP u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
       p->mode[3]++;
     }
     case 1: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       (p->coord).y += 0x1c00;
       if ((p->coord).y <= (p->unk_coord).y) {
         return 0;
@@ -462,7 +457,7 @@ WIP u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
       break;
     }
     case 2: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       (p->spr).mag.x = p->work[2] * 0x40 + 0x20;
       (p->spr).mag.y = p->work[2] * -0x20 + 0x160;
       if (++p->work[2] < 5) {
@@ -473,7 +468,7 @@ WIP u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
       break;
     }
     case 3: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       (p->spr).mag.x = p->work[2] * -4 + 0x120;
       (p->spr).mag.y = p->work[2] * 4 + 0xe0;
       if (++p->work[2] < 9) {
@@ -487,12 +482,12 @@ WIP u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
       if (r2 != 0) {
         ResetDynamicMotion(p);
       }
-      SetMotion(p, m);
+      SetSpriteAnimation(p, m);
       p->work[2] = 30;
       p->mode[3]++;
     }
     case 5: {
-      UpdateMotionGraphic(p);
+      UpdateSpriteAnimation(p);
       if (p->work[2] & 1) {
         UpdateEntityPaletteID(p);
       } else {
@@ -540,11 +535,8 @@ static void ActorDummy_Update(struct Solid* p) {
 
 static void deleteActor(struct Solid* p) {
   (p->s).flags &= ~DISPLAY;
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
-  (p->s).flags2 &= ~ENTITY_HAZARD;
+  EXIT_BODY(p);
+  (p->s).flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -611,7 +603,7 @@ _080D0D7C:\n\
 	strb r0, [r6, #0xd]\n\
 _080D0DAA:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r6, #0x54]\n\
 	adds r0, #0x50\n\
 	str r0, [r6, #0x54]\n\
@@ -639,7 +631,7 @@ _080D0DD0:\n\
 _080D0DDC: .4byte 0x00003303\n\
 _080D0DE0:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r6, #0x12]\n\
@@ -664,7 +656,7 @@ _080D0DE0:\n\
 	b _080D0EA0\n\
 _080D0E12:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r6, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #2\n\
@@ -679,7 +671,7 @@ _080D0E12:\n\
 _080D0E30: .4byte 0x00003301\n\
 _080D0E34:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r6, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -689,7 +681,7 @@ _080D0E34:\n\
 	b _080D0E9E\n\
 _080D0E48:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r6, #0x12]\n\
@@ -736,7 +728,7 @@ _080D0EA0:\n\
 	b _080D0EDC\n\
 _080D0EA8:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080D0EC8\n\
@@ -774,42 +766,42 @@ static void Actor2_Update(struct Solid* p) {
   switch ((p->s).mode[1]) {
     case 0: {
       (p->s).coord.y = FUN_08009f6c((p->s).coord.x + 0xF000, (p->s).coord.y);
-      SetMotion(&p->s, MOTION(DM194_CIEL, 15));
+      SetSpriteAnimation(p, MOTION(DM194_CIEL, 15));
       (p->s).mode[1]++;
       FALLTHROUGH
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).coord.x += 0x50;
-      if (((p->s).scriptEntity->flags & (1 << 0)) && ((p->s).motion.state == MOTION_NEXT)) {
-        SetMotion(&p->s, MOTION(DM194_CIEL, 17));
+      if (((p->s).scriptEntity->flags & (1 << 0)) && ((p->s).motion.state == ANIM_NEXT_GOTO)) {
+        SetSpriteAnimation(p, MOTION(DM194_CIEL, 17));
         (p->s).mode[1]++;
       }
       break;
     }
 
     case 2: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).scriptEntity->flags & (1 << 1)) == 0) {
         return;
       }
-      SetMotion(&p->s, MOTION(DM194_CIEL, 19));
+      SetSpriteAnimation(p, MOTION(DM194_CIEL, 19));
       (p->s).mode[1]++;
       break;
     }
 
     case 3: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).scriptEntity->flags & (1 << 2)) == 0) {
         return;
       }
-      SetMotion(&p->s, MOTION(DM194_CIEL, 17));
+      SetSpriteAnimation(p, MOTION(DM194_CIEL, 17));
       (p->s).mode[1]++;
       break;
     }
 
     case 4: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -824,25 +816,25 @@ static void Actor3_Update(struct Solid* p) {
       if ((p->s).work[1] == 0) {
         LOAD_STATIC_GRAPHIC(SM130_PROLOGUE_RESISTANCE);
       }
-      SetMotion(&p->s, MOTION(SM130_PROLOGUE_RESISTANCE, 2));
+      SetSpriteAnimation(p, MOTION(SM130_PROLOGUE_RESISTANCE, 2));
       (p->s).mode[1]++;
       FALLTHROUGH
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).coord.x += 0x50;
-      if ((p->s).motion.state != MOTION_NEXT) {
+      if ((p->s).motion.state != ANIM_NEXT_GOTO) {
         return;
       }
       if (((p->s).scriptEntity->flags & 1) == 0) {
         return;
       }
-      SetMotion(&p->s, MOTION(SM130_PROLOGUE_RESISTANCE, 0));
+      SetSpriteAnimation(p, MOTION(SM130_PROLOGUE_RESISTANCE, 0));
       (p->s).mode[1]++;
       break;
     }
     case 2: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if (((p->s).scriptEntity->flags & 2) == 0) {
         return;
       }
@@ -851,7 +843,7 @@ static void Actor3_Update(struct Solid* p) {
       break;
     }
     case 3: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
@@ -890,7 +882,7 @@ _080D1114:\n\
 	strb r0, [r4, #0xd]\n\
 _080D112C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #1\n\
@@ -904,7 +896,7 @@ _080D1144: .4byte 0x0000C210\n\
 _080D1148: .4byte 0x0000C214\n\
 _080D114C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #2\n\
@@ -936,7 +928,7 @@ _080D1170:\n\
 	ands r0, r1\n\
 	strb r0, [r2]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r4, #0x12]\n\
@@ -956,7 +948,7 @@ _080D11A8:\n\
 _080D11B0: .4byte 0x0000C212\n\
 _080D11B4:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080D11BA:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -1035,7 +1027,7 @@ _080D1248:\n\
 	strb r0, [r6, #0xd]\n\
 _080D1256:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r6, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #1\n\
@@ -1087,11 +1079,11 @@ _080D12B4:\n\
 	strb r0, [r6, #0x12]\n\
 _080D12CC:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080D1366\n\
 _080D12D4:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r6, #0x54]\n\
 	movs r1, #0xe0\n\
 	lsls r1, r1, #1\n\
@@ -1113,7 +1105,7 @@ _080D12D4:\n\
 _080D1300: .4byte 0x00008C05\n\
 _080D1304:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r6, #0x12]\n\
@@ -1140,7 +1132,7 @@ _080D1304:\n\
 	b _080D1354\n\
 _080D133A:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	subs r0, #1\n\
 	strb r0, [r6, #0x12]\n\
@@ -1159,7 +1151,7 @@ _080D1354:\n\
 _080D135C: .4byte 0x00008C06\n\
 _080D1360:\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080D1366:\n\
 	pop {r4, r5, r6}\n\
 	pop {r0}\n\
@@ -1204,7 +1196,7 @@ _080D13A4:\n\
 	b _080D1446\n\
 _080D13BC:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #1\n\
@@ -1219,7 +1211,7 @@ _080D13BC:\n\
 _080D13D8: .4byte 0x0000BE1C\n\
 _080D13DC:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #2\n\
@@ -1234,7 +1226,7 @@ _080D13DC:\n\
 _080D13F8: .4byte 0x0000BE1D\n\
 _080D13FC:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -1247,7 +1239,7 @@ _080D13FC:\n\
 	b _080D1442\n\
 _080D1418:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x18]\n\
 	ldrb r1, [r0, #9]\n\
 	movs r0, #4\n\
@@ -1285,12 +1277,12 @@ static void Actor7_Update(struct Solid* p) {
       wStaticGraphicTilenums[19] = 0x388;
       wStaticMotionPalIDs[19] = 9;
       LOAD_STATIC_GRAPHIC(SM019_PANTHEON_HUNTER);
-      SetMotion(&p->s, MOTION(SM019_PANTHEON_HUNTER, 9));
+      SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 9));
       (p->s).mode[1]++;
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).coord.x += PIXEL(1);
       break;
     }
@@ -1599,7 +1591,7 @@ const struct Collision Collision_08370ab8 = {
   damage : 1,
   remaining : 0,
   layer : 0x00000001,
-  range : {0x0000, 0x0800, 0x2000, 0x1000},
+  range : {PIXEL(0), PIXEL(8), PIXEL(32), PIXEL(16)},
 };
 
 const struct Collision Collision_08370ad0 = {
@@ -1608,354 +1600,298 @@ const struct Collision Collision_08370ad0 = {
   LAYER(0xFFFFFFFF),
   hitzone : 1,
   remaining : 1,
-  range : {0x0000, -0x1000, 0x1000, 0x2000},
+  range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
 };
 
-const struct SlashedEnemy SlashedEnemy_08370ae8 = {
-  m : MOTION(SM019_PANTHEON_HUNTER, 0x06),
-  unk_02 : {0xFF, 0x11},
-  c : {0, 0},
-  d : {0x80, 0xFB00},
-  unk_coord_0c : {0xFF, 0x1FF},
-  unk_10 : {0, 0x40},
-  unk_14 : {0x200, 0x200},
+// 0x08370ae8
+static const struct SlashedEnemy sProloguePantheons[4] = {
+    {
+      m : MOTION(SM019_PANTHEON_HUNTER, 6),
+      unk_02 : {0xFF, 0x11},
+      c : {PIXEL(0), PIXEL(0)},
+      d : {PIXEL(1) / 2, -PIXEL(5)},
+      unk_coord_0c : {0x00FF, 0x01FF},
+      unk_10 : {0x0000, 0x0040},
+      unk_14 : {512, 512},
+    },
+    {
+      m : MOTION(SM019_PANTHEON_HUNTER, 7),
+      unk_02 : {0xFE, 0x11},
+      c : {PIXEL(0), PIXEL(0)},
+      d : {PIXEL(1) / 2, -PIXEL(2)},
+      unk_coord_0c : {0x007F, 0x007F},
+      unk_10 : {0x0000, 0x0040},
+      unk_14 : {512, 512},
+    },
+    {
+      m : MOTION(SM019_PANTHEON_HUNTER, 8),
+      unk_02 : {0xFE, 0x11},
+      c : {PIXEL(0), PIXEL(0)},
+      d : {PIXEL(1), -PIXEL(3)},
+      unk_coord_0c : {0x01FF, 0x01FF},
+      unk_10 : {0x0000, 0x0040},
+      unk_14 : {512, 512},
+    },
+    {
+      m : MOTION(SM019_PANTHEON_HUNTER, 5),
+      unk_02 : {0xFF, 0x04},
+      c : {PIXEL(0), PIXEL(0)},
+      d : {PIXEL(0), PIXEL(0)},
+      unk_coord_0c : {PIXEL(0), PIXEL(0)},
+      unk_10 : {0x0000, 0x0040},
+      unk_14 : {2048, 512},
+    },
 };
 
-const u8 SlashedEnemy_08370b04[sizeof(struct SlashedEnemy)] = {
-    0x07, 0x13, 0xFE, 0x11, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 0x00, 0xFE, 0x7F, 0x00, 0x7F, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-};
-
-const u8 SlashedEnemy_ARRAY_08370b20[2 * sizeof(struct SlashedEnemy)] = {
-    0x08, 0x13, 0xFE, 0x11, 0x00, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0xFD, 0xFF, 0x01, 0xFF, 0x01, 0x00, 0x00, 0x40, 0x00, 0x00, 0x02, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00, 0x05, 0x13, 0xFF, 0x04, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x00, 0x00, 0x08, 0x00, 0x02, 0x00, 0x00, 0x00, 0x00,
-};
-
-const struct Collision Collision_ARRAY_08370b58[11] = {
+// 0x08370B58
+static const struct Collision sCollisions_08370B58[11] = {
     [0] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x2000},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(32)},
     },
     [1] = {
       kind : DRP,
       faction : FACTION_ENEMY,
       special : CS_BOSS,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
     [2] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [3] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [4] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [5] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x03,
-      hitzone : 0x00,
+      comboLv : 3,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [6] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x04,
-      hitzone : 0x00,
+      comboLv : 4,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [7] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x05,
-      hitzone : 0x00,
+      comboLv : 5,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [8] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x06,
-      hitzone : 0x00,
+      comboLv : 6,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [9] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x07,
-      hitzone : 0x00,
+      comboLv : 7,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
     [10] = {
       kind : DDP,
       faction : FACTION_ALLY,
-      special : 0,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x08,
-      hitzone : 0x00,
+      comboLv : 8,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x2000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(120)},
     },
 };
 
+// 0x08370c60
 const struct Rect Rect_08370c60 = {PIXEL(8), PIXEL(8), PIXEL(16), PIXEL(16)};
 
-const struct Collision Collision_ARRAY_08370c68[16] = {
+// 0x08370C68
+static const struct Collision sCollisions_08370C68[16] = {
     [0] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
     [1] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, -0x8000, 0x7800},
+      range : {PIXEL(0), PIXEL(0), -PIXEL(128), PIXEL(120)},
     },
     [2] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
     [3] = {
       kind : DRP,
       faction : FACTION_ENEMY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x0E00, 0x1000, 0x1C00},
+      range : {PIXEL(0), -PIXEL(14), PIXEL(16), PIXEL(28)},
     },
     [4] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [5] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [6] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [7] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
     [8] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1000, 0x1000},
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
     },
     [9] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1000, 0x1000},
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
     },
     [10] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1000, 0x1000},
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
     },
     [11] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      hitzone : 0x00,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [12] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x01,
-      hitzone : 0x00,
+      comboLv : 1,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [13] = {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 1,
-      atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0x02,
-      hitzone : 0x00,
+      comboLv : 2,
       remaining : 0,
       layer : 0x00000001,
-      range : {-0x1800, -0x1000, 0x1000, 0x1000},
+      range : {-PIXEL(24), -PIXEL(16), PIXEL(16), PIXEL(16)},
     },
     [14] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
     [15] = {
       kind : DRP,
       faction : FACTION_NEUTRAL,
-      special : 0,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0x01,
+      hitzone : 1,
       remaining : 0,
-      range : {0x0000, -0x1000, 0x1000, 0x2000},
+      range : {PIXEL(0), -PIXEL(16), PIXEL(16), PIXEL(32)},
     },
 };
 
-const s32 s32_ARRAY_08370de8[8] = {
-    0x00000038, 0x00000020, 0x00000030, 0x00000040, 0x00000038, 0x00000030, 0x00000048, 0x00000030,
-};
+const s32 s32_ARRAY_08370de8[8] = {56, 32, 48, 64, 56, 48, 72, 48};
 
-const struct Coord Coord_08370e08 = {PIXEL(0), -PIXEL(24)};
+const Coords32 Coord_08370e08 = {PIXEL(0), -PIXEL(24)};
 
 const struct Rect Rect_08370e10 = {0x0, 0x0, 0x1000, 0x2800};

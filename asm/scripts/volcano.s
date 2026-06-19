@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
     .balign 4
     .section .rodata
@@ -62,15 +63,15 @@ Entity_0834eda8:
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_0834edb8:
-  eventflag 0, 5, 0
+  cutscene_start CS_VOLCANO_MISSION
   spawn 0, Entity_0834ed28
   reset_camera Camera_0834ecfc
   lock
   normal_screen
   wait 1
   visible 0, FALSE
-  wait_screeneffect
-  play_bgm 331
+  wait_transition_end
+  play_bgm BGM_MISSION_INSTRUCTION
   wait 15
   force 6, 0, 0
   wait 60
@@ -78,7 +79,7 @@ Script_0834edb8:
   wait_msgbox_end
   stop_bgm
   wait 15
-  eventflag 1, 0, 0
+  cutscene_end
   indicator 1, 2, 0
   wait 45
   play_bgm BGM_VOLCANO
@@ -92,7 +93,7 @@ Script_0834ee78:
   reset_camera Camera_0834ecfc
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm BGM_VOLCANO
@@ -105,8 +106,8 @@ Script_0834eed8:
   spawn 0, Entity_0834ed28
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_VOLCANO
   indicator 1, 0, 0
   wait_indicator_end
@@ -118,8 +119,8 @@ Script_0834ef30:
   spawn 0, Entity_0834ed38
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_VOLCANO
   indicator 1, 0, 0
   wait_indicator_end
@@ -131,8 +132,8 @@ Script_0834ef88:
   spawn 0, Entity_0834ed48
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_VOLCANO
   indicator 1, 0, 0
   wait_indicator_end
@@ -145,7 +146,7 @@ Script_0834efe0:
   pause
   wait 8
   lock
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   stop_bgm
   wait 120
   release
@@ -165,8 +166,8 @@ Script_0834f068:
   spawn 0, Entity_0834ed58
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_VOLCANO
   indicator 1, 0, 0
   wait_indicator_end
@@ -178,8 +179,8 @@ Script_0834f0c0:
   spawn 0, Entity_0834ed68
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
@@ -192,10 +193,10 @@ Script_0834f118:
   spawn 3, Entity_0834ed98
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 6, 0
+  cutscene_start CS_VOLCANO_BOSS
   force 9, 0, 11568*PX
   lock
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 75
   message 1, 0, 0x0402
   wait_msgbox_end
@@ -208,14 +209,14 @@ Script_0834f118:
   triumphant_message 0, 0x0404
   message 1, 0, 0x0403
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 120
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -224,10 +225,10 @@ Script_0834f208:
   spawn 1, Entity_0834eda8
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 6, 0
+  cutscene_start CS_VOLCANO_BOSS
   force 9, 0, 11568*PX
   lock
-  eventflag 1, 0, 0
+  cutscene_end
   triumphant_message 0, 0x0404
   entityflag 1, 0, TRUE
   stop_bgm
@@ -235,7 +236,7 @@ Script_0834f208:
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -246,7 +247,7 @@ Script_0834f298:
   reset_camera Camera_0834ecfc
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0404
   entityflag 1, 0, TRUE
   wait 120
@@ -254,7 +255,7 @@ Script_0834f298:
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -266,30 +267,30 @@ Script_0834f320:
   message 1, 0, 0x0405
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 0, 2
+  cmd08_wait_set 1
   force 4, 0, 0
   wait 8
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 32
   fadeout_se 90, SE_UNK_e0
   destroy 1
   destroy 0
-  cmd20 0, 0, 0
+  load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 Script_0834f3e8:
   spawn 0, Entity_0834ed88
   reset_camera Camera_0834ecfc
   lock
-  screeneffect 9
+  start_transition 9
   play_bgm BGM_VOLCANO
   release
   resume 0
@@ -302,7 +303,7 @@ Script_0834f428:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm BGM_VOLCANO
   indicator 1, 0, 0
   wait 15
@@ -326,7 +327,7 @@ Script_0834f4a0:
   fadeout_se 120, SE_UNK_e0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

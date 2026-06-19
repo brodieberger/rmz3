@@ -15,20 +15,15 @@ const EnemyRoutine gPillerCannonRoutine = {
     [ENTITY_INIT] =      PillerCannon_Init,
     [ENTITY_UPDATE] =    PillerCannon_Update,
     [ENTITY_DIE] =       PillerCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreatePillerCannon(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Enemy* CreatePillerCannon(Coords32* c, u8 n) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_PILLER_CANNON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
+    INIT_ENEMY_ROUTINE(p, ENEMY_PILLER_CANNON);
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -85,6 +80,7 @@ static const EnemyFunc sUpdates2[9] = {
 };
 // clang-format on
 
+// 0x0836609c
 static const struct Collision sCollisions[14] = {
     [0] = {
       kind : DRP,
@@ -220,9 +216,10 @@ static const struct Collision sCollisions[14] = {
     },
 };
 
-const struct Coord Coord_083661ec = {0xFFFFF500, 0x0};
+const Coords32 Coord_083661ec = {0xFFFFF500, 0x0};
 
 // clang-format off
+// 0x083661f4
 static const motion_t sMotions[7] = {
     MOTION(SM008_PILLAR_CANNON, 0x01),
     MOTION(SM008_PILLAR_CANNON, 0x02),

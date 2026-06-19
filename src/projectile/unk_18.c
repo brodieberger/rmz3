@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/unk_18.inc");
+
 static const struct Collision sCollisions[4];
 static const u8 sInitModes[4];
 
@@ -14,7 +16,7 @@ const ProjectileRoutine gProjectile18Routine = {
     [ENTITY_INIT] =      Projectile18_Init,
     [ENTITY_UPDATE] =    Projectile18_Update,
     [ENTITY_DIE] =       Projectile18_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

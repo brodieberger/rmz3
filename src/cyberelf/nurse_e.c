@@ -15,7 +15,7 @@ const ElfRoutine gNurseERoutine = {
     [ENTITY_INIT] =      NurseE_Init,
     [ENTITY_UPDATE] =    NurseE_Update,
     [ENTITY_DIE] =       NurseE_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
 // clang-format on

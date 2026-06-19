@@ -3,68 +3,51 @@
 
 #include "gba/gba.h"
 
-struct GameState;
-
-typedef void (*MinigameLoopFunc)(struct GameState*);
-
+// 全種類のミニゲームで同じレイアウトなのか、unionを使うべきかは調査中
 struct MinigameState {
-  u8 unk_00[4];
-  s16 unk_04;
-  u8 unk_06[6];
-  u8 unk_0c;
-  u8 unk_0d[3];
-  u8 unk_10[240];
+  u8 unk_00[4];  // unk_00: s16 in CopyX
+  s16 unk_04;    // zero と copy_x で s16
+  s16 unk_06;    // s16 in CopyX
+  s32 unk_08;    // Ciel score
+  u8 unk_0c;     // u8 in ZeroMini_Update
+  u8 unk_0d;
+  u8 unk_0e;
+  u8 unk_0f;
+  u16 unk_10;  // u16 in leviathanMode0Pre
+  u16 unk_12;  // u16 in leviathanMode0Pre
+  s32 unk_14;  // used by Phantom
+  u16 unk_18;  // ?16 in fefnir_080347f0
+  u8 unk_1a;
+  u8 unk_1b;
+  u8 unk_1c[4];
+  s32 unk_20;  // s32 in Fefnir
+
+  // u16 unk_24, unk_26 in FUN_08034774
+  s32 unk_24;  // s32 in CopyX, Leviathan
+  s32 unk_28;  // Fefnir Hiscore
+
+  // unk_2f が Fefnir だと u8 っぽくアクセスしてる(Fefnir_Update) ので、ここらへんは union?
+  s32 unk_2c;  // Leviathan Hiscore
+  u8 unk_30;
+  u8 unk_31;  // Leviathan で u8
+  u8 unk_32[2];
+  s32 unk_34;  // Phantom score
+  u8 unk_38[4];
+  s32 unk_3c;  // Phantom Hiscore
+  u8 unk_40[144];
+  u8 unk_d0[4];
+  u8 unk_d4;
+  u8 unk_d5;  // Phantom minigame で u8 としてアクセス
+  u8 unk_d6;  // used by Phantom
+  u8 unk_d7;
+  u8 unk_d8[8];
+  u8 unk_e0[32];
 };
+static_assert(sizeof(struct MinigameState) == 256);
 
-void MinigameLoop_Main(struct GameState* p);
-void MinigameLoop_ExitMinigame(struct GameState* p);
+struct GameState;
+typedef bool32 (*MinigameFunc)(struct GameState*);
 
-void initZeroMinigame(struct GameState* p);
-void initCielMinigame(struct GameState* p);
-void initCopyXMinigame(struct GameState* p);
-void initHarpuiaMinigame(struct GameState* p);
-void initFefnirMinigame(struct GameState* p);
-void initLeviathanMinigame(struct GameState* p);
-void initPhantomMinigame(struct GameState* p);
-
-void zeroMinigame(struct GameState* p);
-void cielMinigame(struct GameState* p);
-void copyXMinigame(struct GameState* p);
-void harpuiaMinigame(struct GameState* p);
-void fefnirMinigame(struct GameState* p);
-void leviathanMinigame(struct GameState* p);
-void phantomMinigame(struct GameState* p);
-
-void exitZeroMinigame(struct GameState* p);
-void exitCielMinigame(struct GameState* p);
-void exitCopyXMinigame(struct GameState* p);
-void exitHarpuiaMinigame(struct GameState* p);
-void exitFefnirMinigame(struct GameState* p);
-void exitLeviathanMinigame(struct GameState* p);
-void exitPhantomMinigame(struct GameState* p);
-
-void zeroMinigamePhase0(struct GameState* p);
-void zeroMinigamePhase1(struct GameState* p);
-void zeroMinigamePhase2(struct GameState* p);
-
-void copyx_minigame_080fa560(struct GameState* p);
-void copyx_minigame_080fa62c(struct GameState* p);
-void copyx_minigame_080fa764(struct GameState* p);
-
-void harpuia_minigame_080fab10(struct GameState* p);
-void harpuia_minigame_080fabe8(struct GameState* p);
-void harpuia_minigame_080faebc(struct GameState* p);
-
-void fefnir_minigame_080fb2d8(struct GameState* p);
-void fefnir_minigame_080fb354(struct GameState* p);
-void fefnir_minigame_080fb48c(struct GameState* p);
-
-void leviathan_minigame_080fbba0(struct GameState* p);
-void leviathan_minigame_080fbc30(struct GameState* p);
-void leviathan_minigame_080fbcdc(struct GameState* p);
-
-void phantomMinigame_080fc13c(struct GameState* p);
-void phantomMinigame_080fc1b8(struct GameState* p);
-void phantomMinigame_080fc390(struct GameState* p);
+void PrintMinigameNumber(s32 score, u16 x, u16 y);
 
 #endif  // GUARD_RMZ3_MINIGAME_H

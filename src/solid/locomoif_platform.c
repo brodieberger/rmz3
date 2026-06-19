@@ -7,6 +7,14 @@
   ロコモIF戦で出現する台座
 */
 
+struct LocomoIFPlatformObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u16 unk_00;     // 0xB4
+  u8 unk_02[14];  // 0xB6
+};
+static_assert(sizeof(struct LocomoIFPlatformObject) == sizeof(struct Solid));
+
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 void LocomoIFPlatform_Init(struct Solid* p);
@@ -18,7 +26,7 @@ const SolidRoutine gLocomoIFPlatformRoutine = {
     [ENTITY_INIT] =      LocomoIFPlatform_Init,
     [ENTITY_UPDATE] =    LocomoIFPlatform_Update,
     [ENTITY_DIE] =       LocomoIFPlatform_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -26,17 +34,11 @@ const SolidRoutine gLocomoIFPlatformRoutine = {
 void CreateLocomoIFPlatform(struct Boss* locomoif) {
   s32 i;
   for (i = 0; i < 2; i++) {
-    struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+    struct LocomoIFPlatformObject* p = (struct LocomoIFPlatformObject*)AllocEntityLast(gSolidHeaderPtr);
     if (p != NULL) {
-      u16 val;
-      (p->s).taskCol = 30;
       INIT_SOLID_ROUTINE(p, SOLID_LOCOMOIF_PLATFORM);
-      (p->s).tileNum = 0;
-      (p->s).palID = 0;
-      (p->s).flags2 |= WHITE_PAINTABLE;
-      (p->s).invincibleID = (p->s).uniqueID;
       (p->s).work[0] = 0;
-      (p->props).lifp.unk_00 = (i << 15);
+      p->unk_00 = (i << 15);
       (p->s).unk_28 = &locomoif->s;
     }
   }

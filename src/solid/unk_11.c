@@ -3,9 +3,7 @@
 #include "overworld.h"
 #include "solid.h"
 
-void FUN_0800e370(struct Coord* c);
-
-static const struct Collision sCollision;
+void FUN_0800e370(Coords32* c);
 
 static void Solid11_Init(struct Solid* p);
 static void Solid11_Update(struct Solid* p);
@@ -13,31 +11,37 @@ static void Solid11_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gSolid11Routine = {
-    [ENTITY_INIT] =      Solid11_Init,
-    [ENTITY_UPDATE] =    Solid11_Update,
-    [ENTITY_DIE] =       Solid11_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Solid11_Init,
+    [ENTITY_UPDATE] =    (void*)Solid11_Update,
+    [ENTITY_DIE] =       (void*)Solid11_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 static void Solid11_Init(struct Solid* p) {
-  struct Coord* velocity;
+  static const struct Collision sCollision = {
+    kind : DRP,
+    faction : FACTION_ENEMY,
+    LAYER(RECOIL_PUSHABLE),
+    hitzone : 0xFF,
+    remaining : 0,
+    range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(32)},
+  };
 
   const metatile_attr_t attr = GetMetatileAttr((p->s).coord.x, (p->s).coord.y);
   if (attr == 0) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
   INIT_BODY(p, &sCollision, 0, NULL);
-  velocity = &(p->s).d;
-  velocity->x = velocity->y = 0;
+  {
+    Coords32* d = &(p->s).d;
+    d->x = d->y = 0;
+  }
   (p->s).coord.x += PIXEL(8);
   (p->s).coord.y += PIXEL(8);
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
@@ -47,14 +51,11 @@ static void Solid11_Init(struct Solid* p) {
 static void Solid11_Update(struct Solid* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
     if ((p->body).status & BODY_STATUS_RECOILED) {
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM072_UNK, 0));
+      SetSpriteAnimation(p, MOTION(SM072_UNK, 0));
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Solid11_Die(p);
     }
@@ -73,14 +74,14 @@ static void Solid11_Die(struct Solid* p) {
       FALLTHROUGH;
     }
     case 1: {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       if ((p->s).d.y < PIXEL(7)) {
         (p->s).d.y += PIXEL(1) / 8;
       }
       y = (p->s).coord.y + (p->s).d.y;
       (p->s).coord.y = y;
       (p->s).unk_coord.y = y;
-      if (CalcFromCamera(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
+      if (Camera_GetDistance(&gStageRun.vm.camera, &(p->s).coord) > PIXEL(48)) {
         (p->s).flags &= ~DISPLAY;
         SET_SOLID_ROUTINE(p, ENTITY_EXIT);
       }
@@ -88,14 +89,3 @@ static void Solid11_Die(struct Solid* p) {
     }
   }
 }
-
-// --------------------------------------------
-
-static const struct Collision sCollision = {
-  kind : DRP,
-  faction : FACTION_ENEMY,
-  LAYER(RECOIL_PUSHABLE),
-  hitzone : 0xFF,
-  remaining : 0,
-  range : {PIXEL(0), PIXEL(0), PIXEL(32), PIXEL(32)},
-};

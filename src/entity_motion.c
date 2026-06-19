@@ -4,18 +4,18 @@
 #include "global.h"
 #include "motion.h"
 
-void InitNonAffineMotion(struct Entity *p) {
-  struct Sprite *spr = &p->spr;
-  ResetMotion(&p->motion, gStaticMotionCmdTable[0]);
-  InitNonAffineSprite(spr, (struct MetaspriteHeader *)gStaticMotionMetaspriteTable[0], &p->coord);
+void InitNonAffineMotion(struct Entity* p) {
+  struct Sprite* spr = &p->spr;
+  ResetAnimState(&p->motion, gStaticMotionCmdTable[0]);
+  InitNonAffineSprite(spr, (struct MetaspriteHeader*)gStaticMotionMetaspriteTable[0], &p->coord);
 
-  spr->xflip = (p->flags >> 4) & 1;
-  spr->oam.xflip = (p->flags >> 4) & 1;
-  spr->yflip = (p->flags >> 5) & 1;
-  spr->oam.yflip = (p->flags >> 5) & 1;
+  spr->xflip = (p->flags & X_FLIP) != 0;
+  (spr->oam).xflip = (p->flags & X_FLIP) != 0;
+  spr->yflip = (p->flags & Y_FLIP) != 0;
+  (spr->oam).yflip = (p->flags & Y_FLIP) != 0;
 
   p->motionID = 0xFF;
-  p->flags |= OAM_PRIO;
+  p->flags |= USE_COMMON_OAM_RENDERER;
   p->flags &= ~AFFINE;
   p->flags2 &= ~SCALEROT;
   p->flags2 &= ~ENTITY_FLAG2_B1;
@@ -23,19 +23,19 @@ void InitNonAffineMotion(struct Entity *p) {
   p->flags2 &= ~PALETTE_FORCED;
 }
 
-void InitRotatableMotion(struct Entity *p) {
-  struct Sprite *spr = &p->spr;
-  ResetMotion(&p->motion, gStaticMotionCmdTable[0]);
-  InitRotatableSprite(spr, (struct MetaspriteHeader *)gStaticMotionMetaspriteTable[0], &p->coord);
+void InitRotatableMotion(struct Entity* p) {
+  struct Sprite* spr = &p->spr;
+  ResetAnimState(&p->motion, gStaticMotionCmdTable[0]);
+  InitRotatableSprite(spr, (struct MetaspriteHeader*)gStaticMotionMetaspriteTable[0], &p->coord);
 
-  spr->xflip = (p->flags >> 4) & 1;
-  spr->oam.xflip = (p->flags >> 4) & 1;
-  spr->yflip = (p->flags >> 5) & 1;
-  spr->oam.yflip = (p->flags >> 5) & 1;
+  spr->xflip = (p->flags & X_FLIP) != 0;
+  (spr->oam).xflip = (p->flags & X_FLIP) != 0;
+  spr->yflip = (p->flags & Y_FLIP) != 0;
+  (spr->oam).yflip = (p->flags & Y_FLIP) != 0;
 
   p->motionID = 0xFF;
   p->angle = 0;
-  p->flags |= OAM_PRIO;
+  p->flags |= USE_COMMON_OAM_RENDERER;
   p->flags |= AFFINE;
   p->flags2 &= ~SCALEROT;
   p->flags2 &= ~ENTITY_FLAG2_B1;
@@ -43,21 +43,20 @@ void InitRotatableMotion(struct Entity *p) {
   p->flags2 &= ~PALETTE_FORCED;
 }
 
-void InitScalerotMotion1(struct Entity *p) {
-  struct Sprite *spr = &p->spr;
-  ResetMotion(&p->motion, gStaticMotionCmdTable[0]);
-  InitScalerotSprite1(spr, (struct MetaspriteHeader *)gStaticMotionMetaspriteTable[0], &p->coord);
+void InitScalerotMotion1(struct Entity* p) {
+  struct Sprite* spr = &p->spr;
+  ResetAnimState(&p->motion, gStaticMotionCmdTable[0]);
+  InitScalerotSprite1(spr, (struct MetaspriteHeader*)gStaticMotionMetaspriteTable[0], &p->coord);
 
-  spr->xflip = (p->flags >> 4) & 1;
-  spr->oam.xflip = (p->flags >> 4) & 1;
-  spr->yflip = (p->flags >> 5) & 1;
-  spr->oam.yflip = (p->flags >> 5) & 1;
+  spr->xflip = (p->flags & X_FLIP) != 0;
+  (spr->oam).xflip = (p->flags & X_FLIP) != 0;
+  spr->yflip = (p->flags & Y_FLIP) != 0;
+  (spr->oam).yflip = (p->flags & Y_FLIP) != 0;
 
   p->motionID = 0xFF;
   p->angle = 0;
-  spr->mag.x = 0x100;
-  spr->mag.y = 0x100;
-  p->flags |= OAM_PRIO;
+  (spr->mag).x = 0x100, (spr->mag).y = 0x100;
+  p->flags |= USE_COMMON_OAM_RENDERER;
   p->flags |= AFFINE;
   p->flags2 |= SCALEROT;
   p->flags2 &= ~ENTITY_FLAG2_B1;
@@ -65,21 +64,20 @@ void InitScalerotMotion1(struct Entity *p) {
   p->flags2 &= ~PALETTE_FORCED;
 }
 
-void InitScalerotMotion2(struct Entity *p) {
-  struct Sprite *spr = &p->spr;
-  ResetMotion(&p->motion, gStaticMotionCmdTable[0]);
-  InitScalerotSprite2(spr, (struct MetaspriteHeader *)gStaticMotionMetaspriteTable[0], &p->coord);
+void InitScalerotMotion2(struct Entity* p) {
+  struct Sprite* spr = &p->spr;
+  ResetAnimState(&p->motion, gStaticMotionCmdTable[0]);
+  InitScalerotSprite2(spr, (struct MetaspriteHeader*)gStaticMotionMetaspriteTable[0], &p->coord);
 
-  spr->xflip = (p->flags >> 4) & 1;
-  spr->oam.xflip = (p->flags >> 4) & 1;
-  spr->yflip = (p->flags >> 5) & 1;
-  spr->oam.yflip = (p->flags >> 5) & 1;
+  spr->xflip = (p->flags & X_FLIP) != 0;
+  (spr->oam).xflip = (p->flags & X_FLIP) != 0;
+  spr->yflip = (p->flags & Y_FLIP) != 0;
+  (spr->oam).yflip = (p->flags & Y_FLIP) != 0;
 
   p->motionID = 0xFF;
   p->angle = 0;
-  spr->mag.x = 0x100;
-  spr->mag.y = 0x100;
-  p->flags |= OAM_PRIO;
+  (spr->mag).x = 0x100, (spr->mag).y = 0x100;
+  p->flags |= USE_COMMON_OAM_RENDERER;
   p->flags |= AFFINE;
   p->flags2 |= SCALEROT;
   p->flags2 &= ~ENTITY_FLAG2_B1;
@@ -87,100 +85,106 @@ void InitScalerotMotion2(struct Entity *p) {
   p->flags2 &= ~PALETTE_FORCED;
 }
 
-void ResetDynamicMotion(struct Entity *p) {
+void ResetDynamicMotion(struct Entity* p) {
   p->motionID = 0xFF;
-  p->motionStep = 0xFF;
+  p->texture = 0xFF;
   p->flags2 |= DYNAMIC;
 }
 
-NON_MATCH void SetMotion(struct Entity *p, motion_t m) {
+NON_MATCH void SetMotion(struct Entity* p, motion_t m) {
 #if MODERN
-  motion_id_t id = (m >> 8) & 0xFF;
+  motion_id_t id = m >> 8;
   if (id != p->motionID) {
     if (p->flags2 & DYNAMIC) {
-      (p->motion).cmds = gDynamicMotionCmdTable[id];
-      p->motionStep = 0xFF;
+      (p->motion).table = *(const AnimCmd***)((void*)gDynamicMotionCmdTable + ((u32)id << 2));  // = gDynamicMotionCmdTable[id]
+      p->texture = 0xFF;
     } else {
-      (p->motion).cmds = gStaticMotionCmdTable[id];
-      (p->spr).sprites = (struct MetaspriteHeader *)gStaticMotionMetaspriteTable[id];
+      (p->motion).table = *(const AnimCmd***)((void*)gStaticMotionCmdTable + ((u32)id << 2));                 // = gStaticMotionCmdTable[id]
+      (p->spr).sprites = *(struct MetaspriteHeader**)((void*)gStaticMotionMetaspriteTable + ((u32)id << 2));  // = gStaticMotionMetaspriteTable[id];
     }
-    p->motionID = id;
+    p->motionID = id;  // ここら辺のレジスタの割り当てがあわない
   }
 
-  if (!(p->flags2 & DYNAMIC)) {
-    struct Sprite *spr = &p->spr;
-    u16 palID = (u16)p->palID + wStaticMotionPalIDs[id];
+  if ((p->flags2 & DYNAMIC) == 0) {
+    struct Sprite* spr = &p->spr;
+    u16 tileNum = p->tileNum + wStaticGraphicTilenums[id];
+    u16 palID = p->palID + wStaticMotionPalIDs[id];
 
-    (spr->oam).tileNum = wStaticGraphicTilenums[id] + p->tileNum;
-    if (!(p->flags2 & PALETTE_FORCED)) {
+    (spr->oam).tileNum = tileNum;
+    if ((p->flags2 & PALETTE_FORCED) == 0) {
       (spr->oam).paletteNum = palID;
-      p->savedPalID = palID;
+      p->savedPalID = (u8)palID;
     }
   }
-  setMotionStep(&p->motion, (u8)(m & 0xFF));
+  SetAnimSubID(&p->motion, (u8)m);
 #else
   INCCODE("asm/wip/SetMotion.inc");
 #endif
 }
 
 // SetMotion は cmdIdx とかは 0 つまり motion の初めからになるが、これはmotionの途中状態にもセットできる
-void GotoMotion(struct Entity *p, motion_t motion, u16 cmdIdx, u16 r3) {
-  SetMotion(p, motion);
+void GotoMotion(struct Entity* p, motion_t motion, u16 cmdIdx, u16 duration) {
+  SetSpriteAnimation(p, motion);
   (p->motion).cmdIdx = cmdIdx;
-  (p->motion).duration = r3;
+  (p->motion).duration = duration;
 }
 
-WIP void UpdateMotionGraphic(struct Entity *p) {
+// 0x0801765C
+NON_MATCH void UpdateEntityAnim(struct Entity* p) {
 #if MODERN
-  UpdateMotionState(&p->motion);
-  (p->spr).spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
+  u8 spriteIdx;
+  struct Sprite* spr = &p->spr;
+  StepAnimState(&p->motion);
+  spr->spriteIdx = spriteIdx = (p->motion).table[(p->motion).id][(p->motion).cmdIdx].param;
   if (p->flags2 & DYNAMIC) {
-    u8 step;
-    struct MetaspriteHeader *metaspriteTable = gDynamicMotionMetaspriteTable[p->motionID];
-    if ((p->spr).sprites != metaspriteTable) {
+    u8 texture;
+    struct MetaspriteHeader* metaspriteTable = gDynamicMotionMetaspriteTable[p->motionID];
+    if (spr->sprites != metaspriteTable) {
       (p->spr).sprites = metaspriteTable;
     }
 
-    step = metaspriteTable[(p->spr).spriteIdx].step;
-    if (step != p->motionStep) {
+    texture = metaspriteTable[spriteIdx].texture;
+    if (texture != p->texture) {
       u16 tileNum, palID;
-      p->motionStep = step;
-      tileNum = wDynamicGraphicTilenums[p->motionID] + p->tileNum;
-      palID = wDynamicMotionPalIDs[p->motionID] + p->palID;
+
+      p->texture = texture;
+
+      tileNum = p->tileNum + wDynamicGraphicTilenums[p->motionID];
+      palID = p->palID + wDynamicMotionPalIDs[p->motionID];
       if (p->motionID < 144) {
-        struct Graphic *g = &((struct Graphic *)OFFSET_TABLE(gDynamicMotionGraphicOffsets, p->motionID))[step];
-        RequestGraphicTransfer(g, (void *)((tileNum - g->ofs) * 32 + 0x10000));
+        struct GraphicV2* g = (struct GraphicV2*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + texture;
+        RequestGraphicTransfer((void*)g, (void*)((tileNum - g->tileId) * 32 + 0x10000));
       } else {
-        struct ColorGraphic *g = &((struct ColorGraphic *)OFFSET_TABLE(gDynamicMotionGraphicOffsets, p->motionID))[step];
-        RequestGraphicTransfer(&g->g, (void *)((tileNum - (g->g).ofs) * 32 + 0x10000));
+        struct ColorGraphicV2* g = (struct ColorGraphicV2*)SELF_REL_PTR(&gDynamicMotionGraphicOffsets[p->motionID]) + texture;
+        RequestGraphicTransfer((void*)g, (void*)((tileNum - (g->g).tileId) * 32 + 0x10000));
         LoadPalette(&g->pal, (palID - (g->pal).dst) * 32 + 512);
       }
-      (p->spr).oam.tileNum = tileNum;
+      (spr->oam).tileNum = tileNum;
       if (!(p->flags2 & PALETTE_FORCED)) {
-        (p->spr).oam.paletteNum = palID;
+        (spr->oam).paletteNum = palID;
         p->savedPalID = palID;
       }
     }
   }
 #else
-  INCCODE("asm/wip/UpdateMotionGraphic.inc");
+  INCCODE("asm/wip/UpdateEntityAnim.inc");
 #endif
 }
 
-WIP void FUN_0801779c(struct Entity *p) {
+NON_MATCH void FUN_0801779c(struct Entity* p) {
 #if MODERN
-  UpdateMotionState(&p->motion);
-  (p->spr).spriteIdx = (p->motion).cmds[(p->motion).step][(p->motion).cmdIdx].spriteIdx;
+  StepAnimState(&p->motion);
+  (p->spr).spriteIdx = (p->motion).table[(p->motion).id][(p->motion).cmdIdx].param;
   if (p->flags2 & DYNAMIC) {
-    u8 step;
+    u8 texture;
     if ((p->spr).sprites != gDynamicMotionMetaspriteTable[p->motionID]) {
       (p->spr).sprites = gDynamicMotionMetaspriteTable[p->motionID];
     }
 
-    step = (p->spr).sprites[(p->spr).spriteIdx].step;
-    if (step != (p->motionStep & 0x7F)) {
+    texture = (p->spr).sprites[(p->spr).spriteIdx].texture;
+    if (texture != (p->texture & 0x7F)) {
       u16 tileNum, palID;
-      p->motionStep = step | 0x80;
+      p->texture = texture | 0x80;
       tileNum = wDynamicGraphicTilenums[p->motionID] + p->tileNum;
       palID = wDynamicMotionPalIDs[p->motionID] + p->palID;
 
@@ -196,9 +200,9 @@ WIP void FUN_0801779c(struct Entity *p) {
 #endif
 }
 
-NAKED static void unused_0801785c(struct Entity *p) { INCCODE("asm/unused/unused_0801785c.inc"); }
+NAKED static void unused_0801785c(struct Entity* p) { INCCODE("asm/unused/unused_0801785c.inc"); }
 
-void UpdateEntityPaletteID(struct Entity *p) {
+void UpdateEntityPaletteID(struct Entity* p) {
   u16 pal;
   if (p->flags2 & DYNAMIC) {
     pal = p->palID + wDynamicMotionPalIDs[p->motionID];
@@ -210,7 +214,7 @@ void UpdateEntityPaletteID(struct Entity *p) {
   p->flags2 &= ~PALETTE_FORCED;
 }
 
-u8 GetEntityPalID(struct Entity *p) {
+u8 GetEntityPalID(struct Entity* p) {
   u16 palID;
   if (p->flags2 & DYNAMIC) {
     palID = p->palID + wDynamicMotionPalIDs[p->motionID];
@@ -220,15 +224,15 @@ u8 GetEntityPalID(struct Entity *p) {
   return palID;
 }
 
-void ForceEntityPalette(struct Entity *p, u8 palID) {
+void ForceEntityPalette(struct Entity* p, u8 palID) {
   p->flags2 |= PALETTE_FORCED;
   (p->spr).oam.paletteNum = palID;
   p->savedPalID = palID;
 }
 
-void PaintEntityWhite(struct Entity *p) {
+void PaintEntityWhite(struct Entity* p) {
   u8 palID = 13;
-  gWhitePaintFlags[p->invincibleID >> 5] |= (1 << (p->invincibleID & 0x1F));
+  SET_FLAG32(gWhitePaintFlags, p->invincibleID);
   p->flags2 |= PALETTE_FORCED;
   (p->spr).oam.paletteNum = palID;
   p->savedPalID = palID;
@@ -242,8 +246,8 @@ NON_MATCH void InitMotionLocation(void) {
     wStaticMotionPalIDs[i] = gStaticMotionGraphics[i].pal.dst;
   }
   for (i = 0; i < DYNAMIC_MOTION_COUNT; i++) {
-    struct ColorGraphic *g = (struct ColorGraphic *)OFFSET_TABLE(gDynamicMotionGraphicOffsets, i);
-    wDynamicGraphicTilenums[i] = (g->g).ofs;
+    struct ColorGraphicV2* g = SELF_REL_PTR(&gDynamicMotionGraphicOffsets[i]);
+    wDynamicGraphicTilenums[i] = (g->g).tileId;
     if (i < 144) {
       wDynamicMotionPalIDs[i] = 0;
     } else {

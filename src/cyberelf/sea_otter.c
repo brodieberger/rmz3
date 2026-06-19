@@ -1,17 +1,19 @@
 #include "cyberelf.h"
 #include "global.h"
 
+// 敵の動きを止めるサイバーエルフ
+
 void SeaOtterElf_Init(struct Elf* p);
 void SeaOtterElf_Update(struct Elf* p);
 void SeaOtterElf_Die(struct Elf* p);
 
 // clang-format off
 const ElfRoutine gSeaOtterElfRoutine = {
-    [ENTITY_INIT] =      SeaOtterElf_Init,
-    [ENTITY_UPDATE] =    SeaOtterElf_Update,
-    [ENTITY_DIE] =       SeaOtterElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
-    [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)SeaOtterElf_Init,
+    [ENTITY_UPDATE] =    (void*)SeaOtterElf_Update,
+    [ENTITY_DIE] =       (void*)SeaOtterElf_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -89,11 +91,29 @@ INCASM("asm/cyberelf/sea_otter.inc");
 void FUN_080e4a3c(struct Elf* p);
 void FUN_080e4a88(struct Elf* p);
 void FUN_080e4ae8(struct Elf* p);
-void FUN_080e4b58(struct Elf* p);
+static void FUN_080e4b58(struct Entity* p);
 
+// 0x08371dc0
 static const ElfFunc sUpdates[4] = {
-    FUN_080e4a3c,
-    FUN_080e4a88,
-    FUN_080e4ae8,
-    FUN_080e4b58,
+    (ElfFunc)FUN_080e4a3c,
+    (ElfFunc)FUN_080e4a88,
+    (ElfFunc)FUN_080e4ae8,
+    (ElfFunc)FUN_080e4b58,
 };
+
+static void FUN_080e4b58(struct Entity* p) {
+  if (p->mode[2] == 0) {
+    p->mode[3] = 64;
+    p->mode[2]++;
+  }
+
+  if ((p->d).x > 0x90) {
+    p->mode[3]--;
+    if (p->mode[3] != 0xFF) {
+      return;
+    }
+  }
+
+  p->mode[1] = 0;
+  p->mode[2] = 0;
+}

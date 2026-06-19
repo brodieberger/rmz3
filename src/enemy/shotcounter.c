@@ -5,7 +5,7 @@
 
 bool8 shotcounter_08066da0(struct Enemy* p);
 
-static const struct Collision sCollisions[12];
+static const struct Collision sCollisions[];
 
 static void Shotcounter_Init(struct Enemy* p);
 static void Shotcounter_Update(struct Enemy* p);
@@ -13,29 +13,23 @@ static void Shotcounter_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gShotcounterRoutine = {
-    [ENTITY_INIT] =      Shotcounter_Init,
-    [ENTITY_UPDATE] =    Shotcounter_Update,
-    [ENTITY_DIE] =       Shotcounter_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Shotcounter_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Shotcounter_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Shotcounter_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 // Unused
-static struct Enemy* CreateShotcounter(struct Coord* c, u8 r1) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+static struct Entity* CreateShotcounter(Coords32* c, u8 r1) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    s32 x, y;
-    (p->s).taskCol = 0x18;
-    INIT_ZAKO_ROUTINE(p, 3);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = r1;
+    INIT_ENEMY_ROUTINE(p, ENEMY_SHOTCOUNTER);
+    p->coord = *c;
+    p->work[0] = r1;
   }
-  return p;
+  return (void*)p;
 }
 
 NAKED static void Shotcounter_Init(struct Enemy* p) {
@@ -52,7 +46,7 @@ NAKED static void Shotcounter_Init(struct Enemy* p) {
 	orrs r2, r0\n\
 	orrs r2, r3\n\
 	strb r2, [r6, #0xa]\n\
-	ldr r0, _0806602C @ =gSystemSavedataManager\n\
+	ldr r0, _0806602C @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x14]\n\
 	movs r0, #1\n\
 	ands r0, r1\n\
@@ -78,7 +72,7 @@ NAKED static void Shotcounter_Init(struct Enemy* p) {
 	movs r3, #0xc\n\
 	b _08066050\n\
 	.align 2, 0\n\
-_0806602C: .4byte gSystemSavedataManager\n\
+_0806602C: .4byte gSystemSavedata\n\
 _08066030: .4byte gCurStory\n\
 _08066034: .4byte sCollisions\n\
 _08066038:\n\
@@ -134,7 +128,7 @@ _0806608E:\n\
 	subs r0, #5\n\
 	str r5, [r0]\n\
 	adds r0, r6, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08066112\n\
 	movs r1, #0x80\n\
@@ -142,7 +136,7 @@ _0806608E:\n\
 	adds r0, r6, #0\n\
 	bl SetMotion\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r2, [r4]\n\
 	cmp r2, #0\n\
 	bne _080660E4\n\
@@ -219,8 +213,8 @@ _08066144: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
-static bool8 FUN_080665e0(struct Enemy* p);
-static bool8 FUN_080665e8(struct Enemy* p);
+static bool8 FUN_080665e0(void* _ UNUSED);
+static bool8 FUN_080665e8(void* _ UNUSED);
 void FUN_080667b8(struct Enemy* p);
 void nop_08066978(struct Enemy* p);
 void FUN_08066ad0(struct Enemy* p);
@@ -229,7 +223,7 @@ void FUN_08066b30(struct Enemy* p);
 void FUN_08066b38(struct Enemy* p);
 void FUN_08066bdc(struct Enemy* p);
 
-static void FUN_080665e4(struct Enemy* p);
+static void FUN_080665e4(void* _ UNUSED);
 void FUN_080665ec(struct Enemy* p);
 void shotcounter_080667bc(struct Enemy* p);
 void shotcounter_0806697c(struct Enemy* p);
@@ -244,39 +238,39 @@ static void Shotcounter_Update(struct Enemy* p) {
   static const EnemyFunc sUpdates1[9] = {
       (EnemyFunc)FUN_080665e0,
       (EnemyFunc)FUN_080665e8,
-      FUN_080667b8,
-      nop_08066978,
-      FUN_08066ad0,
-      FUN_08066ad8,
-      FUN_08066b30,
-      FUN_08066b38,
-      FUN_08066bdc,
+      (EnemyFunc)FUN_080667b8,
+      (EnemyFunc)nop_08066978,
+      (EnemyFunc)FUN_08066ad0,
+      (EnemyFunc)FUN_08066ad8,
+      (EnemyFunc)FUN_08066b30,
+      (EnemyFunc)FUN_08066b38,
+      (EnemyFunc)FUN_08066bdc,
   };
   // clang-format on
 
   // clang-format off
   static const EnemyFunc sUpdates2[9] = {
-      FUN_080665e4,
-      FUN_080665ec,
-      shotcounter_080667bc,
-      shotcounter_0806697c,
-      FUN_08066ad4,
-      FUN_08066adc,
-      FUN_08066b34,
-      FUN_08066b3c,
-      shotcounter_08066be0,
+      (EnemyFunc)FUN_080665e4,
+      (EnemyFunc)FUN_080665ec,
+      (EnemyFunc)shotcounter_080667bc,
+      (EnemyFunc)shotcounter_0806697c,
+      (EnemyFunc)FUN_08066ad4,
+      (EnemyFunc)FUN_08066adc,
+      (EnemyFunc)FUN_08066b34,
+      (EnemyFunc)FUN_08066b3c,
+      (EnemyFunc)shotcounter_08066be0,
   };
   // clang-format on
 
-  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || isFrozen(p))) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+  if (((p->body).status & BODY_STATUS_DEAD) && ((p->s).mode[1] != 8 || IsFrozen(p))) {
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     Shotcounter_Die(p);
     return;
   }
-  (sUpdates1[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
   shotcounter_08066da0(p);
-  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !isFrozen(p)) {
-    (sUpdates2[(p->s).mode[1]])(p);
+  if ((p->s).mode[1] == 8 || (p->s).mode[1] == 5 || (p->s).mode[1] == 7 || !IsFrozen(p)) {
+    (sUpdates2[(p->s).mode[1]])((void*)p);
   }
 }
 
@@ -393,7 +387,7 @@ _0806629E:\n\
 	b _08066388\n\
 _080662C0:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r7, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -407,7 +401,7 @@ _080662D4:\n\
 	adds r0, r7, #0\n\
 	bl SetMotion\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0\n\
 	strb r0, [r7, #0x13]\n\
 	str r0, [r7, #0x60]\n\
@@ -496,7 +490,7 @@ _08066388:\n\
 	b _080665B0\n\
 _08066390:\n\
 	adds r0, r7, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r7, #0x60]\n\
 	adds r0, #0x10\n\
 	str r0, [r7, #0x60]\n\
@@ -567,7 +561,7 @@ _080663A6:\n\
 	bl FUN_080b721c\n\
 	movs r0, #0x2a\n\
 	bl PlaySound\n\
-	ldr r2, _0806645C @ =gMission\n\
+	ldr r2, _0806645C @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _08066460 @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -586,7 +580,7 @@ _0806644C: .4byte 0x00269EC3\n\
 _08066450: .4byte 0x00000409\n\
 _08066454: .4byte 0x0000040A\n\
 _08066458: .4byte 0x0000040B\n\
-_0806645C: .4byte gMission\n\
+_0806645C: .4byte gScore\n\
 _08066460: .4byte 0x0000270E\n\
 _08066464:\n\
 	ldrb r0, [r7, #0x12]\n\
@@ -645,7 +639,7 @@ _08066478:\n\
 	bl FUN_080b721c\n\
 	movs r0, #0x2a\n\
 	bl PlaySound\n\
-	ldr r2, _08066508 @ =gMission\n\
+	ldr r2, _08066508 @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _0806650C @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -664,7 +658,7 @@ _080664F8: .4byte 0x00269EC3\n\
 _080664FC: .4byte 0x00000409\n\
 _08066500: .4byte 0x0000040A\n\
 _08066504: .4byte 0x0000040B\n\
-_08066508: .4byte gMission\n\
+_08066508: .4byte gScore\n\
 _0806650C: .4byte 0x0000270E\n\
 _08066510:\n\
 	ldr r0, [r7, #0x54]\n\
@@ -717,7 +711,7 @@ _08066510:\n\
 	adds r0, r6, #0\n\
 	adds r3, r4, #0\n\
 	bl FUN_080b721c\n\
-	ldr r2, _080665D4 @ =gMission\n\
+	ldr r2, _080665D4 @ =gScore\n\
 	ldrh r1, [r2, #0xc]\n\
 	ldr r0, _080665D8 @ =0x0000270E\n\
 	cmp r1, r0\n\
@@ -757,20 +751,21 @@ _080665C4: .4byte 0x00269EC3\n\
 _080665C8: .4byte 0x00000409\n\
 _080665CC: .4byte 0x0000040A\n\
 _080665D0: .4byte 0x0000040B\n\
-_080665D4: .4byte gMission\n\
+_080665D4: .4byte gScore\n\
 _080665D8: .4byte 0x0000270E\n\
 _080665DC: .4byte gEnemyFnTable\n\
  .syntax divided\n");
 }
 
-static bool8 FUN_080665e0(struct Enemy* p) { return TRUE; }
+static bool8 FUN_080665e0(void* _) { return TRUE; }
 
-static void FUN_080665e4(struct Enemy* p) { return; }
+static void FUN_080665e4(void* _) { return; }
 
-static bool8 FUN_080665e8(struct Enemy* p) { return TRUE; }
+static bool8 FUN_080665e8(void* _) { return TRUE; }
 
 INCASM("asm/enemy/shotcounter.inc");
 
+// 0x08365D64
 static const struct Collision sCollisions[12] = {
     [0] = {
       kind : DDP,
@@ -778,36 +773,36 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 4,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [1] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 3,
-      range : {-0x0C00, 0x0000, 0x0800, 0x1E00},
+      range : {-PIXEL(12), PIXEL(0), PIXEL(8), PIXEL(30)},
     },
     [2] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 2,
       layer : 0xFFFFFFFF,
-      range : {-0x0600, 0x0C00, 0x0C00, 0x0800},
+      range : {-PIXEL(6), PIXEL(12), PIXEL(12), PIXEL(8)},
     },
     [3] = {
       kind : DRP2,
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       hardness : METAL,
       remaining : 1,
       layer : 0xFFFFFFFF,
-      range : {-0x0600, -0x0C00, 0x0C00, 0x0800},
+      range : {-PIXEL(6), -PIXEL(12), PIXEL(12), PIXEL(8)},
     },
     [4] = {
       kind : DRP,
@@ -815,7 +810,7 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0E00, 0x0000, 0x0800, 0x1600},
+      range : {PIXEL(14), PIXEL(0), PIXEL(8), PIXEL(22)},
     },
     [5] = {
       kind : DDP,
@@ -823,7 +818,7 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x0C00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(12), PIXEL(26)},
     },
     [6] = {
       kind : DRP,
@@ -832,8 +827,8 @@ static const struct Collision sCollisions[12] = {
       hitzone : 1,
       hardness : METAL,
       remaining : 0,
-      layer : 0xFFFFFFFF,
-      range : {0x0000, 0x0000, 0x0C00, 0x1A00},
+      priorityLayer : 0xFFFFFFFF,
+      range : {PIXEL(0), PIXEL(0), PIXEL(12), PIXEL(26)},
     },
     [7] = {
       kind : DDP,
@@ -841,7 +836,7 @@ static const struct Collision sCollisions[12] = {
       damage : 2,
       remaining : 2,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [8] = {
       kind : DRP,
@@ -849,7 +844,7 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 1,
-      range : {-0x0A00, 0x0000, 0x0800, 0x1200},
+      range : {-PIXEL(10), PIXEL(0), PIXEL(8), PIXEL(18)},
     },
     [9] = {
       kind : DRP,
@@ -857,26 +852,24 @@ static const struct Collision sCollisions[12] = {
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0E00, 0x0000, 0x0800, 0x1600},
+      range : {PIXEL(14), PIXEL(0), PIXEL(8), PIXEL(22)},
     },
     [10] = {
       kind : DDP,
       faction : FACTION_NEUTRAL,
-      special : 0,
       damage : 2,
       remaining : 1,
       layer : 0x00000001,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
     [11] = {
       kind : DRP,
       faction : FACTION_NEUTRAL,
-      damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
       remaining : 0,
-      range : {0x0000, 0x0000, 0x1A00, 0x1A00},
+      range : {PIXEL(0), PIXEL(0), PIXEL(26), PIXEL(26)},
     },
 };
 
-const struct Coord Coord_08365e84 = {0, 0};
+const Coords32 Coord_08365e84 = {0, 0};

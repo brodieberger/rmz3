@@ -13,7 +13,7 @@ const SolidRoutine gGiantElevatorPierRoutine = {
     [ENTITY_INIT] =      Solid45_Init,
     [ENTITY_UPDATE] =    Solid45_Update,
     [ENTITY_DIE] =       Solid45_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -157,7 +157,7 @@ NAKED static void Solid45_Update(struct Solid* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, _080DE7A4 @ =gOverworld\n\
 	ldr r1, _080DE7A8 @ =0x0002D024\n\
 	adds r6, r0, r1\n\
@@ -205,7 +205,7 @@ _080DE758:\n\
 _080DE774:\n\
 	ldr r0, _080DE7AC @ =gStageRun+232\n\
 	adds r1, r5, #0\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\

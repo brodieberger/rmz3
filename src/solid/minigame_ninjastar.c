@@ -6,6 +6,8 @@
 
 // ファントムのミニゲームに出てくるでかい手裏剣
 
+struct MenuState;
+
 static const u8 sInitModes[4];
 
 static void MgNinjaStar_Init(struct Solid* p);
@@ -17,20 +19,15 @@ const SolidRoutine gMinigameNinjaStarRoutine = {
     [ENTITY_INIT] =      MgNinjaStar_Init,
     [ENTITY_UPDATE] =    MgNinjaStar_Update,
     [ENTITY_DIE] =       MgNinjaStar_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 void FUN_080d915c(struct MenuState* m, s32 x, s32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_MG_NINJASTAR);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -39,14 +36,9 @@ void FUN_080d915c(struct MenuState* m, s32 x, s32 y) {
 }
 
 void FUN_080d91b4(struct MenuState* m, s32 x, s32 y, u8 r3) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_MG_NINJASTAR);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 1;
     (p->s).coord.x = x;
     (p->s).coord.y = y;

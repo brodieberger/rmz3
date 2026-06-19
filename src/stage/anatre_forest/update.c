@@ -143,7 +143,7 @@ _0801D978:\n\
 	beq _0801D9A8\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r7]\n\
 _0801D9A8:\n\
 	ldr r1, [r4, #0x54]\n\
@@ -170,11 +170,11 @@ _0801D9B2:\n\
 	beq _0801D9DC\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801D9DC:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801D9E6:\n\

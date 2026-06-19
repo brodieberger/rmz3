@@ -2,7 +2,7 @@
 #include "global.h"
 #include "text.h"
 
-void OverworldLoop_MissionSelect(struct GameState *g) {
+void OverworldLoop_MissionSelect(struct GameState* g) {
   s16 ans;
 
   switch (g->mode[3]) {

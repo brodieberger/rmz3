@@ -164,8 +164,8 @@
 #define SE_ELEVATOR 160 /* エレベータの移動音 */
 
 #define BGM_GUARDER_ROOM 161     /*  ガーダールーム */
-#define BGM_PROLOGUE 162         /* ネオ・アルカディアマーチ */
-#define BGM_INTRO_STARSHIP 163   /* 忌まわしき箱舟 */
+#define BGM_RECAP 162            /* ネオ・アルカディアマーチ */
+#define BGM_PROLOGUE 163         /* 忌まわしき箱舟 */
 #define BGM_X 164                /* エックスのテーマ */
 #define BGM_OMEGA 165            /* 追放されしもの-オメガ */
 #define BGM_WEIL 166             /* 怨讐の科学者 */
@@ -342,6 +342,6 @@
 
 #define MUS_NONE (~0)
 
-#define SONG_COUNT SOUND_UNK_14f + 1
+#define SONG_COUNT SE_UNK_14f + 1
 
 #endif  // GUARD_RMZ3_CONST_SONG_H

@@ -7,7 +7,7 @@
 static const u8 sInitModes[4];
 static const struct Rect sSize;
 
-bool8 FUN_080cc814(struct Solid* p);
+bool8 FUN_080cc814(struct Entity* p);
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -20,20 +20,15 @@ const SolidRoutine gLavaGeyserPlatformRoutine = {
     [ENTITY_INIT] =      Solid6_Init,
     [ENTITY_UPDATE] =    Solid6_Update,
     [ENTITY_DIE] =       Solid6_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 void CreateLavaGeyserPlatform(struct Solid* s) {
-  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_LAVA_GEYSER_PLATFORM);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).unk_28 = &s->s;
   }
@@ -45,9 +40,9 @@ static void Solid6_Init(struct Solid* p) {
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &sSize;
-  (p->s).hazardAttr = METATILE_GROUND;
+  (p->s).physicsAttr = SHAPE_BLOCK;
   Solid6_Update(p);
 }
 
@@ -67,10 +62,7 @@ static void Solid6_Update(struct Solid* p) {
   if (((p->s).unk_28)->mode[0] == 4) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
@@ -80,7 +72,7 @@ static void Solid6_Update(struct Solid* p) {
 }
 
 static void Solid6_Die(struct Solid* p) {
-  (p->s).flags2 &= ~ENTITY_HAZARD;
+  (p->s).flags2 &= ~ENTI_PHYSICS;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
 
@@ -123,7 +115,7 @@ _080CC6CE:\n\
 	strb r0, [r4, #0xe]\n\
 _080CC6E0:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080CC712\n\
 	.align 2, 0\n\
 _080CC6E8: .4byte 0x00003A01\n\
@@ -145,7 +137,7 @@ _080CC6FC:\n\
 	strb r0, [r4, #0xe]\n\
 _080CC70C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _080CC712:\n\
 	ldr r0, [r5, #0x54]\n\
 	str r0, [r4, #0x54]\n\

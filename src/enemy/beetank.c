@@ -11,25 +11,22 @@ const EnemyRoutine gBeetankRoutine = {
     [ENTITY_INIT] =      Beetank_Init,
     [ENTITY_UPDATE] =    Beetank_Update,
     [ENTITY_DIE] =       Beetank_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreateBeetank(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Enemy* CreateBeetank(Coords32* c, u8 n) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_BEETANK);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
+    INIT_ENEMY_ROUTINE(p, ENEMY_BEETANK);
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
   return p;
 }
+
+// --------------------------------------------
 
 INCASM("asm/enemy/beetank.inc");
 
@@ -67,15 +64,13 @@ static const EnemyFunc sUpdates2[5] = {
 
 // --------------------------------------------
 
+// 0x083679ec
 static const struct Collision sCollisions[2] = {
     {
       kind : DDP,
       faction : FACTION_ENEMY,
       damage : 2,
       atkType : 0x00,
-      element : 0x00,
-      nature : 0x00,
-      comboLv : 0,
       remaining : 1,
       layer : 0x00000001,
       range : {PIXEL(0), -PIXEL(10), PIXEL(24), PIXEL(24)},
@@ -90,4 +85,5 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+// 0x08367a1c
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};

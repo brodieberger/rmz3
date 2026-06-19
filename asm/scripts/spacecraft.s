@@ -3,6 +3,7 @@
 #include "constants/entity.h"
 #include "constants/song.h"
 #include "constants/flag.h"
+#include "constants/cutscene.h"
 
   .balign 4
   .section .rodata
@@ -258,44 +259,44 @@ Entity_OmegaWhite: @ 0x0834d580
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_0834d590:
-  eventflag 0, 0, 0
-  cmd06 0x70, 6, 0
+  cutscene_start CS_RECAP
+  cmd06 112, 6, 0
   normal_screen
-  wait_screeneffect
-  play_bgm BGM_PROLOGUE
+  wait_transition_end
+  play_bgm BGM_RECAP
   wait 90
   scroll 0, 0, 0
-  scroll 1, 10, 1300 @ Prologue text
+  scroll 1, 10, 1300 @ recap text
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   wait SECOND/2
-  eventflag 1, 0, 0
+  cutscene_end
   lockmenu
   end
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-@ script entity slot idx
+@ vm.entities slot idx
 @ 3: Zero
 .equ CIEL, 4
 
 Script_0834d608: @ 0x0834d608
-  eventflag 0, 1, 0
-  play_bgm BGM_INTRO_STARSHIP
-  rune 11, 8, 11
+  cutscene_start CS_PROLOGUE
+  play_bgm BGM_PROLOGUE
+  print_string 11, 8, 11 @ あれから2ヶ月後
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND*3
   blackout_screen
-  wait_screeneffect
-  rune 0, 0, 0
+  wait_transition_end
+  print_string_end
   wait SECOND*2
   reset_camera Camera_0834d294
   time 0
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   waitabs 213
   scroll_speed_y 0
   spawn 3, Entity_SpaceCraftIntroZero
@@ -325,12 +326,12 @@ Script_0834d608: @ 0x0834d608
   entityflag 5, 0, TRUE
   wait FRAME*40
   scroll_speed_x 0x00
-  emotion CIEL, 0xC00, 0xFFD800, 0
+  emotion_bubble CIEL, 12, -40, 0
   wait SECOND/4
   entityflag 3, 0, TRUE
   entityflag 6, 0, TRUE
   wait SECOND
-  emotion 3, 0xC00, 0xFFD800, 1
+  emotion_bubble 3, 12, -40, 1
   wait SECOND*2
   print_message 0x50, 0x0301
   wait_msgbox_end
@@ -339,7 +340,7 @@ Script_0834d608: @ 0x0834d608
   print_message 0x50, 0x0302 @ 0x0837f1de
   wait_msgbox_end
   wait SECOND*2
-  emotion 6, 0x800, 0xFFD800, 0
+  emotion_bubble 6, 8, -40, 0
   wait SECOND
   print_message 0x50, 0x0303 @ 0x0837f1eb
   wait_msgbox_end
@@ -347,15 +348,15 @@ Script_0834d608: @ 0x0834d608
   entityflag 4, 1, TRUE
   wait SECOND/2
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   visible 3, FALSE
   visible 4, FALSE
   visible 5, FALSE
   visible 6, FALSE
   stop_camera
-  cutscene 0
+  play_find_spacecraft_movie 0
   normal_screen
-  cutscene 1
+  play_find_spacecraft_movie 1
   wait SECOND/2
   message 1, 0, 0x0304
   wait_msgbox_end
@@ -364,8 +365,8 @@ Script_0834d608: @ 0x0834d608
   wait_msgbox_end
   wait SECOND/4
   blackout_screen
-  wait_screeneffect
-  cutscene 2
+  wait_transition_end
+  play_find_spacecraft_movie 2
   visible 6, TRUE
   visible 5, TRUE
   visible 4, TRUE
@@ -374,7 +375,7 @@ Script_0834d608: @ 0x0834d608
   reset_camera Camera_0834d2c0
   entityflag 4, 2, TRUE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND/4
   message 1, 0, 0x0306
   wait_msgbox_end
@@ -383,12 +384,12 @@ Script_0834d608: @ 0x0834d608
   stop_bgm
   wait SECOND
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   destroy 3
   destroy 4
   destroy 6
   destroy 5
-  eventflag 1, 0, 0
+  cutscene_end
   lockmenu
   end
 
@@ -417,8 +418,8 @@ Script_InitSpaceCraftStageRun: @ 0x0834d9f0
   spawn 0, Entity_ZeroSpaceCraftStartPoint
   reset_camera Camera_0834d268
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_BREAKOUT
   indicator 1, 0, 0
   wait_indicator_end
@@ -429,36 +430,36 @@ Script_InitSpaceCraftStageRun: @ 0x0834d9f0
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_0834da48: @ 0x0834da48
-  eventflag 0, 2, 0
+  cutscene_start CS_OMEGA_CALL
   force 0, 0, 0
   lock
   force 8, 0, 0
   turn_right 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 0xC5000
   wait 90*FRAME
   start_talk
   wait 45*FRAME
-  message 1, 0, 0x307
+  message 1, 0, 0x307 @ このおく……か、ダークエルフのハンノウがあったのは……
   wait_msgbox_end
   wait SECOND/4
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 0x72, 6, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND/4
   message 1, 0, 0x308 @ アイツは俺のことを知っていた.. 世界を滅ぼしかけたエルフがなぜオレのことを..
   wait_msgbox_end
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   resume_camera
   change_camera_mode 1
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND/2
   message 1, 0, 0x309
   wait_msgbox_end
@@ -467,19 +468,19 @@ Script_0834da48: @ 0x0834da48
   wait_msgbox_end
   wait SECOND/4
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   gimmick 1, 0, 1
   spawn 4, EntityTemplate_0834d3c0
   spawn 5, EntityTemplate_0834d3d0
   spawn 3, EntityTemplate_0834d3b0
   reset_camera Camera_0834d2c0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND/4
   message 1, 0, 0x30B
   wait_msgbox_end
   wait SECOND/2
-  emotion 4, 0x800, 0xFFD800, 0 
+  emotion_bubble 4, 8, -40, 0
   stop_bgm
   wait SECOND
   message 1, 0, 0x30C
@@ -504,7 +505,7 @@ Script_0834da48: @ 0x0834da48
   wait 15
   stop_bgm
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   wait 90
   play_se 90
@@ -517,12 +518,12 @@ Script_0834da48: @ 0x0834da48
   wait 120
   reset_camera Camera_0834d2ec
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 166
   message 1, 0, 0x030F
   wait_msgbox_end
   wait 30
-  emotion 0, 0x0C00, 0x00FFD800, 0
+  emotion_bubble 0, 12, -40, 0
   wait 60
   force 3, 0, 0
   wait 60
@@ -556,27 +557,27 @@ Script_0834da48: @ 0x0834da48
   destroy 3
   play_se 231
   wait 180
-  emotion 0, 0x0C00, 0x00FFD800, 0
+  emotion_bubble 0, 12, -40, 0
   wait 60
   message 1, 0, 0x0316
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 115, 0, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
-  message 1, 0, 0x0317
+  message 1, 0, 0x0317 @ オレを…呼んでいるのか…？
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   reset_camera Camera_0834d2ec
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   force 3, 0, 0
   wait 15
@@ -584,13 +585,13 @@ Script_0834da48: @ 0x0834da48
   forcekeyinput 0x00004010
   wait 1
   force 9, 0, 868352
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 860160
   adjust_camera 14, 0, 2621440
   stop_bgm
   wait 60
-  eventflag 1, 0, 0
-  play_bgm 170
+  cutscene_end
+  play_bgm BGM_BREAKOUT
   release
   resume 1
   end
@@ -602,7 +603,7 @@ Script_SpaceCraftBuilding:
   reset_camera Camera_0834d318
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm BGM_BREAKOUT
   release
   resume 0
@@ -614,8 +615,8 @@ Script_0834dfb8:
   spawn 0, Entity_ZeroSpaceCraftBuilding
   reset_camera Camera_0834d318
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_BREAKOUT
   indicator 1, 0, 0
   wait_indicator_end
@@ -629,8 +630,8 @@ Script_GuarderRoom:
   spawn 0, Entity_0834d560
   reset_camera Camera_0834d318
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
@@ -641,7 +642,7 @@ Script_GuarderRoom:
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_PreOmegaWhiteBattle:
-  eventflag 0, 3, 0
+  cutscene_start CS_SPACECRAFT_BOSS
   spawn 3, Entity_PantheonOmegaCrash0
   spawn 4, Entity_PantheonOmegaCrash1
   spawn 5, Entity_PantheonOmegaCrash2
@@ -649,15 +650,15 @@ Script_PreOmegaWhiteBattle:
   lock
   force 0, 0, 0
   turn_right 0
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 60
   play_se 285
   quake 2, 0, 4
   wait 60
-  play_bgm 167
+  play_bgm BGM_ANTAN
   change_camera_mode 1
-  adjust_camera 1, 0, 2
-  adjust_camera 3, 0, 1013760
+  set_chase_mode 2
+  set_camera_target_x 1013760
   wait 60
   play_se 285
   quake 2, 0, 8
@@ -705,20 +706,20 @@ Script_PreOmegaWhiteBattle:
   wait 15
   spawn 1, Entity_OmegaWhite
   change_camera_mode 1
-  adjust_camera 1, 0, 2
-  adjust_camera 3, 0, 1028096
+  set_chase_mode 2
+  set_camera_target_x 1028096
   wait 60
   play_se 231
   wait 90
   stop_bgm
   wait 90
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 116, 3, 0
   normal_screen
-  wait_screeneffect
-  play_bgm 165
+  wait_transition_end
+  play_bgm BGM_OMEGA
   wait 15
   cmd06 116, 4, 0
   wait 15
@@ -726,26 +727,26 @@ Script_PreOmegaWhiteBattle:
   wait_msgbox_end
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   resume_camera
   change_camera_mode 1
-  adjust_camera 1, 0, 8
-  adjust_camera 3, 0, 1028096
+  set_chase_mode 8
+  set_camera_target_x 1028096
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   force 1, 0, 0
   gameflag FLAG_2, FALSE
   walkto 3992*PX
   gameflag FLAG_2, TRUE
-  emotion 8, 0x1000, 0x00FFD800, 0
+  emotion_bubble 8, 16, -40, 0
   wait 60
   message 1, 0, 0x031D
   wait_msgbox_end
   wait 15
   change_camera_mode 1
-  adjust_camera 1, 0, 2
-  adjust_camera 3, 0, 1013760
+  set_chase_mode 2
+  set_camera_target_x 1013760
   wait 60
   message 1, 0, 0x031E
   wait_msgbox_end
@@ -753,24 +754,24 @@ Script_PreOmegaWhiteBattle:
   entityflag 6, 1, TRUE
   wait 60
   change_camera_mode 1
-  adjust_camera 1, 0, 2
-  adjust_camera 3, 0, 1028096
+  set_chase_mode 2
+  set_camera_target_x 1028096
   wait 60
-  message 1, 0, 0x031F
+  message 1, 0, 0x031F @ ちっ、レヴィアタンめ… くそっ、体がいうことをきかねえ… ... それまで死ぬんじゃねーぞ… ゼロ……！
   wait_msgbox_end
   wait 15
   entityflag 8, 2, TRUE
-  eventflag 1, 0, 0
+  cutscene_end
   wait 120
   change_camera_mode 6
-  adjust_camera 1, 0, 2
+  set_chase_mode 2
   adjust_camera 11, 0, 1009664
   adjust_camera 12, 0, 1071104
   stop_bgm
   wait 120
-  play_se 231
+  play_se SE_OMEGA1_GROWL
   wait 180
-  message 1, 0, 0x0320
+  message 1, 0, 0x0320 @ オメガとか言ったな… オマエか… オレを呼んでいたのは…
   wait_msgbox_end
   wait 15
   destroy 6
@@ -780,7 +781,7 @@ Script_PreOmegaWhiteBattle:
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 187
+  play_bgm BGM_OMEGA_BATTLE
   resume 1
   end
 
@@ -793,12 +794,12 @@ Script_IntoOmegaWhiteBattle:
   forcekeyinput DPAD_RIGHT
   pause
   spawn 1, Entity_OmegaWhite
-  eventflag 0, 3, 0
+  cutscene_start CS_SPACECRAFT_BOSS
   gameflag FLAG_2, TRUE
   walkto 3992 * PX
-  eventflag 1, 0, 0
+  cutscene_end
   change_camera_mode 6
-  adjust_camera 1, 0, 2
+  set_chase_mode 2
   adjust_camera 11, 0, 3944 * PX
   adjust_camera 12, 0, 4184 * PX
   stop_bgm
@@ -821,16 +822,16 @@ Script_0834e5a0:
   spawn 1, Entity_OmegaWhite
   reset_camera Camera_0834d344
   lock
-  screeneffect 9
+  start_transition 9
   wait 1
   gimmick 1, 2, 4
-  wait_screeneffect
-  play_se 231
+  wait_transition_end
+  play_se SE_OMEGA1_GROWL
   wait 120
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 187
+  play_bgm BGM_OMEGA_BATTLE
   resume 1
   end
 
@@ -842,7 +843,7 @@ Script_0834e628:
   wait 1
   lock
   force 8, 0, 0
-  eventflag 0, 4, 0
+  cutscene_start CS_SPACECRAFT_AFTER_BOSS
   entityflag 1, 7, TRUE
   wait 90
   message 1, 0, 0x0321
@@ -855,15 +856,15 @@ Script_0834e628:
   wait 120
   entityflag 1, 0, TRUE
   wait 30
-  play_bgm 167
-  emotion 0, 0x1000, 0x00FFD800, 0
+  play_bgm BGM_ANTAN
+  emotion_bubble 0, 16, -40, 0
   wait 90
   play_se 231
   wait 240
   message 1, 0, 0x0322
   wait_msgbox_end
   wait 15
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 60
   sweep 1, 0, 0
   sweep 3, 0, 0
@@ -913,8 +914,8 @@ Script_0834e628:
   wait_msgbox_end
   stop_bgm
   wait 15
-  emotion 0, 0x1000, 0x00FFD800, 0
-  emotion 3, 0x0C00, 0x00FFD000, 0
+  emotion_bubble 0, 16, -40, 0
+  emotion_bubble 3, 12, -48, 0
   wait 90
   play_bgm 166
   message 1, 0, 0x0326
@@ -926,25 +927,25 @@ Script_0834e628:
   spawn 4, Entity_0834d500
   wait 210
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   stop_camera
   cmd06 117, 0, 0
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   wait 15
   message 1, 0, 0x0328
   wait_msgbox_end
   stop_bgm
   wait 15
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   cmd06 0, 1, 0
   resume_camera
   change_camera_mode 1
-  adjust_camera 1, 0, 8
+  set_chase_mode 8
   normal_screen
-  wait_screeneffect
-  play_bgm 164
+  wait_transition_end
+  play_bgm BGM_X
   wait 15
   spawn 5, Entity_0834d510
   wait 60
@@ -958,7 +959,7 @@ Script_0834e628:
   wait 60
   message 1, 0, 0x032B
   wait_msgbox_end
-  emotion 3, 0x0C00, 0x00FFD800, 0
+  emotion_bubble 3, 12, -40, 0
   wait 60
   message 1, 0, 0x032C
   wait_msgbox_end
@@ -984,7 +985,7 @@ Script_0834e628:
   destroy 6
   force 2, 0, 0
   wait 75
-  play_bgm 167
+  play_bgm BGM_ANTAN
   message 1, 0, 0x032F
   wait_msgbox_end
   wait 15
@@ -998,27 +999,27 @@ Script_0834e628:
   wait 15
   force 4, 0, 0
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 60
-  eventflag 1, 0, 0
+  cutscene_end
   destroy 0
   destroy 3
   destroy 4
   destroy 5
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
-  prepare_missionresult
-  missionresult
+  backdrop_color 0xFFFF
+  start_transition 5
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_MissionResult:
   backdrop_color 0xFFFF
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -1030,7 +1031,7 @@ Script_InitSpaceCraftFreeRun:
   wait FRAME
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm BGM_BREAKOUT
   indicator 1, 0, 0
   wait 15*FRAME
@@ -1054,7 +1055,7 @@ Script_0834ec38:
   force 5, 0, 0
   wait SECOND
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait SECOND/2
   destroy 0
   force 1, 0, 0

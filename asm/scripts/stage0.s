@@ -18,8 +18,8 @@ Script_Stage0: @ 0x0834d214
   spawn 0, Entity_0834d204
   reset_camera Camera_0834d1d8
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   indicator 1, 0, 0
   wait_indicator_end
   release

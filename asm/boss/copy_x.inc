@@ -4,403 +4,6 @@
 	
 	.text
 
-	thumb_func_start copyxNeutral
-copyxNeutral: @ 0x08055848
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r5, r0, #0
-	ldr r2, _0805587C @ =RNG_0202f388
-	ldr r1, [r2]
-	ldr r0, _08055880 @ =0x000343FD
-	muls r0, r1, r0
-	ldr r1, _08055884 @ =0x00269EC3
-	adds r0, r0, r1
-	lsls r0, r0, #1
-	lsrs r1, r0, #1
-	str r1, [r2]
-	lsrs r6, r0, #0x11
-	movs r0, #0x1f
-	ands r6, r0
-	ldr r0, _08055888 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r5, #0x54]
-	cmp r1, r0
-	ble _0805588C
-	movs r2, #0x80
-	lsls r2, r2, #7
-	adds r0, r0, r2
-	b _08055890
-	.align 2, 0
-_0805587C: .4byte RNG_0202f388
-_08055880: .4byte 0x000343FD
-_08055884: .4byte 0x00269EC3
-_08055888: .4byte pZero2
-_0805588C:
-	ldr r7, _080558DC @ =0xFFFFC000
-	adds r0, r0, r7
-_08055890:
-	subs r1, r1, r0
-	mov r8, r1
-	adds r0, r5, #0
-	bl UpdateMotionGraphic
-	movs r3, #0
-	ldr r0, _080558E0 @ =pZero2
-	ldr r2, [r0]
-	ldr r1, [r2, #0x54]
-	ldr r0, [r5, #0x54]
-	cmp r1, r0
-	ble _080558AA
-	movs r3, #1
-_080558AA:
-	adds r0, r5, #0
-	adds r0, #0x4c
-	strb r3, [r0]
-	movs r3, #0
-	ldr r1, [r2, #0x54]
-	ldr r0, [r5, #0x54]
-	cmp r1, r0
-	ble _080558BC
-	movs r3, #1
-_080558BC:
-	adds r4, r5, #0
-	adds r4, #0x4a
-	lsls r2, r3, #4
-	ldrb r1, [r4]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	orrs r0, r2
-	strb r0, [r4]
-	cmp r3, #0
-	beq _080558E4
-	ldrb r0, [r5, #0xa]
-	movs r1, #0x10
-	orrs r0, r1
-	b _080558EA
-	.align 2, 0
-_080558DC: .4byte 0xFFFFC000
-_080558E0: .4byte pZero2
-_080558E4:
-	ldrb r1, [r5, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-_080558EA:
-	strb r0, [r5, #0xa]
-	ldr r0, _0805591C @ =gStageRun+232
-	adds r4, r5, #0
-	adds r4, #0x54
-	adds r1, r4, #0
-	bl CalcFromCamera
-	adds r3, r0, #0
-	mov ip, r4
-	adds r4, #0x50
-	cmp r3, #0
-	bne _08055920
-	adds r2, r5, #0
-	adds r2, #0xce
-	ldrb r1, [r2]
-	movs r7, #0
-	ldrsh r0, [r4, r7]
-	cmp r1, r0
-	ble _08055920
-	movs r0, #0x23
-	strb r0, [r5, #0xd]
-	movs r0, #1
-	strb r0, [r5, #0xe]
-	strb r3, [r2]
-	b _08055ABC
-	.align 2, 0
-_0805591C: .4byte gStageRun+232
-_08055920:
-	adds r7, r5, #0
-	adds r7, #0xd8
-	movs r0, #0
-	ldrsh r1, [r7, r0]
-	movs r2, #0
-	ldrsh r0, [r4, r2]
-	cmp r1, r0
-	ble _08055942
-	adds r0, r5, #0
-	bl copyx_080578e0
-	movs r0, #1
-	strb r0, [r5, #0xe]
-	ldrh r0, [r4]
-	subs r0, #8
-	strh r0, [r7]
-	b _08055ABC
-_08055942:
-	adds r0, r5, #0
-	adds r0, #0xcd
-	ldrb r0, [r0]
-	cmp r0, #0
-	beq _0805595A
-	adds r0, r5, #0
-	adds r0, #0xc6
-	ldrb r0, [r0]
-	cmp r0, #0
-	bne _0805595A
-	movs r0, #0x11
-	b _08055AB6
-_0805595A:
-	ldr r0, _0805597C @ =gStageRun+232
-	mov r1, ip
-	bl CalcFromCamera
-	cmp r0, #0
-	beq _080559A0
-	cmp r6, #0xf
-	bhi _08055984
-	movs r0, #9
-	strb r0, [r5, #0xd]
-	movs r0, #0xd
-	strb r0, [r5, #0xf]
-	ldr r0, _08055980 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	b _080559CE
-	.align 2, 0
-_0805597C: .4byte gStageRun+232
-_08055980: .4byte pZero2
-_08055984:
-	movs r0, #9
-	strb r0, [r5, #0xd]
-	movs r0, #0xb
-	strb r0, [r5, #0xf]
-	ldr r0, _0805599C @ =pZero2
-	ldr r0, [r0]
-	ldr r0, [r0, #0x54]
-	ldr r1, [r5, #0x54]
-	subs r0, r0, r1
-	movs r1, #0x2e
-	b _08055A6E
-	.align 2, 0
-_0805599C: .4byte pZero2
-_080559A0:
-	ldr r2, _080559E4 @ =pZero2
-	ldr r3, [r2]
-	ldr r1, [r5, #0x58]
-	ldr r0, [r3, #0x58]
-	subs r1, r1, r0
-	movs r0, #0x90
-	lsls r0, r0, #7
-	adds r7, r2, #0
-	cmp r1, r0
-	ble _080559EC
-	movs r7, #0
-	ldrsh r0, [r4, r7]
-	cmp r6, #1
-	bls _08055A62
-	cmp r6, #0x13
-	bls _08055A84
-	cmp r6, #0x19
-	bhi _08055AB4
-	movs r0, #9
-	strb r0, [r5, #0xd]
-	movs r0, #0xd
-	strb r0, [r5, #0xf]
-	ldr r1, [r3, #0x54]
-_080559CE:
-	ldr r0, [r5, #0x54]
-	subs r0, r1, r0
-	cmp r0, #0
-	bge _080559D8
-	adds r0, #0x7f
-_080559D8:
-	asrs r0, r0, #7
-	str r0, [r5, #0x5c]
-	ldr r0, _080559E8 @ =0xFFFFFA00
-	str r0, [r5, #0x60]
-	b _08055AB8
-	.align 2, 0
-_080559E4: .4byte pZero2
-_080559E8: .4byte 0xFFFFFA00
-_080559EC:
-	ldr r2, [r3, #0x54]
-	ldr r0, [r5, #0x54]
-	subs r1, r2, r0
-	adds r3, r0, #0
-	cmp r1, #0
-	blt _08055A02
-	movs r0, #0xc8
-	lsls r0, r0, #7
-	cmp r1, r0
-	bgt _08055A0C
-	b _08055A36
-_08055A02:
-	subs r1, r3, r2
-	movs r0, #0xc8
-	lsls r0, r0, #7
-	cmp r1, r0
-	ble _08055A36
-_08055A0C:
-	movs r1, #0
-	ldrsh r0, [r4, r1]
-	cmp r0, #0x1f
-	bgt _08055A1E
-_08055A14:
-	cmp r6, #1
-	bls _08055A62
-_08055A18:
-	cmp r6, #0x13
-	bls _08055A84
-	b _08055A8C
-_08055A1E:
-	cmp r0, #0x2f
-	bgt _08055A2C
-	cmp r6, #0
-	beq _08055A50
-	cmp r6, #2
-	bls _08055A62
-	b _08055A18
-_08055A2C:
-	cmp r6, #1
-	bls _08055A50
-	cmp r6, #5
-	bls _08055A62
-	b _08055A18
-_08055A36:
-	movs r2, #0
-	ldrsh r0, [r4, r2]
-	cmp r0, #0x1f
-	ble _08055A14
-	cmp r0, #0x2f
-	bgt _08055A4C
-	cmp r6, #0
-	beq _08055A50
-	cmp r6, #2
-	bls _08055A62
-	b _08055A18
-_08055A4C:
-	cmp r6, #1
-	bhi _08055A5E
-_08055A50:
-	movs r0, #3
-	strb r0, [r5, #0xd]
-	movs r0, #2
-	strb r0, [r5, #0xf]
-	movs r0, #0x10
-	strb r0, [r5, #0x12]
-	b _08055AB8
-_08055A5E:
-	cmp r6, #3
-	bhi _08055A80
-_08055A62:
-	movs r0, #9
-	strb r0, [r5, #0xd]
-	movs r0, #0xb
-	strb r0, [r5, #0xf]
-	mov r0, r8
-	movs r1, #0x28
-_08055A6E:
-	bl __divsi3
-	str r0, [r5, #0x5c]
-	ldr r0, _08055A7C @ =0xFFFFFB00
-	str r0, [r5, #0x60]
-	b _08055AB8
-	.align 2, 0
-_08055A7C: .4byte 0xFFFFFB00
-_08055A80:
-	cmp r6, #0x10
-	bhi _08055A8C
-_08055A84:
-	adds r0, r5, #0
-	bl copyx_080577c8
-	b _08055AB8
-_08055A8C:
-	cmp r6, #0x19
-	bhi _08055AB4
-	movs r0, #9
-	strb r0, [r5, #0xd]
-	movs r0, #0xd
-	strb r0, [r5, #0xf]
-	ldr r0, [r7]
-	ldr r0, [r0, #0x54]
-	subs r0, r0, r3
-	cmp r0, #0
-	bge _08055AA4
-	adds r0, #0x3f
-_08055AA4:
-	asrs r0, r0, #6
-	str r0, [r5, #0x5c]
-	ldr r0, _08055AB0 @ =0xFFFFFE00
-	str r0, [r5, #0x60]
-	b _08055AB8
-	.align 2, 0
-_08055AB0: .4byte 0xFFFFFE00
-_08055AB4:
-	movs r0, #6
-_08055AB6:
-	strb r0, [r5, #0xd]
-_08055AB8:
-	movs r0, #1
-	strb r0, [r5, #0xe]
-_08055ABC:
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-
-	thumb_func_start copyxNextMode
-copyxNextMode: @ 0x08055AC8
-	push {r4, lr}
-	adds r4, r0, #0
-	bl UpdateMotionGraphic
-	ldrb r0, [r4, #0x12]
-	subs r0, #1
-	strb r0, [r4, #0x12]
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #0xff
-	bne _08055AE6
-	ldrb r0, [r4, #0xf]
-	strb r0, [r4, #0xd]
-	movs r0, #1
-	strb r0, [r4, #0xe]
-_08055AE6:
-	pop {r4}
-	pop {r0}
-	bx r0
-
-	thumb_func_start copyxMode4
-copyxMode4: @ 0x08055AEC
-	push {r4, lr}
-	adds r4, r0, #0
-	bl UpdateMotionGraphic
-	adds r1, r4, #0
-	adds r1, #0xc6
-	movs r0, #1
-	strb r0, [r1]
-	movs r1, #3
-	strb r1, [r4, #0xd]
-	strb r0, [r4, #0xe]
-	movs r1, #2
-	strb r1, [r4, #0xf]
-	adds r0, r4, #0
-	adds r0, #0xa4
-	movs r2, #0
-	ldrsh r0, [r0, r2]
-	cmp r0, #0x1f
-	bgt _08055B18
-	movs r0, #8
-	strb r0, [r4, #0x12]
-	b _08055B24
-_08055B18:
-	cmp r0, #0x2f
-	bgt _08055B22
-	movs r0, #4
-	strb r0, [r4, #0x12]
-	b _08055B24
-_08055B22:
-	strb r1, [r4, #0x12]
-_08055B24:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-
 	thumb_func_start copyxMode5
 copyxMode5: @ 0x08055B2C
 	push {r4, lr}
@@ -471,7 +74,7 @@ _08055B92:
 	bl PlaySound
 _08055BB0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -597,7 +200,7 @@ _08055C96:
 	str r0, [r4, #0x60]
 _08055C9C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -711,7 +314,7 @@ _08055D72:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #0
-	bl createCopyXSonicBoom
+	bl CreateCopyXSonicBoom
 	adds r0, r4, #0
 	adds r0, #0x74
 	ldr r1, _08055DCC @ =0x08363CD8
@@ -720,7 +323,7 @@ _08055D72:
 	bl PlaySound
 _08055D90:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -823,7 +426,7 @@ _08055E18:
 	bl SetDDP
 _08055E58:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -845,7 +448,7 @@ copyxMode9: @ 0x08055E6C
 	strb r0, [r4, #0xe]
 _08055E82:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -880,7 +483,7 @@ copyxMode10: @ 0x08055EA4
 	bl SetDDP
 _08055EC4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -968,7 +571,7 @@ _08055F62:
 	bl SetDDP
 _08055F6E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1011,7 +614,7 @@ copyxMode12: @ 0x08055FAC
 	strb r0, [r4, #0xe]
 _08055FC2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #3
 	strb r0, [r4, #0xd]
 	movs r0, #1
@@ -1089,7 +692,7 @@ _0805604E:
 	strb r0, [r4, #0x12]
 _08056058:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1132,7 +735,7 @@ copyxNovaStrike2: @ 0x08056090
 	str r0, [r4, #0x60]
 _080560AA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r0, r0, r1
@@ -1219,12 +822,12 @@ _08056158:
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #0
-	bl createCopyXSonicBoom
+	bl CreateCopyXSonicBoom
 	movs r0, #0
 	strb r0, [r5]
 _08056166:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r3, [r4, #0x5c]
 	adds r0, r0, r3
@@ -1442,7 +1045,7 @@ _080562F4:
 	str r0, [r4, #0x60]
 _080562FA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1476,7 +1079,7 @@ copyxMode17: @ 0x08056338
 	push {r4, lr}
 	sub sp, #4
 	adds r4, r0, #0
-	ldr r1, _08056378 @ =0x080FEFB0
+	ldr r1, _08056378 @ =u8_ARRAY_080fefb0
 	mov r0, sp
 	movs r2, #4
 	bl memcpy
@@ -1488,7 +1091,7 @@ copyxMode17: @ 0x08056338
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _08056380
-	ldr r0, _0805637C @ =gMission
+	ldr r0, _0805637C @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -1504,8 +1107,8 @@ copyxMode17: @ 0x08056338
 	bl copyx_08057094
 	b _080563C4
 	.align 2, 0
-_08056378: .4byte 0x080FEFB0
-_0805637C: .4byte gMission
+_08056378: .4byte u8_ARRAY_080fefb0
+_0805637C: .4byte gScore
 _08056380:
 	ldr r1, _080563B4 @ =0x0000B301
 	adds r0, r4, #0
@@ -1514,7 +1117,7 @@ _08056380:
 	strb r0, [r4, #0xe]
 _0805638C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1551,7 +1154,7 @@ copyxMode18: @ 0x080563CC
 	push {r4, lr}
 	sub sp, #4
 	adds r4, r0, #0
-	ldr r1, _080563FC @ =0x080FEFB4
+	ldr r1, _080563FC @ =u8_ARRAY_080fefb4
 	mov r0, sp
 	movs r2, #4
 	bl memcpy
@@ -1571,7 +1174,7 @@ copyxMode18: @ 0x080563CC
 	movs r0, #4
 	b _0805640E
 	.align 2, 0
-_080563FC: .4byte 0x080FEFB4
+_080563FC: .4byte u8_ARRAY_080fefb4
 _08056400: .4byte 0x0000B302
 _08056404:
 	adds r0, r4, #0
@@ -1583,7 +1186,7 @@ _0805640E:
 	strb r0, [r4, #0x12]
 _08056410:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1685,7 +1288,7 @@ _080564D8:
 	strb r0, [r1]
 _080564DA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1724,7 +1327,7 @@ copyx_08056508: @ 0x08056508
 	strb r0, [r4, #0xe]
 _0805651E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1877,7 +1480,7 @@ _0805662A:
 	strb r0, [r4, #0x12]
 _0805664C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r0, r0, r1
@@ -1894,7 +1497,7 @@ _0805664C:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080566A0
-	ldr r0, _0805669C @ =gMission
+	ldr r0, _0805669C @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -1911,7 +1514,7 @@ _0805668C: .4byte 0xFFFFFF00
 _08056690: .4byte RNG_0202f388
 _08056694: .4byte 0x000343FD
 _08056698: .4byte 0x00269EC3
-_0805669C: .4byte gMission
+_0805669C: .4byte gScore
 _080566A0:
 	movs r0, #0x16
 _080566A2:
@@ -1929,7 +1532,7 @@ copyx_080566b0: @ 0x080566B0
 	push {r4, lr}
 	sub sp, #4
 	adds r4, r0, #0
-	ldr r1, _08056708 @ =0x080FEFB0
+	ldr r1, _08056708 @ =u8_ARRAY_080fefb0
 	mov r0, sp
 	movs r2, #4
 	bl memcpy
@@ -1945,7 +1548,7 @@ copyx_080566b0: @ 0x080566B0
 	str r0, [r4, #0x60]
 _080566D6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r0, r0, r1
@@ -1969,7 +1572,7 @@ _080566D6:
 	strb r1, [r4, #0x13]
 	b _0805671C
 	.align 2, 0
-_08056708: .4byte 0x080FEFB0
+_08056708: .4byte u8_ARRAY_080fefb0
 _0805670C: .4byte 0x0000B315
 _08056710:
 	adds r0, r4, #0
@@ -1989,7 +1592,7 @@ copyx_08056724: @ 0x08056724
 	push {r4, lr}
 	sub sp, #4
 	adds r4, r0, #0
-	ldr r1, _08056754 @ =0x080FEFB4
+	ldr r1, _08056754 @ =u8_ARRAY_080fefb4
 	mov r0, sp
 	movs r2, #4
 	bl memcpy
@@ -2009,7 +1612,7 @@ copyx_08056724: @ 0x08056724
 	movs r0, #4
 	b _08056766
 	.align 2, 0
-_08056754: .4byte 0x080FEFB4
+_08056754: .4byte u8_ARRAY_080fefb4
 _08056758: .4byte 0x0000B316
 _0805675C:
 	adds r0, r4, #0
@@ -2021,7 +1624,7 @@ _08056766:
 	strb r0, [r4, #0x12]
 _08056768:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r0, r0, r1
@@ -2151,7 +1754,7 @@ _08056854:
 	strb r6, [r0]
 _08056862:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0xc7
 	ldrb r0, [r1]
@@ -2213,7 +1816,7 @@ copyx_080568bc: @ 0x080568BC
 	strb r0, [r4, #0xe]
 _080568D2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -2255,7 +1858,7 @@ copyx_08056908: @ 0x08056908
 	strb r0, [r4, #0x12]
 _08056920:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0x79
 	beq _0805696C
@@ -2337,7 +1940,7 @@ FUN_080569a4: @ 0x080569A4
 	strb r0, [r4, #0xe]
 _080569BA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2371,7 +1974,7 @@ copyx_080569e4: @ 0x080569E4
 	strb r0, [r5, #0xe]
 _080569FA:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2443,7 +2046,7 @@ FUN_08056a80: @ 0x08056A80
 	strb r0, [r4, #0xe]
 _08056A96:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2548,7 +2151,7 @@ _08056B4C:
 	strb r0, [r4, #0xe]
 _08056B5E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -2572,7 +2175,7 @@ copyx_08056b6c: @ 0x08056B6C
 	bl PlaySound
 _08056B8C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #7
 	ands r0, r1
@@ -2581,7 +2184,7 @@ _08056B8C:
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #0
-	bl FUN_080a9aa0
+	bl CreateProjectile28
 _08056BA6:
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
@@ -2621,7 +2224,7 @@ copyx_08056bd0: @ 0x08056BD0
 	strb r0, [r4, #0x12]
 _08056BEA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -2735,7 +2338,7 @@ _08056C98:
 	str r5, [r4, #0x2c]
 _08056CC6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0xdd
 	adds r0, r4, #0
@@ -2777,7 +2380,7 @@ _08056CF0:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xf]
 	adds r0, #1
 	strb r0, [r4, #0xf]
@@ -2840,7 +2443,7 @@ FUN_08056d58: @ 0x08056D58
 	strb r0, [r4, #0xe]
 _08056D9A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r4, #0
 	adds r2, #0xce
 	ldrb r0, [r2]
@@ -3031,7 +2634,7 @@ _08056F02:
 	bl PlaySound
 _08056F0E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0xf]
 	cmp r1, #0
 	bne _08056F44
@@ -3071,7 +2674,7 @@ _08056F44:
 	strb r2, [r4, #0x12]
 	adds r0, r4, #0
 	movs r1, #2
-	bl FUN_080a9aa0
+	bl CreateProjectile28
 _08056F68:
 	ldrb r0, [r4, #0xf]
 	adds r0, #1
@@ -3141,7 +2744,7 @@ copyxMode36: @ 0x08056FD4
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0
 	strb r0, [r4, #0xe]
 	strb r0, [r4, #0xf]
@@ -3298,7 +2901,7 @@ _080570FE:
 	strb r0, [r1]
 _0805711C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -3385,7 +2988,7 @@ _080571A6:
 	strb r0, [r1]
 _080571C4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -3675,7 +3278,7 @@ _08057406:
 	strb r0, [r4, #0xe]
 _0805740C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -3764,13 +3367,13 @@ _08057492:
 	strb r0, [r5, #0x12]
 _080574BE:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0805751A
 	.align 2, 0
 _080574C8: .4byte 0x0000B314
 _080574CC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -3798,7 +3401,7 @@ _080574EC:
 	b _0805751A
 _08057502:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -3828,14 +3431,14 @@ copyx_08057520: @ 0x08057520
 	movs r1, #0xa0
 	lsls r1, r1, #2
 	movs r0, #0x62
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0x24
 	strb r0, [r4, #0x12]
 _08057544:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x62
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r1, r4, #0
 	adds r1, #0x4c
 	movs r0, #0
@@ -3858,7 +3461,7 @@ _08057544:
 	cmp r0, #0xff
 	bne _08057588
 	movs r0, #0x62
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #3
 	strb r0, [r4, #0xd]
 	movs r0, #1
@@ -3887,7 +3490,7 @@ copyx_08057590: @ 0x08057590
 	movs r1, #0xa0
 	lsls r1, r1, #2
 	movs r0, #0x63
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0x39
 	bl PlaySound
 	movs r0, #0xff
@@ -3895,9 +3498,9 @@ copyx_08057590: @ 0x08057590
 	strb r4, [r5, #0x13]
 _080575C0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x63
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldrb r0, [r5, #0x12]
 	movs r1, #7
 	ands r1, r0
@@ -3939,7 +3542,7 @@ _0805760E:
 	cmp r0, #0
 	beq _08057628
 	movs r0, #0x63
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #0
 	strb r4, [r5, #0xd]
 	strb r0, [r5, #0xe]
@@ -3997,7 +3600,7 @@ copyx_0805763c: @ 0x0805763C
 	movs r1, #0xa0
 	lsls r1, r1, #2
 	movs r0, #0x64
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldr r2, _080576F0 @ =gStageRun
 	ldrb r1, [r2, #0x12]
 	movs r0, #2
@@ -4007,18 +3610,18 @@ copyx_0805763c: @ 0x0805763C
 	strb r0, [r4, #0x12]
 	strb r5, [r4, #0x13]
 	movs r0, #0x39
-	bl stopSound
+	bl StopSound
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _080576B4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xe]
 	cmp r0, #1
 	bhi _0805773C
 	movs r0, #0x64
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldrb r1, [r4, #0x13]
 	adds r0, r1, #4
 	cmp r0, #0xff
@@ -4072,7 +3675,7 @@ _0805771A:
 	cmp r0, #0xff
 	bne _0805773C
 	movs r0, #0x64
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldr r0, [r5]
 	adds r0, #0x77
 	movs r1, #1

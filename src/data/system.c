@@ -8,6 +8,8 @@ void HBlankIntr1(void);
 void HBlankIntr2(void);
 void FUN_08002110(void);
 
+typedef void (*sramFunc)(const u8* src, u8* dest, u32 size);
+
 const u8 SRAM_VERSION[] = "SRAM_V113";
 
 const ALIGNED(4) sramFunc Jt_08338c80[4] = {
@@ -17,7 +19,8 @@ const ALIGNED(4) sramFunc Jt_08338c80[4] = {
     (sramFunc)VerifySram,
 };
 
-const VoidFunc HBlankIntrs[4] = {
+// 0x08338c90
+const VoidFunc gHBlankIntrs[4] = {
     NULL,
     HBlankIntr1,
     HBlankIntr2,

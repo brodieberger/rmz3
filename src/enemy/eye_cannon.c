@@ -11,19 +11,19 @@ const EnemyRoutine gEyeCannonRoutine = {
     [ENTITY_INIT] =      EyeCannon_Init,
     [ENTITY_UPDATE] =    EyeCannon_Update,
     [ENTITY_DIE] =       EyeCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }
 
 static bool8 FUN_08084708(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;
     EyeCannon_Die(p);
     return TRUE;
@@ -109,7 +109,7 @@ static const u32 u32_ARRAY_08368358[4] = {
     48,
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(18)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(18)};
 
 static const u8 u8_ARRAY_08368370[4] = {
     249,

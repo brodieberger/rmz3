@@ -4,100 +4,6 @@
 	
 	.text
 
-	thumb_func_start Ghost70_Update
-Ghost70_Update: @ 0x080C56FC
-	push {lr}
-	ldr r2, _080C5710 @ =0x0836F73C
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080C5710: .4byte sGhost70Updates
-
-	thumb_func_start Ghost70_Die
-Ghost70_Die: @ 0x080C5714
-	push {lr}
-	ldr r2, _080C5728 @ =0x0836F754
-	ldrb r1, [r0, #0x10]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080C5728: .4byte sGhost70Deinitializers
-
-	thumb_func_start FUN_080c572c
-FUN_080c572c: @ 0x080C572C
-	push {r4, lr}
-	adds r4, r0, #0
-	ldrb r1, [r4, #0xa]
-	movs r0, #1
-	orrs r0, r1
-	movs r1, #2
-	orrs r0, r1
-	strb r0, [r4, #0xa]
-	adds r0, r4, #0
-	bl InitNonAffineMotion
-	ldr r1, _080C5760 @ =gVFXFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #1
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r4, #0x14]
-	adds r0, r4, #0
-	bl Ghost70_Update
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080C5760: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c5764
-FUN_080c5764: @ 0x080C5764
-	push {lr}
-	ldr r2, _080C5780 @ =gVFXFnTable
-	ldrb r1, [r0, #9]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	movs r2, #2
-	str r2, [r0, #0xc]
-	ldr r1, [r1]
-	ldr r1, [r1, #8]
-	str r1, [r0, #0x14]
-	bl Ghost70_Die
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080C5780: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c5784
-FUN_080c5784: @ 0x080C5784
-	ldrb r2, [r0, #0xa]
-	movs r1, #0xfe
-	ands r1, r2
-	strb r1, [r0, #0xa]
-	ldr r2, _080C57A0 @ =gVFXFnTable
-	ldrb r1, [r0, #9]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	movs r2, #4
-	str r2, [r0, #0xc]
-	ldr r1, [r1]
-	ldr r1, [r1, #0x10]
-	str r1, [r0, #0x14]
-	bx lr
-	.align 2, 0
-_080C57A0: .4byte gVFXFnTable
-
 	thumb_func_start FUN_080c57a4
 FUN_080c57a4: @ 0x080C57A4
 	push {r4, lr}
@@ -133,7 +39,7 @@ _080C57D6:
 	strb r0, [r4, #0xd]
 _080C57E0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x60]
 	ldr r0, _080C5858 @ =0x000006FF
 	cmp r1, r0
@@ -278,7 +184,7 @@ _080C58FA:
 	strb r0, [r7, #0xd]
 _080C5906:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x54]
 	ldr r1, [r7, #0x64]
 	adds r0, r0, r1
@@ -404,7 +310,7 @@ _080C59A2:
 	strb r0, [r7, #0xd]
 _080C59F4:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r2, [r7, #0x68]
 	adds r2, #0x80
 	str r2, [r7, #0x68]
@@ -675,7 +581,7 @@ _080C5BAA:
 	strb r0, [r7, #0xd]
 _080C5C10:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r7, #0x58]
 	ldr r0, [r7, #0x60]
 	subs r1, r1, r0
@@ -816,7 +722,7 @@ _080C5D32:
 	strb r0, [r7, #0xa]
 _080C5D34:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x12]
 	cmp r0, #0
 	bne _080C5D5E

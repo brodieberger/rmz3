@@ -4,626 +4,6 @@
 	
 	.text
 
-	thumb_func_start createPAquaModRubble
-createPAquaModRubble: @ 0x08080804
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _08080850 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _0808084A
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080854 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #8
-	strb r0, [r3, #0x10]
-	str r4, [r3, #0x54]
-_0808084A:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080850: .4byte gZakoHeaderPtr
-_08080854: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_08080858
-FUN_08080858: @ 0x08080858
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _080808AC @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080808A6
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _080808B0 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #6
-	strb r0, [r3, #0x10]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-_080808A6:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080808AC: .4byte gZakoHeaderPtr
-_080808B0: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_080808b4
-FUN_080808b4: @ 0x080808B4
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _08080900 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080808FA
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080904 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #3
-	strb r0, [r3, #0x10]
-	str r4, [r3, #0x28]
-_080808FA:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080900: .4byte gZakoHeaderPtr
-_08080904: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_08080908
-FUN_08080908: @ 0x08080908
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	ldr r0, _0808095C @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08080954
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080960 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r4, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	strb r2, [r4, #0x10]
-	ldr r0, [r5, #0x54]
-	str r0, [r4, #0x54]
-	ldr r0, [r5, #0x58]
-	str r0, [r4, #0x58]
-	str r5, [r4, #0x28]
-_08080954:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0808095C: .4byte gZakoHeaderPtr
-_08080960: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_08080964
-FUN_08080964: @ 0x08080964
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _080809B8 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080809B2
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _080809BC @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #1
-	strb r0, [r3, #0x10]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-_080809B2:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080809B8: .4byte gZakoHeaderPtr
-_080809BC: .4byte gEnemyFnTable
-
-	thumb_func_start createLaserSign2
-createLaserSign2: @ 0x080809C0
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _08080A1C @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _08080A16
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080A20 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #2
-	strb r0, [r3, #0x10]
-	movs r0, #1
-	strb r0, [r3, #0x11]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	ldr r1, _08080A24 @ =0xFFFFF400
-	adds r0, r0, r1
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-_08080A16:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080A1C: .4byte gZakoHeaderPtr
-_08080A20: .4byte gEnemyFnTable
-_08080A24: .4byte 0xFFFFF400
-
-	thumb_func_start createSweepLaserSign
-createSweepLaserSign: @ 0x08080A28
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _08080A84 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _08080A7E
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080A88 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #2
-	strb r0, [r3, #0x10]
-	movs r0, #1
-	strb r0, [r3, #0x11]
-	ldr r0, [r4, #0x54]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #0x58]
-	ldr r1, _08080A8C @ =0xFFFFF400
-	adds r0, r0, r1
-	str r0, [r3, #0x58]
-	str r4, [r3, #0x28]
-_08080A7E:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080A84: .4byte gZakoHeaderPtr
-_08080A88: .4byte gEnemyFnTable
-_08080A8C: .4byte 0xFFFFF400
-
-	thumb_func_start createStretchedGrabArm
-createStretchedGrabArm: @ 0x08080A90
-	push {r4, r5, r6, r7, lr}
-	mov r7, sl
-	mov r6, sb
-	mov r5, r8
-	push {r5, r6, r7}
-	mov r8, r0
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	ldr r0, _08080B68 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08080B06
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080B6C @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r4, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r0, #0
-	strh r2, [r4, #0x20]
-	adds r1, r4, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	movs r0, #5
-	strb r0, [r4, #0x10]
-	strb r6, [r4, #0x11]
-	mov r0, r8
-	ldr r1, [r0, #0x54]
-	ldr r0, _08080B70 @ =0xFFFFE900
-	adds r1, r1, r0
-	lsls r0, r6, #1
-	adds r0, r0, r6
-	lsls r0, r0, #3
-	subs r0, r0, r6
-	lsls r0, r0, #9
-	adds r1, r1, r0
-	str r1, [r4, #0x54]
-	mov r1, r8
-	ldr r0, [r1, #0x58]
-	ldr r1, _08080B74 @ =0xFFFFFC00
-	adds r0, r0, r1
-	str r0, [r4, #0x58]
-	mov r0, r8
-	str r0, [r4, #0x28]
-_08080B06:
-	movs r5, #0
-	movs r7, #0
-	ldr r0, _08080B78 @ =0x083659E0
-	mov sb, r0
-_08080B0E:
-	ldr r0, _08080B68 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r2, r0, #0
-	adds r3, r5, #1
-	cmp r2, #0
-	beq _08080B54
-	adds r1, r2, #0
-	adds r1, #0x25
-	movs r0, #0x18
-	strb r0, [r1]
-	movs r0, #0x26
-	strb r0, [r2, #9]
-	mov r1, sb
-	ldr r0, [r1]
-	ldr r0, [r0]
-	str r0, [r2, #0x14]
-	strh r7, [r2, #0x20]
-	adds r0, r2, #0
-	adds r0, #0x22
-	strb r7, [r0]
-	ldrb r0, [r2, #0xb]
-	movs r1, #0x10
-	orrs r0, r1
-	strb r0, [r2, #0xb]
-	ldrb r0, [r2, #0x1c]
-	strb r0, [r2, #0x1d]
-	movs r0, #4
-	strb r0, [r2, #0x10]
-	strb r6, [r2, #0x11]
-	mov r0, r8
-	str r0, [r2, #0x28]
-	str r4, [r2, #0x2c]
-	strb r3, [r2, #0x12]
-_08080B54:
-	adds r5, r3, #0
-	cmp r5, #5
-	ble _08080B0E
-	pop {r3, r4, r5}
-	mov r8, r3
-	mov sb, r4
-	mov sl, r5
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080B68: .4byte gZakoHeaderPtr
-_08080B6C: .4byte gEnemyFnTable
-_08080B70: .4byte 0xFFFFE900
-_08080B74: .4byte 0xFFFFFC00
-_08080B78: .4byte 0x083659E0
-
-	thumb_func_start createStretchedArms
-createStretchedArms: @ 0x08080B7C
-	push {r4, r5, r6, r7, lr}
-	mov r7, sl
-	mov r6, sb
-	mov r5, r8
-	push {r5, r6, r7}
-	adds r7, r0, #0
-	movs r6, #0
-_08080B8A:
-	ldr r0, _08080C58 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08080BEA
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r0, #0x18
-	strb r0, [r1]
-	movs r0, #0x26
-	strb r0, [r4, #9]
-	ldr r1, _08080C5C @ =0x083659E0
-	ldr r0, [r1]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r0, #0
-	strh r0, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	movs r1, #0
-	strb r1, [r0]
-	ldrb r0, [r4, #0xb]
-	movs r1, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	movs r0, #7
-	strb r0, [r4, #0x10]
-	strb r6, [r4, #0x11]
-	ldr r1, [r7, #0x54]
-	ldr r0, _08080C60 @ =0xFFFFE900
-	adds r1, r1, r0
-	lsls r0, r6, #1
-	adds r0, r0, r6
-	lsls r0, r0, #3
-	subs r0, r0, r6
-	lsls r0, r0, #9
-	adds r1, r1, r0
-	str r1, [r4, #0x54]
-	ldr r0, [r7, #0x58]
-	movs r1, #0x80
-	lsls r1, r1, #3
-	adds r0, r0, r1
-	str r0, [r4, #0x58]
-	str r7, [r4, #0x28]
-_08080BEA:
-	movs r5, #0
-	adds r0, r6, #1
-	mov sb, r0
-	mov r8, r5
-	ldr r1, _08080C5C @ =0x083659E0
-	mov sl, r1
-_08080BF6:
-	ldr r0, _08080C58 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r2, r0, #0
-	adds r3, r5, #1
-	cmp r2, #0
-	beq _08080C3E
-	adds r1, r2, #0
-	adds r1, #0x25
-	movs r0, #0x18
-	strb r0, [r1]
-	movs r0, #0x26
-	strb r0, [r2, #9]
-	mov r1, sl
-	ldr r0, [r1]
-	ldr r0, [r0]
-	str r0, [r2, #0x14]
-	mov r0, r8
-	strh r0, [r2, #0x20]
-	adds r0, r2, #0
-	adds r0, #0x22
-	mov r1, r8
-	strb r1, [r0]
-	ldrb r0, [r2, #0xb]
-	movs r1, #0x10
-	orrs r0, r1
-	strb r0, [r2, #0xb]
-	ldrb r0, [r2, #0x1c]
-	strb r0, [r2, #0x1d]
-	movs r0, #4
-	strb r0, [r2, #0x10]
-	strb r6, [r2, #0x11]
-	str r7, [r2, #0x28]
-	str r4, [r2, #0x2c]
-	strb r3, [r2, #0x12]
-_08080C3E:
-	adds r5, r3, #0
-	cmp r5, #5
-	ble _08080BF6
-	mov r6, sb
-	cmp r6, #1
-	ble _08080B8A
-	pop {r3, r4, r5}
-	mov r8, r3
-	mov sb, r4
-	mov sl, r5
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080C58: .4byte gZakoHeaderPtr
-_08080C5C: .4byte 0x083659E0
-_08080C60: .4byte 0xFFFFE900
-
-	thumb_func_start FUN_08080c64
-FUN_08080c64: @ 0x08080C64
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	adds r5, r1, #0
-	ldr r0, _08080CB4 @ =gZakoHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _08080CAE
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r0, _08080CB8 @ =gEnemyFnTable
-	movs r1, #0x26
-	strb r1, [r3, #9]
-	adds r0, #0x98
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	ldrb r1, [r3, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r3, #0xb]
-	ldrb r0, [r3, #0x1c]
-	strb r0, [r3, #0x1d]
-	movs r0, #9
-	strb r0, [r3, #0x10]
-	str r4, [r3, #0x54]
-	str r5, [r3, #0x58]
-_08080CAE:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08080CB4: .4byte gZakoHeaderPtr
-_08080CB8: .4byte gEnemyFnTable
-
 	thumb_func_start FUN_08080cbc
 FUN_08080cbc: @ 0x08080CBC
 	push {r4, r5, r6, r7, lr}
@@ -1116,7 +496,7 @@ _0808105C:
 	adds r1, r1, r0
 	str r1, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r0, [r0]
@@ -1176,7 +556,7 @@ _080810EA:
 	adds r0, #8
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	movs r1, #7
 	ands r0, r1
@@ -1381,7 +761,7 @@ _08081296:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x18]
 	ldrb r1, [r0, #9]
 	movs r0, #4
@@ -1510,7 +890,7 @@ _080813A6:
 	strb r0, [r4, #0xe]
 _080813B0:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08081428
 _080813B8:
 	movs r0, #0x80
@@ -1532,11 +912,11 @@ _080813C4:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _08081430 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -2261,7 +1641,7 @@ _08081936:
 	adds r4, r4, r0
 	str r4, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0808197C:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -2484,7 +1864,7 @@ _08081B26:
 	strb r0, [r5, #0xe]
 _08081B38:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r4, r5, #0
 	adds r4, #0x8c
 	b _08081C3A
@@ -2539,7 +1919,7 @@ _08081B6A:
 	b _08081BF0
 _08081BA6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08081C3A
 _08081BAE:
 	adds r0, r5, #0
@@ -2611,7 +1991,7 @@ _08081C2C: .4byte 0xFFFFFEFF
 _08081C30: .4byte gEnemyFnTable
 _08081C34:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08081C3A:
 	ldr r0, [r5, #0x68]
 	cmp r0, #0
@@ -2648,7 +2028,7 @@ _08081C78:
 	bl SetMotion
 _08081C80:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08081D22
 	.align 2, 0
 _08081C88: .4byte 0x00004D0A
@@ -2723,7 +2103,7 @@ _08081D14:
 	bl SetMotion
 _08081D1C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08081D22:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -2763,7 +2143,7 @@ _08081D3E:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x55
-	bl LoadBlink
+	bl StartPaletteAnimation
 	strb r5, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -2789,9 +2169,9 @@ _08081D92:
 	movs r5, #0
 	strb r0, [r4, #0x12]
 	movs r0, #0x55
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0xb4
 	ldr r0, [r0]
@@ -2804,7 +2184,7 @@ _08081D92:
 	bls _08081DF4
 _08081DBA:
 	movs r0, #0x55
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -2972,7 +2352,7 @@ _08081F04:
 	strb r0, [r4, #0xe]
 _08081F0E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08081FB6
 	.align 2, 0
 _08081F18: .4byte 0x00004D0D
@@ -2996,7 +2376,7 @@ _08081F38:
 	strb r0, [r4, #0xe]
 _08081F3E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	subs r0, r0, r1
@@ -3140,7 +2520,7 @@ _0808204A:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0x1d
 	bhi _08082080
@@ -3248,11 +2628,11 @@ _08082118:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0808218C @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1

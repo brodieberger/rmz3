@@ -13,7 +13,7 @@ const EnemyRoutine gTileCannonRoutine = {
     [ENTITY_INIT] =      TileCannon_Init,
     [ENTITY_UPDATE] =    TileCannon_Update,
     [ENTITY_DIE] =       TileCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -144,7 +144,7 @@ static const struct Collision sCollisions[9] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 
 static const u8 sInitModes[3] = {1, 1, 4};
 

@@ -1,32 +1,31 @@
-#include "blink.h"
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
 #include "hud.h"
 #include "overworld.h"
-#include "sound.h"
+#include "palette_animation.h"
+#include "spawn.h"
 #include "text.h"
 #include "zero.h"
 
-extern const s32 s32_ARRAY_080fece4[2];
+extern const Coords32 gMaxCoords;
 
-static bool32 runFieldScript(struct VM* vm);
-static void updateScreenEffectZ(struct VM* vm);
-static void writeRune(struct VM* vm);
+static bool32 RunScript(struct VM* vm);
+static void PrintScriptString(struct VM* vm);
 static void readInput(struct VM* vm);
-static void filterEmergencyRed(struct VM* vm);
+static void StepEmergencyRed(struct VM* vm);
 static void quakeScreen(struct VM* vm);
-static void FUN_08021f2c(struct VM* vm);
+static void StepTransition(struct VM* vm);
 static void tryDeleteIndicator(struct VM* vm);
 static void tryForceZeroXCoord(struct VM* vm);
-static void NoEntryZero(struct VM* vm);
+static void UpdatePlayerMovableArea(struct VM* vm);
 
 void ClearVM(struct VM* vm, u32 stageID) {
   s32 i;
 
   vm->unk_000 = stageID;
   vm->unk_001 = 0;
-  vm->unk_003 = vm->unk_004 = 0;
+  vm->eventID = vm->unk_004 = 0;
 
   for (i = 0; i < SCRIPT_ENTITY_COUNT; i++) {
     vm->entities[i].entity = NULL;
@@ -35,47 +34,47 @@ void ClearVM(struct VM* vm, u32 stageID) {
   vm->time = 0;
   vm->wait = 0;
   vm->forcedKey = 0;
-  vm->screenEffect = NO_SCREEN_EFFECT;
+  vm->transition = TRANSITION_NONE;
   vm->unk_14a = 0;
   vm->emergency = 0;
   vm->magnitude = 0;
-  vm->rune.raw = 0;
+  vm->string.raw = 0;
   vm->indicator = NULL;
   vm->bgm = MUS_NONE;
   vm->zeroDeathTextIDs[0] = vm->zeroDeathTextIDs[1] = 0xFFFF;
   (vm->forceCoord).x = (vm->forceCoord).y = -1;
 
   gStageRun.vm.active = 0;
-  PALETTE16(0) = RGB_BLACK;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x00;
+  gPaletteManager.buf[0] = RGB_BLACK;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
   StopAllMusics();
 }
 
 void FUN_08021b88(struct VM* _ UNUSED) {
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
-  ClearBlinkings();
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
+  gPaletteManager.post_process = NULL;
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
   wMOSAIC = 0;
-  PALETTE16(0) = RGB_BLACK;
+  gPaletteManager.buf[0] = RGB_BLACK;
   gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON);
   StopAllMusics();
 }
 
-void SetScript(struct VM* vm, const struct Command* script) {
-  vm->pc = (struct Command*)script;
-  vm->start = (struct Command*)script;
-  gStageRun.vm.active |= TRUE;
+void SetScript(struct VM* vm, const GameCommand* script) {
+  vm->pc = (GameCommand*)script;
+  vm->start = (GameCommand*)script;
+  gStageRun.vm.active |= VM_ACTIVE;
   wMOSAIC = 0;
   if (gTimeElfTimer != 0) {
     CLEAR_FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED);
     TurnUpBGM();
     gTimeElfTimer = 0;
   }
-  stopSound(SE_TIME_ELF);
-  stopSound(SE_TIME_ELF_HURRY);
+  StopSound(SE_TIME_ELF);
+  StopSound(SE_TIME_ELF_HURRY);
 }
 
 /*
@@ -86,27 +85,30 @@ void SetScript(struct VM* vm, const struct Command* script) {
 */
 bool32 RunVM(struct VM* vm) {
   bool32 done = FALSE;
-  if (gStageRun.vm.active & 1) {
-    done = runFieldScript(vm);
+  if (gStageRun.vm.active & VM_ACTIVE) {
+    done = RunScript(vm);
   }
   vm->time++;
 
   readInput(vm);
-  filterEmergencyRed(vm);
+  StepEmergencyRed(vm);
   quakeScreen(vm);
-  FUN_08021f2c(vm);
+  StepTransition(vm);
   tryDeleteIndicator(vm);
   tryForceZeroXCoord(vm);
-  NoEntryZero(vm);
+  UpdatePlayerMovableArea(vm);
   return done;
 }
 
-void FUN_08021ca0(struct VM* vm) {
-  updateScreenEffectZ(vm);
-  writeRune(vm);
+static void _RenderWipeZ(struct VM* vm);
+
+void RenderWipeZ(struct VM* vm) {
+  _RenderWipeZ(vm);
+  PrintScriptString(vm);
 }
 
-void FUN_08021cb4(struct VM* vm, const struct Command* script, struct Entity* e) {
+// シールドブーメラン を受け取る会話の時にのみ呼ばれる
+void FUN_08021cb4(struct VM* vm, const GameCommand* script, struct Entity* e) {
   struct ScriptEntity* se = &vm->entities[2];
   if (se->entity == NULL) {
     e->flags |= SCRIPTED;
@@ -119,16 +121,26 @@ void FUN_08021cb4(struct VM* vm, const struct Command* script, struct Entity* e)
   }
 }
 
+struct ScriptEntityTemplate {
+  u8 kind;
+  u8 variant;
+  u8 work[2];
+  Coords32 coord;
+  s8 xflip;
+  s8 yflip;
+};
+
+// spawn　コマンド
 void CreateScriptEntity(u8 n, struct ScriptEntityTemplate* template) {
   struct ScriptEntity* se = &gStageRun.vm.entities[n];
   if (se->entity == NULL) {
     struct Entity* e;
 
     if ((template->kind == ENTITY_PLAYER) && (template->work[0] != PLAYER_ZERO)) {
-      e = (struct Entity*)AllocPlayer2();
+      e = AllocPlayer2();
       if (e != NULL) {
-        e->taskCol = 16;
-        INIT_PLAYER_ROUTINE(((struct Zero*)e), template->variant);
+        e->renderPrio = 16;
+        INIT_PLAYER_ROUTINE(e, template->variant);
       }
     } else {
       e = CreateStageEntity(template->kind, template->variant);
@@ -138,10 +150,8 @@ void CreateScriptEntity(u8 n, struct ScriptEntityTemplate* template) {
     if (e != NULL) {
       e->flags |= SCRIPTED;
       e->scriptEntity = se;
-      e->work[0] = template->work[0];
-      e->work[1] = template->work[1];
-      e->coord.x = (template->coord).x;
-      e->coord.y = (template->coord).y;
+      e->work[0] = template->work[0], e->work[1] = template->work[1];
+      e->coord.x = (template->coord).x, e->coord.y = (template->coord).y;
       if (template->xflip) {
         e->flags |= X_FLIP;
       } else {
@@ -158,12 +168,10 @@ void CreateScriptEntity(u8 n, struct ScriptEntityTemplate* template) {
       if (n == 0) {
         pZero2 = (struct Zero*)e;
         gHUD.z = (struct Zero*)e;
-        SaveZeroStatus((struct Zero*)e, &gGameState.save.status);
+        LoadZeroStatus((struct Zero*)e, &gGameState.save.status);
         LoadZeroPalette(e, ((&((struct Zero*)e)->unk_b4)->status).body);
       }
-      if (n == 1) {
-        CLEAR_FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED);
-      }
+      if (n == 1) CLEAR_FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED);
     }
   }
 }
@@ -175,7 +183,7 @@ void DeleteScriptEntity(u8 n) {
     if ((gStageRun.id != 0) && (n == 0)) {
       gHUD.z = NULL;
       resetSateliteElfPosition(gGameState.z2);
-      CopyZeroStatus(gGameState.z2, &gGameState.save.status);
+      StoreZeroStatus(gGameState.z2, &gGameState.save.status);
     }
     if (n == 1) {
       gHUD.unk_0c = NULL;
@@ -185,194 +193,80 @@ void DeleteScriptEntity(u8 n) {
   }
 }
 
-/*
-RunVM(08021e5c) で終端(0xFF)までループして実行される
-
-返り値:
-  0: ループ続行
-  1: ループから抜ける 再び runFieldScript が実行されるとき、次のコマンドから再開
-*/
-static bool32 runFieldScript(struct VM* vm) {
+/**
+ * @brief スクリプト(asm/scripts のコマンド列) を実行する
+ * @return TRUE: 終端コマンド(end)まで実行を終えた, FALSE: wait コマンドなどで一時停止(halt)している
+ * @note 0x08021e5c
+ */
+static bool32 RunScript(struct VM* vm) {
   if (vm->wait != 0) {
     vm->wait--;
     return FALSE;
   }
 
-  while (vm->pc->cmd != 0xFF) {
-    const bool32 exit = (gScriptCommands[vm->pc->cmd])(vm);
-    if (exit) {
+  while (((vm->pc)->c).op != 0xFF) {
+    const bool32 halted = (gScriptCommands[((vm->pc)->c).op])(vm);
+    if (halted) {  // wait コマンドや wait_transition_end コマンドなどでコマンドの実行が一時停止した (pcのデクリメント処理はそれぞれのコマンドハンドラが行う)
       vm->pc++;
       return FALSE;
     }
-
     vm->pc++;
   }
-  gStageRun.vm.active &= ~1;
-  return TRUE;
+  gStageRun.vm.active &= ~VM_ACTIVE;
+  return TRUE;  // 終端コマンドまで実行完了
 }
 
 // 0x08021ec4
 static void readInput(struct VM* vm) {
-  struct Zero* z = (struct Zero*)vm->entities[0].entity;
+  Player* p = (Player*)vm->entities[0].entity;
   if (vm->forcedKey == 0) {
     gStageRun.input = gJoypad[0].input & 0x7FFF;
     gStageRun.unk_06 = gJoypad[1].input & 0x7FFF;
-
   } else if (vm->forcedKey == 0xFFFF) {
     gStageRun.input = 0;
     gStageRun.unk_06 = 0;
-    if (z != NULL) {
-      ResetZeroInput(z);
-    }
-
+    if (p != NULL) ResetZeroInput(p);
   } else {
     gStageRun.input = vm->forcedKey;
     gStageRun.unk_06 = vm->forcedKey;
   }
 }
 
-NAKED static void FUN_08021f2c(struct VM* vm) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, r8\n\
-	push {r7}\n\
-	adds r4, r0, #0\n\
-	movs r0, #0xa2\n\
-	lsls r0, r0, #1\n\
-	adds r5, r4, r0\n\
-	ldr r3, [r5]\n\
-	lsrs r1, r3, #0x10\n\
-	cmp r3, #0\n\
-	beq _0802202A\n\
-	movs r0, #8\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _08021FB0\n\
-	ldr r1, _08021F9C @ =gPaletteManager\n\
-	ldr r2, _08021FA0 @ =0x00000402\n\
-	adds r2, r2, r1\n\
-	mov r8, r2\n\
-	movs r4, #0\n\
-	movs r0, #0x20\n\
-	strb r0, [r2]\n\
-	ldr r6, _08021FA4 @ =0x00000401\n\
-	adds r7, r1, r6\n\
-	strb r0, [r7]\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #3\n\
-	adds r6, r1, r2\n\
-	strb r0, [r6]\n\
-	movs r0, #0xc0\n\
-	lsls r0, r0, #0xa\n\
-	adds r1, r3, r0\n\
-	str r1, [r5]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #0xf\n\
-	cmp r1, r0\n\
-	bls _0802202A\n\
-	movs r0, #1\n\
-	ands r1, r0\n\
-	cmp r1, #0\n\
-	bne _08021F8C\n\
-	movs r0, #0xc7\n\
-	bl PlaySound\n\
-	mov r1, r8\n\
-	strb r4, [r1]\n\
-	strb r4, [r7]\n\
-	strb r4, [r6]\n\
-_08021F8C:\n\
-	str r4, [r5]\n\
-	ldr r2, _08021FA8 @ =gWindowRegBuffer\n\
-	ldrh r1, [r2]\n\
-	ldr r0, _08021FAC @ =0x0000DFFF\n\
-	ands r0, r1\n\
-	strh r0, [r2]\n\
-	b _0802202A\n\
-	.align 2, 0\n\
-_08021F9C: .4byte gPaletteManager\n\
-_08021FA0: .4byte 0x00000402\n\
-_08021FA4: .4byte 0x00000401\n\
-_08021FA8: .4byte gWindowRegBuffer\n\
-_08021FAC: .4byte 0x0000DFFF\n\
-_08021FB0:\n\
-	movs r0, #1\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	bne _08021FBC\n\
-	movs r0, #0x40\n\
-	subs r1, r0, r1\n\
-_08021FBC:\n\
-	movs r0, #4\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _08021FF4\n\
-	ldr r2, _08021FEC @ =gPaletteManager\n\
-	lsrs r1, r1, #1\n\
-	movs r0, #0x40\n\
-	subs r0, r0, r1\n\
-	ldr r6, _08021FF0 @ =0x00000402\n\
-	adds r1, r2, r6\n\
-	strb r0, [r1]\n\
-	movs r1, #0xff\n\
-	ands r0, r1\n\
-	subs r6, #1\n\
-	adds r1, r2, r6\n\
-	strb r0, [r1]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #3\n\
-	adds r2, r2, r1\n\
-	strb r0, [r2]\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #9\n\
-	adds r0, r3, r2\n\
-	b _08022016\n\
-	.align 2, 0\n\
-_08021FEC: .4byte gPaletteManager\n\
-_08021FF0: .4byte 0x00000402\n\
-_08021FF4:\n\
-	ldr r2, _08022034 @ =gPaletteManager\n\
-	lsrs r1, r1, #1\n\
-	ldr r6, _08022038 @ =0x00000402\n\
-	adds r0, r2, r6\n\
-	strb r1, [r0]\n\
-	movs r0, #0xff\n\
-	ands r1, r0\n\
-	subs r6, #1\n\
-	adds r0, r2, r6\n\
-	strb r1, [r0]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #3\n\
-	adds r2, r2, r0\n\
-	strb r1, [r2]\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #0xa\n\
-	adds r0, r3, r1\n\
-_08022016:\n\
-	str r0, [r5]\n\
-	movs r6, #0xa2\n\
-	lsls r6, r6, #1\n\
-	adds r2, r4, r6\n\
-	ldr r1, [r2]\n\
-	ldr r0, _0802203C @ =0x00400005\n\
-	cmp r1, r0\n\
-	bls _0802202A\n\
-	movs r0, #0\n\
-	str r0, [r2]\n\
-_0802202A:\n\
-	pop {r3}\n\
-	mov r8, r3\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_08022034: .4byte gPaletteManager\n\
-_08022038: .4byte 0x00000402\n\
-_0802203C: .4byte 0x00400005\n\
- .syntax divided\n");
+static void StepTransition(struct VM* vm) {
+  u32 mode = vm->transition;
+  u32 counter = mode >> 16;
+  if (mode != TRANSITION_NONE) {
+    if (mode & TRANSITION_Z) {
+      gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
+      vm->transition += (0x3 << 16);                   // counter += 3
+      if (vm->transition > (64 << 16)) {               // counter > 64
+        if (!(vm->transition & TRANSITION_REVERSE)) {  // 画面が見える状態からZで真っ黒になったとき
+          PlaySound(SE_UNK_c7);
+          gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
+        }
+        vm->transition = TRANSITION_NONE;
+        gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
+      }
+    } else {
+      if (!(mode & TRANSITION_REVERSE)) {
+        counter = 64 - counter;
+      }
+      if (mode & TRANSITION_WHITEOUT) {
+        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_WHITE - (counter >> 1);
+        vm->transition += (0x1 << 16);  // counter++
+      } else {
+        gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = (counter >> 1);
+        vm->transition += (0x2 << 16);  // counter += 2
+      }
+      if (vm->transition > ((64 << 16) | 5)) {
+        vm->transition = TRANSITION_NONE;
+      }
+    }
+  }
 }
 
 // Zマークを作りながらの暗転(or Zマークを作りながらの暗転からの復帰)
-NAKED static void updateScreenEffectZ(struct VM* vm) {
+NAKED static void _RenderWipeZ(struct VM* vm) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	movs r1, #0xa2\n\
@@ -540,12 +434,13 @@ _08022170:\n\
  .syntax divided\n");
 }
 
-static void writeRune(struct VM* vm) {
-  const s32 rune = vm->rune.raw;
-  if (rune != 0) {
-    u8 x = rune >> 16;
-    u8 y = rune >> 24;
-    PrintString(STRING(rune & 0xFFFF), x, y);
+// print_string (Cmd_printstring) でリクエストされた文字列があれば描画する (コマンド側で文字列の描画の終了がリクエストされるまで毎フレーム描画される)
+static void PrintScriptString(struct VM* vm) {
+  const s32 s = vm->string.raw;
+  if (s != 0) {
+    u8 x = s >> 16;
+    u8 y = s >> 24;
+    PrintString(STRING(s & 0xFFFF), x, y);
   }
 }
 
@@ -565,127 +460,58 @@ static void tryForceZeroXCoord(struct VM* vm) {
 }
 
 // gOverworld.range の見えない壁に阻まれる処理
-WIP static void NoEntryZero(struct VM* vm) {
-#if MODERN
-  s32 top = 0;
-  s32 left = 0;
-  s32 right = s32_ARRAY_080fece4[0];
-  s32 bottom = s32_ARRAY_080fece4[1];
+static void UpdatePlayerMovableArea(struct VM* vm) {
+  struct Zero* player = (struct Zero*)vm->entities[0].entity;
+  Coords32 c1 = {x : 0, y : 0};
+  Coords32 c2 = {x : gMaxCoords.x, y : gMaxCoords.y};
 
-  struct Zero* z = (struct Zero*)vm->entities[0].entity;
-  if (z != NULL) {
-    struct Camera* camera = &gStageRun.vm.camera;
-    if (camera->mode > 3) {
-      left = camera->left;
-      top = camera->top;
-      right = camera->right;
-      bottom = camera->bottom;
+  if (player != NULL) {
+    struct Camera* cam = &gStageRun.vm.camera;
+    if (cam->mode >= CM4) {
+      c1.x = cam->left, c1.y = cam->top;
+      c2.x = cam->right, c2.y = cam->bottom;
     }
+    if (c1.x < gOverworld.range.left) c1.x = gOverworld.range.left;
+    if (c1.y < gOverworld.range.top) c1.y = gOverworld.range.top;
+    if (c2.x > gOverworld.range.right) c2.x = gOverworld.range.right;
+    if (c2.y > gOverworld.range.bottom) c2.y = gOverworld.range.bottom;
+    SetDisableArea(player, c1.x, c1.y, c2.x, c2.y);
 
-    if (left < gOverworld.range.left) {
-      left = gOverworld.range.left;
-    }
-    if (top < gOverworld.range.top) {
-      top = gOverworld.range.top;
-    }
-    if (right > gOverworld.range.right) {
-      right = gOverworld.range.right;
-    }
-    if (bottom > gOverworld.range.bottom) {
-      bottom = gOverworld.range.bottom;
-    }
-    SetDisableArea(z, left, top, right, bottom);
-
-    z = (struct Zero*)vm->entities[1].entity;
-    if ((z != NULL) && ((z->s).kind == ENTITY_PLAYER)) {
-      SetDisableArea(z, left, top, right, bottom);
+    player = (struct Zero*)vm->entities[1].entity;
+    if ((player != NULL) && ((player->s).kind == ENTITY_PLAYER)) {
+      SetDisableArea(player, c1.x, c1.y, c2.x, c2.y);
     }
   }
-#else
-  INCCODE("asm/wip/NoEntryZero.inc");
-#endif
 }
 
-NAKED static void filterEmergencyRed(struct VM* vm) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	movs r1, #0xa6\n\
-	lsls r1, r1, #1\n\
-	adds r5, r0, r1\n\
-	ldrh r3, [r5]\n\
-	ldr r0, _08022314 @ =0x0000BFFF\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _0802230C\n\
-	ldr r1, _08022318 @ =gSineTable\n\
-	lsls r0, r3, #0x1a\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #0x17\n\
-	adds r0, r0, r2\n\
-	lsrs r0, r0, #0x17\n\
-	adds r0, r0, r1\n\
-	ldrh r0, [r0]\n\
-	lsls r0, r0, #0x10\n\
-	asrs r0, r0, #0x15\n\
-	movs r1, #8\n\
-	subs r4, r1, r0\n\
-	movs r2, #0xff\n\
-	lsls r2, r2, #8\n\
-	ands r2, r3\n\
-	adds r0, r3, #1\n\
-	movs r1, #0xff\n\
-	ands r0, r1\n\
-	orrs r2, r0\n\
-	strh r2, [r5]\n\
-	ldr r3, _0802231C @ =gPaletteManager\n\
-	asrs r0, r4, #1\n\
-	adds r0, #0x20\n\
-	movs r6, #0x80\n\
-	lsls r6, r6, #3\n\
-	adds r1, r3, r6\n\
-	strb r0, [r1]\n\
-	movs r0, #0x20\n\
-	subs r0, r0, r4\n\
-	adds r6, #1\n\
-	adds r1, r3, r6\n\
-	strb r0, [r1]\n\
-	ldr r1, _08022320 @ =0x00000402\n\
-	adds r3, r3, r1\n\
-	strb r0, [r3]\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #7\n\
-	ands r2, r0\n\
-	cmp r2, #0\n\
-	beq _0802230C\n\
-	cmp r4, #0\n\
-	bne _0802230C\n\
-	strh r4, [r5]\n\
-_0802230C:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_08022314: .4byte 0x0000BFFF\n\
-_08022318: .4byte gSineTable\n\
-_0802231C: .4byte gPaletteManager\n\
-_08022320: .4byte 0x00000402\n\
- .syntax divided\n");
+/**
+ * @brief update Emergency effect (blend red)
+ * @note 0x080222a4
+ */
+static void StepEmergencyRed(struct VM* vm) {
+  if ((vm->emergency & ((u16)~EMERGENCY_END)) != 0) {  // = (vm->emergency & EMERGENCY_ENABLED) != 0
+    s32 red = 8 - (COS(vm->emergency << 2) >> 5);
+    vm->emergency = (vm->emergency & 0xFF00) | ((vm->emergency + 1) & 0xFF);
+    gPaletteManager.filter[0] = 0x20 + (red >> 1);                       // R
+    gPaletteManager.filter[2] = gPaletteManager.filter[1] = 0x20 - red;  // G, B
+
+    if ((vm->emergency & EMERGENCY_END) && (red == 0)) {
+      vm->emergency = 0;
+    }
+  }
 }
 
 static void quakeScreen(struct VM* vm) {
-  struct Coord c;
-  s32 rng;
-
   if (vm->magnitude != 0) {
-    RNG_0202f388 = LCG(RNG_0202f388);
-    rng = (RNG_0202f388 >> 16) & 0xF;
+    s32 rng = RANDOM(RNG_0202f388) & 0xF;
     if (rng <= (vm->magnitude & 0xFF)) {
       AppendQuake(rng, &gStageRun.vm.camera.viewport);
     }
-    if ((&gStageRun.vm.camera)->mode == 0) {
+    // カメラが無効なときは自分で反映させる
+    if ((&gStageRun.vm.camera)->mode == CM0_DISABLED) {
+      Coords32 c;
       CalcQuake(&(&gStageRun.vm.camera)->target, &c);
-      BGOFS(1)->x = c.x >> 8;
-      BGOFS(1)->y = c.y >> 8;
+      BGOFS(1)->x = c.x >> 8, BGOFS(1)->y = c.y >> 8;
     }
   }
 }

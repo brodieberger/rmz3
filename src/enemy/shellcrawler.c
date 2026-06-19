@@ -13,7 +13,7 @@ const EnemyRoutine gShellcrawlerRoutine = {
     [ENTITY_INIT] =      Shellcrawler_Init,
     [ENTITY_UPDATE] =    Shellcrawler_Update,
     [ENTITY_DIE] =       Shellcrawler_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

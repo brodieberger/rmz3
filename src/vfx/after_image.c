@@ -1,107 +1,88 @@
+#include "vfx/after_image.h"
+
 #include "global.h"
 #include "motion.h"
 #include "vfx.h"
 
-/*
-  ダッシュの残像
-*/
+// ダッシュの残像
 
-static void AfterImage_Init(struct VFX *p);
-static void AfterImage_Update(struct VFX *p);
-static void AfterImage_Die(struct VFX *p);
+static void AfterImage_Init(struct AfterImage* p);
+static void AfterImage_Update(struct AfterImage* p);
+static void AfterImage_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gDashAfterImageRoutine = {
-    [ENTITY_INIT] =      AfterImage_Init,
-    [ENTITY_UPDATE] =    AfterImage_Update,
-    [ENTITY_DIE] =       AfterImage_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)AfterImage_Init,
+    [ENTITY_UPDATE] =    (void*)AfterImage_Update,
+    [ENTITY_DIE] =       (void*)AfterImage_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct VFX *CreateAfterImages(struct Entity *p) {
-  struct VFX *s1, *s2, *s3;
-  s1 = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* CreateAfterImages(struct Entity* p) {
+  struct Entity *s1, *s2, *s3;  // 残像は3つ作られる
+  s1 = AllocEntityLast(gVFXHeaderPtr);
   if (s1 != NULL) {
-    (s1->s).taskCol = 1;
     INIT_VFX_ROUTINE(s1, VFX_AFTER_IMAGE);
-    (s1->s).tileNum = 0;
-    (s1->s).palID = 0;
-    (s1->s).work[0] = 0;
-    (s1->s).work[1] = 0;
-    (s1->s).unk_28 = p;
-    (s1->s).unk_2c = p;
+    s1->work[0] = 0, s1->work[1] = 0;
+    s1->unk_28 = p;
+    s1->unk_2c = p;
   }
-  s2 = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+  s2 = AllocEntityLast(gVFXHeaderPtr);
   if (s2 != NULL) {
-    (s2->s).taskCol = 1;
     INIT_VFX_ROUTINE(s2, VFX_AFTER_IMAGE);
-    (s2->s).tileNum = 0;
-    (s2->s).palID = 0;
-    (s2->s).work[0] = 1;
-    (s2->s).work[1] = 0;
-    (s2->s).unk_28 = &s1->s;
-    (s2->s).unk_2c = p;
+    s2->work[0] = 1, s2->work[1] = 0;
+    s2->unk_28 = (void*)s1;
+    s2->unk_2c = (void*)p;
   }
-  s3 = (struct VFX *)AllocEntityFirst(gVFXHeaderPtr);
+  s3 = AllocEntityLast(gVFXHeaderPtr);
   if (s3 != NULL) {
-    (s3->s).taskCol = 1;
     INIT_VFX_ROUTINE(s3, VFX_AFTER_IMAGE);
-    (s3->s).tileNum = 0;
-    (s3->s).palID = 0;
-    (s3->s).work[0] = 2;
-    (s3->s).work[1] = 0;
-    (s3->s).unk_28 = &s2->s;
-    (s3->s).unk_2c = p;
+    s3->work[0] = 2, s3->work[1] = 0;
+    s3->unk_28 = (void*)s2;
+    s3->unk_2c = (void*)p;
   }
   return s1;
 };
 
 // --------------------------------------------
 
-// Reg swapの問題でロジックは問題なし
-NON_MATCH static void AfterImage_Init(struct VFX *p) {
-#if MODERN
-  s32 i;
-  struct Coord *c;
-  struct Entity *e1 = (p->s).unk_28;
-  struct Entity *e2 = (p->s).unk_2c;
-  struct Coord *c1 = &p->props.afterImage.c;
-  struct Coord *c2 = &(p->s).coord;
+static void AfterImage_Init(struct AfterImage* p) {
+  struct Entity* q = (p->s).unk_28;
+  struct Entity* parent = (p->s).unk_2c;  // この残像を作った Entity, Zero or OmegaZero のどちらか
 
-  if (e1->mode[0] != 0) {
+  Coords32* c1 = &p->c;
+  Coords32* c2 = &(p->s).coord;
+
+  if (q->mode[0] != 0) {
+    s32 i;
     InitNonAffineMotion(&p->s);
     (p->s).flags |= DISPLAY;
     (p->s).spr.c = c1;
 
-    if (e2->kind != ENTITY_BOSS) {
+    if (parent->kind != ENTITY_BOSS) {
       // Zero
-      (p->s).taskCol = (p->s).work[0] + 17;
+      (p->s).renderPrio = (p->s).work[0] + 17;
       ForceEntityPalette(&p->s, 12);
     } else {
       // Omega Zero
-      (p->s).taskCol = (p->s).work[0] + 25;
+      (p->s).renderPrio = (p->s).work[0] + 25;
       ForceEntityPalette(&p->s, 8);
     }
 
-    c = &c2[0];
-    for (i = 2; i >= 0; i--) {
-      c->x = (e2->coord).x;
-      c->y = (e2->coord).y;
-      c = &c[1];
+    for (i = 0; i < 3; i++) {
+      c2[i].x = (parent->coord).x;
+      c2[i].y = (parent->coord).y;
     }
-
     (p->s).work[2] = 3;
+
     SET_VFX_ROUTINE(p, ENTITY_UPDATE);
     AfterImage_Update(p);
   }
-#else
-  INCCODE("asm/wip/AfterImage_Init.inc");
-#endif
 }
 
-NAKED static void AfterImage_Update(struct VFX *p) {
+NAKED static void AfterImage_Update(struct AfterImage* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	mov ip, r0\n\
@@ -274,7 +255,7 @@ _080B4448: .4byte gVFXFnTable\n\
  .syntax divided\n");
 }
 
-static void AfterImage_Die(struct VFX *p) {
-  (p->s).flags &= ~DISPLAY;
+static void AfterImage_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }

@@ -1,29 +1,87 @@
 #include "collision.h"
 #include "global.h"
 #include "projectile.h"
+#include "story.h"
 
-void Projectile16_Init(struct Projectile* p);
-void Projectile16_Update(struct Projectile* p);
-void Projectile16_Die(struct Projectile* p);
+static void Projectile16_Init(Object* p);
+static void Projectile16_Update(Object* p);
+static void Projectile16_Die(Object* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile16Routine = {
-    [ENTITY_INIT] =      Projectile16_Init,
-    [ENTITY_UPDATE] =    Projectile16_Update,
-    [ENTITY_DIE] =       Projectile16_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile16_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile16_Update,
+    [ENTITY_DIE] =       (void*)Projectile16_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+struct Entity* FUN_080a244c(Coords32* c1, Coords32* c2, bool8 isDirRight) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 16);
+    p->work[0] = isDirRight;
+    (p->coord).x = c1->x, (p->coord).y = c1->y;
+    (p->unk_coord).x = c2->x, (p->unk_coord).y = c2->y;
+  }
+  return p;
+}
+
+// --------------------------------------------
+
+static const struct Collision sCollisions[];
+
+static void Projectile16_Init(Object* p) {
+  InitNonAffineMotion(&p->s);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  INIT_BODY(p, &sCollisions[0], 2, NULL);
+  if ((p->s).work[0] == 0) {
+    SET_XFLIP(p, FALSE);
+  } else {
+    SET_XFLIP(p, TRUE);
+  }
+  (p->s).work[2] = 0xFF;
+  SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
+  (p->s).mode[1] = 0, (p->s).mode[2] = 0, (p->s).mode[3] = 0;
+  Projectile16_Update((void*)p);
+}
 
 void FUN_080a25f8(struct Projectile* p);
 void FUN_080a2710(struct Projectile* p);
 
-static const ProjectileFunc PTR_ARRAY_0836b350[2] = {
-    FUN_080a25f8,
-    FUN_080a2710,
-};
+static void Projectile16_Update(Object* p) {
+  // 0x0836b350
+  static const ProjectileFunc sUpdates[2] = {
+      (void*)FUN_080a25f8,
+      (void*)FUN_080a2710,
+  };
 
+  if (IS_METTAUR) {
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
+    return;
+  }
+
+  (sUpdates[(p->s).mode[1]])((void*)p);
+}
+
+static void Projectile16_Die(Object* p) {
+  (p->s).flags &= ~DISPLAY;
+  EXIT_BODY(p);
+  SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
+}
+
+// --------------------------------------------
+
+INCASM("asm/projectile/unk_16.inc");
+
+// --------------------------------------------
+
+// 0x0836B358
 static const struct Collision sCollisions[3] = {
     {
       kind : DDP,

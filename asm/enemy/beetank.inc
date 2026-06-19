@@ -131,7 +131,7 @@ _0807B972:
 	strb r5, [r6, #0xe]
 	strb r5, [r6, #0xf]
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807B9D6
 	movs r1, #0xf8
@@ -139,7 +139,7 @@ _0807B972:
 	adds r0, r6, #0
 	bl SetMotion
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807B9D6:
 	adds r0, r6, #0
 	bl Beetank_Update
@@ -249,7 +249,7 @@ _0807BAB4:
 	str r0, [r5, #0x58]
 _0807BAB6:
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0807BACA
 	ldrb r1, [r5, #0xd]
@@ -290,7 +290,7 @@ Beetank_Die: @ 0x0807BAE8
 	bl TryDropItem
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807BB20 @ =gMission
+	ldr r2, _0807BB20 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807BB24 @ =0x0000270E
 	cmp r1, r0
@@ -303,7 +303,7 @@ _0807BB16:
 	b _0807BC5A
 	.align 2, 0
 _0807BB1C: .4byte gStageRun
-_0807BB20: .4byte gMission
+_0807BB20: .4byte gScore
 _0807BB24: .4byte 0x0000270E
 _0807BB28:
 	ldrb r0, [r4, #0xe]
@@ -367,7 +367,7 @@ _0807BB54:
 	strb r0, [r4, #0xe]
 _0807BBAA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -448,7 +448,7 @@ _0807BC30:
 _0807BC40:
 	movs r0, #0
 	bl PlaySound
-	ldr r2, _0807BC80 @ =gMission
+	ldr r2, _0807BC80 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807BC84 @ =0x0000270E
 	cmp r1, r0
@@ -480,7 +480,7 @@ _0807BC78:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807BC80: .4byte gMission
+_0807BC80: .4byte gScore
 _0807BC84: .4byte 0x0000270E
 _0807BC88: .4byte gEnemyFnTable
 
@@ -564,7 +564,7 @@ _0807BCFE:
 	strb r0, [r3]
 _0807BD18:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0807BD2E
@@ -660,7 +660,7 @@ _0807BDA4:
 	strb r0, [r4, #0xe]
 _0807BDC4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

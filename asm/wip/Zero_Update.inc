@@ -72,7 +72,7 @@ _08029344:
 	ble _0802935E
 	movs r7, #0
 	ldrsh r0, [r4, r7]
-	bl stopSound
+	bl StopSound
 	ldr r0, _080293B0 @ =0x0000FFFF
 _0802935C:
 	strh r0, [r4]
@@ -876,7 +876,7 @@ _080299A2:
 	cmp r0, #0
 	bne _080299B0
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080299B0:
 	adds r0, r6, #0
 	bl setStageElfFlags

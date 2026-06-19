@@ -67,13 +67,13 @@ _080ECD88:
 	strb r0, [r1]
 	movs r0, #1
 	strb r0, [r4]
-	bl sio_0800133c
+	bl EReader_SioInitHandshake
 	b _080ECFCC
 	.align 2, 0
 _080ECDA0: .4byte 0x00000252
 _080ECDA4: .4byte 0x00000251
 _080ECDA8:
-	bl sio_080013a8
+	bl EReader_SioWaitForConnect
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	beq _080ECDCC
@@ -96,7 +96,7 @@ _080ECDCC:
 	bne _080ECE38
 	movs r0, #2
 	strb r0, [r4]
-	bl sio_0800100c
+	bl SioLink_SendDisconnect
 	b _080ECFCC
 	.align 2, 0
 _080ECDE0: .4byte 0x00000251
@@ -111,13 +111,13 @@ _080ECDE4:
 	strb r0, [r1]
 	movs r0, #3
 	strb r0, [r4]
-	bl sio_08001538
+	bl EReader_SioInitDataReceive
 	b _080ECFCC
 	.align 2, 0
 _080ECE00: .4byte 0x00000252
 _080ECE04: .4byte 0x00000251
 _080ECE08:
-	bl sio_080015e8
+	bl EReader_SioCheckAllPlayersConnected
 	lsls r0, r0, #0x18
 	lsrs r2, r0, #0x18
 	cmp r2, #0
@@ -147,10 +147,10 @@ _080ECE38:
 _080ECE40: .4byte 0x00000251
 _080ECE44:
 	strb r2, [r4]
-	bl sio_08001778
+	bl EReader_SioAbortSession
 	b _080ECFCC
 _080ECE4C:
-	bl sio_080013d0
+	bl EReader_SioHandshakePoll
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	bne _080ECE70
@@ -176,10 +176,10 @@ _080ECE72:
 _080ECE76:
 	movs r0, #6
 	strb r0, [r4]
-	bl sio_080014ec
+	bl EReader_SioBeginCardRead
 	b _080ECEB8
 _080ECE80:
-	bl sio_08001410
+	bl EReader_SioReadCardType
 	lsls r0, r0, #0x18
 	lsrs r2, r0, #0x18
 	cmp r2, #0
@@ -188,14 +188,14 @@ _080ECE80:
 	bne _080ECEBC
 	movs r0, #2
 	strb r0, [r4]
-	bl sio_08001514
+	bl EReader_SioGetCardId
 	movs r2, #0x93
 	lsls r2, r2, #2
 	adds r1, r5, r2
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
 	str r0, [r1]
-	bl sio_0800100c
+	bl SioLink_SendDisconnect
 	b _080ECEBC
 _080ECEAA:
 	movs r0, #0x80
@@ -204,14 +204,14 @@ _080ECEAA:
 _080ECEB0:
 	movs r0, #8
 	strb r0, [r4]
-	bl sio_0800100c
+	bl SioLink_SendDisconnect
 _080ECEB8:
-	bl sio_080013d0
+	bl EReader_SioHandshakePoll
 _080ECEBC:
 	movs r0, #1
 	b _080ECFCE
 _080ECEC0:
-	bl sio_080013f0
+	bl EReader_SioConfirmReceipt
 	lsls r0, r0, #0x18
 	cmp r0, #0
 	beq _080ECEBC
@@ -222,10 +222,10 @@ _080ECEC0:
 	lsls r3, r3, #2
 	adds r1, r5, r3
 	str r0, [r1]
-	bl sio_0800100c
+	bl SioLink_SendDisconnect
 	b _080ECEBC
 _080ECEDE:
-	bl sio_08001570
+	bl EReader_SioVerifyCardData
 	lsls r0, r0, #0x18
 	lsrs r2, r0, #0x18
 	cmp r2, #0
@@ -275,7 +275,7 @@ _080ECF34:
 	movs r0, #3
 _080ECF3C:
 	str r0, [r1]
-	ldr r1, _080ECF74 @ =gSystemSavedataManager
+	ldr r1, _080ECF74 @ =gSystemSavedata
 	ldr r2, _080ECF78 @ =0x08385F9C
 	movs r3, #0x93
 	lsls r3, r3, #2
@@ -299,10 +299,10 @@ _080ECF3C:
 	adds r1, r5, r0
 	movs r0, #0xa
 	strb r0, [r1]
-	bl sio_08001778
+	bl EReader_SioAbortSession
 	b _080ECFCC
 	.align 2, 0
-_080ECF74: .4byte gSystemSavedataManager
+_080ECF74: .4byte gSystemSavedata
 _080ECF78: .4byte u8_ARRAY_08385f9c
 _080ECF7C: .4byte gSineTable
 _080ECF80:
@@ -312,7 +312,7 @@ _080ECF80:
 	strb r0, [r4]
 	b _080ECFCC
 _080ECF8A:
-	bl sio_08001570
+	bl EReader_SioVerifyCardData
 	lsls r0, r0, #0x18
 	lsrs r2, r0, #0x18
 	ldr r1, _080ECFA0 @ =0x00000253
@@ -344,8 +344,8 @@ _080ECFB4:
 	str r1, [r0]
 	movs r0, #0
 	strb r0, [r4]
-	bl sio_0800100c
-	bl sio_08001778
+	bl SioLink_SendDisconnect
+	bl EReader_SioAbortSession
 _080ECFCC:
 	movs r0, #0
 _080ECFCE:

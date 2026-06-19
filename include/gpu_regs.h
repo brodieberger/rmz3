@@ -4,12 +4,23 @@
 #include "constants/constants.h"
 #include "gba/gba.h"
 
+// Stage.bgIdx, LoadBgMap の引数 bg16 などで使われる値
+#define USE_BGn(n) ((n << 4) | (1 << n))
+#define USE_BG1 USE_BGn(1)  // 0x12
+#define USE_BG2 USE_BGn(2)  // 0x24
+#define USE_BG3 USE_BGn(3)  // 0x38
+
+#define BGCNT16(n) *((u16*)&gVideoRegBuffer.bgcnt[n])
 #define BGOFS(n) ((struct BgOfs*)gVideoRegBuffer.bgofs[(n)])
+#define CHAR_BASE(n) ((void*)((*((u16*)&gVideoRegBuffer.bgcnt[n]) & 0xc) << 0xc))
+#define SCREEN_BASE(n) ((BGCNT16(n) & 0x1F00) << 3)
+#define SCREEN_ADDR(bgIdx) ((void*)(BG_VRAM + SCREEN_BASE(bgIdx)))
 
 struct BgOfs {
-  u16 x;
-  u16 y;
+  u16 x;  // ピクセル単位
+  u16 y;  // ピクセル単位
 };
+static_assert(sizeof(struct BgOfs) == 4);
 
 // Video register buffer on EWRAM (gVideoRegBuffer)
 struct WramVideoRegister {
@@ -17,10 +28,13 @@ struct WramVideoRegister {
     ただし、 bit13..15 は無視される (0x2002190 が担う)
     WramWindowRegister.dispcnt と OR したものが 実際のDISPCNT
   */
-  u16 dispcnt;
-  struct BgCnt ALIGNED(4) bgcnt[4];
-  u16 bgofs[4][2];
-};
+  u16 dispcnt;                       // 0x00
+  struct BgCnt ALIGNED(4) bgcnt[4];  // 0x04
+  u16 bgofs[4][2];                   // 0x0C
+  struct BgAffineDstData bg2p;       // 0x1C, 使われてなさそう
+  struct BgAffineDstData bg3p;       // 0x2C, 使われてなさそう
+};  // 60 bytes
+static_assert(sizeof(struct WramVideoRegister) == 60);
 
 // Video register buffer on EWRAM (gBlendRegBuffer)
 struct WramBlendRegister {
@@ -29,11 +43,13 @@ struct WramBlendRegister {
   u16 bldy;
   u16 _;
 };  // 8 bytes
+static_assert(sizeof(struct WramBlendRegister) == 8);
 
 union WindowRegister {
   u32 word;
   u16 half[2];  // win0, win1
 };
+static_assert(sizeof(union WindowRegister) == 4);
 
 // Window register buffer on EWRAM (gWindowRegBuffer)
 struct WramWindowRegister {
@@ -45,8 +61,9 @@ struct WramWindowRegister {
   u16 _;
   union WindowRegister winH;
   union WindowRegister winV;
-  u8 winin[4];  // 0x04000048, 0x04000049, 0x0400004A, 0x0400004B
+  u8 winin[4];  // 0x04000048 (winin.0-7), 0x04000049 (winin.8-15), 0x0400004A (winout.0-7), 0x0400004B (winout.8-15)
 };  // 16 bytes
+static_assert(sizeof(struct WramWindowRegister) == 16);
 
 // --------------------------------------------
 
@@ -58,16 +75,16 @@ extern u16 wMOSAIC;  // wMOSAIC
 // --------------------------------------------
 
 void ResetVideoRegister(void);
-void FlashVideoRegister(void);
-void LoadBgMap(u8 bg16, const u32* tbl, u8 idx, s8 x, s8 y);
-void loadBgMap_08004248(u16* dst, const u32* tbl, s32 idx, u8 x, s32 y);
+void FlushVideoRegister(void);
+void LoadBgMap(u8 bg16, const u32* tbl, u8 idx, s8 x8, s8 y8);
+void loadBgMap_08004248(u16* dst, const u32* tbl, u8 idx, s8 x8, s8 y8);
 void ResetOAM(void);
-void FlashOAM(void);
+void FlushOAM(void);
 void ClearBLDCLT_1(void);
-void FlashBlendRegister(void);
+void FlushBlendRegister(void);
 void ResetWindow(void);
-void FlashWinRegister(void);
+void FlushWinRegister(void);
 void ClearMOSAIC(void);
-void FlashMOSAIC(void);
+void FlushMOSAIC(void);
 
 #endif  // GUARD_RMZ3_GPU_REGS_H

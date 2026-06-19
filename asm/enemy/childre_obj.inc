@@ -47,7 +47,7 @@ _080739D0:
 	strb r0, [r4, #0xd]
 _080739FA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08073A00:
 	pop {r4}
 	pop {r0}
@@ -101,7 +101,7 @@ _08073A30:
 	strb r0, [r4, #0xd]
 _08073A60:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08073A66:
 	pop {r4}
 	pop {r0}
@@ -193,7 +193,7 @@ _08073AE0:
 	strb r0, [r4, #0xd]
 _08073B10:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08073B16:
 	pop {r4}
 	pop {r0}
@@ -249,7 +249,7 @@ _08073B4C:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	lsls r0, r0, #9
 	ldr r1, _08073BE0 @ =0xFFFFFF00
@@ -448,7 +448,7 @@ _08073CC6:
 	adds r0, r5, #0
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x13]
 	adds r0, #1
 	strb r0, [r5, #0x13]

@@ -13,7 +13,7 @@ const EnemyRoutine gCarryArmRoutine = {
     [ENTITY_INIT] =      CarryArm_Init,
     [ENTITY_UPDATE] =    CarryArm_Update,
     [ENTITY_DIE] =       CarryArm_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

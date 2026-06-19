@@ -12,23 +12,23 @@ void InitEnemyHeader(struct EntityHeader* h, struct Enemy* p, s16 len) {
     p[i].s.uniqueID = gEntityIDGenerator + i;
   }
   gEntityIDGenerator += len;
-  gZakoHeaderPtr = h;
+  gEnemyHeaderPtr = h;
 }
 
-void DeleteEnemy(struct Enemy* p) {
-  (p->s).flags &= ~DISPLAY;
-  SET_ZAKO_ROUTINE(p, ENTITY_EXIT);
+void DeleteEnemy(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 
-bool32 isFrozen(struct Enemy* p) {
+// 0x0806364c, 本当は引数の型は (struct Enemy*) だけど cast面倒くさいから void* で
+bool32 IsFrozen(void* enemy_entity) {
   bool32 result = FALSE;
-  if (FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED) || ((p->s).flags2 & STOPPED)) {
+  if (FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED) || (((struct Entity*)enemy_entity)->flags2 & STOPPED)) {
     result = TRUE;
   }
   return result;
 }
 
-#if MODERN == 0
 static struct Enemy* unused_08063674(struct Entity* e) {
   struct Enemy* p = (struct Enemy*)GetNearestEntity(gZeroHeaderPtr, &e->coord);
   if (p == NULL) {
@@ -36,27 +36,18 @@ static struct Enemy* unused_08063674(struct Entity* e) {
   }
   return p;
 }
-#endif
 
-#if MODERN == 0
-static struct Enemy* unused_08063690(u8 n) {
-  struct Entity* p;
+static struct Entity* Unused_08063690(u8 n) {
   struct EntityHeader* h = gZeroHeaderPtr;
-  ignoreEntityFn(h);
+  struct Entity* p = GetEntityList(h);
 
-  p = h->last = h->last->prev;
-  while (p != (struct Entity*)END) {
-    if (p->work[0] == n) {
-      return (struct Enemy*)p;
-    }
-
-    p = h->last = h->last->prev;
+  while (p != (struct Entity*)(&h->tail)) {
+    if (p->work[0] == n) return p;
+    p = GetNextEntity(h);
   }
   return NULL;
 }
-#endif
 
-#if MODERN == 0
 static struct Weapon* unused_080636d4(struct Entity* e) {
   struct Weapon* p = (struct Weapon*)GetNearestEntity(gWeaponHeaderPtr, &e->coord);
   if (p == NULL) {
@@ -64,25 +55,92 @@ static struct Weapon* unused_080636d4(struct Entity* e) {
   }
   return p;
 }
-#endif
 
-#if MODERN == 0
-static struct Coord* unused_080636f0(struct Entity* p) {
+static Coords32* unused_080636f0(struct Entity* p) {
   struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w != NULL) return &w->coord;
   return NULL;
 }
-#endif
 
-#if MODERN == 0
-static u16 unused_CountSpecificZako(void* _ UNUSED, u8 id) { return countSpecificEntities1(gZakoHeaderPtr, id); }
-#endif
+static u16 unused_CountSpecificZako(void* _ UNUSED, u8 id) { return countSpecificEntities1(gEnemyHeaderPtr, id); }
 
-#if MODERN == 0
 static u16 unused_CountSpecificProjectile(void* _ UNUSED, u8 id, u8 r2, u8 r3) { return countSpecificEntities2(gProjectileHeaderPtr, id, r2, r3); }
-#endif
 
 // ------------------------------------------------------------------------------------------------------------------------------------
+
+extern const EnemyRoutine gPantheonGuardianRoutine;
+extern const EnemyRoutine gPantheonHunterRoutine;
+extern const EnemyRoutine gMegamilpaNodeRoutine;
+extern const EnemyRoutine gShotcounterRoutine;
+extern const EnemyRoutine gBatringRoutine;
+extern const EnemyRoutine gPillerCannonRoutine;
+extern const EnemyRoutine gGrandCannonRoutine;
+extern const EnemyRoutine gShrimporinRoutine;
+extern const EnemyRoutine gOmegaWhiteHandRoutine;
+extern const EnemyRoutine gFlopperRoutine;
+extern const EnemyRoutine gLamplortRoutine;
+extern const EnemyRoutine gGyroCannonRoutine;
+extern const EnemyRoutine gLemminglesNestRoutine;
+extern const EnemyRoutine gLemminglesRoutine;
+extern const EnemyRoutine gTopGabyoallRoutine;
+extern const EnemyRoutine gSharksealXRoutine;
+extern const EnemyRoutine gVolcanoBombRoutine;
+extern const EnemyRoutine gCarryArmRoutine;
+extern const EnemyRoutine gPantheonAquaRoutine;
+extern const EnemyRoutine gChildreObjRoutine;
+extern const EnemyRoutine gSnakecordRoutine;
+extern const EnemyRoutine gHammerRoutine;
+extern const EnemyRoutine gPurpleNerpleRoutine;
+extern const EnemyRoutine gWormerRockDroneRoutine;
+extern const EnemyRoutine gVolcaireRoutine;
+extern const EnemyRoutine gTileCannonRoutine;
+extern const EnemyRoutine gShellunoRoutine;
+extern const EnemyRoutine gDeathtanzRockRoutine;
+extern const EnemyRoutine gHeavyCannonBallRoutine;
+extern const EnemyRoutine gWormerSnowBallRoutine;
+extern const EnemyRoutine gBeetankRoutine;
+extern const EnemyRoutine gSwordyRoutine;
+extern const EnemyRoutine gPuffyRoutine;
+extern const EnemyRoutine gCrossbyneRoutine;
+extern const EnemyRoutine gBurnableWoodRoutine;
+extern const EnemyRoutine gMellnetRoutine;
+extern const EnemyRoutine gHellBouncerRoutine;
+extern const EnemyRoutine gPantheonZombieRoutine;
+extern const EnemyRoutine gPantheonAquaModObjRoutine;
+extern const EnemyRoutine gGlacierleAtkArmRoutine;
+extern const EnemyRoutine gOmegaGoldHandRoutine;
+extern const EnemyRoutine gEyeCannonRoutine;
+extern const EnemyRoutine gEnemy42Routine;
+extern const EnemyRoutine gCapsuleCannonRoutine;
+extern const EnemyRoutine gPantheonBomberRoutine;
+extern const EnemyRoutine gHanumachineObjRoutine;
+extern const EnemyRoutine gGallisniRoutine;
+extern const EnemyRoutine gMothjiroRoutine;
+extern const EnemyRoutine gMettaurRoutine;
+extern const EnemyRoutine gPantheonBaseRoutine;
+extern const EnemyRoutine gHanumachineNecroRoutine;
+extern const EnemyRoutine gCarrybeeGRoutine;
+extern const EnemyRoutine gOmegaZeroRockRoutine;
+extern const EnemyRoutine gOmegaGoldSwordRoutine;
+extern const EnemyRoutine gGeneratorCannonRoutine;
+extern const EnemyRoutine gDeathlockRoutine;
+extern const EnemyRoutine gClavekerRoutine;
+extern const EnemyRoutine gSeimeranRoutine;
+extern const EnemyRoutine gPetatriaRoutine;
+extern const EnemyRoutine gEnemy59Routine;
+extern const EnemyRoutine gEnemy60Routine;
+extern const EnemyRoutine gEnemy61Routine;
+extern const EnemyRoutine gShotloidRoutine;
+extern const EnemyRoutine gEnemy63Routine;
+extern const EnemyRoutine gPantheonFistRoutine;
+extern const EnemyRoutine gShellcrawlerRoutine;
+extern const EnemyRoutine gCannonHopperRoutine;
+extern const EnemyRoutine gCattatankRoutine;
+extern const EnemyRoutine gLeviathanMinigameEnemyRoutine;
+extern const EnemyRoutine gHarpuiaMinigameEnemyRoutine;
+extern const EnemyRoutine gCielMinigameEnemy1Routine;
+extern const EnemyRoutine gCielMinigameEnemy2Routine;
+extern const EnemyRoutine gEnemy72Routine;
 
 // clang-format off
 const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
@@ -94,7 +152,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_PILLER_CANNON] =  &gPillerCannonRoutine,
   [ENEMY_GRAND_CANNON] =  &gGrandCannonRoutine,
   [ENEMY_SHRIMPORIN] =  &gShrimporinRoutine,
-  [ENEMY_OMEGA_WHITE_HAND] =  &gOmegaWhiteHandRoutine,
+  [ENEMY_OMEGA1W_HAND] =  &gOmegaWhiteHandRoutine,
   [ENEMY_FLOPPER] =  &gFlopperRoutine,
   [ENEMY_LAMPLORT] = &gLamplortRoutine,
   [ENEMY_GYRO_CANNON] = &gGyroCannonRoutine,
@@ -126,7 +184,7 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_P_ZOMBIE] = &gPantheonZombieRoutine,
   [ENEMY_P_AQUA_MOD_OBJ] = &gPantheonAquaModObjRoutine,
   [ENEMY_GLACIERLE_ARM] = &gGlacierleAtkArmRoutine,
-  [ENEMY_OMEGA_GOLD_HAND] = &gOmegaGoldHandRoutine,
+  [ENEMY_OMEGA1G_HAND] = &gOmegaGoldHandRoutine,
   [ENEMY_EYE_CANNON] = &gEyeCannonRoutine,
   [ENEMY_42] = &gEnemy42Routine,
   [ENEMY_CAPSULE_CANNON] = &gCapsuleCannonRoutine,
@@ -134,19 +192,19 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_HANUMACHINE_OBJ] = &gHanumachineObjRoutine,
   [ENEMY_GALLISNI] = &gGallisniRoutine,
   [ENEMY_MOTHJIRO] = &gMothjiroRoutine,
-  [ENEMY_METTAUR_SWIM] = &gMettaurSwimRoutine,
+  [ENEMY_METTAUR] = &gMettaurRoutine,
   [ENEMY_P_BASE] = &gPantheonBaseRoutine,
   [ENEMY_HANUMACHINE_NECRO] = &gHanumachineNecroRoutine,
   [ENEMY_CARRYBEE_G] = &gCarrybeeGRoutine,
   [ENEMY_OZ_ROCK] = &gOmegaZeroRockRoutine,
-  [ENEMY_OMEGA_GOLD_SWORD] = &gOmegaGoldSwordRoutine,
+  [ENEMY_OMEGA1G_SWORD] = &gOmegaGoldSwordRoutine,
   [ENEMY_GENERATOR_CANNON] = &gGeneratorCannonRoutine,
   [ENEMY_DEATHLOCK] = &gDeathlockRoutine,
   [ENEMY_CLAVEKER] = &gClavekerRoutine,
   [ENEMY_SEIMERAN] = &gSeimeranRoutine,
   [ENEMY_PETATRIA] = &gPetatriaRoutine,
   [ENEMY_59] = &gEnemy59Routine,
-  [ENEMY_60] = &gEnemy60Routine,
+  [ENEMY_OMEGA_ZX_X] = &gEnemy60Routine,
   [ENEMY_61] = &gEnemy61Routine,
   [ENEMY_SHOTLOID] = &gShotloidRoutine,
   [ENEMY_63] = &gEnemy63Routine,

@@ -51,7 +51,7 @@ _080CFF80:
 	lsls r3, r3, #2
 	adds r2, r3, #0
 	orrs r1, r2
-	bl LoadBlink
+	bl StartPaletteAnimation
 _080CFFAC:
 	movs r2, #0
 	ldrb r1, [r4, #0xa]
@@ -139,7 +139,7 @@ FUN_080d0024: @ 0x080D0024
 _080D0048: .4byte 0x00008902
 _080D004C:
 	ldrb r0, [r4, #0x12]
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #0xbc
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
@@ -151,7 +151,7 @@ _080D004C:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0xbc
-	bl LoadBlink
+	bl StartPaletteAnimation
 	b _080D009E
 _080D006E:
 	cmp r2, #1
@@ -164,7 +164,7 @@ _080D0076:
 	b _080D009E
 _080D007E:
 	ldrb r0, [r4, #0x12]
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #0xbb
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
@@ -176,15 +176,15 @@ _080D007E:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0xbb
-	bl LoadBlink
+	bl StartPaletteAnimation
 _080D009E:
 	ldrb r0, [r5, #0xd]
 	strb r0, [r4, #0xd]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080D00A8:
 	ldrb r0, [r4, #0x12]
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
 	str r0, [r4, #0x54]
@@ -195,7 +195,7 @@ _080D00A8:
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _080D00C6
-	bl ClearBlink
+	bl RemovePaletteAnimation
 _080D00C6:
 	ldr r1, _080D00E0 @ =gSolidFnTable
 	ldrb r0, [r4, #9]
@@ -258,7 +258,7 @@ _080D0130:
 	bl SetMotion
 _080D0138:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r2, #0
 	str r2, [r4, #0x60]
 	ldr r1, _080D01B0 @ =gOverworld
@@ -360,7 +360,7 @@ _080D0200:
 	cmp r1, r0
 	beq _080D0218
 	adds r0, r1, #0
-	bl stopSound
+	bl StopSound
 	ldr r0, _080D0220 @ =0x0000FFFF
 	strh r0, [r4]
 _080D0218:
@@ -394,7 +394,7 @@ _080D0246:
 	strb r0, [r4, #0xe]
 _080D024C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r5, r0, r1

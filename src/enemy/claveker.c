@@ -11,20 +11,15 @@ const EnemyRoutine gClavekerRoutine = {
     [ENTITY_INIT] =      Claveker_Init,
     [ENTITY_UPDATE] =    Claveker_Update,
     [ENTITY_DIE] =       Claveker_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreateClaveker(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Enemy* CreateClaveker(Coords32* c, u8 n) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_CLAVEKER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
+    INIT_ENEMY_ROUTINE(p, ENEMY_CLAVEKER);
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -102,4 +97,4 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(12)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(12)};

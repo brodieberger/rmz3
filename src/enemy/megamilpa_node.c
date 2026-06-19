@@ -1,10 +1,16 @@
 #include "collision.h"
 #include "enemy.h"
-#include "entity.h"
 #include "global.h"
-#include "vfx.h"
 
-INCASM("asm/enemy/megamilpa_node.inc");
+struct EnemyMegamilpaNode {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[4];
+  u8 nodeIdx;  // 0xB8
+  u8 unk_b9[3];
+  u8 unk_bc[8];
+};
+static_assert(sizeof(struct EnemyMegamilpaNode) == sizeof(struct Enemy));
 
 void MegamilpaNode_Init(struct Enemy* p);
 void MegamilpaNode_Update(struct Enemy* p);
@@ -12,15 +18,29 @@ void MegamilpaNode_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gMegamilpaNodeRoutine = {
-    [ENTITY_INIT] =      MegamilpaNode_Init,
-    [ENTITY_UPDATE] =    MegamilpaNode_Update,
-    [ENTITY_DIE] =       MegamilpaNode_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)MegamilpaNode_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)MegamilpaNode_Update,
+    [ENTITY_DIE] =       (EnemyFunc)MegamilpaNode_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
 // --------------------------------------------
+
+struct Entity* CreateMegamilpaNode(u8 idx) {
+  struct EnemyMegamilpaNode* p = (struct EnemyMegamilpaNode*)AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_MEGAMILPA_NODE);
+    (p->s).work[0] = 0;
+    p->nodeIdx = idx;
+  }
+  return (void*)p;
+}
+
+// --------------------------------------------
+
+INCASM("asm/enemy/megamilpa_node.inc");
 
 void nop_08065928(struct Enemy* p);
 

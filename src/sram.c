@@ -3,7 +3,7 @@
 #include "global.h"
 #include "syssav.h"
 
-static const struct SaveHeader sDummySaveHeader = {
+static const SectorHeader sDummySectorHeader = {
   INTI : 0x20202020,
 };
 
@@ -21,26 +21,23 @@ void UpdateSram(void) {
 }
 
 /**
+ * @param datasize セクタのデータ部分のサイズ
  * @return TRUE: ok, FALSE: broken or none
+ * @note 0x08003228
  */
-bool32 CheckSavedataCorrect(u8 saveIdx, s32 length) {
-  struct SaveHeader h;
-  u16 remaining;
+bool32 ValidateSector(u8 sector, s32 datasize) {
+  u16 retry;
+  SectorHeader h = sDummySectorHeader;
 
-  h = sDummySaveHeader;
+  if (sector >= SECTOR_NUM) return FALSE;
 
-  if (saveIdx > SAVE_DATA_NUM) {
-    return FALSE;
-  }
-
-  for (remaining = SRAM_RETRY_MAX; remaining != 0; remaining--) {
-    ReadSram(SRAM_START + (2730 * saveIdx), (u8*)&h, sizeof(struct SaveHeader));
-    if ((h.INTI == *(u32*)sINTI) && (h.size == length) && (h.unk_c == 11) && (h.idx == saveIdx)) {
+  for (retry = SRAM_RETRY_MAX; retry != 0; retry--) {
+    ReadSram(SRAM_START + (SECTOR_SIZE * sector), (u8*)&h, sizeof(SectorHeader));
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == 11) && (h.sector == sector)) {
       return TRUE;
     }
-
-    ReadSram(SRAM_START + (2730 * (6 + saveIdx)), (u8*)&h, sizeof(struct SaveHeader));
-    if ((h.INTI == *(u32*)sINTI) && (h.size == length) && (h.unk_c == 11) && (h.idx == saveIdx)) {
+    ReadSram(SRAM_START + (SECTOR_SIZE * (6 + sector)), (u8*)&h, sizeof(SectorHeader));
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == 11) && (h.sector == sector)) {
       return TRUE;
     }
   }
@@ -48,30 +45,28 @@ bool32 CheckSavedataCorrect(u8 saveIdx, s32 length) {
   return FALSE;
 }
 
-s32 WriteSramINTI(u8 saveIdx) {
+/**
+ * @brief ゲームのセーブデータ削除時に使う
+ * @param sector 0..4: ゲームのセーブスロット, 5: システムデータ
+ * @return 0: ok, -1: error
+ * @note 0x080032E4
+ */
+s32 DeleteSector(u8 sector) {
   bool32 ok1, ok2;
   vu32 dummy = 0;
 
-  if (saveIdx > SAVE_DATA_NUM) {
-    return -1;
-  }
-  ok1 = WriteSramEx((const u8*)&dummy, SRAM_START + (2730 * saveIdx), 4);
-  ok2 = WriteSramEx((const u8*)&dummy, SRAM_START + (2730 * (saveIdx + 6)), 4);
+  if (sector >= SECTOR_NUM) return -1;
+  ok1 = WriteSramEx((const u8*)&dummy, SRAM_START + (SECTOR_SIZE * sector), 4);
+  ok2 = WriteSramEx((const u8*)&dummy, SRAM_START + (SECTOR_SIZE * (sector + 6)), 4);
   return ok1 | ok2;
 }
 
-s32 sram_08003330(u8 saveIdx, u8* start, u32 bytesize) {
-  if (saveIdx > SLOT_SYSTEM) {
-    return -1;
-  }
-  if (gSramState.unk_00 != 0) {
-    return -1;
-  }
-  if (bytesize > SLOT_SIZE) {
-    return -1;
-  }
-  gSramState.slot = saveIdx;
-  gSramState.start = start;
+s32 sram_08003330(u8 sector, void* data, u32 bytesize) {
+  if (sector >= SECTOR_NUM) return -1;
+  if (gSramState.unk_00 != 0) return -1;
+  if (bytesize > (SECTOR_SIZE + 16)) return -1;
+  gSramState.sector = sector;
+  gSramState.start = data;
   gSramState.length = bytesize;
   gSramState.unk_1c = 0;
   gSramState.unk_00 = 2;
@@ -79,21 +74,13 @@ s32 sram_08003330(u8 saveIdx, u8* start, u32 bytesize) {
   return 0;
 }
 
-s32 sram_08003378(u8 saveIdx, u8* start, u32 bytesize) {
-  if (saveIdx > SLOT_SYSTEM) {
-    return -1;
-  }
-  if (gSramState.unk_00 != 0) {
-    return -1;
-  }
-  if (!CheckSavedataCorrect(saveIdx, bytesize)) {
-    return -1;
-  }
-  if (bytesize > SLOT_SIZE) {
-    return -1;
-  }
-  gSramState.slot = saveIdx;
-  gSramState.start = start;
+s32 sram_08003378(u8 sector, void* data, u32 bytesize) {
+  if (sector >= SECTOR_NUM) return -1;
+  if (gSramState.unk_00 != 0) return -1;
+  if (!ValidateSector(sector, bytesize)) return -1;
+  if (bytesize > (SECTOR_SIZE + 16)) return -1;
+  gSramState.sector = sector;
+  gSramState.start = data;
   gSramState.length = bytesize;
   gSramState.health = 0;
   gSramState.unk_00 = 1;
@@ -332,7 +319,7 @@ _0800355C:\n\
 	lsls r2, r2, #0x14\n\
 	adds r0, r0, r2\n\
 	str r0, [r5, #0x10]\n\
-	ldr r4, _080035B4 @ =0x02000010\n\
+	ldr r4, _080035B4 @ =gSaveHeader\n\
 	adds r1, r4, #0\n\
 	movs r2, #0x10\n\
 	bl ReadSram\n\
@@ -358,7 +345,7 @@ _0800355C:\n\
 	b _0800368E\n\
 	.align 2, 0\n\
 _080035B0: .4byte 0x00000AAA\n\
-_080035B4: .4byte 0x02000010\n\
+_080035B4: .4byte gSaveHeader\n\
 _080035B8: .4byte sINTI\n\
 _080035BC: .4byte 0x0000FFFF\n\
 _080035C0: .4byte gSramState\n\
@@ -405,7 +392,7 @@ _08003602:\n\
 	ldr r0, [r5, #8]\n\
 	str r0, [r5, #0xc]\n\
 	ldr r4, [r5, #0x14]\n\
-	ldr r7, _08003650 @ =0x02000010\n\
+	ldr r7, _08003650 @ =gSaveHeader\n\
 	cmp r4, #0\n\
 	beq _08003630\n\
 	adds r3, r7, #0\n\
@@ -437,7 +424,7 @@ _08003630:\n\
 	b _0800368E\n\
 	.align 2, 0\n\
 _0800364C: .4byte gSramState\n\
-_08003650: .4byte 0x02000010\n\
+_08003650: .4byte gSaveHeader\n\
 _08003654: .4byte 0x0000FFFF\n\
 _08003658:\n\
 	ldrh r0, [r6, #0x1e]\n\

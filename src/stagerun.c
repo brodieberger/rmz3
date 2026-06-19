@@ -1,16 +1,23 @@
-#include "blink.h"
 #include "collision.h"
 #include "game.h"
 #include "global.h"
 #include "hud.h"
-#include "mission.h"
 #include "overworld.h"
+#include "palette_animation.h"
+#include "renderer.h"
+#include "score.h"
+#include "spawn.h"
 #include "story.h"
-#include "task.h"
 #include "zero.h"
 
-static bool8 CheckMissionFail(struct StageRun* p);
-static void trySkipEventScene(void);
+extern const GameCommand Script_MissionFail[];
+extern const GameCommand Script_MissionFail2[];
+
+void RenderWipeZ(struct VM* vm);
+void FUN_08021b88(struct VM* _);
+
+static bool32 CheckMissionFail(struct StageRun* p);
+static void trySkipEventScene(void* _);
 
 const u8 gStageID8s[STAGE_COUNT] = {
     0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
@@ -85,186 +92,174 @@ void InitStageRun(u8 stageID) {
 void LoadStageRun(u8 stageID, u8 checkPoint) {
   gStageRun.id = stageID;
   gStageRun.checkpoint = checkPoint;
-  gStageRun.checkpointBuffer = 0xFF;
+  gStageRun.checkpointResultScreen = 0xFF;
   gStageRun.unk_0a = 0;
   FUN_080322c4(&gGameState.save.status);
-  InitMissionInfo(stageID, &gGameState.save.playinfo);
+  ResetMissionScore(stageID, &gGameState.save.playinfo);
 
-  if (((gMission.unk_00)->missionDones & (1 << gStageMissionBitTable[stageID])) == 0) {
-    *(u8*)&gGameState.save.story.id &= ~STAGE_DONE;
+  if (!(gMissionDones & (1 << gStageMissionBitTable[stageID]))) {
+    CLEAR_FLAG(gGameState.save.story.gameflags, IS_FREERUN);
   } else {
-    *(u8*)&gGameState.save.story.id |= STAGE_DONE;
+    SET_FLAG(gGameState.save.story.gameflags, IS_FREERUN);
   }
 
-  resetCurStory(stageID, &gGameState.save.story);
+  LoadStoryData(stageID, &gGameState.save.story);
   clearStageDisk();
 
-  CpuFastCopy(&gGameState.save.status, &gGameState.save.zeroAsset, 0);
-  CpuCopy32(&gGameState.save.status, &gGameState.save.zeroAsset, 12);
+  MemCopy32(&gGameState.save.status, &gGameState.save.zeroAsset, sizeof(struct ZeroAsset));
 
-  gGameState.save.savedRank = (gMission.unk_00)->rank;
-  saveCurStory(&gGameState.save.savedStory);
+  gGameState.save.savedRank = (gScore.total)->rank;
+  StoreStoryData(&gGameState.save.savedStory);
 
-  CpuFastCopy(gGameState.save.disk, gGameState.save.savedDisk, 32);
-  CpuCopy32(&gGameState.save.disk[32], &gGameState.save.savedDisk[32], 16);
-
-  CpuFastCopy(gGameState.save.elf, gGameState.save.savedElf, 64);
-  CpuCopy32(&gGameState.save.elf[64], &gGameState.save.savedElf[64], 12);
+  MemCopy32(gGameState.save.disk, gGameState.save.savedDisk, 48);
+  MemCopy32(gGameState.save.elf, gGameState.save.savedElf, 76);
 }
 
-void ClearStageRun(struct TaskManager* tm) {
+void ClearStageRun(Renderer* r) {
   const u8 id = gStageRun.id;
-  gStageRun.checkpointBuffer = 0xFF;
+  gStageRun.checkpointResultScreen = 0xFF;
   gStageRun.frame = 0;
-  gStageRun.taskManager = tm;
+  gStageRun.renderer = r;
   gStageRun.missionStatus = 0;
   gStageRun.unk_17d = 0;
   gStageRun.stageEventPhase = 0;
-  gStageRun.remainingTimeFrame = 0xffffffff;
+  gStageRun.remainingTimeFrame = 0xFFFFFFFF;
   ClearQuakeManager();
-  ResetCamera(&gStageRun.vm.camera, &gDefaultCameraTemplate, tm);
+  Camera_Reset(&gStageRun.vm.camera, &gDefaultCameraTemplate, r);
   ResetLandscape(gStageID32s[id], &gStageRun.vm.camera.viewport);
 
-  if (((gMission.unk_00)->missionDones & (1 << gStageMissionBitTable[id])) == 0) {
-    InitStageEntityManager(gStageID8s[id], FALSE);
+  if (!(gMissionDones & (1 << gStageMissionBitTable[id]))) {
+    InitSpawnManager(gStageID8s[id], FALSE);
   } else {
-    InitStageEntityManager(gStageID8s[id], TRUE);
+    InitSpawnManager(gStageID8s[id], TRUE);
   }
   ClearVM(&gStageRun.vm, id);
 }
 
-WIP bool32 OverworldUpdate(bool8 paused) {
-#if MODERN
+// 0x0801a068
+bool32 StageRun_Update(bool8 paused) {
+  bool32 exit = FALSE;
+  bool32 running = FALSE;
   if (paused) {
     return FALSE;
   }
-  gStageRun.frame++;
 
-  bool32 exit = FALSE;
-  bool8 running = FALSE;
-  s32 cameraMode = gStageRun.vm.camera.mode;
-  do {
-    bool8 failed = CheckMissionFail(&gStageRun);
-    if (!failed) {
-      if (!(gStageRun.vm.active & 1)) {
-        const StageRunFunc* fn;
-        if (FLAG(gCurStory.s.gameflags, IS_FREERUN)) {
-          fn = gFreerunUpdate;
-        } else {
-          fn = gMissionUpdate;
-        }
-        (fn[gStageRun.id])(&gStageRun);
-      }
-    }
-
-    if (!(gStageRun.vm.active & 1)) {
-      exit = (gStageRun.missionStatus & MISSION_STAY) == 0;
-    }
-
-    bool32 done = RunVM(&gStageRun.vm);
-    if (!done) {
-      running = FALSE;
-      trySkipEventScene();
-    } else {
-      exit = (gStageRun.missionStatus & MISSION_STAY) == 0;
-    }
-  } while (running);
-
-  RunCameraCallback(&gStageRun.vm.camera);
-
-  // Update hazards
   {
-    u32 fastcopysize = (HAZARD_LENGTH * sizeof(struct Hazard)) & ~(0x1F);
-    CpuFastCopy(gOverworld.objects, gOverworld.objectsPrev, fastcopysize);
+    bool32 cameraEnabled;
+    gStageRun.frame++;
 
-    u32 copysize = (HAZARD_LENGTH * sizeof(struct Hazard)) & 0x1F;
-    if (copysize > 0) {
-      CpuCopy32((void*)gOverworld.objects + fastcopysize, (void*)gOverworld.objectsPrev + fastcopysize, copysize);
+    cameraEnabled = (&gStageRun.vm.camera)->mode != CM0_DISABLED;
+    do {
+      if (!CheckMissionFail(&gStageRun)) {
+        if (!(gStageRun.vm.active & VM_ACTIVE)) {
+          if (FLAG(gCurStory.s.gameflags, IS_FREERUN)) {
+            (gFreerunUpdate[gStageRun.id])(&gStageRun);
+          } else {
+            (gMissionUpdate[gStageRun.id])(&gStageRun);
+          }
+        } else {
+          running = TRUE;
+        }
+      }
+
+      if (!(gStageRun.vm.active & VM_ACTIVE)) {
+        exit = !(gStageRun.missionStatus & MISSION_STAY);
+      }
+
+      if (RunVM(&gStageRun.vm)) {
+        exit = !(gStageRun.missionStatus & MISSION_STAY);
+      } else {
+        running = FALSE;
+        trySkipEventScene(&gStageRun);
+      }
+    } while (running);
+
+    if (!paused) {  // paused が TRUE のときは早期リターンしてるので、 ここでは paused は絶対 FALSE なので、条件は常に真
+      Camera_Update(&gStageRun.vm.camera);
+      // Update objects
+      {
+        void* src = gOverworld.terrain.objects;
+        void* dst = gOverworld.terrain.objectsPrev;
+        u32 bytesize = gOverworld.terrain.objectLen * sizeof(struct Hazard);
+        u32 fastsize = bytesize & ~31;
+        CpuFastCopy(src, dst, fastsize);
+        if (bytesize & 31) CpuCopy32(src + fastsize, dst + fastsize, bytesize & 31);
+        gOverworld.terrain.objectLenPrev = gOverworld.terrain.objectLen;
+        gOverworld.terrain.objectLen = 0;
+      }
+      if (gStageRun.vm.camera.mode != CM0_DISABLED) UpdateStageLandscape(&gStageRun.vm.camera.viewport);
     }
-    gOverworld.objectLenPrev = HAZARD_LENGTH;
-    HAZARD_LENGTH = 0;
+    ApplyGiantElf(&gStageRun);
+    if (cameraEnabled && ((&gStageRun.vm.camera)->mode != CM0_DISABLED)) UpdateSpawnManager(&gStageRun.vm.camera.viewport);
   }
-
-  if (gStageRun.vm.camera.mode != 0) {
-    UpdateStageLandscape(&gStageRun.vm.camera.viewport);
-  }
-  ApplyGiantElf(&gStageRun);
-
-  if (((s32)((-cameraMode) | cameraMode) < 0) && (gStageRun.vm.camera.mode != 0)) {
-    UpdateStageEntities(&gStageRun.vm.camera.viewport);
-  }
-
   return exit;
-#else
-  INCCODE("asm/wip/OverworldUpdate.inc");
-#endif
 }
 
-// 基本的に、毎フレーム呼び出される
-void CameraUpdate(bool8 paused) {
-  struct Camera* camera;
-  struct StageRun* ow = &gStageRun;
-  struct TaskManager* tm = ow->taskManager;
+/**
+ * @note 0x0801a1e8
+ */
+void StageRun_Render(bool8 paused) {
+  Renderer* r = gStageRun.renderer;
 
   if (!paused) {
-    quake_0801a604(&(ow->vm).camera);
+    Camera_Shake(&gStageRun.vm.camera);
   }
-
-  camera = &(ow->vm).camera;
-  if (camera->mode != 0) {
-    DrawOverworld(tm);
+  if ((&gStageRun.vm.camera)->mode != CM0_DISABLED) {
+    DrawOverworld(r);  // -> RenderTask_Overworld
   }
-  FUN_08021ca0(&ow->vm);
-  RunAllDrawTasks(camera);
+  RenderWipeZ(&gStageRun.vm);  // wipe by "Z" and print string (if any)
+  Camera_Render(&gStageRun.vm.camera);
 }
 
 // ミッションの終了状況を見てフラグを立てる
+// GameLoop_EndRun からのみ呼び出される
 void UpdateStoryFlag(void) {
   ExitStageLandscape();
   FUN_08021b88(&gStageRun.vm);
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
 
-  if ((gStageRun.missionStatus & MISSION_FAIL) == 0) {
-    if ((gMission.unk_00)->missionDones & SPACE_CRAFT) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_7);
+  if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
+    if (gMissionDones & (1 << STAGE_SPACE_CRAFT)) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_SPACE_CRAFT_DONE);
     }
-    if (((gMission.unk_00)->missionDones & FIRST4) == FIRST4) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_11);
+    if ((gMissionDones & ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) == ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE);  // First 4 missions
     }
-    if ((gMission.unk_00)->missionDones & MISSILE_FACTORY) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_12);
+    if (gMissionDones & (1 << STAGE_MISSILE_FACTORY)) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_MISSILE_DONE);
     }
-    if (((gMission.unk_00)->missionDones & MEDIUM3) == MEDIUM3) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_15);
+    if ((gMissionDones & ((1 << STAGE_ICE_BASE) | (1 << STAGE_ANATRE_FOREST) | (1 << STAGE_TWILIGHT_DESERT))) == ((1 << STAGE_ICE_BASE) | (1 << STAGE_ANATRE_FOREST) | (1 << STAGE_TWILIGHT_DESERT))) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_MID3_DONE);  // Medium 3 missions
     }
-    if ((gMission.unk_00)->missionDones & AREA_X2) {
-      SET_FLAG(gCurStory.s.gameflags, NO_HARPUIA);
+    if (gMissionDones & (1 << STAGE_AREA_X2)) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_AREAX2_DONE);
     }
-    if (((gMission.unk_00)->missionDones & LATER4) == LATER4) {
-      SET_FLAG(gCurStory.s.gameflags, SUNKEN_ANALYZE);
+    if ((gMissionDones & ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) == ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE);  // Later 4 missions
     }
-    if ((gMission.unk_00)->missionDones & SUB_ARCADIA) {
-      SET_FLAG(gCurStory.s.gameflags, FLAG_WEIL_LABO);
+    if (gMissionDones & (1 << STAGE_SUB_ARCADIA)) {
+      SET_FLAG(gCurStory.s.gameflags, FLAG_SUBARCADIA_DONE);
     }
-    saveCurStory(&gGameState.save.story);
+    StoreStoryData(&gGameState.save.story);
   } else {
-    resetCurStory((u8)gStageRun.id, &gGameState.save.story);
+    LoadStoryData((u8)gStageRun.id, &gGameState.save.story);
   }
-  CopyZeroStatus(gGameState.z2, &gGameState.save.status);
+  StoreZeroStatus(gGameState.z2, &gGameState.save.status);
   FUN_080322c4(&gGameState.save.status);
 }
 
 void setStageCheckpoint(u8 cp) {
   gStageRun.checkpoint = cp;
-  gStageRun.checkpointBuffer = 0xFF;
-  saveCurStory(&gGameState.save.story);
-  CopyZeroStatus(gGameState.z2, &gGameState.save.status);
+  gStageRun.checkpointResultScreen = 0xFF;
+  StoreStoryData(&gGameState.save.story);
+  StoreZeroStatus(gGameState.z2, &gGameState.save.status);
 }
 
+// リザルト画面の前にカットシーンがある場合、カットシーンをスキップすると後続のリザルト画面を呼ぶコマンドもスキップしてしまうので、それを防ぐための(割と強引な)処理と思われる
 void setStageCheckpoint2(u8 cp) {
-  gStageRun.checkpointBuffer = cp;
-  saveCurStory(&gGameState.save.story);
-  CopyZeroStatus(gGameState.z2, &gGameState.save.status);
+  gStageRun.checkpointResultScreen = cp;
+  StoreStoryData(&gGameState.save.story);
+  StoreZeroStatus(gGameState.z2, &gGameState.save.status);
 }
 
 // ハンマーガなどのサイバーエルフの適用(ついでにストパーラ系のエルフの適用終了)
@@ -276,10 +271,10 @@ void ApplyGiantElf(struct StageRun* p) {
       TurnUpBGM();
       gTimeElfTimer = 0;
     }
-    stopSound(SE_TIME_ELF);
-    stopSound(SE_TIME_ELF_HURRY);
+    StopSound(SE_TIME_ELF);
+    StopSound(SE_TIME_ELF_HURRY);
 
-    if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1) && FLAG(gCurStory.s.gameflags, GIANT_ELF_ENABLED)) {
+    if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE) && FLAG(gCurStory.s.gameflags, GIANT_ELF_ENABLED)) {
       if ((boss->s).kind == ENTITY_BOSS) {
         const u8 id = (boss->s).id;
         if (id != BOSS_MEGAMILPA) {
@@ -293,7 +288,7 @@ void ApplyGiantElf(struct StageRun* p) {
                         if ((boss->s).flags & COLLIDABLE) {
                           (boss->body).hp = ((u16)(boss->body).hp + 1) >> 1;
                           CLEAR_FLAG(gCurStory.s.gameflags, GIANT_ELF_ENABLED);
-                          CLEAR_FLAG((&gGameState.save.story)->gameflags, FLAG_2);
+                          CLEAR_FLAG((&gGameState.save.story)->gameflags, GIANT_ELF_ENABLED);
                         }
                       }
                     }
@@ -308,21 +303,21 @@ void ApplyGiantElf(struct StageRun* p) {
   }
 }
 
-static bool8 CheckMissionFail(struct StageRun* p) {
-  const struct Command* c;
+static bool32 CheckMissionFail(struct StageRun* p) {
+  const GameCommand* c;
   struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
   if ((z != NULL) && ((((z->body).status & BODY_STATUS_DEAD) || ((z->body).hp == 0)))) {
     gStageRun.missionStatus &= ~MISSION_STAY;
-    gStageRun.missionStatus |= MISSION_FAIL;
+    gStageRun.missionStatus |= MISSION_PLAYER_DEAD;
   }
 
-  if ((gStageRun.missionStatus & MISSION_STAY) == 0) {
-    if (gStageRun.missionStatus & MISSION_FAIL) {
+  if (!(gStageRun.missionStatus & MISSION_STAY)) {
+    if (gStageRun.missionStatus & MISSION_PLAYER_DEAD) {
       gCollisionManager.disabled |= (1 << 7);
       gHUD.timeLeft = NULL;
       c = (p->vm).start;
       if ((c != Script_MissionFail) && (c != Script_MissionFail2)) {
-        if (gStageRun.vm.screenEffect != NO_SCREEN_EFFECT) {
+        if (gStageRun.vm.transition != TRANSITION_NONE) {
           SetScript(&gStageRun.vm, Script_MissionFail2);
         } else {
           SetScript(&gStageRun.vm, Script_MissionFail);
@@ -334,15 +329,15 @@ static bool8 CheckMissionFail(struct StageRun* p) {
   return FALSE;
 }
 
-static void trySkipEventScene(void) {
+static void trySkipEventScene(void* _) {
   struct GameState* g = &gGameState;
 
-  if ((gJoypad[0].pressed & START_BUTTON) && (gStageRun.missionStatus & EVENT_SCENE)) {
-    if (gStageRun.checkpointBuffer != 0xFF) {
-      gStageRun.checkpoint = gStageRun.checkpointBuffer;
+  if ((gJoypad[0].pressed & START_BUTTON) && (gStageRun.missionStatus & SKIPPABLE_CUTSCENE)) {
+    if (gStageRun.checkpointResultScreen != 0xFF) {
+      gStageRun.checkpoint = gStageRun.checkpointResultScreen;
     }
-    skipEventScene(g->z2, &(g->save).status);
-    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0;
+    CopyPlayerMaxHPChargeOnSkipEventScene(g->z2, &(g->save).status);
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
     SetGameMode(g, GAMEMODE(MAINGAME, SKIP_EVENT, 0, 0));
   }
 }

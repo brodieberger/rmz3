@@ -16,21 +16,18 @@ const SolidRoutine gOceanRodWallRoutine = {
     [ENTITY_INIT] =      Solid53_Init,
     [ENTITY_UPDATE] =    Solid53_Update,
     [ENTITY_DIE] =       Solid53_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 static void Solid53_Init(struct Solid* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
 
   if (GetMetatileAttr((p->s).coord.x, (p->s).coord.y) == 0) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
@@ -47,14 +44,11 @@ static void Solid53_Init(struct Solid* p) {
 static void Solid53_Update(struct Solid* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
     if ((p->body).status & BODY_STATUS_RECOILED) {
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      EXIT_BODY(p);
       (p->s).flags |= DISPLAY;
       (p->s).flags |= FLIPABLE;
       InitNonAffineMotion(&p->s);
-      SetMotion(&p->s, MOTION(SM182_UNK, 1));
+      SetSpriteAnimation(p, MOTION(SM182_UNK, 1));
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Solid53_Die(p);
     }

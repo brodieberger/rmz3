@@ -5,23 +5,39 @@
 #include "overworld.h"
 #include "zero.h"
 
-void CreateSolidGlacierleArm(struct Boss* glacierle, s32 x, s32 y);
+struct Glacierle {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  u32 unk_b4;
+  struct Entity* elfx;  // 0xB8, Element Effect
+  s32 unk_bc;
+  u8 unk_c0;
+  u8 unk_c1;
+  bool8 shouldRightDir;
+  u8 unk_c3[5];
+  Coords32 unk_c8;
+  u8 unk_d0[20];
+};
+static_assert(sizeof(struct Glacierle) == sizeof(struct Boss));
+
+void CreateSolidGlacierleArm(struct Entity* e, s32 x, s32 y);
 
 static const u8 u8_ARRAY_08364aac[2];
-static const struct Collision sCollisions[135];
-static const struct Coord sElementCoord;
+static const struct Collision sCollisions[];
+static const Coords32 sElementCoord;
+static const u8 sGlacierleModes[48];
 
 static void Glacierle_Init(struct Boss* p);
-static void Glacierle_Update(struct Boss* p);
+static void Glacierle_Update(struct Glacierle* p);
 static void Glacierle_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gGlacierleRoutine = {
-    [ENTITY_INIT] =      Glacierle_Init,
-    [ENTITY_UPDATE] =    Glacierle_Update,
-    [ENTITY_DIE] =       Glacierle_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Glacierle_Init,
+    [ENTITY_UPDATE] =    (void*)Glacierle_Update,
+    [ENTITY_DIE] =       (void*)Glacierle_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -71,9 +87,9 @@ _080579AA:\n\
 	b _080579CE\n\
 	.align 2, 0\n\
 _080579BC: .4byte RNG_0202f388\n\
-_080579C0: .4byte 0x08364A7C\n\
+_080579C0: .4byte sGlacierleModes\n\
 _080579C4:\n\
-	ldr r0, _08057A0C @ =gMission\n\
+	ldr r0, _08057A0C @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldrb r0, [r0, #1]\n\
 	cmp r0, #4\n\
@@ -113,7 +129,7 @@ _080579FA:\n\
 	adds r0, #1\n\
 	b _08057A1C\n\
 	.align 2, 0\n\
-_08057A0C: .4byte gMission\n\
+_08057A0C: .4byte gScore\n\
 _08057A10: .4byte 0x000343FD\n\
 _08057A14: .4byte 0x00269EC3\n\
 _08057A18:\n\
@@ -137,21 +153,21 @@ _08057A1C:\n\
  .syntax divided\n");
 }
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
-  struct CollidableEntity* e = (struct CollidableEntity*)body->enemy->parent;
-  struct Boss* p = (struct Boss*)body->parent;
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  struct Entity* q = (struct Entity*)body->enemy->parent;
+  struct Glacierle* p = (struct Glacierle*)body->parent;
 
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    (p->props.glacierle).unk_c8.x = (e->s).coord.x;
-    (p->props.glacierle).unk_c8.y = (e->s).coord.y;
-    (p->props.glacierle).shouldRightDir = (p->s).coord.x < (e->s).coord.x;
+    (p->unk_c8).x = (q->coord).x;
+    (p->unk_c8).y = (q->coord).y;
+    p->shouldRightDir = (p->s).coord.x < (q->coord).x;
   }
 }
 
 static bool8 tryKillGlacierle(struct Boss* p) {
   u32* status = &(p->body).status;
 
-  if (((*status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && ((gStageRun.missionStatus & MISSION_FAIL) == 0)) {
+  if (((*status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     PlaySound(SE_GLACIERLE_DEATH);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     if (*status & BODY_STATUS_SLASHED) {
@@ -364,8 +380,8 @@ _08057C8C: .4byte wStaticMotionPalIDs\n\
 
 // --------------------------------------------
 
-static void glacierle_08057d00(struct Boss* p);
-static void tryMakeFlinch(struct Boss* p);
+static void glacierle_08057d00(struct Glacierle* p);
+static void tryMakeFlinch(struct Glacierle* p);
 static void nop_08057cfc(struct Boss* p);
 
 static void glacierle_08057d7c(struct Boss* p);
@@ -390,69 +406,67 @@ void glacierle_080594dc(struct Boss* p);
 void glacierle_080595ec(struct Boss* p);
 void glacierle_08059674(struct Boss* p);
 
-static void Glacierle_Update(struct Boss* p) {
+static void Glacierle_Update(struct Glacierle* p) {
   // clang-format off
   static const BossFunc sUpdates1[21] = {
-      tryMakeFlinch,
-      nop_08057cfc,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      tryMakeFlinch,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      glacierle_08057d00,
-      nop_08057cfc,
-      nop_08057cfc,
-      glacierle_08057d00,
+      (void*)tryMakeFlinch,
+      (void*)nop_08057cfc,
+      (void*)tryMakeFlinch,
+      (void*)tryMakeFlinch,
+      (void*)tryMakeFlinch,
+      (void*)tryMakeFlinch,
+      (void*)tryMakeFlinch,
+      (void*)tryMakeFlinch,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)tryMakeFlinch,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)glacierle_08057d00,
+      (void*)nop_08057cfc,
+      (void*)nop_08057cfc,
+      (void*)glacierle_08057d00,
   };
   // clang-format on
 
   // clang-format off
   static const BossFunc sUpdates2[21] = {
-      glacierle_08057d7c,
-      glacierle_08057e20,
-      glacierle_08057f38,
-      glacierle_08058018,
-      glacierle_08058168,
-      glacierle_080581d8,
-      glacierle_0805836c,
-      glacierle_080583c4,
-      glacierleHammerPunch1,
-      glacierleHammerPunch2,
-      glacierleHammerPunch3,
-      glacierleIceRainJump,
-      glacierleIceRain1,
-      glacierleIceRain2,
-      glacierleIceRain3,
-      glacierleIceCarnival1,
-      glacierleIceCarnival2,
-      glacierle_080593c4,
-      glacierle_080594dc,
-      glacierle_080595ec,
-      glacierle_08059674,
+      (void*)glacierle_08057d7c,
+      (void*)glacierle_08057e20,
+      (void*)glacierle_08057f38,
+      (void*)glacierle_08058018,
+      (void*)glacierle_08058168,
+      (void*)glacierle_080581d8,
+      (void*)glacierle_0805836c,
+      (void*)glacierle_080583c4,
+      (void*)glacierleHammerPunch1,
+      (void*)glacierleHammerPunch2,
+      (void*)glacierleHammerPunch3,
+      (void*)glacierleIceRainJump,
+      (void*)glacierleIceRain1,
+      (void*)glacierleIceRain2,
+      (void*)glacierleIceRain3,
+      (void*)glacierleIceCarnival1,
+      (void*)glacierleIceCarnival2,
+      (void*)glacierle_080593c4,
+      (void*)glacierle_080594dc,
+      (void*)glacierle_080595ec,
+      (void*)glacierle_08059674,
   };
   // clang-format on
 
-  if ((p->props.glacierle).unk_b8 != NULL) {
-    if (isKilled(&((p->props.glacierle).unk_b8)->s)) {
-      (p->props.glacierle).unk_b8 = NULL;
-    }
+  if (p->elfx != NULL) {
+    if (IsDead(p->elfx)) p->elfx = NULL;
   }
-  if (tryKillGlacierle(p)) {
+  if (tryKillGlacierle((void*)p)) {
     return;
   }
-  (sUpdates1[(p->s).mode[1]])(p);
-  (sUpdates2[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
+  (sUpdates2[(p->s).mode[1]])((void*)p);
 }
 
 // --------------------------------------------
@@ -475,25 +489,22 @@ static void nop_08057cfc(struct Boss* p) {
   return;
 }
 
-static void glacierle_08057d00(struct Boss* p) {
-  if (((p->body).status & BODY_STATUS_WHITE) && ((p->props.glacierle).unk_b8 == NULL)) {
-    (p->props.glacierle).unk_b8 = ApplyElementEffect(25, &p->s, &sElementCoord);
+static void glacierle_08057d00(struct Glacierle* p) {
+  if (((p->body).status & BODY_STATUS_WHITE) && (p->elfx == NULL)) {
+    p->elfx = (void*)ApplyElementEffect(25, (Object*)p, &sElementCoord);
   }
 }
 
 // 0x08057d30
-static void tryMakeFlinch(struct Boss* p) {
+static void tryMakeFlinch(struct Glacierle* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
     if ((p->body).status & BODY_STATUS_RECOILED) {
-      (p->s).mode[1] = 20;
-      (p->s).mode[2] = 0;
+      (p->s).mode[1] = 20, (p->s).mode[2] = 0;
     }
-
-    if ((p->props.glacierle).unk_b8 == NULL) {
-      (p->props.glacierle).unk_b8 = ApplyElementEffect(25, &p->s, &sElementCoord);
-      if ((p->props.glacierle).unk_b8 != NULL) {
-        (p->s).mode[1] = 19;
-        (p->s).mode[2] = 0;
+    if (p->elfx == NULL) {
+      p->elfx = (void*)ApplyElementEffect(25, (Object*)p, &sElementCoord);
+      if (p->elfx != NULL) {
+        (p->s).mode[1] = 19, (p->s).mode[2] = 0;
       }
     }
   }
@@ -505,14 +516,14 @@ static void glacierle_08057d7c(struct Boss* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).work[2] = 24;
-      SetMotion(&p->s, MOTION(DM178_GLACIERLE, 0));
+      SetSpriteAnimation(p, MOTION(DM178_GLACIERLE, 0));
       (p->s).mode[2]++;
       FALLTHROUGH;
     }
     case 1: {
       bool8 isZeroRight;
       SetDDP(&p->body, &sCollisions[1]);
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
 
       isZeroRight = (p->s).coord.x < (pZero2->s).coord.x;
       if ((p->s).flags & X_FLIP) {
@@ -615,7 +626,7 @@ _08057EC2:\n\
 	strb r0, [r4, #0xe]\n\
 _08057EC8:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _08057F2C\n\
 	.align 2, 0\n\
 _08057ED0: .4byte 0x0000B208\n\
@@ -628,7 +639,7 @@ _08057ED4:\n\
 	strb r0, [r4, #0xe]\n\
 _08057EE2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x73\n\
 	ldrb r0, [r0]\n\
@@ -662,7 +673,7 @@ _08057F10:\n\
 	strb r0, [r4, #0x12]\n\
 _08057F26:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _08057F2C:\n\
 	pop {r4}\n\
 	pop {r0}\n\
@@ -676,6 +687,7 @@ INCASM("asm/boss/glacierle.inc");
 
 // --------------------------------------------
 
+// 0x08363dcc
 static const struct Collision sCollisions[135] = {
     [0] = {
       kind : DRP,
@@ -2205,7 +2217,7 @@ static const struct Collision sCollisions[135] = {
 
 // --------------------------------------------
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(16)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(16)};
 
 static const u8 sGlacierleModes[48] = {
     3, 3, 4, 4, 4, 4, 8, 8, 8, 8, 11, 11, 15, 15, 15, 15, 3, 3, 3, 4, 4, 4, 4, 8, 8, 11, 11, 11, 11, 15, 15, 15, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 11, 11, 15, 15,
@@ -2219,7 +2231,7 @@ static const u8 u8_ARRAY_08364abc[3] = {77, 81, 85};
 static const u8 u8_ARRAY_08364abf[3] = {89, 1, 1};
 static const u8 u8_ARRAY_08364ac2[4] = {112, 115, 119, 119};
 
-static const struct Coord16 ALIGNED(2) Coord16_ARRAY_08364ac6[2] = {
+static const Coords16 ALIGNED(2) Coord16_ARRAY_08364ac6[2] = {
     {-0x900, -0x2800},
     {0x800, -0x2100},
 };
@@ -2228,6 +2240,7 @@ static const u8 u8_ARRAY_08364ace[5] = {68, 71, 74, 93, 97};
 static const u8 u8_ARRAY_08364ad3[5] = {101, 101, 101, 105, 0};
 
 // clang-format off
+// 0x08364ad8
 static const motion_t sMotions[8] = {
     MOTION(DM178_GLACIERLE, 0x1B),
     MOTION(DM178_GLACIERLE, 0x0D),
@@ -2249,7 +2262,8 @@ static const u8 u8_ARRAY_08364b20[2] = {101, 108};
 static const u8 u8_ARRAY_08364b22[4] = {4, 7, 10, 10};
 static const u8 u8_ARRAY_08364b26[5] = {15, 18, 21, 24, 27};
 
-static const struct Coord sExplosionCoords[2] = {
+// 0x08364b2c
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(35)},
     {PIXEL(0), -PIXEL(35)},
 };

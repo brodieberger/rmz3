@@ -1,13 +1,13 @@
 #include "global.h"
 #include "overworld.h"
 
-extern const struct Coord gSnowyPlainMetatileShift1;
-extern const struct Coord gSnowyPlainMetatileShift2;
+extern const Coords32 gSnowyPlainMetatileShift1;
+extern const Coords32 gSnowyPlainMetatileShift2;
 
-static void initSnowyPlains(struct Coord* _ UNUSED);
-static void nop_08012b18(struct Coord* _ UNUSED);
-static void nop_08012b1c(struct Coord* _ UNUSED);
-static void nop_08012b20(struct Coord* _ UNUSED);
+static void initSnowyPlains(Coords32* _ UNUSED);
+static void nop_08012b18(Coords32* _ UNUSED);
+static void nop_08012b1c(Coords32* _ UNUSED);
+static void nop_08012b20(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initSnowyPlains,
@@ -16,19 +16,19 @@ static const StageFunc sStageRoutine[4] = {
     nop_08012b20,
 };
 
-static void initSnowyPlains(struct Coord* _ UNUSED) {
-  struct Coord shift1, shift2;
+static void initSnowyPlains(Coords32* _ UNUSED) {
+  Coords32 shift1, shift2;
   shift1 = gSnowyPlainMetatileShift1;
   shift2 = gSnowyPlainMetatileShift2;
-  ShiftMetatile(0, 0x51, (struct MetatileShift*)&shift1);
-  ShiftMetatile(0xf0, 0x6f, (struct MetatileShift*)&shift2);
+  ShiftMetatile(0, 81, (struct MetatileShift*)&shift1);
+  ShiftMetatile(240, 111, (struct MetatileShift*)&shift2);
 }
 
-static void nop_08012b18(struct Coord* _ UNUSED) { return; }
+static void nop_08012b18(Coords32* _ UNUSED) { return; }
 
-static void nop_08012b1c(struct Coord* _ UNUSED) { return; }
+static void nop_08012b1c(Coords32* _ UNUSED) { return; }
 
-static void nop_08012b20(struct Coord* _ UNUSED) { return; }
+static void nop_08012b20(Coords32* _ UNUSED) { return; }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
@@ -90,7 +90,7 @@ static const StageLayerRoutine sLayerRoutine[8] = {
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     l->phase++;
   }
 }
@@ -98,7 +98,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 static void LayerUpdate_3(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     (l->scrollPower).x = 0x60;
     (l->scrollPower).y = 0x60;
     (l->scroll).x = 0x96;
@@ -133,7 +133,7 @@ const struct Stage gSnowyPlainsLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG2, USE_BG1, USE_BG3},
   prio : {2, 1, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
   scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,

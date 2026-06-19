@@ -3,14 +3,18 @@
 
 #include "types.h"
 
-// GBAのBGマップデータ x4枚分(16x16px)
-typedef u16 Metatile[4];
+// Metatile is a 16x16px tile, which is made of 4 GBA tiles (8x8 x 4)
+
+typedef u16 metatile_id_t;    // Metatile を識別するためのID
+typedef u16 metatile_attr_t;  // Metatileの属性 (include/constants/metatile.h 参照)
+
+typedef u16 Metatile[4];  // GBAのBGマップデータ x4枚分(16x16px)
 
 struct MetatileShift {
   s16 x;      // メタタイル単位
   s16 y;      // メタタイル単位
-  s16 block;  // 動かすメタタイルの数
-  s16 row;
+  s16 block;  // 動かすメタタイルの数(col)
+  s16 row;    // 動かすメタタイルの数(row)
 };
 
 // --------------------------------------------
@@ -27,20 +31,14 @@ struct MetatilePatch {
   */
 };
 
-struct MetatilePatch2x1 {
-  struct MetatilePatch size;
-  metatile_id_t data[2 * 1];
-};
-
-struct MetatilePatch2x2 {
-  struct MetatilePatch size;
-  metatile_id_t data[2 * 2];
-};
-
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 metatile_attr_t GetMetatileAttr(s32 x, s32 y);
-void ShiftMetatile(s32 x, s32 y, const struct MetatileShift* s);
-void PatchMetatileMap(u32 x, u32 y, struct MetatilePatch* p);
+metatile_attr_t GetHazardMetatileAttr(s32 x, s32 y);
+metatile_attr_t FUN_080098a4(s32 x, s32 y);
+metatile_attr_t GetGroundMetatileAttr(s32 x, s32 y);
+
+void ShiftMetatile(s32 x16, s32 y16, const struct MetatileShift* s);
+void PatchMetatileMap(s32 x, s32 y, u16* patch);
 
 #endif  // GUARD_RMZ3_OW_METATILE_H

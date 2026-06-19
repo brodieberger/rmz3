@@ -47,7 +47,7 @@ _080E02F2:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r1, _080E0398 @ =0x083719D0
+	ldr r1, _080E0398 @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -103,7 +103,7 @@ _080E02F2:
 	.align 2, 0
 _080E0390: .4byte gCurStory
 _080E0394: .4byte pZero2
-_080E0398: .4byte 0x083719D0
+_080E0398: .4byte sCollisions
 _080E039C: .4byte gStaticMotionGraphics
 _080E03A0: .4byte wStaticGraphicTilenums
 _080E03A4: .4byte gStaticMotionGraphics+12
@@ -163,7 +163,7 @@ _080E0404:
 	b _080E063A
 _080E040A:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x18]
 	ldrb r1, [r0, #9]
 	movs r0, #1
@@ -200,7 +200,7 @@ _080E0440:
 _080E0454: .4byte 0x0000B404
 _080E0458:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x18]
 	ldrb r0, [r0, #9]
 	ands r4, r0
@@ -288,7 +288,7 @@ _080E0506:
 	ldr r0, _080E0540 @ =gStageRun+232
 	adds r1, r7, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x90
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -454,7 +454,7 @@ _080E064E:
 	ands r0, r1
 	cmp r0, #0
 	bne _080E06AE
-	ldr r0, _080E07F0 @ =0x08371A00
+	ldr r0, _080E07F0 @ =sSonicWaveXCoords
 	lsls r1, r4, #2
 	adds r1, r1, r0
 	ldr r2, [r7, #0x54]
@@ -473,14 +473,14 @@ _080E064E:
 	str r0, [r6, #4]
 	mov r0, sp
 	movs r1, #0
-	bl FUN_080b2794
+	bl CreateChildreShipSonicBoom
 	ldr r0, [r7, #0x58]
 	mov r2, r8
 	subs r0, r0, r2
 	str r0, [r6, #4]
 	mov r0, sp
 	movs r1, #1
-	bl FUN_080b2794
+	bl CreateChildreShipSonicBoom
 	movs r0, #1
 	mov sb, r0
 	mov r1, sb
@@ -638,7 +638,7 @@ _080E07BC:
 	ldr r0, _080E07FC @ =gStageRun+232
 	adds r1, r7, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x90
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -648,7 +648,7 @@ _080E07BC:
 	b _080E080C
 	.align 2, 0
 _080E07EC: .4byte 0x0029E000
-_080E07F0: .4byte 0x08371A00
+_080E07F0: .4byte sSonicWaveXCoords
 _080E07F4: .4byte gProjectileHeaderPtr
 _080E07F8: .4byte 0xFFFFE800
 _080E07FC: .4byte gStageRun+232

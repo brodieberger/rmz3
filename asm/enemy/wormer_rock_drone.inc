@@ -15,9 +15,9 @@ CreateWormerRockDrone: @ 0x08076E58
 	lsrs r5, r2, #0x18
 	lsls r3, r3, #0x18
 	lsrs r6, r3, #0x18
-	ldr r0, _08076ED4 @ =gZakoHeaderPtr
+	ldr r0, _08076ED4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _08076ECA
@@ -69,7 +69,7 @@ _08076ECA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08076ED4: .4byte gZakoHeaderPtr
+_08076ED4: .4byte gEnemyHeaderPtr
 _08076ED8: .4byte gEnemyFnTable
 _08076EDC: .4byte gSineTable
 
@@ -244,11 +244,11 @@ _0807700E:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _08077074 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1

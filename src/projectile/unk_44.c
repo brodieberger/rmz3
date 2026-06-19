@@ -1,0 +1,40 @@
+#include "collision.h"
+#include "global.h"
+#include "projectile.h"
+
+INCASM("asm/projectile/unk_44.inc");
+
+void FUN_080b16f4(struct Projectile* p);
+void FUN_080b1764(struct Projectile* p);
+void FUN_080b1798(struct Projectile* p);
+
+// clang-format off
+const ProjectileRoutine gProjectile44Routine = {
+    [ENTITY_INIT] =      FUN_080b16f4,
+    [ENTITY_UPDATE] =    FUN_080b1764,
+    [ENTITY_DIE] =       FUN_080b1798,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+};
+// clang-format on
+
+void FUN_080b17d8(struct Projectile* p);
+void FUN_080b17dc(struct Projectile* p);
+
+// clang-format off
+static const ProjectileFunc PTR_ARRAY_0836d794[2] = {
+    FUN_080b17d8,
+    FUN_080b17dc,
+};
+// clang-format on
+
+static const struct Collision Collision_0836d79c = {
+  kind : DDP,
+  faction : FACTION_ENEMY,
+  damage : 4,
+  remaining : 0,
+  layer : 0x00000001,
+  range : {PIXEL(0), PIXEL(0), PIXEL(20), PIXEL(13)},
+};
+
+static const u8 u8_ARRAY_0836d7b4[4] = {0, 0, 0, 0};

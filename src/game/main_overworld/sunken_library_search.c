@@ -1,12 +1,14 @@
 #include "game.h"
 #include "global.h"
+#include "spawn.h"
 
 static const TextID SearchReactionTexts[4];
 static const disk_t SunkenSecretDisks[4];
 static const str_id_t StrID_ARRAY_08386294[4];
 static const TextID AfterSearchTextIDs[4];
 
-NAKED void OverworldLoop_SunkenLibrarySearch(struct GameState *p) {
+// 0x080F2620
+NAKED void OverworldLoop_SunkenLibrarySearch(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -102,10 +104,10 @@ _080F26CA:\n\
 	bl PrintOptionMessage2\n\
 	movs r0, #0x97\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x98\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r6, #3]\n\
 	adds r0, #1\n\
 	strb r0, [r6, #3]\n\
@@ -466,9 +468,9 @@ _080F29AC:\n\
 	b _080F2BF8\n\
 _080F29BA:\n\
 	movs r0, #0x97\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x98\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	ldr r4, _080F2A00 @ =0x087044BC\n\
 	ldr r0, [r4]\n\
 	ldr r5, _080F2A04 @ =0x08704520\n\
@@ -517,7 +519,7 @@ _080F2A18:\n\
 	beq _080F2A2A\n\
 	b _080F2BF8\n\
 _080F2A2A:\n\
-	ldr r1, _080F2A8C @ =gStageEntityManager\n\
+	ldr r1, _080F2A8C @ =gSpawnManager\n\
 	ldr r0, _080F2A90 @ =0x0000020E\n\
 	adds r1, r1, r0\n\
 	ldrh r2, [r1]\n\
@@ -531,7 +533,7 @@ _080F2A2A:\n\
 	adds r4, #0xe8\n\
 	adds r0, r4, #0\n\
 	movs r1, #3\n\
-	bl SetCameraMode\n\
+	bl Camera_SetMode\n\
 	movs r0, #8\n\
 	strb r0, [r4, #0x19]\n\
 	strh r7, [r4, #0x22]\n\
@@ -564,7 +566,7 @@ _080F2A2A:\n\
 	b _080F2BF6\n\
 	.align 2, 0\n\
 _080F2A88: .4byte gStageRun\n\
-_080F2A8C: .4byte gStageEntityManager\n\
+_080F2A8C: .4byte gSpawnManager\n\
 _080F2A90: .4byte 0x0000020E\n\
 _080F2A94: .4byte 0x00000ECC\n\
 _080F2A98:\n\
@@ -685,7 +687,7 @@ _080F2B84:\n\
 	adds r4, #0xe8\n\
 	adds r0, r4, #0\n\
 	movs r1, #6\n\
-	bl SetCameraMode\n\
+	bl Camera_SetMode\n\
 	movs r0, #8\n\
 	strb r0, [r4, #0x19]\n\
 	strh r5, [r4, #0x22]\n\
@@ -727,7 +729,7 @@ _080F2BD8:\n\
 	ldr r0, [r0]\n\
 	cmp r0, #0\n\
 	bne _080F2BF8\n\
-	ldr r1, _080F2C18 @ =gStageEntityManager\n\
+	ldr r1, _080F2C18 @ =gSpawnManager\n\
 	ldr r2, _080F2C1C @ =0x0000020E\n\
 	adds r1, r1, r2\n\
 	ldrh r2, [r1]\n\
@@ -739,9 +741,9 @@ _080F2BF6:\n\
 	strb r0, [r6, #3]\n\
 _080F2BF8:\n\
 	movs r0, #0x97\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x98\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	add sp, #0x20\n\
 	pop {r3, r4, r5}\n\
 	mov r8, r3\n\
@@ -752,7 +754,7 @@ _080F2BF8:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _080F2C14: .4byte gStageRun\n\
-_080F2C18: .4byte gStageEntityManager\n\
+_080F2C18: .4byte gSpawnManager\n\
 _080F2C1C: .4byte 0x0000020E\n\
 _080F2C20: .4byte 0x0000FFFE\n\
  .syntax divided\n");

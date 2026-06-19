@@ -12,11 +12,11 @@ void BabyElf_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gBabyElfRoutine = {
-    [ENTITY_INIT] =      BabyElf_Init,
-    [ENTITY_UPDATE] =    BabyElf_Update,
-    [ENTITY_DIE] =       BabyElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)BabyElf_Init,
+    [ENTITY_UPDATE] =    (void*)BabyElf_Update,
+    [ENTITY_DIE] =       (void*)BabyElf_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -104,6 +104,7 @@ static const BossFunc sDeinitializers[2] = {
 
 // --------------------------------------------
 
+// 0x0836265C
 static const struct Collision sCollisions[5] = {
     [0] = {
       kind : DRP,
@@ -157,8 +158,10 @@ static const struct Collision sCollisions[5] = {
     },
 };
 
+// 0x083626d4
 const u8 u8_ARRAY_083626d4[64] = {
     1, 1, 1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 5, 5, 5, 5, 1, 1, 2, 2, 3, 3, 5, 5, 7, 7, 7, 7, 7, 7, 7, 7, 1, 1, 1, 2, 2, 2, 12, 12, 12, 3, 3, 3, 13, 13, 13, 13, 1, 2, 12, 12, 3, 3, 13, 13, 7, 7, 7, 7, 7, 7, 7, 7,
 };
 
+// 0x08362714
 static const u8 sInitModes[4] = {0, 0, 0, 0};

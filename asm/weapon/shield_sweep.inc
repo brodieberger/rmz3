@@ -108,7 +108,7 @@ ShieldSweep_Update: @ 0x0803C2FC
 	push {r4, r5, r6, lr}
 	adds r4, r0, #0
 	ldr r5, [r4, #0x28]
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r2, [r4, #0x10]
 	cmp r2, #0
 	bne _0803C3BE
@@ -253,7 +253,7 @@ incrementShieldHitCount_0803c40c: @ 0x0803C40C
 	ands r0, r1
 	cmp r0, #0
 	beq _0803C426
-	ldr r2, _0803C42C @ =gMission
+	ldr r2, _0803C42C @ =gScore
 	ldrh r1, [r2, #0x22]
 	ldr r0, _0803C430 @ =0x0000FFFE
 	cmp r1, r0
@@ -264,5 +264,5 @@ _0803C426:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803C42C: .4byte gMission
+_0803C42C: .4byte gScore
 _0803C430: .4byte 0x0000FFFE

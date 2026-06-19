@@ -117,7 +117,7 @@ _0806179C:
 	adds r1, r1, r2
 	adds r0, r4, #0
 	bl LoadPalette
-	ldr r1, _080618F0 @ =0x083656B0
+	ldr r1, _080618F0 @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #1
 	bl ResetBossBody
@@ -150,7 +150,7 @@ _0806179C:
 	lsls r0, r0, #2
 	orrs r1, r0
 	movs r0, #0xcb
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #1
 	strb r0, [r5]
 	adds r0, r7, #0
@@ -165,7 +165,7 @@ _0806179C:
 	lsls r2, r2, #2
 	orrs r1, r2
 	movs r0, #0xcc
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0xe0
 	bl PlaySound
 	adds r0, r7, #0
@@ -187,7 +187,7 @@ _080618E0: .4byte wStaticGraphicTilenums
 _080618E4: .4byte gStaticMotionGraphics+12
 _080618E8: .4byte wStaticMotionPalIDs
 _080618EC: .4byte 0x0000053C
-_080618F0: .4byte 0x083656B0
+_080618F0: .4byte sCollisions
 _080618F4: .4byte 0xFFFFE800
 
 	thumb_func_start ReactorCore_Update
@@ -200,9 +200,9 @@ ReactorCore_Update: @ 0x080618F8
 	sub sp, #4
 	adds r7, r0, #0
 	movs r0, #0xcb
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	movs r0, #0xcc
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r2, _080619D8 @ =gStageRun
 	ldrb r1, [r2, #0x12]
 	movs r0, #1
@@ -342,9 +342,9 @@ ReactorCore_Die: @ 0x08061A2C
 	push {r4, lr}
 	adds r4, r0, #0
 	movs r0, #0xcb
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	movs r0, #0xcc
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r1, _08061A54 @ =0x083656AC
 	ldrb r0, [r4, #0xd]
 	lsls r0, r0, #2
@@ -363,9 +363,9 @@ ReactorCore_Disappear: @ 0x08061A58
 	push {r4, lr}
 	adds r4, r0, #0
 	movs r0, #0xcb
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #0xcc
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	adds r0, r4, #0
 	bl DeleteBoss
 	pop {r4}
@@ -397,7 +397,7 @@ _08061A88:
 	strb r0, [r4, #0xe]
 _08061A98:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08061A9E:
 	pop {r4}
 	pop {r0}
@@ -449,7 +449,7 @@ FUN_08061adc: @ 0x08061ADC
 	b _08061B58
 _08061AEC:
 	movs r0, #0xe0
-	bl stopSound
+	bl StopSound
 	ldrb r1, [r4, #0xb]
 	movs r0, #0xf7
 	ands r0, r1

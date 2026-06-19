@@ -6,7 +6,7 @@
 	bl KillAllWeapons
 	ldr r0, _08038188 @ =gWeaponHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r5, r0, #0
 	cmp r5, #0
 	beq _080381EA

@@ -13,7 +13,7 @@ const EnemyRoutine gSharksealXRoutine = {
     [ENTITY_INIT] =      SharksealX_Init,
     [ENTITY_UPDATE] =    SharksealX_Update,
     [ENTITY_DIE] =       SharksealX_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -105,4 +105,4 @@ static const struct Collision sCollisions[] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};

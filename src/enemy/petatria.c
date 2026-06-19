@@ -13,7 +13,7 @@ const EnemyRoutine gPetatriaRoutine = {
     [ENTITY_INIT] =      Petatria_Init,
     [ENTITY_UPDATE] =    Petatria_Update,
     [ENTITY_DIE] =       Petatria_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -72,6 +72,7 @@ static const EnemyFunc sUpdates2[10] = {
 
 // --------------------------------------------
 
+// 0x08369608
 static const struct Collision sCollisions[12] = {
     {
       kind : DDP,
@@ -186,6 +187,7 @@ static const struct Collision sCollisions[12] = {
 static const s32 s32_ARRAY_08369728[16] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
 
 // clang-format off
+// 0x08369768
 static const motion_t sMotions1[6] = {
     MOTION(SM126_PETATRIA, 0),
     MOTION(SM126_PETATRIA, 1),

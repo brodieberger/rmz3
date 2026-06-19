@@ -5,7 +5,7 @@
 	lsrs r4, r2, #0x18
 	ldr r0, _0809CABC @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0809CAB4

@@ -12,7 +12,7 @@ const ElfRoutine gBirdElfRoutine = {
     [ENTITY_INIT] =      BirdElf_Init,
     [ENTITY_UPDATE] =    BirdElf_Update,
     [ENTITY_DIE] =       BirdElf_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
 // clang-format on

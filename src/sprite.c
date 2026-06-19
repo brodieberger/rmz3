@@ -3,14 +3,103 @@
 #include "entity.h"
 #include "global.h"
 #include "overworld.h"
+#include "renderer.h"
 #include "story.h"
-#include "task.h"
 
-void ResetPivot(struct Pivot *pivot, struct Coord *c, u32 _, void *nullVal) {
-  static const struct Coord offset = {0x0, 0x0};
+void ResetPivot(struct Pivot* pivot, Coords32* c, u32 _, void* nullVal) {
+  static const Coords32 offset = {0x0, 0x0};
   pivot->coord = c;
-  pivot->offset = (struct Coord *)&offset;
+  pivot->offset = (Coords32*)&offset;
   pivot->_ = nullVal;
+}
+
+static void unused_080046ac(u16* param_1) {
+  s16 val1, val2;
+  param_1[0] = 0, param_1[1] = 0;
+
+  val1 = 0x280;
+  param_1[2] = val1;
+  val2 = 0x1c0;
+  param_1[3] = val2;
+  param_1[4] = (val1 >> 1), param_1[5] = (val2 >> 1);
+}
+
+static void unused_080046c8(u16* p, u32 x, u32 y) { p[4] = x, p[5] = y; }
+
+void CreateDrawPivot(struct DrawPivot* dp, struct Pivot* p, void* _ UNUSED) {
+  if (p != NULL) {
+    (dp->coord).x = (p->coord)->x;
+    (dp->coord).y = (p->coord)->y;
+
+    (dp->lefttop).x = PIXEL((p->coord->x >> 8) + ((p->offset)->x >> 8) - 120);
+    (dp->lefttop).y = PIXEL((p->coord->y >> 8) + ((p->offset)->y >> 8) - 80);
+
+    (dp->offset).x = (p->offset)->x;
+    (dp->offset).y = (p->offset)->y;
+    return;
+  }
+
+  (dp->coord).x = (dp->coord).y = 0;
+  (dp->lefttop).x = (dp->lefttop).y = 0;
+  (dp->offset).x = (dp->offset).y = 0;
+}
+
+void SetTaskCallback(struct Task* t, void* cb) { t->fn = cb; }
+
+static void unused_ClearTaskCallback(struct Task* t) { t->fn = NULL; }
+
+static void unused_08004730(struct Task* t) { t->next = NULL; }
+
+static void unused_08004738(u32* a, u32* b) { *b = *a, *a = (u32)b; }
+
+static void unused_08004740(u32* a, u32 b, u32* c) { *c = *a, *a = b; }
+
+// --------------------------------------------
+
+void InitNonAffineSprite(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c) {
+  MemFill32(0, &s->sprites, 24);  // Clear 8..32 bytes
+
+  SetTaskCallback((struct Task*)s, TaskCB_DrawNoAffineSprite);
+  (s->oam).mosaic = 1;
+  (s->oam).priority = 2;
+  s->sprites = sprites;
+  s->c = c;
+}
+
+void InitRotatableSprite(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c) {
+  MemFill32(0, &s->sprites, 24);  // Clear 8..32 bytes
+
+  SetTaskCallback((struct Task*)s, TaskCB_DrawRotatableSprite);
+  (s->oam).mosaic = 1;
+  (s->oam).priority = 2;
+  s->sprites = sprites;
+  s->c = c;
+  (s->oam).affineMode = ST_OAM_AFFINE_DOUBLE;
+}
+
+void InitScalerotSprite1(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c) {
+  MemFill32(0, &s->sprites, 24);  // Clear 8..32 bytes
+
+  SetTaskCallback((struct Task*)s, TaskCB_SetMetaspriteTileNum1);
+  (s->oam).mosaic = 1;
+  (s->oam).priority = 2;
+  s->sprites = sprites;
+  s->c = c;
+  s->mag.x = 0x100;
+  s->mag.y = 0x100;
+  (s->oam).affineMode = ST_OAM_AFFINE_DOUBLE;
+}
+
+void InitScalerotSprite2(struct Sprite* s, struct MetaspriteHeader* sprites, Coords32* c) {
+  _CpuFastFill(0, s, 32);
+  SetTaskCallback((struct Task*)s, TaskCB_SetMetaspriteTileNum2);
+  (s->oam).mosaic = 1;
+  (s->oam).priority = 2;
+  s->sprites = sprites;
+  s->c = c;
+  s->mag.x = 0x100;
+  s->mag.y = 0x100;
+  (s->oam).affineMode = ST_OAM_AFFINE_NORMAL;
 }
 
 static const s16 s16_ARRAY_08338cd4[12] = {
@@ -21,134 +110,7 @@ static const s16 s16_ARRAY_08338cec[36] = {
     0x0400, 0x0800, 0x1000, 0x2000, 0x0400, 0x0400, 0x0800, 0x1000, 0x0800, 0x1000, 0x1000, 0x2000, 0x0001, 0x0000, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0xFC00, 0xF000, 0x1800, 0x2000, 0x0001, 0x0000, 0xFFFF, 0xFFFF, 0x0000, 0x0000, 0x0000, 0x0000, 0xFC00, 0xF000, 0x1800, 0x2000,
 };
 
-#if MODERN == 0
-static void unused_080046ac(u16 *param_1) {
-  s16 val1;
-  s16 val2;
-  param_1[0] = 0;
-  param_1[1] = 0;
-
-  val1 = 0x280;
-  param_1[2] = val1;
-  val2 = 0x1c0;
-  param_1[3] = val2;
-  param_1[4] = (val1 >> 1);
-  param_1[5] = (val2 >> 1);
-}
-#endif
-
-#if MODERN == 0
-NAKED static void unused_080046c8(void) { INCCODE("asm/unused/unused_080046c8.inc"); }
-#endif
-
-void CreateDrawPivot(struct DrawPivot *dp, struct Pivot *p, void *_ UNUSED) {
-  if (p != NULL) {
-    (dp->coord).x = p->coord->x;
-    (dp->coord).y = p->coord->y;
-
-    (dp->lefttop).x = PIXEL((p->coord->x >> 8) + (p->offset->x >> 8) - 120);
-    (dp->lefttop).y = PIXEL((p->coord->y >> 8) + (p->offset->y >> 8) - 80);
-
-    (dp->offset).x = p->offset->x;
-    (dp->offset).y = p->offset->y;
-    return;
-  }
-
-  (dp->coord).x = (dp->coord).y = 0;
-  (dp->lefttop).x = (dp->lefttop).y = 0;
-  (dp->offset).x = (dp->offset).y = 0;
-}
-
-void SetTaskCallback(struct Task *t, void *cb) {
-  t->fn = cb;
-  return;
-}
-
-// Unused
-static void clearTaskCallback(struct Sprite *s) {
-  s->fn = NULL;
-  return;
-}
-
-void FUN_08004730(struct Sprite *s) {
-  s->p = NULL;
-  return;
-}
-
-#if MODERN == 0
-static void unused_08004738(u32 *a, u32 *b) {
-  *b = *a;
-  *a = (u32)b;
-}
-#endif
-
-#if MODERN == 0
-void unused_08004740(u32 *a, u32 b, u32 *c) {
-  *c = *a;
-  *a = b;
-}
-#endif
-
-void InitNonAffineSprite(struct Sprite *s, struct MetaspriteHeader *sprites, struct Coord *c) {
-  // Clear 8..32 bytes
-  u32 src = 0;
-  u32 *dest = (u32 *)&s->sprites;
-  CpuFastFill(src, dest, 0);
-  CpuFill32(src, dest, 24);
-
-  SetTaskCallback((struct Task *)s, TaskCB_DrawNoAffineSprite);
-  (s->oam).mosaic = 1;
-  (s->oam).priority = 2;
-  s->sprites = sprites;
-  s->c = c;
-}
-
-void InitRotatableSprite(struct Sprite *s, struct MetaspriteHeader *sprites, struct Coord *c) {
-  // Clear 8..32 bytes
-  u32 src = 0;
-  u32 *dest = (u32 *)&s->sprites;
-  CpuFastFill(src, dest, 0);
-  CpuFill32(src, dest, 24);
-
-  SetTaskCallback((struct Task *)s, TaskCB_DrawRotatableSprite);
-  (s->oam).mosaic = 1;
-  (s->oam).priority = 2;
-  s->sprites = sprites;
-  s->c = c;
-  (s->oam).affineMode = ST_OAM_AFFINE_DOUBLE;
-}
-
-void InitScalerotSprite1(struct Sprite *s, struct MetaspriteHeader *sprites, struct Coord *c) {
-  // Clear 8..32 bytes
-  u32 src = 0;
-  u32 *dest = (u32 *)&s->sprites;
-  CpuFastFill(src, dest, 0);
-  CpuFill32(src, dest, 24);
-
-  SetTaskCallback((struct Task *)s, TaskCB_SetMetaspriteTileNum1);
-  (s->oam).mosaic = 1;
-  (s->oam).priority = 2;
-  s->sprites = sprites;
-  s->c = c;
-  s->mag.x = 0x100;
-  s->mag.y = 0x100;
-  (s->oam).affineMode = ST_OAM_AFFINE_DOUBLE;
-}
-
-void InitScalerotSprite2(struct Sprite *s, struct MetaspriteHeader *sprites, struct Coord *c) {
-  CpuFastFill(0, s, 32);
-  { vu8 _; }
-  SetTaskCallback((struct Task *)s, TaskCB_SetMetaspriteTileNum2);
-  (s->oam).mosaic = 1;
-  (s->oam).priority = 2;
-  s->sprites = sprites;
-  s->c = c;
-  s->mag.x = 0x100;
-  s->mag.y = 0x100;
-  (s->oam).affineMode = ST_OAM_AFFINE_NORMAL;
-}
-
-NAKED void TaskCB_SetMetaspriteTileNum1(struct Sprite *s, struct DrawPivot *r1) {
+NAKED void TaskCB_SetMetaspriteTileNum1(struct Sprite* s, struct DrawPivot* r1) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -402,7 +364,7 @@ _08004AE8: .4byte 0x000003FF\n\
  .syntax divided\n");
 }
 
-NAKED void TaskCB_SetMetaspriteTileNum2(struct Sprite *s, struct DrawPivot *r1) {
+NAKED void TaskCB_SetMetaspriteTileNum2(struct Sprite* s, struct DrawPivot* r1) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -647,16 +609,3 @@ _08004CC8: .4byte 0x000001FF\n\
 _08004CCC: .4byte 0x000003FF\n\
  .syntax divided\n");
 }
-
-/**
- * @brief Create phantom face icon for Minigame HP
- * @param s ChipIcon sprite (0: 0x2031970, 1: 0x2031990, 2: 0x20319B0)
- * @param sprites 0x20319D0
- * @param r2 0x0000001
- * @param tilenum Tile Number for Chip icon
- * @note Called on Phantom minigame only in Zero3
- */
-NAKED void createPhantomIcon(struct Sprite *s, struct MetaspriteHeader *sprites, u32 r2, u16 tilenum) { INCCODE("asm/todo/createPhantomIcon.inc"); }
-
-// Only used in Phantom minigame
-NAKED void phantom_minigame_08004d80(struct Sprite *s, s32 param_2) { INCCODE("asm/todo/phantom_minigame_08004d80.inc"); }

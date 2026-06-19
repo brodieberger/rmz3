@@ -2,29 +2,26 @@
 #include "collision.h"
 #include "global.h"
 
+static const struct Collision sCollisions[];
+
 void Cubit_Init(struct Boss* p);
 void Cubit_Update(struct Boss* p);
 void Cubit_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gCubitRoutine = {
-    [ENTITY_INIT] =      Cubit_Init,
-    [ENTITY_UPDATE] =    Cubit_Update,
-    [ENTITY_DIE] =       Cubit_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Cubit_Init,
+    [ENTITY_UPDATE] =    (void*)Cubit_Update,
+    [ENTITY_DIE] =       (void*)Cubit_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateCubit(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Boss* CreateCubit(Coords32* c, u8 n) {
+  struct Boss* p = (struct Boss*)AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_CUBIT);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -107,6 +104,7 @@ static const BossFunc sDeads[2] = {
 
 // --------------------------------------------
 
+// 0x083639d8
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -165,18 +163,19 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoords[2] = {
+static const Coords32 sElementCoords[2] = {
     {PIXEL(0), -PIXEL(24)},
     {PIXEL(0), PIXEL(10)},
 };
 
-static const struct Coord sExplosionCoords[4] = {
+static const Coords32 sExplosionCoords[4] = {
     {PIXEL(6), -PIXEL(33)},
     {PIXEL(6), -PIXEL(33)},
     {PIXEL(10), -PIXEL(33)},
     {PIXEL(10), -PIXEL(33)},
 };
 
+// 0x08363a98
 static const u16 u16_ARRAY_ARRAY_08363a98[2][4] = {
     {4, 6, 7, 9},
     {5, 6, 8, 0},

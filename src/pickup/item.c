@@ -1,25 +1,26 @@
+#include "collision.h"
 #include "entity.h"
 #include "global.h"
 #include "pickup.h"
 
 static const struct Collision sCollision;
-static void onCollision(struct Body *body, struct Coord *r1 UNUSED, struct Coord *r2 UNUSED);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
-static void MapItem_Init(struct Pickup *p);
-static void MapItem_Update(struct Pickup *p);
-static void MapItem_Die(struct Pickup *p);
+static void MapItem_Init(struct Pickup* p);
+static void MapItem_Update(struct Pickup* p);
+static void MapItem_Die(struct Entity* p);
 
 // clang-format off
 const PickupRoutine gPickupItemRoutine = {
-    [ENTITY_INIT] =      MapItem_Init,
-    [ENTITY_UPDATE] =    MapItem_Update,
-    [ENTITY_DIE] =       MapItem_Die,
-    [ENTITY_DISAPPEAR] = DeletePickup,
+    [ENTITY_INIT] =      (PickupFunc)MapItem_Init,
+    [ENTITY_UPDATE] =    (PickupFunc)MapItem_Update,
+    [ENTITY_DIE] =       (PickupFunc)MapItem_Die,
+    [ENTITY_DISAPPEAR] = (PickupFunc)DeletePickup,
     [ENTITY_EXIT] =      (PickupFunc)DeleteEntity,
 };
 // clang-format on
 
-NAKED struct Pickup *CreatePickupItem(u8 itemID, struct Coord *c, u8 param_3) {
+NAKED struct Entity* CreatePickupItem(u8 itemID, Coords32* c, u8 param_3) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -48,7 +49,7 @@ NAKED struct Pickup *CreatePickupItem(u8 itemID, struct Coord *c, u8 param_3) {
 _080E09EC: .4byte gPickupHeaderPtr\n\
 _080E09F0:\n\
 	adds r0, r1, #0\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r4, r0, #0\n\
 	cmp r4, #0\n\
 	beq _080E0A74\n\
@@ -126,7 +127,7 @@ _080E0A76:\n\
  .syntax divided\n");
 }
 
-NAKED static void MapItem_Init(struct Pickup *p) {
+NAKED static void MapItem_Init(struct Pickup* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r6, r0, #0\n\
@@ -217,7 +218,7 @@ _080E0B2A:\n\
 	ldrh r4, [r0]\n\
 	cmp r1, #2\n\
 	bhi _080E0B5C\n\
-	ldr r0, _080E0B58 @ =gSystemSavedataManager\n\
+	ldr r0, _080E0B58 @ =gSystemSavedata\n\
 	adds r0, #0x49\n\
 	b _080E0B74\n\
 	.align 2, 0\n\
@@ -227,19 +228,19 @@ _080E0B48: .4byte wStaticGraphicTilenums\n\
 _080E0B4C: .4byte gStaticMotionGraphics+12\n\
 _080E0B50: .4byte wStaticMotionPalIDs\n\
 _080E0B54: .4byte gMapItemMotions\n\
-_080E0B58: .4byte gSystemSavedataManager\n\
+_080E0B58: .4byte gSystemSavedata\n\
 _080E0B5C:\n\
 	cmp r1, #4\n\
 	bhi _080E0B6C\n\
-	ldr r0, _080E0B68 @ =gSystemSavedataManager\n\
+	ldr r0, _080E0B68 @ =gSystemSavedata\n\
 	adds r0, #0x4a\n\
 	b _080E0B74\n\
 	.align 2, 0\n\
-_080E0B68: .4byte gSystemSavedataManager\n\
+_080E0B68: .4byte gSystemSavedata\n\
 _080E0B6C:\n\
 	cmp r1, #5\n\
 	bne _080E0B7E\n\
-	ldr r0, _080E0BD0 @ =gSystemSavedataManager\n\
+	ldr r0, _080E0BD0 @ =gSystemSavedata\n\
 	adds r0, #0x4c\n\
 _080E0B74:\n\
 	ldrb r0, [r0]\n\
@@ -286,7 +287,7 @@ _080E0B7E:\n\
 	str r5, [r6, #0x60]\n\
 	b _080E0BE0\n\
 	.align 2, 0\n\
-_080E0BD0: .4byte gSystemSavedataManager\n\
+_080E0BD0: .4byte gSystemSavedata\n\
 _080E0BD4: .4byte sCollision\n\
 _080E0BD8: .4byte onCollision\n\
 _080E0BDC:\n\
@@ -316,11 +317,11 @@ _080E0C08: .4byte gPickupFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void MapItem_Update(struct Pickup *p) {
+NAKED static void MapItem_Update(struct Pickup* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x11]\n\
 	cmp r0, #0\n\
 	bne _080E0C40\n\
@@ -470,7 +471,7 @@ _080E0D20:\n\
 	ldrb r1, [r0, #8]\n\
 	movs r0, #0x80\n\
 	ands r0, r1\n\
-	ldr r2, _080E0D58 @ =gMission\n\
+	ldr r2, _080E0D58 @ =gScore\n\
 	cmp r0, #0\n\
 	beq _080E0D3E\n\
 	ldr r1, [r2]\n\
@@ -492,7 +493,7 @@ _080E0D4A:\n\
 	b _080E0D94\n\
 	.align 2, 0\n\
 _080E0D54: .4byte gCurStory\n\
-_080E0D58: .4byte gMission\n\
+_080E0D58: .4byte gScore\n\
 _080E0D5C:\n\
 	cmp r0, #7\n\
 	bne _080E0D7C\n\
@@ -558,7 +559,7 @@ _080E0DD4:\n\
 	ldr r0, _080E0E38 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #8\n\
 	cmp r0, r1\n\
@@ -714,16 +715,16 @@ _080E0F14: .4byte 0xFFFFFC00\n\
  .syntax divided\n");
 }
 
-static void MapItem_Die(struct Pickup *p) {
-  (p->s).flags &= ~DISPLAY;
+static void MapItem_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_ITEM_ROUTINE(p, ENTITY_EXIT);
 }
 
-static void onCollision(struct Body *body, struct Coord *r1 UNUSED, struct Coord *r2 UNUSED) {
-  struct Pickup *item = (struct Pickup *)body->parent;
-  struct CollidableEntity *p = body->enemy->parent;
-  if ((p->s).kind == ENTITY_PLAYER) {
-    item->z = (struct Zero *)p;
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  struct Pickup* p = (struct Pickup*)body->parent;
+  struct Entity* q = body->enemy->parent;
+  if (q->kind == ENTITY_PLAYER) {
+    p->z = (void*)q;
   }
 }
 
@@ -747,7 +748,6 @@ static const struct Collision sCollision = {
   kind : DDP,
   faction : FACTION_ENEMY,
   damage : 255,
-  remaining : 0,
   layer : 0x00000001,
   range : {PIXEL(0), -PIXEL(6), PIXEL(12), PIXEL(12)},
 };

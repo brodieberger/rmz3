@@ -1,21 +1,32 @@
 #ifndef GUARD_RMZ3_MMBN4_H
 #define GUARD_RMZ3_MMBN4_H
 
+// カードeもここかも？
+
 #include "constants/constants.h"
+#include "gba/gba.h"
 #include "types.h"
 
-// 0x02030b54
-struct UnkMmbn4 {
-  u32 unk_00;
-  u8 _[8];
+// 0x02000db0, 0x02000dc0
+struct Unk_02000db0 {
+  u32 magic;
+  u16 field1_0x4;
 };
+static_assert(sizeof(struct Unk_02000db0) == 8);
 
+// SIO（シリアルI/O）制御構造体
+// 0x02000d50
 struct Unk_02000d50 {
   u8 unk_00;
   u8 unk_01;
   u8 unk_02;
   u8 unk_03;
-  u8 unk_04[6];
+  u8 unk_04;
+  u8 unk_05;
+  u8 shouldAdvanceLinkState;  // 0x06, (LinkMain1 の第1引数であることから) pret/pokefirered の gShouldAdvanceLinkState に相当
+  u8 unk_07;
+  u8 unk_08;
+  u8 unk_09;
   u16 unk_0a;
   u16 unk_0c;
   u16 unk_0e;
@@ -31,7 +42,7 @@ struct Unk_02000d50 {
   u32 unk_3c;
   u32 unk_40;
   u32 unk_44;
-  u32 unk_48;
+  u32 linkStatus;  // 0x48, LinkMain1 の戻り値, pret/pokefirered の gLinkStatus に相当
   u32 unk_4c;
   u32 unk_50;
   u32 unk_54;
@@ -45,21 +56,21 @@ struct Unk_080006c8 {
   u8 _[3];
 };
 
-extern struct UnkMmbn4 gUnkMmbn4;
+extern u32 gUnkMmbn4;
 extern struct Unk_02000d50 gUnk02000d50;
 
-void sio_0800100c(void);
-void sio_0800133c(void);
-u8 sio_080013a8(void);
-u8 sio_080013d0(void);
-u8 sio_080013f0(void);
-u8 sio_08001410(void);
-void sio_080014ec(void);
-u16 sio_08001514(void);
-void sio_08001538(void);
-u8 sio_08001570(void);
-u8 sio_080015e8(void);
-void sio_08001778(void);
-void FUN_08000eac(u32 r0, u32 r1, u32 r2);
+void SioLink_SendDisconnect(void);
+void EReader_SioInitHandshake(void);
+u8 EReader_SioWaitForConnect(void);
+u8 EReader_SioHandshakePoll(void);
+u8 EReader_SioConfirmReceipt(void);
+u8 EReader_SioReadCardType(void);
+void EReader_SioBeginCardRead(void);
+u16 EReader_SioGetCardId(void);
+void EReader_SioInitDataReceive(void);
+u8 EReader_SioVerifyCardData(void);
+u8 EReader_SioCheckAllPlayersConnected(void);
+void EReader_SioAbortSession(void);
+void FUN_08000eac(u16 recvCmd, u32 playerIdx, u32 recvCmdIndex);
 
 #endif  // GUARD_RMZ3_MMBN4_H

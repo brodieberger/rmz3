@@ -119,7 +119,7 @@ _080E3AFA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E3B44: .4byte 0x08371D94
+_080E3B44: .4byte u8_ARRAY_08371d94
 _080E3B48: .4byte gElfFnTable
 
 	thumb_func_start Elf7_Update
@@ -139,7 +139,7 @@ Elf7_Update: @ 0x080E3B4C
 	ldr r5, [r0]
 	ldr r6, [r0, #4]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -241,7 +241,7 @@ _080E3C2A:
 	adds r2, r0, r4
 	b _080E3C54
 	.align 2, 0
-_080E3C40: .4byte 0x08371D88
+_080E3C40: .4byte sUpdates
 _080E3C44: .4byte gSineTable
 _080E3C48: .4byte 0x000FFFFF
 _080E3C4C:
@@ -457,7 +457,7 @@ _080E3E40:
 	strh r0, [r1, #4]
 	movs r0, #6
 	bl PlaySound
-	ldr r2, _080E3E98 @ =gMission
+	ldr r2, _080E3E98 @ =gScore
 	ldr r1, [r2]
 	ldrb r0, [r1]
 	cmp r0, #8
@@ -480,7 +480,7 @@ _080E3E76:
 	ldrb r0, [r5, #0x11]
 	cmp r0, #0
 	beq _080E3EB0
-	ldr r2, _080E3E98 @ =gMission
+	ldr r2, _080E3E98 @ =gScore
 	ldr r1, [r2]
 	ldrb r0, [r1]
 	cmp r0, #8
@@ -495,7 +495,7 @@ _080E3E76:
 	strb r0, [r1]
 	b _080E3EB0
 	.align 2, 0
-_080E3E98: .4byte gMission
+_080E3E98: .4byte gScore
 _080E3E9C:
 	adds r1, r4, #0
 	adds r1, #0xb4
@@ -510,7 +510,7 @@ _080E3EA6:
 _080E3EAE:
 	strh r0, [r1, #4]
 _080E3EB0:
-	ldr r0, _080E3F14 @ =gMission
+	ldr r0, _080E3F14 @ =gScore
 	ldr r0, [r0]
 	adds r1, r0, #0
 	adds r1, #0x4c
@@ -520,7 +520,7 @@ _080E3EB0:
 	adds r0, #1
 	strb r0, [r1]
 _080E3EC2:
-	ldr r1, _080E3F18 @ =gUnlockedElfPtr
+	ldr r1, _080E3F18 @ =gElfAvailability
 	ldr r2, _080E3F1C @ =0x00000121
 	adds r0, r4, r2
 	ldrb r0, [r0]
@@ -560,8 +560,8 @@ _080E3EC2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080E3F14: .4byte gMission
-_080E3F18: .4byte gUnlockedElfPtr
+_080E3F14: .4byte gScore
+_080E3F18: .4byte gElfAvailability
 _080E3F1C: .4byte 0x00000121
 _080E3F20: .4byte gElfFnTable
 

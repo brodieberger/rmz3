@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/pantheon_aqua_mod.inc");
+
 void PantheonAquaModProjectile_Init(struct Projectile* p);
 void PantheonAquaModProjectile_Update(struct Projectile* p);
 void PantheonAquaModProjectile_Die(struct Projectile* p);
@@ -11,7 +13,7 @@ const ProjectileRoutine gPantheonAquaModProjectileRoutine = {
     [ENTITY_INIT] =      PantheonAquaModProjectile_Init,
     [ENTITY_UPDATE] =    PantheonAquaModProjectile_Update,
     [ENTITY_DIE] =       PantheonAquaModProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

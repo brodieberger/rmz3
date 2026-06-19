@@ -2,6 +2,8 @@
 #include "enemy.h"
 #include "global.h"
 
+INCASM("asm/enemy/minigame_leviathan.inc");
+
 void LeviathanMinigameEnemy_Init(struct Enemy* p);
 void LeviathanMinigameEnemy_Update(struct Enemy* p);
 void LeviathanMinigameEnemy_Die(struct Enemy* p);
@@ -11,7 +13,7 @@ const EnemyRoutine gLeviathanMinigameEnemyRoutine = {
     [ENTITY_INIT] =      LeviathanMinigameEnemy_Init,
     [ENTITY_UPDATE] =    LeviathanMinigameEnemy_Update,
     [ENTITY_DIE] =       LeviathanMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -66,6 +68,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x0836a6d4
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -132,6 +135,7 @@ static const u8 u8_ARRAY_0836a76a[8] = {
 };
 
 // clang-format off
+// 0x0836a772
 static const motion_t sMotions[12] = {
     MOTION(SM024_SHARKSEAL_X, 0),
     MOTION(SM053_SHELLUNO, 1),
@@ -146,5 +150,4 @@ static const motion_t sMotions[12] = {
     MOTION(SM053_SHELLUNO, 7),
     MOTION(SM053_SHELLUNO, 8),
 };
-
-
+// clang-format on

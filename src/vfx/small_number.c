@@ -3,17 +3,17 @@
 
 // SecretDisk Number when Zero gain on field
 
-static void Ghost81_Init(struct VFX *vfx);
-static void Ghost81_Update(struct VFX *vfx);
-static void Ghost81_Die(struct VFX *vfx);
+static void Ghost81_Init(struct VFX* vfx);
+static void Ghost81_Update(struct VFX* vfx);
+static void Ghost81_Die(struct VFX* vfx);
 
 // clang-format off
 const VFXRoutine gSmallNumberRoutine = {
-    [ENTITY_INIT] =      Ghost81_Init,
-    [ENTITY_UPDATE] =    Ghost81_Update,
-    [ENTITY_DIE] =       Ghost81_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Ghost81_Init,
+    [ENTITY_UPDATE] =    (void*)Ghost81_Update,
+    [ENTITY_DIE] =       (void*)Ghost81_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -40,7 +40,7 @@ NAKED bool8 CreateSmallNumber(s32 x, s32 y, u8 value) {
 _080C9358:\n\
 	ldr r0, _080C9374 @ =gVFXHeaderPtr\n\
 	ldr r0, [r0]\n\
-	bl AllocEntityFirst\n\
+	bl AllocEntityLast\n\
 	adds r1, r0, #0\n\
 	str r1, [r4]\n\
 	cmp r1, #0\n\
@@ -153,7 +153,7 @@ _080C942C: .4byte 0xFFFFF800\n\
 
 static const u8 u8_ARRAY_0836fa3c[4];
 
-static void Ghost81_Init(struct VFX *p) {
+static void Ghost81_Init(struct VFX* p) {
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
   (p->s).mode[1] = u8_ARRAY_0836fa3c[(p->s).work[0]];
   (p->s).flags |= FLIPABLE;
@@ -164,12 +164,12 @@ static void Ghost81_Init(struct VFX *p) {
 
 // --------------------------------------------
 
-static void FUN_080c94a8(struct VFX *p);
-static void FUN_080c94e4(struct VFX *p);
-static void FUN_080c955c(struct VFX *p);
-static void FUN_080c9594(struct VFX *p);
+static void FUN_080c94a8(struct VFX* p);
+static void FUN_080c94e4(struct VFX* p);
+static void FUN_080c955c(struct VFX* p);
+static void FUN_080c9594(struct VFX* p);
 
-static void Ghost81_Update(struct VFX *p) {
+static void Ghost81_Update(struct VFX* p) {
   static VFXFunc const sUpdates[] = {
       FUN_080c94a8,
       FUN_080c94e4,
@@ -181,11 +181,11 @@ static void Ghost81_Update(struct VFX *p) {
 
 // --------------------------------------------
 
-static void Ghost81_Die(struct VFX *p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
+static void Ghost81_Die(struct VFX* p) { SET_VFX_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
 
-static void FUN_080c94a8(struct VFX *p) {
+static void FUN_080c94a8(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).flags &= ~DISPLAY;
@@ -204,15 +204,15 @@ static void FUN_080c94a8(struct VFX *p) {
   }
 }
 
-static void FUN_080c94e4(struct VFX *p) {
+static void FUN_080c94e4(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).spr.oam.priority = 0;
-      (p->s).taskCol = 0;
+      (p->s).renderPrio = 0;
       (p->s).flags |= DISPLAY;
       (p->s).unk_coord.y = (p->s).coord.y;
       (p->s).d.y = -0x300;
-      SetMotion(&p->s, MOTION(0xD1, (p->s).work[2]));
+      SetSpriteAnimation(p, MOTION(SM209_NUMBER, (p->s).work[2]));
       (p->s).mode[2]++;
       FALLTHROUGH
     }
@@ -221,16 +221,15 @@ static void FUN_080c94e4(struct VFX *p) {
       (p->s).coord.y += (p->s).d.y;
       if ((p->s).coord.y > (p->s).unk_coord.y) {
         (p->s).coord.y = (p->s).unk_coord.y;
-        (p->s).mode[1] = ENTITY_DIE;
-        (p->s).mode[2] = 0;
+        (p->s).mode[1] = 2, (p->s).mode[2] = 0;
       }
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       break;
     }
   }
 }
 
-static void FUN_080c955c(struct VFX *p) {
+static void FUN_080c955c(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).unk_coord.x = (2 - (p->s).work[3]) * 4 + 60;
@@ -240,15 +239,14 @@ static void FUN_080c955c(struct VFX *p) {
     case 1: {
       (p->s).unk_coord.x--;
       if ((p->s).unk_coord.x == 0) {
-        (p->s).mode[1] = ENTITY_DISAPPEAR;
-        (p->s).mode[2] = 0;
+        (p->s).mode[1] = 3, (p->s).mode[2] = 0;
       }
       break;
     }
   }
 }
 
-static void FUN_080c9594(struct VFX *p) {
+static void FUN_080c9594(struct VFX* p) {
   switch ((p->s).mode[2]) {
     case 0: {
       (p->s).unk_coord.x = 0x10;

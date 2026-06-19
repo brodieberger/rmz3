@@ -2,41 +2,54 @@
 #include "cyberelf.h"
 #include "entity.h"
 #include "global.h"
+#include "zero.h"
 
-// ------------------------------------------------------------------------------------------------------------------------------------
+// NurseB (Elf2) に従属する何か
 
-void Elf3_Init(struct Elf *p);
-void Elf3_Update(struct Elf *p);
-void Elf3_Die(struct Elf *p);
+static void Elf3_Init(Object* p);
+void Elf3_Update(struct Elf* p);
+void Elf3_Die(struct Elf* p);
 
 // clang-format off
 const ElfRoutine gElf3Routine = {
-    [ENTITY_INIT] =      Elf3_Init,
-    [ENTITY_UPDATE] =    Elf3_Update,
-    [ENTITY_DIE] =       Elf3_Die,
-    [ENTITY_DISAPPEAR] = DeleteElf,
-    [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Elf3_Init,
+    [ENTITY_UPDATE] =    (void*)Elf3_Update,
+    [ENTITY_DIE] =       (void*)Elf3_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteElf,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Elf *CreateElf3(struct Entity *r0, void *r1) {
-  struct Elf *p = (struct Elf *)AllocEntityFirst(gElfHeaderPtr);
+struct Entity* CreateElf3(struct Entity* nurse_b, struct Entity* z) {
+  struct Entity* p = AllocEntityLast(gElfHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 16;
     INIT_ELF_ROUTINE(p, 3);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).unk_28 = r0;
-    (p->s).unk_2c = r1;
-    (p->s).work[0] = 0;
-    (p->s).work[1] = r0->work[1];
+    p->unk_28 = nurse_b;
+    p->unk_2c = z;
+    p->work[0] = 0, p->work[1] = nurse_b->work[1];
   }
   return p;
 }
 
+// --------------------------------------------
+
+static const struct Collision sElf3Collisions[];
+void FUN_080e2af0(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
+
+static void Elf3_Init(Object* p) {
+  (p->s).flags |= FLIPABLE;
+  (p->s).spr.xflip = FALSE, (p->s).spr.oam.xflip = FALSE;
+  (p->s).flags &= ~X_FLIP;
+  INIT_BODY(p, sElf3Collisions, 1, FUN_080e2af0);
+  (p->s).work[2] = 0;
+  SET_ELF_ROUTINE(p, ENTITY_UPDATE);
+  Elf3_Update((void*)p);
+}
+
 INCASM("asm/cyberelf/unk_3.inc");
 
-const struct Collision sElf3Collisions[2] = {
+// 0x08371cf0
+static const struct Collision sElf3Collisions[2] = {
     {
       kind : DDP,
       faction : FACTION_ALLY,

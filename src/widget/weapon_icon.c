@@ -2,17 +2,17 @@
 #include "overworld.h"
 #include "widget.h"
 
-static void MenuWeapon_Init(struct Widget *w);
-static void MenuWeapon_Update(struct Widget *w);
-static void MenuWeapon_Die(struct Widget *w);
+static void MenuWeapon_Init(struct Widget* w);
+static void MenuWeapon_Update(struct Widget* w);
+static void MenuWeapon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gMenuWeaponIconRoutine = {
-    [ENTITY_INIT] =      MenuWeapon_Init,
-    [ENTITY_UPDATE] =    MenuWeapon_Update,
-    [ENTITY_DIE] =       MenuWeapon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuWeapon_Init,
+    [ENTITY_UPDATE] =    (void*)MenuWeapon_Update,
+    [ENTITY_DIE] =       (void*)MenuWeapon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -25,14 +25,11 @@ const motion_t sWeaponIconMotions[WEAPON_KINDS] = {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-struct Widget *createMenuWeaponIcon(void *g, weapon_t weapon, bool8 isSubWeapon, bool8 r3) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Widget* createMenuWeaponIcon(void* g, weapon_t weapon, bool8 isSubWeapon, bool8 r3) {
+  struct Widget* w = (struct Widget*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 0);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)g;
+    (w->s).unk_28 = (struct Entity*)g;
     (w->s).work[0] = weapon;
     (w->s).work[1] = isSubWeapon;
     (w->s).work[3] = r3;
@@ -40,14 +37,14 @@ struct Widget *createMenuWeaponIcon(void *g, weapon_t weapon, bool8 isSubWeapon,
   return w;
 }
 
-static void MenuWeapon_Init(struct Widget *w) {
+static void MenuWeapon_Init(struct Widget* w) {
   s32 x, y;
 
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sWeaponIconMotions[(w->s).work[0]]);
+  SetSpriteAnimation(w, sWeaponIconMotions[(w->s).work[0]]);
   (w->s).spr.xflip = FALSE;
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;
@@ -74,7 +71,7 @@ static void MenuWeapon_Init(struct Widget *w) {
   MenuWeapon_Update(w);
 }
 
-NAKED static void MenuWeapon_Update(struct Widget *w) {
+NAKED static void MenuWeapon_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r4, r0, #0\n\
@@ -356,7 +353,7 @@ _080E61F0:\n\
 	strb r0, [r4, #0xd]\n\
 _080E61F2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldr r0, [r4, #0x54]\n\
 	ldr r1, [r4, #0x58]\n\
 	str r0, [r4, #0x64]\n\
@@ -383,7 +380,7 @@ _080E6224: .4byte gVideoRegBuffer+16\n\
  .syntax divided\n");
 }
 
-static void MenuWeapon_Die(struct Widget *w) {
+static void MenuWeapon_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);
   return;
 }

@@ -2,70 +2,74 @@
 #include "enemy.h"
 #include "global.h"
 
+struct FlopperObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  Coords32 c;
+  u32 unk_08;
+  u8 unk_0c[4];
+};
+static_assert(sizeof(struct FlopperObject) == sizeof(struct Enemy));
+
 static const struct Collision sCollisions[2];
 static const EnemyFunc sUpdates[4];
 
-void Flopper_onCollision(struct Body *body, struct Coord *r1 UNUSED, struct Coord *r2 UNUSED);
+void Flopper_onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
-static void Flopper_Init(struct Enemy *p);
-static void Flopper_Update(struct Enemy *p);
-void Flopper_Die(struct Enemy *p);
+static void Flopper_Init(struct FlopperObject* p);
+static void Flopper_Update(struct FlopperObject* p);
+void Flopper_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gFlopperRoutine = {
-    [ENTITY_INIT] =      Flopper_Init,
-    [ENTITY_UPDATE] =    Flopper_Update,
-    [ENTITY_DIE] =       Flopper_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Flopper_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Flopper_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Flopper_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-static void Flopper_Init(struct Enemy *p) {
-  SET_ZAKO_ROUTINE(p, ENTITY_UPDATE);
-  p->props.flopper.c.x = (p->s).coord.x;
-  p->props.flopper.c.y = (p->s).coord.y;
+static void Flopper_Init(struct FlopperObject* p) {
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
+  (p->c).x = (p->s).coord.x;
+  (p->c).y = (p->s).coord.y;
   INIT_BODY(p, &sCollisions[0], 1, Flopper_onCollision);
   (p->s).flags |= FLIPABLE;
   (p->s).mode[1] = (p->s).work[0];
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
-  SetMotion(&p->s, MOTION(SM022_FLOPPER, 0x00));
-  Flopper_Update(p);
+  SetSpriteAnimation(p, MOTION(SM022_FLOPPER, 0x00));
+  Flopper_Update((void*)p);
 }
 
-static void Flopper_Update(struct Enemy *p) {
+static void Flopper_Update(struct FlopperObject* p) {
   if ((p->body).status & (BODY_STATUS_DEAD | BODY_STATUS_B2)) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     (p->s).work[2] = 0;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     (p->s).flags &= ~DISPLAY;
-    p->props.flopper.unk_08 = 0;
+    p->unk_08 = 0;
     (p->s).work[2] = 0;
-    Flopper_Die(p);
+    Flopper_Die((void*)p);
     return;
   }
 
-  if ((p->s).mode[3] == 0) {
-    if (isFrozen(p)) {
-      (p->s).mode[3] = 1;
-    }
+  if ((p->s).mode[3] == 0 && IsFrozen(p)) {
+    (p->s).mode[3] = 1;
   }
 
   if ((p->s).mode[3] != 0) {
     if ((p->s).mode[3] == 1) {
-      UpdateMotionGraphic(&p->s);
+      UpdateSpriteAnimation(p);
       (p->s).mode[3] = 2;
     }
-    if (!isFrozen(p)) {
+    if (!IsFrozen(p)) {
       (p->s).mode[3] = 0;
     }
     return;
   }
-  (sUpdates[(p->s).mode[1]])(p);
+  (sUpdates[(p->s).mode[1]])((void*)p);
 }
 
 INCASM("asm/enemy/flopper.inc");
@@ -91,10 +95,10 @@ static const struct Collision sCollisions[2] = {
     },
 };
 
-void FUN_0806bfdc(struct Enemy *p);
-void FUN_0806c04c(struct Enemy *p);
-void FUN_0806c0bc(struct Enemy *p);
-void FUN_0806c150(struct Enemy *p);
+void FUN_0806bfdc(struct Enemy* p);
+void FUN_0806c04c(struct Enemy* p);
+void FUN_0806c0bc(struct Enemy* p);
+void FUN_0806c150(struct Enemy* p);
 
 static const EnemyFunc sUpdates[4] = {
     FUN_0806bfdc,

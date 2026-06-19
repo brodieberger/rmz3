@@ -2,7 +2,14 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/lemmingles.inc");
+struct EnemyLemmingles {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[4];
+  s32 unk_b8_x;
+  u8 unk_bc[8];
+};
+static_assert(sizeof(struct EnemyLemmingles) == sizeof(struct Enemy));
 
 void Lemmingles_Init(struct Enemy* p);
 void Lemmingles_Update(struct Enemy* p);
@@ -10,13 +17,34 @@ void Lemmingles_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gLemminglesRoutine = {
-    [ENTITY_INIT] =      Lemmingles_Init,
-    [ENTITY_UPDATE] =    Lemmingles_Update,
-    [ENTITY_DIE] =       Lemmingles_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Lemmingles_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Lemmingles_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Lemmingles_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
+
+// --------------------------------------------
+
+void FUN_0806e590(struct Entity* e, u8 kind1, u8 kind2, u8 kind3) {
+  struct EnemyLemmingles* p = (struct EnemyLemmingles*)AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_LEMMINGLES);
+    (p->s).coord.x = e->coord.x;
+    (p->s).coord.y = e->coord.y;
+    (p->s).unk_28 = (void*)e;
+    (p->s).work[0] = kind1;
+    (p->s).work[1] = kind3;
+    (p->s).work[2] = kind2;
+    p->unk_b8_x = e->coord.x;
+  }
+}
+
+// 0x0806e600
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
+
+INCASM("asm/enemy/lemmingles.inc");
 
 // --------------------------------------------
 
@@ -70,6 +98,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x0836686c
 static const struct Collision sCollisions[7] = {
     {
       kind : DRP,
@@ -134,10 +163,11 @@ static const struct Collision sCollisions[7] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 static const u8 sInitModes[4] = {1, 1, 1, 1};
 
 // clang-format off
+// 0x08366920
 static const motion_t sMotions[13] = {
     MOTION(SM029_LEMMINGLES, 1),
     MOTION(SM029_LEMMINGLES, 0),
@@ -156,5 +186,4 @@ static const motion_t sMotions[13] = {
     MOTION(SM029_LEMMINGLES, 19),
     MOTION(SM029_LEMMINGLES, 17),
 };
-
-
+// clang-format on

@@ -11,7 +11,7 @@
 	mov r8, r3
 	ldr r0, _080B2AD4 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080B2B34
@@ -36,7 +36,7 @@
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
 	bl InitNonAffineMotion
-	ldr r0, _080B2ADC @ =sSmokeMotionIdx
+	ldr r0, _080B2ADC @ =sMotionSubIDs
 	adds r0, r6, r0
 	ldrb r1, [r0]
 	adds r0, r4, #0
@@ -51,7 +51,7 @@
 	.align 2, 0
 _080B2AD4: .4byte gVFXHeaderPtr
 _080B2AD8: .4byte gVFXFnTable
-_080B2ADC: .4byte sSmokeMotionIdx
+_080B2ADC: .4byte sMotionSubIDs
 _080B2AE0:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef

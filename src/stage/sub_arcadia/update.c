@@ -128,7 +128,7 @@ _080201EC:\n\
 	movs r1, #0x10\n\
 	orrs r0, r1\n\
 	strb r0, [r6, #4]\n\
-	bl ApplyCyberSpaceColorFilter\n\
+	bl EnableCyberSpaceColorFilter\n\
 	ldr r1, _0802021C @ =0x0000017D\n\
 	adds r0, r7, r1\n\
 	mov r2, sl\n\
@@ -152,7 +152,7 @@ _08020220:\n\
 	movs r1, #0x10\n\
 	orrs r0, r1\n\
 	strb r0, [r6, #4]\n\
-	bl ApplyCyberSpaceColorFilter\n\
+	bl EnableCyberSpaceColorFilter\n\
 	ldr r0, _08020250 @ =0x0000017D\n\
 	adds r1, r7, r0\n\
 	movs r0, #2\n\
@@ -332,7 +332,7 @@ _0802035C:\n\
 	movs r1, #4\n\
 	orrs r1, r3\n\
 	strb r1, [r2, #4]\n\
-	ldr r2, _080203CC @ =gMission\n\
+	ldr r2, _080203CC @ =gScore\n\
 	movs r1, #7\n\
 	ldrsb r1, [r2, r1]\n\
 	adds r1, #5\n\
@@ -348,7 +348,7 @@ _080203BC: .4byte gCollisionManager\n\
 _080203C0: .4byte gStageScriptList\n\
 _080203C4: .4byte 0x0000FFEF\n\
 _080203C8: .4byte gCurStory\n\
-_080203CC: .4byte gMission\n\
+_080203CC: .4byte gScore\n\
 _080203D0:\n\
 	strb r6, [r2, #7]\n\
 _080203D2:\n\
@@ -459,7 +459,7 @@ _08020478:\n\
 	beq _080204CA\n\
 	lsls r0, r1, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 	b _080204CA\n\
 	.align 2, 0\n\
@@ -499,11 +499,11 @@ _080204D4:\n\
 	beq _080204FE\n\
 	lsls r0, r1, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _080204FE:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r1, #0xa1\n\
 	str r1, [r4]\n\
 _08020508:\n\

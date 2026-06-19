@@ -8,9 +8,9 @@
 FUN_0808a0ec: @ 0x0808A0EC
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _0808A138 @ =gZakoHeaderPtr
+	ldr r0, _0808A138 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0808A130
@@ -45,7 +45,7 @@ _0808A130:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0808A138: .4byte gZakoHeaderPtr
+_0808A138: .4byte gEnemyHeaderPtr
 _0808A13C: .4byte gEnemyFnTable
 
 	thumb_func_start nop_0808a140
@@ -116,7 +116,7 @@ pBase_0808a194: @ 0x0808A194
 	b _0808A208
 _0808A1AE:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808A208
 	ldr r1, _0808A1E8 @ =0x0836896C
@@ -137,7 +137,7 @@ _0808A1AE:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #1
 	b _0808A20A
 	.align 2, 0
@@ -149,7 +149,7 @@ _0808A1F0:
 	ldr r0, [r1, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _0808A206
 	movs r0, #1
@@ -221,7 +221,7 @@ PantheonBase_Init: @ 0x0808A248
 	strb r0, [r6, #0xa]
 	adds r0, r6, #0
 	bl InitNonAffineMotion
-	ldr r0, _0808A2B8 @ =gSystemSavedataManager
+	ldr r0, _0808A2B8 @ =gSystemSavedata
 	ldrb r1, [r0, #0x10]
 	movs r0, #8
 	ands r0, r1
@@ -250,7 +250,7 @@ PantheonBase_Init: @ 0x0808A248
 	.align 2, 0
 _0808A2B0: .4byte gEnemyFnTable
 _0808A2B4: .4byte 0x08368BE4
-_0808A2B8: .4byte gSystemSavedataManager
+_0808A2B8: .4byte gSystemSavedata
 _0808A2BC: .4byte gCurStory
 _0808A2C0: .4byte 0x08368984
 _0808A2C4:
@@ -431,7 +431,7 @@ _0808A40E:
 	ldr r1, _0808A434 @ =0x08368984
 	bl SetDDP
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _0808A42E
@@ -462,7 +462,7 @@ _0808A44A:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x74
 	ldr r1, _0808A478 @ =0x083689CC
@@ -555,7 +555,7 @@ _0808A4E2:
 	ldr r0, [r5, #0x58]
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0808A50C:
 	pop {r4, r5}
 	pop {r0}
@@ -613,7 +613,7 @@ pBase_0808a514: @ 0x0808A514
 	movs r0, #4
 	adds r1, r4, #0
 	bl TryDropItem
-	ldr r2, _0808A5BC @ =gMission
+	ldr r2, _0808A5BC @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0808A5C0 @ =0x0000270E
 	cmp r1, r0
@@ -640,7 +640,7 @@ _0808A590:
 	.align 2, 0
 _0808A5B4: .4byte 0xFFFFF000
 _0808A5B8: .4byte 0x08368BEE
-_0808A5BC: .4byte gMission
+_0808A5BC: .4byte gScore
 _0808A5C0: .4byte 0x0000270E
 _0808A5C4: .4byte gEnemyFnTable
 
@@ -737,7 +737,7 @@ _0808A672:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]

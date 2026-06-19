@@ -1,5 +1,6 @@
 #include "entity.h"
 #include "global.h"
+#include "mod.h"
 #include "solid.h"
 
 // 改造カードで出現する猫
@@ -13,7 +14,7 @@ const SolidRoutine gCatRoutine = {
     [ENTITY_INIT] =      Cat_Init,
     [ENTITY_UPDATE] =    Cat_Update,
     [ENTITY_DIE] =       Cat_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -26,17 +27,14 @@ void FUN_080dd5e0(struct Solid* p);
 static void Cat_Init(struct Solid* p) {
   u8 enabled;
   if ((p->s).work[0] == 0) {
-    enabled = gSystemSavedataManager.mods[3] & (1 << 3);
+    enabled = FLAG(gSystemSavedata.flags, MOD_ORANGE_CAT);
   } else {
-    enabled = gSystemSavedataManager.mods[5] & (1 << 7);
+    enabled = FLAG(gSystemSavedata.flags, MOD_TABBY_CAT);
   }
   if (!enabled) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }

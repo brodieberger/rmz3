@@ -4,13 +4,14 @@
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
-#include "sound.h"
-#include "task.h"
+#include "renderer.h"
 #include "zero.h"
+
+#define SLOT_4BPP 16
 
 static const struct PlttData gWeaponPalettes[5][SLOT_4BPP];
 
-void InitWeaponHeader(struct EntityHeader *h, struct Weapon *w, s16 len) {
+void InitWeaponHeader(struct EntityHeader* h, struct Weapon* w, s16 len) {
   s16 i;
   u16 j;
 
@@ -25,7 +26,7 @@ void InitWeaponHeader(struct EntityHeader *h, struct Weapon *w, s16 len) {
   }
 }
 
-void DrawWeapon(struct TaskManager *tm) {
+void DrawWeapon(Renderer* r) {
   u16 i;
   for (i = 0; i < 4; i++) {
     if (gLastWeaponElements[i] != gWeaponElements[i]) {
@@ -33,12 +34,12 @@ void DrawWeapon(struct TaskManager *tm) {
       CpuFastCopy(gWeaponPalettes[gLastWeaponElements[i]], &gPaletteManager.buf[gWeaponPalIDs[i] * SLOT_4BPP + 256], 32);
     }
   }
-  DrawEntity(gWeaponHeaderPtr, tm);
+  DrawEntity(gWeaponHeaderPtr, r);
 }
 
-void DeleteWeapon(struct Weapon *w) {
-  (w->s).flags = (w->s).flags & ~DISPLAY;
-  SET_WEAPON_ROUTINE(w, ENTITY_EXIT);
+void DeleteWeapon(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
 /*
@@ -52,18 +53,13 @@ void SetWeaponElement(u16 weaponKind, u16 element) {
   return;
 }
 
-// run kill(w) for all weapon entities (mainly clean up all weapons)
+// run kill(p) for all weapon entities (mainly clean up all weapons)
 void KillAllWeapons(WeaponFunc kill) {
-  struct Entity *w;
-
-  struct EntityHeader *h = gWeaponHeaderPtr;
-  ignoreEntityFn(h);
-
-  w = h->last = h->last->prev;
-  while (w != (struct Entity *)&h->next) {
-    kill((struct Weapon *)w);
-    w = h->last->prev;
-    h->last = w;
+  struct EntityHeader* h = gWeaponHeaderPtr;
+  struct Entity* p = GetEntityList(h);
+  while (p != (struct Entity*)&h->tail) {
+    kill((struct Weapon*)p);
+    p = GetNextEntity(h);
   }
 }
 
@@ -86,6 +82,24 @@ static const ALIGNED(4) struct PlttData gWeaponPalettes[5][SLOT_4BPP] = {
   [WEAPON_COLOR_ICE]     = { PLTTDATA(0x0000), PLTTDATA(0xB4A0), PLTTDATA(0xC588), PLTTDATA(0x6AD2), PLTTDATA(0xFBDE), PLTTDATA(0x82DC), PLTTDATA(0x939F), PLTTDATA(0xD3FF), PLTTDATA(0x8388), PLTTDATA(0xBFF2), PLTTDATA(0xFBF5), PLTTDATA(0x7F07), PLTTDATA(0xFF90), PLTTDATA(0x7FD5), PLTTDATA(0xFFFC), PLTTDATA(0xFFFF) },
   [WEAPON_COLOR_OMEGA]   = { PLTTDATA(0x0000), PLTTDATA(0xB4A0), PLTTDATA(0xC588), PLTTDATA(0x6AD2), PLTTDATA(0xFBDE), PLTTDATA(0x82DC), PLTTDATA(0x939F), PLTTDATA(0xD3FF), PLTTDATA(0xE8BF), PLTTDATA(0x7DFF), PLTTDATA(0x7EDF), PLTTDATA(0x441F), PLTTDATA(0xE8BF), PLTTDATA(0x7DFF), PLTTDATA(0x7EDF), PLTTDATA(0xFFBF) },
 };
+
+extern const WeaponRoutine gBusterRoutine;
+extern const WeaponRoutine gSaberRoutine;
+extern const WeaponRoutine gShieldGuardRoutine;
+extern const WeaponRoutine gRodRoutine;
+extern const WeaponRoutine gShieldFlyRoutine;
+extern const WeaponRoutine gSaberWaveRoutine;
+extern const WeaponRoutine gWeapon6Routine;
+extern const WeaponRoutine gReflectLaserRoutine;
+extern const WeaponRoutine gSoulLauncherRoutine;
+extern const WeaponRoutine gBurstShotRoutine;
+extern const WeaponRoutine gBlizzardArrowRoutine;
+extern const WeaponRoutine gThrowBladeRoutine;
+extern const WeaponRoutine gShieldSweepRoutine;
+extern const WeaponRoutine gWeapon13Routine;
+extern const WeaponRoutine gSmashElecRoutine;
+extern const WeaponRoutine gElecShieldSweepRoutine;
+extern const WeaponRoutine gMinigameRodRoutine;
 
 const WeaponRoutine* const gWeaponFnTable[WEAPON_MOVE_COUNT] = {
     [WEAPON_MOVE_Z_BUSTER] =          &gBusterRoutine,

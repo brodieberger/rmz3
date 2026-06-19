@@ -191,7 +191,7 @@ _080AF4C0:
 	ldr r0, _080AF510 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -454,7 +454,7 @@ _080AF6B2:
 	ldr r0, _080AF704 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -807,7 +807,7 @@ _080AF912:
 	ldr r0, _080AF9A4 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -997,7 +997,7 @@ _080AFAC2:
 	ldr r0, _080AFB18 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -1124,7 +1124,7 @@ FUN_080afbb0: @ 0x080AFBB0
 	lsrs r4, r1, #0x18
 	ldr r0, _080AFBF4 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AFBEC
@@ -1170,7 +1170,7 @@ FUN_080afbfc: @ 0x080AFBFC
 	lsrs r7, r3, #0x18
 	ldr r0, _080AFC90 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AFC82
@@ -1246,7 +1246,7 @@ FUN_080afc9c: @ 0x080AFC9C
 	lsrs r4, r1, #0x18
 	ldr r0, _080AFCE4 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AFCDC
@@ -1292,7 +1292,7 @@ FUN_080afcec: @ 0x080AFCEC
 	mov r8, r5
 	ldr r0, _080AFD98 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080AFD8C
@@ -1377,7 +1377,7 @@ FUN_080afda4: @ 0x080AFDA4
 	adds r4, r0, #0
 	ldr r0, _080AFDE8 @ =gProjectileHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080AFDDE

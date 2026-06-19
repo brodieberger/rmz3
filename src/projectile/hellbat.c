@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/hellbat.inc");
+
 void Projectile15_Init(struct Projectile* p);
 void Projectile15_Update(struct Projectile* p);
 void Projectile15_Die(struct Projectile* p);
@@ -11,7 +13,7 @@ const ProjectileRoutine gHellbatProjectileRoutine = {
     [ENTITY_INIT] =      Projectile15_Init,
     [ENTITY_UPDATE] =    Projectile15_Update,
     [ENTITY_DIE] =       Projectile15_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

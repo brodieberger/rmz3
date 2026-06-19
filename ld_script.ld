@@ -14,7 +14,7 @@ SECTIONS {
 	ewram (NOLOAD) :
 	ALIGN(4)
     {
-      src/ewram.o(ewram_data);
+      INCLUDE "linker/ewram.txt"
     } >ewram = 0x00
 
 	. = 0x3000000;
@@ -22,15 +22,15 @@ SECTIONS {
     ALIGN(4)
     {
         src/libs/m4a.o(.bss.code);
-        src/iwram.o(iwram_data);
+        INCLUDE "linker/iwram.txt"
     } >iwram = 0x00
 
     . = 0x8000000;
     .text :
     ALIGN(4)
     {
-      asm/rom_header.o (.text);
-			asm/crt0.o (.text);
+      src/rom_header.o (.text);
+			src/crt0.o (.text);
 			src/sprite2.o (.text);
 			src/sprite2.o (.rodata);
 			src/sprite2.o (.data);
@@ -45,7 +45,7 @@ SECTIONS {
 	{
 		src/libs/m4a_1.o (.text);
 		src/libs/m4a.o (.text);
-		asm/libagbsyscall.o (.text);
+		src/libs/libagbsyscall.o (.text);
 		src/libs/agb_sram.o (.text);
 		*libgcc.a:*_call_via_rX*.o(.text);
 		*libgcc.a:*_divsi3*.o(.text);

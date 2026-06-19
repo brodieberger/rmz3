@@ -16,20 +16,15 @@ const SolidRoutine gIronStarRoutine = {
     [ENTITY_INIT] =      initIronStar,
     [ENTITY_UPDATE] =    ironStarAI,
     [ENTITY_DIE] =       killIronStar,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
 void CreateIronStar(struct Entity* e, s32 x, s32 y) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_UNK_004);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 2;
     (p->s).coord.x = x;
     (p->s).coord.y = y;
@@ -37,7 +32,7 @@ void CreateIronStar(struct Entity* e, s32 x, s32 y) {
   }
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   // NOP
   return;
 }
@@ -103,4 +98,4 @@ const struct Collision Collision_ARRAY_0836fe10[3] = {
     },
 };
 
-const struct Coord Coord_0836fe58 = {-0x04000000, 0x10002000};
+const Coords32 Coord_0836fe58 = {-0x04000000, 0x10002000};

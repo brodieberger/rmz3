@@ -11,28 +11,22 @@ const EnemyRoutine gGeneratorCannonRoutine = {
     [ENTITY_INIT] =      GeneratorCannon_Init,
     [ENTITY_UPDATE] =    GeneratorCannon_Update,
     [ENTITY_DIE] =       GeneratorCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-void CreateGeneratorCannon(s32 x, s32 y, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+// 0x0808c388
+static void CreateGeneratorCannon(s32 x, s32 y, u8 n) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_GENERATOR_CANNON);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = 1;
-    (p->s).work[2] = n;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
+    INIT_ENEMY_ROUTINE(p, ENEMY_GENERATOR_CANNON);
+    p->work[0] = 1, p->work[2] = n;
+    (p->coord).x = x, (p->coord).y = y;
   }
 }
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 INCASM("asm/enemy/generator_cannon.inc");
 
@@ -90,6 +84,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x08368f58
 static const struct Collision sCollisions[18] = {
     {
       kind : DRP,
@@ -286,7 +281,7 @@ static const struct Collision sCollisions[18] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 
 static const u8 sInitModes[4] = {1, 5, 0, 0};
 
@@ -296,6 +291,7 @@ static const u8 sCollisionIdxs1[4] = {3, 7, 11, 11};
 static const u8 sCollisionIdxs2[4] = {11, 7, 3, 0};
 
 // clang-format off
+// 0x08369124
 static const motion_t sMotions[7] = {
     MOTION(SM113_GENERATOR_CANNON, 3),
     MOTION(SM113_GENERATOR_CANNON, 4),

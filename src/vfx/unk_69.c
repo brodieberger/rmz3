@@ -1,6 +1,14 @@
 #include "global.h"
 #include "vfx.h"
 
+struct VFX69 {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  Coords32 c;    // 0x74
+  u8 unk_7c[8];  // 0x7C
+};
+static_assert(sizeof(struct VFX69) == sizeof(struct VFX));
+
 void Ghost69_Init(struct VFX* p);
 void Ghost69_Update(struct VFX* p);
 void Ghost69_Die(struct VFX* p);
@@ -10,18 +18,15 @@ const VFXRoutine gGhost69Routine = {
     [ENTITY_INIT] =      Ghost69_Init,
     [ENTITY_UPDATE] =    Ghost69_Update,
     [ENTITY_DIE] =       Ghost69_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* FUN_080c4e58(struct Coord* c, void* _, struct Entity* e) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4e58(Coords32* c, void* _, struct Entity* e) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 0;
     (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
@@ -30,13 +35,10 @@ struct VFX* FUN_080c4e58(struct Coord* c, void* _, struct Entity* e) {
   return p;
 }
 
-struct VFX* FUN_080c4eac(struct Entity* e, struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4eac(struct Entity* e, Coords32* c, u8 n) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 1;
     (p->s).work[1] = n;
     (p->s).unk_coord.x = c->x;
@@ -46,13 +48,10 @@ struct VFX* FUN_080c4eac(struct Entity* e, struct Coord* c, u8 n) {
   return p;
 }
 
-struct VFX* FUN_080c4f04(struct Entity* e, struct Coord* c, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct VFX* FUN_080c4f04(struct Entity* e, Coords32* c, u8 n) {
+  struct VFX* p = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = 2;
     (p->s).work[1] = n;
     (p->s).coord.x = c->x;
@@ -62,22 +61,17 @@ struct VFX* FUN_080c4f04(struct Entity* e, struct Coord* c, u8 n) {
   return p;
 }
 
-struct VFX* FUN_080c4f60(struct Entity* e, struct Coord* c1, struct Coord* c2, u8 n) {
-  struct VFX* p = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+struct Entity* FUN_080c4f60(struct Entity* e, Coords32* c1, Coords32* c2, u8 n) {
+  struct VFX69* p = (struct VFX69*)AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 1;
     INIT_VFX_ROUTINE(p, VFX_UNK_069);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).work[0] = 3;
-    (p->s).work[1] = n;
+    (p->s).work[0] = 3, (p->s).work[1] = n;
     (p->s).unk_coord.x = c1->x;
     (p->s).unk_coord.y = c1->y;
-    (p->props).unk69.c.x = c2->x;
-    (p->props).unk69.c.y = c2->y;
+    (p->c).x = c2->x, (p->c).y = c2->y;
     (p->s).unk_28 = e;
   }
-  return p;
+  return (void*)p;
 }
 
 INCASM("asm/vfx/unk_69.inc");

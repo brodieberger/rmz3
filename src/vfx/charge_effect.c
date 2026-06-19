@@ -7,27 +7,24 @@
 
 static const motion_t sMotions[2];
 
-static void ChargeEffect_Init(struct VFX* p);
+static void ChargeEffect_Init(struct Entity* p);
 static void ChargeEffect_Update(struct VFX* p);
 static void ChargeEffect_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gChargeEffectRoutine = {
-    [ENTITY_INIT] =      ChargeEffect_Init,
-    [ENTITY_UPDATE] =    ChargeEffect_Update,
-    [ENTITY_DIE] =       ChargeEffect_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
+    [ENTITY_INIT] =      (VFXFunc)ChargeEffect_Init,
+    [ENTITY_UPDATE] =    (VFXFunc)ChargeEffect_Update,
+    [ENTITY_DIE] =       (VFXFunc)ChargeEffect_Die,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
     [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
 };
 // clang-format on
 
 struct VFX* CreateChargeEffect(struct Zero* z, struct VFX* v, u8 r2) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
+  struct VFX* g = (struct VFX*)AllocEntityLast(gVFXHeaderPtr);
   if (g != NULL) {
-    (g->s).taskCol = 1;
     INIT_VFX_ROUTINE(g, VFX_CHARGE_EFFECT);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
     (g->s).unk_28 = &z->s;
     (g->s).unk_2c = &v->s;
     (g->s).work[0] = r2;
@@ -39,18 +36,12 @@ struct VFX* CreateChargeEffect(struct Zero* z, struct VFX* v, u8 r2) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-NON_MATCH static void ChargeEffect_Init(struct VFX* p) {
-#if MODERN
-  InitNonAffineMotion(&p->s);
-  (p->s).flags |= FLIPABLE;
-  (p->s).flags &= ~X_FLIP;
-  (p->s).spr.xflip = FALSE;
-  (p->s).spr.oam.xflip = FALSE;
+static void ChargeEffect_Init(struct Entity* p) {
+  InitNonAffineMotion(p);
+  p->flags |= FLIPABLE;
+  SET_XFLIP(p, FALSE);
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);
-  ChargeEffect_Update(p);
-#else
-  INCCODE("asm/wip/ChargeEffect_Init.inc");
-#endif
+  ChargeEffect_Update((void*)p);
 }
 
 // --------------------------------------------
@@ -197,7 +188,7 @@ _080B34CC:\n\
 	str r0, [r4, #0x74]\n\
 _080B34D6:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _080B34E6\n\
 _080B34DE:\n\
 	movs r0, #0xfe\n\

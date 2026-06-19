@@ -4,77 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080dcd20
-FUN_080dcd20: @ 0x080DCD20
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r3, _080DCD7C @ =gSolidFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r3
-	movs r1, #1
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r4, #0x14]
-	ldr r0, _080DCD80 @ =gSystemSavedataManager
-	ldrb r1, [r0, #0xc]
-	movs r0, #0x40
-	ands r0, r1
-	lsls r0, r0, #0x18
-	lsrs r2, r0, #0x18
-	cmp r2, #0
-	bne _080DCD84
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	movs r1, #0xfd
-	ands r0, r1
-	strb r0, [r4, #0xa]
-	adds r0, r4, #0
-	adds r0, #0x8c
-	str r2, [r0]
-	adds r0, #4
-	str r2, [r0]
-	adds r0, #4
-	strb r2, [r0]
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xfb
-	ands r0, r1
-	strb r0, [r4, #0xa]
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r3
-	movs r1, #3
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #0xc]
-	str r0, [r4, #0x14]
-	b _080DCDA4
-	.align 2, 0
-_080DCD7C: .4byte gSolidFnTable
-_080DCD80: .4byte gSystemSavedataManager
-_080DCD84:
-	adds r0, r4, #0
-	movs r1, #1
-	movs r2, #0
-	bl CreateSeagulls
-	str r0, [r4, #0x2c]
-	adds r1, r4, #0
-	adds r1, #0xb4
-	ldr r0, [r4, #0x54]
-	str r0, [r1]
-	movs r0, #0
-	strb r0, [r4, #0x12]
-	strb r0, [r4, #0x13]
-	adds r0, r4, #0
-	bl Seagulls_Update
-_080DCDA4:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-
 	thumb_func_start FUN_080dcdac
 FUN_080dcdac: @ 0x080DCDAC
 	push {r4, r5, r6, lr}
@@ -511,7 +440,7 @@ _080DD134:
 	strb r0, [r5, #0x12]
 _080DD138:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r4, [r5, #0xd]
 	cmp r4, #1
 	bne _080DD146
@@ -698,7 +627,7 @@ _080DD284:
 	orrs r0, r1
 	strb r0, [r3]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	adds r0, #1
 	strb r0, [r5, #0x12]
@@ -723,7 +652,7 @@ _080DD2B4:
 	adds r0, r5, #0
 	bl SetMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0xa]
 	movs r0, #0x10
 	ands r0, r1
@@ -796,7 +725,7 @@ _080DD360: .4byte 0x00269EC3
 FUN_080dd364: @ 0x080DD364
 	push {r4, r5, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x54]
 	ldr r0, [r4, #0x5c]
 	adds r1, r1, r0

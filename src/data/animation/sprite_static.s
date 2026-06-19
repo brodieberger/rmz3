@@ -1,0 +1,1022 @@
+	.include "asm/macros.inc"
+  .balign 4
+  .section .rodata
+
+.global gStaticMotionMetaspriteTable
+gStaticMotionMetaspriteTable:
+  .word gStaticMetaSprite_effects
+  .word gStaticMetaSprite_1
+  .word gStaticMetaSprite_lemon
+  .word gStaticMetaSprite_emotion_bubble
+  .word gStaticMetaSprite_enemy_shotcounter
+  .word gStaticMetaSprite_gravel
+  .word gStaticMetaSprite_enemy_batring
+  .word gStaticMetaSprite_enemy_grand_cannon
+  .word gStaticMetaSprite_enemy_pillar_cannon
+  .word gStaticMetaSprite_omega_white_hand
+  .word gStaticMetaSprite_omega_white_ring
+  .word gStaticMetaSprite_omega_white_recover
+  .word gStaticMetaSprite_omega_white_rubble
+  .word gStaticMetaSprite_enemy_shrimpolin
+  .word gStaticMetaSprite_menu_chip_icon
+  .word gStaticMetaSprite_menu_main_menu
+  .word gStaticMetaSprite_enemy_icebon_icebon
+  .word gStaticMetaSprite_enemy_icebon_ice
+  .word gStaticMetaSprite_door_2d_blue
+  .word gStaticMetaSprite_enemy_pantheon_hunter
+  .word gStaticMetaSprite_enemy_pantheon_guardian
+  .word gStaticMetaSprite_enemy_top_gabyoall
+  .word gStaticMetaSprite_enemy_flopper
+  .word gStaticMetaSprite_enemy_gyro_cannon
+  .word gStaticMetaSprite_enemy_sharkseal_x
+  .word gStaticMetaSprite_enemy_lamplort
+  .word gStaticMetaSprite_element_effect_thunder
+  .word gStaticMetaSprite_element_effect_thunder
+  .word gStaticMetaSprite_element_effect_ice
+  .word gStaticMetaSprite_enemy_lemmingles
+  .word gStaticMetaSprite_enemy_lemmingles
+  .word gStaticMetaSprite_volcano_bomb
+  .word gStaticMetaSprite_32
+  .word gStaticMetaSprite_fefnir_fireball
+  .word gStaticMetaSprite_enemy_carryarm
+  .word gStaticMetaSprite_container_container
+  .word gStaticMetaSprite_childre_36
+  .word gStaticMetaSprite_childre_ear_shot
+  .word gStaticMetaSprite_childre_38
+  .word gStaticMetaSprite_enemy_pantheon_aqua
+  .word gStaticMetaSprite_enemy_snakecord
+  .word gStaticMetaSprite_hammer
+  .word gStaticMetaSprite_enemy_purple_nerple
+  .word gStaticMetaSprite_wormer_body
+  .word gStaticMetaSprite_wormer_rock_drone
+  .word gStaticMetaSprite_minigame_phantom_mine
+  .word gStaticMetaSprite_enemy_volcaire
+  .word gStaticMetaSprite_enemy_tile_cannon
+  .word gStaticMetaSprite_baby_elf_48
+  .word gStaticMetaSprite_baby_elf_49
+  .word gStaticMetaSprite_baby_elf_50
+  .word gStaticMetaSprite_baby_elf_51
+  .word gStaticMetaSprite_baby_elf_52
+  .word gStaticMetaSprite_enemy_shelluno
+  .word gStaticMetaSprite_deathtanz_rock
+  .word gStaticMetaSprite_deathtanz_projectile
+  .word gStaticMetaSprite_enemy_heavy_cannon
+  .word gStaticMetaSprite_volcano_geyser
+  .word gStaticMetaSprite_volcano_geyser_platform
+  .word gStaticMetaSprite_volcano_lava_river_platform
+  .word gStaticMetaSprite_exlife_indicator
+  .word gStaticMetaSprite_61
+  .word gStaticMetaSprite_enemy_beetank
+  .word gStaticMetaSprite_enemy_swordy
+  .word gStaticMetaSprite_iceball
+  .word gStaticMetaSprite_enemy_puffy_body
+  .word gStaticMetaSprite_enemy_puffy_bubble
+  .word gStaticMetaSprite_enemy_crossbyne
+  .word gStaticMetaSprite_old_residential_fall_rock
+  .word gStaticMetaSprite_menu_exskill_icon
+  .word gStaticMetaSprite_bee_server
+  .word gStaticMetaSprite_enemy_mellnet
+  .word gStaticMetaSprite_72
+  .word gStaticMetaSprite_anubis_rod
+  .word gStaticMetaSprite_anubis_sand
+  .word gStaticMetaSprite_anubis_coffin
+  .word gStaticMetaSprite_enemy_pantheon_zombie
+  .word gStaticMetaSprite_pantheon_aqua_mod_body
+  .word gStaticMetaSprite_pantheon_aqua_mod_projectile
+  .word gStaticMetaSprite_pantheon_aqua_mod_rock
+  .word gStaticMetaSprite_80
+  .word gStaticMetaSprite_mother_elf_81
+  .word gStaticMetaSprite_menu_elf_menu
+  .word gStaticMetaSprite_menu_elf_menu_icon
+  .word gStaticMetaSprite_locomo_if_body
+  .word gStaticMetaSprite_locomo_if_platform
+  .word gStaticMetaSprite_locomo_if_flame
+  .word gStaticMetaSprite_locomo_if_chill
+  .word gStaticMetaSprite_locomo_if_ice
+  .word gStaticMetaSprite_glacierle_hand
+  .word gStaticMetaSprite_glacierle_icicle
+  .word gStaticMetaSprite_copy_x_fire_shot
+  .word gStaticMetaSprite_copy_x_elec_shot
+  .word gStaticMetaSprite_copy_x_normal_shot
+  .word gStaticMetaSprite_copy_x_sliding_spark
+  .word gStaticMetaSprite_copy_x_charge_effect
+  .word gStaticMetaSprite_copy_x_reflect_laser
+  .word gStaticMetaSprite_copy_x_97
+  .word gStaticMetaSprite_blizzack_ice
+  .word gStaticMetaSprite_blizzack_chill
+  .word gStaticMetaSprite_blizzack_shoulder
+  .word gStaticMetaSprite_omega_white_sword
+  .word gStaticMetaSprite_enemy_eye_cannon
+  .word gStaticMetaSprite_enemy_gallisni
+  .word gStaticMetaSprite_enemy_capsule_cannon
+  .word gStaticMetaSprite_enemy_pantheon_bomber
+  .word gStaticMetaSprite_hanumachine_obj
+  .word gStaticMetaSprite_enemy_mothjiro
+  .word gStaticMetaSprite_sub_arcadia_platform
+  .word gStaticMetaSprite_enemy_pantheon_base
+  .word gStaticMetaSprite_enemy_carrybee_g
+  .word gStaticMetaSprite_rocket
+  .word gStaticMetaSprite_anatre_cube
+  .word gStaticMetaSprite_enemy_generator_cannon
+  .word gStaticMetaSprite_enemy_keaton
+  .word gStaticMetaSprite_resistance_base_elevator_default
+  .word gStaticMetaSprite_enemy_deathlock
+  .word gStaticMetaSprite_enemy_claveker
+  .word gStaticMetaSprite_lever_switch_red
+  .word gStaticMetaSprite_enemy_seimeran
+  .word gStaticMetaSprite_door_2d_gray_horizontal
+  .word gStaticMetaSprite_enemy_turtloid_s
+  .word gStaticMetaSprite_door_2d_gray_vertical
+  .word gStaticMetaSprite_teleportal
+  .word gStaticMetaSprite_area_x2_platform
+  .word gStaticMetaSprite_weil_labo_platform
+  .word gStaticMetaSprite_enemy_petatria
+  .word gStaticMetaSprite_disabled_disk
+  .word gStaticMetaSprite_128
+  .word gStaticMetaSprite_subtank2
+  .word gStaticMetaSprite_prologue_mob
+  .word gStaticMetaSprite_prologue_cutscene_mob
+  .word gStaticMetaSprite_prologue_cutscene_zero
+  .word gStaticMetaSprite_prologue_cutscene_ciel
+  .word gStaticMetaSprite_phantom_ninja_star
+  .word gStaticMetaSprite_phantom_135
+  .word gStaticMetaSprite_phantom_makibishi
+  .word gStaticMetaSprite_resistance_base_elevator_wood
+  .word gStaticMetaSprite_resistance_base_elevator_mmx
+  .word gStaticMetaSprite_energy_facility_btn
+  .word gStaticMetaSprite_resistance_mob
+  .word gStaticMetaSprite_effects
+  .word gStaticMetaSprite_enemy_shotloid
+  .word gStaticMetaSprite_143
+  .word gStaticMetaSprite_resistance_base_ciel_comp_0
+  .word gStaticMetaSprite_resistance_base_ciel_comp_1
+  .word gStaticMetaSprite_resistance_base_ciel_comp_2
+  .word gStaticMetaSprite_resistance_base_ciel_comp_3
+  .word gStaticMetaSprite_resistance_base_ciel_comp_4
+  .word gStaticMetaSprite_logo_megaman
+  .word gStaticMetaSprite_logo_z
+  .word gStaticMetaSprite_missile_platform
+  .word gStaticMetaSprite_mother_elf_152
+  .word gStaticMetaSprite_volcano_coffin
+  .word gStaticMetaSprite_giant_elevator_pier
+  .word gStaticMetaSprite_giant_elevator_platform
+  .word gStaticMetaSprite_156
+  .word gStaticMetaSprite_smoke_157
+  .word gStaticMetaSprite_minigame_zero
+  .word gStaticMetaSprite_minigame_copy_x
+  .word gStaticMetaSprite_minigame_phantom_icon
+  .word gStaticMetaSprite_minigame_harpuia
+  .word gStaticMetaSprite_resistance_base_painting_mmbn
+  .word gStaticMetaSprite_resistance_base_graffiti_zero1
+  .word gStaticMetaSprite_resistance_base_graffiti_ciel
+  .word gStaticMetaSprite_resistance_base_graffiti_zero2
+  .word gStaticMetaSprite_resistance_base_painting_ciel
+  .word gStaticMetaSprite_life_energy_default
+  .word gStaticMetaSprite_life_energy_x
+  .word gStaticMetaSprite_life_energy_tank
+  .word gStaticMetaSprite_ecrystal_default
+  .word gStaticMetaSprite_ecrystal_ball
+  .word gStaticMetaSprite_ecrystal_green
+  .word gStaticMetaSprite_exlife_default
+  .word gStaticMetaSprite_exlife_blue
+  .word gStaticMetaSprite_exlife_green
+  .word gStaticMetaSprite_result_disk_default
+  .word gStaticMetaSprite_result_disk_blue
+  .word gStaticMetaSprite_result_disk_red
+  .word gStaticMetaSprite_179
+  .word gStaticMetaSprite_ocean_childre_ship
+  .word gStaticMetaSprite_ocean_sea_level_button
+  .word gStaticMetaSprite_ocean_182
+  .word gStaticMetaSprite_ocean_childre_ship_sonic_wave
+  .word gStaticMetaSprite_x
+  .word gStaticMetaSprite_omega_zx_floating_rock
+  .word gStaticMetaSprite_186
+  .word gStaticMetaSprite_resistance_alouette
+  .word gStaticMetaSprite_resistance_kiss
+  .word gStaticMetaSprite_resistance_faucon
+  .word gStaticMetaSprite_resistance_hirondelle
+  .word gStaticMetaSprite_resistance_autruche
+  .word gStaticMetaSprite_resistance_rocinolle
+  .word gStaticMetaSprite_resistance_doigt
+  .word gStaticMetaSprite_resistance_cerveau
+  .word gStaticMetaSprite_resistance_hibou
+  .word gStaticMetaSprite_resistance_andrew
+  .word gStaticMetaSprite_resistance_menart
+  .word gStaticMetaSprite_resistance_perroquiet
+  .word gStaticMetaSprite_resistance_pic
+  .word gStaticMetaSprite_smoke
+  .word gStaticMetaSprite_resistance_operator
+  .word gStaticMetaSprite_resistance_base_202
+  .word gStaticMetaSprite_iceblock
+  .word gStaticMetaSprite_resistance_base_204
+  .word gStaticMetaSprite_mission_mugshot_first4
+  .word gStaticMetaSprite_mission_mugshot_middle4
+  .word gStaticMetaSprite_mission_mugshot_done
+  .word gStaticMetaSprite_mission_mugshot_later4
+  .word gStaticMetaSprite_number
+  .word gStaticMetaSprite_lever_switch_yellow
+  .word gStaticMetaSprite_menu_border
+  .word gStaticMetaSprite_enemy_pantheon_fist
+  .word gStaticMetaSprite_enemy_cattatank
+  .word gStaticMetaSprite_enemy_spearook
+  .word gStaticMetaSprite_215
+  .word gStaticMetaSprite_resistance_base_cat_216
+  .word gStaticMetaSprite_resistance_base_cat_217
+  .word gStaticMetaSprite_resistance_base_seagull
+  .word gStaticMetaSprite_enemy_shellcrawler
+  .word gStaticMetaSprite_enemy_cannon_hopper
+  .word gStaticMetaSprite_enemy_mettaur
+  .word gStaticMetaSprite_structural_steel
+  .word gStaticMetaSprite_light_switch
+  .word gStaticMetaSprite_rubble
+  .word gStaticMetaSprite_omega_white_body
+  .word gStaticMetaSprite_container_crashed
+  .word gStaticMetaSprite_container_crashed
+  .word gStaticMetaSprite_container_crashed
+  .word gStaticMetaSprite_subtank
+  .word gStaticMetaSprite_resistance_base_flying_fish
+  .word gStaticMetaSprite_resistance_base_plant
+  .word gStaticMetaSprite_ciel_minigame_232
+  .word gStaticMetaSprite_ciel_minigame_233
+  .word gStaticMetaSprite_ciel_minigame_234
+  .word gStaticMetaSprite_235
+  .word gStaticMetaSprite_spark
+  .word gStaticMetaSprite_rock_237
+  .word gStaticMetaSprite_238
+  .word gStaticMetaSprite_fish_angel_fish
+  .word gStaticMetaSprite_fish_sea_bream
+  .word gStaticMetaSprite_fish_crab
+  .word gStaticMetaSprite_fish_school
+  .word gStaticMetaSprite_243
+  .word gStaticMetaSprite_copy_x_minigame_slot
+  .word gStaticMetaSprite_boss_human_hellbat
+  .word gStaticMetaSprite_boss_human_childre
+  .word gStaticMetaSprite_boss_human_blazin
+  .word gStaticMetaSprite_boss_human_deathtanz
+  .word gStaticMetaSprite_boss_human_glacierle
+  .word gStaticMetaSprite_boss_human_cubit
+  .word gStaticMetaSprite_boss_human_tretista
+  .word gStaticMetaSprite_boss_human_volteel
+  .word gStaticMetaSprite_253
+
+
+.include "sprites/static/effects/metasprite.inc"
+.include "sprites/static/1/metasprite.inc"
+.include "sprites/static/lemon/metasprite.inc"
+.include "sprites/static/emotion_bubble/metasprite.inc"
+.include "sprites/static/enemy/shotcounter/metasprite.inc"
+.include "sprites/static/gravel/metasprite.inc"
+.include "sprites/static/enemy/batring/metasprite.inc"
+.include "sprites/static/enemy/grand_cannon/metasprite.inc"
+.include "sprites/static/enemy/pillar_cannon/metasprite.inc"
+.include "sprites/static/omega_white/hand/metasprite.inc"
+.include "sprites/static/omega_white/ring/metasprite.inc"
+.include "sprites/static/omega_white/recover/metasprite.inc"
+.include "sprites/static/omega_white/rubble/metasprite.inc"
+.include "sprites/static/enemy/shrimpolin/metasprite.inc"
+.include "sprites/static/menu/chip_icon/metasprite.inc"
+.include "sprites/static/menu/main_menu/metasprite.inc"
+.include "sprites/static/enemy/icebon/icebon/metasprite.inc"
+.include "sprites/static/enemy/icebon/ice/metasprite.inc"
+.include "sprites/static/door_2d/blue/metasprite.inc"
+.include "sprites/static/enemy/pantheon_hunter/metasprite.inc"
+.include "sprites/static/enemy/pantheon_guardian/metasprite.inc"
+.include "sprites/static/enemy/top_gabyoall/metasprite.inc"
+.include "sprites/static/enemy/flopper/metasprite.inc"
+.include "sprites/static/enemy/gyro_cannon/metasprite.inc"
+.include "sprites/static/enemy/sharkseal_x/metasprite.inc"
+.include "sprites/static/enemy/lamplort/metasprite.inc"
+.include "sprites/static/element_effect/thunder/metasprite.inc"
+.include "sprites/static/element_effect/ice/metasprite.inc"
+.include "sprites/static/enemy/lemmingles/metasprite.inc"
+.include "sprites/static/volcano/bomb/metasprite.inc"
+.include "sprites/static/32/metasprite.inc"
+.include "sprites/static/fefnir_fireball/metasprite.inc"
+.include "sprites/static/enemy/carryarm/metasprite.inc"
+.include "sprites/static/container/container/metasprite.inc"
+.include "sprites/static/childre/36/metasprite.inc"
+.include "sprites/static/childre/ear_shot/metasprite.inc"
+.include "sprites/static/childre/38/metasprite.inc"
+.include "sprites/static/enemy/pantheon_aqua/metasprite.inc"
+.include "sprites/static/enemy/snakecord/metasprite.inc"
+.include "sprites/static/hammer/metasprite.inc"
+.include "sprites/static/enemy/purple_nerple/metasprite.inc"
+.include "sprites/static/wormer/body/metasprite.inc"
+.include "sprites/static/wormer/rock_drone/metasprite.inc"
+.include "sprites/static/minigame/phantom/mine/metasprite.inc"
+.include "sprites/static/enemy/volcaire/metasprite.inc"
+.include "sprites/static/enemy/tile_cannon/metasprite.inc"
+.include "sprites/static/baby_elf/48/metasprite.inc"
+.include "sprites/static/baby_elf/49/metasprite.inc"
+.include "sprites/static/baby_elf/50/metasprite.inc"
+.include "sprites/static/baby_elf/51/metasprite.inc"
+.include "sprites/static/baby_elf/52/metasprite.inc"
+.include "sprites/static/enemy/shelluno/metasprite.inc"
+.include "sprites/static/deathtanz/rock/metasprite.inc"
+.include "sprites/static/deathtanz/projectile/metasprite.inc"
+.include "sprites/static/enemy/heavy_cannon/metasprite.inc"
+.include "sprites/static/volcano/geyser/metasprite.inc"
+.include "sprites/static/volcano/geyser_platform/metasprite.inc"
+.include "sprites/static/volcano/lava_river_platform/metasprite.inc"
+.include "sprites/static/exlife_indicator/metasprite.inc"
+.include "sprites/static/61/metasprite.inc"
+.include "sprites/static/enemy/beetank/metasprite.inc"
+.include "sprites/static/enemy/swordy/metasprite.inc"
+.include "sprites/static/iceball/metasprite.inc"
+.include "sprites/static/enemy/puffy/body/metasprite.inc"
+.include "sprites/static/enemy/puffy/bubble/metasprite.inc"
+.include "sprites/static/enemy/crossbyne/metasprite.inc"
+.include "sprites/static/old_residential/fall_rock/metasprite.inc"
+.include "sprites/static/menu/exskill_icon/metasprite.inc"
+.include "sprites/static/bee_server/metasprite.inc"
+.include "sprites/static/enemy/mellnet/metasprite.inc"
+.include "sprites/static/72/metasprite.inc"
+.include "sprites/static/anubis/rod/metasprite.inc"
+.include "sprites/static/anubis/sand/metasprite.inc"
+.include "sprites/static/anubis/coffin/metasprite.inc"
+.include "sprites/static/enemy/pantheon_zombie/metasprite.inc"
+.include "sprites/static/pantheon_aqua_mod/body/metasprite.inc"
+.include "sprites/static/pantheon_aqua_mod/projectile/metasprite.inc"
+.include "sprites/static/pantheon_aqua_mod/rock/metasprite.inc"
+.include "sprites/static/80/metasprite.inc"
+.include "sprites/static/mother_elf/81/metasprite.inc"
+.include "sprites/static/menu/elf_menu/metasprite.inc"
+.include "sprites/static/menu/elf_menu_icon/metasprite.inc"
+.include "sprites/static/locomo_if/body/metasprite.inc"
+.include "sprites/static/locomo_if/platform/metasprite.inc"
+.include "sprites/static/locomo_if/flame/metasprite.inc"
+.include "sprites/static/locomo_if/chill/metasprite.inc"
+.include "sprites/static/locomo_if/ice/metasprite.inc"
+.include "sprites/static/glacierle/hand/metasprite.inc"
+.include "sprites/static/glacierle/icicle/metasprite.inc"
+.include "sprites/static/copy_x/fire_shot/metasprite.inc"
+.include "sprites/static/copy_x/elec_shot/metasprite.inc"
+.include "sprites/static/copy_x/normal_shot/metasprite.inc"
+.include "sprites/static/copy_x/sliding_spark/metasprite.inc"
+.include "sprites/static/copy_x/charge_effect/metasprite.inc"
+.include "sprites/static/copy_x/reflect_laser/metasprite.inc"
+.include "sprites/static/copy_x/97/metasprite.inc"
+.include "sprites/static/blizzack/ice/metasprite.inc"
+.include "sprites/static/blizzack/chill/metasprite.inc"
+.include "sprites/static/blizzack/shoulder/metasprite.inc"
+.include "sprites/static/omega_white/sword/metasprite.inc"
+.include "sprites/static/enemy/eye_cannon/metasprite.inc"
+.include "sprites/static/enemy/gallisni/metasprite.inc"
+.include "sprites/static/enemy/capsule_cannon/metasprite.inc"
+.include "sprites/static/enemy/pantheon_bomber/metasprite.inc"
+.include "sprites/static/hanumachine_obj/metasprite.inc"
+.include "sprites/static/enemy/mothjiro/metasprite.inc"
+.include "sprites/static/sub_arcadia_platform/metasprite.inc"
+.include "sprites/static/enemy/pantheon_base/metasprite.inc"
+.include "sprites/static/enemy/carrybee_g/metasprite.inc"
+.include "sprites/static/rocket/metasprite.inc"
+.include "sprites/static/anatre_cube/metasprite.inc"
+.include "sprites/static/enemy/generator_cannon/metasprite.inc"
+.include "sprites/static/enemy/keaton/metasprite.inc"
+.include "sprites/static/resistance_base/elevator/default/metasprite.inc"
+.include "sprites/static/enemy/deathlock/metasprite.inc"
+.include "sprites/static/enemy/claveker/metasprite.inc"
+.include "sprites/static/lever_switch/red/metasprite.inc"
+.include "sprites/static/enemy/seimeran/metasprite.inc"
+.include "sprites/static/door_2d/gray/horizontal/metasprite.inc"
+.include "sprites/static/enemy/turtloid_s/metasprite.inc"
+.include "sprites/static/door_2d/gray/vertical/metasprite.inc"
+.include "sprites/static/teleportal/metasprite.inc"
+.include "sprites/static/area_x2_platform/metasprite.inc"
+.include "sprites/static/weil_labo_platform/metasprite.inc"
+.include "sprites/static/enemy/petatria/metasprite.inc"
+.include "sprites/static/disabled_disk/metasprite.inc"
+.include "sprites/static/128/metasprite.inc"
+.include "sprites/static/subtank2/metasprite.inc"
+.include "sprites/static/prologue/mob/metasprite.inc"
+.include "sprites/static/prologue/cutscene_mob/metasprite.inc"
+.include "sprites/static/prologue/cutscene_zero/metasprite.inc"
+.include "sprites/static/prologue/cutscene_ciel/metasprite.inc"
+.include "sprites/static/phantom/ninja_star/metasprite.inc"
+.include "sprites/static/phantom/135/metasprite.inc"
+.include "sprites/static/phantom/makibishi/metasprite.inc"
+.include "sprites/static/resistance_base/elevator/wood/metasprite.inc"
+.include "sprites/static/resistance_base/elevator/mmx/metasprite.inc"
+.include "sprites/static/energy_facility_btn/metasprite.inc"
+.include "sprites/static/resistance/mob/metasprite.inc"
+.include "sprites/static/enemy/shotloid/metasprite.inc"
+.include "sprites/static/143/metasprite.inc"
+.include "sprites/static/resistance_base/ciel_comp/0/metasprite.inc"
+.include "sprites/static/resistance_base/ciel_comp/1/metasprite.inc"
+.include "sprites/static/resistance_base/ciel_comp/2/metasprite.inc"
+.include "sprites/static/resistance_base/ciel_comp/3/metasprite.inc"
+.include "sprites/static/resistance_base/ciel_comp/4/metasprite.inc"
+.include "sprites/static/logo/megaman/metasprite.inc"
+.include "sprites/static/logo/z/metasprite.inc"
+.include "sprites/static/missile_platform/metasprite.inc"
+.include "sprites/static/mother_elf/152/metasprite.inc"
+.include "sprites/static/volcano/coffin/metasprite.inc"
+.include "sprites/static/giant_elevator_pier/metasprite.inc"
+.include "sprites/static/giant_elevator_platform/metasprite.inc"
+.include "sprites/static/156/metasprite.inc"
+.include "sprites/static/smoke_157/metasprite.inc"
+.include "sprites/static/minigame/zero/metasprite.inc"
+.include "sprites/static/minigame/copy_x/metasprite.inc"
+.include "sprites/static/minigame/phantom/icon/metasprite.inc"
+.include "sprites/static/minigame/harpuia/metasprite.inc"
+.include "sprites/static/resistance_base/painting/mmbn/metasprite.inc"
+.include "sprites/static/resistance_base/graffiti/zero1/metasprite.inc"
+.include "sprites/static/resistance_base/graffiti/ciel/metasprite.inc"
+.include "sprites/static/resistance_base/graffiti/zero2/metasprite.inc"
+.include "sprites/static/resistance_base/painting/ciel/metasprite.inc"
+.include "sprites/static/life_energy/default/metasprite.inc"
+.include "sprites/static/life_energy/x/metasprite.inc"
+.include "sprites/static/life_energy/tank/metasprite.inc"
+.include "sprites/static/ecrystal/default/metasprite.inc"
+.include "sprites/static/ecrystal/ball/metasprite.inc"
+.include "sprites/static/ecrystal/green/metasprite.inc"
+.include "sprites/static/exlife/default/metasprite.inc"
+.include "sprites/static/exlife/blue/metasprite.inc"
+.include "sprites/static/exlife/green/metasprite.inc"
+.include "sprites/static/result_disk/default/metasprite.inc"
+.include "sprites/static/result_disk/blue/metasprite.inc"
+.include "sprites/static/result_disk/red/metasprite.inc"
+.include "sprites/static/179/metasprite.inc"
+.include "sprites/static/ocean/childre_ship/metasprite.inc"
+.include "sprites/static/ocean/sea_level_button/metasprite.inc"
+.include "sprites/static/ocean/182/metasprite.inc"
+.include "sprites/static/ocean/childre_ship_sonic_wave/metasprite.inc"
+.include "sprites/static/x/metasprite.inc"
+.include "sprites/static/omega_zx_floating_rock/metasprite.inc"
+.include "sprites/static/186/metasprite.inc"
+.include "sprites/static/resistance/alouette/metasprite.inc"
+.include "sprites/static/resistance/kiss/metasprite.inc"
+.include "sprites/static/resistance/faucon/metasprite.inc"
+.include "sprites/static/resistance/hirondelle/metasprite.inc"
+.include "sprites/static/resistance/autruche/metasprite.inc"
+.include "sprites/static/resistance/rocinolle/metasprite.inc"
+.include "sprites/static/resistance/doigt/metasprite.inc"
+.include "sprites/static/resistance/cerveau/metasprite.inc"
+.include "sprites/static/resistance/hibou/metasprite.inc"
+.include "sprites/static/resistance/andrew/metasprite.inc"
+.include "sprites/static/resistance/menart/metasprite.inc"
+.include "sprites/static/resistance/perroquiet/metasprite.inc"
+.include "sprites/static/resistance/pic/metasprite.inc"
+.include "sprites/static/smoke/metasprite.inc"
+.include "sprites/static/resistance/operator/metasprite.inc"
+.include "sprites/static/resistance_base/202/metasprite.inc"
+.include "sprites/static/iceblock/metasprite.inc"
+.include "sprites/static/resistance_base/204/metasprite.inc"
+.include "sprites/static/mission_mugshot/first4/metasprite.inc"
+.include "sprites/static/mission_mugshot/middle4/metasprite.inc"
+.include "sprites/static/mission_mugshot/done/metasprite.inc"
+.include "sprites/static/mission_mugshot/later4/metasprite.inc"
+.include "sprites/static/number/metasprite.inc"
+.include "sprites/static/lever_switch/yellow/metasprite.inc"
+.include "sprites/static/menu/border/metasprite.inc"
+.include "sprites/static/enemy/pantheon_fist/metasprite.inc"
+.include "sprites/static/enemy/cattatank/metasprite.inc"
+.include "sprites/static/enemy/spearook/metasprite.inc"
+.include "sprites/static/215/metasprite.inc"
+.include "sprites/static/resistance_base/cat/216/metasprite.inc"
+.include "sprites/static/resistance_base/cat/217/metasprite.inc"
+.include "sprites/static/resistance_base/seagull/metasprite.inc"
+.include "sprites/static/enemy/shellcrawler/metasprite.inc"
+.include "sprites/static/enemy/cannon_hopper/metasprite.inc"
+.include "sprites/static/enemy/mettaur/metasprite.inc"
+.include "sprites/static/structural_steel/metasprite.inc"
+.include "sprites/static/light_switch/metasprite.inc"
+.include "sprites/static/rubble/metasprite.inc"
+.include "sprites/static/omega_white/body/metasprite.inc"
+.include "sprites/static/container/crashed/metasprite.inc"
+.include "sprites/static/subtank/metasprite.inc"
+.include "sprites/static/resistance_base/flying_fish/metasprite.inc"
+.include "sprites/static/resistance_base/plant/metasprite.inc"
+.include "sprites/static/ciel_minigame/232/metasprite.inc"
+.include "sprites/static/ciel_minigame/233/metasprite.inc"
+.include "sprites/static/ciel_minigame/234/metasprite.inc"
+.include "sprites/static/235/metasprite.inc"
+.include "sprites/static/spark/metasprite.inc"
+.include "sprites/static/rock_237/metasprite.inc"
+.include "sprites/static/238/metasprite.inc"
+.include "sprites/static/fish/angel_fish/metasprite.inc"
+.include "sprites/static/fish/sea_bream/metasprite.inc"
+.include "sprites/static/fish/crab/metasprite.inc"
+.include "sprites/static/fish/school/metasprite.inc"
+.include "sprites/static/243/metasprite.inc"
+.include "sprites/static/copy_x_minigame_slot/metasprite.inc"
+.include "sprites/static/boss_human/hellbat/metasprite.inc"
+.include "sprites/static/boss_human/childre/metasprite.inc"
+.include "sprites/static/boss_human/blazin/metasprite.inc"
+.include "sprites/static/boss_human/deathtanz/metasprite.inc"
+.include "sprites/static/boss_human/glacierle/metasprite.inc"
+.include "sprites/static/boss_human/cubit/metasprite.inc"
+.include "sprites/static/boss_human/tretista/metasprite.inc"
+.include "sprites/static/boss_human/volteel/metasprite.inc"
+.include "sprites/static/253/metasprite.inc"
+
+  .balign 4
+.global gStaticMotionCmdTable
+gStaticMotionCmdTable:
+  .word gStaticAnimationSequence_effects
+  .word gStaticAnimationSequence_1
+  .word gStaticAnimationSequence_lemon
+  .word gStaticAnimationSequence_emotion_bubble
+  .word gStaticAnimationSequence_enemy_shotcounter
+  .word gStaticAnimationSequence_gravel
+  .word gStaticAnimationSequence_enemy_batring
+  .word gStaticAnimationSequence_enemy_grand_cannon
+  .word gStaticAnimationSequence_enemy_pillar_cannon
+  .word gStaticAnimationSequence_omega_white_hand
+  .word gStaticAnimationSequence_omega_white_ring
+  .word gStaticAnimationSequence_omega_white_recover
+  .word gStaticAnimationSequence_omega_white_rubble
+  .word gStaticAnimationSequence_enemy_shrimpolin
+  .word gStaticAnimationSequence_menu_chip_icon
+  .word gStaticAnimationSequence_menu_main_menu
+  .word gStaticAnimationSequence_enemy_icebon_icebon
+  .word gStaticAnimationSequence_enemy_icebon_ice
+  .word gStaticAnimationSequence_door_2d_blue
+  .word gStaticAnimationSequence_enemy_pantheon_hunter
+  .word gStaticAnimationSequence_enemy_pantheon_guardian
+  .word gStaticAnimationSequence_enemy_top_gabyoall
+  .word gStaticAnimationSequence_enemy_flopper
+  .word gStaticAnimationSequence_enemy_gyro_cannon
+  .word gStaticAnimationSequence_enemy_sharkseal_x
+  .word gStaticAnimationSequence_enemy_lamplort
+  .word gStaticAnimationSequence_element_effect_thunder
+  .word gStaticAnimationSequence_element_effect_thunder
+  .word gStaticAnimationSequence_element_effect_ice
+  .word gStaticAnimationSequence_enemy_lemmingles
+  .word gStaticAnimationSequence_enemy_lemmingles
+  .word gStaticAnimationSequence_volcano_bomb
+  .word gStaticAnimationSequence_32
+  .word gStaticAnimationSequence_fefnir_fireball
+  .word gStaticAnimationSequence_enemy_carryarm
+  .word gStaticAnimationSequence_container_container
+  .word gStaticAnimationSequence_childre_36
+  .word gStaticAnimationSequence_childre_ear_shot
+  .word gStaticAnimationSequence_childre_38
+  .word gStaticAnimationSequence_enemy_pantheon_aqua
+  .word gStaticAnimationSequence_enemy_snakecord
+  .word gStaticAnimationSequence_hammer
+  .word gStaticAnimationSequence_enemy_purple_nerple
+  .word gStaticAnimationSequence_wormer_body
+  .word gStaticAnimationSequence_wormer_rock_drone
+  .word gStaticAnimationSequence_minigame_phantom_mine
+  .word gStaticAnimationSequence_enemy_volcaire
+  .word gStaticAnimationSequence_enemy_tile_cannon
+  .word gStaticAnimationSequence_baby_elf_48
+  .word gStaticAnimationSequence_baby_elf_49
+  .word gStaticAnimationSequence_baby_elf_50
+  .word gStaticAnimationSequence_baby_elf_51
+  .word gStaticAnimationSequence_baby_elf_52
+  .word gStaticAnimationSequence_enemy_shelluno
+  .word gStaticAnimationSequence_deathtanz_rock
+  .word gStaticAnimationSequence_deathtanz_projectile
+  .word gStaticAnimationSequence_enemy_heavy_cannon
+  .word gStaticAnimationSequence_volcano_geyser
+  .word gStaticAnimationSequence_volcano_geyser_platform
+  .word gStaticAnimationSequence_volcano_lava_river_platform
+  .word gStaticAnimationSequence_exlife_indicator
+  .word gStaticAnimationSequence_61
+  .word gStaticAnimationSequence_enemy_beetank
+  .word gStaticAnimationSequence_enemy_swordy
+  .word gStaticAnimationSequence_iceball
+  .word gStaticAnimationSequence_enemy_puffy_body
+  .word gStaticAnimationSequence_enemy_puffy_bubble
+  .word gStaticAnimationSequence_enemy_crossbyne
+  .word gStaticAnimationSequence_old_residential_fall_rock
+  .word gStaticAnimationSequence_menu_exskill_icon
+  .word gStaticAnimationSequence_bee_server
+  .word gStaticAnimationSequence_enemy_mellnet
+  .word gStaticAnimationSequence_72
+  .word gStaticAnimationSequence_anubis_rod
+  .word gStaticAnimationSequence_anubis_sand
+  .word gStaticAnimationSequence_anubis_coffin
+  .word gStaticAnimationSequence_enemy_pantheon_zombie
+  .word gStaticAnimationSequence_pantheon_aqua_mod_body
+  .word gStaticAnimationSequence_pantheon_aqua_mod_projectile
+  .word gStaticAnimationSequence_pantheon_aqua_mod_rock
+  .word gStaticAnimationSequence_80
+  .word gStaticAnimationSequence_mother_elf_81
+  .word gStaticAnimationSequence_menu_elf_menu
+  .word gStaticAnimationSequence_menu_elf_menu_icon
+  .word gStaticAnimationSequence_locomo_if_body
+  .word gStaticAnimationSequence_locomo_if_platform
+  .word gStaticAnimationSequence_locomo_if_flame
+  .word gStaticAnimationSequence_locomo_if_chill
+  .word gStaticAnimationSequence_locomo_if_ice
+  .word gStaticAnimationSequence_glacierle_hand
+  .word gStaticAnimationSequence_glacierle_icicle
+  .word gStaticAnimationSequence_copy_x_fire_shot
+  .word gStaticAnimationSequence_copy_x_elec_shot
+  .word gStaticAnimationSequence_copy_x_normal_shot
+  .word gStaticAnimationSequence_copy_x_sliding_spark
+  .word gStaticAnimationSequence_copy_x_charge_effect
+  .word gStaticAnimationSequence_copy_x_reflect_laser
+  .word gStaticAnimationSequence_copy_x_97
+  .word gStaticAnimationSequence_blizzack_ice
+  .word gStaticAnimationSequence_blizzack_chill
+  .word gStaticAnimationSequence_blizzack_shoulder
+  .word gStaticAnimationSequence_omega_white_sword
+  .word gStaticAnimationSequence_enemy_eye_cannon
+  .word gStaticAnimationSequence_enemy_gallisni
+  .word gStaticAnimationSequence_enemy_capsule_cannon
+  .word gStaticAnimationSequence_enemy_pantheon_bomber
+  .word gStaticAnimationSequence_hanumachine_obj
+  .word gStaticAnimationSequence_enemy_mothjiro
+  .word gStaticAnimationSequence_sub_arcadia_platform
+  .word gStaticAnimationSequence_enemy_pantheon_base
+  .word gStaticAnimationSequence_enemy_carrybee_g
+  .word gStaticAnimationSequence_rocket
+  .word gStaticAnimationSequence_anatre_cube
+  .word gStaticAnimationSequence_enemy_generator_cannon
+  .word gStaticAnimationSequence_enemy_keaton
+  .word gStaticAnimationSequence_resistance_base_elevator_default
+  .word gStaticAnimationSequence_enemy_deathlock
+  .word gStaticAnimationSequence_enemy_claveker
+  .word gStaticAnimationSequence_lever_switch_red
+  .word gStaticAnimationSequence_enemy_seimeran
+  .word gStaticAnimationSequence_door_2d_gray_horizontal
+  .word gStaticAnimationSequence_enemy_turtloid_s
+  .word gStaticAnimationSequence_door_2d_gray_vertical
+  .word gStaticAnimationSequence_teleportal
+  .word gStaticAnimationSequence_area_x2_platform
+  .word gStaticAnimationSequence_weil_labo_platform
+  .word gStaticAnimationSequence_enemy_petatria
+  .word gStaticAnimationSequence_disabled_disk
+  .word gStaticAnimationSequence_128
+  .word gStaticAnimationSequence_subtank2
+  .word gStaticAnimationSequence_prologue_mob
+  .word gStaticAnimationSequence_prologue_cutscene_mob
+  .word gStaticAnimationSequence_prologue_cutscene_zero
+  .word gStaticAnimationSequence_prologue_cutscene_ciel
+  .word gStaticAnimationSequence_phantom_ninja_star
+  .word gStaticAnimationSequence_phantom_135
+  .word gStaticAnimationSequence_phantom_makibishi
+  .word gStaticAnimationSequence_resistance_base_elevator_wood
+  .word gStaticAnimationSequence_resistance_base_elevator_mmx
+  .word gStaticAnimationSequence_energy_facility_btn
+  .word gStaticAnimationSequence_resistance_mob
+  .word gStaticAnimationSequence_effects
+  .word gStaticAnimationSequence_enemy_shotloid
+  .word gStaticAnimationSequence_143
+  .word gStaticAnimationSequence_resistance_base_ciel_comp_0
+  .word gStaticAnimationSequence_resistance_base_ciel_comp_1
+  .word gStaticAnimationSequence_resistance_base_ciel_comp_2
+  .word gStaticAnimationSequence_resistance_base_ciel_comp_3
+  .word gStaticAnimationSequence_resistance_base_ciel_comp_4
+  .word gStaticAnimationSequence_logo_megaman
+  .word gStaticAnimationSequence_logo_z
+  .word gStaticAnimationSequence_missile_platform
+  .word gStaticAnimationSequence_mother_elf_152
+  .word gStaticAnimationSequence_volcano_coffin
+  .word gStaticAnimationSequence_giant_elevator_pier
+  .word gStaticAnimationSequence_giant_elevator_platform
+  .word gStaticAnimationSequence_156
+  .word gStaticAnimationSequence_smoke_157
+  .word gStaticAnimationSequence_minigame_zero
+  .word gStaticAnimationSequence_minigame_copy_x
+  .word gStaticAnimationSequence_minigame_phantom_icon
+  .word gStaticAnimationSequence_minigame_harpuia
+  .word gStaticAnimationSequence_resistance_base_painting_mmbn
+  .word gStaticAnimationSequence_resistance_base_graffiti_zero1
+  .word gStaticAnimationSequence_resistance_base_graffiti_ciel
+  .word gStaticAnimationSequence_resistance_base_graffiti_zero2
+  .word gStaticAnimationSequence_resistance_base_painting_ciel
+  .word gStaticAnimationSequence_life_energy_default
+  .word gStaticAnimationSequence_life_energy_x
+  .word gStaticAnimationSequence_life_energy_tank
+  .word gStaticAnimationSequence_ecrystal_default
+  .word gStaticAnimationSequence_ecrystal_ball
+  .word gStaticAnimationSequence_ecrystal_green
+  .word gStaticAnimationSequence_exlife_default
+  .word gStaticAnimationSequence_exlife_blue
+  .word gStaticAnimationSequence_exlife_green
+  .word gStaticAnimationSequence_result_disk_default
+  .word gStaticAnimationSequence_result_disk_blue
+  .word gStaticAnimationSequence_result_disk_red
+  .word gStaticAnimationSequence_179
+  .word gStaticAnimationSequence_ocean_childre_ship
+  .word gStaticAnimationSequence_ocean_sea_level_button
+  .word gStaticAnimationSequence_ocean_182
+  .word gStaticAnimationSequence_ocean_childre_ship_sonic_wave
+  .word gStaticAnimationSequence_x
+  .word gStaticAnimationSequence_omega_zx_floating_rock
+  .word gStaticAnimationSequence_186
+  .word gStaticAnimationSequence_resistance_alouette
+  .word gStaticAnimationSequence_resistance_kiss
+  .word gStaticAnimationSequence_resistance_faucon
+  .word gStaticAnimationSequence_resistance_hirondelle
+  .word gStaticAnimationSequence_resistance_autruche
+  .word gStaticAnimationSequence_resistance_rocinolle
+  .word gStaticAnimationSequence_resistance_doigt
+  .word gStaticAnimationSequence_resistance_cerveau
+  .word gStaticAnimationSequence_resistance_hibou
+  .word gStaticAnimationSequence_resistance_andrew
+  .word gStaticAnimationSequence_resistance_menart
+  .word gStaticAnimationSequence_resistance_perroquiet
+  .word gStaticAnimationSequence_resistance_pic
+  .word gStaticAnimationSequence_smoke
+  .word gStaticAnimationSequence_resistance_operator
+  .word gStaticAnimationSequence_resistance_base_202
+  .word gStaticAnimationSequence_iceblock
+  .word gStaticAnimationSequence_resistance_base_204
+  .word gStaticAnimationSequence_mission_mugshot_first4
+  .word gStaticAnimationSequence_mission_mugshot_middle4
+  .word gStaticAnimationSequence_mission_mugshot_done
+  .word gStaticAnimationSequence_mission_mugshot_later4
+  .word gStaticAnimationSequence_number
+  .word gStaticAnimationSequence_lever_switch_yellow
+  .word gStaticAnimationSequence_menu_border
+  .word gStaticAnimationSequence_enemy_pantheon_fist
+  .word gStaticAnimationSequence_enemy_cattatank
+  .word gStaticAnimationSequence_enemy_spearook
+  .word gStaticAnimationSequence_215
+  .word gStaticAnimationSequence_resistance_base_cat_216
+  .word gStaticAnimationSequence_resistance_base_cat_217
+  .word gStaticAnimationSequence_resistance_base_seagull
+  .word gStaticAnimationSequence_enemy_shellcrawler
+  .word gStaticAnimationSequence_enemy_cannon_hopper
+  .word gStaticAnimationSequence_enemy_mettaur
+  .word gStaticAnimationSequence_structural_steel
+  .word gStaticAnimationSequence_light_switch
+  .word gStaticAnimationSequence_rubble
+  .word gStaticAnimationSequence_omega_white_body
+  .word gStaticAnimationSequence_container_crashed
+  .word gStaticAnimationSequence_container_crashed
+  .word gStaticAnimationSequence_container_crashed
+  .word gStaticAnimationSequence_subtank
+  .word gStaticAnimationSequence_resistance_base_flying_fish
+  .word gStaticAnimationSequence_resistance_base_plant
+  .word gStaticAnimationSequence_ciel_minigame_232
+  .word gStaticAnimationSequence_ciel_minigame_233
+  .word gStaticAnimationSequence_ciel_minigame_234
+  .word gStaticAnimationSequence_235
+  .word gStaticAnimationSequence_spark
+  .word gStaticAnimationSequence_rock_237
+  .word gStaticAnimationSequence_238
+  .word gStaticAnimationSequence_fish_angel_fish
+  .word gStaticAnimationSequence_fish_sea_bream
+  .word gStaticAnimationSequence_fish_crab
+  .word gStaticAnimationSequence_fish_school
+  .word gStaticAnimationSequence_243
+  .word gStaticAnimationSequence_copy_x_minigame_slot
+  .word gStaticAnimationSequence_boss_human_hellbat
+  .word gStaticAnimationSequence_boss_human_childre
+  .word gStaticAnimationSequence_boss_human_blazin
+  .word gStaticAnimationSequence_boss_human_deathtanz
+  .word gStaticAnimationSequence_boss_human_glacierle
+  .word gStaticAnimationSequence_boss_human_cubit
+  .word gStaticAnimationSequence_boss_human_tretista
+  .word gStaticAnimationSequence_boss_human_volteel
+  .word gStaticAnimationSequence_253
+
+
+.include "sprites/static/effects/sequence.inc"
+.include "sprites/static/1/sequence.inc"
+.include "sprites/static/lemon/sequence.inc"
+.include "sprites/static/emotion_bubble/sequence.inc"
+.include "sprites/static/enemy/shotcounter/sequence.inc"
+.include "sprites/static/gravel/sequence.inc"
+.include "sprites/static/enemy/batring/sequence.inc"
+.include "sprites/static/enemy/grand_cannon/sequence.inc"
+.include "sprites/static/enemy/pillar_cannon/sequence.inc"
+.include "sprites/static/omega_white/hand/sequence.inc"
+.include "sprites/static/omega_white/ring/sequence.inc"
+.include "sprites/static/omega_white/recover/sequence.inc"
+.include "sprites/static/omega_white/rubble/sequence.inc"
+.include "sprites/static/enemy/shrimpolin/sequence.inc"
+.include "sprites/static/menu/chip_icon/sequence.inc"
+.include "sprites/static/menu/main_menu/sequence.inc"
+.include "sprites/static/enemy/icebon/icebon/sequence.inc"
+.include "sprites/static/enemy/icebon/ice/sequence.inc"
+.include "sprites/static/door_2d/blue/sequence.inc"
+.include "sprites/static/enemy/pantheon_hunter/sequence.inc"
+.include "sprites/static/enemy/pantheon_guardian/sequence.inc"
+.include "sprites/static/enemy/top_gabyoall/sequence.inc"
+.include "sprites/static/enemy/flopper/sequence.inc"
+.include "sprites/static/enemy/gyro_cannon/sequence.inc"
+.include "sprites/static/enemy/sharkseal_x/sequence.inc"
+.include "sprites/static/enemy/lamplort/sequence.inc"
+.include "sprites/static/element_effect/thunder/sequence.inc"
+.include "sprites/static/element_effect/ice/sequence.inc"
+.include "sprites/static/enemy/lemmingles/sequence.inc"
+.include "sprites/static/volcano/bomb/sequence.inc"
+.include "sprites/static/32/sequence.inc"
+.include "sprites/static/fefnir_fireball/sequence.inc"
+.include "sprites/static/enemy/carryarm/sequence.inc"
+.include "sprites/static/container/container/sequence.inc"
+.include "sprites/static/childre/36/sequence.inc"
+.include "sprites/static/childre/ear_shot/sequence.inc"
+.include "sprites/static/childre/38/sequence.inc"
+.include "sprites/static/enemy/pantheon_aqua/sequence.inc"
+.include "sprites/static/enemy/snakecord/sequence.inc"
+.include "sprites/static/hammer/sequence.inc"
+.include "sprites/static/enemy/purple_nerple/sequence.inc"
+.include "sprites/static/wormer/body/sequence.inc"
+.include "sprites/static/wormer/rock_drone/sequence.inc"
+.include "sprites/static/minigame/phantom/mine/sequence.inc"
+.include "sprites/static/enemy/volcaire/sequence.inc"
+.include "sprites/static/enemy/tile_cannon/sequence.inc"
+.include "sprites/static/baby_elf/48/sequence.inc"
+.include "sprites/static/baby_elf/49/sequence.inc"
+.include "sprites/static/baby_elf/50/sequence.inc"
+.include "sprites/static/baby_elf/51/sequence.inc"
+.include "sprites/static/baby_elf/52/sequence.inc"
+.include "sprites/static/enemy/shelluno/sequence.inc"
+.include "sprites/static/deathtanz/rock/sequence.inc"
+.include "sprites/static/deathtanz/projectile/sequence.inc"
+.include "sprites/static/enemy/heavy_cannon/sequence.inc"
+.include "sprites/static/volcano/geyser/sequence.inc"
+.include "sprites/static/volcano/geyser_platform/sequence.inc"
+.include "sprites/static/volcano/lava_river_platform/sequence.inc"
+.include "sprites/static/exlife_indicator/sequence.inc"
+.include "sprites/static/61/sequence.inc"
+.include "sprites/static/enemy/beetank/sequence.inc"
+.include "sprites/static/enemy/swordy/sequence.inc"
+.include "sprites/static/iceball/sequence.inc"
+.include "sprites/static/enemy/puffy/body/sequence.inc"
+.include "sprites/static/enemy/puffy/bubble/sequence.inc"
+.include "sprites/static/enemy/crossbyne/sequence.inc"
+.include "sprites/static/old_residential/fall_rock/sequence.inc"
+.include "sprites/static/menu/exskill_icon/sequence.inc"
+.include "sprites/static/bee_server/sequence.inc"
+.include "sprites/static/enemy/mellnet/sequence.inc"
+.include "sprites/static/72/sequence.inc"
+.include "sprites/static/anubis/rod/sequence.inc"
+.include "sprites/static/anubis/sand/sequence.inc"
+.include "sprites/static/anubis/coffin/sequence.inc"
+.include "sprites/static/enemy/pantheon_zombie/sequence.inc"
+.include "sprites/static/pantheon_aqua_mod/body/sequence.inc"
+.include "sprites/static/pantheon_aqua_mod/projectile/sequence.inc"
+.include "sprites/static/pantheon_aqua_mod/rock/sequence.inc"
+.include "sprites/static/80/sequence.inc"
+.include "sprites/static/mother_elf/81/sequence.inc"
+.include "sprites/static/menu/elf_menu/sequence.inc"
+.include "sprites/static/menu/elf_menu_icon/sequence.inc"
+.include "sprites/static/locomo_if/body/sequence.inc"
+.include "sprites/static/locomo_if/platform/sequence.inc"
+.include "sprites/static/locomo_if/flame/sequence.inc"
+.include "sprites/static/locomo_if/chill/sequence.inc"
+.include "sprites/static/locomo_if/ice/sequence.inc"
+.include "sprites/static/glacierle/hand/sequence.inc"
+.include "sprites/static/glacierle/icicle/sequence.inc"
+.include "sprites/static/copy_x/fire_shot/sequence.inc"
+.include "sprites/static/copy_x/elec_shot/sequence.inc"
+.include "sprites/static/copy_x/normal_shot/sequence.inc"
+.include "sprites/static/copy_x/sliding_spark/sequence.inc"
+.include "sprites/static/copy_x/charge_effect/sequence.inc"
+.include "sprites/static/copy_x/reflect_laser/sequence.inc"
+.include "sprites/static/copy_x/97/sequence.inc"
+.include "sprites/static/blizzack/ice/sequence.inc"
+.include "sprites/static/blizzack/chill/sequence.inc"
+.include "sprites/static/blizzack/shoulder/sequence.inc"
+.include "sprites/static/omega_white/sword/sequence.inc"
+.include "sprites/static/enemy/eye_cannon/sequence.inc"
+.include "sprites/static/enemy/gallisni/sequence.inc"
+.include "sprites/static/enemy/capsule_cannon/sequence.inc"
+.include "sprites/static/enemy/pantheon_bomber/sequence.inc"
+.include "sprites/static/hanumachine_obj/sequence.inc"
+.include "sprites/static/enemy/mothjiro/sequence.inc"
+.include "sprites/static/sub_arcadia_platform/sequence.inc"
+.include "sprites/static/enemy/pantheon_base/sequence.inc"
+.include "sprites/static/enemy/carrybee_g/sequence.inc"
+.include "sprites/static/rocket/sequence.inc"
+.include "sprites/static/anatre_cube/sequence.inc"
+.include "sprites/static/enemy/generator_cannon/sequence.inc"
+.include "sprites/static/enemy/keaton/sequence.inc"
+.include "sprites/static/resistance_base/elevator/default/sequence.inc"
+.include "sprites/static/enemy/deathlock/sequence.inc"
+.include "sprites/static/enemy/claveker/sequence.inc"
+.include "sprites/static/lever_switch/red/sequence.inc"
+.include "sprites/static/enemy/seimeran/sequence.inc"
+.include "sprites/static/door_2d/gray/horizontal/sequence.inc"
+.include "sprites/static/enemy/turtloid_s/sequence.inc"
+.include "sprites/static/door_2d/gray/vertical/sequence.inc"
+.include "sprites/static/teleportal/sequence.inc"
+.include "sprites/static/area_x2_platform/sequence.inc"
+.include "sprites/static/weil_labo_platform/sequence.inc"
+.include "sprites/static/enemy/petatria/sequence.inc"
+.include "sprites/static/disabled_disk/sequence.inc"
+.include "sprites/static/128/sequence.inc"
+.include "sprites/static/subtank2/sequence.inc"
+.include "sprites/static/prologue/mob/sequence.inc"
+.include "sprites/static/prologue/cutscene_mob/sequence.inc"
+.include "sprites/static/prologue/cutscene_zero/sequence.inc"
+.include "sprites/static/prologue/cutscene_ciel/sequence.inc"
+.include "sprites/static/phantom/ninja_star/sequence.inc"
+.include "sprites/static/phantom/135/sequence.inc"
+.include "sprites/static/phantom/makibishi/sequence.inc"
+.include "sprites/static/resistance_base/elevator/wood/sequence.inc"
+.include "sprites/static/resistance_base/elevator/mmx/sequence.inc"
+.include "sprites/static/energy_facility_btn/sequence.inc"
+.include "sprites/static/resistance/mob/sequence.inc"
+.include "sprites/static/enemy/shotloid/sequence.inc"
+.include "sprites/static/143/sequence.inc"
+.include "sprites/static/resistance_base/ciel_comp/0/sequence.inc"
+.include "sprites/static/resistance_base/ciel_comp/1/sequence.inc"
+.include "sprites/static/resistance_base/ciel_comp/2/sequence.inc"
+.include "sprites/static/resistance_base/ciel_comp/3/sequence.inc"
+.include "sprites/static/resistance_base/ciel_comp/4/sequence.inc"
+.include "sprites/static/logo/megaman/sequence.inc"
+.include "sprites/static/logo/z/sequence.inc"
+.include "sprites/static/missile_platform/sequence.inc"
+.include "sprites/static/mother_elf/152/sequence.inc"
+.include "sprites/static/volcano/coffin/sequence.inc"
+.include "sprites/static/giant_elevator_pier/sequence.inc"
+.include "sprites/static/giant_elevator_platform/sequence.inc"
+.include "sprites/static/156/sequence.inc"
+.include "sprites/static/smoke_157/sequence.inc"
+.include "sprites/static/minigame/zero/sequence.inc"
+.include "sprites/static/minigame/copy_x/sequence.inc"
+.include "sprites/static/minigame/phantom/icon/sequence.inc"
+.include "sprites/static/minigame/harpuia/sequence.inc"
+.include "sprites/static/resistance_base/painting/mmbn/sequence.inc"
+.include "sprites/static/resistance_base/graffiti/zero1/sequence.inc"
+.include "sprites/static/resistance_base/graffiti/ciel/sequence.inc"
+.include "sprites/static/resistance_base/graffiti/zero2/sequence.inc"
+.include "sprites/static/resistance_base/painting/ciel/sequence.inc"
+.include "sprites/static/life_energy/default/sequence.inc"
+.include "sprites/static/life_energy/x/sequence.inc"
+.include "sprites/static/life_energy/tank/sequence.inc"
+.include "sprites/static/ecrystal/default/sequence.inc"
+.include "sprites/static/ecrystal/ball/sequence.inc"
+.include "sprites/static/ecrystal/green/sequence.inc"
+.include "sprites/static/exlife/default/sequence.inc"
+.include "sprites/static/exlife/blue/sequence.inc"
+.include "sprites/static/exlife/green/sequence.inc"
+.include "sprites/static/result_disk/default/sequence.inc"
+.include "sprites/static/result_disk/blue/sequence.inc"
+.include "sprites/static/result_disk/red/sequence.inc"
+.include "sprites/static/179/sequence.inc"
+.include "sprites/static/ocean/childre_ship/sequence.inc"
+.include "sprites/static/ocean/sea_level_button/sequence.inc"
+.include "sprites/static/ocean/182/sequence.inc"
+.include "sprites/static/ocean/childre_ship_sonic_wave/sequence.inc"
+.include "sprites/static/x/sequence.inc"
+.include "sprites/static/omega_zx_floating_rock/sequence.inc"
+.include "sprites/static/186/sequence.inc"
+.include "sprites/static/resistance/alouette/sequence.inc"
+.include "sprites/static/resistance/kiss/sequence.inc"
+.include "sprites/static/resistance/faucon/sequence.inc"
+.include "sprites/static/resistance/hirondelle/sequence.inc"
+.include "sprites/static/resistance/autruche/sequence.inc"
+.include "sprites/static/resistance/rocinolle/sequence.inc"
+.include "sprites/static/resistance/doigt/sequence.inc"
+.include "sprites/static/resistance/cerveau/sequence.inc"
+.include "sprites/static/resistance/hibou/sequence.inc"
+.include "sprites/static/resistance/andrew/sequence.inc"
+.include "sprites/static/resistance/menart/sequence.inc"
+.include "sprites/static/resistance/perroquiet/sequence.inc"
+.include "sprites/static/resistance/pic/sequence.inc"
+.include "sprites/static/smoke/sequence.inc"
+.include "sprites/static/resistance/operator/sequence.inc"
+.include "sprites/static/resistance_base/202/sequence.inc"
+.include "sprites/static/iceblock/sequence.inc"
+.include "sprites/static/resistance_base/204/sequence.inc"
+.include "sprites/static/mission_mugshot/first4/sequence.inc"
+.include "sprites/static/mission_mugshot/middle4/sequence.inc"
+.include "sprites/static/mission_mugshot/done/sequence.inc"
+.include "sprites/static/mission_mugshot/later4/sequence.inc"
+.include "sprites/static/number/sequence.inc"
+.include "sprites/static/lever_switch/yellow/sequence.inc"
+.include "sprites/static/menu/border/sequence.inc"
+.include "sprites/static/enemy/pantheon_fist/sequence.inc"
+.include "sprites/static/enemy/cattatank/sequence.inc"
+.include "sprites/static/enemy/spearook/sequence.inc"
+.include "sprites/static/215/sequence.inc"
+.include "sprites/static/resistance_base/cat/216/sequence.inc"
+.include "sprites/static/resistance_base/cat/217/sequence.inc"
+.include "sprites/static/resistance_base/seagull/sequence.inc"
+.include "sprites/static/enemy/shellcrawler/sequence.inc"
+.include "sprites/static/enemy/cannon_hopper/sequence.inc"
+.include "sprites/static/enemy/mettaur/sequence.inc"
+.include "sprites/static/structural_steel/sequence.inc"
+.include "sprites/static/light_switch/sequence.inc"
+.include "sprites/static/rubble/sequence.inc"
+.include "sprites/static/omega_white/body/sequence.inc"
+.include "sprites/static/container/crashed/sequence.inc"
+.include "sprites/static/subtank/sequence.inc"
+.include "sprites/static/resistance_base/flying_fish/sequence.inc"
+.include "sprites/static/resistance_base/plant/sequence.inc"
+.include "sprites/static/ciel_minigame/232/sequence.inc"
+.include "sprites/static/ciel_minigame/233/sequence.inc"
+.include "sprites/static/ciel_minigame/234/sequence.inc"
+.include "sprites/static/235/sequence.inc"
+.include "sprites/static/spark/sequence.inc"
+.include "sprites/static/rock_237/sequence.inc"
+.include "sprites/static/238/sequence.inc"
+.include "sprites/static/fish/angel_fish/sequence.inc"
+.include "sprites/static/fish/sea_bream/sequence.inc"
+.include "sprites/static/fish/crab/sequence.inc"
+.include "sprites/static/fish/school/sequence.inc"
+.include "sprites/static/243/sequence.inc"
+.include "sprites/static/copy_x_minigame_slot/sequence.inc"
+.include "sprites/static/boss_human/hellbat/sequence.inc"
+.include "sprites/static/boss_human/childre/sequence.inc"
+.include "sprites/static/boss_human/blazin/sequence.inc"
+.include "sprites/static/boss_human/deathtanz/sequence.inc"
+.include "sprites/static/boss_human/glacierle/sequence.inc"
+.include "sprites/static/boss_human/cubit/sequence.inc"
+.include "sprites/static/boss_human/tretista/sequence.inc"
+.include "sprites/static/boss_human/volteel/sequence.inc"
+.include "sprites/static/253/sequence.inc"
+
+.balign 4

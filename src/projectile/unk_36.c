@@ -2,6 +2,10 @@
 #include "global.h"
 #include "projectile.h"
 
+// Hanumachine
+
+INCASM("asm/projectile/unk_36.inc");
+
 void Projectile36_Init(struct Projectile* p);
 void Projectile36_Update(struct Projectile* p);
 void Projectile36_Die(struct Projectile* p);
@@ -11,7 +15,7 @@ const ProjectileRoutine gProjectile36Routine = {
     [ENTITY_INIT] =      Projectile36_Init,
     [ENTITY_UPDATE] =    Projectile36_Update,
     [ENTITY_DIE] =       Projectile36_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on

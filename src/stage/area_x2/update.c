@@ -1,5 +1,6 @@
 #include "global.h"
 #include "overworld.h"
+#include "spawn.h"
 #include "story.h"
 
 s16 AreaX2_MissionUpdate(struct StageRun* p) {
@@ -60,11 +61,11 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
     if ((z->s).coord.x >= PIXEL(3824)) {
       if (IS_MISSION) {
         if (gStageRun.vm.bgm != MUS_NONE) {
-          fadeoutBGM(gStageRun.vm.bgm);
+          FadeOutBGM(gStageRun.vm.bgm);
           gStageRun.vm.bgm = MUS_NONE;
         }
       } else {
-        FUN_080186c8(gStageEntityManager.dynamicEntityRange[0], PIXEL(480));
+        ClipSpawnRange(gSpawnManager.borderY[0], PIXEL(480));
         gCollisionManager.sweep |= (1 << FACTION_ENEMY);
         p->stageEventPhase = 4;
       }
@@ -72,14 +73,14 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
 
     // Leave Boss door (= into Guarder room)
     if ((z->s).coord.x >= PIXEL(3856)) {
-      FUN_080186c8(gStageEntityManager.dynamicEntityRange[0], PIXEL(480));
+      ClipSpawnRange(gSpawnManager.borderY[0], PIXEL(480));
       gCollisionManager.sweep |= (1 << FACTION_ENEMY);
       if (gStageRun.vm.bgm != BGM_GUARDER_ROOM) {
         if (gStageRun.vm.bgm != MUS_NONE) {
-          fadeoutBGM(gStageRun.vm.bgm);
+          FadeOutBGM(gStageRun.vm.bgm);
           gStageRun.vm.bgm = MUS_NONE;
         }
-        playBGM(BGM_GUARDER_ROOM);
+        PlayBGM(BGM_GUARDER_ROOM);
         gStageRun.vm.bgm = BGM_GUARDER_ROOM;
       }
       p->stageEventPhase = 4;
@@ -111,14 +112,14 @@ s16 AreaX2_MissionUpdate(struct StageRun* p) {
     gCollisionManager.sweep |= (1 << FACTION_ENEMY);
     SetScript(&gStageRun.vm, gStageScriptList[STAGE_AREA_X2][8]);
     gStageRun.missionStatus &= ~MISSION_SUCCESS;
-    gStageRun.vm.active &= 0xFD;
+    gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= STOP_TIME_COUNT;
     gStageRun.missionStatus |= MISSION_STAY;
     setStageCheckpoint2(6);
     p->stageEventPhase = 8;
 
   } else if (p->stageEventPhase == 8) {
-    gCollisionManager.disabled &= 0x7F;
+    gCollisionManager.disabled &= ~(1 << 7);
     gCollisionManager.sweep = 0;
     SetScript(&gStageRun.vm, gStageScriptList[STAGE_AREA_X2][10]);
     setStageCheckpoint(7);

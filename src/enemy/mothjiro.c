@@ -2,8 +2,6 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/mothjiro.inc");
-
 void Mothjiro_Init(struct Enemy* p);
 void Mothjiro_Update(struct Enemy* p);
 void Mothjiro_Die(struct Enemy* p);
@@ -13,10 +11,26 @@ const EnemyRoutine gMothjiroRoutine = {
     [ENTITY_INIT] =      Mothjiro_Init,
     [ENTITY_UPDATE] =    Mothjiro_Update,
     [ENTITY_DIE] =       Mothjiro_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
+
+// --------------------------------------------
+
+struct Enemy* CreateMothjiro(Coords32* c, u8 r1) {
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_MOTHJIRO);
+    (p->s).coord = *c;
+    (p->s).work[0] = r1;
+  }
+  return p;
+}
+
+INCASM("asm/enemy/mothjiro.inc");
+
+// --------------------------------------------
 
 void nop_080881d8(struct Enemy* p);
 void nop_080884a0(struct Enemy* p);
@@ -89,4 +103,4 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(4)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(4)};

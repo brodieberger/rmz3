@@ -4,350 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080bf390
-FUN_080bf390: @ 0x080BF390
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	ldr r6, [r5, #0x2c]
-	ldr r0, _080BF3D0 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _080BF3CA
-	adds r0, #0x25
-	movs r3, #0
-	movs r2, #1
-	strb r2, [r0]
-	ldr r0, _080BF3D4 @ =gVFXFnTable
-	movs r1, #0x2f
-	strb r1, [r4, #9]
-	adds r0, #0xbc
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r0, #0
-	strh r3, [r4, #0x20]
-	adds r1, r4, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r2, [r4, #0x10]
-	str r5, [r4, #0x28]
-	str r6, [r4, #0x2c]
-_080BF3CA:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF3D0: .4byte gVFXHeaderPtr
-_080BF3D4: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080bf3d8
-FUN_080bf3d8: @ 0x080BF3D8
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r7, r0, #0
-	movs r6, #0
-	movs r4, #0
-	movs r5, #0
-	ldr r0, _080BF430 @ =0x0836D9BC
-	mov r8, r0
-_080BF3EA:
-	ldr r0, _080BF434 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r1, r0, #0
-	cmp r1, #0
-	beq _080BF41E
-	adds r2, r1, #0
-	adds r2, #0x25
-	movs r0, #1
-	strb r0, [r2]
-	movs r0, #0x2f
-	strb r0, [r1, #9]
-	mov r2, r8
-	ldr r0, [r2]
-	ldr r0, [r0]
-	str r0, [r1, #0x14]
-	strh r5, [r1, #0x20]
-	adds r0, r1, #0
-	adds r0, #0x22
-	strb r5, [r0]
-	strb r5, [r1, #0x10]
-	strb r4, [r1, #0x12]
-	str r7, [r1, #0x28]
-	str r6, [r1, #0x2c]
-	adds r6, r1, #0
-_080BF41E:
-	adds r4, #1
-	cmp r4, #1
-	ble _080BF3EA
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF430: .4byte 0x0836D9BC
-_080BF434: .4byte gVFXHeaderPtr
-
-	thumb_func_start FUN_080bf438
-FUN_080bf438: @ 0x080BF438
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	adds r6, r1, #0
-	lsls r2, r2, #0x18
-	lsrs r4, r2, #0x18
-	ldr r0, _080BF484 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080BF47C
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080BF488 @ =gVFXFnTable
-	movs r1, #0x2f
-	strb r1, [r3, #9]
-	adds r0, #0xbc
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	movs r0, #2
-	strb r0, [r3, #0x10]
-	strb r4, [r3, #0x12]
-	str r5, [r3, #0x54]
-	str r6, [r3, #0x58]
-_080BF47C:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF484: .4byte gVFXHeaderPtr
-_080BF488: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080bf48c
-FUN_080bf48c: @ 0x080BF48C
-	push {r4, r5, r6, r7, lr}
-	mov r7, sl
-	mov r6, sb
-	mov r5, r8
-	push {r5, r6, r7}
-	mov sb, r1
-	lsls r2, r2, #0x18
-	lsrs r2, r2, #0x18
-	mov r8, r2
-	movs r4, #0
-	movs r7, #0
-	ldr r1, _080BF514 @ =0x0836D9BC
-	mov sl, r1
-	ldr r1, _080BF518 @ =0xFFFFF800
-	adds r5, r0, r1
-	ldr r6, _080BF51C @ =RNG_0202f388
-_080BF4AC:
-	ldr r0, _080BF520 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r2, r0, #0
-	cmp r2, #0
-	beq _080BF4FE
-	adds r1, r2, #0
-	adds r1, #0x25
-	movs r0, #1
-	strb r0, [r1]
-	movs r0, #0x2f
-	strb r0, [r2, #9]
-	mov r1, sl
-	ldr r0, [r1]
-	ldr r0, [r0]
-	str r0, [r2, #0x14]
-	strh r7, [r2, #0x20]
-	adds r0, r2, #0
-	adds r0, #0x22
-	strb r7, [r0]
-	movs r0, #3
-	strb r0, [r2, #0x10]
-	strb r4, [r2, #0x12]
-	mov r0, r8
-	strb r0, [r2, #0x13]
-	str r5, [r2, #0x54]
-	ldr r1, [r6]
-	ldr r0, _080BF524 @ =0x000343FD
-	muls r0, r1, r0
-	ldr r1, _080BF528 @ =0x00269EC3
-	adds r0, r0, r1
-	lsls r0, r0, #1
-	lsrs r1, r0, #1
-	str r1, [r6]
-	lsls r0, r0, #3
-	lsrs r0, r0, #0x14
-	adds r0, r5, r0
-	str r0, [r2, #0x54]
-	mov r0, sb
-	str r0, [r2, #0x58]
-_080BF4FE:
-	adds r4, #1
-	cmp r4, #2
-	ble _080BF4AC
-	pop {r3, r4, r5}
-	mov r8, r3
-	mov sb, r4
-	mov sl, r5
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF514: .4byte 0x0836D9BC
-_080BF518: .4byte 0xFFFFF800
-_080BF51C: .4byte RNG_0202f388
-_080BF520: .4byte gVFXHeaderPtr
-_080BF524: .4byte 0x000343FD
-_080BF528: .4byte 0x00269EC3
-
-	thumb_func_start FUN_080bf52c
-FUN_080bf52c: @ 0x080BF52C
-	push {r4, r5, r6, r7, lr}
-	mov r7, sb
-	mov r6, r8
-	push {r6, r7}
-	mov r8, r1
-	movs r4, #0
-	movs r7, #0
-	ldr r1, _080BF5A4 @ =0x0836D9BC
-	mov sb, r1
-	ldr r1, _080BF5A8 @ =0xFFFFF800
-	adds r5, r0, r1
-	ldr r6, _080BF5AC @ =RNG_0202f388
-_080BF544:
-	ldr r0, _080BF5B0 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r2, r0, #0
-	cmp r2, #0
-	beq _080BF592
-	adds r1, r2, #0
-	adds r1, #0x25
-	movs r0, #1
-	strb r0, [r1]
-	movs r0, #0x2f
-	strb r0, [r2, #9]
-	mov r1, sb
-	ldr r0, [r1]
-	ldr r0, [r0]
-	str r0, [r2, #0x14]
-	strh r7, [r2, #0x20]
-	adds r0, r2, #0
-	adds r0, #0x22
-	strb r7, [r0]
-	movs r0, #4
-	strb r0, [r2, #0x10]
-	strb r4, [r2, #0x12]
-	str r5, [r2, #0x54]
-	ldr r1, [r6]
-	ldr r0, _080BF5B4 @ =0x000343FD
-	muls r0, r1, r0
-	ldr r1, _080BF5B8 @ =0x00269EC3
-	adds r0, r0, r1
-	lsls r0, r0, #1
-	lsrs r1, r0, #1
-	str r1, [r6]
-	lsls r0, r0, #3
-	lsrs r0, r0, #0x14
-	adds r0, r5, r0
-	str r0, [r2, #0x54]
-	mov r0, r8
-	str r0, [r2, #0x58]
-_080BF592:
-	adds r4, #1
-	cmp r4, #5
-	ble _080BF544
-	pop {r3, r4}
-	mov r8, r3
-	mov sb, r4
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF5A4: .4byte 0x0836D9BC
-_080BF5A8: .4byte 0xFFFFF800
-_080BF5AC: .4byte RNG_0202f388
-_080BF5B0: .4byte gVFXHeaderPtr
-_080BF5B4: .4byte 0x000343FD
-_080BF5B8: .4byte 0x00269EC3
-
-	thumb_func_start VFX47_Init
-VFX47_Init: @ 0x080BF5BC
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r1, _080BF5FC @ =gVFXFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #1
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #4]
-	str r0, [r4, #0x14]
-	ldr r1, _080BF600 @ =0x0836F10C
-	ldrb r0, [r4, #0x10]
-	adds r0, r0, r1
-	ldrb r0, [r0]
-	strb r0, [r4, #0xd]
-	ldrb r0, [r4, #0xa]
-	movs r1, #2
-	orrs r0, r1
-	movs r1, #1
-	orrs r0, r1
-	strb r0, [r4, #0xa]
-	adds r0, r4, #0
-	bl InitNonAffineMotion
-	adds r0, r4, #0
-	bl VFX47_Update
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF5FC: .4byte gVFXFnTable
-_080BF600: .4byte 0x0836F10C
-
-	thumb_func_start VFX47_Update
-VFX47_Update: @ 0x080BF604
-	push {lr}
-	ldr r2, _080BF618 @ =0x0836F0F4
-	ldrb r1, [r0, #0xd]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	ldr r1, [r1]
-	bl _call_via_r1
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BF618: .4byte 0x0836F0F4
-
-	thumb_func_start VFX47_Die
-VFX47_Die: @ 0x080BF61C
-	ldr r2, _080BF630 @ =gVFXFnTable
-	ldrb r1, [r0, #9]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	movs r2, #4
-	str r2, [r0, #0xc]
-	ldr r1, [r1]
-	ldr r1, [r1, #0x10]
-	str r1, [r0, #0x14]
-	bx lr
-	.align 2, 0
-_080BF630: .4byte gVFXFnTable
-
 	thumb_func_start FUN_080bf634
 FUN_080bf634: @ 0x080BF634
 	push {r4, r5, lr}
@@ -392,7 +48,7 @@ _080BF664:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x46
-	bl LoadBlink
+	bl StartPaletteAnimation
 _080BF690:
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -421,9 +77,9 @@ _080BF696:
 	strb r0, [r4, #0xe]
 _080BF6C0:
 	movs r0, #0x46
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BF6CC:
 	pop {r4, r5}
 	pop {r0}
@@ -463,7 +119,7 @@ _080BF71C:
 	movs r0, #0x80
 	bl PlaySound
 	movs r0, #0x46
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	adds r0, r4, #0
 	bl GetEntityPalID
 	adds r1, r0, #0
@@ -474,7 +130,7 @@ _080BF71C:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x47
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldr r1, [r4, #0x54]
 	ldr r0, _080BF788 @ =0xFFFFF600
 	adds r1, r1, r0
@@ -603,9 +259,9 @@ _080BF81A:
 	strb r0, [r4, #0xe]
 _080BF82C:
 	movs r0, #0x47
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BF886
 _080BF83A:
 	movs r0, #0x50
@@ -615,9 +271,9 @@ _080BF83A:
 	strb r0, [r4, #0xe]
 _080BF844:
 	movs r0, #0x47
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	subs r0, #0xc0
 	str r0, [r4, #0x58]
@@ -628,7 +284,7 @@ _080BF844:
 	cmp r0, #0
 	bne _080BF886
 	movs r0, #0x47
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -779,7 +435,7 @@ _080BF984:
 _080BF98A:
 	strb r0, [r7, #0xa]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r7, #0x13]
 	cmp r0, #0
 	bne _080BF9BA
@@ -877,7 +533,7 @@ _080BFA3E:
 	strb r0, [r4, #0xe]
 _080BFA44:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r2, [r0]
@@ -934,7 +590,7 @@ _080BFA8C:
 	str r5, [r4, #0x60]
 	b _080BFAD6
 	.align 2, 0
-_080BFAB4: .4byte 0x0836F112
+_080BFAB4: .4byte sMotions
 _080BFAB8:
 	ldr r2, _080BFB18 @ =0xFFFFFB80
 	ldr r3, _080BFB1C @ =RNG_0202f388
@@ -957,7 +613,7 @@ _080BFAD6:
 	strb r0, [r4, #0xe]
 _080BFADC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x60]
 	adds r0, #0x40
 	str r0, [r4, #0x60]
@@ -1163,7 +819,7 @@ _080BFC74:
 	adds r0, #0x24
 	strb r1, [r0]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BFC88:
 	pop {r4, r5, r6, r7}
 	pop {r0}

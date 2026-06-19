@@ -2,7 +2,7 @@
 	adds r4, r0, #0
 	movs r5, #0x10
 	movs r1, #0
-	ldr r0, _080258E4 @ =gUnlockedElfPtr
+	ldr r0, _080258E4 @ =gElfAvailability
 	ldr r6, [r0]
 _08025888:
 	adds r1, #1
@@ -53,5 +53,5 @@ _080258DA:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080258E4: .4byte gUnlockedElfPtr
+_080258E4: .4byte gElfAvailability
 _080258E8: .4byte 0x00000231

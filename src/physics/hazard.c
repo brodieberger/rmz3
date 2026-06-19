@@ -1,6 +1,8 @@
 #include "global.h"
 #include "overworld.h"
 
+extern s32 gConveyor;
+
 // Hazard領域内かチェックしてそうだとしたら, Hazard領域のmetatile_attr_tを返す
 NAKED metatile_attr_t GetHazardMetatileAttr(s32 x, s32 y) {
   asm(".syntax unified\n\
@@ -60,7 +62,7 @@ _0800AC4C:\n\
 	adds r0, r6, r1\n\
 	ldr r0, [r0]\n\
 	subs r0, r4, r0\n\
-	ldr r2, _0800AC9C @ =s32_ARRAY_02000028\n\
+	ldr r2, _0800AC9C @ =gConveyor\n\
 	str r0, [r2]\n\
 	movs r7, #0xeb\n\
 	lsls r7, r7, #1\n\
@@ -70,7 +72,7 @@ _0800AC4C:\n\
 	.align 2, 0\n\
 _0800AC94: .4byte gOverworld\n\
 _0800AC98: .4byte gOverworld+484\n\
-_0800AC9C: .4byte s32_ARRAY_02000028\n\
+_0800AC9C: .4byte gConveyor\n\
 _0800ACA0:\n\
 	movs r0, #0x18\n\
 	add ip, r0\n\
@@ -99,14 +101,14 @@ _0800ACB6:\n\
 // 座標(x, y) が Hazard(物理的に干渉するEntity) によって上に押し出された後の Y 座標を返す
 s32 CalcPushout_Up(s32 x, s32 y) {
   s32 i;
-  for (i = 0; i < gOverworld.objectLen; i++) {
-    const u32 w = gOverworld.objects[i].w << 1;
-    const u32 _x = (u32)(x - (gOverworld.objects[i].start).x) + gOverworld.objects[i].w;
-    if (w > _x) {
-      const u32 h = gOverworld.objects[i].h << 1;
-      const u32 _y = (u32)(y - (gOverworld.objects[i].start).y) + gOverworld.objects[i].h - 1;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    const u32 w = gOverworld.terrain.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[i].center).x) + gOverworld.terrain.objects[i].hw;
+    if (w > _x) {  // (x > (center_x - hw)) && (x < (center_x + hw))
+      const u32 h = gOverworld.terrain.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (gOverworld.terrain.objects[i].center).y) + gOverworld.terrain.objects[i].hh - 1;
       if (h > _y) {
-        y = (gOverworld.objects[i].start).y - gOverworld.objects[i].h;
+        y = (gOverworld.terrain.objects[i].center).y - gOverworld.terrain.objects[i].hh;
         return CalcPushout_Up(x, y);
       }
     }
@@ -123,15 +125,15 @@ s32 CalcPushout_Up(s32 x, s32 y) {
  */
 s32 CalcPushout_Down(s32 x, s32 y) {
   s32 i;
-  for (i = 0; i < gOverworld.objectLen; i++) {
-    const u32 w = gOverworld.objects[i].w << 1;
-    const u32 _x = (u32)(x - (gOverworld.objects[i].start).x) + gOverworld.objects[i].w;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    const u32 w = gOverworld.terrain.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[i].center).x) + gOverworld.terrain.objects[i].hw;
     if (w > _x) {
-      const u32 h = gOverworld.objects[i].h << 1;
-      const u32 _y = (u32)(y - (gOverworld.objects[i].start).y) + gOverworld.objects[i].h - 1;
+      const u32 h = gOverworld.terrain.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (gOverworld.terrain.objects[i].center).y) + gOverworld.terrain.objects[i].hh - 1;
       if (h > _y) {
-        if ((gOverworld.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          y = (gOverworld.objects[i].start).y + gOverworld.objects[i].h + 1;
+        if ((gOverworld.terrain.objects[i].attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP)) == 0) {
+          y = (gOverworld.terrain.objects[i].center).y + gOverworld.terrain.objects[i].hh + 1;
           return CalcPushout_Down(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }
@@ -143,15 +145,15 @@ s32 CalcPushout_Down(s32 x, s32 y) {
 // 座標(x, y) が Hazard(物理的に干渉するEntity) によって左に押し出された後の X 座標を返す
 s32 CalcPushout_Left(s32 x, s32 y) {
   s32 i;
-  for (i = 0; i < gOverworld.objectLen; i++) {
-    const u32 w = gOverworld.objects[i].w << 1;
-    const u32 _x = (u32)(x - (gOverworld.objects[i].start).x) + gOverworld.objects[i].w;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    const u32 w = gOverworld.terrain.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[i].center).x) + gOverworld.terrain.objects[i].hw;
     if (w > _x) {
-      const u32 h = gOverworld.objects[i].h << 1;
-      const u32 _y = (u32)(y - (gOverworld.objects[i].start).y) + gOverworld.objects[i].h - 1;
+      const u32 h = gOverworld.terrain.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (gOverworld.terrain.objects[i].center).y) + gOverworld.terrain.objects[i].hh - 1;
       if (h > _y) {
-        if ((gOverworld.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          x = ((gOverworld.objects[i].start).x - gOverworld.objects[i].w) - 1;
+        if ((gOverworld.terrain.objects[i].attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP)) == 0) {
+          x = ((gOverworld.terrain.objects[i].center).x - gOverworld.terrain.objects[i].hw) - 1;
           return CalcPushout_Left(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }
@@ -163,15 +165,15 @@ s32 CalcPushout_Left(s32 x, s32 y) {
 // 座標(x, y) が Hazard(物理的に干渉するEntity) によって右に押し出された後の X 座標を返す
 s32 CalcPushout_Right(s32 x, s32 y) {
   s32 i;
-  for (i = 0; i < gOverworld.objectLen; i++) {
-    const u32 w = gOverworld.objects[i].w << 1;
-    const u32 _x = (u32)(x - (gOverworld.objects[i].start).x) + gOverworld.objects[i].w;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    const u32 w = gOverworld.terrain.objects[i].hw << 1;
+    const u32 _x = (u32)(x - (gOverworld.terrain.objects[i].center).x) + gOverworld.terrain.objects[i].hw;
     if (w > _x) {
-      const u32 h = gOverworld.objects[i].h << 1;
-      const u32 _y = (u32)(y - (gOverworld.objects[i].start).y) + gOverworld.objects[i].h - 1;
+      const u32 h = gOverworld.terrain.objects[i].hh << 1;
+      const u32 _y = (u32)(y - (gOverworld.terrain.objects[i].center).y) + gOverworld.terrain.objects[i].hh - 1;
       if (h > _y) {
-        if ((gOverworld.objects[i].attr & (METATILE_SOFT_PLATFORM | METATILE_ANTTRAP)) == 0) {
-          x = (gOverworld.objects[i].start).x + gOverworld.objects[i].w;
+        if ((gOverworld.terrain.objects[i].attr & (MTATTR_SOFT_PLATFORM | MTATTR_ANTTRAP)) == 0) {
+          x = (gOverworld.terrain.objects[i].center).x + gOverworld.terrain.objects[i].hw;
           return CalcPushout_Right(x, y);  // 押し出した先に、別のHazardがあるかもしれないので、押し出した先で再度チェックが必要
         }
       }

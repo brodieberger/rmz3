@@ -1,19 +1,29 @@
 #include "global.h"
 #include "overworld.h"
 
-// ステージのグラフィック情報をbgmapとかオフセットレジスタに反映させる処理
+// メタタイルで構成されたステージレイヤを実際のGBAタイルとして描画するための処理
+// ついでに ステージレイヤ のオフセット値を GBAの BGOFS として書き込む処理も
 
-void ResetLayerGraphic(struct LayerGraphic* l, struct Coord* c, u16* _, Metatile* tiledata, Screen* chunks, const struct ChunkMap* map) {
-  (l->c).x = c->x;
-  (l->c).y = c->y;
+/**
+ * @param dst 描画先のBGマップのアドレス を渡しているけど、　FUN_080050b0 などの描画関数側で渡すようにしたのか、この引数は使われておらず意味ない
+ */
+void ResetLayerGraphic(struct LayerGraphic* l, PixelCoords* c, void* dst, Metatile* tiledata, Chunk* chunks, const struct ChunkMap* map) {
+  (l->c).x = c->x, (l->c).y = c->y;
   l->tiledata = tiledata;
   l->chunks = chunks;
   l->map = map;
-  l->bgofs[0] = c->x & 0x1FF;
-  l->bgofs[1] = c->y & 0x1FF;
+  l->bgofs[0] = c->x & 0x1FF, l->bgofs[1] = c->y & 0x1FF;
 }
 
-NAKED void FUN_080050b0(struct LayerGraphic* l, struct Coord* c, u32 mapAddr) {
+/**
+ * @brief STAGE_LAYER_1 or STAGE_LAYER_2 を GBAの実際のBGマップに描画する関数 その1
+ * @param l 描画内容
+ * @param c 画面左上のワールド座標(ピクセル単位)
+ * @param dst 描画先のBGマップのVRAMアドレス, e.g. 0x6000800
+ * @note その2 は FUN_08005a70
+ * @note 0x080050B0
+ */
+NAKED void FUN_080050b0(struct LayerGraphic* l, PixelCoords* c, void* dst) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -651,13 +661,19 @@ _08005580: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
-NAKED static void unused_08005584(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005584.inc"); }
-NAKED static void unused_080055e8(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_080055e8.inc"); }
-NAKED static void unused_08005674(struct LayerGraphic* r0, struct Coord* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005674.inc"); }
-#endif
+NAKED static void unused_08005584(struct LayerGraphic* l, Coords32* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005584.inc"); }
+NAKED static void unused_080055e8(struct LayerGraphic* l, Coords32* c, u32 mapAddr) { INCCODE("asm/unused/unused_080055e8.inc"); }
+NAKED static void unused_08005674(struct LayerGraphic* l, Coords32* c, u32 mapAddr) { INCCODE("asm/unused/unused_08005674.inc"); }
 
-NAKED void FUN_08005a70(struct LayerGraphic* l, struct Coord* c, u32 mapAddr) {
+/**
+ * @brief STAGE_LAYER_1 or STAGE_LAYER_2 を GBAの実際のBGマップに描画する関数 その2
+ * @param l 描画内容
+ * @param c 画面左上のワールド座標(ピクセル単位)
+ * @param dst 描画先のBGマップのVRAMアドレス, e.g. 0x6000800
+ * @note その1 は FUN_080050b0
+ * @note 0x08005a70
+ */
+NAKED void FUN_08005a70(struct LayerGraphic* l, PixelCoords* c, void* dst) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1032,15 +1048,22 @@ _08005D30: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
 NAKED static void unused_08005d34(void) { INCCODE("asm/unused/unused_08005d34.inc"); }
 NAKED static void unused_080061a4(void) { INCCODE("asm/unused/unused_080061a4.inc"); }
 NAKED static void unused_08006474(void) { INCCODE("asm/unused/unused_08006474.inc"); }
 NAKED static void unused_08006738(void) { INCCODE("asm/unused/unused_08006738.inc"); }
 NAKED static void unused_080069e0(void) { INCCODE("asm/unused/unused_080069e0.inc"); }
-#endif
 
-NAKED void FUN_08006a10(struct LayerGraphic* l, struct Coord* c, u32* bgmap, struct MetatileMap* mm) {
+/**
+ * @brief STAGE_LAYER_TERRAIN を dst に(GBAのBGマップとして)描画する関数 その1
+ * @param l 描画内容
+ * @param c 画面左上のワールド座標(ピクセル単位)
+ * @param dst 描画先のBGマップ, EWRAMのバッファ (gOverworld.bgmap) or VRAM
+ * @param src STAGE_LAYER_TERRAIN は動的に変更されることのあるレイヤなので、描画内容は src から取る (メタタイル　から GBAのBGマップへ変換するのに l を使う), 多分常に gOverworld.terrain.tilemap
+ * @note その2 は FUN_08006bb4
+ * @note 0x08006a10
+ */
+NAKED void FUN_08006a10(struct LayerGraphic* l, PixelCoords* c, u32* dst, u16* src) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1152,23 +1175,32 @@ _08006ADC: .4byte 0x000001FF\n\
 }
 
 // bgmap.c　の処理を知るためにとりあえずCにしたもの、多分ロジックおかしなっとる
-WIP void FUN_08006ae0(struct LayerGraphic* l, struct Coord* c, u32* bgmap, struct MetatileMap* mm) {
-#if MODERN
+/**
+ * @brief STAGE_LAYER_TERRAIN(まだ確認してないけど) を GBAの実際のBGマップに描画する関数
+ * @param l 描画内容
+ * @param c 画面左上のワールド座標(ピクセル単位)
+ * @param dst 描画先のBGマップ (VRAM)
+ * @param src STAGE_LAYER_TERRAIN は動的に変更されることのあるレイヤなので、描画内容は src から取る (メタタイル　から GBAのBGマップへ変換するのに l を使う)
+ * @note 使われているのが、旧居住区　と　アナトレーの森 なので多分ツタのあるレイヤ用の描画関数
+ * @note 0x08006ae0
+ */
+WIP void FUN_08006ae0(struct LayerGraphic* l, PixelCoords* c, u32* dst, u16* src) {
+#ifdef ALWAYS_FALSE
   s16 i;
   s32 x = c->x >> 4;
   s32 y = c->y >> 4;
-  metatile_id_t* id = &mm->map[y * mm->width16 + x];
+  metatile_id_t* id = &src[2 + y * src[0] + x];
   for (i = 0; i < 12; i++) {
     s16 X = x + i;
     while (X < 18) {
       s32 Y = (y & 0xF) + i;
       Metatile* mt = &l->tiledata[*id];
-      bgmap[(Y + (X & 0x10)) * 32 + (X & 0xF)] = *(u32*)&((*mt)[0]);
-      bgmap[(Y + (X & 0x10)) * 32 + (X & 0xF) + 16] = *(u32*)&((*mt)[2]);
+      dst[(Y + (X & 0x10)) * 32 + (X & 0xF)] = *(u32*)&((*mt)[0]);
+      dst[(Y + (X & 0x10)) * 32 + (X & 0xF) + 16] = *(u32*)&((*mt)[2]);
       id++;
       X++;
     }
-    id += (mm->width16 - 18);
+    id += (src[0] - 18);
   }
   l->bgofs[0] = c->x & 0x1FF;
   l->bgofs[1] = c->y & 0x1FF;
@@ -1179,7 +1211,16 @@ WIP void FUN_08006ae0(struct LayerGraphic* l, struct Coord* c, u32* bgmap, struc
 #endif
 }
 
-NAKED void FUN_08006bb4(struct LayerGraphic* l, struct Coord* c, u32* bgmap, struct MetatileMap* mm) {
+/**
+ * @brief STAGE_LAYER_TERRAIN を dst に(GBAのBGマップとして)描画する関数 その2
+ * @param l 描画内容
+ * @param c 画面左上のワールド座標(ピクセル単位)
+ * @param dst 描画先のBGマップ, EWRAMのバッファ (gOverworld.bgmap) or VRAM
+ * @param src STAGE_LAYER_TERRAIN は動的に変更されることのあるレイヤなので、描画内容は src から取る (メタタイル　から GBAのBGマップへ変換するのに l を使う), 多分常に gOverworld.terrain.tilemap
+ * @note その1 は FUN_08006a10
+ * @note 0x08006BB4
+ */
+NAKED void FUN_08006bb4(struct LayerGraphic* l, PixelCoords* c, u32* dst, u16* src) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1396,47 +1437,35 @@ _08006D40: .4byte 0x000001FF\n\
  .syntax divided\n");
 }
 
-#if MODERN == 0
-static void unused_Clear2KB(u32* dst) {  // dstから2048バイトを0クリア
-  CpuFastFill(0, dst, 2048);
-  {
-    vu32 _;
-  }
-}
-#endif
+static void unused_Clear2KB(u32* dst) { _CpuFastFill(0, dst, 2048); }
 
-#if MODERN == 0
 static void unused_FastCopy(void* dst, const void* src, u32 bytesize) {  // CpuFastSetとCpuSetを組み合わせて細かい単位でも高速にコピー
   u32 n = (bytesize & 0xFFFFFFE0);
   CpuFastCopy(src, dst, n);
-
-  if ((bytesize & 0x1F) != 0) {
-    CpuCopy32(src + n, dst + n, bytesize & 0x1F);
-  }
+  if ((bytesize & 0x1F) != 0) CpuCopy32(src + n, dst + n, bytesize & 0x1F);
 }
-#endif
 
 void UpdateBGOFS(struct LayerGraphic* l, struct BgOfs* bgofs) {
   bgofs->x = l->bgofs[0];
   bgofs->y = l->bgofs[1];
 }
 
-/*
-  引数の例:
-    バイル研究所のとき
-      r1 = 0863c638 + (0863c638)[1]
-      r2 = 0863c638 + (0863c638)[0]
-      r3 = 0863c638 + (0863c638)[2]
-*/
-void ResetTerrain(struct Terrain* terrain, metatile_attr_t* attr, Metatile* tiles, Screen* m, const struct ChunkMap* map) {
-  terrain->attrs = attr;
-  terrain->tiles = tiles;
-  terrain->screens = m;
-  terrain->map = map;
+/**
+ * @param attr 壊れた宇宙船なら gStage0_TileAttrs (各メタタイルの attr がわかる)
+ * @param tiles 壊れた宇宙船なら gSpaceCraft_Tiles (各メタタイル を構成するGBAのタイルがわかる)
+ * @param m 壊れた宇宙船なら gStage0_Chunks (これで　チャンクID から チャンクを構成する メタタイル(のID) がわかる)
+ * @param map STAGE_LAYER_TERRAIN を構成するチャンク (これで チャンク座標　から チャンクID　がわかる)
+ * @note 0x08006DB8
+ */
+void ResetTerrainMapTemplate(struct TerrainMapTemplate* tmpl, metatile_attr_t* attr, Metatile* tiles, Chunk* chunks, const struct ChunkMap* map) {
+  tmpl->attrs = attr;
+  tmpl->tiles = tiles;
+  tmpl->chunks = chunks;
+  tmpl->map = map;
 }
 
-#if MODERN == 0
-NAKED static u8 unused_08006dcc(void* p, struct Coord* c) { INCCODE("asm/unused/unused_08006dcc.inc"); }
+NAKED static u8 unused_08006dcc(void* p, Coords32* c) { INCCODE("asm/unused/unused_08006dcc.inc"); }
+
 NAKED static u8 unused_08006e3c(void* p, u32 unk_x, u32 unk_y) { INCCODE("asm/unused/unused_08006e3c.inc"); }  // unk_x, unk_y の単位不明(pixel?)
+
 NAKED static u8 unused_08006ea8(void* p, u32 r1, s32 r2, s32 r3) { INCCODE("asm/unused/unused_08006ea8.inc"); }
-#endif

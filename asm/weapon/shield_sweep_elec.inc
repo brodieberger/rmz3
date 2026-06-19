@@ -129,7 +129,7 @@ _0803CD90: .4byte incrementShieldHitCount
 ElecShieldSweep_Update: @ 0x0803CD94
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	cmp r1, #0xf
 	bhi _0803CDBA
@@ -206,7 +206,7 @@ incrementShieldHitCount: @ 0x0803CE10
 	cmp r0, #0
 	beq _0803CE32
 	ldr r2, [r2, #0x2c]
-	ldr r3, _0803CE38 @ =gMission
+	ldr r3, _0803CE38 @ =gScore
 	ldrh r1, [r3, #0x22]
 	ldr r0, _0803CE3C @ =0x0000FFFE
 	cmp r1, r0
@@ -220,5 +220,5 @@ _0803CE32:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803CE38: .4byte gMission
+_0803CE38: .4byte gScore
 _0803CE3C: .4byte 0x0000FFFE

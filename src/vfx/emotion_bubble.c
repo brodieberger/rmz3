@@ -1,6 +1,6 @@
 #include "entity.h"
-#include "vfx.h"
 #include "global.h"
+#include "vfx.h"
 
 /*
   !などの吹き出し
@@ -14,58 +14,39 @@ static void EmotionBubble_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gEmotionBubbleRoutine = {
-    [ENTITY_INIT] =      EmotionBubble_Init,
-    [ENTITY_UPDATE] =    EmotionBubble_Update,
-    [ENTITY_DIE] =       EmotionBubble_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)EmotionBubble_Init,
+    [ENTITY_UPDATE] =    (void*)EmotionBubble_Update,
+    [ENTITY_DIE] =       (void*)EmotionBubble_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-static struct VFX* unused_CreateGhost15(u8 n, struct Coord* c) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_EMOTION_BUBBLE);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    ((g->s).coord).x = c->x;
-    ((g->s).coord).y = c->y;
-    (g->s).work[0] = 0;
-    InitNonAffineMotion(&g->s);
-    SetMotion(&g->s, sMotions[n]);
+static struct Entity* unused_CreateGhost15(u8 n, Coords32* c) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_EMOTION_BUBBLE);
+    (p->coord).x = c->x, (p->coord).y = c->y;
+    p->work[0] = 0;
+    InitNonAffineMotion(p);
+    SetSpriteAnimation(p, sMotions[n]);
   }
-  return g;
+  return p;
 }
 
-WIP struct VFX* CreateEmotionBubble(u8 kind, struct Coord* target, struct Coord* c) {
-#if MODERN
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    bool8 xflip;
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, VFX_EMOTION_BUBBLE);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).unk_28 = (struct Entity*)target;
-    ((g->s).unk_coord).x = c->x;
-    ((g->s).unk_coord).y = c->y;
-    (g->s).work[0] = 1;
-    InitNonAffineMotion(&g->s);
-    SetMotion(&g->s, sMotions[kind]);
-    xflip = (c->x < 0);
-    if (xflip) {
-      (g->s).flags |= X_FLIP;
-    } else {
-      (g->s).flags &= ~X_FLIP;
-    }
-    (g->s).spr.xflip = xflip;
-    (g->s).spr.oam.xflip = xflip;
+// 0x080b6340
+struct Entity* CreateEmotionBubble(u8 kind, Coords32* target, Coords32* offset) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_EMOTION_BUBBLE);
+    p->unk_28 = (void*)target;
+    (p->unk_coord).x = offset->x, (p->unk_coord).y = offset->y;
+    p->work[0] = 1;
+    InitNonAffineMotion(p);
+    SetSpriteAnimation(p, sMotions[kind]);
+    SET_XFLIP(p, (offset->x < 0));
   }
-  return g;
-#else
-  INCCODE("asm/wip/CreateEmotionBubble.inc");
-#endif
+  return p;
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -79,9 +60,9 @@ static void EmotionBubble_Init(struct VFX* p) {
 }
 
 static void EmotionBubble_Update(struct VFX* p) {
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   if ((p->s).work[0] != 0) {
-    struct Coord* from = (struct Coord*)(p->s).unk_28;
+    Coords32* from = (Coords32*)(p->s).unk_28;
     (p->s).coord.x = from->x + (p->s).unk_coord.x;
     (p->s).coord.y = from->y + (p->s).unk_coord.y;
   }

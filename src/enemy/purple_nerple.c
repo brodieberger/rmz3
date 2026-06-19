@@ -13,7 +13,7 @@ const EnemyRoutine gPurpleNerpleRoutine = {
     [ENTITY_INIT] =      PurpleNerple_Init,
     [ENTITY_UPDATE] =    PurpleNerple_Update,
     [ENTITY_DIE] =       PurpleNerple_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -91,6 +91,7 @@ const EnemyFunc PTR_ARRAY_08367120[6] = {
 
 // --------------------------------------------
 
+// 0x08367138
 static const struct Collision sCollisions[] = {
     {
       kind : DRP,
@@ -155,11 +156,12 @@ static const struct Collision sCollisions[] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 
 static const u8 sInitModes[4] = {1, 3, 7, 0};
 
 // clang-format off
+// 0x083671ec
 static const motion_t sMotions[9] = {
     MOTION(SM042_PURPLE_NERPLE, 0x11),
     MOTION(SM042_PURPLE_NERPLE, 0x12),

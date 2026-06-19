@@ -5,25 +5,25 @@
 
 #define FONT_BOLD 0x7800
 
-static s32 printStringWithLen(u8 startX, u8 startY, char_t *s, u16 len);
+static s32 printStringWithLen(u8 start_x8, u8 start_y8, char_t* s, u16 len);
 
-void InitTextPrinter(u32 *bg0) {
-  gTextPrinter.bg0 = (tile_id_t *)bg0;
-  gTextPrinter.inserted = &gTerminateCharCode;
+void InitTextPrinter(u32* bg0) {
+  gTextPrinter.bg0 = (tile_id_t*)bg0;
+  gTextPrinter.variable = &gTerminateCharCode;
   gTextPrinter.startX = 0;
   gTextPrinter.endX = 30;
   gTextPrinter.startY = 0;
   gTextPrinter.endY = 22;
-  text_080e9730();
+  LoadAsciiBold();
 }
 
-void text_080e9730(void) {
-  static const ALIGNED(4) u16 sDefaultBGPalette[SLOT_4BPP] = {
+void LoadAsciiBold(void) {
+  static const ALIGNED(4) u16 sDefaultBGPalette[16] = {
       0x0000, 0xFFFF, 0xB9CE, 0x8421, 0xC21F, 0xABFF, 0xC3EC, 0x9E80, 0xA110, 0xF3F3, 0xF68A, 0xD14A, 0xA8FC, 0x8537, 0x908D, 0xCEB5,
   };
 
   u8 val;
-  CpuFastCopy(gFontBold, (void *)(CHAR_BASE(0) + VRAM + FONT_BOLD), 2048);
+  CpuFastCopy(gFontBold, (void*)(CHAR_BASE(0) + VRAM + FONT_BOLD), 2048);
   val = 0;
   CpuFastCopy(sDefaultBGPalette, gPaletteManager.buf, 32);
   gTextPrinter.startX = val;
@@ -33,9 +33,9 @@ void text_080e9730(void) {
   ResetCharTiles();
 }
 
-WIP void ResetCharTiles(void) {
+NON_MATCH void ResetCharTiles(void) {
 #if MODERN
-  struct CharTile *tile;
+  struct CharTile* tile;
   gTextPrinter.freelist = NULL;
   for (s32 i = 79; i >= 0; i--) {
     tile = &gTextPrinter.tilelist[i];
@@ -51,9 +51,9 @@ WIP void ResetCharTiles(void) {
 }
 
 void LoadKatakanaBold(void) {
-  const void *src = &gFontBold[0x40];
-  const u16 charBase = (*((u16 *)&gVideoRegBuffer.bgcnt[0]) & 0xc) << 12;
-  CpuFastCopy(src, (void *)(VRAM + 0x7000 + charBase), 2048);
+  const void* src = &gFontBold[0x40];
+  const u16 charBase = (*((u16*)&gVideoRegBuffer.bgcnt[0]) & 0xc) << 12;
+  CpuFastCopy(src, (void*)(VRAM + 0x7000 + charBase), 2048);
 }
 
 void FUN_080e981c(void) {
@@ -69,78 +69,24 @@ void FUN_080e9840(void) {
 /*
   毎フレーム、gTextPrinter の文字列を全て描画する
 */
-NAKED void PrintAllStrings(void) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	ldr r1, _080E98E4 @ =gTextPrinter\n\
-	movs r2, #0xb1\n\
-	lsls r2, r2, #3\n\
-	adds r0, r1, r2\n\
-	ldr r2, [r0]\n\
-	ldr r7, _080E98E8 @ =0x0000058C\n\
-	adds r1, r1, r7\n\
-	cmp r2, #0\n\
-	beq _080E9888\n\
-	ldr r3, [r1]\n\
-_080E987A:\n\
-	ldr r0, [r2]\n\
-	str r3, [r2]\n\
-	adds r3, r2, #0\n\
-	adds r2, r0, #0\n\
-	cmp r2, #0\n\
-	bne _080E987A\n\
-	str r3, [r1]\n\
-_080E9888:\n\
-	ldr r3, _080E98E4 @ =gTextPrinter\n\
-	movs r1, #0xb1\n\
-	lsls r1, r1, #3\n\
-	adds r0, r3, r1\n\
-	movs r1, #0\n\
-	str r1, [r0]\n\
-	movs r5, #0\n\
-	movs r2, #4\n\
-	ldrsh r0, [r3, r2]\n\
-	cmp r5, r0\n\
-	bge _080E98D6\n\
-	adds r6, r3, #0\n\
-_080E98A0:\n\
-	movs r7, #0xc4\n\
-	lsls r7, r7, #1\n\
-	adds r0, r6, r7\n\
-	adds r0, r5, r0\n\
-	ldrb r0, [r0]\n\
-	movs r2, #0xf4\n\
-	lsls r2, r2, #1\n\
-	adds r1, r6, r2\n\
-	adds r1, r5, r1\n\
-	ldrb r1, [r1]\n\
-	lsls r2, r5, #2\n\
-	adds r3, r6, #0\n\
-	adds r3, #8\n\
-	adds r2, r2, r3\n\
-	ldr r2, [r2]\n\
-	lsls r3, r5, #1\n\
-	adds r7, #0xc0\n\
-	adds r4, r6, r7\n\
-	adds r3, r3, r4\n\
-	ldrh r3, [r3]\n\
-	bl printStringWithLen\n\
-	adds r5, #1\n\
-	movs r1, #4\n\
-	ldrsh r0, [r6, r1]\n\
-	cmp r5, r0\n\
-	blt _080E98A0\n\
-_080E98D6:\n\
-	ldr r1, _080E98E4 @ =gTextPrinter\n\
-	movs r0, #0\n\
-	strh r0, [r1, #4]\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080E98E4: .4byte gTextPrinter\n\
-_080E98E8: .4byte 0x0000058C\n\
- .syntax divided\n");
+WIP void PrintAllStrings(void) {
+#ifdef ALWAYS_FALSE
+  s32 i;
+  struct CharTile* c = gTextPrinter.cur;
+  while (c != NULL) {
+    gTextPrinter.cur = c->next;
+    c->next = gTextPrinter.used;
+    gTextPrinter.used = c;
+  }
+  gTextPrinter.cur = NULL;
+
+  for (i = 0; i < gTextPrinter.len; i++) {
+    printStringWithLen(gTextPrinter.x8[i], gTextPrinter.y8[i], gTextPrinter.strings[i], gTextPrinter.progress[i]);
+  }
+  gTextPrinter.len = 0;
+#else
+  INCCODE("asm/wip/PrintAllStrings.inc");
+#endif
 }
 
 NAKED void FUN_080e98ec(void) {
@@ -342,77 +288,62 @@ _080E9A70: .4byte gFontBig+32\n\
  .syntax divided\n");
 }
 
-s16 getStringLength(char_t *s) {
+s16 getStringLength(char_t* s) {
   s16 len = 0;
   for (; *s < CHAR_NEXT; s++) {
-    if (*s == CHAR_INSERT) {  // Insert
-      len += getStringLength(gTextPrinter.inserted);
-    }
-    if (*s < 0xF0) {
-      len++;
-    }
+    if (*s == CHAR_VARIABLE) len += getStringLength(gTextPrinter.variable);
+    if (*s < CHAR_KANJI) len++;  // バイト数ではなく文字数を数える
   }
   return len;
 }
 
-// Unused
-static s16 GetLineCount(char_t *s) {
+static s16 Unused_GetLineCount(char_t* s) {
   s16 line = 1;
   for (; *s < CHAR_NEXT; s++) {
-    if (*s == CHAR_LF) {
-      line++;
-    }
+    if (*s == CHAR_LF) line++;
   }
   return line;
 }
 
-void PrintString(const char_t *s, u32 x, u32 y) {
+void PrintString(const char_t* s, u32 x8, u32 y8) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
-    gTextPrinter.strings[gTextPrinter.len] = (char_t *)s;
-    gTextPrinter.x[gTextPrinter.len] = x;
-    gTextPrinter.y[gTextPrinter.len] = y;
+    gTextPrinter.strings[gTextPrinter.len] = (char_t*)s;
+    gTextPrinter.x8[gTextPrinter.len] = x8;
+    gTextPrinter.y8[gTextPrinter.len] = y8;
     gTextPrinter.progress[gTextPrinter.len] = -1;
     gTextPrinter.len++;
   }
 }
 
-void text_080e9b40(const char_t *s, u32 x, u32 y, u16 count) {
+void text_080e9b40(const char_t* s, u32 x8, u32 y8, u16 count) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
-    gTextPrinter.strings[gTextPrinter.len] = (char_t *)s;
-    gTextPrinter.x[gTextPrinter.len] = x;
-    gTextPrinter.y[gTextPrinter.len] = y;
+    gTextPrinter.strings[gTextPrinter.len] = (char_t*)s;
+    gTextPrinter.x8[gTextPrinter.len] = x8;
+    gTextPrinter.y8[gTextPrinter.len] = y8;
     gTextPrinter.progress[gTextPrinter.len] = count;
     gTextPrinter.len++;
   }
 }
 
 // 文字列のうち、 rowStart行 から rowEnd行 までを描画
-void PrintRows(char_t *s, u32 x, u32 y, u16 rowStart, u16 rowEnd) {
+void PrintRows(char_t* s, u32 x8, u32 y8, u16 rowStart, u16 rowEnd) {
   if (gTextPrinter.len < MAX_STRING_COUNT) {
     u16 line = 0;
     for (; (line < rowStart) && (*s < CHAR_NEXT); s++) {
-      if (*s == CHAR_LF) {
-        line++;
-      }
+      if (*s == CHAR_LF) line++;
     }
 
     if (*s < CHAR_NEXT) {
       u16 len;
       gTextPrinter.strings[gTextPrinter.len] = s;
-      gTextPrinter.x[gTextPrinter.len] = x;
-      gTextPrinter.y[gTextPrinter.len] = y;
+      gTextPrinter.x8[gTextPrinter.len] = x8;
+      gTextPrinter.y8[gTextPrinter.len] = y8;
 
       len = 0;
       for (; (line < rowEnd) && (*s < CHAR_NEXT); s++) {
-        if (*s == CHAR_INSERT) {
-          len += getStringLength(gTextPrinter.inserted);
-        }
-        if (*s < CHAR_KANJI) {
-          len++;
-        }
-        if (*s == CHAR_LF) {
-          line++;
-        }
+        if (*s == CHAR_VARIABLE) len += getStringLength(gTextPrinter.variable);
+        if (*s < CHAR_KANJI) len++;
+        if (*s == CHAR_LF) line++;
       }
       gTextPrinter.progress[gTextPrinter.len] = len;
       gTextPrinter.len++;
@@ -421,7 +352,7 @@ void PrintRows(char_t *s, u32 x, u32 y, u16 rowStart, u16 rowEnd) {
 }
 
 // 文字列を skipBytesize だけ読み飛ばす
-char_t *SkipString(char_t *s, s32 skipBytesize) {
+char_t* SkipString(char_t* s, s32 skipBytesize) {
   for (; (*s < CHAR_NEXT) && (skipBytesize != 0); s++) {
     if (*s < CHAR_KANJI) {
       skipBytesize--;
@@ -430,42 +361,37 @@ char_t *SkipString(char_t *s, s32 skipBytesize) {
       s++;
       skipBytesize--;
 
-    } else if (*s < CHAR_INSERT) {
+    } else if (*s < CHAR_VARIABLE) {
       s++;
     }
   }
   return s;
 }
 
-// x, y is 8x8 tile unit
-WIP void PrintUnicodeString(u8 *s, u32 x, u32 y) {
-#if MODERN
-  if (y < 32) {
-    tile_id_t *bg0 = &gTextPrinter.bg0[x + (y * 32)];
-    for (; *s != 0; s++, bg0++) {
-      if (x < 32) {
-        if (*s < UNICODE_A) {
-          *bg0 = 928 + *s;
-        } else if (*s < UNICODE_NBSP) {
-          *bg0 = 896 + *s;
-        } else {
-          *bg0 = 736 + *s;
-        }
+void PrintUnicodeString(const char_t* s, u32 x8, u32 y8) {
+  tile_id_t* dst = gTextPrinter.bg0;
+  if (y8 < 32) {
+    dst = &dst[x8 + (y8 * 32)];
+    while (*s != 0) {
+      if (x8 > 31) return;
+
+      if (*s < UNICODE_A) {
+        *dst++ = 928 + *s++;
+      } else if (*s < UNICODE_NBSP) {
+        *dst++ = 896 + *s++;
+      } else {
+        *dst++ = 736 + *s++;
       }
     }
   }
-#else
-  INCCODE("asm/wip/PrintUnicodeString.inc");
-#endif
 }
 
-NAKED void minigame_str_080e9d04(s32 r0, u16 r1, u16 r2) { INCCODE("asm/todo/minigame_str_080e9d04.inc"); };
+// 0x080e9d04
+NAKED void PrintMinigameNumber(s32 score, u16 x, u16 y) { INCCODE("asm/todo/PrintMinigameNumber.inc"); };
 
-#if MODERN == 0
 NAKED void unused_080e9d94(s32 r0, u16 r1, u16 r2) { INCCODE("asm/unused/unused_080e9d94.inc"); };
-#endif
 
-NAKED static s32 printStringWithLen(u8 startX, u8 startY, char_t *s, u16 len) {
+NAKED static s32 printStringWithLen(u8 start_x8, u8 start_y8, char_t* s, u16 len) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -718,7 +644,7 @@ _080E9FDC: .4byte 0x000003FF\n\
  .syntax divided\n");
 }
 
-NAKED static struct CharTile *getFreeCharTile(u16 styledChar) {
+NAKED static struct CharTile* getFreeCharTile(u16 styledChar) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	lsls r0, r0, #0x10\n\

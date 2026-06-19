@@ -15,7 +15,7 @@ const BossRoutine gMegamilpaRoutine = {
     [ENTITY_INIT] =      Megamilpa_Init,
     [ENTITY_UPDATE] =    Megamilpa_Update,
     [ENTITY_DIE] =       Megamilpa_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -100,7 +100,7 @@ _0803D234:\n\
 	adds r4, #1\n\
 	cmp r4, #0xa\n\
 	ble _0803D224\n\
-	ldr r0, _0803D260 @ =gSystemSavedataManager\n\
+	ldr r0, _0803D260 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x16]\n\
 	movs r0, #0x40\n\
 	ands r0, r1\n\
@@ -115,7 +115,7 @@ _0803D234:\n\
 _0803D254: .4byte gBossFnTable\n\
 _0803D258: .4byte u8_ARRAY_08361ab8\n\
 _0803D25C: .4byte 0xFFFFFC00\n\
-_0803D260: .4byte gSystemSavedataManager\n\
+_0803D260: .4byte gSystemSavedata\n\
 _0803D264: .4byte gMegamilpaCoreHitbox\n\
 _0803D268:\n\
 	ldr r1, _0803D2AC @ =gMegamilpaCoreHitbox\n\
@@ -152,16 +152,16 @@ _0803D2A0:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _0803D2AC: .4byte gMegamilpaCoreHitbox\n\
-_0803D2B0: .4byte 0x085D795C\n\
+_0803D2B0: .4byte gStaticMotionGraphics+(5*20)\n\
 _0803D2B4: .4byte wStaticGraphicTilenums\n\
-_0803D2B8: .4byte 0x085D7968\n\
+_0803D2B8: .4byte gStaticMotionGraphics+(5*20)+12\n\
 _0803D2BC: .4byte wStaticMotionPalIDs\n\
  .syntax divided\n");
 }
 
 // --------------------------------------------
 
-static void nop_0803d6a0(struct Boss* p);
+static void nop_0803d6a0(void* _);
 
 void FUN_0803d6a4(struct Boss* p);
 void FUN_0803d6fc(struct Boss* p);
@@ -173,24 +173,24 @@ void FUN_0803dc34(struct Boss* p);
 static void Megamilpa_Update(struct Boss* p) {
   // clang-format off
   static const BossFunc sUpdates1[6] = {
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0, 
-      nop_0803d6a0,
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0, 
+      (BossFunc)nop_0803d6a0,
   };
   static const BossFunc sUpdates2[6] = {
-      FUN_0803d6a4, 
-      FUN_0803d6fc, 
-      FUN_0803d7a0, 
-      FUN_0803d844, 
-      FUN_0803dba0, 
-      FUN_0803dc34,
+      (BossFunc)FUN_0803d6a4, 
+      (BossFunc)FUN_0803d6fc, 
+      (BossFunc)FUN_0803d7a0, 
+      (BossFunc)FUN_0803d844, 
+      (BossFunc)FUN_0803dba0, 
+      (BossFunc)FUN_0803dc34,
   };
   // clang-format on
 
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     Megamilpa_Die(p);
     return;
@@ -226,7 +226,7 @@ _0803D358: @ jump table\n\
 	.4byte _0803D448 @ case 4\n\
 _0803D36C:\n\
 	ldr r0, _0803D3BC @ =0x0000010D\n\
-	bl stopSound\n\
+	bl StopSound\n\
 	ldr r3, _0803D3C0 @ =gStageRun\n\
 	ldrh r2, [r3, #8]\n\
 	movs r4, #1\n\
@@ -590,7 +590,7 @@ _0803D640:\n\
 	cmp r0, #0\n\
 	beq _0803D652\n\
 	ldr r0, _0803D69C @ =0x0000010D\n\
-	bl stopSound\n\
+	bl StopSound\n\
 	strb r6, [r5]\n\
 _0803D652:\n\
 	adds r0, r4, #0\n\
@@ -634,10 +634,7 @@ _0803D69C: .4byte 0x0000010D\n\
 
 // --------------------------------------------
 
-static void nop_0803d6a0(struct Boss* p) {
-  // nop
-  return;
-}
+static void nop_0803d6a0(void* _) {}
 
 // --------------------------------------------
 

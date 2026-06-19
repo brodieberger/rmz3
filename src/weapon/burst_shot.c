@@ -25,11 +25,11 @@ void BurstShot_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gBurstShotRoutine = {
-    [ENTITY_INIT] =      BurstShot_Init,
-    [ENTITY_UPDATE] =    BurstShot_Update,
-    [ENTITY_DIE] =       BurstShot_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)BurstShot_Init,
+    [ENTITY_UPDATE] =    (void*)BurstShot_Update,
+    [ENTITY_DIE] =       (void*)BurstShot_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
@@ -40,27 +40,24 @@ void MenuExit_BurstShot(struct Weapon* w) {
   if (((&z->unk_b4)->status).element != ELEMENT_FLAME || (z->unk_136 & (1 << 0))) {
     (w->s).flags &= ~DISPLAY;
     (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(w);
     SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
   }
 }
 
 struct Weapon* CreateBurstShot(struct Zero* z, struct Weapon* p, u8 n, s32 x, s32 y) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_BUSTER) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_BURST_SHOT);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[0];
       (w->s).palID = gWeaponPalIDs[0];
     } else {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_BURST_SHOT);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[1];
       (w->s).palID = gWeaponPalIDs[1];
     }

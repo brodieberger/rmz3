@@ -13,10 +13,10 @@ void Wormer_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gWormerRoutine = {
-    [ENTITY_INIT] =      Wormer_Init,
-    [ENTITY_UPDATE] =    Wormer_Update,
-    [ENTITY_DIE] =       Wormer_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Wormer_Init,
+    [ENTITY_UPDATE] =    (void*)Wormer_Update,
+    [ENTITY_DIE] =       (void*)Wormer_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -24,7 +24,7 @@ const BossRoutine gWormerRoutine = {
 void nop_080423e0(struct Body* _ UNUSED) { return; }
 
 bool8 tryKillOrWormer(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     Wormer_Die(p);
     return TRUE;
@@ -85,6 +85,7 @@ static const BossFunc sUpdates2[11] = {
 };
 // clang-format on
 
+// 0x083620f8
 static const struct Collision sCollisions[15] = {
     [0] = {
       kind : DRP,
@@ -272,13 +273,13 @@ static const struct Collision sCollisions[15] = {
 
 static const u8 sInitModes[4] = {1, 1, 0, 0};
 
-const struct Coord Coord_08362264 = {-0xA00, -0x2000};
+const Coords32 Coord_08362264 = {-0xA00, -0x2000};
 
 const u8 u8_ARRAY_0836226c[10] = {
     1, 1, 1, 1, 3, 3, 5, 5, 5, 5,
 };
 
-const struct Coord Coord_ARRAY_08362278[3] = {
+const Coords32 Coord_ARRAY_08362278[3] = {
     {-0x180, -0x400},
     {-0x280, -0x480},
     {-0x380, -0x500},
@@ -288,7 +289,7 @@ const u8 u8_ARRAY_08362290[10] = {
     5, 5, 5, 5, 3, 3, 1, 1, 1, 1,
 };
 
-const struct Coord16 ALIGNED(2) Coord_ARRAY_0836229a[4] = {
+const Coords16 ALIGNED(2) Coord_ARRAY_0836229a[4] = {
     {0x080, -0x200},
     {0x140, -0x280},
     {0x200, -0x300},

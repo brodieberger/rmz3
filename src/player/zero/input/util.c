@@ -8,6 +8,11 @@ static void tryCommandDash(struct Zero* z);
 void handlePlayerInput(struct Zero* z);
 void ClearInputHistory(struct Zero* z);
 
+static bool32 ultimate_command_080339a8(struct Zero* z);
+static bool32 ultimate_command_08033ad8(struct Zero* z);
+static bool32 ultimate_command_08033c8c(struct Zero* z);
+static bool32 ultimate_command_08033da0(struct Zero* z);
+
 void InitPlayerKeyMap(struct Zero* z) {
   struct Zero_b4* b4;
 
@@ -15,37 +20,37 @@ void InitPlayerKeyMap(struct Zero* z) {
 
   b4 = &(z->unk_b4);
   if ((b4->status).keyMap.btnMode == 0) {
-    (z->keyMap).jump = A_BUTTON;
-    (z->keyMap).dash = L_BUTTON;
-    (z->keyMap).main = B_BUTTON;
-    (z->keyMap).sub = R_BUTTON;
+    (z->input).mapping.jump = A_BUTTON;
+    (z->input).mapping.dash = L_BUTTON;
+    (z->input).mapping.main = B_BUTTON;
+    (z->input).mapping.sub = R_BUTTON;
 
   } else if ((b4->status).keyMap.btnMode == 1) {
-    (z->keyMap).jump = A_BUTTON;
-    (z->keyMap).dash = R_BUTTON;
-    (z->keyMap).main = B_BUTTON;
-    (z->keyMap).sub = L_BUTTON;
+    (z->input).mapping.jump = A_BUTTON;
+    (z->input).mapping.dash = R_BUTTON;
+    (z->input).mapping.main = B_BUTTON;
+    (z->input).mapping.sub = L_BUTTON;
 
   } else {
-    (z->keyMap).jump = (b4->status).keyMap.keys.jump;
-    (z->keyMap).dash = (b4->status).keyMap.keys.dash;
-    (z->keyMap).main = (b4->status).keyMap.keys.main;
-    (z->keyMap).sub = (b4->status).keyMap.keys.sub;
+    (z->input).mapping.jump = (b4->status).keyMap.keys.jump;
+    (z->input).mapping.dash = (b4->status).keyMap.keys.dash;
+    (z->input).mapping.main = (b4->status).keyMap.keys.main;
+    (z->input).mapping.sub = (b4->status).keyMap.keys.sub;
   }
-  z->zeroInput = 0;
-  z->commandDashTimer = 0;
+  (z->input).val = 0;
+  (z->input).commandDashTimer = 0;
 
-  (z->ultimateCommand_224)[0] = 0;
-  (z->ultimateCommand_224)[1] = 0;
+  ((z->input).ultimateCommand_224)[0] = 0;
+  ((z->input).ultimateCommand_224)[1] = 0;
 
-  (z->ultimateCommand_227)[0] = 0;
-  (z->ultimateCommand_227)[1] = 0;
+  ((z->input).ultimateCommand_227)[0] = 0;
+  ((z->input).ultimateCommand_227)[1] = 0;
 
-  (z->ultimateCommand_22a)[0] = 0;
-  (z->ultimateCommand_22a)[1] = 0;
+  ((z->input).ultimateCommand_22a)[0] = 0;
+  ((z->input).ultimateCommand_22a)[1] = 0;
 
-  (z->ultimateCommand_22c)[0] = 0;
-  (z->ultimateCommand_22c)[1] = 0;
+  ((z->input).ultimateCommand_22c)[0] = 0;
+  ((z->input).ultimateCommand_22c)[1] = 0;
 }
 
 NAKED void HandlePlayerInput(struct Zero* z) {
@@ -1222,24 +1227,25 @@ _080336F6:\n\
  .syntax divided\n");
 }
 
-WIP static void tryCommandDash(struct Zero* z) {
+// コマンドダッシュ(十字キー2回押し)
+NON_MATCH static void tryCommandDash(struct Zero* z) {
 #if MODERN
   u8 i, j;
-  if (z->commandDashTimer > 0) {
-    z->commandDashTimer--;
-    z->inputHistory[0] |= COMMAND_DASH;
-    if ((z->last & (DPAD_RIGHT | DPAD_LEFT)) == 0) {
-      z->commandDashTimer = 0;
+  if ((z->input).commandDashTimer > 0) {
+    (z->input).commandDashTimer--;
+    (z->input).history[0] |= COMMAND_DASH;
+    if (((z->input).raw & (DPAD_RIGHT | DPAD_LEFT)) == 0) {
+      (z->input).commandDashTimer = 0;
       return;
     }
     // Continue command dash
-    z->zeroInput |= ZERO_INPUT_DASH;
+    (z->input).val |= ZERO_INPUT_DASH;
     return;
   }
 
-  if (z->pressed & DPAD_RIGHT) {
+  if ((z->input).pressed & DPAD_RIGHT) {
     for (i = 1; i < 10; i++) {
-      KEY_INPUT pressed = z->inputHistory[i];
+      KEY_INPUT pressed = (z->input).history[i];
       if (pressed & COMMAND_DASH) {
         return;
       }
@@ -1248,18 +1254,18 @@ WIP static void tryCommandDash(struct Zero* z) {
       }
       if (pressed & DPAD_RIGHT) {
         for (j = 0; j < 10; j++) {
-          if (!(z->inputHistory[i + j] & DPAD_RIGHT)) {
-            z->inputHistory[0] |= COMMAND_DASH;
-            z->zeroInput |= ZERO_INPUT_PRESS_DASH;
-            z->commandDashTimer = 28;
+          if (!((z->input).history[i + j] & DPAD_RIGHT)) {
+            (z->input).history[0] |= COMMAND_DASH;
+            (z->input).val |= ZERO_INPUT_PRESS_DASH;
+            (z->input).commandDashTimer = 28;
           }
         }
         return;
       }
     }
-  } else if (z->pressed & DPAD_LEFT) {
+  } else if ((z->input).pressed & DPAD_LEFT) {
     for (i = 1; i < 10; i++) {
-      KEY_INPUT pressed = z->inputHistory[i];
+      KEY_INPUT pressed = (z->input).history[i];
       if (pressed & COMMAND_DASH) {
         return;
       }
@@ -1268,10 +1274,10 @@ WIP static void tryCommandDash(struct Zero* z) {
       }
       if (pressed & DPAD_LEFT) {
         for (j = 0; j < 10; j++) {
-          if (!(z->inputHistory[i + j] & DPAD_LEFT)) {
-            z->inputHistory[0] |= COMMAND_DASH;
-            z->zeroInput |= ZERO_INPUT_PRESS_DASH;
-            z->commandDashTimer = 28;
+          if (!((z->input).history[i + j] & DPAD_LEFT)) {
+            (z->input).history[0] |= COMMAND_DASH;
+            (z->input).val |= ZERO_INPUT_PRESS_DASH;
+            (z->input).commandDashTimer = 28;
           }
         }
         return;
@@ -1279,7 +1285,7 @@ WIP static void tryCommandDash(struct Zero* z) {
     }
   }
 
-  z->commandDashTimer = 0;
+  (z->input).commandDashTimer = 0;
 #else
   INCCODE("asm/wip/tryCommandDash.inc");
 #endif
@@ -1292,81 +1298,57 @@ bool8 IsButtonMashed(struct Zero* z) {
   return FALSE;
 }
 
-NAKED u8 CountRodButton(struct Zero* z, bool8 isSubWeapon) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r3, r0, #0\n\
-	lsls r1, r1, #0x18\n\
-	cmp r1, #0\n\
-	beq _080338EC\n\
-	adds r0, r3, #0\n\
-	adds r0, #0xd9\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	beq _080338EC\n\
-	cmp r0, #1\n\
-	bne _080338EC\n\
-	ldr r1, _080338E8 @ =0x00000222\n\
-	b _080338F0\n\
-	.align 2, 0\n\
-_080338E8: .4byte 0x00000222\n\
-_080338EC:\n\
-	movs r1, #0x88\n\
-	lsls r1, r1, #2\n\
-_080338F0:\n\
-	adds r0, r3, r1\n\
-	ldrh r2, [r0]\n\
-	movs r4, #0\n\
-	movs r1, #0\n\
-	movs r0, #0xca\n\
-	lsls r0, r0, #1\n\
-	adds r3, r3, r0\n\
-_080338FE:\n\
-	lsls r0, r1, #1\n\
-	adds r0, r3, r0\n\
-	ldrh r0, [r0]\n\
-	ands r0, r2\n\
-	adds r1, #1\n\
-	cmp r0, #0\n\
-	beq _0803391E\n\
-	lsls r0, r1, #1\n\
-	adds r0, r3, r0\n\
-	ldrh r0, [r0]\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	bne _0803391E\n\
-	adds r0, r4, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r4, r0, #0x18\n\
-_0803391E:\n\
-	lsls r0, r1, #0x18\n\
-	lsrs r1, r0, #0x18\n\
-	cmp r1, #0x1f\n\
-	bls _080338FE\n\
-	adds r0, r4, #0\n\
-	pop {r4}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
+// attackMode ら辺のレジスタ割り当てがうまくいかないだけ
+// 0x080338cc
+NON_MATCH u8 CountRodButton(struct Zero* z, bool8 isSubWeapon) {
+#if MODERN
+  u8 i, count;
+
+  KEY_INPUT input;
+  if (isSubWeapon) {
+    // ロッドがサブウェポンのときは、アタックモードによってメインとサブのどちらのボタンでカウントするか変わる
+    u8 mode = (z->unk_b4).status.keyMap.attackMode;
+    if (mode == 0) {  // タイプA (メイン: Main, サブ: Main+Sub)
+      input = (z->input).mapping.main;
+    } else if (mode == 1) {  // タイプB (メイン: Main, サブ: Sub)
+      input = (z->input).mapping.sub;
+    } else {  // タイプC (メイン: Main or Sub, サブ: Toggle Main/Sub)
+      input = (z->input).mapping.main;
+    }
+  } else {
+    input = (z->input).mapping.main;
+  }
+
+  count = 0;
+  for (i = 0; i < 32; i++) {
+    if (((z->input).history[i] & input) && (((z->input).history[i + 1] & input) == 0)) {
+      count++;
+    }
+  }
+  return count;
+#else
+  INCCODE("asm/wip/CountRodButton.inc");
+#endif
 }
 
 void FUN_08033930(struct Zero* z, u8 r1, u8 r2) {
   (z->unk_b4).status.keyMap.btnMode = r1;
   if (r1 == 0) {
-    (z->keyMap).jump = A_BUTTON;
-    (z->keyMap).dash = L_BUTTON;
-    (z->keyMap).main = B_BUTTON;
-    (z->keyMap).sub = R_BUTTON;
+    (z->input).mapping.jump = A_BUTTON;
+    (z->input).mapping.dash = L_BUTTON;
+    (z->input).mapping.main = B_BUTTON;
+    (z->input).mapping.sub = R_BUTTON;
   } else if (r1 == 1) {
-    (z->keyMap).jump = A_BUTTON;
-    (z->keyMap).dash = R_BUTTON;
-    (z->keyMap).main = B_BUTTON;
-    (z->keyMap).sub = L_BUTTON;
+    (z->input).mapping.jump = A_BUTTON;
+    (z->input).mapping.dash = R_BUTTON;
+    (z->input).mapping.main = B_BUTTON;
+    (z->input).mapping.sub = L_BUTTON;
   }
   (z->unk_b4).status.keyMap.attackMode = r2;
 }
 
-NAKED bool8 ultimate_command_080339a8(struct Zero* z) {
+// 0x080339a8
+NAKED static bool32 ultimate_command_080339a8(struct Zero* z) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r1, r0, #0\n\
@@ -1536,7 +1518,8 @@ _08033AD4: .4byte 0x00000225\n\
  .syntax divided\n");
 }
 
-NAKED bool8 ultimate_command_08033ad8(struct Zero* z) {
+// 0x08033ad8
+NAKED static bool32 ultimate_command_08033ad8(struct Zero* z) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r2, r0, #0\n\
@@ -1762,7 +1745,8 @@ _08033C86:\n\
  .syntax divided\n");
 }
 
-NAKED bool8 ultimate_command_08033c8c(struct Zero* z) {
+// 0x08033c8c
+NAKED static bool32 ultimate_command_08033c8c(struct Zero* z) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r1, r0, #0\n\
@@ -1915,7 +1899,8 @@ _08033D9C: .4byte 0x0000022B\n\
  .syntax divided\n");
 }
 
-NAKED bool8 ultimate_command_08033da0(struct Zero* z) {
+// 0x08033da0
+NAKED static bool32 ultimate_command_08033da0(struct Zero* z) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\

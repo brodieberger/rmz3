@@ -1,9 +1,9 @@
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "gpu_regs.h"
 #include "intro.h"
+#include "palette_animation.h"
 #include "system.h"
 
 void ClearMemory(void);
@@ -16,11 +16,11 @@ void InitPaletteManager(void);
 void InitSound(void);
 void InitTextPrinter(u32*);
 void InitScheduler(bool32 ok);
-void GameLoop(void);
+void RunScheduler(void);
 void usrHBlankCallback(void);
 void usrVBlankCallback(void);
 
-WIP void AgbMain(void) {
+NON_MATCH void AgbMain(void) {
 #if MODERN
   ClearMemory();
   InitIntrHandlers();
@@ -30,14 +30,14 @@ WIP void AgbMain(void) {
   REG_DISPCNT = DISPCNT_FORCED_BLANK;
   ClearVRAM();
   InitPaletteManager();
-  ClearBlinkings();
+  RemoveAllPaletteAnimations();
   ResetVideoRegister();
   ResetOAM();
   ClearBLDCLT_1();
   ResetWindow();
   ClearMOSAIC();
   InitSound();
-  MaskBg0(gGameState.bg0, SCREEN_BASE(0), 1408, 0x3C0);
+  EnableBG0(gGameState.bg0, SCREEN_BASE(0), 1408, RGB(0, 30, 0));
   InitTextPrinter(gGameState.bg0);
   PALETTE16(0) = RGB_WHITE;
   gIntrManager.slowGameRatio = 1;
@@ -46,13 +46,13 @@ WIP void AgbMain(void) {
   gIntrManager.vblankCallback = usrVBlankCallback;
   gGameState.unk_00c = TRUE;
   SetIntroMode(&gIntro, 0);
-  gIntro.unk_12 = 0;
+  gIntro.demo_id = 0;
 
   InitScheduler(TRUE);
   ResetProcess(0, Process_SoftReset);  // Process_SoftReset -> Process_Intro -> Process_Game
   ResetProcess(2, Process_System);
 
-  GameLoop();
+  RunScheduler();
 #else
   INCCODE("asm/wip/AgbMain.inc");
 #endif

@@ -27,14 +27,14 @@
 	movs r1, #2
 	orrs r0, r1
 	strb r0, [r6, #0xa]
-	ldr r1, _08039544 @ =0x08360430
+	ldr r1, _08039544 @ =sMotions
 	ldrb r0, [r6, #0x10]
 	lsls r0, r0, #1
 	adds r0, r0, r1
 	ldrh r1, [r0]
 	adds r0, r6, #0
 	bl SetMotion
-	ldr r1, _08039548 @ =0x083611F4
+	ldr r1, _08039548 @ =gRodHitboxes
 	ldrb r0, [r6, #0x10]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -63,8 +63,8 @@
 	b _0803955E
 	.align 2, 0
 _08039540: .4byte gWeaponFnTable
-_08039544: .4byte 0x08360430
-_08039548: .4byte 0x083611F4
+_08039544: .4byte sMotions
+_08039548: .4byte gRodHitboxes
 _0803954C:
 	cmp r0, #0xa
 	bhi _08039558
@@ -79,7 +79,7 @@ _0803955E:
 	adds r2, #0xb4
 	movs r4, #1
 	strb r4, [r2, #7]
-	ldr r1, _08039598 @ =0x083611F4
+	ldr r1, _08039598 @ =gRodHitboxes
 	ldrb r0, [r6, #0x10]
 	lsls r0, r0, #2
 	adds r0, r0, r1
@@ -92,7 +92,7 @@ _0803955E:
 	adds r5, r2, #0
 	cmp r0, #0
 	beq _080395A0
-	ldr r1, _0803959C @ =0x0836045C
+	ldr r1, _0803959C @ =gRodElement
 	mov r2, sb
 	adds r2, #0xb4
 	ldrb r0, [r2, #0xe]
@@ -104,15 +104,15 @@ _0803955E:
 	adds r7, r2, #0
 	b _080395C2
 	.align 2, 0
-_08039598: .4byte 0x083611F4
-_0803959C: .4byte 0x0836045C
+_08039598: .4byte gRodHitboxes
+_0803959C: .4byte gRodElement
 _080395A0:
-	ldr r0, _080395FC @ =0x0836045C
+	ldr r0, _080395FC @ =gRodElement
 	ldrb r0, [r0]
 	strb r0, [r5, #4]
 	movs r0, #8
 	strb r0, [r5, #5]
-	ldr r1, _08039600 @ =0x08360430
+	ldr r1, _08039600 @ =sMotions
 	ldrb r0, [r6, #0x10]
 	lsls r0, r0, #1
 	adds r0, r0, r1
@@ -153,8 +153,8 @@ _080395CC:
 	bl InitWeaponBody
 	b _0803961C
 	.align 2, 0
-_080395FC: .4byte 0x0836045C
-_08039600: .4byte 0x08360430
+_080395FC: .4byte gRodElement
+_08039600: .4byte sMotions
 _08039604:
 	adds r4, r6, #0
 	adds r4, #0x74
@@ -194,7 +194,7 @@ _08039642:
 _08039644:
 	movs r0, #1
 	strb r0, [r5, #8]
-	ldr r0, _08039660 @ =FUN_08039960
+	ldr r0, _08039660 @ =onCollision
 	str r0, [r4, #0x24]
 	adds r0, r6, #0
 	bl Rod_Update
@@ -206,4 +206,4 @@ _08039644:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08039660: .4byte FUN_08039960
+_08039660: .4byte onCollision

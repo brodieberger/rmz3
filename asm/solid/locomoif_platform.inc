@@ -154,7 +154,7 @@ LocomoIFPlatform_Update: @ 0x080CE600
 	ldr r0, _080CE6A8 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #7
 	cmp r0, r1
@@ -271,7 +271,7 @@ _080CE73A:
 	adds r0, r4, #0
 	bl FUN_080ce538
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0xbd
 	ldrb r0, [r0]
@@ -311,7 +311,7 @@ _080CE776:
 	adds r0, r4, #0
 	bl FUN_080ce538
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CE78E:
 	ldrb r0, [r5, #0xc]
 	cmp r0, #1
@@ -360,7 +360,7 @@ _080CE7CE:
 	adds r0, r4, #0
 	bl FUN_080ce538
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -409,7 +409,7 @@ _080CE828:
 	adds r0, r4, #0
 	bl FUN_080ce538
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -417,7 +417,7 @@ _080CE828:
 	cmp r0, #0
 	bne _080CE862
 	ldr r0, _080CE868 @ =0x0000010B
-	bl stopSound
+	bl StopSound
 	adds r0, r6, #0
 	adds r0, #0xbd
 	strb r5, [r0]

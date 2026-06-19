@@ -93,7 +93,7 @@ _080EF082:
 	strh r0, [r5]
 	ldr r0, _080EF138 @ =wMOSAIC
 	strh r6, [r0]
-	bl PauseAllBlinks
+	bl PauseAllPaletteAnimations
 	movs r3, #0x81
 	lsls r3, r3, #2
 	adds r0, r3, #0
@@ -107,13 +107,13 @@ _080EF082:
 	ldr r0, _080EF140 @ =0x08547CB4
 	movs r1, #0
 	bl LoadPalette
-	ldr r0, _080EF144 @ =0x08547CBC
+	ldr r0, _080EF144 @ =gGraphic_OpeningAnim2
 	ldrh r1, [r5, #6]
 	ands r4, r1
 	lsls r4, r4, #0xc
 	adds r1, r4, #0
 	bl LoadGraphic
-	ldr r0, _080EF148 @ =0x08547CC8
+	ldr r0, _080EF148 @ =gPalette_OpeningAnim2
 	movs r1, #0
 	bl LoadPalette
 	ldr r1, _080EF14C @ =gBgMapOffsets
@@ -122,7 +122,7 @@ _080EF082:
 	movs r2, #0x82
 	movs r3, #0
 	bl LoadBgMap
-	bl CancelCyberSpaceColorFilter
+	bl DisableCyberSpaceColorFilter
 	movs r0, #0x89
 	lsls r0, r0, #1
 	bl PlaySound
@@ -157,10 +157,10 @@ _080EF12C: .4byte 0x00000402
 _080EF130: .4byte gVideoRegBuffer
 _080EF134: .4byte 0x0000B0FF
 _080EF138: .4byte wMOSAIC
-_080EF13C: .4byte 0x08547CA8
-_080EF140: .4byte 0x08547CB4
-_080EF144: .4byte 0x08547CBC
-_080EF148: .4byte 0x08547CC8
+_080EF13C: .4byte gGraphic_OpeningAnim1
+_080EF140: .4byte gPalette_OpeningAnim1
+_080EF144: .4byte gGraphic_OpeningAnim2
+_080EF148: .4byte gPalette_OpeningAnim2
 _080EF14C: .4byte gBgMapOffsets
 _080EF150:
 	movs r0, #0
@@ -182,7 +182,7 @@ _080EF162:
 	movs r0, #0x10
 	orrs r0, r1
 	strb r0, [r2, #4]
-	ldr r1, _080EF18C @ =gMission
+	ldr r1, _080EF18C @ =gScore
 	movs r0, #7
 	ldrsb r0, [r1, r0]
 	subs r0, #5
@@ -194,11 +194,11 @@ _080EF162:
 	b _080EF192
 	.align 2, 0
 _080EF188: .4byte gCurStory
-_080EF18C: .4byte gMission
+_080EF18C: .4byte gScore
 _080EF190:
 	strb r3, [r1, #7]
 _080EF192:
-	bl ApplyCyberSpaceColorFilter
+	bl EnableCyberSpaceColorFilter
 	b _080EF1D2
 _080EF198:
 	ldr r2, _080EF1C0 @ =gCurStory
@@ -206,7 +206,7 @@ _080EF198:
 	movs r0, #0xef
 	ands r0, r1
 	strb r0, [r2, #4]
-	bl CancelCyberSpaceColorFilter
+	bl DisableCyberSpaceColorFilter
 	ldr r0, _080EF1C4 @ =gOverworld
 	movs r2, #0xe8
 	lsls r2, r2, #1
@@ -261,13 +261,13 @@ _080EF1D2:
 	strb r3, [r0, #0xf]
 	adds r0, r7, #0
 	bl RestoreGraphicState
-	bl ResumeAllBlinks
+	bl ResumeAllPaletteAnimations
 	ldr r0, _080EF240 @ =gStageRun+288
-	bl UpdateStageEntities
+	bl UpdateSpawnManager
 	ldr r0, _080EF244 @ =gSolidHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
-	ldr r0, _080EF248 @ =gZakoHeaderPtr
+	ldr r0, _080EF248 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
 	movs r0, #8
@@ -278,7 +278,7 @@ _080EF238: .4byte pZero2
 _080EF23C: .4byte gIsUsingDoor3D
 _080EF240: .4byte gStageRun+288
 _080EF244: .4byte gSolidHeaderPtr
-_080EF248: .4byte gZakoHeaderPtr
+_080EF248: .4byte gEnemyHeaderPtr
 _080EF24C:
 	ldrh r0, [r7, #4]
 	subs r0, #1
@@ -401,20 +401,20 @@ _080EF32C:
 	lsls r3, r3, #4
 	adds r4, r7, r3
 	adds r0, r4, #0
-	bl ClearTaskBuffer
+	bl Renderer_Clear
 	bl ClearAllHitboxes
-	ldr r1, _080EF3D4 @ =0x0202F354
+	ldr r1, _080EF3D4 @ =gMatrixCount
 	movs r0, #0
 	strb r0, [r1]
 	movs r0, #0
-	ldr r1, _080EF3D8 @ =0x0202F360
+	ldr r1, _080EF3D8 @ =gWhitePaintFlags
 	str r0, [sp, #4]
 	ldr r2, _080EF3DC @ =0x01000008
 	add r0, sp, #4
 	bl CpuFastSet
 	movs r0, #1
-	bl OverworldUpdate
-	ldr r5, _080EF3E0 @ =0x0203029C
+	bl StageRun_Update
+	ldr r5, _080EF3E0 @ =gZeroHeaderPtr
 	ldr r0, [r5]
 	bl UpdateEntities
 	ldr r6, _080EF3E4 @ =gElfHeaderPtr
@@ -429,7 +429,7 @@ _080EF32C:
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
-	ldr r0, _080EF3F0 @ =gZakoHeaderPtr
+	ldr r0, _080EF3F0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	adds r1, r4, #0
 	bl DrawCollidableEntity
@@ -454,7 +454,7 @@ _080EF32C:
 	adds r1, r4, #0
 	bl DrawCollidableEntity
 	movs r0, #1
-	bl CameraUpdate
+	bl StageRun_Render
 	adds r0, r7, #0
 	bl DrawHUD
 	bl UpdateTextWindow
@@ -464,14 +464,14 @@ _080EF3CC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080EF3D4: .4byte 0x0202F354
-_080EF3D8: .4byte 0x0202F360
+_080EF3D4: .4byte gMatrixCount
+_080EF3D8: .4byte gWhitePaintFlags
 _080EF3DC: .4byte 0x01000008
-_080EF3E0: .4byte 0x0203029C
+_080EF3E0: .4byte gZeroHeaderPtr
 _080EF3E4: .4byte gElfHeaderPtr
 _080EF3E8: .4byte gSolidHeaderPtr
 _080EF3EC: .4byte gBossHeaderPtr
-_080EF3F0: .4byte gZakoHeaderPtr
+_080EF3F0: .4byte gEnemyHeaderPtr
 _080EF3F4: .4byte gProjectileHeaderPtr
 _080EF3F8: .4byte gVFXHeaderPtr
 _080EF3FC: .4byte gPickupHeaderPtr

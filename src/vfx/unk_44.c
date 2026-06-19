@@ -1,24 +1,73 @@
 #include "global.h"
+#include "stagerun.h"
 #include "vfx.h"
 
-INCASM("asm/vfx/unk_44.inc");
+// MMBN4との通信で出現する敵に関係するエフェクト?
 
-void VFX44_Init(struct VFX* vfx);
-void VFX44_Update(struct VFX* vfx);
-void VFX44_Die(struct VFX* vfx);
+static void VFX44_Init(struct Entity* p);
+static void VFX44_Update(struct Entity* p);
+static void VFX44_Die(struct Entity* p);
 
 // clang-format off
 const VFXRoutine gVFX44Routine = {
-    [ENTITY_INIT] =      VFX44_Init,
-    [ENTITY_UPDATE] =    VFX44_Update,
-    [ENTITY_DIE] =       VFX44_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)VFX44_Init,
+    [ENTITY_UPDATE] =    (void*)VFX44_Update,
+    [ENTITY_DIE] =       (void*)VFX44_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void FUN_080be974(struct VFX* vfx);
+// --------------------------------------------
 
-static const VFXFunc sUpdates[1] = {
-    FUN_080be974,
-};
+struct Entity* createGhost44(Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_UNK_MMBN4_044);
+    p->work[0] = kind, p->work[1] = 0;
+    (p->coord).x = c->x, (p->coord).y = c->y;
+  }
+  return p;
+}
+
+// --------------------------------------------
+
+static void VFX44_Init(struct Entity* p) {
+  InitNonAffineMotion(p);
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
+  if (p->work[0] == 0) {
+    SET_XFLIP(p, FALSE);
+  } else {
+    SET_XFLIP(p, TRUE);
+  }
+  (p->d).y = 0;
+  p->work[2] = 0xFF;
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  p->mode[1] = 0, p->mode[2] = 0, p->mode[3] = 0;
+  VFX44_Update(p);
+}
+
+void FUN_080be974(struct Entity* p);
+
+static void VFX44_Update(struct Entity* p) {
+  static const EntityFunc sUpdates[1] = {
+      FUN_080be974,
+  };
+  if (FLAG(gCurStory.s.gameflags, METTAUR_ENABLED) || gStageRun.vm.entities[1].entity != NULL) {
+    p->flags &= ~DISPLAY;
+    p->flags &= ~FLIPABLE;
+    SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);
+    return;
+  }
+  (sUpdates[p->mode[1]])(p);
+}
+
+static void VFX44_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_VFX_ROUTINE(p, ENTITY_EXIT);
+}
+
+// --------------------------------------------
+
+INCASM("asm/vfx/unk_44.inc");

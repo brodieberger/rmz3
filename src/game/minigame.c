@@ -1,15 +1,21 @@
 #include "minigame.h"
 
-#include "blink.h"
 #include "global.h"
 #include "hud.h"
+#include "palette_animation.h"
+#include "pickup.h"
 #include "sprite.h"
+#include "system.h"
 #include "zero.h"
 
+void ExitStageLandscape(void);
+
 static void MinigameLoop_InitMinigame(struct GameState* g);
+static void MinigameLoop_Main(struct GameState* g);
+static void MinigameLoop_ExitMinigame(struct GameState* g);
 
 void MainLoop_Minigame(struct GameState* g) {
-  static const MinigameLoopFunc MinigameLoops[3] = {
+  static const GameLoopFunc MinigameLoops[3] = {
       MinigameLoop_InitMinigame,
       MinigameLoop_Main,
       MinigameLoop_ExitMinigame,
@@ -17,37 +23,47 @@ void MainLoop_Minigame(struct GameState* g) {
   (MinigameLoops[g->mode[2]])(g);
 }
 
-// clang-format off
-static const MinigameLoopFunc sMinigameInitializers[MINIGAME_COUNT] = {
-    [MINIGAME_ZERO] = initZeroMinigame,
-    [MINIGAME_CIEL] = initCielMinigame,
-    [MINIGAME_COPY_X] = initCopyXMinigame,
-    [MINIGAME_HARPUIA] = initHarpuiaMinigame,
-    [MINIGAME_FEFNIR] = initFefnirMinigame,
-    [MINIGAME_LEVIATHAN] = initLeviathanMinigame,
-    [MINIGAME_PHANTOM] = initPhantomMinigame,
-};
-// clang-format on
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+void initZeroMinigame(struct GameState* g);
+void initCielMinigame(struct GameState* g);
+void initCopyXMinigame(struct GameState* g);
+void initHarpuiaMinigame(struct GameState* g);
+void initFefnirMinigame(struct GameState* g);
+void initLeviathanMinigame(struct GameState* g);
+void initPhantomMinigame(struct GameState* g);
 
 static void MinigameLoop_InitMinigame(struct GameState* g) {
+  // clang-format off
+  static const GameLoopFunc sMinigameInitializers[MINIGAME_COUNT] = {
+      [MINIGAME_ZERO] = initZeroMinigame,
+      [MINIGAME_CIEL] = initCielMinigame,
+      [MINIGAME_COPY_X] = initCopyXMinigame,
+      [MINIGAME_HARPUIA] = initHarpuiaMinigame,
+      [MINIGAME_FEFNIR] = initFefnirMinigame,
+      [MINIGAME_LEVIATHAN] = initLeviathanMinigame,
+      [MINIGAME_PHANTOM] = initPhantomMinigame,
+  };
+  // clang-format on
+
   struct Pivot* pivot = &g->unk_0db8;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x20;
-  gPaletteManager.unk_408 = NULL;
-  ClearBlinkings();
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_NONE;
+  gPaletteManager.post_process = NULL;
+  RemoveAllPaletteAnimations();
   gBlendRegBuffer.bldclt = 0;
   gWindowRegBuffer.dispcnt = 0;
   gWindowRegBuffer.winin[2] = 0xFF;
   wMOSAIC = 0x0;
   PALETTE16(0) = RGB_BLACK;
-  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = 0x00;
-  gVideoRegBuffer.dispcnt &= 0xFFF8;
-  gVideoRegBuffer.dispcnt &= 0xF0FF;
-  gVideoRegBuffer.dispcnt |= 0x0100;
+  gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = FILTER_BLACK;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
+  gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   g->unk_1ed8 = 0xFFFFFFFF;
   g->inMenu = FALSE;
   ResetPivot(pivot, &g->unk_0dc4, 0, 0);
-  ResetTaskManager(&g->taskManager);
-  SetTaskPivot(&g->taskManager, pivot);
+  Renderer_Init(&g->rendererMain);
+  Renderer_SetPivot(&g->rendererMain, pivot);
   ResetCollisionManager();
   ResetEntityEnvironment();
   RNG_0202f388 = (g->save).stageID;
@@ -55,7 +71,7 @@ static void MinigameLoop_InitMinigame(struct GameState* g) {
   PTR_0202f384 = &g->unk_1ed8;
   pZero2 = g->z2;
 
-  InitPlayerHeader(&g->entityHeaders[ENTITY_PLAYER], &gZero, 1);
+  InitPlayerHeader(&g->entityHeaders[ENTITY_PLAYER], gPlayers, 1);
   InitWeaponHeader(&g->entityHeaders[ENTITY_WEAPON], gWeapons, 24);
   InitEnemyHeader(&g->entityHeaders[ENTITY_ENEMY], gEnemies, 18);
   InitProjectileHeader(&g->entityHeaders[ENTITY_PROJECTILE], gProjectiles, 24);
@@ -72,8 +88,18 @@ static void MinigameLoop_InitMinigame(struct GameState* g) {
   g->mode[2]++;
 }
 
+// ------------------------------------------------------------------------------------------------------------------------------------
+
+bool32 zeroMinigame(struct GameState* g);
+bool32 cielMinigame(struct GameState* g);
+bool32 copyXMinigame(struct GameState* g);
+bool32 harpuiaMinigame(struct GameState* g);
+bool32 fefnirMinigame(struct GameState* g);
+bool32 leviathanMinigame(struct GameState* g);
+bool32 phantomMinigame(struct GameState* g);
+
 // clang-format off
-const MinigameLoopFunc gEachMinigameLoops[MINIGAME_COUNT] = {
+static const MinigameFunc sEachMinigameLoops[MINIGAME_COUNT] = {
     [MINIGAME_ZERO] = zeroMinigame,
     [MINIGAME_CIEL] = cielMinigame,
     [MINIGAME_COPY_X] = copyXMinigame,
@@ -81,81 +107,110 @@ const MinigameLoopFunc gEachMinigameLoops[MINIGAME_COUNT] = {
     [MINIGAME_FEFNIR] = fefnirMinigame,
     [MINIGAME_LEVIATHAN] = leviathanMinigame,
     [MINIGAME_PHANTOM] = phantomMinigame,
-};
+}; // 0x08386AB4
 // clang-format on
 
-// clang-format off
-const MinigameLoopFunc MinigameDeinitializers[MINIGAME_COUNT] = {
-    [MINIGAME_ZERO] = exitZeroMinigame,
-    [MINIGAME_CIEL] = exitCielMinigame,
-    [MINIGAME_COPY_X] = exitCopyXMinigame,
-    [MINIGAME_HARPUIA] = exitHarpuiaMinigame,
-    [MINIGAME_FEFNIR] = exitFefnirMinigame,
-    [MINIGAME_LEVIATHAN] = exitLeviathanMinigame,
-    [MINIGAME_PHANTOM] = exitPhantomMinigame,
-};
-// clang-format on
+// 0x080f8f5c
+// レジスタ割り当てがうまくいかない以外は問題なさそう
+NON_MATCH static void MinigameLoop_Main(struct GameState* g) {
+#if MODERN
+  if (g->frames < 32) {
+    g->frames++;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames;
+  } else if (g->frames > 32) {
+    g->frames--;
+    gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames - FILTER_NONE;
+  }
+  g->unk_1ed8++;
 
-const MinigameLoopFunc ZeroMinigameLoops[3] = {
-    zeroMinigamePhase0,
-    zeroMinigamePhase1,
-    zeroMinigamePhase2,
-};
+  Renderer_Clear(&g->rendererMain);
+  gMatrixCount = 0;
+  {
+    void* dst = gWhitePaintFlags;
+    u32 bytesize = sizeof(gWhitePaintFlags);
+    _CpuFastFill(0, dst, bytesize);
+  }
 
-// clang-format off
-const struct Coord Coord_ARRAY_08386af8[6] = {
-    {-0x2000, 0x1000}, {+0x2000, 0x1000},
-    {-0x2000, 0x4800}, {+0x2000, 0x4800},
-    {-0x2000, 0x8000}, {+0x2000, 0x8000},
-};
-// clang-format on
+  if ((sEachMinigameLoops[g->mode[1]])(g) == 0) g->mode[2]++;
 
-// clang-format off
-const struct Coord Coord_ARRAY_08386b28[6] = {
-    {+0x2800, 0x1000}, {-0x2800, 0x1000},
-    {+0x1800, 0x4800}, {-0x1800, 0x4800},
-    {+0x2800, 0x8000}, {-0x2800, 0x8000},
-};
-// clang-format on
+  // ここのレジスタ割り当てがうまくいかない以外は問題なさそう
+  if (g->mode[1] != MINIGAME_CIEL) {
+    void* src = gOverworld.terrain.objects;
+    void* dst = gOverworld.terrain.objectsPrev;
+    u32 bytesize = gOverworld.terrain.objectLen * sizeof(struct Hazard);
+    u32 fastsize = bytesize & ~31;
+    CpuFastCopy(src, dst, fastsize);
+    if (bytesize & 31) CpuCopy32(src + fastsize, dst + fastsize, bytesize & 31);
+    gOverworld.terrain.objectLenPrev = gOverworld.terrain.objectLen;
+    gOverworld.terrain.objectLen = 0;
+  }
 
-const u8 u8_ARRAY_08386b58[40] = {
-    0, 2, 0, 4, 2, 3, 1, 5, 0, 1, 0, 6, 1, 3, 1, 7, 4, 2, 0, 8, 2, 3, 1, 9, 4, 5, 2, 8, 5, 7, 3, 9, 8, 6, 4, 8, 6, 7, 5, 9,
-};
+  UpdateHazardEntities(gSolidHeaderPtr);
+  UpdateHazardEntities(gEnemyHeaderPtr);
+  UpdateEntities(gZeroHeaderPtr);
+  UpdateProjectiles();
+  UpdateEntities(gWeaponHeaderPtr);
+  UpdateEntities(gPickupHeaderPtr);
+  UpdateVFXs();
+  ClearAllHitboxes();
+  RegisterHitboxes(gSolidHeaderPtr);
+  RegisterHitboxes(gEnemyHeaderPtr);
+  RegisterHitboxes(gZeroHeaderPtr);
+  RegisterHitboxes(gProjectileHeaderPtr);
+  RegisterHitboxes(gWeaponHeaderPtr);
+  RegisterHitboxes(gPickupHeaderPtr);
+  if (g->mode[1] != MINIGAME_CIEL) UpdateStageLandscape(&g->unk_0dc4);
+  CheckCollision();
+  RunDamageEffect(gSolidHeaderPtr);
+  RunDamageEffect(gEnemyHeaderPtr);
+  RunDamageEffect(gZeroHeaderPtr);
+  RunDamageEffect(gPickupHeaderPtr);
 
-const MinigameLoopFunc CopyXMinigameLoops[3] = {
-    copyx_minigame_080fa560,
-    copyx_minigame_080fa62c,
-    copyx_minigame_080fa764,
-};
+  DrawCollidableEntity(gSolidHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gEnemyHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gZeroHeaderPtr, &g->rendererMain);
+  DrawWeapon(&g->rendererMain);
+  DrawEntity(gProjectileHeaderPtr, &g->rendererMain);
+  DrawEntity(gVFXHeaderPtr, &g->rendererMain);
+  DrawCollidableEntity(gPickupHeaderPtr, &g->rendererMain);
+  if (g->mode[1] != MINIGAME_CIEL) DrawOverworld(&g->rendererMain);
+  Renderer_Flush(&g->rendererMain);
 
-const MinigameLoopFunc HarpuiaMinigameLoops[3] = {
-    harpuia_minigame_080fab10,
-    harpuia_minigame_080fabe8,
-    harpuia_minigame_080faebc,
-};
+  if (gIsPlayDamageSE && (!(gCollisionManager.sweep & SWEEP_ALL_ENEMY))) PlaySound(SE_ZAKO_STUN);
+  gIsPlayDamageSE = FALSE;
+#else
+  INCCODE("asm/wip/MinigameLoop_Main.inc");
+#endif
+}
 
-const MinigameLoopFunc FefnirMinigameLoops[3] = {
-    fefnir_minigame_080fb2d8,
-    fefnir_minigame_080fb354,
-    fefnir_minigame_080fb48c,
-};
+// ------------------------------------------------------------------------------------------------------------------------------------
 
-const MinigameLoopFunc LeviathanMinigameLoops[3] = {
-    leviathan_minigame_080fbba0,
-    leviathan_minigame_080fbc30,
-    leviathan_minigame_080fbcdc,
-};
+bool32 exitZeroMinigame(struct GameState* g);
+bool32 exitCielMinigame(struct GameState* g);
+bool32 exitCopyXMinigame(struct GameState* g);
+bool32 exitHarpuiaMinigame(struct GameState* g);
+bool32 exitFefnirMinigame(struct GameState* g);
+bool32 exitLeviathanMinigame(struct GameState* g);
+bool32 exitPhantomMinigame(struct GameState* g);
 
-const u8 u8_ARRAY_08386bb0[16] = {
-    2, 2, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3, 5, 5,
-};
+static void MinigameLoop_ExitMinigame(struct GameState* g) {
+  bool32 result;
+  // clang-format off
+  static const MinigameFunc sMinigameDeinitializers[MINIGAME_COUNT] = {
+      [MINIGAME_ZERO] = exitZeroMinigame,
+      [MINIGAME_CIEL] = exitCielMinigame,
+      [MINIGAME_COPY_X] = exitCopyXMinigame,
+      [MINIGAME_HARPUIA] = exitHarpuiaMinigame,
+      [MINIGAME_FEFNIR] = exitFefnirMinigame,
+      [MINIGAME_LEVIATHAN] = exitLeviathanMinigame,
+      [MINIGAME_PHANTOM] = exitPhantomMinigame,
+  };
+  // clang-format on
 
-const u8 u8_ARRAY_08386bc0[16] = {
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2, 2, 3, 3, 3, 5,
-};
-
-const MinigameLoopFunc PhantomMinigameLoops[3] = {
-    phantomMinigame_080fc13c,
-    phantomMinigame_080fc1b8,
-    phantomMinigame_080fc390,
-};
+  result = (sMinigameDeinitializers[g->mode[1]])(g);
+  if (result == FALSE) {
+    ExitStageLandscape();
+    RemoveAllPaletteAnimations();
+    ExitProcess();
+  }
+}

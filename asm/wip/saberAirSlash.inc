@@ -83,7 +83,7 @@ _08038628:
 	cmp r5, #1
 	bne _080386B4
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x71
 	movs r1, #0
@@ -163,7 +163,7 @@ _080386B4:
 	strb r0, [r4, #0xe]
 _080386D6:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]

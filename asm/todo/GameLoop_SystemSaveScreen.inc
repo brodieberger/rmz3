@@ -45,7 +45,7 @@ _080EFD54:
 	orrs r0, r1
 	strh r0, [r2]
 	str r4, [r2, #0xc]
-	bl text_080e9730
+	bl LoadAsciiBold
 	strh r4, [r6, #6]
 	ldrb r0, [r6, #2]
 	adds r0, #1
@@ -164,24 +164,24 @@ _080EFE70:
 	adds r0, r4, #0
 	movs r1, #0x94
 	lsls r1, r1, #2
-	bl CheckSavedataCorrect
+	bl ValidateSector
 	adds r1, r0, #0
 	cmp r1, #0
 	bne _080EFE98
-	ldr r0, _080EFE94 @ =0x02000360
+	ldr r0, _080EFE94 @ =gSaveSlotMetadata_02000360
 	adds r0, r5, r0
 	b _080EFEE4
 	.align 2, 0
 _080EFE8C: .4byte 0x020002C4
 _080EFE90: .4byte 0xFFFFFE4C
-_080EFE94: .4byte 0x02000360
+_080EFE94: .4byte gSaveSlotMetadata_02000360
 _080EFE98:
-	ldr r0, _080EFF8C @ =0x02000360
+	ldr r0, _080EFF8C @ =gSaveSlotMetadata_02000360
 	adds r0, r5, r0
 	movs r1, #1
 	strb r1, [r0]
 	adds r0, r4, #0
-	ldr r1, _080EFF90 @ =0x02000110
+	ldr r1, _080EFF90 @ =SaveState_02000110
 	movs r2, #0x94
 	lsls r2, r2, #2
 	bl sram_08003378
@@ -278,7 +278,7 @@ _080EFF52:
 	adds r4, #0x3e
 	mov r8, r4
 _080EFF64:
-	ldr r0, _080EFF8C @ =0x02000360
+	ldr r0, _080EFF8C @ =gSaveSlotMetadata_02000360
 	adds r0, r5, r0
 	ldrb r0, [r0]
 	cmp r0, #0
@@ -297,8 +297,8 @@ _080EFF64:
 	bl PrintString
 	b _080EFFDE
 	.align 2, 0
-_080EFF8C: .4byte 0x02000360
-_080EFF90: .4byte 0x02000110
+_080EFF8C: .4byte gSaveSlotMetadata_02000360
+_080EFF90: .4byte SaveState_02000110
 _080EFF94: .4byte gSramState
 _080EFF98: .4byte 0x02000368
 _080EFF9C: .4byte 0x02000380
@@ -327,7 +327,7 @@ _080EFFB4:
 	mov r4, sb
 	lsrs r4, r4, #0x18
 	str r4, [sp, #4]
-	bl printSaveDataRowText
+	bl PrintSaveDataRowText
 _080EFFDE:
 	movs r0, #0x80
 	lsls r0, r0, #0x12
@@ -379,7 +379,7 @@ _080F0040:
 _080F004C:
 	movs r0, #2
 	bl PlaySound
-	ldr r0, _080F009C @ =0x02000360
+	ldr r0, _080F009C @ =gSaveSlotMetadata_02000360
 	movs r2, #4
 	ldrsh r1, [r6, r2]
 	adds r1, r1, r0
@@ -389,13 +389,13 @@ _080F004C:
 	ldr r3, _080F00A0 @ =0x00006270
 	adds r4, r6, r3
 	adds r0, r4, #0
-	bl saveCurStory
+	bl StoreStoryData
 	ldr r1, _080F00A4 @ =0x000064AC
 	adds r0, r6, r1
 	ldr r0, [r0]
 	ldr r2, _080F00A8 @ =0x00006460
 	adds r1, r6, r2
-	bl CopyZeroStatus
+	bl StoreZeroStatus
 	ldr r2, _080F00AC @ =gCurStory
 	ldrb r1, [r2, #4]
 	movs r0, #8
@@ -414,7 +414,7 @@ _080F004C:
 	strb r0, [r6, #2]
 	b _080F02C6
 	.align 2, 0
-_080F009C: .4byte 0x02000360
+_080F009C: .4byte gSaveSlotMetadata_02000360
 _080F00A0: .4byte 0x00006270
 _080F00A4: .4byte 0x000064AC
 _080F00A8: .4byte 0x00006460
@@ -443,7 +443,7 @@ _080F00B8:
 	str r4, [sp]
 	movs r4, #6
 	str r4, [sp, #4]
-	bl printSaveDataRowText
+	bl PrintSaveDataRowText
 	ldr r7, _080F0190 @ =gJoypad
 	ldrh r1, [r7, #6]
 	movs r0, #0xc0
@@ -495,13 +495,13 @@ _080F0138:
 	ldr r0, _080F019C @ =0x00006270
 	adds r4, r6, r0
 	adds r0, r4, #0
-	bl saveCurStory
+	bl StoreStoryData
 	ldr r1, _080F01A0 @ =0x000064AC
 	adds r0, r6, r1
 	ldr r0, [r0]
 	ldr r2, _080F01A4 @ =0x00006460
 	adds r1, r6, r2
-	bl CopyZeroStatus
+	bl StoreZeroStatus
 	ldr r2, _080F01A8 @ =gCurStory
 	ldrb r1, [r2, #4]
 	movs r0, #8

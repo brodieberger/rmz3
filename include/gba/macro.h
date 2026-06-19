@@ -1,10 +1,10 @@
 #ifndef GUARD_GBA_MACRO_H
 #define GUARD_GBA_MACRO_H
 
-#define CPU_FILL(value, dest, size, bit)                                                                  \
-  {                                                                                                       \
-    vu##bit tmp = (vu##bit)(value);                                                                       \
-    CpuSet((void *)&tmp, dest, CPU_SET_##bit##BIT | CPU_SET_SRC_FIXED | ((size) / (bit / 8) & 0x1FFFFF)); \
+#define CPU_FILL(value, dest, size, bit)                                                                 \
+  {                                                                                                      \
+    vu##bit tmp = (vu##bit)(value);                                                                      \
+    CpuSet((void*)&tmp, dest, CPU_SET_##bit##BIT | CPU_SET_SRC_FIXED | ((size) / (bit / 8) & 0x1FFFFF)); \
   }
 
 #define CpuFill16(value, dest, size) CPU_FILL(value, dest, size, 16)
@@ -15,23 +15,49 @@
 #define CpuCopy16(src, dest, bytesize) CPU_COPY(src, dest, bytesize, 16)
 #define CpuCopy32(src, dest, bytesize) CPU_COPY(src, dest, bytesize, 32)
 
-#define CpuFastFill(value, dest, bytesize)                                                       \
-  {                                                                                              \
-    vu32 tmp = (vu32)(value);                                                                    \
-    CpuFastSet((void *)&tmp, dest, CPU_FAST_SET_SRC_FIXED | ((bytesize) / (32 / 8) & 0x1FFFFF)); \
+#define CpuFastFill(value, dest, bytesize)                                                      \
+  {                                                                                             \
+    vu32 tmp = (vu32)(value);                                                                   \
+    CpuFastSet((void*)&tmp, dest, CPU_FAST_SET_SRC_FIXED | ((bytesize) / (32 / 8) & 0x1FFFFF)); \
   }
 
-#define CpuFastFill16(value, dest, size) CpuFastFill(((value) << 16) | (value), (dest), (size))
+// なんか CpuFastFill の後に　vu32 しておくとコンパイル結果が一致するのがある (理由がわかって簡潔に書けるようになったら廃止する)
+#define _CpuFastFill(value, dest, bytesize) \
+  {                                         \
+    CpuFastFill(value, dest, bytesize);     \
+    {                                       \
+      vu32 _;                               \
+    }                                       \
+  }
+
+#define CpuFastFill16(value, dest, bytesize) CpuFastFill(((value) << 16) | (value), (dest), (bytesize))
+#define CpuFastFill8(value, dest, bytesize) CpuFastFill(((value) << 24) | ((value) << 16) | ((value) << 8) | (value), (dest), (bytesize))
 
 #define CpuFastCopy(src, dest, bytesize) CpuFastSet(src, dest, ((bytesize) / (32 / 8) & 0x1FFFFF))
 
-#define DmaSet(dmaNum, src, dest, control)        \
-  {                                               \
-    vu32 *dmaRegs = (vu32 *)REG_ADDR_DMA##dmaNum; \
-    dmaRegs[0] = (vu32)(src);                     \
-    dmaRegs[1] = (vu32)(dest);                    \
-    dmaRegs[2] = (vu32)(control);                 \
-    dmaRegs[2];                                   \
+// 32バイト単位のコピーは CpuFastCopy, あまりは CpuCopy32 で行うマクロ
+#define MemCopy32(src, dest, bytesize)                                                                                                         \
+  {                                                                                                                                            \
+    CpuFastCopy(src, dest, ((bytesize) - ((bytesize) & 0x1F)));                                                                                \
+    CpuCopy32((((u8*)(src)) + ((bytesize) - ((bytesize) & 0x1F))), (((u8*)(dest)) + ((bytesize) - ((bytesize) & 0x1F))), ((bytesize) & 0x1F)); \
+  }
+
+// 32バイト単位のfillは CpuFastFill, あまりは CpuFill32 で行うマクロ
+#define MemFill32(value, dest, bytesize)                                                             \
+  {                                                                                                  \
+    u32 tmpval = (value);                                                                            \
+    void* tmpdest = (dest);                                                                          \
+    CpuFastFill(tmpval, tmpdest, ((bytesize) - ((bytesize) & 0x1F)));                                \
+    CpuFill32(tmpval, (((u8*)(tmpdest)) + ((bytesize) - ((bytesize) & 0x1F))), ((bytesize) & 0x1F)); \
+  }
+
+#define DmaSet(dmaNum, src, dest, control)       \
+  {                                              \
+    vu32* dmaRegs = (vu32*)REG_ADDR_DMA##dmaNum; \
+    dmaRegs[0] = (vu32)(src);                    \
+    dmaRegs[1] = (vu32)(dest);                   \
+    dmaRegs[2] = (vu32)(control);                \
+    dmaRegs[2];                                  \
   }
 
 #define DMA_FILL(dmaNum, value, dest, size, bit)                                                                                           \
@@ -50,7 +76,7 @@
 
 #define DMA_CLEAR(dmaNum, dest, size, bit) \
   {                                        \
-    vu##bit *_dest = (vu##bit *)(dest);    \
+    vu##bit* _dest = (vu##bit*)(dest);     \
     u32 _size = size;                      \
     DmaFill##bit(dmaNum, 0, _dest, _size); \
   }
@@ -65,7 +91,7 @@
 
 #define DmaStop(dmaNum)                                         \
   {                                                             \
-    vu16 *dmaRegs = (vu16 *)REG_ADDR_DMA##dmaNum;               \
+    vu16* dmaRegs = (vu16*)REG_ADDR_DMA##dmaNum;                \
     dmaRegs[5] &= ~(DMA_START_MASK | DMA_DREQ_ON | DMA_REPEAT); \
     dmaRegs[5] &= ~DMA_ENABLE;                                  \
     dmaRegs[5];                                                 \
@@ -73,8 +99,8 @@
 
 #define DmaCopyLarge(dmaNum, src, dest, size, block, bit) \
   {                                                       \
-    const void *_src = src;                               \
-    void *_dest = (void *)(dest);                         \
+    const void* _src = src;                               \
+    void* _dest = (void*)(dest);                          \
     u32 _size = size;                                     \
     while (1) {                                           \
       DmaCopy##bit(dmaNum, _src, _dest, (block));         \
@@ -90,7 +116,7 @@
 
 #define DmaClearLarge(dmaNum, dest, size, block, bit) \
   {                                                   \
-    void *_dest = dest;                               \
+    void* _dest = dest;                               \
     u32 _size = size;                                 \
     while (1) {                                       \
       DmaFill##bit(dmaNum, 0, _dest, (block));        \
@@ -111,8 +137,8 @@
 
 #define DmaCopyDefvars(dmaNum, src, dest, size, bit) \
   {                                                  \
-    const void *_src = src;                          \
-    void *_dest = (void *)(dest);                    \
+    const void* _src = src;                          \
+    void* _dest = (void*)(dest);                     \
     u32 _size = size;                                \
     DmaCopy##bit(dmaNum, _src, _dest, _size);        \
   }
@@ -122,7 +148,7 @@
 
 #define DmaFillLarge(dmaNum, fillval, dest, size, block, bit) \
   {                                                           \
-    void *_dest = (void *)(dest);                             \
+    void* _dest = (void*)(dest);                              \
     u32 _size = (u32)(size);                                  \
     while (1) {                                               \
       DmaFill##bit(dmaNum, fillval, _dest, (block));          \
@@ -140,7 +166,7 @@
 
 #define DmaFillDefvars(dmaNum, fillval, dest, size, bit) \
   {                                                      \
-    void *_dest = (void *)(dest);                        \
+    void* _dest = (void*)(dest);                         \
     u32 _size = (u##bit)(size);                          \
     DmaFill##bit(dmaNum, fillval, _dest, _size);         \
   }
@@ -161,8 +187,8 @@
 
 #define Dma3CopyLarge_(src, dest, size, bit)            \
   {                                                     \
-    const void *_src = src;                             \
-    void *_dest = dest;                                 \
+    const void* _src = src;                             \
+    void* _dest = dest;                                 \
     u32 _size = size;                                   \
     while (1) {                                         \
       if (_size <= MAX_DMA_BLOCK_SIZE) {                \
@@ -181,7 +207,7 @@
 
 #define Dma3FillLarge_(value, dest, size, bit)           \
   {                                                      \
-    void *_dest = dest;                                  \
+    void* _dest = dest;                                  \
     u32 _size = size;                                    \
     while (1) {                                          \
       if (_size <= MAX_DMA_BLOCK_SIZE) {                 \

@@ -13,7 +13,7 @@ const EnemyRoutine gShellunoRoutine = {
     [ENTITY_INIT] =      Shelluno_Init,
     [ENTITY_UPDATE] =    Shelluno_Update,
     [ENTITY_DIE] =       Shelluno_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -109,4 +109,4 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(9)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(9)};

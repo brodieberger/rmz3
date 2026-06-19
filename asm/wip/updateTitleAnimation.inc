@@ -8,7 +8,7 @@
 	b _080EC0F8
 _080EBFDC:
 	movs r0, #0xbf
-	bl playBGM
+	bl PlayBGM
 	ldr r0, _080EC04C @ =gIntro
 	str r6, [r0, #0xc]
 	ldr r2, _080EC050 @ =gVideoRegBuffer
@@ -216,7 +216,7 @@ _080EC192:
 	ldr r0, _080EC1CC @ =0x0000014D
 	bl PlaySound
 	movs r0, #0xbf
-	bl fadeoutBGM
+	bl FadeOutBGM
 _080EC19E:
 	ldr r1, _080EC1D0 @ =gPaletteManager
 	ldr r2, _080EC1D4 @ =0x00000402

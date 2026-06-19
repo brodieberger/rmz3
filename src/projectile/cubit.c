@@ -2,6 +2,8 @@
 #include "global.h"
 #include "projectile.h"
 
+INCASM("asm/projectile/cubit.inc");
+
 void CubitProjectile_Init(struct Projectile* p);
 void CubitProjectile_Update(struct Projectile* p);
 void CubitProjectile_Die(struct Projectile* p);
@@ -11,7 +13,7 @@ const ProjectileRoutine gCubitProjectileRoutine = {
     [ENTITY_INIT] =      CubitProjectile_Init,
     [ENTITY_UPDATE] =    CubitProjectile_Update,
     [ENTITY_DIE] =       CubitProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
@@ -45,6 +47,7 @@ static const ProjectileFunc* const sUpdates[4] = {
 
 // --------------------------------------------
 
+// 0x0836BBA4
 static const struct Collision sCollisions[16] = {
     {
       kind : DDP,
@@ -218,7 +221,8 @@ static const struct Collision sCollisions[16] = {
 };
 
 // clang-format off
-static const struct Coord sCoords[30] = {
+// 0x0836bd24
+static const Coords32 sCoords[30] = {
     {PIXEL(0), PIXEL(0)},
     {-PIXEL(13), -PIXEL(9)},
     {PIXEL(11), -PIXEL(17)},

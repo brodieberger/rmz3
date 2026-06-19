@@ -30,6 +30,9 @@ typedef u8 bool8;
 typedef u16 bool16;
 typedef u32 bool32;
 
+typedef s32 s24_8;  // a signed 24.8 fixed-point number
+typedef s16 s8_8;   // a signed 8.8 fixed-point number
+
 struct __attribute__((packed, aligned(2))) BgCnt {
   u16 priority : 2;
   u16 charBaseBlock : 2;
@@ -126,7 +129,7 @@ struct BgAffineDstData {
   s16 pd;
   s32 dx;
   s32 dy;
-};
+};  // 16 bytes
 
 struct ObjAffineSrcData {
   s16 xScale;

@@ -4,195 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080bc540
-FUN_080bc540: @ 0x080BC540
-	push {r4, r5, r6, r7, lr}
-	adds r4, r0, #0
-	adds r5, r1, #0
-	adds r6, r2, #0
-	adds r7, r3, #0
-	ldr r0, _080BC58C @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080BC584
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080BC590 @ =gVFXFnTable
-	movs r1, #0x25
-	strb r1, [r3, #9]
-	adds r0, #0x94
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r0, [r3, #0x10]
-	str r4, [r3, #0x54]
-	str r5, [r3, #0x58]
-	str r6, [r3, #0x5c]
-	str r7, [r3, #0x60]
-_080BC584:
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BC58C: .4byte gVFXHeaderPtr
-_080BC590: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080bc594
-FUN_080bc594: @ 0x080BC594
-	push {r4, r5, r6, r7, lr}
-	mov r7, sb
-	mov r6, r8
-	push {r6, r7}
-	adds r6, r0, #0
-	adds r7, r1, #0
-	mov r8, r2
-	mov sb, r3
-	ldr r0, [sp, #0x1c]
-	lsls r0, r0, #0x18
-	lsrs r5, r0, #0x18
-	ldr r0, _080BC5F4 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _080BC5E8
-	adds r0, #0x25
-	movs r3, #0
-	movs r2, #1
-	strb r2, [r0]
-	ldr r0, _080BC5F8 @ =gVFXFnTable
-	movs r1, #0x25
-	strb r1, [r4, #9]
-	adds r0, #0x94
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r0, #0
-	strh r3, [r4, #0x20]
-	adds r1, r4, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r2, [r4, #0x10]
-	str r6, [r4, #0x54]
-	str r7, [r4, #0x58]
-	mov r0, r8
-	str r0, [r4, #0x5c]
-	mov r0, sb
-	str r0, [r4, #0x60]
-	strb r5, [r4, #0x12]
-_080BC5E8:
-	pop {r3, r4}
-	mov r8, r3
-	mov sb, r4
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BC5F4: .4byte gVFXHeaderPtr
-_080BC5F8: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080bc5fc
-FUN_080bc5fc: @ 0x080BC5FC
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r7, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	movs r4, #0
-	movs r5, #0
-	ldr r0, _080BC658 @ =0x0836D994
-	mov r8, r0
-_080BC610:
-	ldr r0, _080BC65C @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r1, r0, #0
-	cmp r1, #0
-	beq _080BC646
-	adds r2, r1, #0
-	adds r2, #0x25
-	movs r0, #1
-	strb r0, [r2]
-	movs r0, #0x25
-	strb r0, [r1, #9]
-	mov r2, r8
-	ldr r0, [r2]
-	ldr r0, [r0]
-	str r0, [r1, #0x14]
-	strh r5, [r1, #0x20]
-	adds r0, r1, #0
-	adds r0, #0x22
-	strb r5, [r0]
-	movs r0, #2
-	strb r0, [r1, #0x10]
-	str r7, [r1, #0x28]
-	strb r4, [r1, #0x12]
-	adds r0, r6, r4
-	strb r0, [r1, #0x13]
-_080BC646:
-	adds r4, #1
-	cmp r4, #5
-	ble _080BC610
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BC658: .4byte 0x0836D994
-_080BC65C: .4byte gVFXHeaderPtr
-
-	thumb_func_start FUN_080bc660
-FUN_080bc660: @ 0x080BC660
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	adds r5, r1, #0
-	ldr r0, _080BC6A4 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityLast
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080BC69E
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080BC6A8 @ =gVFXFnTable
-	movs r1, #0x25
-	strb r1, [r3, #9]
-	adds r0, #0x94
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	movs r0, #3
-	strb r0, [r3, #0x10]
-	str r4, [r3, #0x54]
-	str r5, [r3, #0x58]
-_080BC69E:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080BC6A4: .4byte gVFXHeaderPtr
-_080BC6A8: .4byte gVFXFnTable
-
 	thumb_func_start FUN_080bc6ac
 FUN_080bc6ac: @ 0x080BC6AC
 	push {r4, r5, r6, r7, lr}
@@ -209,7 +20,7 @@ FUN_080bc6ac: @ 0x080BC6AC
 	mov sb, r4
 	ldr r0, _080BC74C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC73E
@@ -288,7 +99,7 @@ FUN_080bc758: @ 0x080BC758
 	adds r5, r1, #0
 	ldr r0, _080BC79C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC796
@@ -339,7 +150,7 @@ FUN_080bc7a4: @ 0x080BC7A4
 	mov sb, r0
 	ldr r0, _080BC83C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080BC830
@@ -495,7 +306,7 @@ _080BC8D0:
 	strb r0, [r4, #0xe]
 _080BC8EA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -610,7 +421,7 @@ _080BC984:
 	strb r0, [r5, #0xe]
 _080BC9C4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x5c]
 	adds r0, r0, r1
@@ -763,7 +574,7 @@ _080BCAD8:
 	mov r1, r8
 	adds r1, #0x54
 	mov r0, ip
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080BCB00
 	ldrb r1, [r4, #0x13]
@@ -818,7 +629,7 @@ _080BCB3A:
 	str r0, [r4, #0x14]
 _080BCB58:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCB5E:
 	pop {r3}
 	mov r8, r3
@@ -907,13 +718,13 @@ _080BCBEA:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x18
-	bl LoadBlink
+	bl StartPaletteAnimation
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _080BCC12:
 	movs r0, #0x18
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	cmp r0, #3
@@ -923,11 +734,11 @@ _080BCC12:
 	strb r0, [r4, #0xe]
 _080BCC26:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCC8E
 _080BCC2E:
 	movs r0, #0x18
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	movs r0, #6
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -974,7 +785,7 @@ _080BCC80:
 _080BCC86:
 	strb r0, [r4, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCC8E:
 	pop {r4}
 	pop {r0}
@@ -1035,10 +846,10 @@ _080BCCE0:
 	cmp r0, #0
 	beq _080BCCFC
 	movs r0, #0x19
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 _080BCCFC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCD90
 	.align 2, 0
 _080BCD04: .4byte 0x0000330B
@@ -1113,7 +924,7 @@ _080BCD7A:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCD90:
 	pop {r4, r5, r6}
 	pop {r0}
@@ -1149,7 +960,7 @@ _080BCDAC:
 	adds r0, r2, #0
 	orrs r1, r0
 	movs r0, #0x1a
-	bl LoadBlink
+	bl StartPaletteAnimation
 	movs r0, #0xc
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -1157,9 +968,9 @@ _080BCDAC:
 	strb r0, [r4, #0xe]
 _080BCDE0:
 	movs r0, #0x1a
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #1
 	ands r0, r1
@@ -1184,7 +995,7 @@ _080BCE0A:
 	cmp r0, #0
 	bne _080BCE3C
 	movs r0, #0x1a
-	bl ClearBlink
+	bl RemovePaletteAnimation
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe
 	ands r0, r1
@@ -1276,7 +1087,7 @@ _080BCEB8:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080BCF5E
 	.align 2, 0
 _080BCED0: .4byte 0x0836EE0A
@@ -1349,7 +1160,7 @@ _080BCF48:
 	adds r0, r0, r1
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080BCF5E:
 	pop {r4, r5}
 	pop {r0}

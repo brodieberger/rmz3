@@ -2,19 +2,43 @@
 #include "global.h"
 #include "projectile.h"
 
+// キャリビーG の ミサイル + そのミサイルを撃つ部分
+
 void Projectile37_Init(struct Projectile* p);
 void Projectile37_Update(struct Projectile* p);
 void Projectile37_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gProjectile37Routine = {
-    [ENTITY_INIT] =      Projectile37_Init,
-    [ENTITY_UPDATE] =    Projectile37_Update,
-    [ENTITY_DIE] =       Projectile37_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Projectile37_Init,
+    [ENTITY_UPDATE] =    (void*)Projectile37_Update,
+    [ENTITY_DIE] =       (void*)Projectile37_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+static struct Entity* unused_FUN_080ada80(void* e, u8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 37);
+    p->work[0] = kind, p->work[1] = 1;
+    p->unk_28 = e;
+  }
+  return p;
+}
+
+struct Entity* FUN_080adad0(Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 37);
+    p->work[0] = kind, p->work[1] = 0;
+    (p->coord).x = c->x, (p->coord).y = c->y;
+  }
+  return p;
+}
+
+INCASM("asm/projectile/unk_37.inc");
 
 // --------------------------------------------
 

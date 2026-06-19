@@ -10,10 +10,10 @@ void LocomoIF_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gLocomoIFRoutine = {
-    [ENTITY_INIT] =      LocomoIF_Init,
-    [ENTITY_UPDATE] =    LocomoIF_Update,
-    [ENTITY_DIE] =       LocomoIF_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)LocomoIF_Init,
+    [ENTITY_UPDATE] =    (BossFunc)LocomoIF_Update,
+    [ENTITY_DIE] =       (BossFunc)LocomoIF_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
@@ -64,6 +64,7 @@ static const BossFunc sDeads[1] = {
 
 // --------------------------------------------
 
+// 0x08363af8
 static const struct Collision sCollisions[3] = {
     {
       kind : DRP,
@@ -99,7 +100,7 @@ static const struct Collision sCollisions[3] = {
 };
 
 static const u8 sInitModes[2] = {1, 0};
-static const struct Coord sElementCoord = {0, 0};
+static const Coords32 sElementCoord = {0, 0};
 
 static const motion_t sMotions[3] = {
     MOTION(0x54, 0x9),

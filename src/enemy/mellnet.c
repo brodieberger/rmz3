@@ -13,7 +13,7 @@ const EnemyRoutine gMellnetRoutine = {
     [ENTITY_INIT] =      Mellnet_Init,
     [ENTITY_UPDATE] =    Mellnet_Update,
     [ENTITY_DIE] =       Mellnet_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -66,6 +66,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x08367cdc
 static const struct Collision sCollisions[4] = {
     {
       kind : DRP,
@@ -104,7 +105,7 @@ static const struct Collision sCollisions[4] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 static const u8 sInitModes[2] = {1, 2};
 
 // clang-format off

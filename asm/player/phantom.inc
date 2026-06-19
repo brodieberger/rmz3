@@ -4,87 +4,6 @@
 	
 	.text
 
-	thumb_func_start PhantomMini_Update
-PhantomMini_Update: @ 0x08034AC0
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r1, [r4, #0x28]
-	ldr r0, [r4, #0x54]
-	ldr r1, [r1, #0x14]
-	adds r0, r0, r1
-	str r0, [r4, #0x54]
-	ldr r1, _08034B04 @ =0x0835EA68
-	ldrb r0, [r4, #0xd]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	ldr r1, _08034B08 @ =0x0835EA78
-	ldrb r0, [r4, #0xd]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	ldr r0, [r4, #0x68]
-	movs r2, #0xf0
-	lsls r2, r2, #8
-	adds r1, r0, r2
-	ldr r0, [r4, #0x58]
-	cmp r0, r1
-	ble _08034AFE
-	str r1, [r4, #0x58]
-_08034AFE:
-	pop {r4}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08034B04: .4byte 0x0835EA68
-_08034B08: .4byte 0x0835EA78
-
-	thumb_func_start PhantomMini_Die
-PhantomMini_Die: @ 0x08034B0C
-	ldr r2, _08034B20 @ =gZeroFnTable
-	ldrb r1, [r0, #9]
-	lsls r1, r1, #2
-	adds r1, r1, r2
-	movs r2, #4
-	str r2, [r0, #0xc]
-	ldr r1, [r1]
-	ldr r1, [r1, #0x10]
-	str r1, [r0, #0x14]
-	bx lr
-	.align 2, 0
-_08034B20: .4byte gZeroFnTable
-
-	thumb_func_start nop_08034b24
-nop_08034b24: @ 0x08034B24
-	bx lr
-	.align 2, 0
-
-	thumb_func_start FUN_08034b28
-FUN_08034b28: @ 0x08034B28
-	push {lr}
-	adds r2, r0, #0
-	ldr r1, [r2, #0x28]
-	adds r0, r1, #0
-	adds r0, #0xd6
-	ldrb r0, [r0]
-	cmp r0, #0
-	beq _08034B46
-	ldrb r0, [r1, #1]
-	cmp r0, #3
-	beq _08034B46
-	movs r1, #0
-	movs r0, #3
-	strb r0, [r2, #0xd]
-	strb r1, [r2, #0xe]
-_08034B46:
-	pop {r0}
-	bx r0
-	.align 2, 0
-
 	thumb_func_start phantom_08034b4c
 phantom_08034b4c: @ 0x08034B4C
 	push {r4, r5, r6, r7, lr}
@@ -319,7 +238,7 @@ _08034CFA:
 	movs r3, #4
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r1, #0
 	movs r0, #1
 	strb r0, [r5, #0xd]
@@ -332,7 +251,7 @@ _08034D28: .4byte 0x0000BC02
 _08034D2C: .4byte 0x0000BC03
 _08034D30:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08034D36:
 	pop {r3}
 	mov r8, r3
@@ -382,7 +301,7 @@ _08034D6A:
 	strb r0, [r4, #0xe]
 _08034D88:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrh r1, [r5, #0x10]
 	movs r0, #0x20
 	ands r0, r1
@@ -456,7 +375,7 @@ _08034E0A:
 	strb r1, [r4, #0xe]
 _08034E12:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrh r1, [r5, #0x10]
 	movs r0, #0x20
 	ands r0, r1
@@ -606,7 +525,7 @@ _08034EE0:
 	str r1, [r5, #0x58]
 	b _08034F4A
 	.align 2, 0
-_08034F38: .4byte 0x0835EAA0
+_08034F38: .4byte sCollisions+(24*1)
 _08034F3C: .4byte 0x0000BC13
 _08034F40: .4byte gOverworld
 _08034F44:
@@ -678,7 +597,7 @@ _08034FB2:
 	movs r3, #4
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r1, #0
 	movs r0, #1
 	strb r0, [r5, #0xd]
@@ -691,7 +610,7 @@ _08034FE0: .4byte 0x0000BC02
 _08034FE4: .4byte 0x0000BC03
 _08034FE8:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08034FEE:
 	pop {r3}
 	mov r8, r3

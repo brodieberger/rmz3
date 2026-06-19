@@ -4,38 +4,6 @@
 	
 	.text
 
-	thumb_func_start Weapon16_Die
-Weapon16_Die: @ 0x0803CF48
-	adds r2, r0, #0
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	movs r1, #0
-	strb r0, [r2, #0xa]
-	adds r0, r2, #0
-	adds r0, #0x8c
-	str r1, [r0]
-	adds r0, #4
-	str r1, [r0]
-	adds r0, #4
-	strb r1, [r0]
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xfb
-	ands r0, r1
-	strb r0, [r2, #0xa]
-	ldr r1, _0803CF80 @ =gWeaponFnTable
-	ldrb r0, [r2, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #4
-	str r1, [r2, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #0x10]
-	str r0, [r2, #0x14]
-	bx lr
-	.align 2, 0
-_0803CF80: .4byte gWeaponFnTable
-
 	thumb_func_start weapon_0803cf84
 weapon_0803cf84: @ 0x0803CF84
 	push {r4, r5, r6, r7, lr}
@@ -76,7 +44,7 @@ _0803CFC2:
 	ldr r0, [r1, #0x58]
 	str r0, [r5, #0x58]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x11]
 	cmp r0, #5
 	bhi _0803CFEC

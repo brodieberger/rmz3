@@ -3,21 +3,40 @@
 #include "global.h"
 #include "overworld.h"
 
+struct Deathtanz {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  Coords32 unk_b4;
+  u8 unk_bc;
+  u8 unk_bd;
+  u8 unk_be;
+  u8 unk_bf;
+  u8 unk_c0;
+  u8 unk_c1;
+  bool8 shouldTurnRight;
+  u8 unk_c3;
+  u8 unk_c4;
+  u8 unk_c5[3];
+  Coords32 unk_c8;
+  u8 unk_d0[20];
+};
+static_assert(sizeof(struct Deathtanz) == sizeof(struct Boss));
+
 static const u8 sDeathtanzModes[32];
-static const struct Collision sCollisions[71];
+static const struct Collision sCollisions[];
 static const u8 sInitModes[2];
 
-static void Deathtanz_Init(struct Boss* p);
+static void Deathtanz_Init(struct Deathtanz* p);
 static void Deathtanz_Update(struct Boss* p);
 static void Deathtanz_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gDeathtanzRoutine = {
-    [ENTITY_INIT] =      Deathtanz_Init,
-    [ENTITY_UPDATE] =    Deathtanz_Update,
-    [ENTITY_DIE] =       Deathtanz_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Deathtanz_Init,
+    [ENTITY_UPDATE] =    (void*)Deathtanz_Update,
+    [ENTITY_DIE] =       (void*)Deathtanz_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -58,7 +77,7 @@ _08048DA4: .4byte pZero2\n\
 _08048DA8: .4byte RNG_0202f388\n\
 _08048DAC: .4byte sDeathtanzModes\n\
 _08048DB0:\n\
-	ldr r0, _08048DF8 @ =gMission\n\
+	ldr r0, _08048DF8 @ =gScore\n\
 	ldr r0, [r0]\n\
 	ldrb r0, [r0, #1]\n\
 	cmp r0, #4\n\
@@ -98,7 +117,7 @@ _08048DE6:\n\
 	adds r0, #1\n\
 	b _08048E08\n\
 	.align 2, 0\n\
-_08048DF8: .4byte gMission\n\
+_08048DF8: .4byte gScore\n\
 _08048DFC: .4byte 0x000343FD\n\
 _08048E00: .4byte 0x00269EC3\n\
 _08048E04:\n\
@@ -121,19 +140,19 @@ _08048E08:\n\
  .syntax divided\n");
 }
 
-static void onCollision(struct Body* body, struct Coord* c1, struct Coord* c2) {
+static void onCollision(struct Body* body, Coords32* c1, Coords32* c2) {
   struct Zero* z = (struct Zero*)body->enemy->parent;
-  struct Boss* boss = (struct Boss*)body->parent;
+  struct Deathtanz* p = (struct Deathtanz*)body->parent;
 
   if (body->hitboxFlags & BODY_STATUS_WHITE) {
-    (boss->props.deathtanz).unk_c8.x = (z->s).coord.x;
-    (boss->props.deathtanz).unk_c8.y = (z->s).coord.y;
-    (boss->props.deathtanz).shouldTurnRight = (boss->s).coord.x < (z->s).coord.x;
+    (p->unk_c8).x = (z->s).coord.x;
+    (p->unk_c8).y = (z->s).coord.y;
+    p->shouldTurnRight = (p->s).coord.x < (z->s).coord.x;
   }
 }
 
 static bool8 tryKillDeathtanz(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     PlaySound(SE_DEATHTANZ_DEATH);
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -148,7 +167,7 @@ static bool8 tryKillDeathtanz(struct Boss* p) {
   return FALSE;
 }
 
-static void Deathtanz_Init(struct Boss* p) {
+static void Deathtanz_Init(struct Deathtanz* p) {
   struct Body* body;
   s32 y;
   void* fn;
@@ -167,7 +186,7 @@ static void Deathtanz_Init(struct Boss* p) {
   InitNonAffineMotion(&p->s);
   ResetDynamicMotion(&p->s);
 
-  ResetBossBody(p, &sCollisions[0], 64);
+  ResetBossBody((void*)p, &sCollisions[0], 64);
   SET_BOSS_COLLISION_HANDLER(p, onCollision);
 
   if ((p->s).work[0] == 0) {
@@ -175,28 +194,28 @@ static void Deathtanz_Init(struct Boss* p) {
     LOAD_STATIC_GRAPHIC(SM055_DEATHTANZ_PROJECTILE);
 
     (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
-    ((p->props).deathtanz).unk_b4.x = (p->s).coord.x >> 8;
-    ((p->props).deathtanz).unk_b4.x = ((((p->props).deathtanz).unk_b4.x / 240) * PIXEL(240)) + PIXEL(120);
-    ((p->props).deathtanz).unk_b4.y = (p->s).coord.y;
-    ((p->props).deathtanz).unk_bd = 0;
-    ((p->props).deathtanz).unk_c1 = 3;
+    p->unk_b4.x = (p->s).coord.x >> 8;
+    p->unk_b4.x = ((p->unk_b4.x / 240) * PIXEL(240)) + PIXEL(120);
+    p->unk_b4.y = (p->s).coord.y;
+    p->unk_bd = 0;
+    p->unk_c1 = 3;
 #if MODERN
-    ((p->props).deathtanz).unk_c3 = 0xFF;
+    p->unk_c3 = 0xFF;
 #else
-    r2 = &((p->props).deathtanz).unk_c3;
+    r2 = &p->unk_c3;
     r0 = *r2;
     r1 = 0xFF;
     r0 |= r1;
     *r2 = r0;
 #endif
-    ((p->props).deathtanz).unk_c4 = 0;
+    p->unk_c4 = 0;
   }
-  Deathtanz_Update(p);
+  Deathtanz_Update((void*)p);
 }
 
 // --------------------------------------------
 
-static void nop_0804908c(struct Boss* p);
+static void nop_0804908c(void* _);
 static void tryMakeFlinch(struct Boss* p);
 
 void deathtanzMode0(struct Boss* p);
@@ -224,53 +243,53 @@ void deathtanzKnockBackDamage(struct Boss* p);
 static void Deathtanz_Update(struct Boss* p) {
   // clang-format off
   static const BossFunc sUpdates1[21] = {
-      nop_0804908c,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      nop_0804908c,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      tryMakeFlinch,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
-      nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)nop_0804908c,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)tryMakeFlinch,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
+      (BossFunc)nop_0804908c,
   };
   // clang-format on
 
   // clang-format off
   static const BossFunc sUpdates2[21] = {
-      deathtanzMode0,
-      deathtanzNeutral,
-      deathtanzMode2,
-      deathtanzMode3,
-      deathtanzMode4,
-      deathtanzPreAI,
-      deathtanzMode6,
-      deathtanzMode7,
-      deathtanzMode8,
-      deathtanzMode9,
-      deathtanzMode10,
-      deathtanzMode11,
-      deathtanzMode12,
-      deathtanzMode13,
-      deathtanzMode14,
-      deathtanzMode15,
-      deathtanzMode16,
-      deathtanzEX1,
-      deathtanzEX2,
-      deathtanzMode19,
-      deathtanzKnockBackDamage,
+      (BossFunc)deathtanzMode0,
+      (BossFunc)deathtanzNeutral,
+      (BossFunc)deathtanzMode2,
+      (BossFunc)deathtanzMode3,
+      (BossFunc)deathtanzMode4,
+      (BossFunc)deathtanzPreAI,
+      (BossFunc)deathtanzMode6,
+      (BossFunc)deathtanzMode7,
+      (BossFunc)deathtanzMode8,
+      (BossFunc)deathtanzMode9,
+      (BossFunc)deathtanzMode10,
+      (BossFunc)deathtanzMode11,
+      (BossFunc)deathtanzMode12,
+      (BossFunc)deathtanzMode13,
+      (BossFunc)deathtanzMode14,
+      (BossFunc)deathtanzMode15,
+      (BossFunc)deathtanzMode16,
+      (BossFunc)deathtanzEX1,
+      (BossFunc)deathtanzEX2,
+      (BossFunc)deathtanzMode19,
+      (BossFunc)deathtanzKnockBackDamage,
   };
   // clang-format on
 
@@ -288,18 +307,15 @@ void deathtanz_0804adb0(struct Boss* p);
 
 static void Deathtanz_Die(struct Boss* p) {
   static const BossFunc sDeads[2] = {
-      FUN_0804ac44,
-      deathtanz_0804adb0,
+      (BossFunc)FUN_0804ac44,
+      (BossFunc)deathtanz_0804adb0,
   };
   (sDeads[(p->s).mode[1]])(p);
 }
 
 // --------------------------------------------
 
-static void nop_0804908c(struct Boss* p) {
-  // nop
-  return;
-}
+static void nop_0804908c(void* p) {}
 
 static void tryMakeFlinch(struct Boss* p) {
   if ((p->body).status & BODY_STATUS_WHITE) {
@@ -314,6 +330,7 @@ INCASM("asm/boss/deathtanz.inc");
 
 // --------------------------------------------
 
+// 0x083627dc
 static const struct Collision sCollisions[71] = {
     [0] = {
       kind : DRP,
@@ -1032,15 +1049,18 @@ static const u8 sDeathtanzModes[32] = {
 
 static const u8 sInitModes[2] = {0, 19};
 
+// 0x08362ea6
 static const u8 u8_ARRAY_08362ea6[16] = {
     0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2, 3, 3,
 };
 
+// 0x08362eb6
 static const u8 sPostures[14] = {
     39, 39, 42, 42, 45, 45, 48, 51, 54, 57, 57, 57, 57, 0,
 };
 
-static const struct Coord sExplosionCoords[2] = {
+// 0x08362ec4
+static const Coords32 sExplosionCoords[2] = {
     {PIXEL(0), -PIXEL(35)},
     {PIXEL(0), -PIXEL(35)},
 };

@@ -1,8 +1,8 @@
-#include "blink.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "menu.h"
+#include "palette_animation.h"
 #include "story.h"
 #include "text.h"
 #include "widget.h"
@@ -62,12 +62,11 @@ void EachMenuLoop_Elf(struct GameState* g) {
 
 static void ElfMenuLoop_Init(struct GameState* g) {
   u8 i;
-  const struct ColorGraphic* gfx;
   struct Zero* z = g->z2;
-  LoadGraphic(BG_GRAPHIC(BG_ELF_MENU), (void*)CHAR_BASE(1));
+  LoadGraphic(BG_GRAPHIC(BG_ELF_MENU), CHAR_BASE(1));
   LoadPalette(BG_PALETTE(BG_ELF_MENU), 0);
-  CpuFastCopy(BGMAP(BG_ELF_MENU), g->unk_16d8, 1920);
-  RequestBgMapTransfer(g->unk_0ed8, (void*)SCREEN_BASE_16(1), 0x1000);
+  CpuFastCopy(BGMAP(BG_ELF_MENU), g->menuBgMap2, 1920);
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
   for (i = 0; i < 6; i++) {
     (&((g->sceneState).menu).elf)->displayed[i] = 0;
   }
@@ -80,17 +79,15 @@ static void ElfMenuLoop_Init(struct GameState* g) {
   (&((g->sceneState).menu).elf)->cursor = (&((g->sceneState).menu).elf)->tab = 0;
   (&((g->sceneState).menu).elf)->unk_a = 6;
   (&((g->sceneState).menu).elf)->unk_b = 0x10;
-  (&((g->sceneState).menu).elf)->blinkID = 0;
+  (&((g->sceneState).menu).elf)->plttAnimID = 0;
 
-// TODO
-#if MODERN
-  (&((g->sceneState).menu).elf)->unk_f = 0;
-#else
-  asm("mov r0, #0");
-  asm("strb r0, [r1, #15]");
-#endif
+  {
+    // (&((g->sceneState).menu).elf)->unk_f = 0;
+    register u32 val asm("r0") = 0;
+    (&((g->sceneState).menu).elf)->unk_f = val;
+  }
 
-  gBlendRegBuffer.bldclt = 0x210;
+  gBlendRegBuffer.bldclt = BLDCNT_TGT2_BG1 | BLDCNT_TGT1_OBJ;
 
   LOAD_STATIC_GRAPHIC(SM082_ELF_MENU);
   LOAD_STATIC_GRAPHIC(SM083_ELF_MENU_ICON);
@@ -98,12 +95,10 @@ static void ElfMenuLoop_Init(struct GameState* g) {
   if (((&z->unk_b4)->status).menuZeroColor == MZC_HARD) {
     CreateElfMenuItem(g, 4, 0);
   } else {
-    for (i = 0; i < 5; i++) {
-      CreateElfMenuItem(g, i, 0);
-    }
+    for (i = 0; i < 5; i++) CreateElfMenuItem(g, i, 0);
   }
   CreateElfIcon(g);
-  LoadBlink(81, 0);
+  StartPaletteAnimation(81, 0);
   g->mode[2] = 2;
 }
 
@@ -113,19 +108,19 @@ static void ElfMenuLoop_Update(struct GameState* g) {
   u8 prev = g->mode[3];
   if ((g->mode[3] != 0) || (!TrySlideMenu(g))) {
     (ElfMenuFocusLoops[g->mode[3]])(g);
-    UpdateBlinkMotionState(81);
-    if (ELF_MENU->blinkID != 0) {
-      UpdateBlinkMotionState(ELF_MENU->blinkID);
+    StepPaletteAnimation(81);
+    if (ELF_MENU->plttAnimID != 0) {
+      StepPaletteAnimation(ELF_MENU->plttAnimID);
     }
     gBlendRegBuffer.bldalpha = (ELF_MENU->unk_b & 0x1F) | ((0x10 - ELF_MENU->unk_b) << 8);
     if (tab != ELF_MENU->tab) {
-      LoadGraphic(gGraphic_ElfTab(ELF_MENU->tab), (void*)CHAR_BASE(1));
+      LoadGraphic((void*)gGraphic_ElfTab(ELF_MENU->tab), (void*)CHAR_BASE(1));
       LoadPalette(gPalette_ElfTab(ELF_MENU->tab), 0);
     }
 
     if (g->mode[3] >= 2) {
       if (tab != ELF_MENU->tab || (prev < 2)) {
-        LoadGraphic((const struct Graphic*)((void*)BG_GRAPHIC(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), (void*)CHAR_BASE(1));
+        LoadGraphic((void*)((void*)BG_GRAPHIC(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), (void*)CHAR_BASE(1));
         LoadPalette((const struct Palette*)((void*)BG_PALETTE(BG_ELF_CATEGORY) + (20 * ELF_MENU->tab)), 0);
       }
     } else {
@@ -133,18 +128,18 @@ static void ElfMenuLoop_Update(struct GameState* g) {
         LoadGraphic(BG_GRAPHIC(BG_UNK_39), (void*)CHAR_BASE(1));
         LoadPalette(BG_PALETTE(BG_UNK_39), 0);
       }
-      if ((ELF_MENU->mode == 0) && (SATELITE_1 != ELF_NONE)) {
-        PrintString(STRING(100 + SATELITE_1), 21, 1);
+      if ((ELF_MENU->mode == 0) && (((&z->unk_b4)->status).satelites[0] != ELF_NONE)) {
+        PrintString(STRING(100 + ((&z->unk_b4)->status).satelites[0]), 21, 1);
       }
-      if ((ELF_MENU->mode == 1) && (SATELITE_2 != ELF_NONE)) {
-        PrintString(STRING(100 + SATELITE_2), 21, 1);
+      if ((ELF_MENU->mode == 1) && (((&z->unk_b4)->status).satelites[1] != ELF_NONE)) {
+        PrintString(STRING(100 + ((&z->unk_b4)->status).satelites[1]), 21, 1);
       }
     }
 
     printElfNames(g);
     printElfMenuDescription(g);
     printElfMenuBottomString(g);
-    RequestBgMapTransfer(g->unk_0ed8, (void*)SCREEN_BASE_16(1), 0x1000);
+    RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
   }
 }
 
@@ -166,9 +161,9 @@ static void ElfMenuLoop_Exit(struct GameState* g) {
   struct ElfMenuState* m = &((g->sceneState).menu).elf;
   m->unk_f &= 3;
   m->unk_f |= (1 << 2);
-  ClearBlink(81);
-  if (m->blinkID != 0) {
-    ClearBlink(m->blinkID);
+  RemovePaletteAnimation(81);
+  if (m->plttAnimID != 0) {
+    RemovePaletteAnimation(m->plttAnimID);
   }
 }
 
@@ -247,14 +242,14 @@ _080F6A3A:\n\
 	ldrb r0, [r4, #0xc]\n\
 	cmp r0, #0\n\
 	beq _080F6A60\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 _080F6A60:\n\
 	movs r0, #0x4d\n\
 	strb r0, [r4, #0xc]\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r4, #0xc]\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #2\n\
 	bl PlaySound\n\
 _080F6A76:\n\
@@ -278,7 +273,7 @@ NAKED static void ElfMenuFocusLoop_OpenTab(struct GameState* g) {
 	ldr r1, _080F6B20 @ =0x00000DFC\n\
 	adds r0, r5, r1\n\
 	ldrb r0, [r0, #0xc]\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r3, _080F6B24 @ =0x00000E17\n\
 	adds r6, r5, r3\n\
 	ldrb r0, [r6]\n\
@@ -290,7 +285,7 @@ NAKED static void ElfMenuFocusLoop_OpenTab(struct GameState* g) {
 _080F6AB4:\n\
 	adds r0, r5, #0\n\
 	adds r1, r4, #0\n\
-	bl createMenuCursor\n\
+	bl CreateTriangleCursor\n\
 	adds r0, r4, #1\n\
 	lsls r0, r0, #0x18\n\
 	lsrs r4, r0, #0x18\n\
@@ -327,13 +322,13 @@ _080F6AEC:\n\
 	ldr r0, _080F6B20 @ =0x00000DFC\n\
 	adds r4, r5, r0\n\
 	ldrb r0, [r4, #0xc]\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x4e\n\
 	strb r0, [r4, #0xc]\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r4, #0xc]\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #3\n\
 	bl PlaySound\n\
 	b _080F6B7E\n\
@@ -362,7 +357,7 @@ _080F6B44:\n\
 	ldrb r0, [r6, #0xc]\n\
 	cmp r0, #0\n\
 	beq _080F6B5A\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	strb r4, [r6, #0xc]\n\
 _080F6B5A:\n\
 	ldr r2, _080F6B88 @ =gWindowRegBuffer\n\
@@ -407,7 +402,7 @@ NAKED static void ElfMenuFocusLoop_TabSelect(struct GameState* g) {
 	bne _080F6BB8\n\
 	movs r0, #0x4f\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldr r0, _080F6C04 @ =0x00000DFC\n\
 	adds r1, r7, r0\n\
 	ldrb r0, [r1, #8]\n\
@@ -417,7 +412,7 @@ NAKED static void ElfMenuFocusLoop_TabSelect(struct GameState* g) {
 	strb r0, [r6]\n\
 _080F6BB8:\n\
 	movs r0, #0x4f\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldr r0, _080F6C04 @ =0x00000DFC\n\
 	adds r4, r7, r0\n\
 	ldrb r3, [r4, #0xd]\n\
@@ -446,7 +441,7 @@ _080F6BDE:\n\
 	strb r0, [r7, #3]\n\
 	strb r1, [r6]\n\
 	movs r0, #0x4f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #2\n\
 	bl PlaySound\n\
 	b _080F6CB6\n\
@@ -464,13 +459,13 @@ _080F6C10:\n\
 	beq _080F6C50\n\
 	strb r5, [r7, #3]\n\
 	movs r0, #0x4f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x4e\n\
 	strb r0, [r4, #0xc]\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	ldrb r0, [r4, #0xc]\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	strb r5, [r4, #8]\n\
 	ldr r2, _080F6C48 @ =gWindowRegBuffer\n\
 	ldrh r1, [r2]\n\
@@ -511,12 +506,12 @@ _080F6C7E:\n\
 	cmp r8, r0\n\
 	beq _080F6CB6\n\
 	movs r0, #0x4f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	movs r0, #0x4f\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x4f\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	ldrb r0, [r4, #8]\n\
 	strb r0, [r4, #0xa]\n\
 	strb r6, [r4, #6]\n\
@@ -558,11 +553,11 @@ NAKED static void ElfMenuFocusLoop_ElfSelect(struct GameState* g) {
 	bne _080F6CFA\n\
 	movs r0, #0x4f\n\
 	movs r1, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0x4f\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 	movs r0, #0x4f\n\
-	bl ClearBlink\n\
+	bl RemovePaletteAnimation\n\
 	ldrb r0, [r4]\n\
 	adds r0, #1\n\
 	strb r0, [r4]\n\
@@ -678,7 +673,7 @@ _080F6DBA:\n\
 	adds r5, r0, r1\n\
 	ldrb r1, [r5]\n\
 	lsls r1, r1, #0x1d\n\
-	ldr r0, _080F6DF4 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F6DF4 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r4\n\
 	ldr r0, [r0]\n\
@@ -699,7 +694,7 @@ _080F6DBA:\n\
 	b _080F6E08\n\
 	.align 2, 0\n\
 _080F6DF0: .4byte gElfBreedInfo\n\
-_080F6DF4: .4byte gUnlockedElfPtr\n\
+_080F6DF4: .4byte gElfAvailability\n\
 _080F6DF8: .4byte u16_ARRAY_08371afc\n\
 _080F6DFC:\n\
 	ldr r2, _080F6E4C @ =u16_ARRAY_08371afc\n\
@@ -722,7 +717,7 @@ _080F6E08:\n\
 	adds r0, r0, r1\n\
 	ldrb r5, [r0]\n\
 	lsls r1, r5, #0x1d\n\
-	ldr r0, _080F6E54 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F6E54 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r3, r0, r4\n\
 	ldr r0, [r3]\n\
@@ -744,7 +739,7 @@ _080F6E08:\n\
 	.align 2, 0\n\
 _080F6E4C: .4byte u16_ARRAY_08371afc\n\
 _080F6E50: .4byte gElfBreedInfo\n\
-_080F6E54: .4byte gUnlockedElfPtr\n\
+_080F6E54: .4byte gElfAvailability\n\
 _080F6E58:\n\
 	lsls r0, r5, #0x1a\n\
 	lsrs r0, r0, #0x1d\n\
@@ -869,7 +864,7 @@ _080F6F30:\n\
 	adds r5, r0, r1\n\
 	ldrb r1, [r5]\n\
 	lsls r1, r1, #0x1d\n\
-	ldr r0, _080F6F64 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F6F64 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r4\n\
 	ldr r0, [r0]\n\
@@ -890,7 +885,7 @@ _080F6F30:\n\
 	b _080F6F78\n\
 	.align 2, 0\n\
 _080F6F60: .4byte gElfBreedInfo\n\
-_080F6F64: .4byte gUnlockedElfPtr\n\
+_080F6F64: .4byte gElfAvailability\n\
 _080F6F68: .4byte u16_ARRAY_08371afc\n\
 _080F6F6C:\n\
 	ldr r2, _080F6F9C @ =u16_ARRAY_08371afc\n\
@@ -936,7 +931,7 @@ _080F6FBC: .4byte 0x00000E17\n\
 _080F6FC0:\n\
 	adds r0, r6, #0\n\
 	movs r1, #5\n\
-	bl createMenuCursor\n\
+	bl CreateTriangleCursor\n\
 	ldr r0, _080F6FEC @ =0x00000DFC\n\
 	adds r1, r6, r0\n\
 	movs r0, #0\n\
@@ -1154,7 +1149,7 @@ _080F7160:\n\
 	blo _080F7174\n\
 	b _080F7402\n\
 _080F7174:\n\
-	ldr r0, _080F71E0 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F71E0 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	str r0, [sp]\n\
 	adds r3, r2, #0\n\
@@ -1209,7 +1204,7 @@ _080F71B6:\n\
 	.align 2, 0\n\
 _080F71D8: .4byte u8_ARRAY_08386497\n\
 _080F71DC: .4byte 0x00000DFC\n\
-_080F71E0: .4byte gUnlockedElfPtr\n\
+_080F71E0: .4byte gElfAvailability\n\
 _080F71E4: .4byte gElfBreedInfo\n\
 _080F71E8:\n\
 	ldrb r0, [r3, #0xf]\n\
@@ -1247,7 +1242,7 @@ _080F7214:\n\
 	blo _080F7228\n\
 	b _080F7402\n\
 _080F7228:\n\
-	ldr r0, _080F7294 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F7294 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	str r0, [sp, #4]\n\
 	adds r3, r2, #0\n\
@@ -1302,7 +1297,7 @@ _080F726A:\n\
 	.align 2, 0\n\
 _080F728C: .4byte u8_ARRAY_08386497\n\
 _080F7290: .4byte 0x00000DFC\n\
-_080F7294: .4byte gUnlockedElfPtr\n\
+_080F7294: .4byte gElfAvailability\n\
 _080F7298: .4byte gElfBreedInfo\n\
 _080F729C:\n\
 	ldrb r0, [r3, #0xf]\n\
@@ -1345,7 +1340,7 @@ _080F72D0:\n\
 	blo _080F72E4\n\
 	b _080F7402\n\
 _080F72E4:\n\
-	ldr r0, _080F7350 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F7350 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	str r0, [sp, #8]\n\
 	adds r5, r2, #0\n\
@@ -1399,7 +1394,7 @@ _080F7332:\n\
 	.align 2, 0\n\
 _080F7348: .4byte u8_ARRAY_08386497\n\
 _080F734C: .4byte 0x00000DFC\n\
-_080F7350: .4byte gUnlockedElfPtr\n\
+_080F7350: .4byte gElfAvailability\n\
 _080F7354: .4byte gElfBreedInfo\n\
 _080F7358:\n\
 	ldrb r1, [r5, #0xf]\n\
@@ -1441,7 +1436,7 @@ _080F738C:\n\
 	ldrb r0, [r0]\n\
 	cmp r6, r0\n\
 	bhs _080F7402\n\
-	ldr r0, _080F73D0 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F73D0 @ =gElfAvailability\n\
 	ldr r5, [r0]\n\
 	adds r4, r2, #0\n\
 _080F73A4:\n\
@@ -1466,7 +1461,7 @@ _080F73A4:\n\
 	.align 2, 0\n\
 _080F73C8: .4byte u8_ARRAY_08386497\n\
 _080F73CC: .4byte 0x00000DFC\n\
-_080F73D0: .4byte gUnlockedElfPtr\n\
+_080F73D0: .4byte gElfAvailability\n\
 _080F73D4:\n\
 	ldrb r0, [r2, #0xf]\n\
 	movs r1, #2\n\
@@ -1770,7 +1765,7 @@ _080F7678:\n\
 	adds r4, r0, r1\n\
 	ldrb r1, [r4]\n\
 	lsls r1, r1, #0x1d\n\
-	ldr r0, _080F76AC @ =gUnlockedElfPtr\n\
+	ldr r0, _080F76AC @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r6\n\
 	ldr r0, [r0]\n\
@@ -1791,7 +1786,7 @@ _080F7678:\n\
 	b _080F76C0\n\
 	.align 2, 0\n\
 _080F76A8: .4byte gElfBreedInfo\n\
-_080F76AC: .4byte gUnlockedElfPtr\n\
+_080F76AC: .4byte gElfAvailability\n\
 _080F76B0: .4byte u16_ARRAY_08371afc\n\
 _080F76B4:\n\
 	ldr r2, _080F772C @ =u16_ARRAY_08371afc\n\
@@ -1858,7 +1853,7 @@ _080F7738:\n\
 	adds r4, r0, r1\n\
 	ldrb r3, [r4]\n\
 	lsls r1, r3, #0x1d\n\
-	ldr r0, _080F7778 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F7778 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r5, r0, r6\n\
 	ldr r0, [r5]\n\
@@ -1884,7 +1879,7 @@ _080F7738:\n\
 	b _080F77BE\n\
 	.align 2, 0\n\
 _080F7774: .4byte gElfBreedInfo\n\
-_080F7778: .4byte gUnlockedElfPtr\n\
+_080F7778: .4byte gElfAvailability\n\
 _080F777C: .4byte u16_ARRAY_08371afc\n\
 _080F7780: .4byte StringOfsTable\n\
 _080F7784:\n\
@@ -2107,7 +2102,7 @@ NAKED static str_id_t getElfDescStrID(struct GameState* g, u8 r1) {
 	ldr r1, _080F7970 @ =0x000064AC\n\
 	adds r0, r0, r1\n\
 	ldr r2, [r0]\n\
-	ldr r0, _080F7974 @ =gUnlockedElfPtr\n\
+	ldr r0, _080F7974 @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r4\n\
 	ldrb r1, [r0]\n\
@@ -2138,7 +2133,7 @@ NAKED static str_id_t getElfDescStrID(struct GameState* g, u8 r1) {
 	b _080F7996\n\
 	.align 2, 0\n\
 _080F7970: .4byte 0x000064AC\n\
-_080F7974: .4byte gUnlockedElfPtr\n\
+_080F7974: .4byte gElfAvailability\n\
 _080F7978: .4byte StringOfsTable\n\
 _080F797C: .4byte gStringData\n\
 _080F7980:\n\
@@ -2161,7 +2156,7 @@ _080F7996:\n\
 	lsrs r0, r0, #0x1d\n\
 	cmp r0, #2\n\
 	bne _080F79E0\n\
-	ldr r0, _080F79CC @ =gUnlockedElfPtr\n\
+	ldr r0, _080F79CC @ =gElfAvailability\n\
 	ldr r0, [r0]\n\
 	adds r0, r0, r4\n\
 	ldrb r1, [r0]\n\
@@ -2178,7 +2173,7 @@ _080F7996:\n\
 _080F79C0: .4byte StringOfsTable\n\
 _080F79C4: .4byte gStringData\n\
 _080F79C8: .4byte gElfBreedInfo\n\
-_080F79CC: .4byte gUnlockedElfPtr\n\
+_080F79CC: .4byte gElfAvailability\n\
 _080F79D0: .4byte 0x0000010B\n\
 _080F79D4:\n\
 	cmp r4, #0x27\n\

@@ -13,7 +13,7 @@ const EnemyRoutine gPantheonFistRoutine = {
     [ENTITY_INIT] =      PantheonFist_Init,
     [ENTITY_UPDATE] =    PantheonFist_Update,
     [ENTITY_DIE] =       PantheonFist_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -76,6 +76,7 @@ static const EnemyFunc sDeads[3] = {
 
 // --------------------------------------------
 
+// 0x08369fd4
 static const struct Collision sCollisions[6] = {
     {
       kind : DRP,
@@ -131,9 +132,10 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(8)};
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(8)};
 static const u8 sInitModes[2] = {2, 0};
 
+// 0x0836a06e
 static const motion_t sMotions[4] = {
     MOTION(SM212_PANTHEON_FIST, 9),
     MOTION(SM212_PANTHEON_FIST, 10),

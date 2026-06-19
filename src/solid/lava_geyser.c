@@ -2,86 +2,108 @@
 #include "global.h"
 #include "solid.h"
 
-static const struct Collision sCollisions[2];
+void CreateLavaGeyserPlatform(struct Solid* s);
+
+static const struct Collision sCollisions[];
 static const struct Rect sSize;
+
+struct LavaGeyserObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[4];  // 0xB4
+  s32 unk_b8_y;  // 0xB8
+  s32 unk_bc_y;  // 0xBC
+  s32 unk_c0_x;  // 0xC0
+};
+static_assert(sizeof(struct LavaGeyserObject) == sizeof(struct Solid));
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-void Solid7_Init(struct Solid* p);
+static void Solid7_Init(struct LavaGeyserObject* p);
 void Solid7_Update(struct Solid* p);
 void Solid7_Die(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gLavaGeyserRoutine = {
-    [ENTITY_INIT] =      Solid7_Init,
-    [ENTITY_UPDATE] =    Solid7_Update,
-    [ENTITY_DIE] =       Solid7_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_INIT] =      (SolidFunc)Solid7_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)Solid7_Update,
+    [ENTITY_DIE] =       (SolidFunc)Solid7_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
-WIP void CreateLavaGeyser(struct Solid* solid, s32 x, s32 y, s32 n) {
-#if MODERN
+void CreateLavaGeyser(struct Entity* e, s32 x, s32 y, s32 n) {
   s32 i;
   for (i = 0; i < 6; i++) {
-    struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+    struct Entity* p = AllocEntityLast(gSolidHeaderPtr);
     if (p != NULL) {
-      s32 val;
+      register s32 r0 asm("r0");
+      register s32 r1 asm("r1");
 
-      (p->s).taskCol = 30;
       INIT_SOLID_ROUTINE(p, SOLID_LAVA_GEYSER);
-      (p->s).tileNum = 0;
-      (p->s).palID = 0;
-      (p->s).flags2 |= WHITE_PAINTABLE;
-      (p->s).invincibleID = (p->s).uniqueID;
-      (p->s).work[0] = 12;
-      (p->s).work[1] = i;
-      val = n - y;
-      if (val < 0) {
-        val = -val;
+      (p->work)[0] = 12;
+      (p->work)[1] = i;
+
+      r0 = abs(n - y);
+      r1 = r0;
+      if (r0 < 0) {  // never reached?
+        r1 = r0 + ((1 << 11) - 1);
       }
-      if (val < 0) {
-        val += ((1 << 11) - 1);
-      }
-      (p->s).work[3] = val >> 11;
-      (p->s).coord.x = x;
-      (p->s).coord.y = y;
+      r0 = r1 >> 11;
+      (p->work)[3] = r0;
+
+      (p->coord).x = x;
+      (p->coord).y = y;
       y += PIXEL(16);
-      (p->s).unk_28 = &solid->s;
+      p->unk_28 = (void*)e;
     }
   }
-#else
-  INCCODE("asm/wip/CreateLavaGeyser.inc");
-#endif
 }
 
 static void CreateSolid7_Unused(s32 x, u8 n) {
-  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
+  struct Entity* p = (struct Entity*)AllocEntityFirst(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_LAVA_GEYSER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).work[0] = n;
-    (p->s).coord.x = x;
+    (p->work)[0] = n;
+    (p->coord).x = x;
   }
 }
 
-bool8 FUN_080cc814(struct Solid* p) { return (p->s).mode[1] == ENTITY_EXIT; }
+bool8 FUN_080cc814(struct Entity* p) { return (p->mode)[1] == ENTITY_EXIT; }
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) {
-  struct CollidableEntity* enemy = (body->enemy)->parent;
-  struct Solid* self = (struct Solid*)body->parent;
+// 0x080cc828
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  struct Entity* enemy = (struct Entity*)(body->enemy)->parent;
+  struct LavaGeyserObject* self = (struct LavaGeyserObject*)body->parent;
 
   if (body->hitboxFlags & BODY_STATUS_B3) {
-    *(s32*)(&(self->props).raw[8]) = (enemy->s).coord.y;
+    self->unk_bc_y = (enemy->coord).y;
   }
 }
 
-INCASM("asm/solid/unk_07.inc");
+static void Solid7_Init(struct LavaGeyserObject* p) {
+  (p->s).flags |= FLIPABLE;
+  (p->s).flags |= DISPLAY;
+  InitNonAffineMotion(&p->s);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  if ((p->s).work[0] == 12) {
+    (p->s).mode[1] = 5;
+  } else {
+    (p->s).mode[1] = 0;
+    INIT_BODY(p, &sCollisions[0], 1, onCollision);
+    (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y) - PIXEL(14);
+    p->unk_b8_y = (p->s).coord.y;
+    p->unk_c0_x = (p->s).coord.x;
+    (p->s).flags2 |= ENTI_PHYSICS;
+    (p->s).size = &sSize;
+    (p->s).physicsAttr = MTATTR_B11 | MTATTR_SPIKE | SHAPE_BLOCK;
+    CreateLavaGeyserPlatform((void*)p);
+  }
+  Solid7_Update((void*)p);
+}
+
+INCASM("asm/solid/lava_geyser.inc");
 
 // --------------------------------------------
 
@@ -121,6 +143,7 @@ const SolidFunc sSolid7Updates2[6] = {
 
 // --------------------------------------------
 
+// 0x0836ffac
 static const struct Collision sCollisions[] = {
     {
       kind : DDP,
@@ -144,4 +167,5 @@ static const struct Collision sCollisions[] = {
 
 // --------------------------------------------
 
+// 0x0836ffdc
 static const struct Rect sSize = {PIXEL(0), PIXEL(57), PIXEL(32), PIXEL(120)};

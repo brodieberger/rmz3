@@ -1,10 +1,8 @@
 #ifndef GUARD_RMZ3_MENU_H
 #define GUARD_RMZ3_MENU_H
 
-#include "common.h"
-#include "cyberelf.h"
-#include "entity.h"
 #include "gba/gba.h"
+#include "types.h"
 
 /*
   GameState.mode:
@@ -14,15 +12,21 @@
     idx=3: メインメニューなら選択しているコンポーネント メイン=1, サブ=2, ..., フット=6
 */
 
+struct Elf;
+struct Widget;
+struct Zero;
+
 struct GameState;
 typedef void (*MenuLoopFunc)(struct GameState*);
 typedef struct Elf* (*MenuElfFunc)(struct Zero*, u8, u8, u8);
 
 #define MENU (&(g->sceneState).menu)
 #define ELF_MENU (&((g->sceneState).menu).elf)
+#define EXSKILL_MENU (&((g->sceneState).menu).exskill)
 
+struct SquareCursorWidget;
 struct ExSkillMenuState {
-  struct Widget* w;  // EXSkill用のMC(カーソル？)
+  struct SquareCursorWidget* cursor;  // カーソル
   u8 selected;
   bool8 inactive;  // 現在EXスキルメニュー中か
   u16 _;
@@ -30,7 +34,7 @@ struct ExSkillMenuState {
 
 struct KeyConfigMenuState {
   u8 y;  // キーコンフィグでカーソルが何行目か
-  u8 blinkID;
+  u8 plttAnimID;
   u16 _;
 };
 
@@ -42,7 +46,7 @@ struct ElfMenuState {
   u8 cursor;                // サテライト1などのエルフのリストでページの上から何行目のエルフを選択しているか(ページ=6行分)
   u8 unk_a;
   u8 unk_b;
-  u8 blinkID;
+  u8 plttAnimID;
   u8 unk_d;
   u8 unk_e;
   u8 unk_f;
@@ -63,7 +67,7 @@ struct MenuState {
   u8 unk_1c[8];
 
   struct ExSkillMenuState exskill;
-  struct KeyConfigMenuState kc;
+  struct KeyConfigMenuState kc;  // 0x2c..
   struct ElfMenuState elf;
   u8 unk_40[8];
   cyberelf_t satelites[2];
@@ -71,30 +75,17 @@ struct MenuState {
   u8 unk_4b;
   u8 unk_4c;
   u8 unk_4d;
-  u8 unk_4e[178];
+  u8 unk_4e;
+  u8 unk_4f;
+  u8 unk_50;
+  u8 unk_51;
+  u8 attackMode;  // 0x52
+  u8 unk_53[173];
 };
-
-extern const MenuLoopFunc gMenuLoops[5];
-extern const WeaponFunc PTR_ARRAY_08386300[17];
-extern const ElfFunc PTR_ARRAY_08386344[13];
-extern const MenuLoopFunc gMainManuLoops[4];
-
-void InitWidgetHeader(struct EntityHeader* h, struct Widget* p, s16 len);
-void MainLoop_Menu(struct GameState* p);
-
-void EachMenuLoop_MainMenu(struct GameState* p);
-void EachMenuLoop_ExSkill(struct GameState* g);
-void EachMenuLoop_KeyConfig(struct GameState* p);
-void EachMenuLoop_Elf(struct GameState* p);
-
-void MenuLoop_InitMenu(struct GameState* p);
-void MenuLoop_OpenMenu(struct GameState* p);
-void MenuLoop_Update(struct GameState* p);
-void MenuLoop_BlackOut(struct GameState* p);
-void MenuLoop_ExitMenu(struct GameState* p);
 
 bool8 TrySlideMenu(struct GameState* g);
 
+struct BgMapHeader;
 void CopyBgMap(u16* dst, struct BgMapHeader* src, u8 x, u8 y);
 
 #endif  // GUARD_RMZ3_MENU_H

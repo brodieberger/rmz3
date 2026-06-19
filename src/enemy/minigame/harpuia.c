@@ -2,6 +2,8 @@
 #include "enemy.h"
 #include "global.h"
 
+INCASM("asm/enemy/minigame_harpuia.inc");
+
 void HarpuiaMinigameEnemy_Init(struct Enemy* p);
 void HarpuiaMinigameEnemy_Update(struct Enemy* p);
 void HarpuiaMinigameEnemy_Die(struct Enemy* p);
@@ -11,7 +13,7 @@ const EnemyRoutine gHarpuiaMinigameEnemyRoutine = {
     [ENTITY_INIT] =      HarpuiaMinigameEnemy_Init,
     [ENTITY_UPDATE] =    HarpuiaMinigameEnemy_Update,
     [ENTITY_DIE] =       HarpuiaMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

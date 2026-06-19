@@ -253,7 +253,7 @@ _0803C738: .4byte 0x00000137
 _0803C73C: .4byte gWeaponFnTable
 _0803C740:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r2, [r4, #0x5c]
 	adds r0, r0, r2

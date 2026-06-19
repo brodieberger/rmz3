@@ -121,7 +121,7 @@ _080DB48C:
 	strb r0, [r6, #0xd]
 _080DB4FA:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -202,7 +202,7 @@ _080DB598:
 _080DB5A4: .4byte gGameState
 _080DB5A8:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB5E4 @ =gGameState
 	ldrb r1, [r0, #2]
 	cmp r1, #0
@@ -235,7 +235,7 @@ _080DB5E4: .4byte gGameState
 _080DB5E8: .4byte gInChat
 _080DB5EC:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB62C @ =gTextWindow+8
 	ldrh r0, [r0, #2]
 	cmp r0, #0
@@ -271,7 +271,7 @@ _080DB634: .4byte gGameState+25696
 _080DB638: .4byte 0x0000C201
 _080DB63C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -288,7 +288,7 @@ _080DB63C:
 _080DB65C: .4byte 0x0000C202
 _080DB660:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -305,7 +305,7 @@ _080DB660:
 _080DB680: .4byte 0x0000C201
 _080DB684:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	subs r0, #1
 	strb r0, [r6, #0x12]
@@ -323,7 +323,7 @@ _080DB6A0:
 	b _080DB6DE
 _080DB6A8:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB6E4 @ =gStageRun
 	ldrb r1, [r0, #0x12]
 	movs r4, #1
@@ -462,7 +462,7 @@ _080DB754:
 	strb r0, [r5, #0xd]
 _080DB7BA:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x8c
 	ldr r0, [r0]
@@ -533,7 +533,7 @@ _080DB81E:
 _080DB848: .4byte 0x00001306
 _080DB84C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB868 @ =gTextWindow+8
 	ldrh r1, [r0, #2]
 	cmp r1, #0
@@ -550,232 +550,3 @@ _080DB862:
 	.align 2, 0
 _080DB868: .4byte gTextWindow+8
 _080DB86C: .4byte gInChat
-
-	thumb_func_start UpdateSearchConsole
-UpdateSearchConsole: @ 0x080DB870
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	ldrb r6, [r5, #0xd]
-	cmp r6, #1
-	beq _080DB8BC
-	cmp r6, #1
-	bgt _080DB884
-	cmp r6, #0
-	beq _080DB88A
-	b _080DB920
-_080DB884:
-	cmp r6, #2
-	beq _080DB910
-	b _080DB920
-_080DB88A:
-	ldrb r1, [r5, #0xa]
-	movs r0, #2
-	orrs r0, r1
-	movs r1, #4
-	orrs r0, r1
-	strb r0, [r5, #0xa]
-	adds r4, r5, #0
-	adds r4, #0x74
-	ldr r1, _080DB8FC @ =Collision_ARRAY_08371410
-	adds r2, r5, #0
-	adds r2, #0x54
-	adds r0, r4, #0
-	movs r3, #0x40
-	bl InitBody
-	str r5, [r4, #0x2c]
-	str r6, [r4, #0x24]
-	ldr r0, [r5, #0x54]
-	ldr r1, [r5, #0x58]
-	bl FUN_08009f6c
-	str r0, [r5, #0x58]
-	ldrb r0, [r5, #0xd]
-	adds r0, #1
-	strb r0, [r5, #0xd]
-_080DB8BC:
-	adds r0, r5, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #0x16
-	ands r0, r1
-	cmp r0, #0
-	beq _080DB920
-	ldr r0, _080DB900 @ =gInChat
-	ldrb r0, [r0]
-	cmp r0, #0
-	beq _080DB920
-	ldr r0, _080DB904 @ =gCollisionManager
-	movs r1, #0xc5
-	lsls r1, r1, #3
-	adds r0, r0, r1
-	adds r1, r5, #0
-	adds r1, #0x74
-	ldr r0, [r0]
-	cmp r0, r1
-	bne _080DB920
-	movs r0, #0x95
-	lsls r0, r0, #1
-	bl PlaySound
-	ldr r0, _080DB908 @ =gGameState
-	ldr r1, _080DB90C @ =0x00070400
-	bl SetGameMode
-	ldrb r0, [r5, #0xd]
-	adds r0, #1
-	b _080DB91E
-	.align 2, 0
-_080DB8FC: .4byte Collision_ARRAY_08371410
-_080DB900: .4byte gInChat
-_080DB904: .4byte gCollisionManager
-_080DB908: .4byte gGameState
-_080DB90C: .4byte 0x00070400
-_080DB910:
-	ldr r0, _080DB928 @ =gGameState
-	ldrb r1, [r0, #2]
-	cmp r1, #0
-	bne _080DB920
-	ldr r0, _080DB92C @ =gInChat
-	strb r1, [r0]
-	movs r0, #1
-_080DB91E:
-	strb r0, [r5, #0xd]
-_080DB920:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080DB928: .4byte gGameState
-_080DB92C: .4byte gInChat
-
-	thumb_func_start FUN_080db930
-FUN_080db930: @ 0x080DB930
-	push {r4, r5, r6, lr}
-	adds r5, r0, #0
-	ldrb r6, [r5, #0xd]
-	cmp r6, #1
-	beq _080DB9D6
-	cmp r6, #1
-	bgt _080DB944
-	cmp r6, #0
-	beq _080DB94A
-	b _080DBA2C
-_080DB944:
-	cmp r6, #2
-	beq _080DBA1C
-	b _080DBA2C
-_080DB94A:
-	ldr r0, _080DB994 @ =gCurStory
-	ldr r0, [r0, #4]
-	movs r1, #0x82
-	lsls r1, r1, #0xb
-	ands r0, r1
-	movs r1, #0x80
-	lsls r1, r1, #5
-	cmp r0, r1
-	beq _080DB99C
-	ldrb r1, [r5, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	movs r1, #0xfd
-	ands r0, r1
-	strb r0, [r5, #0xa]
-	adds r0, r5, #0
-	adds r0, #0x8c
-	str r6, [r0]
-	adds r0, #4
-	str r6, [r0]
-	adds r0, #4
-	strb r6, [r0]
-	ldrb r1, [r5, #0xa]
-	movs r0, #0xfb
-	ands r0, r1
-	strb r0, [r5, #0xa]
-	ldr r1, _080DB998 @ =gSolidFnTable
-	ldrb r0, [r5, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #3
-	str r1, [r5, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #0xc]
-	str r0, [r5, #0x14]
-	b _080DBA2C
-	.align 2, 0
-_080DB994: .4byte gCurStory
-_080DB998: .4byte gSolidFnTable
-_080DB99C:
-	ldrb r1, [r5, #0xa]
-	movs r0, #2
-	orrs r0, r1
-	movs r1, #4
-	orrs r0, r1
-	strb r0, [r5, #0xa]
-	adds r4, r5, #0
-	adds r4, #0x74
-	ldr r1, _080DBA0C @ =Collision_ARRAY_08371410
-	adds r2, r5, #0
-	adds r2, #0x54
-	adds r0, r4, #0
-	movs r3, #0x40
-	bl InitBody
-	str r5, [r4, #0x2c]
-	str r6, [r4, #0x24]
-	ldr r0, [r5, #0x54]
-	movs r1, #0x80
-	lsls r1, r1, #4
-	adds r0, r0, r1
-	str r0, [r5, #0x54]
-	ldr r1, [r5, #0x58]
-	bl FUN_08009f6c
-	str r0, [r5, #0x58]
-	ldrb r0, [r5, #0xd]
-	adds r0, #1
-	strb r0, [r5, #0xd]
-_080DB9D6:
-	adds r0, r5, #0
-	adds r0, #0x8c
-	ldr r0, [r0]
-	movs r1, #0x80
-	lsls r1, r1, #0x16
-	ands r0, r1
-	cmp r0, #0
-	beq _080DBA2C
-	ldr r0, _080DBA10 @ =gInChat
-	ldrb r0, [r0]
-	cmp r0, #0
-	beq _080DBA2C
-	ldr r0, _080DBA14 @ =gCollisionManager
-	movs r1, #0xc5
-	lsls r1, r1, #3
-	adds r0, r0, r1
-	adds r1, r5, #0
-	adds r1, #0x74
-	ldr r0, [r0]
-	cmp r0, r1
-	bne _080DBA2C
-	ldr r0, _080DBA18 @ =0x00001333
-	bl PrintNormalMessage
-	ldrb r0, [r5, #0xd]
-	adds r0, #1
-	b _080DBA2A
-	.align 2, 0
-_080DBA0C: .4byte Collision_ARRAY_08371410
-_080DBA10: .4byte gInChat
-_080DBA14: .4byte gCollisionManager
-_080DBA18: .4byte 0x00001333
-_080DBA1C:
-	ldr r0, _080DBA34 @ =gTextWindow+8
-	ldrh r1, [r0, #2]
-	cmp r1, #0
-	bne _080DBA2C
-	ldr r0, _080DBA38 @ =gInChat
-	strb r1, [r0]
-	movs r0, #1
-_080DBA2A:
-	strb r0, [r5, #0xd]
-_080DBA2C:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_080DBA34: .4byte gTextWindow+8
-_080DBA38: .4byte gInChat

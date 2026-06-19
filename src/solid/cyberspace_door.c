@@ -5,6 +5,16 @@
 #include "sprite.h"
 #include "story.h"
 
+static void RenderTask_CyberSpaceDoor(struct Sprite* s, struct DrawPivot* dp);
+
+struct CyberDoorObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct MetaspriteHeader* sprites;  // 0xB4
+  u8 unk_bc[12];                     // 0xBC
+};
+static_assert(sizeof(struct CyberDoorObject) == sizeof(struct Solid));
+
 static const struct Collision sCollisions[2];
 
 static void CyberSpaceDoor_Init(struct Solid* p);
@@ -14,11 +24,11 @@ static void CyberSpaceDoor_Disappear(struct Solid* p);
 
 // clang-format off
 const SolidRoutine gCyberSpaceDoorRoutine = {
-    [ENTITY_INIT] =      CyberSpaceDoor_Init,
-    [ENTITY_UPDATE] =    CyberSpaceDoor_Update,
-    [ENTITY_DIE] =       CyberSpaceDoor_Die,
-    [ENTITY_DISAPPEAR] = CyberSpaceDoor_Disappear,
-    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)CyberSpaceDoor_Init,
+    [ENTITY_UPDATE] =    (void*)CyberSpaceDoor_Update,
+    [ENTITY_DIE] =       (void*)CyberSpaceDoor_Die,
+    [ENTITY_DISAPPEAR] = (void*)CyberSpaceDoor_Disappear,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
@@ -150,20 +160,17 @@ _080DBB34: .4byte gSolidFnTable\n\
  .syntax divided\n");
 }
 
-static void FUN_080dbbd4(struct Solid* p);
+static void _CyberSpaceDoor_Update(struct Solid* p);
 
 static void CyberSpaceDoor_Update(struct Solid* p) {
   static const SolidFunc sUpdates[1] = {
-      FUN_080dbbd4,
+      _CyberSpaceDoor_Update,
   };
   (sUpdates[(p->s).mode[1]])(p);
 }
 
 static void CyberSpaceDoor_Die(struct Solid* p) {
-  (p->body).status = 0;
-  (p->body).prevStatus = 0;
-  (p->body).invincibleTime = 0;
-  (p->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(p);
   (p->s).flags &= ~DISPLAY;
   SET_SOLID_ROUTINE(p, ENTITY_EXIT);
 }
@@ -172,7 +179,7 @@ static void CyberSpaceDoor_Disappear(struct Solid* p) {
   s32* border;
   s32 val;
   if (((p->s).work[1] != 0) && FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
-    if ((gOverworld.id & 0x7F) != STAGE_AREA_X2) {
+    if ((gOverworld.terrain.id & 0x7F) != STAGE_AREA_X2) {
       border = &gStageRun.vm.camera.right;
       val = PIXEL(15360);
     } else {
@@ -181,12 +188,13 @@ static void CyberSpaceDoor_Disappear(struct Solid* p) {
     }
     *border = val;
   }
-  DeleteSolid(p);
+  DeleteSolid((void*)p);
 }
 
 // --------------------------------------------
 
-NAKED static void FUN_080dbbd4(struct Solid* p) {
+// 0x080dbbd4
+NAKED static void _CyberSpaceDoor_Update(struct Solid* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r4, r0, #0\n\
@@ -215,7 +223,7 @@ _080DBBF0:\n\
 	str r0, [r1]\n\
 	adds r0, r4, #0\n\
 	adds r0, #0x34\n\
-	ldr r1, _080DBC8C @ =TaskCB_080dbdf4\n\
+	ldr r1, _080DBC8C @ =RenderTask_CyberSpaceDoor\n\
 	bl SetTaskCallback\n\
 	str r4, [r4, #0x3c]\n\
 	ldrb r1, [r4, #0xa]\n\
@@ -285,7 +293,7 @@ _080DBC62:\n\
 	str r0, [r5, #0x60]\n\
 	b _080DBCB4\n\
 	.align 2, 0\n\
-_080DBC8C: .4byte TaskCB_080dbdf4\n\
+_080DBC8C: .4byte RenderTask_CyberSpaceDoor\n\
 _080DBC90: .4byte sCollisions\n\
 _080DBC94: .4byte gStageRun+232\n\
 _080DBC98: .4byte 0xFFFF5800\n\
@@ -455,8 +463,9 @@ _080DBDF0: .4byte gStageRun\n\
  .syntax divided\n");
 }
 
-void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
-  struct Solid* p = (struct Solid*)s->sprites;
+// 0x080dbdf4
+static void RenderTask_CyberSpaceDoor(struct Sprite* s, struct DrawPivot* dp) {
+  struct CyberDoorObject* p = (struct CyberDoorObject*)s->sprites;
   if (!FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
     if ((p->s).work[0] != 0) {
       return;
@@ -467,11 +476,11 @@ void TaskCB_080dbdf4(struct Sprite* s, struct DrawPivot* dp) {
     }
   }
 
-  (p->s).spr.sprites = (p->props.cyberDoor).sprites;
-  UpdateMotionGraphic(&p->s);
+  (p->s).spr.sprites = p->sprites;
+  UpdateSpriteAnimation(p);
   TaskCB_DrawNoAffineSprite(s, dp);
-  (p->props.cyberDoor).sprites = (p->s).spr.sprites;
-  (p->s).spr.sprites = (struct MetaspriteHeader*)p;
+  p->sprites = (p->s).spr.sprites;
+  (p->s).spr.sprites = (void*)p;
 }
 
 static const struct Collision sCollisions[2] = {

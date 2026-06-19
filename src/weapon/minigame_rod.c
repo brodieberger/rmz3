@@ -6,24 +6,24 @@
 
 static void Weapon16_Init(struct Weapon* w);
 static void Weapon16_Update(struct Weapon* w);
-void Weapon16_Die(struct Weapon* w);
+static void Weapon16_Die(Object* p);
 
 // clang-format off
 const WeaponRoutine gMinigameRodRoutine = {
-    [ENTITY_INIT] =      Weapon16_Init,
-    [ENTITY_UPDATE] =    Weapon16_Update,
-    [ENTITY_DIE] =       Weapon16_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)Weapon16_Init,
+    [ENTITY_UPDATE] =    (void*)Weapon16_Update,
+    [ENTITY_DIE] =       (void*)Weapon16_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
 struct Weapon* CreateWeaponMinigameRod(struct Entity* p, u8 r1, u8 r2) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_MINIGAME_ROD);
     (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-    (w->s).taskCol = 16;
+    (w->s).renderPrio = 16;
     (w->s).tileNum = gWeaponTileNum[0];
     (w->s).palID = gWeaponPalIDs[0];
     (w->s).work[0] = r2;
@@ -114,6 +114,12 @@ static void Weapon16_Update(struct Weapon* w) {
       weapon_0803cf84,
   };
   (sUpdates[(w->s).mode[1]])(w);
+}
+
+static void Weapon16_Die(Object* p) {
+  (p->s).flags &= ~DISPLAY;
+  EXIT_BODY(p);
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
 INCASM("asm/weapon/minigame_rod.inc");

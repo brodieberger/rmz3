@@ -3,10 +3,21 @@
 #include "global.h"
 #include "vfx.h"
 
+struct PantheonHunterObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  u8 unk_b4[8];
+  bool8 isRight;  // 0xBC
+  u32 unk_c0;
+};
+static_assert(sizeof(struct PantheonHunterObject) == sizeof(struct Enemy));
+
 static const EnemyFunc sUpdates[13];
 static const EnemyFunc sDeads[3];
-static const struct Collision sCollisions[3];
+static const struct Collision sCollisions[];
 static const struct SlashedEnemy sSlashedEnemies[4];
+
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void PantheonHunter_Init(struct Enemy* p);
 static void PantheonHunter_Update(struct Enemy* p);
@@ -17,23 +28,18 @@ const EnemyRoutine gPantheonHunterRoutine = {
     [ENTITY_INIT] =      PantheonHunter_Init,
     [ENTITY_UPDATE] =    PantheonHunter_Update,
     [ENTITY_DIE] =       PantheonHunter_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* CreatePantheonHunter(struct Coord* c, u8 r1, u8 r2) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Entity* CreatePantheonHunter(Coords32* c, u8 r1, u8 r2) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_P_HUNTER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = r1;
-    (p->s).work[1] = r2;
+    INIT_ENEMY_ROUTINE(p, ENEMY_P_HUNTER);
+    p->coord = *c;
+    p->work[0] = r1;
+    p->work[1] = r2;
   }
   return p;
 }
@@ -65,8 +71,8 @@ NAKED static void PantheonHunter_Init(struct Enemy* p) {
 	adds r0, r6, #0\n\
 	bl SetMotion\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
-	ldr r0, _08064764 @ =gSystemSavedataManager\n\
+	bl UpdateEntityAnim\n\
+	ldr r0, _08064764 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #8]\n\
 	movs r0, #8\n\
 	ands r0, r1\n\
@@ -94,7 +100,7 @@ NAKED static void PantheonHunter_Init(struct Enemy* p) {
 	b _08064788\n\
 	.align 2, 0\n\
 _08064760: .4byte gEnemyFnTable\n\
-_08064764: .4byte gSystemSavedataManager\n\
+_08064764: .4byte gSystemSavedata\n\
 _08064768: .4byte gCurStory\n\
 _0806476C: .4byte sCollisions\n\
 _08064770:\n\
@@ -114,7 +120,7 @@ _08064788:\n\
 	bl InitBody\n\
 	str r6, [r4, #0x2c]\n\
 	str r5, [r4, #0x24]\n\
-	ldr r0, _080647B4 @ =FUN_080656f4\n\
+	ldr r0, _080647B4 @ =onCollision\n\
 	str r0, [r4, #0x24]\n\
 	movs r0, #0\n\
 	str r0, [r6, #0x60]\n\
@@ -132,7 +138,7 @@ _08064788:\n\
 	b _080647FA\n\
 	.align 2, 0\n\
 _080647B0: .4byte sCollisions\n\
-_080647B4: .4byte FUN_080656f4\n\
+_080647B4: .4byte onCollision\n\
 _080647B8:\n\
 	cmp r0, #0\n\
 	beq _080647CA\n\
@@ -288,7 +294,7 @@ _0806488C:\n\
 	ldr r0, _080648F4 @ =gStageRun+232\n\
 	adds r1, r5, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #7\n\
 	cmp r0, r1\n\
@@ -298,7 +304,7 @@ _0806488C:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	beq _08064904\n\
-	ldr r0, _080648F8 @ =gSystemSavedataManager\n\
+	ldr r0, _080648F8 @ =gSystemSavedata\n\
 	ldr r1, [r0, #0x40]\n\
 	ldr r0, _080648FC @ =0x000032DA\n\
 	cmp r1, r0\n\
@@ -336,7 +342,7 @@ _080648D6:\n\
 	b _08064AC2\n\
 	.align 2, 0\n\
 _080648F4: .4byte gStageRun+232\n\
-_080648F8: .4byte gSystemSavedataManager\n\
+_080648F8: .4byte gSystemSavedata\n\
 _080648FC: .4byte 0x000032DA\n\
 _08064900: .4byte gEnemyFnTable\n\
 _08064904:\n\
@@ -432,7 +438,7 @@ _080649B6:\n\
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r4, r5, #0\n\
 	adds r4, #0x74\n\
 	ldr r1, _08064A38 @ =sCollisions+24\n\
@@ -490,7 +496,7 @@ _08064A38: .4byte sCollisions+24\n\
 _08064A3C: .4byte sCollisions\n\
 _08064A40:\n\
 	adds r0, r5, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08064AAC\n\
 	movs r1, #0x98\n\
@@ -498,7 +504,7 @@ _08064A40:\n\
 	adds r0, r5, #0\n\
 	bl SetMotion\n\
 	adds r0, r5, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	adds r0, r5, #0\n\
 	adds r0, #0x74\n\
 	ldr r1, _08064AA8 @ =sCollisions\n\
@@ -555,19 +561,39 @@ _08064AC8: .4byte sUpdates\n\
  .syntax divided\n");
 }
 
-INCASM("asm/enemy/pantheon_hunter.inc");
-
 // --------------------------------------------
 
 void explodePHunter(struct Enemy* p);
 void slashPHunter(struct Enemy* p);
-void FUN_080656cc(struct Enemy* p);
+static void FUN_080656cc(struct Entity* p);
 
 static const EnemyFunc sDeads[3] = {
-    explodePHunter,
-    slashPHunter,
-    FUN_080656cc,
+    (EnemyFunc)explodePHunter,
+    (EnemyFunc)slashPHunter,
+    (EnemyFunc)FUN_080656cc,
 };
+
+INCASM("asm/enemy/pantheon_hunter.inc");
+
+// 0x080656cc
+static void FUN_080656cc(struct Entity* p) {
+  if (p->mode[3] == 0) {
+    SetSpriteAnimation(p, MOTION(SM019_PANTHEON_HUNTER, 3));
+    p->mode[3]++;
+  }
+  UpdateSpriteAnimation(p);
+}
+
+// --------------------------------------------
+
+// 0x080656f4
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  if (body->hitboxFlags & BODY_STATUS_WHITE) {
+    struct Entity* e = (struct Entity*)body->enemy->parent;
+    struct PantheonHunterObject* self = (struct PantheonHunterObject*)body->parent;
+    self->isRight = (e->coord).x > (self->s).coord.x;
+  }
+}
 
 // --------------------------------------------
 
@@ -641,5 +667,5 @@ static const struct SlashedEnemy sSlashedEnemies[4] = {
     },
 };
 
-const struct Coord Coord_08365c84 = {0, -0x1000};
-const struct Coord Coord_08365c8c = {0xFFFFF780, 0x880};
+const Coords32 Coord_08365c84 = {0, -0x1000};
+const Coords32 Coord_08365c8c = {0xFFFFF780, 0x880};

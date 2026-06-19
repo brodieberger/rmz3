@@ -13,7 +13,7 @@ FUN_080c078c: @ 0x080C078C
 	lsrs r5, r2, #0x18
 	ldr r0, _080C07DC @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C07D4
@@ -63,7 +63,7 @@ FUN_080c07e4: @ 0x080C07E4
 	lsrs r7, r3, #0x18
 	ldr r0, _080C084C @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _080C0840
@@ -278,7 +278,7 @@ _080C0984:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	cmp r0, #0
 	beq _080C09A6
@@ -370,7 +370,7 @@ _080C0A22:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x28]
 	ldrb r1, [r0, #0xa]
 	movs r0, #1

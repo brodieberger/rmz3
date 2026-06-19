@@ -5,6 +5,8 @@
 
 // Hammer in Repair Factory
 
+struct Entity* CreateBallChain(Coords32* c, struct Entity* e, u8 n);
+
 static const struct Collision sCollisions[5];
 
 static void Enemy21_Init(struct Enemy* p);
@@ -13,42 +15,30 @@ static void Enemy21_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gHammerRoutine = {
-    [ENTITY_INIT] =      Enemy21_Init,
-    [ENTITY_UPDATE] =    Enemy21_Update,
-    [ENTITY_DIE] =       Enemy21_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Enemy21_Init,
+    [ENTITY_UPDATE] =    (void*)Enemy21_Update,
+    [ENTITY_DIE] =       (void*)Enemy21_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Enemy* unused_080752cc(struct Coord* c, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+struct Entity* unused_080752cc(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_HAMMER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 0;
+    INIT_ENEMY_ROUTINE(p, ENEMY_HAMMER);
+    p->coord = *c;
+    p->work[0] = n, p->work[1] = 0;
   }
   return p;
 }
 
 static struct Enemy* FUN_0807532c(struct Entity* e, u8 n) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Enemy* p = (struct Enemy*)AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, ENEMY_HAMMER);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
+    INIT_ENEMY_ROUTINE(p, ENEMY_HAMMER);
     (p->s).unk_28 = e;
-    (p->s).work[0] = n;
-    (p->s).work[1] = 1;
+    (p->s).work[0] = n, (p->s).work[1] = 1;
   }
   return p;
 }
@@ -143,7 +133,7 @@ NAKED static void Enemy21_Init(struct Enemy* p) {
 	mov r0, sp\n\
 	adds r1, r5, #0\n\
 	movs r2, #0\n\
-	bl FUN_080bbcf4\n\
+	bl CreateBallChain\n\
 	ldrb r2, [r5, #0x11]\n\
 	cmp r2, #1\n\
 	bne _08075474\n\
@@ -224,11 +214,11 @@ static void Enemy21_Update(struct Enemy* p) {
 
   if ((p->s).work[1] == 1) {
     if (((p->s).unk_28)->mode[0] == ENTITY_EXIT) {
-      SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+      SET_ENEMY_ROUTINE(p, ENTITY_DIE);
       return;
     }
     if ((p->body).status & BODY_STATUS_DEAD) {
-      SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+      SET_ENEMY_ROUTINE(p, ENTITY_DIE);
       Enemy21_Die(p);
       return;
     }
@@ -245,21 +235,15 @@ static void Enemy21_Die(struct Enemy* p) {
     if (IS_METTAUR) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
-      SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+      EXIT_BODY(p);
+      SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
       return;
     }
 
     switch ((p->s).mode[2]) {
       case 0: {
         (p->s).mode[2] = 1;
-        (p->body).status = 0;
-        (p->body).prevStatus = 0;
-        (p->body).invincibleTime = 0;
-        (p->s).flags &= ~COLLIDABLE;
+        EXIT_BODY(p);
         FALLTHROUGH;
       }
       case 1: {
@@ -278,7 +262,7 @@ static void Enemy21_Die(struct Enemy* p) {
   }
 
   (p->s).flags &= ~DISPLAY;
-  SET_ZAKO_ROUTINE(p, ENTITY_EXIT);
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 
 // --------------------------------------------
@@ -295,10 +279,7 @@ static bool8 FUN_080755f0(struct Enemy* p) { return TRUE; }
 static void FUN_080755f4(struct Enemy* p) {
   if ((p->s).mode[2] == 0) {
     (p->s).flags &= ~DISPLAY;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     (p->s).mode[2]++;
   }
 }
@@ -309,6 +290,7 @@ INCASM("asm/enemy/hammer.inc");
 
 // --------------------------------------------
 
+// 0x08367044
 static const struct Collision sCollisions[5] = {
     {
       kind : DRP,

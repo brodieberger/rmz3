@@ -11,20 +11,15 @@ const SolidRoutine gAnatreCubeRoutine = {
     [ENTITY_INIT] =      Solid47_Init,
     [ENTITY_UPDATE] =    Solid47_Update,
     [ENTITY_DIE] =       Solid47_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Solid* FUN_080deb10(struct Coord* c) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+struct Solid* FUN_080deb10(Coords32* c) {
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_ANATRE_CUBE);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 0;
     (p->s).unk_coord.y = (p->s).coord.x = c->x;
     (p->s).coord.y = c->y;
@@ -32,15 +27,10 @@ struct Solid* FUN_080deb10(struct Coord* c) {
   return p;
 }
 
-struct Solid* FUN_080deb6c(u8 r0, struct Coord* c) {
-  struct Solid* p = (struct Solid*)AllocEntityFirst(gSolidHeaderPtr);
+struct Solid* FUN_080deb6c(u8 r0, Coords32* c) {
+  struct Solid* p = (struct Solid*)AllocEntityLast(gSolidHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 30;
     INIT_SOLID_ROUTINE(p, SOLID_ANATRE_CUBE);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).work[0] = 1;
     (p->s).work[1] = r0;
     (p->s).coord.x = c->x;
@@ -85,7 +75,7 @@ static void Solid47_Die(struct Solid* p) {
 // --------------------------------------------
 
 static void FUN_080dec04(struct Solid* p) {
-  struct Coord* d;
+  Coords32* d;
   (p->s).flags |= FLIPABLE;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y) - (PIXEL(32) - 1);
   d = &(p->s).d;

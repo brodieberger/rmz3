@@ -114,7 +114,7 @@ _0803A800:
 	strb r0, [r6, #0xa]
 	adds r4, r6, #0
 	adds r4, #0x74
-	ldr r5, _0803A880 @ =0x08361338
+	ldr r5, _0803A880 @ =sCollisions
 	adds r2, r6, #0
 	adds r2, #0x54
 	adds r0, r4, #0
@@ -154,7 +154,7 @@ _0803A800:
 	rsbs r0, r0, #0
 	b _0803A894
 	.align 2, 0
-_0803A880: .4byte 0x08361338
+_0803A880: .4byte sCollisions
 _0803A884:
 	mov r1, r8
 	ldr r0, [r1, #0x54]
@@ -237,7 +237,7 @@ Weapon5_Update: @ 0x0803A8CC
 _0803A91C: .4byte gWeaponFnTable
 _0803A920:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0
 	bne _0803A9E0
@@ -320,7 +320,7 @@ _0803A9BE:
 	lsls r1, r4, #1
 	adds r1, r1, r4
 	lsls r1, r1, #4
-	ldr r2, _0803A9DC @ =0x08361338
+	ldr r2, _0803A9DC @ =sCollisions
 	adds r1, r1, r2
 	movs r3, #1
 	rsbs r3, r3, #0
@@ -330,7 +330,7 @@ _0803A9BE:
 	bl InitWeaponBody
 	b _0803AA20
 	.align 2, 0
-_0803A9DC: .4byte 0x08361338
+_0803A9DC: .4byte sCollisions
 _0803A9E0:
 	ldrb r0, [r4, #0xc]
 	cmp r0, #1
@@ -411,7 +411,7 @@ hitZSaber: @ 0x0803AA64
 	ands r0, r1
 	cmp r0, #0
 	beq _0803AA7E
-	ldr r2, _0803AA84 @ =gMission
+	ldr r2, _0803AA84 @ =gScore
 	ldrh r1, [r2, #0x1e]
 	ldr r0, _0803AA88 @ =0x0000FFFE
 	cmp r1, r0
@@ -422,5 +422,5 @@ _0803AA7E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0803AA84: .4byte gMission
+_0803AA84: .4byte gScore
 _0803AA88: .4byte 0x0000FFFE

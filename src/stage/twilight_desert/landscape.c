@@ -1,13 +1,13 @@
-#include "blink.h"
 #include "gfx.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 #include "story.h"
 
-static void initTwilightDesert(struct Coord* _ UNUSED);
-static void FUN_0800f8dc(struct Coord* c);
-static void nop_0800f9bc(struct Coord* _ UNUSED);
-static void exitTwilightDesert(struct Coord* _ UNUSED);
+static void initTwilightDesert(Coords32* _ UNUSED);
+static void FUN_0800f8dc(Coords32* c);
+static void nop_0800f9bc(Coords32* _ UNUSED);
+static void exitTwilightDesert(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initTwilightDesert,
@@ -16,14 +16,14 @@ static const StageFunc sStageRoutine[4] = {
     exitTwilightDesert,
 };
 
-static void initTwilightDesert(struct Coord* _ UNUSED) {
+static void initTwilightDesert(Coords32* _ UNUSED) {
   gOverworld.work.twilightDesert.unk_004 = 0;
   gOverworld.work.twilightDesert.unk_001 = 0;
-  LoadBlink(131, 0);
-  LoadBlink(132, 0);
+  StartPaletteAnimation(131, 0);
+  StartPaletteAnimation(132, 0);
 }
 
-static void FUN_0800f8dc(struct Coord* c) {
+static void FUN_0800f8dc(Coords32* c) {
   if (gOverworld.work.twilightDesert.unk_004 != 0) {
     if (!FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED) && !isSoundPlaying(SE_UNK_102)) {
       PlaySound(SE_UNK_102);
@@ -32,32 +32,26 @@ static void FUN_0800f8dc(struct Coord* c) {
       goto _SKIP;
     }
   }
-  if (isSoundPlaying(SE_UNK_102)) {
-    stopSound(SE_UNK_102);
-  }
+  if (isSoundPlaying(SE_UNK_102)) StopSound(SE_UNK_102);
 
 _SKIP:
-  if (c->x < 0x1fe001) {
+  if (c->x <= PIXEL(8160)) {
     if (((c->x - 0x7a000U < 0x7b001) || (c->x - 0xff000U < 0x2f001)) || (c->x - 0x185000U < 0x2e001)) {
-      if (!isSoundPlaying(SE_UNK_c6)) {
-        PlaySound(SE_UNK_c6);
-      }
+      if (!isSoundPlaying(SE_UNK_c6)) PlaySound(SE_UNK_c6);
       SetStageNoiseVolume(SE_UNK_c6);
     } else {
-      if (isSoundPlaying(SE_UNK_c6)) {
-        stopSound(SE_UNK_c6);
-      }
+      if (isSoundPlaying(SE_UNK_c6)) StopSound(SE_UNK_c6);
     }
   }
-  UpdateBlinkMotionState(131);
-  UpdateBlinkMotionState(132);
+  StepPaletteAnimation(131);
+  StepPaletteAnimation(132);
 }
 
-static void nop_0800f9bc(struct Coord* _ UNUSED) { return; }
+static void nop_0800f9bc(Coords32* _ UNUSED) {}
 
-static void exitTwilightDesert(struct Coord* _ UNUSED) {
-  ClearBlink(131);
-  ClearBlink(132);
+static void exitTwilightDesert(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(131);
+  RemovePaletteAnimation(132);
 }
 
 static void LayerUpdate_TwilightDesert_2(struct StageLayer* l, const struct Stage* stage) {
@@ -65,7 +59,7 @@ static void LayerUpdate_TwilightDesert_2(struct StageLayer* l, const struct Stag
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) = l->prio | l->screenBase | (BGCNT_MOSAIC | BGCNT_CHARBASE(1));
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
-    CpuFastCopy(BGMAP(61), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
+    CpuFastCopy(BGMAP(61), SCREEN_ADDR(n >> 4), BG_SCREEN_SIZE);
     l->phase++;
   }
 }
@@ -83,7 +77,7 @@ static void LayerUpdate_TwilightDesert_5(struct StageLayer* l, const struct Stag
     const u16 n = l->bgIdx;
     (l->scrollPower).x = 0xE0;
     (l->scroll).x = 0x3C0;
-    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | 3;
+    BGCNT16(n >> 4) = (BGCNT16(n >> 4) & 0xFFFC) | BGCNT_PRIORITY(3);
     l->phase++;
   }
 }
@@ -161,9 +155,8 @@ const struct Stage gTwilightDesertLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG2, USE_BG1, USE_BG3},
   prio : {2, 1, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
-  scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,
   bgFns : sLayerRoutine,
   behavior : sScreenBehavior,

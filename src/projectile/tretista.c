@@ -8,13 +8,26 @@ void TretistaProjectile_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gTretistaProjectileRoutine = {
-    [ENTITY_INIT] =      TretistaProjectile_Init,
-    [ENTITY_UPDATE] =    TretistaProjectile_Update,
-    [ENTITY_DIE] =       TretistaProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
-    [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)TretistaProjectile_Init,
+    [ENTITY_UPDATE] =    (void*)TretistaProjectile_Update,
+    [ENTITY_DIE] =       (void*)TretistaProjectile_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+struct Entity* createTretistaBreathGas(struct Entity* e, Coords32* c, u8 kind) {
+  struct Entity* p = AllocEntityLast(gProjectileHeaderPtr);
+  if (p != NULL) {
+    INIT_PROJECTILE_ROUTINE(p, 19);
+    p->work[0] = 0, p->work[1] = kind;
+    (p->coord) = *c;
+    p->unk_28 = (void*)e;
+  }
+  return p;
+}
+
+INCASM("asm/projectile/tretista.inc");
 
 void FUN_080a38e8(struct Projectile* p);
 void FUN_080a3c58(struct Projectile* p);
@@ -35,6 +48,9 @@ static const ProjectileFunc* const PTR_ARRAY_0836b4e4[4] = {
     &PTR_ARRAY_0836b4d4[3],
 };
 
+// --------------------------------------------
+
+// 0x0836B4F4
 static const struct Collision sCollisions[53] = {
     {
       kind : DDP,
@@ -551,7 +567,7 @@ static const struct Collision sCollisions[53] = {
 };
 
 // clang-format off
-static const struct Coord sCoords[10] = {
+static const Coords32 sCoords[10] = {
     {PIXEL(28), PIXEL(24)},
     {-PIXEL(28), -PIXEL(24)},
     {PIXEL(14), PIXEL(10)},

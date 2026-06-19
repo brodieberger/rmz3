@@ -1,8 +1,8 @@
-#include "blink.h"
 #include "boss.h"
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 // I call Omega Second Form "Omega ZX" because his shoulder pads look like Zero and X.
 
@@ -12,39 +12,53 @@ struct OmegaZXProjectileTemplate {
   u8 _;
 } PACKED;
 
-static void OmegaZX_Init(struct Boss* p);
+struct OmegaZX {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  u8 unk_b4[4];  // 0xB4
+  s32 unk_y;     // 0xB8
+  struct Entity* unk_bc;
+  u16 unk_c0;
+  u16 unk_c2;
+  void* unk_c4;
+  u8 unk_c8[4];
+  struct Entity* enemy60;
+  u8 unk_d0[20];
+};
+static_assert(sizeof(struct OmegaZX) == sizeof(struct Boss));
+
+struct Entity* FUN_08092444(Coords32* c, u8 kind, struct Entity* boss);
+
+static void OmegaZX_Init(struct OmegaZX* p);
 static void OmegaZX_Update(struct Boss* p);
 static void OmegaZX_Die(struct Boss* p);
 static void OmegaZX_Disappear(struct Boss* p);
 
 // clang-format off
 const BossRoutine gOmegaZXRoutine = {
-    [ENTITY_INIT] =      OmegaZX_Init,
-    [ENTITY_UPDATE] =    OmegaZX_Update,
-    [ENTITY_DIE] =       OmegaZX_Die,
-    [ENTITY_DISAPPEAR] = OmegaZX_Disappear,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)OmegaZX_Init,
+    [ENTITY_UPDATE] =    (void*)OmegaZX_Update,
+    [ENTITY_DIE] =       (void*)OmegaZX_Die,
+    [ENTITY_DISAPPEAR] = (void*)OmegaZX_Disappear,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateOmegaZX(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateOmegaZX(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_OMEGA_ZX);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
+    p->coord = *c;
+    p->work[0] = n;
   }
   return p;
 }
 
 // --------------------------------------------
 
-NAKED static void OmegaZX_Init(struct Boss* p) {
+static const struct Collision sCollisions[];
+
+NAKED static void OmegaZX_Init(struct OmegaZX* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	sub sp, #8\n\
@@ -186,18 +200,18 @@ _08060C44:\n\
 	lsls r4, r4, #2\n\
 	movs r0, #0xa7\n\
 	adds r1, r4, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r1, #0xb8\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0xa8\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r1, #0xc0\n\
 	lsls r1, r1, #2\n\
 	movs r0, #0xa9\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	movs r0, #0xaa\n\
 	adds r1, r4, #0\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 	adds r0, r5, #0\n\
 	bl OmegaZX_Update\n\
 	add sp, #8\n\
@@ -259,7 +273,7 @@ static void OmegaZX_Update(struct Boss* p) {
   // clang-format on
 
   if (((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) {
-    if (!(gStageRun.missionStatus & MISSION_FAIL)) {
+    if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
       SET_BOSS_ROUTINE(p, ENTITY_DIE);
       OmegaZX_Die(p);
       return;
@@ -272,13 +286,13 @@ static void OmegaZX_Update(struct Boss* p) {
 
 // --------------------------------------------
 
-void FUN_08060d60(struct Boss* p);
+static void FUN_08060d60(Object* p);
 void FUN_08060e14(struct Boss* p);
 
 static void OmegaZX_Die(struct Boss* p) {
   static const BossFunc sDeads[2] = {
-      FUN_08060d60,
-      FUN_08060e14,
+      (void*)FUN_08060d60,
+      (void*)FUN_08060e14,
   };
   (sDeads[(p->s).mode[1]])(p);
 }
@@ -286,17 +300,52 @@ static void OmegaZX_Die(struct Boss* p) {
 // --------------------------------------------
 
 static void OmegaZX_Disappear(struct Boss* p) {
-  ClearBlink(167);
-  ClearBlink(168);
-  ClearBlink(169);
-  ClearBlink(170);
-  DeleteBoss(p);
+  RemovePaletteAnimation(167);
+  RemovePaletteAnimation(168);
+  RemovePaletteAnimation(169);
+  RemovePaletteAnimation(170);
+  DeleteBoss((void*)p);
 }
 
 // --------------------------------------------
 
+static void FUN_08060d60(Object* p) {
+  switch ((p->s).mode[2]) {
+    case 0: {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
+        gStageRun.missionStatus &= ~MISSION_STAY;
+        gStageRun.missionStatus |= MISSION_SUCCESS;
+      }
+      EXIT_BODY(p);
+      (p->s).work[2] = 90;
+      (p->s).mode[2]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      StepPaletteAnimation(167);
+      StepPaletteAnimation(168);
+      StepPaletteAnimation(169);
+      StepPaletteAnimation(170);
+      if ((p->s).work[2] != 0) {
+        (p->s).work[2]--;
+        if ((p->s).work[2] == 0) {
+          (p->s).mode[2]++;
+        }
+      }
+      break;
+    }
+    case 2: {
+      if ((p->s).scriptEntity->flags & (1 << 7)) {
+        (p->s).mode[1] = 1, (p->s).mode[2] = 0;
+      }
+      break;
+    }
+  }
+}
+
 INCASM("asm/boss/omega_zx.inc");
 
+// 0x083655d4
 static const struct Collision sCollisions[3] = {
     {
       kind : DRP,

@@ -1,13 +1,13 @@
-#include "blink.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 #define STAGE (gOverworld.work.sunkenLib)
 
-static void initSunkenLib(struct Coord* _ UNUSED);
-static void updateSunkenLib(struct Coord* _ UNUSED);
-static void FUN_080136a0(struct Coord* _ UNUSED);
-static void exitSunkenLibrary(struct Coord* _ UNUSED);
+static void initSunkenLib(Coords32* _ UNUSED);
+static void updateSunkenLib(Coords32* _ UNUSED);
+static void FUN_080136a0(Coords32* _ UNUSED);
+static void exitSunkenLibrary(Coords32* _ UNUSED);
 
 static const StageFunc sGfxRoutine[4] = {
     initSunkenLib,
@@ -16,70 +16,68 @@ static const StageFunc sGfxRoutine[4] = {
     exitSunkenLibrary,
 };
 
-static void initSunkenLib(struct Coord* _ UNUSED) {
+static void initSunkenLib(Coords32* _ UNUSED) {
   gOverworld.state[0] = 0;
   STAGE.unk_000 = 0;
   STAGE.unk_001 = 0;
   STAGE.unk_002 = 0;
   STAGE.theta = 0;
   STAGE.rng = 0;
-  SEA = PIXEL(568);
-  LoadBlink(150, 0);
+  gOverworld.sea = PIXEL(568);
+  StartPaletteAnimation(150, 0);
 }
 
-WIP static void updateSunkenLib(struct Coord* _ UNUSED) {
+NON_MATCH static void updateSunkenLib(Coords32* _ UNUSED) {
 #if MODERN
   if ((TILESET_ID(0) == STAGE_SUNKEN_LIBRARY) && (TILESET_IDX(0) == 4)) {
     if ((STAGE.unk_000 & (1 << 0)) == 0) {
       STAGE.unk_000 |= (1 << 0);
-      LoadBlink(148, 0);
-      LoadBlink(149, 0);
+      StartPaletteAnimation(148, 0);
+      StartPaletteAnimation(149, 0);
     }
-    UpdateBlinkMotionState(148);
-    UpdateBlinkMotionState(149);
+    StepPaletteAnimation(148);
+    StepPaletteAnimation(149);
 
   } else if ((STAGE.unk_000 & (1 << 0))) {
     STAGE.unk_000 ^= (1 << 0);
-    ClearBlink(148);
-    ClearBlink(149);
+    RemovePaletteAnimation(148);
+    RemovePaletteAnimation(149);
   }
 
   if ((TILESET_ID(1) == STAGE_SUNKEN_LIBRARY) && (TILESET_IDX(1) == 5)) {
     if ((STAGE.unk_000 & (1 << 1)) == 0) {
       STAGE.unk_000 |= (1 << 1);
-      LoadBlink(153, 0);
+      StartPaletteAnimation(153, 0);
     }
-    UpdateBlinkMotionState(153);
+    StepPaletteAnimation(153);
 
   } else if ((STAGE.unk_000 & (1 << 1))) {
     STAGE.unk_000 ^= (1 << 1);
-    ClearBlink(153);
+    RemovePaletteAnimation(153);
   }
 
-  UpdateBlinkMotionState(150);
+  StepPaletteAnimation(150);
 
   if (STAGE.unk_001 == 0) {
     if (STAGE.unk_002 == 0) {
-      STAGE.rng = LCG(STAGE.rng);
-      STAGE.unk_002 = ((STAGE.rng >> 16) & 1) + 1;
+      STAGE.unk_002 = (RANDOM(STAGE.rng) & 1) + 1;
       STAGE.unk_001 = 8;
     } else {
       STAGE.unk_002 = 0;
-      STAGE.rng = LCG(STAGE.rng);
-      STAGE.unk_001 = (((STAGE.rng >> 16) % 58) & 0xF8) + 7;
+      STAGE.unk_001 = ((RANDOM(STAGE.rng) % 58) & 0xF8) + 7;
     }
   }
 
   STAGE.unk_001--;
   STAGE.theta++;
-  SEA = gSineTable[STAGE.theta] * 24 + PIXEL(568);
+  gOverworld.sea = gSineTable[STAGE.theta] * 24 + PIXEL(568);
   gBlendRegBuffer.bldalpha = 0xC04;
 #else
   INCCODE("asm/wip/updateSunkenLib.inc");
 #endif
 }
 
-static void FUN_080136a0(struct Coord* _ UNUSED) {
+static void FUN_080136a0(Coords32* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_SUNKEN_LIBRARY) && (TILESET_IDX(0) == 4)) {
     if (STAGE.unk_002 != 0) {
       RequestGraphicTransfer(&(TILESETS(18, 0)[72 + (STAGE.unk_002 << 1) + (STAGE.unk_001 >> 2)]).g, (void*)0x4000);
@@ -91,14 +89,14 @@ static void FUN_080136a0(struct Coord* _ UNUSED) {
   }
 }
 
-static void exitSunkenLibrary(struct Coord* _ UNUSED) {
-  SEA = PIXEL(10240);
-  ClearBlink(148);
-  ClearBlink(149);
-  ClearBlink(150);
-  ClearBlink(151);
-  ClearBlink(152);
-  ClearBlink(153);
+static void exitSunkenLibrary(Coords32* _ UNUSED) {
+  gOverworld.sea = PIXEL(10240);
+  RemovePaletteAnimation(148);
+  RemovePaletteAnimation(149);
+  RemovePaletteAnimation(150);
+  RemovePaletteAnimation(151);
+  RemovePaletteAnimation(152);
+  RemovePaletteAnimation(153);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -150,16 +148,17 @@ static const StageLayerRoutine sLayerRoutine[6] = {
 };
 // clang-format on
 
+// 0x080137c0
 static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
-    BGCNT16(n >> 4) = l->prio | l->screenBase | 0x8044;
+    BGCNT16(n >> 4) = l->prio | l->screenBase | BGCNT_CHARBASE(1) | BGCNT_MOSAIC | BGCNT_TXT256x512;
     *(u32*)gVideoRegBuffer.bgofs[n >> 4] = 0;
-    CpuFastCopy(BGMAP(67), (void*)(VRAM + SCREEN_BASE_16(n >> 4)), 2048);
-    CpuFastCopy(BGMAP(68), (void*)(VRAM + 0x800 + SCREEN_BASE_16(n >> 4)), 2048);
+    CpuFastCopy(BGMAP(67), SCREEN_ADDR(n >> 4), BG_SCREEN_SIZE);
+    CpuFastCopy(BGMAP(68), SCREEN_ADDR(n >> 4) + BG_SCREEN_SIZE, BG_SCREEN_SIZE);
     gBlendRegBuffer.bldclt = 0x3B44;
     gBlendRegBuffer.bldalpha = 0xC04;
-    gWindowRegBuffer.dispcnt |= 0x4000;
+    gWindowRegBuffer.dispcnt |= DISPCNT_WIN1_ON;
     gWindowRegBuffer.winin[1] = 0xF3;
     gWindowRegBuffer.winin[2] |= 0xE;
     *((u16*)&gWindowRegBuffer.winH + 1) = 0xFF;
@@ -170,7 +169,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 
 static void FUN_08013898(struct StageLayer* l, const struct Stage* _ UNUSED) {
   u16 n = l->bgIdx;
-  s32 deltaPixel = ((l->viewportCenterPixel).y - (SEA >> 8)) + 5;
+  s32 deltaPixel = ((l->viewportLeftTopPixel).y - (gOverworld.sea >> 8)) + 5;
   if (deltaPixel > 255) {
     deltaPixel = 255;
   }
@@ -183,13 +182,13 @@ static void FUN_08013898(struct StageLayer* l, const struct Stage* _ UNUSED) {
     gWindowRegBuffer.winV.half[1] = 0;
   }
 
-  BGOFS(n >> 4)->x = (l->viewportCenterPixel).x;
+  BGOFS(n >> 4)->x = (l->viewportLeftTopPixel).x;
   gVideoRegBuffer.bgofs[n >> 4][1] = deltaPixel;
 }
 
 static void FUN_08013908(struct StageLayer* l UNUSED, const struct Stage* _ UNUSED) {
   gBlendRegBuffer.bldclt = 0;
-  gWindowRegBuffer.dispcnt &= 0xBFFF;
+  gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN1_ON;
   gWindowRegBuffer.winin[2] |= 0xE;
 }
 
@@ -221,7 +220,7 @@ const struct Stage gSunkenLibraryLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {2, 0, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
   scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,

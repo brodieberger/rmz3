@@ -11,18 +11,18 @@ void BeeServer_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gBeeServerRoutine = {
-    [ENTITY_INIT] =      BeeServer_Init,
-    [ENTITY_UPDATE] =    BeeServer_Update,
-    [ENTITY_DIE] =       BeeServer_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)BeeServer_Init,
+    [ENTITY_UPDATE] =    (void*)BeeServer_Update,
+    [ENTITY_DIE] =       (void*)BeeServer_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 static bool8 tryKillBeeServer(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;
     BeeServer_Die(p);
@@ -69,6 +69,7 @@ static const BossFunc sDeads[1] = {
 
 // --------------------------------------------
 
+// 0x08363258
 static const struct Collision sCollisions[8] = {
     {
       kind : DRP,
@@ -166,7 +167,7 @@ static const struct Collision sCollisions[8] = {
 
 static const u8 sInitModes[4] = {1, 0, 0, 0};
 
-const struct Coord Coord_0836331c = {0, 0};
+const Coords32 Coord_0836331c = {0, 0};
 
 const u8 u8_ARRAY_ARRAY_08363324[3][5] = {
     {2, 3, 4, 5, 5},

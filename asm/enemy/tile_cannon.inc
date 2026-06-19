@@ -26,7 +26,7 @@ FUN_080780c4: @ 0x080780C4
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #0x78
 	strb r0, [r4, #0x12]
 	movs r0, #1
@@ -45,9 +45,9 @@ _08078100:
 FUN_08078108: @ 0x08078108
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	ldr r0, _08078168 @ =gZakoHeaderPtr
+	ldr r0, _08078168 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _08078160
@@ -92,7 +92,7 @@ _08078160:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08078168: .4byte gZakoHeaderPtr
+_08078168: .4byte gEnemyHeaderPtr
 _0807816C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08078170
@@ -134,7 +134,7 @@ tilecannon_08078198: @ 0x08078198
 	b _08078208
 _080781A8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078208
 	ldr r1, _080781E4 @ =0x08367418
@@ -155,7 +155,7 @@ _080781A8:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #1
 	b _0807820A
 	.align 2, 0
@@ -169,7 +169,7 @@ _080781EC:
 	bl FUN_080780c4
 _080781F8:
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	beq _08078206
 	movs r0, #1
@@ -275,7 +275,7 @@ _080782B8: .4byte gEnemyFnTable
 _080782BC: .4byte 0x08367540
 _080782C0: .4byte 0x08367460
 _080782C4:
-	ldr r0, _080782F8 @ =gSystemSavedataManager
+	ldr r0, _080782F8 @ =gSystemSavedata
 	ldrb r0, [r0, #0x15]
 	ands r1, r0
 	cmp r1, #0
@@ -301,7 +301,7 @@ _080782C4:
 	movs r3, #0xa
 	b _0807831C
 	.align 2, 0
-_080782F8: .4byte gSystemSavedataManager
+_080782F8: .4byte gSystemSavedata
 _080782FC: .4byte gCurStory
 _08078300: .4byte 0x08367508
 _08078304:
@@ -458,7 +458,7 @@ TileCannon_Die: @ 0x080783E8
 	movs r0, #0
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _08078470 @ =gMission
+	ldr r2, _08078470 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _08078474 @ =0x0000270E
 	cmp r1, r0
@@ -484,7 +484,7 @@ _0807844A:
 	bx r0
 	.align 2, 0
 _0807846C: .4byte 0x08367544
-_08078470: .4byte gMission
+_08078470: .4byte gScore
 _08078474: .4byte 0x0000270E
 _08078478: .4byte gEnemyFnTable
 
@@ -583,7 +583,7 @@ _080784E8:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
 	strb r0, [r4, #0xe]
@@ -628,7 +628,7 @@ _08078560:
 	strb r0, [r4, #0xe]
 _08078576:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x74
 	ldr r2, _080785B4 @ =0x0836754A
@@ -705,7 +705,7 @@ _080785F2:
 	strb r1, [r4, #0xe]
 _08078610:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _08078616:
 	pop {r4}
 	pop {r0}
@@ -733,7 +733,7 @@ _08078634:
 	strb r0, [r4, #0xe]
 _08078642:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -780,7 +780,7 @@ _08078676:
 	strb r0, [r5, #0xe]
 _0807869A:
 	adds r0, r6, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08078736
 	ldr r0, _08078748 @ =pZero2
@@ -856,7 +856,7 @@ _08078704:
 	strb r1, [r5, #0xe]
 _08078736:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807873C:
 	pop {r4, r5, r6, r7}
 	pop {r0}
@@ -943,7 +943,7 @@ _08078786:
 	strb r0, [r5, #0xe]
 _080787EA:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -963,7 +963,7 @@ _08078808:
 	strb r0, [r5, #0xe]
 _08078812:
 	adds r0, r2, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08078842
 	ldrb r0, [r5, #0x13]

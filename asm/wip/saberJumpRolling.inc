@@ -60,7 +60,7 @@
 _08038BA0: .4byte gWeaponFnTable
 _08038BA4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r2, _08038C08 @ =gSaberCollisions
@@ -125,7 +125,7 @@ _08038C10:
 	strb r0, [r5, #0xf]
 _08038C2E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r2, _08038C84 @ =gSaberCollisions
@@ -179,7 +179,7 @@ _08038C88:
 	strb r0, [r5, #0xf]
 _08038C9C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x74
 	ldr r1, _08038CD8 @ =gSaberGeneralCollisions

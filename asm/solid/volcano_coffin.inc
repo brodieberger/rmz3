@@ -28,7 +28,7 @@ _080DDB02:
 	adds r7, r5, #0
 	adds r7, #0x54
 	adds r1, r7, #0
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xb0
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -75,7 +75,7 @@ _080DDB18:
 	strb r0, [r5, #0xd]
 _080DDB6A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x8c
 	ldr r1, [r0]
@@ -129,7 +129,7 @@ _080DDBDC:
 	ldr r0, _080DDC18 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xb0
 	lsls r1, r1, #6
 	cmp r0, r1

@@ -1,6 +1,7 @@
 #include "entity.h"
 #include "global.h"
 #include "vfx.h"
+#include "vfx/element_effect.h"
 
 static void IceEffect_Init(struct VFX* p);
 static void IceEffect_Update(struct VFX* p);
@@ -8,29 +9,24 @@ static void IceEffect_Die(struct VFX* p);
 
 // clang-format off
 const VFXRoutine gIceEffectRoutine = {
-    [ENTITY_INIT] =      IceEffect_Init,
-    [ENTITY_UPDATE] =    IceEffect_Update,
-    [ENTITY_DIE] =       IceEffect_Die,
-    [ENTITY_DISAPPEAR] = DeleteVFX,
-    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)IceEffect_Init,
+    [ENTITY_UPDATE] =    (void*)IceEffect_Update,
+    [ENTITY_DIE] =       (void*)IceEffect_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteVFX,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct VFX* CreateIceEffect(struct Entity* friend, struct Coord* c, u8 r2) {
-  struct VFX* g = (struct VFX*)AllocEntityFirst(gVFXHeaderPtr);
-  if (g != NULL) {
-    (g->s).taskCol = 1;
-    INIT_VFX_ROUTINE(g, 11);
-    (g->s).tileNum = 0;
-    (g->s).palID = 0;
-    (g->s).unk_28 = friend;
-    (g->props).ee.c.x = c->x;
-    (g->props).ee.c.y = c->y;
-    (g->s).work[2] = r2;
-    *(u8*)&(g->props).ee.c.y = r2;
+struct ElementEffect* CreateIceEffect(struct Entity* e, Coords32* c, u8 r2) {
+  struct ElementEffect* p = (struct ElementEffect*)AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_ICE_EFFECT);
+    (p->s).unk_28 = e;
+    (p->c).x = c->x, (p->c).y = c->y;
+    (p->s).work[2] = r2;
+    *((u8*)&(p->c).y) = r2;
   }
-
-  return g;
+  return p;
 }
 
 NAKED static void IceEffect_Init(struct VFX* p) {
@@ -331,7 +327,7 @@ _080B52B0:\n\
 	str r0, [r4, #0x58]\n\
 _080B52B2:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B52C4\n\
@@ -444,7 +440,7 @@ _080B5376:\n\
 	adds r1, #0x40\n\
 	str r1, [r6, #0x60]\n\
 	adds r0, r6, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r6, #0x12]\n\
 	cmp r0, #0\n\
 	beq _080B53A6\n\

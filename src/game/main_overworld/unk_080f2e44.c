@@ -2,7 +2,7 @@
 #include "global.h"
 #include "text.h"
 
-void OverworldLoop_080f2e44(struct GameState *g) {
+void OverworldLoop_080f2e44(struct GameState* g) {
   s16 ans;
   switch (g->mode[3]) {
     default: {
@@ -11,7 +11,7 @@ void OverworldLoop_080f2e44(struct GameState *g) {
     }
 
     case 0: {
-      PrintOptionMessage2(0x1332);
+      PrintOptionMessage2(0x1332);  // ゼロ……わたし…… 略 ネオ・アルカディアのしんこうルートをモニターにヒョウジします, 0x08384949
       g->mode[3]++;
       FALLTHROUGH;
     }
@@ -19,7 +19,7 @@ void OverworldLoop_080f2e44(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage1(0x130E);
+      PrintOptionMessage1(0x130E);  // ミッションをセンタクしますか？ はい/いいえ
       g->mode[3]++;
       FALLTHROUGH;
     }
@@ -57,7 +57,7 @@ void OverworldLoop_080f2e44(struct GameState *g) {
       if (((&gTextWindow.text)->mode != 0) && ((&gTextWindow.text)->mode != TEXT_MODE_OPTION)) {
         return;
       }
-      PrintOptionMessage2(0x130F);
+      PrintOptionMessage2(0x130F);  // では、ジュンビができましたら いつでも声をおかけください…
       g->mode[3] = 3;
       break;
     }

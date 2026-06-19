@@ -2,6 +2,8 @@
 #include "enemy.h"
 #include "global.h"
 
+INCASM("asm/enemy/minigame_ciel1.inc");
+
 void CielMinigameEnemy_Init(struct Enemy* p);
 void CielMinigameEnemy_Update(struct Enemy* p);
 void CielMinigameEnemy_Die(struct Enemy* p);
@@ -11,7 +13,7 @@ const EnemyRoutine gCielMinigameEnemy1Routine = {
     [ENTITY_INIT] =      CielMinigameEnemy_Init,
     [ENTITY_UPDATE] =    CielMinigameEnemy_Update,
     [ENTITY_DIE] =       CielMinigameEnemy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on

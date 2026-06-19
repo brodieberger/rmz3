@@ -3,6 +3,32 @@
 #include "collision.h"
 #include "global.h"
 
+extern const BossRoutine gMegamilpaRoutine;
+extern const BossRoutine gOmegaWhiteRoutine;
+extern const BossRoutine gBlazinRoutine;
+extern const BossRoutine gChildreRoutine;
+extern const BossRoutine gWormerRoutine;
+extern const BossRoutine gVolteelRoutine;
+extern const BossRoutine gBabyElfRoutine;
+extern const BossRoutine gDeathtanzRoutine;
+extern const BossRoutine gHellbatRoutine;
+extern const BossRoutine gBeeServerRoutine;
+extern const BossRoutine gTretistaRoutine;
+extern const BossRoutine gAnubisRoutine;
+extern const BossRoutine gPantheonAquaModRoutine;
+extern const BossRoutine gCubitRoutine;
+extern const BossRoutine gLocomoIFRoutine;
+extern const BossRoutine gCopyXRoutine;
+extern const BossRoutine gGlacierleRoutine;
+extern const BossRoutine gBlizzackRoutine;
+extern const BossRoutine gOmegaGoldRoutine;
+extern const BossRoutine gHanumachineRoutine;
+extern const BossRoutine gOmegaZeroRoutine;
+extern const BossRoutine gPhantomBossRoutine;
+extern const BossRoutine gOmegaZXRoutine;
+extern const BossRoutine gReactorCoreRoutine;
+extern const BossRoutine gSpearookRoutine;
+
 // clang-format off
 const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
     [BOSS_MEGAMILPA] =          &gMegamilpaRoutine,
@@ -33,7 +59,7 @@ const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
 };
 // clang-format on
 
-void InitBossHeader(struct EntityHeader *h, struct Boss *p, s16 len) {
+void InitBossHeader(struct EntityHeader* h, struct Boss* p, s16 len) {
   s16 i;
 
   InitEntityHeader(h, ENTITY_BOSS, &p->s, sizeof(struct Boss), len);
@@ -44,25 +70,21 @@ void InitBossHeader(struct EntityHeader *h, struct Boss *p, s16 len) {
   gBossHeaderPtr = h;
 }
 
-void DeleteBoss(struct Boss *p) {
-  (p->s).flags &= ~DISPLAY;
+void DeleteBoss(struct Entity* p) {
+  p->flags &= ~DISPLAY;
   SET_BOSS_ROUTINE(p, ENTITY_EXIT);
 }
 
-#if MODERN == 0
-static struct Weapon *unused_0803d120(struct Entity *p) {
-  struct Weapon *w = (struct Weapon *)GetNearestEntity(gWeaponHeaderPtr, &p->coord);
+static struct Entity* unused_0803d120(struct Entity* p) {
+  struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w == NULL) return NULL;
   return w;
 }
-#endif
 
-#if MODERN == 0
-static struct Coord *unused_0803d13c(struct Entity *p) {
-  struct Entity *w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
+static Coords32* unused_0803d13c(struct Entity* p) {
+  struct Entity* w = GetNearestEntity(gWeaponHeaderPtr, &p->coord);
   if (w != NULL) return &w->coord;
   return NULL;
 }
-#endif
 
-void ResetBossBody(struct Boss *p, const struct Collision *collisions, s16 hp) { INIT_BODY(p, &collisions[0], hp, NULL); }
+void ResetBossBody(struct Boss* p, const struct Collision* collisions, s16 hp) { INIT_BODY(p, &collisions[0], hp, NULL); }

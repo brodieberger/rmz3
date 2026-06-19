@@ -6,27 +6,24 @@
 
 static const struct Collision sCollisions[2];
 
-static void ShotcounterBullet_Init(struct Projectile *p);
-static void ShotcounterBullet_Update(struct Projectile *p);
-void ShotcounterBullet_Die(struct Projectile *p);
+static void ShotcounterBullet_Init(struct Projectile* p);
+static void ShotcounterBullet_Update(struct Projectile* p);
+void ShotcounterBullet_Die(struct Projectile* p);
 
 // clang-format off
 const ProjectileRoutine gShotcounterBulletRoutine = {
     [ENTITY_INIT] =      ShotcounterBullet_Init,
     [ENTITY_UPDATE] =    ShotcounterBullet_Update,
     [ENTITY_DIE] =       ShotcounterBullet_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Projectile *CreateShotcounterBullet(struct Coord *c, struct Coord *d, u8 r2, u8 r3) {
-  struct Projectile *p = (struct Projectile *)AllocEntityFirst(gProjectileHeaderPtr);
+struct Projectile* CreateShotcounterBullet(Coords32* c, Coords32* d, u8 r2, u8 r3) {
+  struct Projectile* p = (struct Projectile*)AllocEntityLast(gProjectileHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 8;
     INIT_PROJECTILE_ROUTINE(p, PROJECTILE_SHOTCOUNTER_BULLET);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
     (p->s).work[0] = r2;
     (p->s).work[1] = r3;
     (p->s).coord.x = c->x;
@@ -37,7 +34,7 @@ struct Projectile *CreateShotcounterBullet(struct Coord *c, struct Coord *d, u8 
   return p;
 }
 
-NAKED static void ShotcounterBullet_Init(struct Projectile *p) {
+NAKED static void ShotcounterBullet_Init(struct Projectile* p) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r6, r0, #0\n\
@@ -131,11 +128,11 @@ _0809CE00: .4byte gProjectileFnTable\n\
 
 // --------------------------------------------
 
-void nop_0809ceac(struct Projectile *p);
-void FUN_0809ceb0(struct Projectile *p);
-void FUN_0809cf98(struct Projectile *p);
+void nop_0809ceac(struct Projectile* p);
+void FUN_0809ceb0(struct Projectile* p);
+void FUN_0809cf98(struct Projectile* p);
 
-static void ShotcounterBullet_Update(struct Projectile *p) {
+static void ShotcounterBullet_Update(struct Projectile* p) {
   static const ProjectileFunc sUpdates[] = {
       nop_0809ceac,
       FUN_0809ceb0,
@@ -143,10 +140,7 @@ static void ShotcounterBullet_Update(struct Projectile *p) {
   };
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
+    EXIT_BODY(p);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
     ShotcounterBullet_Die(p);
     return;

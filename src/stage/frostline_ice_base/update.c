@@ -1,5 +1,6 @@
 #include "global.h"
 #include "overworld.h"
+#include "spawn.h"
 
 NAKED s16 IceBase_MissionUpdate(struct StageRun* p) {
   asm(".syntax unified\n\
@@ -175,7 +176,7 @@ _0801DD1C:\n\
 	beq _0801DD94\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 	b _0801DD94\n\
 	.align 2, 0\n\
@@ -184,14 +185,14 @@ _0801DD68: .4byte 0x001FCFFF\n\
 _0801DD6C: .4byte gCurStory\n\
 _0801DD70: .4byte gStageRun\n\
 _0801DD74:\n\
-	ldr r0, _0801DDF0 @ =gStageEntityManager\n\
+	ldr r0, _0801DDF0 @ =gSpawnManager\n\
 	movs r1, #0x87\n\
 	lsls r1, r1, #2\n\
 	adds r0, r0, r1\n\
 	ldr r0, [r0]\n\
 	movs r1, #0xf0\n\
 	lsls r1, r1, #9\n\
-	bl FUN_080186c8\n\
+	bl ClipSpawnRange\n\
 	ldr r2, _0801DDF4 @ =gCollisionManager\n\
 	ldrb r1, [r2, #1]\n\
 	movs r0, #2\n\
@@ -206,14 +207,14 @@ _0801DD94:\n\
 	bgt _0801DD9E\n\
 	b _0801DF22\n\
 _0801DD9E:\n\
-	ldr r0, _0801DDF0 @ =gStageEntityManager\n\
+	ldr r0, _0801DDF0 @ =gSpawnManager\n\
 	movs r1, #0x87\n\
 	lsls r1, r1, #2\n\
 	adds r0, r0, r1\n\
 	ldr r0, [r0]\n\
 	movs r1, #0xf0\n\
 	lsls r1, r1, #9\n\
-	bl FUN_080186c8\n\
+	bl ClipSpawnRange\n\
 	ldr r2, _0801DDF4 @ =gCollisionManager\n\
 	ldrb r1, [r2, #1]\n\
 	movs r0, #2\n\
@@ -232,11 +233,11 @@ _0801DD9E:\n\
 	beq _0801DDDA\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801DDDA:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801DDE4:\n\
@@ -247,7 +248,7 @@ _0801DDE4:\n\
 	strb r0, [r1]\n\
 	b _0801DF22\n\
 	.align 2, 0\n\
-_0801DDF0: .4byte gStageEntityManager\n\
+_0801DDF0: .4byte gSpawnManager\n\
 _0801DDF4: .4byte gCollisionManager\n\
 _0801DDF8: .4byte 0x001FEFFF\n\
 _0801DDFC: .4byte gStageRun\n\

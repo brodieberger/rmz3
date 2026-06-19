@@ -532,7 +532,7 @@ _0801E760:\n\
 	beq _0801E790\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 _0801E790:\n\
 	ldr r1, [r7, #0x54]\n\
@@ -559,11 +559,11 @@ _0801E79A:\n\
 	beq _0801E7C4\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801E7C4:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801E7CE:\n\

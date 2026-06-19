@@ -4,31 +4,29 @@
 #include "gba/types.h"
 #include "types.h"
 
-#define BG_MODE_0 0xFFF8
+#define DISPCNT_BGMODE_MASK 0x0007
 
 #define POW2(n) (n * n)
-#define OFFSET_TABLE(tbl, n) ((void *)((u32)(void *)&tbl[n] + (u32)tbl[n]))
-#define PTR_U32(p) ((u32)(void *)(p))
 
 typedef s32 (*ShapeChecker)(s32 x, s32 y);
 
+// bitfield
+#define FLAG(gameflags, n) (gameflags[(n) >> 3] & (1 << ((n) & 7)))
+#define SET_FLAG(gameflags, n) (gameflags[(n) >> 3] |= (1 << ((n) & 7)))
+#define CLEAR_FLAG(gameflags, n) (gameflags[(n) >> 3] &= ~(1 << ((n) & 7)))
+
+#define FLAG32(bitfield32, n) ((bitfield32)[(n) >> 5] & (1 << ((n) & 31)))
+#define SET_FLAG32(bitfield32, n) (((bitfield32)[(n) >> 5]) |= (1 << ((n) & 31)))
+#define CLEAR_FLAG32(bitfield32, n) (((bitfield32)[(n) >> 5]) &= ~(1 << ((n) & 31)))
+
 struct Coord;
 
-void *Malloc(u32 bytesize);
-metatile_attr_t GetHazardMetatileAttr(s32 x, s32 y);
+void* Malloc(u32 bytesize);
 s32 FUN_08009f6c(s32 x, s32 y);
 void CreateFirework(s32 x, s32 y, bool8 r2);
 void ResetEntityEnvironment(void);
-void FUN_0802511c(void);
 void clearStageDisk(void);
-u32 TryDropItem(u32 table, struct Coord *c);
-
-// --------------------------------------------
-
-s32 PushoutToLeft1(s32 x, s32 y);
-s32 PushoutToLeft2(s32 x, s32 y);
-s32 PushoutToRight1(s32 x, s32 y);
-s32 PushoutToRight2(s32 x, s32 y);
+u32 TryDropItem(u32 table, struct Coord* c);
 
 // --------------------------------------------
 
@@ -77,16 +75,15 @@ s32 FUN_0800abc4(s32 x, s32 y);
 s32 FUN_0800abf8(s32 x, s32 y);
 
 #if MODERN
-void *memcpy(void *buf1, const void *buf2, u32 n);
+void* memcpy(void* buf1, const void* buf2, u32 n);
 #endif
 
 // --------------------------------------------
 
 // sym_ewram.txt, sym_iwram.txt
 extern bool8 gIsPlayDamageSE;
-extern u8 wPauseFrame;
+extern bool8 gInHitStopFrames;
 extern u32 gWhitePaintFlags[256 / 32];  // 被ダメ無敵時の白塗り(ビットフィールド)
-extern u8 (*gUnlockedElfPtr)[CYBERELF_LENGTH];
 extern u32 gLifeRecoverAmount;
 extern u32 gSubtankRecoverAmount;
 extern u32 gECrystalGainAmount;

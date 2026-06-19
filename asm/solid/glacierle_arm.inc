@@ -199,7 +199,7 @@ _080CEA8E:
 	adds r2, r2, r3
 	lsls r2, r2, #8
 	rsbs r2, r2, #0
-	bl CreateVFX54
+	bl CreateIcicleParticle
 	adds r5, #1
 	ldrb r0, [r4, #0x12]
 	adds r0, r0, r6
@@ -327,7 +327,7 @@ _080CEB72:
 	cmp r0, #0
 	beq _080CEB98
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080CEB98:
 	ldrb r2, [r4, #0x10]
 	cmp r2, #0
@@ -505,7 +505,7 @@ _080CECE8:
 	strb r0, [r4, #0xe]
 _080CECF8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _080CEDB2
 _080CED00:
 	movs r0, #0x18
@@ -532,7 +532,7 @@ _080CED14:
 	str r0, [r4, #0x68]
 _080CED2A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x13]
 	subs r0, #1
 	strb r0, [r4, #0x13]
@@ -564,7 +564,7 @@ _080CED5E:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	movs r2, #0xb8
@@ -577,7 +577,7 @@ _080CED5E:
 	ldr r0, _080CEDB8 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0xc0
 	lsls r1, r1, #7
 	cmp r0, r1

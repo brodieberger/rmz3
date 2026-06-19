@@ -53,7 +53,7 @@ _0806BF74:
 	movs r0, #0
 	adds r1, r6, #0
 	bl TryDropItem
-	ldr r2, _0806BFCC @ =gMission
+	ldr r2, _0806BFCC @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806BFD0 @ =0x0000270E
 	cmp r1, r0
@@ -79,7 +79,7 @@ _0806BFC4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806BFCC: .4byte gMission
+_0806BFCC: .4byte gScore
 _0806BFD0: .4byte 0x0000270E
 _0806BFD4: .4byte gEnemyFnTable
 
@@ -138,7 +138,7 @@ _0806C002:
 	ands r0, r1
 	str r0, [r3]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806C03E:
 	pop {r4}
 	pop {r0}
@@ -197,7 +197,7 @@ _0806C072:
 	ands r0, r1
 	str r0, [r3]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806C0AE:
 	pop {r4}
 	pop {r0}
@@ -273,7 +273,7 @@ _0806C0E2:
 	ands r0, r1
 	str r0, [r3]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806C140:
 	pop {r4, r5}
 	pop {r0}
@@ -349,7 +349,7 @@ _0806C176:
 	ands r0, r1
 	str r0, [r3]
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0806C1D4:
 	pop {r4, r5}
 	pop {r0}

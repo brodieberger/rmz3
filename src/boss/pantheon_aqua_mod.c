@@ -3,24 +3,34 @@
 #include "global.h"
 #include "overworld.h"
 
+struct PAquaMod {
+  OBJECT_HDR;
+  // props (48bytes, offset: 0xB4..)
+  u8 unk_b4[6];
+  u16 x;
+  s32 y;
+  u8 unk_c0[36];
+};
+static_assert(sizeof(struct PAquaMod) == sizeof(struct Boss));
+
 void PantheonAquaMod_Init(struct Boss* p);
 void PantheonAquaMod_Update(struct Boss* p);
 void PantheonAquaMod_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gPantheonAquaModRoutine = {
-    [ENTITY_INIT] =      PantheonAquaMod_Init,
-    [ENTITY_UPDATE] =    PantheonAquaMod_Update,
-    [ENTITY_DIE] =       PantheonAquaMod_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
-    [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)PantheonAquaMod_Init,
+    [ENTITY_UPDATE] =    (void*)PantheonAquaMod_Update,
+    [ENTITY_DIE] =       (void*)PantheonAquaMod_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-static void onCollision(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 bool8 tryKillPantheonAquaMod(struct Boss* p) {
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     (p->s).mode[1] = 0;
     PantheonAquaMod_Die(p);
@@ -29,10 +39,10 @@ bool8 tryKillPantheonAquaMod(struct Boss* p) {
   return FALSE;
 }
 
-static void paquam_080512f8(struct Boss* p) {
-  (p->props.paquam).x += PIXEL(1);
-  (p->s).coord.y = (p->props.paquam).y;
-  (p->s).coord.y += gSineTable[COORD_TO_PIXEL((p->props.paquam).x)] << 2;
+static void paquam_080512f8(struct PAquaMod* p) {
+  p->x += PIXEL(1);
+  (p->s).coord.y = p->y;
+  (p->s).coord.y += gSineTable[COORD_TO_PIXEL(p->x)] << 2;
 }
 
 INCASM("asm/boss/pantheon_aqua_mod.inc");
@@ -87,6 +97,7 @@ static const BossFunc sDeads[1] = {
 
 // --------------------------------------------
 
+// 0x0836364c
 static const struct Collision sCollisions[32] = {
     [0] = {
       kind : DRP,
@@ -203,9 +214,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 1,
       layer : 0x00000001,
@@ -287,9 +296,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 2,
       layer : 0x00000001,
@@ -301,9 +308,7 @@ static const struct Collision sCollisions[32] = {
       special : CS_BOSS,
       damage : 255,
       atkType : 0x00,
-      element : 0x00,
       nature : 0x04,
-      comboLv : 0,
       hitzone : 0,
       remaining : 1,
       layer : 0x00000001,
@@ -436,5 +441,5 @@ static const struct Collision sCollisions[32] = {
 // --------------------------------------------
 
 static const u8 sInitModes[4] = {1, 4, 0, 0};
-static const struct Coord sElementCoord = {PIXEL(0), PIXEL(0)};
+static const Coords32 sElementCoord = {PIXEL(0), PIXEL(0)};
 static const u8 u8_ARRAY_08363958[4] = {5, 6, 7, 8};

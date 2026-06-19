@@ -91,13 +91,13 @@ _08075656:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080756DA:
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080756E0: .4byte 0x0836705C
+_080756E0: .4byte sCollisions+(24*1)
 _080756E4: .4byte gSineTable
 
 	thumb_func_start FUN_080756e8
@@ -172,7 +172,7 @@ _08075768:
 	movs r0, #1
 	b _080757C2
 	.align 2, 0
-_08075778: .4byte 0x0836708C
+_08075778: .4byte sCollisions+(24*3)
 _0807577C: .4byte pZero2
 _08075780: .4byte gSineTable
 _08075784:
@@ -429,7 +429,7 @@ _08075962:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _08075A22
 	.align 2, 0
 _0807597C: .4byte 0xFFFFF800
@@ -501,7 +501,7 @@ _080759F2:
 	adds r0, #0x24
 	strb r2, [r0]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _08075A1A

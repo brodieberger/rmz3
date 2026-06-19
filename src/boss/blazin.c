@@ -4,6 +4,7 @@
 #include "global.h"
 #include "overworld.h"
 #include "sound.h"
+#include "zero.h"
 
 static const BossFunc sUpdates1[12];
 static const BossFunc sUpdates2[12];
@@ -14,25 +15,20 @@ static void Blazin_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gBlazinRoutine = {
-    [ENTITY_INIT] =      Blazin_Init,
-    [ENTITY_UPDATE] =    Blazin_Update,
-    [ENTITY_DIE] =       Blazin_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (BossFunc)Blazin_Init,
+    [ENTITY_UPDATE] =    (BossFunc)Blazin_Update,
+    [ENTITY_DIE] =       (BossFunc)Blazin_Die,
+    [ENTITY_DISAPPEAR] = (BossFunc)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateBlazin(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Entity* CreateBlazin(Coords32* c, u8 n) {
+  struct Entity* p = AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_BLAZIN);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord = *c;
-    (p->s).work[0] = n;
+    p->coord = *c;
+    p->work[0] = n;
   }
   return p;
 }
@@ -65,7 +61,7 @@ NAKED static void Blazin_Init(struct Boss* p) {
 	movs r0, #0xef\n\
 	ands r0, r1\n\
 	strb r0, [r5, #0xa]\n\
-	ldr r1, _0803E9A4 @ =0x08361C68\n\
+	ldr r1, _0803E9A4 @ =gBlazinCollisions\n\
 	adds r0, r5, #0\n\
 	movs r2, #0x40\n\
 	bl ResetBossBody\n\
@@ -152,7 +148,7 @@ NAKED static void Blazin_Init(struct Boss* p) {
 	strb r7, [r5, #0xd]\n\
 	b _0803E9CA\n\
 	.align 2, 0\n\
-_0803E9A4: .4byte 0x08361C68\n\
+_0803E9A4: .4byte gBlazinCollisions\n\
 _0803E9A8: .4byte FUN_0803ff28\n\
 _0803E9AC: .4byte 0xFFFFC000\n\
 _0803E9B0: .4byte gBossFnTable\n\
@@ -364,23 +360,16 @@ static void Blazin_Die(struct Boss* p) {
 }
 
 static void blazinDeath0(struct Boss* p) {
-  struct Coord* velocity;
+  Coords32* velocity;
   switch ((p->s).mode[2]) {
     case 0: {
-      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & 1)) {
+      if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
         gStageRun.missionStatus &= ~MISSION_STAY;
         gStageRun.missionStatus |= MISSION_SUCCESS;
       }
-      if (isSoundPlaying(SE_COPYX_FIRESHOT)) {
-        stopSound(SE_COPYX_FIRESHOT);
-      }
-      if (isSoundPlaying(SE_BLAZIN_EX)) {
-        stopSound(SE_BLAZIN_EX);
-      }
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
+      if (isSoundPlaying(SE_COPYX_FIRESHOT)) StopSound(SE_COPYX_FIRESHOT);
+      if (isSoundPlaying(SE_BLAZIN_EX)) StopSound(SE_BLAZIN_EX);
+      EXIT_BODY(p);
       velocity = &(p->s).d;
       velocity->x = velocity->y = 0;
       (p->s).work[2] = 1;
@@ -506,7 +495,7 @@ _0803EC4C:\n\
 	str r1, [r4, #0x5c]\n\
 _0803EC6C:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	b _0803EDE8\n\
 	.align 2, 0\n\
 _0803EC74: .4byte 0xFFFFA200\n\
@@ -610,7 +599,7 @@ _0803ED28:\n\
 	adds r0, r4, #0\n\
 	bl SetMotion\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	movs r0, #0x44\n\
 	strb r0, [r4, #0x12]\n\
 	b _0803EDE8\n\
@@ -619,7 +608,7 @@ _0803ED4C: .4byte 0x0000A21A\n\
 _0803ED50: .4byte 0xFFFFA200\n\
 _0803ED54:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0x12]\n\
 	cmp r0, #0\n\
 	beq _0803ED6A\n\
@@ -661,27 +650,27 @@ _0803ED94:\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _0803EDAC\n\
-	ldr r1, _0803EDA8 @ =0x08361DE8\n\
+	ldr r1, _0803EDA8 @ =gBlazinCoords+(8*3)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDA8: .4byte 0x08361DE8\n\
+_0803EDA8: .4byte gBlazinCoords+(3*8)\n\
 _0803EDAC:\n\
-	ldr r1, _0803EDB0 @ =0x08361DF0\n\
+	ldr r1, _0803EDB0 @ =gBlazinCoords+(4*8)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDB0: .4byte 0x08361DF0\n\
+_0803EDB0: .4byte gBlazinCoords+(4*8)\n\
 _0803EDB4:\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	bne _0803EDC8\n\
-	ldr r1, _0803EDC4 @ =0x08361DD8\n\
+	ldr r1, _0803EDC4 @ =gBlazinCoords+(1*8)\n\
 	b _0803EDCA\n\
 	.align 2, 0\n\
-_0803EDC4: .4byte 0x08361DD8\n\
+_0803EDC4: .4byte gBlazinCoords+(1*8)\n\
 _0803EDC8:\n\
-	ldr r1, _0803EDF0 @ =0x08361DE0\n\
+	ldr r1, _0803EDF0 @ =gBlazinCoords+(2*8)\n\
 _0803EDCA:\n\
 	adds r0, r4, #0\n\
 	bl CreateBossExplosion\n\
@@ -704,7 +693,7 @@ _0803EDE8:\n\
 	strb r0, [r4, #0xe]\n\
 	b _0803EE20\n\
 	.align 2, 0\n\
-_0803EDF0: .4byte 0x08361DE0\n\
+_0803EDF0: .4byte gBlazinCoords+(2*8)\n\
 _0803EDF4:\n\
 	movs r0, #0x30\n\
 	strb r0, [r4, #0x12]\n\
@@ -746,6 +735,25 @@ static bool8 nop_0803ee2c(struct Boss* _) { return TRUE; }
 
 INCASM("asm/boss/blazin.inc");
 
+// 0x080403c4
+static void setBlazinDirection(struct Entity* p) {
+  struct Entity* z = (struct Entity*)pZero2;
+  if ((z->coord).x > (p->coord).x) {
+    if (!(p->flags & X_FLIP)) {
+      (p->spr).xflip = TRUE, (p->spr).oam.xflip = TRUE;
+      p->flags |= X_FLIP;
+    }
+  } else {
+    if (p->flags & X_FLIP) {
+      (p->spr).xflip = FALSE, (p->spr).oam.xflip = FALSE;
+      p->flags &= ~X_FLIP;
+    }
+  }
+}
+
+// --------------------------------------------
+
+// 0x08361c68
 const struct Collision gBlazinCollisions[15] = {
     {
       kind : DRP,
@@ -910,6 +918,7 @@ const struct Collision gBlazinCollisions[15] = {
     },
 };
 
-const struct Coord gBlazinCoords[5] = {
-    {0x0000, -0x2000}, {0x0C00, -0x2000}, {0x0C00, -0x2000}, {0x1200, -0x2000}, {0x1200, -0x2000},
+// 0x08361dd0
+const Coords32 gBlazinCoords[5] = {
+    {PIXEL(0), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(12), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)}, {PIXEL(18), -PIXEL(32)},
 };

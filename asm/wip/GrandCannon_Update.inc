@@ -104,5 +104,5 @@ _080692F2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080692F8: .4byte 0x08366234
-_080692FC: .4byte 0x08366244
+_080692F8: .4byte sUpdates1
+_080692FC: .4byte sUpdates2

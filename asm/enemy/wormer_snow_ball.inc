@@ -9,9 +9,9 @@ FUN_0807b0d0: @ 0x0807B0D0
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	adds r6, r1, #0
-	ldr r0, _0807B11C @ =gZakoHeaderPtr
+	ldr r0, _0807B11C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0807B116
@@ -45,7 +45,7 @@ _0807B116:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B11C: .4byte gZakoHeaderPtr
+_0807B11C: .4byte gEnemyHeaderPtr
 _0807B120: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807b124
@@ -55,9 +55,9 @@ FUN_0807b124: @ 0x0807B124
 	adds r5, r1, #0
 	adds r6, r2, #0
 	adds r7, r3, #0
-	ldr r0, _0807B17C @ =gZakoHeaderPtr
+	ldr r0, _0807B17C @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0807B174
@@ -94,7 +94,7 @@ _0807B174:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B17C: .4byte gZakoHeaderPtr
+_0807B17C: .4byte gEnemyHeaderPtr
 _0807B180: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807b184
@@ -102,9 +102,9 @@ FUN_0807b184: @ 0x0807B184
 	push {r4, r5, lr}
 	adds r4, r0, #0
 	adds r5, r1, #0
-	ldr r0, _0807B1D4 @ =gZakoHeaderPtr
+	ldr r0, _0807B1D4 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityLast
+	bl AllocEntityFirst
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _0807B1CC
@@ -139,7 +139,7 @@ _0807B1CC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B1D4: .4byte gZakoHeaderPtr
+_0807B1D4: .4byte gEnemyHeaderPtr
 _0807B1D8: .4byte gEnemyFnTable
 
 	thumb_func_start nop_0807b1dc
@@ -382,7 +382,7 @@ _0807B386:
 	ldr r0, _0807B3F4 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #3
 	cmp r0, r1
@@ -425,7 +425,7 @@ _0807B3F4: .4byte gStageRun+232
 _0807B3F8: .4byte gEnemyFnTable
 _0807B3FC:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807B402:
 	pop {r4}
 	pop {r0}
@@ -497,7 +497,7 @@ _0807B480: .4byte gSineTable
 _0807B484: .4byte gEnemyFnTable
 _0807B488:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807B48E:
 	pop {r4, r5}
 	pop {r0}
@@ -516,7 +516,7 @@ FUN_0807b494: @ 0x0807B494
 _0807B4A4:
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
-	bl FUN_080bea24
+	bl CreateIceballParticle2
 	adds r1, r5, #0
 	adds r1, #0x25
 	movs r0, #0xf
@@ -643,7 +643,7 @@ _0807B5A4: .4byte 0x00004003
 _0807B5A8: .4byte gEnemyFnTable
 _0807B5AC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807B5B2:
 	pop {r4, r5}
 	pop {r0}
@@ -716,7 +716,7 @@ _0807B60C:
 	strb r0, [r5, #0xe]
 _0807B634:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0807B7AC
 	.align 2, 0
 _0807B63C: .4byte 0x0836785C
@@ -864,11 +864,11 @@ _0807B752:
 	str r1, [r5, #0x5c]
 _0807B75E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _0807B7B8 @ =gStageRun+232
 	adds r1, r5, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1
@@ -926,7 +926,7 @@ FUN_0807b7c0: @ 0x0807B7C0
 	strb r0, [r4, #0xa]
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
-	bl FUN_080bea24
+	bl CreateIceballParticle2
 	ldr r1, _0807B7FC @ =gEnemyFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2
@@ -946,7 +946,7 @@ _0807B7FC: .4byte gEnemyFnTable
 FUN_0807b800: @ 0x0807B800
 	push {r4, lr}
 	adds r4, r0, #0
-	ldr r2, _0807B854 @ =gMission
+	ldr r2, _0807B854 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0807B858 @ =0x0000270E
 	cmp r1, r0
@@ -972,7 +972,7 @@ _0807B812:
 	strb r0, [r4, #0xa]
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
-	bl FUN_080bea80
+	bl CreateIceballParticle4
 	ldr r1, _0807B85C @ =gEnemyFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2
@@ -986,6 +986,6 @@ _0807B812:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B854: .4byte gMission
+_0807B854: .4byte gScore
 _0807B858: .4byte 0x0000270E
 _0807B85C: .4byte gEnemyFnTable

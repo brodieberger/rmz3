@@ -17,6 +17,11 @@
     "[c]": {
         "editor.wordBasedSuggestions": "off",
         "editor.suggest.insertMode": "replace",
+        "editor.quickSuggestions": {
+          "other": "on",
+          "comments": "off",
+          "strings": "off"
+        },
         "editor.semanticHighlighting.enabled": true,
         "editor.formatOnSave": true,
         "editor.insertSpaces": true,
@@ -37,7 +42,7 @@
         "*.elf": true,
         "graphics/**/*.{4bpp,lz,gbapal}": true,
         "sprites/**/*.{4bpp,lz,gbapal}": true,
-        "**/*.{o,d}": true,
+        "src/*.{o,d}": true,
         "baserom.gba": true,
         "src/**/*.s": { "when": "$(basename).c" },
         "sound/songs/midi/*.s": false,

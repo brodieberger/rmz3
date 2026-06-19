@@ -11,7 +11,7 @@ const ProjectileRoutine gPhantomProjectileRoutine = {
     [ENTITY_INIT] =      PhantomProjectile_Init,
     [ENTITY_UPDATE] =    PhantomProjectile_Update,
     [ENTITY_DIE] =       PhantomProjectile_Die,
-    [ENTITY_DISAPPEAR] = DeleteProjectile,
+    [ENTITY_DISAPPEAR] = (void*)DeleteProjectile,
     [ENTITY_EXIT] =      (ProjectileFunc)DeleteEntity,
 };
 // clang-format on
@@ -258,7 +258,7 @@ static void PhantomProjectile_Update(struct Projectile* p) {
   };
   // clang-format on
   (sUpdates[(p->s).work[0]])(p);
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 }
 
 void FUN_080af368(struct Projectile* p);

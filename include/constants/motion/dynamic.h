@@ -98,12 +98,12 @@
 #define DM114_UNK 114
 #define DM115_UNK 115
 #define DM116_UNK 116
-#define DM117_UNK 117
-#define DM118_UNK 118
-#define DM119_UNK 119
-#define DM120_UNK 120
-#define DM121_UNK 121
-#define DM122_UNK 122
+#define DM117_ROD_FORWARD_1000 117  // 120 のサウザンドロッド有効時
+#define DM118_ROD_DIAGONAL_UP 118   // リコイルロッドの通常攻撃(斜め上), サウザンドロッド有効時？
+#define DM119_ROD_DIAGONAL_DOWN 119
+#define DM120_ROD_FORWARD 120
+#define DM121_ROD_DIAGONAL_UP 121  // リコイルロッドの通常攻撃(斜め上), 118との違いはサウザンドロッド有効かどうか？
+#define DM122_ROD_DIAGONAL_DOWN 122
 #define DM123_UNK 123
 #define DM124_UNK 124
 #define DM125_UNK 125

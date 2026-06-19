@@ -4,186 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080c1b98
-FUN_080c1b98: @ 0x080C1B98
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080C1BE4 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C1BDA
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C1BE8 @ =gVFXFnTable
-	movs r1, #0x3a
-	strb r1, [r3, #9]
-	adds r0, #0xe8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r5, [r3, #0x10]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-_080C1BDA:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C1BE4: .4byte gVFXHeaderPtr
-_080C1BE8: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c1bec
-FUN_080c1bec: @ 0x080C1BEC
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	adds r6, r2, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080C1C3C @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C1C32
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C1C40 @ =gVFXFnTable
-	movs r1, #0x3a
-	strb r1, [r3, #9]
-	adds r0, #0xe8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r5, [r3, #0x10]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-	str r6, [r3, #0x28]
-_080C1C32:
-	adds r0, r3, #0
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C1C3C: .4byte gVFXHeaderPtr
-_080C1C40: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c1c44
-FUN_080c1c44: @ 0x080C1C44
-	push {r4, lr}
-	adds r4, r0, #0
-	ldr r0, _080C1C8C @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C1C84
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C1C90 @ =gVFXFnTable
-	movs r1, #0x3a
-	strb r1, [r3, #9]
-	adds r0, #0xe8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	movs r0, #4
-	strb r0, [r3, #0x10]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-_080C1C84:
-	adds r0, r3, #0
-	pop {r4}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C1C8C: .4byte gVFXHeaderPtr
-_080C1C90: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c1c94
-FUN_080c1c94: @ 0x080C1C94
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	lsls r2, r2, #0x10
-	lsrs r6, r2, #0x10
-	ldr r0, _080C1CEC @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C1CE4
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C1CF0 @ =gVFXFnTable
-	movs r1, #0x3a
-	strb r1, [r3, #9]
-	adds r0, #0xe8
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	movs r0, #6
-	strb r0, [r3, #0x10]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-	strb r5, [r3, #0x11]
-	adds r0, r3, #0
-	adds r0, #0x80
-	strh r6, [r0]
-_080C1CE4:
-	adds r0, r3, #0
-	pop {r4, r5, r6}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C1CEC: .4byte gVFXHeaderPtr
-_080C1CF0: .4byte gVFXFnTable
-
 	thumb_func_start FUN_080c1cf4
 FUN_080c1cf4: @ 0x080C1CF4
 	push {r4, r5, r6, r7, lr}
@@ -196,7 +16,7 @@ FUN_080c1cf4: @ 0x080C1CF4
 	lsrs r7, r3, #0x10
 	ldr r0, _080C1D54 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C1D4C
@@ -375,7 +195,7 @@ _080C1E64:
 	b _080C1FDC
 _080C1E6A:
 	movs r4, #0x3c
-	ldr r0, _080C1F34 @ =0x085D79E8
+	ldr r0, _080C1F34 @ =gStaticMotionGraphics+(12*20)
 	ldr r1, _080C1F38 @ =wStaticGraphicTilenums
 	ldrh r1, [r1, #0x18]
 	ldrh r2, [r0, #6]
@@ -442,7 +262,7 @@ _080C1E6A:
 _080C1EF0:
 	ldr r0, _080C1F54 @ =gVFXHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r3, r0, #0
 	cmp r3, #0
 	beq _080C1FC6
@@ -470,21 +290,21 @@ _080C1EF0:
 	mov r2, sb
 	cmp r2, #0
 	bne _080C1F5C
-	ldr r0, _080C1F58 @ =0x080FF13C
+	ldr r0, _080C1F58 @ =s32_ARRAY_080ff13c
 	b _080C1F5E
 	.align 2, 0
-_080C1F34: .4byte 0x085D79E8
+_080C1F34: .4byte gStaticMotionGraphics+(12*20)
 _080C1F38: .4byte wStaticGraphicTilenums
-_080C1F3C: .4byte 0x085D79F4
+_080C1F3C: .4byte gStaticMotionGraphics+(12*20)+12
 _080C1F40: .4byte wStaticMotionPalIDs
 _080C1F44: .4byte gVFXFnTable
 _080C1F48: .4byte RNG_0202f388
 _080C1F4C: .4byte 0x000343FD
 _080C1F50: .4byte 0x00269EC3
 _080C1F54: .4byte gVFXHeaderPtr
-_080C1F58: .4byte 0x080FF13C
+_080C1F58: .4byte s32_ARRAY_080ff13c
 _080C1F5C:
-	ldr r0, _080C1F90 @ =0x080FF124
+	ldr r0, _080C1F90 @ =s32_ARRAY_080ff124
 _080C1F5E:
 	lsls r1, r4, #2
 	adds r1, r1, r0
@@ -509,15 +329,15 @@ _080C1F5E:
 	mov r2, r8
 	cmp r2, #0
 	bne _080C1FA0
-	ldr r1, _080C1F9C @ =0x080FF10C
+	ldr r1, _080C1F9C @ =u16_ARRAY_080ff10c
 	b _080C1FA2
 	.align 2, 0
-_080C1F90: .4byte 0x080FF124
+_080C1F90: .4byte s32_ARRAY_080ff124
 _080C1F94: .4byte 0x000343FD
 _080C1F98: .4byte 0x00269EC3
-_080C1F9C: .4byte 0x080FF10C
+_080C1F9C: .4byte u16_ARRAY_080ff10c
 _080C1FA0:
-	ldr r1, _080C1FD0 @ =0x080FF118
+	ldr r1, _080C1FD0 @ =u16_ARRAY_080ff118
 _080C1FA2:
 	lsls r0, r4, #1
 	adds r0, r0, r1
@@ -543,7 +363,7 @@ _080C1FC6:
 	ble _080C1EF0
 	b _080C20D2
 	.align 2, 0
-_080C1FD0: .4byte 0x080FF118
+_080C1FD0: .4byte u16_ARRAY_080ff118
 _080C1FD4: .4byte 0x000343FD
 _080C1FD8: .4byte 0x00269EC3
 _080C1FDC:
@@ -681,7 +501,7 @@ _080C20E8: .4byte gVFXFnTable
 	thumb_func_start VFX58_Update
 VFX58_Update: @ 0x080C20EC
 	push {lr}
-	ldr r2, _080C2100 @ =0x0836F26C
+	ldr r2, _080C2100 @ =sUpdates
 	ldrb r1, [r0, #0xd]
 	lsls r1, r1, #2
 	adds r1, r1, r2
@@ -690,7 +510,7 @@ VFX58_Update: @ 0x080C20EC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C2100: .4byte 0x0836F26C
+_080C2100: .4byte sUpdates
 
 	thumb_func_start VFX58_Die
 VFX58_Die: @ 0x080C2104
@@ -744,7 +564,7 @@ _080C214E:
 	strb r0, [r4, #0xe]
 _080C215C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2162:
 	pop {r4}
 	pop {r0}
@@ -790,7 +610,7 @@ _080C21A0:
 	strb r0, [r4, #0xe]
 _080C21AE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C21B4:
 	pop {r4}
 	pop {r0}
@@ -867,7 +687,7 @@ _080C2232:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080C2266
-	ldr r0, _080C2290 @ =0x0202F360
+	ldr r0, _080C2290 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -905,13 +725,13 @@ _080C226E:
 	strb r0, [r4, #0xa]
 _080C2282:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2288:
 	pop {r4, r5}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C2290: .4byte 0x0202F360
+_080C2290: .4byte gWhitePaintFlags
 
 	thumb_func_start FUN_080c2294
 FUN_080c2294: @ 0x080C2294
@@ -990,7 +810,7 @@ _080C2316:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _080C234A
-	ldr r0, _080C2360 @ =0x0202F360
+	ldr r0, _080C2360 @ =gWhitePaintFlags
 	ldrb r1, [r3, #0x1d]
 	lsrs r2, r1, #5
 	lsls r2, r2, #2
@@ -1017,13 +837,13 @@ _080C234A:
 	strb r0, [r4, #0xa]
 _080C2352:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2358:
 	pop {r4, r5}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C2360: .4byte 0x0202F360
+_080C2360: .4byte gWhitePaintFlags
 
 	thumb_func_start FUN_080c2364
 FUN_080c2364: @ 0x080C2364
@@ -1171,7 +991,7 @@ _080C246A:
 	adds r0, r0, r1
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C2480:
 	pop {r3}
 	mov r8, r3
@@ -1203,7 +1023,7 @@ _080C249C:
 	strb r0, [r4, #0xe]
 _080C24B2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r4, #0x12]
 	movs r0, #1
 	ands r0, r1
@@ -1257,7 +1077,7 @@ FUN_080c2500: @ 0x080C2500
 	beq _080C258A
 	b _080C25D2
 _080C2516:
-	ldr r4, _080C25E0 @ =0x0836F2F0
+	ldr r4, _080C25E0 @ =PTR_s32_ARRAY_0836f2f0
 	movs r0, #0x80
 	adds r0, r0, r7
 	mov sb, r0
@@ -1315,7 +1135,7 @@ _080C2516:
 	strb r0, [r7, #0xe]
 _080C258A:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]
@@ -1359,7 +1179,7 @@ _080C25D2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C25E0: .4byte 0x0836F2F0
+_080C25E0: .4byte PTR_s32_ARRAY_0836f2f0
 _080C25E4: .4byte RNG_0202f388
 _080C25E8: .4byte 0x000343FD
 _080C25EC: .4byte 0x00269EC3
@@ -1379,7 +1199,7 @@ FUN_080c25f4: @ 0x080C25F4
 	beq _080C267E
 	b _080C26C6
 _080C260A:
-	ldr r4, _080C26D4 @ =0x0836F2F0
+	ldr r4, _080C26D4 @ =PTR_s32_ARRAY_0836f2f0
 	movs r0, #0x80
 	adds r0, r0, r7
 	mov sb, r0
@@ -1437,7 +1257,7 @@ _080C260A:
 	strb r0, [r7, #0xe]
 _080C267E:
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r7, #0x60]
 	adds r0, #0x20
 	str r0, [r7, #0x60]
@@ -1481,7 +1301,7 @@ _080C26C6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C26D4: .4byte 0x0836F2F0
+_080C26D4: .4byte PTR_s32_ARRAY_0836f2f0
 _080C26D8: .4byte RNG_0202f388
 _080C26DC: .4byte 0x000343FD
 _080C26E0: .4byte 0x00269EC3

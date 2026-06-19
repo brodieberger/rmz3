@@ -18,7 +18,7 @@
 	ldr r0, [r0]
 	cmp r0, #0
 	bne _080EE898
-	ldr r0, _080EE910 @ =0x0202F344
+	ldr r0, _080EE910 @ =gInHitStopFrames
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _080EE89A
@@ -34,12 +34,12 @@ _080EE89A:
 	movs r1, #0x9a
 	lsls r1, r1, #4
 	adds r0, r7, r1
-	bl ClearTaskBuffer
-	ldr r1, _080EE918 @ =0x0202F354
+	bl Renderer_Clear
+	ldr r1, _080EE918 @ =gMatrixCount
 	movs r0, #0
 	strb r0, [r1]
 	movs r0, #0
-	ldr r1, _080EE91C @ =0x0202F360
+	ldr r1, _080EE91C @ =gWhitePaintFlags
 	str r0, [sp]
 	movs r4, #8
 	ldr r2, _080EE920 @ =0x01000008
@@ -78,10 +78,10 @@ _080EE89A:
 _080EE904: .4byte gPause
 _080EE908: .4byte 0x00001EDC
 _080EE90C: .4byte gLifeRecoverAmount
-_080EE910: .4byte 0x0202F344
+_080EE910: .4byte gInHitStopFrames
 _080EE914: .4byte 0x00001ED8
-_080EE918: .4byte 0x0202F354
-_080EE91C: .4byte 0x0202F360
+_080EE918: .4byte gMatrixCount
+_080EE91C: .4byte gWhitePaintFlags
 _080EE920: .4byte 0x01000008
 _080EE924: .4byte gCurStory
 _080EE928: .4byte 0x0202F33C
@@ -94,7 +94,7 @@ _080EE930:
 	cmp r0, #0
 	beq _080EE944
 	movs r0, #0x25
-	bl stopSound
+	bl StopSound
 _080EE944:
 	movs r0, #0x26
 	bl isSoundPlaying
@@ -121,7 +121,7 @@ _080EE964:
 	cmp r0, #0
 	beq _080EE980
 	movs r0, #0x26
-	bl stopSound
+	bl StopSound
 _080EE980:
 	movs r0, #0
 	ldr r1, [sp, #8]
@@ -133,7 +133,7 @@ _080EE980:
 _080EE98E:
 	movs r0, #1
 _080EE990:
-	bl OverworldUpdate
+	bl StageRun_Update
 	cmp r0, #0
 	beq _080EE9C0
 	ldr r2, _080EE9B8 @ =gVideoRegBuffer
@@ -175,7 +175,7 @@ _080EE9C8:
 	ands r0, r2
 	cmp r0, #0
 	bne _080EEA04
-	ldr r2, _080EEA9C @ =gMission
+	ldr r2, _080EEA9C @ =gScore
 	ldr r1, [r2, #8]
 	ldr r0, _080EEAA0 @ =0x00057E3E
 	cmp r1, r0
@@ -191,7 +191,7 @@ _080EE9F6:
 	adds r0, r1, #1
 	str r0, [r2, #0xc]
 _080EEA04:
-	bl FUN_0802511c
+	bl UpdateElFxManager
 	mov r1, sl
 	cmp r1, #0
 	bne _080EEA42
@@ -201,10 +201,10 @@ _080EEA04:
 	ldr r0, _080EEAAC @ =gBossHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
-	ldr r0, _080EEAB0 @ =gZakoHeaderPtr
+	ldr r0, _080EEAB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl UpdateHazardEntities
-	ldr r0, _080EEAB4 @ =0x0203029C
+	ldr r0, _080EEAB4 @ =gZeroHeaderPtr
 	ldr r0, [r0]
 	bl UpdateEntities
 	bl UpdateProjectiles
@@ -229,10 +229,10 @@ _080EEA42:
 	ldr r0, _080EEAAC @ =gBossHeaderPtr
 	ldr r0, [r0]
 	bl RegisterHitboxes
-	ldr r0, _080EEAB0 @ =gZakoHeaderPtr
+	ldr r0, _080EEAB0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
 	bl RegisterHitboxes
-	ldr r0, _080EEAB4 @ =0x0203029C
+	ldr r0, _080EEAB4 @ =gZeroHeaderPtr
 	ldr r0, [r0]
 	bl RegisterHitboxes
 	ldr r0, _080EEAC4 @ =gProjectileHeaderPtr
@@ -249,13 +249,13 @@ _080EEA42:
 	b _080EEACC
 	.align 2, 0
 _080EEA98: .4byte gStageRun
-_080EEA9C: .4byte gMission
+_080EEA9C: .4byte gScore
 _080EEAA0: .4byte 0x00057E3E
 _080EEAA4: .4byte 0x014996FE
 _080EEAA8: .4byte gSolidHeaderPtr
 _080EEAAC: .4byte gBossHeaderPtr
-_080EEAB0: .4byte gZakoHeaderPtr
-_080EEAB4: .4byte 0x0203029C
+_080EEAB0: .4byte gEnemyHeaderPtr
+_080EEAB4: .4byte gZeroHeaderPtr
 _080EEAB8: .4byte gWeaponHeaderPtr
 _080EEABC: .4byte gPickupHeaderPtr
 _080EEAC0: .4byte gElfHeaderPtr
@@ -272,10 +272,10 @@ _080EEACC:
 	ldr r5, _080EEC64 @ =gBossHeaderPtr
 	ldr r0, [r5]
 	bl RunDamageEffect
-	ldr r6, _080EEC68 @ =gZakoHeaderPtr
+	ldr r6, _080EEC68 @ =gEnemyHeaderPtr
 	ldr r0, [r6]
 	bl RunDamageEffect
-	ldr r3, _080EEC6C @ =0x0203029C
+	ldr r3, _080EEC6C @ =gZeroHeaderPtr
 	mov r8, r3
 	ldr r0, [r3]
 	bl RunDamageEffect
@@ -413,14 +413,14 @@ _080EEC08:
 _080EEC16:
 	movs r0, #1
 _080EEC18:
-	bl CameraUpdate
+	bl StageRun_Render
 	ldr r0, [sp, #8]
 	cmp r0, #0
 	bne _080EEC48
 	mov r1, sl
 	cmp r1, #0
 	bne _080EEC48
-	ldr r0, _080EECA0 @ =0x0202F330
+	ldr r0, _080EECA0 @ =gIsPlayDamageSE
 	ldrb r0, [r0]
 	cmp r0, #0
 	beq _080EEC42
@@ -433,11 +433,11 @@ _080EEC18:
 	movs r0, #0x29
 	bl PlaySound
 _080EEC42:
-	ldr r1, _080EECA0 @ =0x0202F330
+	ldr r1, _080EECA0 @ =gIsPlayDamageSE
 	movs r0, #0
 	strb r0, [r1]
 _080EEC48:
-	ldr r0, _080EECA8 @ =0x0202F344
+	ldr r0, _080EECA8 @ =gInHitStopFrames
 	ldr r1, _080EECA4 @ =gCollisionManager
 	ldrb r1, [r1, #2]
 	strb r1, [r0]
@@ -453,8 +453,8 @@ _080EEC50:
 	.align 2, 0
 _080EEC60: .4byte gSolidHeaderPtr
 _080EEC64: .4byte gBossHeaderPtr
-_080EEC68: .4byte gZakoHeaderPtr
-_080EEC6C: .4byte 0x0203029C
+_080EEC68: .4byte gEnemyHeaderPtr
+_080EEC6C: .4byte gZeroHeaderPtr
 _080EEC70: .4byte gPickupHeaderPtr
 _080EEC74: .4byte gElfHeaderPtr
 _080EEC78: .4byte gProjectileHeaderPtr
@@ -467,6 +467,6 @@ _080EEC90: .4byte gGameState
 _080EEC94: .4byte wMOSAIC
 _080EEC98: .4byte gLifeRecoverAmount
 _080EEC9C: .4byte 0x00001EDC
-_080EECA0: .4byte 0x0202F330
+_080EECA0: .4byte gIsPlayDamageSE
 _080EECA4: .4byte gCollisionManager
-_080EECA8: .4byte 0x0202F344
+_080EECA8: .4byte gInHitStopFrames

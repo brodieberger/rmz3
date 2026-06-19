@@ -1,113 +1,111 @@
-#include "blink.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
-static void initIceBase(struct Coord* _ UNUSED);
-static void FUN_08010eb8(struct Coord* _ UNUSED);
-static void FUN_08011100(struct Coord* _ UNUSED);
-static void FUN_08011104(struct Coord* _ UNUSED);
+static void initIceBase(Coords32* _ UNUSED);
+static void FUN_08010eb8(Coords32* _ UNUSED);
+static void nop_08011100(Coords32* _ UNUSED);
+static void FUN_08011104(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initIceBase,
     FUN_08010eb8,
-    FUN_08011100,
+    nop_08011100,
     FUN_08011104,
 };
 
-static void initIceBase(struct Coord* _ UNUSED) {
+static void initIceBase(Coords32* _ UNUSED) {
   gOverworld.work.iceBase.unk_000 = 0;
   return;
 }
 
-static void FUN_08010eb8(struct Coord* _ UNUSED) {
-  if ((gOverworld.tilesets[0] >> 8 == STAGE_ICE_BASE) && ((gOverworld.tilesets[0] & 0xFF) == 0)) {
+static void FUN_08010eb8(Coords32* _ UNUSED) {
+  if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ICE_BASE) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 0)) {
     if ((gOverworld.work.iceBase.unk_000 & (1 << 0)) == 0) {
       gOverworld.work.iceBase.unk_000 |= (1 << 0);
-      LoadBlink(133, 0);
+      StartPaletteAnimation(133, 0);
     }
-    UpdateBlinkMotionState(133);
+    StepPaletteAnimation(133);
 
   } else if ((gOverworld.work.iceBase.unk_000 & (1 << 0))) {
     gOverworld.work.iceBase.unk_000 ^= (1 << 0);
-    ClearBlink(133);
+    RemovePaletteAnimation(133);
   }
 
-  if ((gOverworld.tilesets[0] >> 8 == STAGE_ICE_BASE) && ((gOverworld.tilesets[0] & 0xFF) == 4)) {
+  if ((gOverworld.terrain.tilesets[0] >> 8 == STAGE_ICE_BASE) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 4)) {
     if ((gOverworld.work.iceBase.unk_000 & (1 << 1)) == 0) {
       gOverworld.work.iceBase.unk_000 |= (1 << 1);
-      LoadBlink(139, 0);
-      LoadBlink(140, 0);
-      LoadBlink(141, 0);
+      StartPaletteAnimation(139, 0);
+      StartPaletteAnimation(140, 0);
+      StartPaletteAnimation(141, 0);
     }
-    UpdateBlinkMotionState(139);
-    UpdateBlinkMotionState(140);
-    UpdateBlinkMotionState(141);
+    StepPaletteAnimation(139);
+    StepPaletteAnimation(140);
+    StepPaletteAnimation(141);
 
   } else if ((gOverworld.work.iceBase.unk_000 & (1 << 1))) {
     gOverworld.work.iceBase.unk_000 ^= (1 << 1);
-    ClearBlink(139);
-    ClearBlink(140);
-    ClearBlink(141);
+    RemovePaletteAnimation(139);
+    RemovePaletteAnimation(140);
+    RemovePaletteAnimation(141);
   }
 
-  if ((gOverworld.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.tilesets[1] & 0xFF) == 2)) {
+  if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 2)) {
     if ((gOverworld.work.iceBase.unk_000 & (1 << 2)) == 0) {
       gOverworld.work.iceBase.unk_000 |= (1 << 2);
-      LoadBlink(136, 0);
+      StartPaletteAnimation(136, 0);
     }
-    UpdateBlinkMotionState(136);
+    StepPaletteAnimation(136);
 
   } else if ((gOverworld.work.iceBase.unk_000 & (1 << 2))) {
     gOverworld.work.iceBase.unk_000 ^= (1 << 2);
-    ClearBlink(136);
+    RemovePaletteAnimation(136);
   }
 
-  if ((gOverworld.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.tilesets[1] & 0xFF) == 1)) {
+  if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 1)) {
     if ((gOverworld.work.iceBase.unk_000 & (1 << 3)) == 0) {
       gOverworld.work.iceBase.unk_000 |= (1 << 3);
-      LoadBlink(134, 0);
-      LoadBlink(135, 0);
+      StartPaletteAnimation(134, 0);
+      StartPaletteAnimation(135, 0);
     }
-    UpdateBlinkMotionState(134);
-    UpdateBlinkMotionState(135);
+    StepPaletteAnimation(134);
+    StepPaletteAnimation(135);
 
   } else if ((gOverworld.work.iceBase.unk_000 & (1 << 3))) {
     gOverworld.work.iceBase.unk_000 ^= (1 << 3);
-    ClearBlink(134);
-    ClearBlink(135);
+    RemovePaletteAnimation(134);
+    RemovePaletteAnimation(135);
   }
 
-  if ((gOverworld.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.tilesets[1] & 0xFF) == 3)) {
+  if ((gOverworld.terrain.tilesets[1] >> 8 == STAGE_ICE_BASE) && ((gOverworld.terrain.tilesets[1] & 0xFF) == 3)) {
     if ((gOverworld.work.iceBase.unk_000 & (1 << 4)) == 0) {
       gOverworld.work.iceBase.unk_000 |= (1 << 4);
-      LoadBlink(137, 0);
-      LoadBlink(138, 0);
+      StartPaletteAnimation(137, 0);
+      StartPaletteAnimation(138, 0);
     }
-    UpdateBlinkMotionState(137);
-    UpdateBlinkMotionState(138);
+    StepPaletteAnimation(137);
+    StepPaletteAnimation(138);
 
   } else if ((gOverworld.work.iceBase.unk_000 & (1 << 4))) {
     gOverworld.work.iceBase.unk_000 ^= (1 << 4);
-    ClearBlink(137);
-    ClearBlink(138);
+    RemovePaletteAnimation(137);
+    RemovePaletteAnimation(138);
   }
 }
 
-static void FUN_08011100(struct Coord* _ UNUSED) {
-  // Nop
-  return;
-}
+// 0x08011100
+static void nop_08011100(Coords32* _ UNUSED) {}
 
-static void FUN_08011104(struct Coord* _ UNUSED) {
-  ClearBlink(133);
-  ClearBlink(134);
-  ClearBlink(135);
-  ClearBlink(136);
-  ClearBlink(137);
-  ClearBlink(138);
-  ClearBlink(139);
-  ClearBlink(140);
-  ClearBlink(141);
+static void FUN_08011104(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(133);
+  RemovePaletteAnimation(134);
+  RemovePaletteAnimation(135);
+  RemovePaletteAnimation(136);
+  RemovePaletteAnimation(137);
+  RemovePaletteAnimation(138);
+  RemovePaletteAnimation(139);
+  RemovePaletteAnimation(140);
+  RemovePaletteAnimation(141);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -187,9 +185,8 @@ const struct Stage gFrostlineIceBaseLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {2, 3, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
-  scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,
   bgFns : sLayerRoutine,
   behavior : sScreenBehavior,

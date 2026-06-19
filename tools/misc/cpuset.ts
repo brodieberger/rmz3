@@ -1,4 +1,4 @@
-#!/usr/bin/env deno run
+#!/usr/bin/env -S deno run
 
 import { Command } from '@cliffy/command';
 
@@ -22,16 +22,16 @@ const main = async () => {
 
   const name = isFast ? 'CpuFastSet' : 'CpuSet';
   console.log(`${name}'s Param: ${Deno.args[0]}`);
-  const mode = ((param >> 24) & 0b1) > 0 ? 'Fill' : 'Copy';
-  console.log(` Mode: ${mode}`);
 
-  const size = param & 0b1_1111_1111_1111_1111_1111;
   let unit = 4;
   if (!isFast && (((param >> 26) & 0b1) === 0)) {
     unit = 2;
   }
-  console.log(` Size: ${size} ${unitname[unit]}`);
-  console.log(` ByteSize: ${size * unit} Bytes`);
+  const mode = ((param >> 24) & 0b1) > 0 ? 'Fill' : 'Copy';
+  console.log(`\tMode: ${mode}${unit * 8}`);
+
+  const size = param & 0b1_1111_1111_1111_1111_1111;
+  console.log(`\tSize: ${size} ${unitname[unit]} = ${size * unit} bytes`);
 };
 
 main();

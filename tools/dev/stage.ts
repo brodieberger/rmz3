@@ -1,6 +1,6 @@
 #!/usr/bin/env -S deno run --allow-read --allow-write
 
-import { join } from 'https://deno.land/std/path/mod.ts';
+import { join } from '@std/path';
 import { Command } from '@cliffy/command';
 import { camelToSnakeCase } from '../common/index.ts';
 
@@ -69,7 +69,7 @@ const struct Stage g${s.name}Landscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {${bgIdxs[0]}, ${bgIdxs[1]}, ${bgIdxs[2]}},
   prio : {${l[0].prio}, ${l[1].prio}, ${l[2].prio}},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{${scrollPower(l[0].scrollPower[0])}, ${scrollPower(l[0].scrollPower[1])}}, {${scrollPower(l[1].scrollPower[0])}, ${scrollPower(l[1].scrollPower[1])}}, {${scrollPower(l[2].scrollPower[0])}, ${scrollPower(l[2].scrollPower[1])}}},
   scroll : {{${l[0].scroll[0]}, ${l[0].scroll[1]}}, {${l[1].scroll[0]}, ${l[1].scroll[1]}}, {${l[2].scroll[0]}, ${l[2].scroll[1]}}},
   tilesetOffset : sTilesetOffset,

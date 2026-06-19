@@ -75,6 +75,9 @@
 #define ELF_ACHOON 71    // Whistle
 #define ELF_ANATER 72    // Whistle
 #define ELF_AWARNE 73    // Whistle
+
+#define CYBERELF_LENGTH 74
+
 #define ELF_NONE 255
 
 #endif  // GUARD_RMZ3_CONST_CYBERELF_H

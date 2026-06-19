@@ -8,7 +8,7 @@
 Solid46_Update: @ 0x080DE914
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r6, #0x11]
 	ldr r0, _080DE984 @ =gCurStory
 	ldrb r0, [r0, #8]
@@ -220,7 +220,7 @@ _080DEAC6:
 	.align 2, 0
 _080DEACC: .4byte gOverworld
 _080DEAD0: .4byte 0x0002D024
-_080DEAD4: .4byte 0x083717C0
+_080DEAD4: .4byte sSize
 _080DEAD8: .4byte 0x00002001
 _080DEADC: .4byte gStageRun+232
 _080DEAE0: .4byte 0xFFFF8000

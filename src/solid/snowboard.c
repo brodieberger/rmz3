@@ -14,7 +14,7 @@ const SolidRoutine gSnowboardRoutine = {
     [ENTITY_INIT] =      Solid18_Init,
     [ENTITY_UPDATE] =    Solid18_Update,
     [ENTITY_DIE] =       Solid18_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
@@ -284,7 +284,7 @@ _080CF62C:\n\
  .syntax divided\n");
 }
 
-static void onCollision(struct Body* body, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
 
 NAKED static void Solid18_Init(struct Solid* p) {
   asm(".syntax unified\n\

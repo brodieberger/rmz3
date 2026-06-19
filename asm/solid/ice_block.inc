@@ -22,7 +22,7 @@ _080D8CB4:
 	b _080D8E22
 _080D8CBA:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r3, _080D8D78 @ =gStageRun+232
 	ldr r1, [r3, #0x38]
 	ldr r2, _080D8D7C @ =0x000077FF
@@ -50,7 +50,7 @@ _080D8CE8:
 	movs r0, #8
 	orrs r0, r1
 	strb r0, [r4, #0xb]
-	ldr r0, _080D8D88 @ =sSize
+	ldr r0, _080D8D88 @ =sIceBlock_Size
 	str r0, [r4, #0x30]
 	ldr r0, _080D8D8C @ =0x00003801
 	strh r0, [r4, #0x26]
@@ -64,7 +64,7 @@ _080D8CE8:
 	strb r0, [r4, #0xd]
 _080D8D0A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x60]
 	ldr r0, _080D8D90 @ =0x000006FF
 	cmp r1, r0
@@ -118,14 +118,14 @@ _080D8D78: .4byte gStageRun+232
 _080D8D7C: .4byte 0x000077FF
 _080D8D80: .4byte 0xFFFF8800
 _080D8D84: .4byte 0xFFFF6800
-_080D8D88: .4byte sSize
+_080D8D88: .4byte sIceBlock_Size
 _080D8D8C: .4byte 0x00003801
 _080D8D90: .4byte 0x000006FF
 _080D8D94: .4byte sCollisions+24
 _080D8D98: .4byte 0x0000CB01
 _080D8D9C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	adds r1, #1
@@ -236,7 +236,7 @@ _080D8E70:
 _080D8E76:
 	strb r0, [r4, #0xa]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x60]
 	ldr r0, _080D8EE8 @ =0x000006FF
 	cmp r1, r0
@@ -253,7 +253,7 @@ _080D8E8C:
 	ldr r0, _080D8EEC @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	movs r1, #0x80
 	lsls r1, r1, #6
 	cmp r0, r1

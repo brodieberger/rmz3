@@ -2,40 +2,50 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/heavy_cannon_ball.inc");
-
 void HeavyCannon_Init(struct Enemy* p);
 void HeavyCannon_Update(struct Enemy* p);
 void HeavyCannon_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gHeavyCannonBallRoutine = {
-    [ENTITY_INIT] =      HeavyCannon_Init,
-    [ENTITY_UPDATE] =    HeavyCannon_Update,
-    [ENTITY_DIE] =       HeavyCannon_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)HeavyCannon_Init,
+    [ENTITY_UPDATE] =    (void*)HeavyCannon_Update,
+    [ENTITY_DIE] =       (void*)HeavyCannon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+void CreateHeavyCannonBall(s32 x, s32 y, u8 kind) {
+  struct Entity* p = AllocEntityFirst(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_HEAVY_CANNON_BALL);
+    p->work[0] = 0, p->work[2] = kind;
+    (p->coord).x = x, (p->coord).y = y;
+  }
+}
+
+INCASM("asm/enemy/heavy_cannon_ball.inc");
 
 void FUN_0807acd0(struct Enemy* p);
 void FUN_0807acd0(struct Enemy* p);
 
 static const EnemyFunc PTR_ARRAY_08367774[2] = {
-    FUN_0807acd0,
-    FUN_0807acd0,
+    (void*)FUN_0807acd0,
+    (void*)FUN_0807acd0,
 };
 
 void FUN_0807acd4(struct Enemy* p);
 void FUN_0807b008(struct Enemy* p);
 
 static const EnemyFunc PTR_ARRAY_0836777c[2] = {
-    FUN_0807acd4,
-    FUN_0807b008,
+    (void*)FUN_0807acd4,
+    (void*)FUN_0807b008,
 };
 
 // --------------------------------------------
 
+// 0x08367784
 static const struct Collision sCollisions[3] = {
     {
       kind : DRP,
@@ -66,6 +76,7 @@ static const struct Collision sCollisions[3] = {
     },
 };
 
+// 0x083677CC
 static const u8 sInitModes[2] = {0, 0};
 
 static const motion_t sMotions[3] = {

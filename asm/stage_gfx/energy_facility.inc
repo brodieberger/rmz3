@@ -278,19 +278,19 @@ FUN_08012a64: @ 0x08012A64
 	lsls r0, r0, #0xc
 	cmp r1, r0
 	ble _08012AC4
-	ldr r0, _08012AC0 @ =0x083427B4
+	ldr r0, _08012AC0 @ =Coord_083427b4
 	b _08012AD2
 	.align 2, 0
 _08012AB8: .4byte gOverworld
 _08012ABC: .4byte gCurStory
-_08012AC0: .4byte 0x083427B4
+_08012AC0: .4byte Coord_083427b4
 _08012AC4:
 	lsls r0, r2, #3
-	ldr r1, _08012ACC @ =0x08342784
+	ldr r1, _08012ACC @ =Coord_ARRAY_08342784
 	adds r0, r0, r1
 	b _08012AD2
 	.align 2, 0
-_08012ACC: .4byte 0x08342784
+_08012ACC: .4byte Coord_ARRAY_08342784
 _08012AD0:
 	movs r0, #0
 _08012AD2:

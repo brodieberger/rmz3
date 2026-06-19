@@ -2,21 +2,33 @@
 #include "enemy.h"
 #include "global.h"
 
-INCASM("asm/enemy/swordy.inc");
-
 void Swordy_Init(struct Enemy* p);
 void Swordy_Update(struct Enemy* p);
 void Swordy_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gSwordyRoutine = {
-    [ENTITY_INIT] =      Swordy_Init,
-    [ENTITY_UPDATE] =    Swordy_Update,
-    [ENTITY_DIE] =       Swordy_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Swordy_Init,
+    [ENTITY_UPDATE] =    (void*)Swordy_Update,
+    [ENTITY_DIE] =       (void*)Swordy_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
+
+struct Entity* CreateSwordy(Coords32* c, u8 n) {
+  struct Entity* p = (struct Entity*)AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_SWORDY);
+    p->coord = *c;
+    p->work[0] = n;
+  }
+  return p;
+}
+
+// --------------------------------------------
+
+INCASM("asm/enemy/swordy.inc");
 
 void FUN_0807c230(struct Enemy* p);
 void FUN_0807c47c(struct Enemy* p);
@@ -44,6 +56,7 @@ static const EnemyFunc PTR_ARRAY_08367a48[4] = {
 
 // --------------------------------------------
 
+// 0x08367a58
 static const struct Collision sCollisions[5] = {
     {
       kind : DDP,
@@ -87,4 +100,5 @@ static const struct Collision sCollisions[5] = {
     },
 };
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(12)};
+// 0x08367ad0
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(12)};

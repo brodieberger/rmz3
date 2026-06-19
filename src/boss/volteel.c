@@ -14,23 +14,18 @@ static void Volteel_Die(struct Boss* p);
 
 // clang-format off
 const BossRoutine gVolteelRoutine = {
-    [ENTITY_INIT] =      Volteel_Init,
-    [ENTITY_UPDATE] =    Volteel_Update,
-    [ENTITY_DIE] =       Volteel_Die,
-    [ENTITY_DISAPPEAR] = DeleteBoss,
+    [ENTITY_INIT] =      (void*)Volteel_Init,
+    [ENTITY_UPDATE] =    (void*)Volteel_Update,
+    [ENTITY_DIE] =       (void*)Volteel_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteBoss,
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
 
-struct Boss* CreateVolteel(struct Coord* c, u8 n) {
-  struct Boss* p = (struct Boss*)AllocEntityFirst(gBossHeaderPtr);
+struct Boss* CreateVolteel(Coords32* c, u8 n) {
+  struct Boss* p = (struct Boss*)AllocEntityLast(gBossHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
     INIT_BOSS_ROUTINE(p, BOSS_VOLTEEL);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
     (p->s).coord = *c;
     (p->s).work[0] = n;
   }
@@ -80,7 +75,7 @@ NAKED static void Volteel_Init(struct Boss* p) {
 	movs r0, #0xef\n\
 	ands r0, r1\n\
 	strb r0, [r7, #0xa]\n\
-	ldr r1, _08043444 @ =0x08362330\n\
+	ldr r1, _08043444 @ =sCollisions\n\
 	adds r0, r7, #0\n\
 	movs r2, #0x40\n\
 	bl ResetBossBody\n\
@@ -173,7 +168,7 @@ NAKED static void Volteel_Init(struct Boss* p) {
 	strb r0, [r7, #0xf]\n\
 	b _08043470\n\
 	.align 2, 0\n\
-_08043444: .4byte 0x08362330\n\
+_08043444: .4byte sCollisions\n\
 _08043448: .4byte FUN_0804586c\n\
 _0804344C: .4byte 0xFFFFC000\n\
 _08043450: .4byte gBossFnTable\n\
@@ -272,7 +267,7 @@ static void Volteel_Update(struct Boss* p) {
       volteelKnockBackDamage,
   };
   // clang-format on
-  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_FAIL)) {
+  if ((((p->body).status & BODY_STATUS_DEAD) || ((p->body).hp == 0)) && !(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
     SET_BOSS_ROUTINE(p, ENTITY_DIE);
     PlaySound(SE_VOLTEEL_DEATH);
     if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -306,6 +301,7 @@ INCASM("asm/boss/volteel.inc");
 
 // --------------------------------------------
 
+// 0x08362330
 static const struct Collision sCollisions[24] = {
     [0] = {
       kind : DRP,
@@ -543,6 +539,7 @@ static const struct Collision sCollisions[24] = {
     },
 };
 
-const struct Coord Coord_ARRAY_08362570[7] = {
+// 0x08362570
+const Coords32 Coord_ARRAY_08362570[7] = {
     {0x00000000, -0x00002000}, {0x00000600, -0x00002500}, {0x00000600, -0x00002500}, {0x00000000, 0x00000400}, {0x00000000, 0x00000400}, {-0x00001000, 0x00000000}, {-0x00001000, 0x00000000},
 };

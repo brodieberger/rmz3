@@ -4,11 +4,18 @@
 #include "global.h"
 #include "story.h"
 
+struct ShrimporinObject {
+  OBJECT_HDR;
+  // props (16bytes, offset: 0xB4..)
+  struct Entity* elfx;
+  u8 unk_004[12];
+};
+static_assert(sizeof(struct ShrimporinObject) == sizeof(struct Enemy));
+
 static const EnemyFunc sUpdates1[8];
 static const EnemyFunc sUpdates2[8];
-static const EnemyFunc sDies[4];
 static const struct Collision sCollisions[6];
-static const struct Coord sElementCoord;
+static const Coords32 sElementCoord;
 static const u8 sInitModes[4];
 static const motion_t sMotions[4];
 
@@ -18,39 +25,33 @@ static void Shrimporin_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gShrimporinRoutine = {
-    [ENTITY_INIT] =      Shrimporin_Init,
-    [ENTITY_UPDATE] =    Shrimporin_Update,
-    [ENTITY_DIE] =       Shrimporin_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
-    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)Shrimporin_Init,
+    [ENTITY_UPDATE] =    (void*)Shrimporin_Update,
+    [ENTITY_DIE] =       (void*)Shrimporin_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
 void CreateShrimporin(s32 x, s32 y, u8 n, bool8 r3) {
-  struct Enemy* p = (struct Enemy*)AllocEntityFirst(gZakoHeaderPtr);
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
-    (p->s).taskCol = 24;
-    INIT_ZAKO_ROUTINE(p, 7);
-    (p->s).tileNum = 0;
-    (p->s).palID = 0;
-    (p->s).flags2 |= WHITE_PAINTABLE;
-    (p->s).invincibleID = (p->s).uniqueID;
-    (p->s).coord.x = x;
-    (p->s).coord.y = y;
-    (p->s).work[2] = n;
+    INIT_ENEMY_ROUTINE(p, ENEMY_SHRIMPORIN);
+    (p->coord).x = x, (p->coord).y = y;
+    p->work[2] = n;
     if (r3) {
-      (p->s).work[0] = 5;
+      p->work[0] = 5;
     } else {
-      (p->s).work[0] = 2;
+      p->work[0] = 2;
     }
   }
 }
 
-void nop_08069874(struct Body* body, struct Coord* c1, struct Coord* c2) { return; }
+void nop_08069874(struct Body* body, Coords32* c1, Coords32* c2) {}
 
 static bool8 tryKillShrimporin(struct Enemy* p) {
   if ((p->body).status & BODY_STATUS_DEAD) {
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     if ((p->s).work[0] == 2) {
       (p->s).mode[1] = 3;
     } else if ((p->body).status & BODY_STATUS_SLASHED) {
@@ -91,7 +92,7 @@ NAKED static bool8 shrimporin_080698dc(struct Enemy* p) {
 	b _0806998A\n\
 _08069906:\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _0806998A\n\
 	ldr r1, _08069940 @ =sUpdates1\n\
@@ -112,7 +113,7 @@ _08069906:\n\
 	adds r0, #1\n\
 	strb r0, [r4, #0xf]\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 _0806993C:\n\
 	movs r0, #1\n\
 	b _0806998C\n\
@@ -137,7 +138,7 @@ _08069960:\n\
 	strb r0, [r4, #0x13]\n\
 _08069966:\n\
 	adds r0, r4, #0\n\
-	bl isFrozen\n\
+	bl IsFrozen\n\
 	cmp r0, #0\n\
 	beq _08069988\n\
 	adds r0, r4, #0\n\
@@ -163,25 +164,22 @@ _0806998C:\n\
  .syntax divided\n");
 }
 
-void shrimporin_08069994(struct Enemy* p) {
-  if ((p->props).shrimpolin.elementEffect == NULL && ((p->body).status & BODY_STATUS_WHITE)) {
+void shrimporin_08069994(struct ShrimporinObject* p) {
+  if (p->elfx == NULL && ((p->body).status & BODY_STATUS_WHITE)) {
     if (((p->body).status & BODY_STATUS_RECOILED)) {
-      (p->s).mode[1] = 7;
-      (p->s).mode[2] = 0;
+      (p->s).mode[1] = 7, (p->s).mode[2] = 0;
     } else {
-      (p->props).shrimpolin.elementEffect = ApplyElementEffect(0, &p->s, &sElementCoord);
-      if ((p->props).shrimpolin.elementEffect != NULL) {
-        (p->s).mode[1] = 0;
-        (p->s).mode[2] = 0;
+      p->elfx = (void*)ApplyElementEffect(0, (Object*)p, &sElementCoord);
+      if (p->elfx != NULL) {
+        (p->s).mode[1] = 0, (p->s).mode[2] = 0;
       }
     }
   }
 }
 
 static void FUN_080699e0(struct Enemy* p) {
-  if (((p->body).status & (BODY_STATUS_WHITE | BODY_STATUS_RECOILED)) == (BODY_STATUS_WHITE | BODY_STATUS_RECOILED)) {
-    (p->s).mode[1] = 7;
-    (p->s).mode[2] = 0;
+  if (((p->body).status & (BODY_STATUS_RECOILED | BODY_STATUS_WHITE)) == (BODY_STATUS_RECOILED | BODY_STATUS_WHITE)) {
+    (p->s).mode[1] = 7, (p->s).mode[2] = 0;
   }
 }
 
@@ -231,7 +229,7 @@ _08069A2C:\n\
 	ldr r1, [r6, #0x58]\n\
 	bl FUN_0800a05c\n\
 	str r0, [r6, #0x58]\n\
-	ldr r0, _08069A88 @ =gSystemSavedataManager\n\
+	ldr r0, _08069A88 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0x14]\n\
 	movs r0, #4\n\
 	ands r0, r1\n\
@@ -257,7 +255,7 @@ _08069A2C:\n\
 	b _08069ACA\n\
 	.align 2, 0\n\
 _08069A84: .4byte sInitModes\n\
-_08069A88: .4byte gSystemSavedataManager\n\
+_08069A88: .4byte gSystemSavedata\n\
 _08069A8C: .4byte gCurStory\n\
 _08069A90: .4byte sCollisions\n\
 _08069A94:\n\
@@ -325,18 +323,18 @@ _08069B08: .4byte nop_08069874\n\
 
 static void FUN_080699e0(struct Enemy* p);
 static void nop_08069c20(struct Enemy* p);
-static void shrimporin_08069c24(struct Enemy* p);
+static void shrimporin_08069c24(struct ShrimporinObject* p);
 
 // clang-format off
 static const EnemyFunc sUpdates1[8] = {
-    shrimporin_08069c24,
-    nop_08069c20,
-    nop_08069c20,
-    FUN_080699e0,
-    FUN_080699e0,
-    nop_08069c20,
-    FUN_080699e0,
-    nop_08069c20,
+    (EnemyFunc)shrimporin_08069c24,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)nop_08069c20,
+    (EnemyFunc)FUN_080699e0,
+    (EnemyFunc)nop_08069c20,
 };
 // clang-format on
 
@@ -367,11 +365,8 @@ static void Shrimporin_Update(struct Enemy* p) {
     if (IS_METTAUR) {
       (p->s).flags &= ~DISPLAY;
       (p->s).flags &= ~FLIPABLE;
-      (p->body).status = 0;
-      (p->body).prevStatus = 0;
-      (p->body).invincibleTime = 0;
-      (p->s).flags &= ~COLLIDABLE;
-      SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+      EXIT_BODY(p);
+      SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
       return;
     }
     if (tryKillShrimporin(p)) {
@@ -381,14 +376,14 @@ static void Shrimporin_Update(struct Enemy* p) {
     if (tryKillShrimporin(p)) {
       return;
     }
-    shrimporin_08069994(p);
+    shrimporin_08069994((void*)p);
     if (shrimporin_080698dc(p)) {
       return;
     }
   }
 
-  (sUpdates1[(p->s).mode[1]])(p);
-  (sUpdates2[(p->s).mode[1]])(p);
+  (sUpdates1[(p->s).mode[1]])((void*)p);
+  (sUpdates2[(p->s).mode[1]])((void*)p);
 }
 
 // --------------------------------------------
@@ -399,44 +394,39 @@ void shrimporin_0806a544(struct Enemy* p);
 void shrimporin_0806a4ec(struct Enemy* p);
 
 static void Shrimporin_Die(struct Enemy* p) {
-  static const EnemyFunc sDies[4] = {
-      explodeShrimpolin,
-      slashShrimporin,
-      shrimporin_0806a544,
-      shrimporin_0806a4ec,
+  static const EnemyFunc sDeads[4] = {
+      (void*)explodeShrimpolin,
+      (void*)slashShrimporin,
+      (void*)shrimporin_0806a544,
+      (void*)shrimporin_0806a4ec,
   };
 
   if (IS_METTAUR) {
     (p->s).flags &= ~DISPLAY;
     (p->s).flags &= ~FLIPABLE;
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
-    SET_ZAKO_ROUTINE(p, ENTITY_DISAPPEAR);
+    EXIT_BODY(p);
+    SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
-  (sDies[(p->s).mode[1]])(p);
+  (sDeads[(p->s).mode[1]])(p);
 }
 
 // --------------------------------------------
 
 static void nop_08069c20(struct Enemy* p) { return; }
 
-static void shrimporin_08069c24(struct Enemy* p) {
-  struct VFX* elementEffect = (p->props).shrimpolin.elementEffect;
-  if (elementEffect == NULL || isKilled(&elementEffect->s)) {
-    (p->props).shrimpolin.elementEffect = NULL;
+static void shrimporin_08069c24(struct ShrimporinObject* p) {
+  struct Entity* elfx = p->elfx;
+  if (elfx == NULL || IsDead(elfx)) {
+    p->elfx = NULL;
     SetDDP(&p->body, &sCollisions[1]);
-    if (!isFrozen(p)) {
-      (p->s).mode[1] = 6;
-      (p->s).mode[2] = 0;
+    if (!IsFrozen(p)) {
+      (p->s).mode[1] = 6, (p->s).mode[2] = 0;
     }
   }
 
-  if (((p->body).status & 0x20001) == 0x20001) {
-    (p->s).mode[1] = 7;
-    (p->s).mode[2] = 0;
+  if (((p->body).status & (BODY_STATUS_RECOILED | BODY_STATUS_WHITE)) == (BODY_STATUS_RECOILED | BODY_STATUS_WHITE)) {
+    (p->s).mode[1] = 7, (p->s).mode[2] = 0;
   }
 }
 
@@ -493,7 +483,6 @@ static const struct Collision sCollisions[6] = {
     [5] = {
       kind : DDP,
       faction : FACTION_NEUTRAL,
-      special : 0,
       damage : 2,
       hitzone : 0x00,
       remaining : 0,
@@ -502,7 +491,7 @@ static const struct Collision sCollisions[6] = {
     },
 };
 
-static const struct Coord sElementCoord = {0, 0};
+static const Coords32 sElementCoord = {0, 0};
 
 static const u8 sInitModes[4] = {1, 1, 5, 0};
 

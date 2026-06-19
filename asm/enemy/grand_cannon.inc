@@ -43,14 +43,14 @@ _0806941A:
 	strb r0, [r5, #0xe]
 _08069450:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0xb4
 	ldr r0, [r0]
 	cmp r0, #0
 	bne _08069544
 	adds r0, r4, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _08069544
 	ldr r1, [r4, #0x54]
@@ -154,7 +154,7 @@ _08069518:
 	bne _08069544
 	ldr r0, _08069558 @ =gStageRun+232
 	adds r1, #0x30
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	ldr r1, _0806955C @ =0x00000FFF
 	cmp r0, r1
 	bhi _08069544
@@ -235,7 +235,7 @@ _08069572:
 	strb r0, [r5, #0xe]
 _080695DC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -315,7 +315,7 @@ explodeGrandCannon: @ 0x0806962C
 	movs r0, #3
 	adds r1, r5, #0
 	bl TryDropItem
-	ldr r2, _080696C0 @ =gMission
+	ldr r2, _080696C0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _080696C4 @ =0x0000270E
 	cmp r1, r0
@@ -346,7 +346,7 @@ _0806968C:
 	.align 2, 0
 _080696B8: .4byte 0xFFFFF000
 _080696BC: .4byte sMotions
-_080696C0: .4byte gMission
+_080696C0: .4byte gScore
 _080696C4: .4byte 0x0000270E
 _080696C8: .4byte gEnemyFnTable
 
@@ -454,7 +454,7 @@ _0806970A:
 	strb r0, [r5, #0xe]
 _08069792:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]

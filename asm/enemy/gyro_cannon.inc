@@ -4,236 +4,6 @@
 	
 	.text
 
-	thumb_func_start initGyroCannonWithoutPropeller
-initGyroCannonWithoutPropeller: @ 0x0806D154
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	ldr r1, _0806D1AC @ =0x00001706
-	bl SetMotion
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-	ldrb r1, [r4, #0xa]
-	movs r0, #4
-	movs r6, #0
-	orrs r0, r1
-	strb r0, [r4, #0xa]
-	adds r5, r4, #0
-	adds r5, #0x74
-	ldr r1, _0806D1B0 @ =0x083666D8
-	adds r2, r4, #0
-	adds r2, #0x54
-	adds r0, r5, #0
-	movs r3, #6
-	bl InitBody
-	str r4, [r5, #0x2c]
-	str r6, [r5, #0x24]
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-	strb r0, [r4, #0xa]
-	adds r0, r4, #0
-	adds r0, #0x4c
-	strb r6, [r0]
-	adds r2, r4, #0
-	adds r2, #0x4a
-	ldrb r1, [r2]
-	movs r0, #0x11
-	rsbs r0, r0, #0
-	ands r0, r1
-	strb r0, [r2]
-	adds r4, #0xb4
-	str r6, [r4]
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806D1AC: .4byte 0x00001706
-_0806D1B0: .4byte 0x083666D8
-
-	thumb_func_start gyrocannon_0806d1b4
-gyrocannon_0806d1b4: @ 0x0806D1B4
-	push {r4, r5, r6, lr}
-	adds r4, r0, #0
-	ldr r0, [r4, #0x54]
-	ldr r1, [r4, #0x58]
-	ldr r2, _0806D204 @ =0xFFFFE800
-	adds r1, r1, r2
-	bl IsVoidSpace
-	lsls r0, r0, #0x18
-	lsrs r2, r0, #0x18
-	cmp r2, #0
-	beq _0806D20C
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xfe
-	ands r0, r1
-	movs r2, #0
-	movs r1, #0xfd
-	ands r0, r1
-	strb r0, [r4, #0xa]
-	adds r0, r4, #0
-	adds r0, #0x8c
-	str r2, [r0]
-	adds r0, #4
-	str r2, [r0]
-	adds r0, #4
-	strb r2, [r0]
-	ldrb r1, [r4, #0xa]
-	movs r0, #0xfb
-	ands r0, r1
-	strb r0, [r4, #0xa]
-	ldr r1, _0806D208 @ =gEnemyFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #3
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #0xc]
-	str r0, [r4, #0x14]
-	b _0806D31C
-	.align 2, 0
-_0806D204: .4byte 0xFFFFE800
-_0806D208: .4byte gEnemyFnTable
-_0806D20C:
-	ldrb r0, [r4, #0xd]
-	adds r1, r0, #0
-	cmp r1, #1
-	beq _0806D246
-	ldr r0, [r4, #0x2c]
-	cmp r0, #0
-	beq _0806D222
-	ldrb r0, [r0, #0xc]
-	cmp r0, #1
-	bls _0806D222
-	str r2, [r4, #0x2c]
-_0806D222:
-	lsls r0, r1, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #1
-	beq _0806D246
-	adds r3, r4, #0
-	adds r3, #0x8c
-	ldr r0, [r3]
-	ldr r1, _0806D250 @ =0x00020001
-	ands r0, r1
-	cmp r0, r1
-	bne _0806D240
-	movs r1, #0
-	movs r0, #1
-	strb r0, [r4, #0xd]
-	strb r1, [r4, #0xe]
-_0806D240:
-	ldrb r2, [r4, #0xd]
-	cmp r2, #1
-	bne _0806D254
-_0806D246:
-	adds r0, r4, #0
-	bl FUN_0806d684
-	b _0806D31C
-	.align 2, 0
-_0806D250: .4byte 0x00020001
-_0806D254:
-	ldr r1, [r3]
-	movs r0, #0x80
-	lsls r0, r0, #2
-	ands r0, r1
-	cmp r0, #0
-	beq _0806D280
-	ldr r1, _0806D27C @ =gEnemyFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #2
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #8]
-	str r0, [r4, #0x14]
-	adds r0, r4, #0
-	bl GyroCannon_Die
-	b _0806D31C
-	.align 2, 0
-_0806D27C: .4byte gEnemyFnTable
-_0806D280:
-	adds r5, r4, #0
-	adds r5, #0xb4
-	cmp r2, #8
-	beq _0806D2AC
-	movs r0, #1
-	ands r1, r0
-	cmp r1, #0
-	beq _0806D2AC
-	ldr r6, [r5]
-	cmp r6, #0
-	bne _0806D2B2
-	ldr r2, _0806D2D0 @ =0x083666A0
-	movs r0, #0
-	adds r1, r4, #0
-	bl ApplyElementEffect
-	str r0, [r5]
-	cmp r0, #0
-	beq _0806D2DC
-	movs r0, #8
-	strb r0, [r4, #0xd]
-	strb r6, [r4, #0xe]
-_0806D2AC:
-	ldr r0, [r5]
-	cmp r0, #0
-	beq _0806D2DC
-_0806D2B2:
-	ldr r1, _0806D2D4 @ =0x0836666C
-	ldrb r0, [r4, #0xd]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	ldr r1, [r0]
-	adds r0, r4, #0
-	bl _call_via_r1
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _0806D2D8 @ =0x083666C0
-	bl SetDDP
-	b _0806D31C
-	.align 2, 0
-_0806D2D0: .4byte 0x083666A0
-_0806D2D4: .4byte 0x0836666C
-_0806D2D8: .4byte 0x083666C0
-_0806D2DC:
-	adds r0, r4, #0
-	adds r0, #0x74
-	ldr r1, _0806D324 @ =sCollisions
-	bl SetDDP
-	adds r0, r4, #0
-	bl isFrozen
-	cmp r0, #0
-	bne _0806D31C
-	ldrb r0, [r5, #0xb]
-	cmp r0, #0
-	bne _0806D306
-	ldrb r0, [r4, #0xd]
-	cmp r0, #0
-	beq _0806D306
-	ldr r0, [r4, #0x2c]
-	cmp r0, #0
-	bne _0806D306
-	strb r0, [r4, #0xd]
-	strb r0, [r4, #0xe]
-_0806D306:
-	ldr r0, _0806D328 @ =0x0836666C
-	ldrb r1, [r4, #0xd]
-	lsls r1, r1, #2
-	adds r1, r1, r0
-	ldr r1, [r1]
-	adds r0, r4, #0
-	bl _call_via_r1
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-_0806D31C:
-	pop {r4, r5, r6}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806D324: .4byte sCollisions
-_0806D328: .4byte 0x0836666C
-
 	thumb_func_start gyrocannon_0806d32c
 gyrocannon_0806d32c: @ 0x0806D32C
 	push {r4, r5, lr}
@@ -272,14 +42,14 @@ _0806D360:
 	ldr r1, _0806D388 @ =0x083666D8
 	bl SetDDP
 	adds r0, r5, #0
-	bl isFrozen
+	bl IsFrozen
 	cmp r0, #0
 	bne _0806D396
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0806D396
 	.align 2, 0
-_0806D388: .4byte 0x083666D8
+_0806D388: .4byte sCollisions+(24*2)
 _0806D38C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -303,7 +73,7 @@ _0806D396:
 	ands r0, r1
 	b _0806D3E0
 	.align 2, 0
-_0806D3B8: .4byte 0x083666F0
+_0806D3B8: .4byte sCollisions+(24*3)
 _0806D3BC:
 	movs r0, #0x40
 	strb r0, [r4, #0x12]
@@ -353,7 +123,7 @@ _0806D410: .4byte 0xFFFFE800
 _0806D414: .4byte gEnemyFnTable
 _0806D418:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x58]
 	ldr r2, _0806D464 @ =0xFFFFFE00
 	adds r0, r1, r2
@@ -486,7 +256,7 @@ _0806D508:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806D520: .4byte 0x08366694
+_0806D520: .4byte sUpdates2
 
 	thumb_func_start FUN_0806d524
 FUN_0806d524: @ 0x0806D524
@@ -508,7 +278,7 @@ FUN_0806d524: @ 0x0806D524
 	lsls r0, r0, #0x10
 	cmp r0, #0
 	bne _0806D5F4
-	ldr r7, _0806D56C @ =0x08366720
+	ldr r7, _0806D56C @ =sSlashedEnemies
 	adds r2, r4, #0
 	adds r2, #0xb4
 	ldrb r5, [r2, #8]
@@ -523,7 +293,7 @@ FUN_0806d524: @ 0x0806D524
 	b _0806D572
 	.align 2, 0
 _0806D568: .4byte 0xFFFFEE00
-_0806D56C: .4byte 0x08366720
+_0806D56C: .4byte sSlashedEnemies
 _0806D570:
 	adds r3, r5, #0
 _0806D572:
@@ -532,7 +302,7 @@ _0806D572:
 	movs r2, #0
 	bl CreateSlashedEnemy
 	mov r5, sp
-	ldr r7, _0806D594 @ =0x08366720
+	ldr r7, _0806D594 @ =sSlashedEnemies
 	ldrb r2, [r6, #8]
 	ldrb r1, [r4, #0xa]
 	movs r3, #0x10
@@ -543,7 +313,7 @@ _0806D572:
 	orrs r3, r2
 	b _0806D59A
 	.align 2, 0
-_0806D594: .4byte 0x08366720
+_0806D594: .4byte sSlashedEnemies
 _0806D598:
 	adds r3, r2, #0
 _0806D59A:
@@ -563,7 +333,7 @@ _0806D59A:
 	orrs r3, r2
 	b _0806D5C2
 	.align 2, 0
-_0806D5BC: .4byte 0x0836673C
+_0806D5BC: .4byte sSlashedEnemies+(28*1)
 _0806D5C0:
 	adds r3, r2, #0
 _0806D5C2:
@@ -583,7 +353,7 @@ _0806D5C2:
 	orrs r3, r2
 	b _0806D5EA
 	.align 2, 0
-_0806D5E4: .4byte 0x0836673C
+_0806D5E4: .4byte sSlashedEnemies+(28*1)
 _0806D5E8:
 	adds r3, r2, #0
 _0806D5EA:
@@ -794,7 +564,7 @@ _0806D762:
 	strb r0, [r5, #0xe]
 _0806D77A:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r3, [r5, #0x5c]
 	adds r0, r0, r3
@@ -837,7 +607,7 @@ _0806D7CE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806D7D4: .4byte 0x08366708
+_0806D7D4: .4byte sCollisions+(24*4)
 _0806D7D8: .4byte 0xFFFFE800
 _0806D7DC: .4byte gEnemyFnTable
 
@@ -1291,7 +1061,7 @@ _0806DB14:
 	strb r6, [r4, #0xe]
 	b _0806DB52
 	.align 2, 0
-_0806DB40: .4byte 0x083666C0
+_0806DB40: .4byte sCollisions+(24*1)
 _0806DB44: .4byte 0xFFFFF600
 _0806DB48: .4byte sCollisions
 _0806DB4C:
@@ -1307,7 +1077,7 @@ _0806DB52:
 FUN_0806db58: @ 0x0806DB58
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, _0806DB88 @ =0xFFFFFE00
 	adds r0, r0, r1
@@ -1351,7 +1121,7 @@ gyroCannon_0806db8c: @ 0x0806DB8C
 	orrs r3, r2
 	b _0806DBB6
 	.align 2, 0
-_0806DBB0: .4byte 0x08366758
+_0806DBB0: .4byte sSlashedEnemies+(28*2)
 _0806DBB4:
 	adds r3, r2, #0
 _0806DBB6:
@@ -1377,7 +1147,7 @@ _0806DBB6:
 	orrs r3, r6
 	b _0806DBEA
 	.align 2, 0
-_0806DBE4: .4byte 0x08366758
+_0806DBE4: .4byte sSlashedEnemies+(28*2)
 _0806DBE8:
 	adds r3, r6, #0
 _0806DBEA:
@@ -1398,7 +1168,7 @@ _0806DBEA:
 	orrs r3, r2
 	b _0806DC12
 	.align 2, 0
-_0806DC0C: .4byte 0x08366774
+_0806DC0C: .4byte sSlashedEnemies+(28*3)
 _0806DC10:
 	adds r3, r2, #0
 _0806DC12:
@@ -1419,7 +1189,7 @@ _0806DC12:
 	orrs r3, r2
 	b _0806DC3A
 	.align 2, 0
-_0806DC34: .4byte 0x08366774
+_0806DC34: .4byte sSlashedEnemies+(28*3)
 _0806DC38:
 	adds r3, r2, #0
 _0806DC3A:
@@ -1459,7 +1229,7 @@ _0806DC78:
 	adds r1, r5, #0
 	movs r0, #4
 	bl TryDropItem
-	ldr r2, _0806DCC0 @ =gMission
+	ldr r2, _0806DCC0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806DCC4 @ =0x0000270E
 	cmp r1, r0
@@ -1485,7 +1255,7 @@ _0806DC9C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806DCC0: .4byte gMission
+_0806DCC0: .4byte gScore
 _0806DCC4: .4byte 0x0000270E
 _0806DCC8: .4byte gEnemyFnTable
 
@@ -1518,7 +1288,7 @@ gyroCannon_0806dccc: @ 0x0806DCCC
 	strb r0, [r4, #0xf]
 _0806DD02:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r1, [r4, #0x2c]
 	cmp r1, #0
 	beq _0806DD2E
@@ -1559,7 +1329,7 @@ _0806DD2E:
 	b _0806DD5A
 	.align 2, 0
 _0806DD50: .4byte 0xFFFFFE00
-_0806DD54: .4byte 0x08366758
+_0806DD54: .4byte sSlashedEnemies+(28*2)
 _0806DD58:
 	adds r3, r5, #0
 _0806DD5A:
@@ -1580,7 +1350,7 @@ _0806DD5A:
 	orrs r3, r2
 	b _0806DD82
 	.align 2, 0
-_0806DD7C: .4byte 0x08366774
+_0806DD7C: .4byte sSlashedEnemies+(28*3)
 _0806DD80:
 	adds r3, r2, #0
 _0806DD82:
@@ -1610,7 +1380,7 @@ _0806DDB0:
 	bl TryDropItem
 	movs r0, #0x2a
 	bl PlaySound
-	ldr r2, _0806DDF0 @ =gMission
+	ldr r2, _0806DDF0 @ =gScore
 	ldrh r1, [r2, #0xc]
 	ldr r0, _0806DDF4 @ =0x0000270E
 	cmp r1, r0
@@ -1637,169 +1407,7 @@ _0806DDE6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806DDF0: .4byte gMission
+_0806DDF0: .4byte gScore
 _0806DDF4: .4byte 0x0000270E
 _0806DDF8: .4byte gEnemyFnTable
 
-	thumb_func_start FUN_0806ddfc
-FUN_0806ddfc: @ 0x0806DDFC
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r4, r0, #0
-	ldrb r0, [r4, #0xf]
-	cmp r0, #0
-	bne _0806DE2E
-	ldr r1, _0806DE64 @ =0x00001708
-	adds r0, r4, #0
-	bl SetMotion
-	adds r0, r4, #0
-	adds r0, #0x54
-	ldrb r1, [r4, #0xa]
-	lsrs r1, r1, #4
-	movs r2, #1
-	ands r1, r2
-	movs r2, #0
-	bl CreateGhost27
-	movs r0, #0x30
-	strb r0, [r4, #0x12]
-	ldrb r0, [r4, #0xf]
-	adds r0, #1
-	strb r0, [r4, #0xf]
-_0806DE2E:
-	adds r0, r4, #0
-	bl UpdateMotionGraphic
-	ldrb r0, [r4, #0x12]
-	subs r0, #1
-	strb r0, [r4, #0x12]
-	lsls r0, r0, #0x18
-	lsrs r0, r0, #0x18
-	cmp r0, #0xff
-	bne _0806DEFA
-	adds r7, r4, #0
-	adds r7, #0x54
-	ldr r0, _0806DE68 @ =0x08366758
-	mov ip, r0
-	adds r2, r4, #0
-	adds r2, #0xb4
-	ldrb r5, [r2, #8]
-	ldrb r1, [r4, #0xa]
-	movs r3, #0x10
-	adds r0, r3, #0
-	ands r0, r1
-	adds r6, r7, #0
-	mov r8, r2
-	cmp r0, #0
-	beq _0806DE6C
-	orrs r3, r5
-	b _0806DE6E
-	.align 2, 0
-_0806DE64: .4byte 0x00001708
-_0806DE68: .4byte 0x08366758
-_0806DE6C:
-	adds r3, r5, #0
-_0806DE6E:
-	adds r0, r7, #0
-	mov r1, ip
-	movs r2, #0
-	bl CreateSlashedEnemy
-	adds r5, r6, #0
-	ldr r7, _0806DE90 @ =0x08366774
-	mov r0, r8
-	ldrb r2, [r0, #8]
-	ldrb r1, [r4, #0xa]
-	movs r3, #0x10
-	adds r0, r3, #0
-	ands r0, r1
-	cmp r0, #0
-	beq _0806DE94
-	orrs r3, r2
-	b _0806DE96
-	.align 2, 0
-_0806DE90: .4byte 0x08366774
-_0806DE94:
-	adds r3, r2, #0
-_0806DE96:
-	adds r0, r5, #0
-	adds r1, r7, #0
-	movs r2, #0
-	bl CreateSlashedEnemy
-	movs r0, #1
-	adds r1, r6, #0
-	bl CreateSmoke
-	ldrb r1, [r4, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	beq _0806DEBC
-	movs r0, #2
-	adds r1, r6, #0
-	bl CreateSmoke
-	b _0806DEC4
-_0806DEBC:
-	movs r0, #2
-	adds r1, r6, #0
-	bl CreateSmoke
-_0806DEC4:
-	adds r1, r6, #0
-	movs r0, #4
-	bl TryDropItem
-	movs r0, #0x2a
-	bl PlaySound
-	ldr r2, _0806DF04 @ =gMission
-	ldrh r1, [r2, #0xc]
-	ldr r0, _0806DF08 @ =0x0000270E
-	cmp r1, r0
-	bhi _0806DEE0
-	adds r0, r1, #1
-	strh r0, [r2, #0xc]
-_0806DEE0:
-	adds r0, r4, #0
-	adds r1, r6, #0
-	bl TryDropZakoDisk
-	ldr r1, _0806DF0C @ =gEnemyFnTable
-	ldrb r0, [r4, #9]
-	lsls r0, r0, #2
-	adds r0, r0, r1
-	movs r1, #4
-	str r1, [r4, #0xc]
-	ldr r0, [r0]
-	ldr r0, [r0, #0x10]
-	str r0, [r4, #0x14]
-_0806DEFA:
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_0806DF04: .4byte gMission
-_0806DF08: .4byte 0x0000270E
-_0806DF0C: .4byte gEnemyFnTable
-
-	thumb_func_start FUN_0806df10
-FUN_0806df10: @ 0x0806DF10
-	push {lr}
-	adds r2, r0, #0
-	ldr r0, [r2, #0x14]
-	movs r1, #1
-	ands r0, r1
-	cmp r0, #0
-	beq _0806DF36
-	ldr r0, [r2, #0xc]
-	ldr r1, [r0, #0x2c]
-	ldr r0, [r2, #0x2c]
-	adds r2, r0, #0
-	adds r2, #0xb4
-	movs r3, #0
-	ldr r1, [r1, #0x54]
-	ldr r0, [r0, #0x54]
-	cmp r1, r0
-	ble _0806DF34
-	movs r3, #1
-_0806DF34:
-	strb r3, [r2, #8]
-_0806DF36:
-	pop {r0}
-	bx r0
-	.align 2, 0

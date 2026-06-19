@@ -4,52 +4,6 @@
 	
 	.text
 
-	thumb_func_start CreateBlizzack
-CreateBlizzack: @ 0x08059A4C
-	push {r4, r5, lr}
-	adds r5, r0, #0
-	ldr r0, _08059A9C @ =gBossHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _08059A96
-	adds r1, r4, #0
-	adds r1, #0x25
-	movs r3, #0
-	movs r0, #0x18
-	strb r0, [r1]
-	ldr r1, _08059AA0 @ =gBossFnTable
-	movs r0, #0x11
-	strb r0, [r4, #9]
-	ldr r0, [r1, #0x44]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r2, #0
-	strh r3, [r4, #0x20]
-	adds r0, r4, #0
-	adds r0, #0x22
-	strb r2, [r0]
-	ldrb r1, [r4, #0xb]
-	movs r0, #0x10
-	orrs r0, r1
-	strb r0, [r4, #0xb]
-	ldrb r0, [r4, #0x1c]
-	strb r0, [r4, #0x1d]
-	ldr r0, [r5]
-	ldr r1, [r5, #4]
-	str r0, [r4, #0x54]
-	str r1, [r4, #0x58]
-	strb r2, [r4, #0x10]
-	strb r2, [r4, #0x11]
-_08059A96:
-	pop {r4, r5}
-	pop {r0}
-	bx r0
-	.align 2, 0
-_08059A9C: .4byte gBossHeaderPtr
-_08059AA0: .4byte gBossFnTable
-
 	thumb_func_start Blizzack_Init
 Blizzack_Init: @ 0x08059AA4
 	push {r4, r5, r6, r7, lr}
@@ -183,7 +137,7 @@ Blizzack_Init: @ 0x08059AA4
 	adds r1, #0xd0
 	movs r0, #0x40
 	strb r0, [r1]
-	ldr r1, _08059CAC @ =0x08364BB0
+	ldr r1, _08059CAC @ =sCollisions
 	adds r0, r7, #0
 	movs r2, #0x40
 	bl ResetBossBody
@@ -247,7 +201,7 @@ Blizzack_Init: @ 0x08059AA4
 	adds r0, r7, #0
 	movs r1, #0
 	movs r2, #0
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	str r0, [r7, #0x2c]
 	movs r1, #1
 	strb r1, [r0, #0xe]
@@ -290,7 +244,7 @@ _08059C9C: .4byte wStaticGraphicTilenums
 _08059CA0: .4byte gStaticMotionGraphics+12
 _08059CA4: .4byte wStaticMotionPalIDs
 _08059CA8: .4byte 0x000007BC
-_08059CAC: .4byte 0x08364BB0
+_08059CAC: .4byte sCollisions
 _08059CB0: .4byte 0x0000FFFF
 
 	thumb_func_start Blizzack_Update
@@ -362,7 +316,7 @@ _08059D2C:
 	ldr r0, [r5]
 	cmp r0, #0
 	bne _08059D48
-	ldr r2, _08059D98 @ =0x08364C10
+	ldr r2, _08059D98 @ =sElementCoord
 	movs r0, #0x1a
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -410,8 +364,8 @@ _08059D8E:
 	bx r0
 	.align 2, 0
 _08059D94: .4byte pZero2
-_08059D98: .4byte 0x08364C10
-_08059D9C: .4byte 0x08364B50
+_08059D98: .4byte sElementCoord
+_08059D9C: .4byte sUpdates
 
 	thumb_func_start Blizzack_Die
 Blizzack_Die: @ 0x08059DA0
@@ -425,7 +379,7 @@ Blizzack_Die: @ 0x08059DA0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08059DB4: .4byte 0x08364BA4
+_08059DB4: .4byte sDeads
 
 	thumb_func_start blizzackMode0
 blizzackMode0: @ 0x08059DB8
@@ -451,7 +405,7 @@ blizzackMode0: @ 0x08059DB8
 	strb r2, [r4, #0x12]
 _08059DE2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x18]
 	ldrb r1, [r0, #9]
 	movs r2, #1
@@ -489,7 +443,7 @@ blizzackMode1: @ 0x08059E00
 	bl PlaySound
 _08059E2A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -537,7 +491,7 @@ blizzackNeutral: @ 0x08059E60
 	strb r2, [r4, #0xe]
 _08059E88:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r3, #0
 	ldr r0, _08059ED4 @ =pZero2
 	ldr r2, [r0]
@@ -610,7 +564,7 @@ _08059EF0:
 	bgt _08059F14
 	b _0805A0F8
 _08059F14:
-	ldr r0, _08059F58 @ =gMission
+	ldr r0, _08059F58 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -642,7 +596,7 @@ _08059F48: .4byte RNG_0202f388
 _08059F4C: .4byte 0x000343FD
 _08059F50: .4byte 0x00269EC3
 _08059F54: .4byte 0x000037FF
-_08059F58: .4byte gMission
+_08059F58: .4byte gScore
 _08059F5C:
 	movs r0, #7
 	strb r0, [r4, #0xd]
@@ -789,7 +743,7 @@ _0805A048:
 _0805A062:
 	cmp r2, #0x17
 	ble _0805A0F8
-	ldr r0, _0805A078 @ =gMission
+	ldr r0, _0805A078 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -799,7 +753,7 @@ _0805A070:
 	strb r0, [r4, #0xd]
 	b _0805A100
 	.align 2, 0
-_0805A078: .4byte gMission
+_0805A078: .4byte gScore
 _0805A07C:
 	movs r0, #7
 	strb r0, [r4, #0xd]
@@ -939,7 +893,7 @@ blizzackPreAI: @ 0x0805A140
 	strb r0, [r4, #0x12]
 _0805A16C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r3, #0
 	ldr r0, _0805A1B8 @ =pZero2
 	ldr r2, [r0]
@@ -1023,7 +977,7 @@ blizzackNextMode: @ 0x0805A1E0
 	bl PlaySound
 _0805A20A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1072,7 +1026,7 @@ blizzackJump: @ 0x0805A230
 	str r0, [r4, #0x60]
 _0805A26A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1141,7 +1095,7 @@ blizzackStamp: @ 0x0805A2C4
 	bl AppendQuake
 _0805A2FC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0x12]
 	adds r0, r1, #1
 	strb r0, [r5, #0x12]
@@ -1264,7 +1218,7 @@ _0805A3E6:
 	bl SetDDP
 _0805A3F2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1279,7 +1233,7 @@ _0805A40A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805A410: .4byte 0x08364BE0
+_0805A410: .4byte sCollisions+(24*2)
 
 	thumb_func_start blizzackMode8
 blizzackMode8: @ 0x0805A414
@@ -1296,7 +1250,7 @@ blizzackMode8: @ 0x0805A414
 	bl FUN_080aabd4
 _0805A42C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1337,11 +1291,11 @@ blizzackMode9: @ 0x0805A450
 	strb r0, [r4, #0x12]
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805A4AC @ =0x08364BB0
+	ldr r1, _0805A4AC @ =sCollisions
 	bl SetDDP
 _0805A482:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1360,7 +1314,7 @@ _0805A49E:
 	.align 2, 0
 _0805A4A4: .4byte 0x0000B408
 _0805A4A8: .4byte 0x00006408
-_0805A4AC: .4byte 0x08364BB0
+_0805A4AC: .4byte sCollisions
 
 	thumb_func_start blizzackStartBlizzard
 blizzackStartBlizzard: @ 0x0805A4B0
@@ -1387,7 +1341,7 @@ blizzackStartBlizzard: @ 0x0805A4B0
 	bl SetDDP
 _0805A4DE:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1404,7 +1358,7 @@ _0805A4F6:
 	.align 2, 0
 _0805A4FC: .4byte 0x0000B409
 _0805A500: .4byte 0x00006409
-_0805A504: .4byte 0x08364BE0
+_0805A504: .4byte sCollisions+(24*2)
 
 	thumb_func_start blizzackBlizzard
 blizzackBlizzard: @ 0x0805A508
@@ -1425,7 +1379,7 @@ blizzackBlizzard: @ 0x0805A508
 	ands r2, r0
 	adds r0, r4, #0
 	movs r1, #1
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	movs r0, #0x44
 	bl PlaySound
 	adds r1, r4, #0
@@ -1433,7 +1387,7 @@ blizzackBlizzard: @ 0x0805A508
 	strh r0, [r1]
 _0805A53C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1476,14 +1430,14 @@ blizzackEndBlizzard: @ 0x0805A560
 	adds r0, #0xc8
 	movs r1, #0
 	ldrsh r0, [r0, r1]
-	bl stopSound
+	bl StopSound
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805A5C8 @ =0x08364BB0
+	ldr r1, _0805A5C8 @ =sCollisions
 	bl SetDDP
 _0805A59E:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -1502,7 +1456,7 @@ _0805A5BA:
 	.align 2, 0
 _0805A5C0: .4byte 0x0000B408
 _0805A5C4: .4byte 0x00006408
-_0805A5C8: .4byte 0x08364BB0
+_0805A5C8: .4byte sCollisions
 
 	thumb_func_start blizzackBombJump
 blizzackBombJump: @ 0x0805A5CC
@@ -1657,7 +1611,7 @@ _0805A6FA:
 	strb r0, [r5, #0xa]
 _0805A6FC:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x5c]
 	adds r0, r0, r1
@@ -1716,7 +1670,7 @@ blizzackBomb: @ 0x0805A744
 	strb r2, [r4, #0x12]
 _0805A76A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r3, #0
 	ldr r0, _0805A7B8 @ =pZero2
 	ldr r2, [r0]
@@ -1876,7 +1830,7 @@ blizzackBombFall: @ 0x0805A880
 	strb r2, [r4, #0xe]
 _0805A8A4:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
 	adds r0, r0, r1
@@ -1943,7 +1897,7 @@ blizzackBombStamp: @ 0x0805A8F4
 	bl AppendQuake
 _0805A92C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r1, [r5, #0x12]
 	adds r0, r1, #1
 	strb r0, [r5, #0x12]
@@ -2013,7 +1967,7 @@ _0805A99C:
 	ldrsh r1, [r1, r2]
 	cmp r0, r1
 	ble _0805A9D4
-	ldr r0, _0805A9D0 @ =gMission
+	ldr r0, _0805A9D0 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -2021,7 +1975,7 @@ _0805A99C:
 	movs r0, #0xa
 	b _0805A9F6
 	.align 2, 0
-_0805A9D0: .4byte gMission
+_0805A9D0: .4byte gScore
 _0805A9D4:
 	movs r0, #7
 	b _0805A9F6
@@ -2105,7 +2059,7 @@ blizzackMode17: @ 0x0805AA44
 	strb r0, [r4, #0x12]
 _0805AA6C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0xc
 	bne _0805AAEC
@@ -2120,19 +2074,19 @@ _0805AA6C:
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #4
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #5
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #6
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #7
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	b _0805AAEC
 	.align 2, 0
 _0805AAB4: .4byte 0x0000B405
@@ -2143,19 +2097,19 @@ _0805AAC4:
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #0
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #1
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #2
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 	adds r0, r4, #0
 	movs r1, #1
 	movs r2, #3
-	bl FUN_080aa7a8
+	bl CreateProjectile31
 _0805AAEC:
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
@@ -2196,7 +2150,7 @@ blizzackMode18: @ 0x0805AB08
 	strb r0, [r4, #0x12]
 _0805AB30:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -2250,11 +2204,11 @@ blizzackMode19: @ 0x0805AB5C
 _0805AB98:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0805ABF4 @ =0x08364BB0
+	ldr r1, _0805ABF4 @ =sCollisions
 	bl SetDDP
 _0805ABA2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
 	adds r0, r0, r1
@@ -2290,7 +2244,7 @@ _0805ABBE:
 _0805ABE8: .4byte 0x0000B40B
 _0805ABEC: .4byte 0x0000640B
 _0805ABF0: .4byte 0xFFFFFD00
-_0805ABF4: .4byte 0x08364BB0
+_0805ABF4: .4byte sCollisions
 _0805ABF8:
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x5c]
@@ -2325,7 +2279,7 @@ blizzackMode20: @ 0x0805AC08
 	strb r0, [r4, #0x12]
 _0805AC30:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -2372,7 +2326,7 @@ _0805AC84:
 	adds r0, #0xc8
 	movs r1, #0
 	ldrsh r0, [r0, r1]
-	bl stopSound
+	bl StopSound
 	movs r0, #0
 	strb r0, [r4, #0xe]
 	strb r0, [r4, #0x12]
@@ -2392,7 +2346,7 @@ _0805ACA6:
 	adds r0, r4, #0
 	bl SetMotion
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r2, r4, #0
 	adds r2, #0x8c
 	ldr r0, [r2]
@@ -2465,7 +2419,7 @@ blizzack_0805ad2c: @ 0x0805AD2C
 	strb r0, [r4, #0xf]
 _0805AD4A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0xf]
 	cmp r0, #1
 	beq _0805AD90
@@ -2614,13 +2568,13 @@ _0805AE4A:
 	ands r2, r0
 	adds r0, r5, #0
 	movs r1, #2
-	bl FUN_08084dc8
+	bl CreateEnemy42
 	str r4, [r5, #0x2c]
 	movs r0, #0x2f
 	bl PlaySound
 _0805AE6E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0xf]
 	cmp r0, #1
 	beq _0805AEAC

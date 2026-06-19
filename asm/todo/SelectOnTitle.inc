@@ -384,7 +384,7 @@ _080EC65C:
 	adds r0, r0, r1
 	ldrh r0, [r0]
 	bl PrintNormalMessage
-	ldr r2, _080EC6A8 @ =gSystemSavedataManager
+	ldr r2, _080EC6A8 @ =gSystemSavedata
 	ldr r1, _080EC6AC @ =0x08385F9C
 	ldr r0, [r4]
 	adds r0, r0, r1
@@ -407,7 +407,7 @@ _080EC65C:
 	b _080EC95C
 	.align 2, 0
 _080EC6A4: .4byte UnlockMinigameTextIDs
-_080EC6A8: .4byte gSystemSavedataManager
+_080EC6A8: .4byte gSystemSavedata
 _080EC6AC: .4byte u8_ARRAY_08385f9c
 _080EC6B0: .4byte gSineTable
 _080EC6B4: .4byte 0x00000253
@@ -569,7 +569,7 @@ _080EC7E2:
 	.align 2, 0
 _080EC7F4: .4byte gTextWindow+8
 _080EC7F8:
-	ldr r1, _080EC83C @ =gSystemSavedataManager
+	ldr r1, _080EC83C @ =gSystemSavedata
 	ldr r0, _080EC840 @ =MaybeCharTable
 	adds r0, r3, r0
 	ldrb r4, [r0]
@@ -602,7 +602,7 @@ _080EC7F8:
 	bl PrintNormalMessage
 	b _080EC862
 	.align 2, 0
-_080EC83C: .4byte gSystemSavedataManager
+_080EC83C: .4byte gSystemSavedata
 _080EC840: .4byte MaybeCharTable
 _080EC844: .4byte gTextPrinter
 _080EC848: .4byte 0x00000594
@@ -616,7 +616,7 @@ _080EC854:
 	ldrh r0, [r1]
 	bl PrintNormalMessage
 _080EC862:
-	ldr r4, _080EC888 @ =gSystemSavedataManager
+	ldr r4, _080EC888 @ =gSystemSavedata
 	adds r4, #0x45
 	ldrb r5, [r4]
 	ldr r1, _080EC88C @ =MaybeCharTable
@@ -634,7 +634,7 @@ _080EC862:
 	b _080EC892
 	.align 2, 0
 _080EC884: .4byte ModCardTextIDs
-_080EC888: .4byte gSystemSavedataManager
+_080EC888: .4byte gSystemSavedata
 _080EC88C: .4byte MaybeCharTable
 _080EC890:
 	movs r0, #0
@@ -748,7 +748,7 @@ _080EC95C:
 	strb r0, [r7, #6]
 _080EC95E:
 	movs r0, #0xf0
-	bl UpdateBlinkMotionState
+	bl StepPaletteAnimation
 	ldr r2, _080EC99C @ =0x00000235
 	adds r0, r7, r2
 	ldrb r1, [r0]

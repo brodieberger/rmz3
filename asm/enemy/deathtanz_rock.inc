@@ -16,9 +16,9 @@ CreateDeathtanzRock: @ 0x0807A4E8
 	mov r8, r2
 	lsls r3, r3, #0x18
 	lsrs r7, r3, #0x18
-	ldr r0, _0807A5B0 @ =gZakoHeaderPtr
+	ldr r0, _0807A5B0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r4, r0, #0
 	cmp r4, #0
 	beq _0807A544
@@ -55,9 +55,9 @@ _0807A544:
 	movs r5, #0
 	movs r6, #0
 _0807A548:
-	ldr r0, _0807A5B0 @ =gZakoHeaderPtr
+	ldr r0, _0807A5B0 @ =gEnemyHeaderPtr
 	ldr r0, [r0]
-	bl AllocEntityFirst
+	bl AllocEntityLast
 	adds r2, r0, #0
 	cmp r2, #0
 	beq _0807A59A
@@ -107,7 +107,7 @@ _0807A59A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A5B0: .4byte gZakoHeaderPtr
+_0807A5B0: .4byte gEnemyHeaderPtr
 _0807A5B4: .4byte gEnemyFnTable
 _0807A5B8: .4byte 0x0836773C
 
@@ -435,7 +435,7 @@ _0807A818: .4byte 0x08367664
 _0807A81C: .4byte gEnemyFnTable
 _0807A820:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0807A894
 _0807A828:
 	adds r0, r4, #0
@@ -457,7 +457,7 @@ _0807A828:
 	strb r0, [r4, #0xe]
 _0807A84A:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	subs r0, #1
 	strb r0, [r4, #0x12]
@@ -614,7 +614,7 @@ _0807A952:
 	adds r1, r1, r0
 	str r1, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807A972:
 	pop {r4, r5}
 	pop {r0}
@@ -705,7 +705,7 @@ _0807A9E8:
 	strb r0, [r4, #0xd]
 _0807AA18:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0807AA1E:
 	pop {r4, r5}
 	pop {r0}

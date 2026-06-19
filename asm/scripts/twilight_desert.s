@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -76,10 +77,10 @@ Script_0835332c:
   spawn 0, Entity_083532bc
   reset_camera Camera_0835320c
   lock
-  screeneffect 9
+  start_transition 9
   wait 1
   visible 0, FALSE
-  wait_screeneffect
+  wait_transition_end
   wait 15
   force 6, 0, 0
   wait 15
@@ -96,7 +97,7 @@ Script_083533b4:
   reset_camera Camera_0835320c
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm 176
@@ -109,8 +110,8 @@ Script_08353414:
   spawn 0, Entity_083532bc
   reset_camera Camera_0835320c
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 176
   indicator 1, 0, 0
   wait_indicator_end
@@ -125,11 +126,11 @@ Script_0835346c:
   force 8, 0, 0
   force 1, 0, 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 4320*PX
   adjust_camera 12, 0 4560*PX
   adjust_camera 13, 0 480*PX
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   stop_bgm
   wait 120
   entityflag 1, 0, TRUE
@@ -141,10 +142,10 @@ Script_0835346c:
 Script_083534fc:
   stop_bgm
   wait 120
-  cmd08 1, 0, 2
+  cmd08_wait_set 1
   destroy 1
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 4176*PX
   adjust_camera 12, 0 15360*PX
   adjust_camera 13, 0 0*PX
@@ -156,8 +157,8 @@ Script_0835355c:
   spawn 0, Entity_083532cc
   reset_camera Camera_08353238
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 176
   indicator 1, 0, 0
   wait_indicator_end
@@ -169,8 +170,8 @@ Script_083535b4:
   spawn 0, Entity_083532dc
   reset_camera Camera_08353264
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 176
   indicator 1, 0, 0
   wait_indicator_end
@@ -182,11 +183,11 @@ Script_0835360c:
   lock
   force 0, 0, 0
   force 8, 0, 0
-  eventflag 0, 25, 0
+  cutscene_start CS_DESERT_BOSS
   turn_right 0
   force 1, 0, 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8640*PX
   adjust_camera 12, 0 8880*PX
   adjust_camera 13, 0 480*PX
@@ -194,22 +195,22 @@ Script_0835360c:
   walkto 8688*PX
   turn_right 0
   lock
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   spawn 1, Entity_0835330c
   waitabs 120
-  play_bgm 161
+  play_bgm BGM_GUARDER_ROOM
   wait 240
   triumphant_message 0, 0x0901
   message 1, 0, 0x0900
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 60
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -217,11 +218,11 @@ Script_08353714:
   lock
   force 0, 0, 0
   force 8, 0, 0
-  eventflag 0, 25, 0
+  cutscene_start CS_DESERT_BOSS
   turn_right 0
   force 1, 0, 0
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0 8640*PX
   adjust_camera 12, 0 8880*PX
   adjust_camera 13, 0 480*PX
@@ -231,17 +232,17 @@ Script_08353714:
   lock
   spawn 1, Entity_0835330c
   waitabs 120
-  play_bgm 161
+  play_bgm BGM_GUARDER_ROOM
   wait 240
   triumphant_message 0, 0x0901
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 60
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -251,14 +252,14 @@ Script_08353804:
   reset_camera Camera_08353290
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x0901
   entityflag 1, 0, TRUE
   wait 60
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -270,23 +271,23 @@ Script_0835387c:
   message 1, 0, 0x0902
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 0, 2
+  cmd08_wait_set 1
   force 4, 0, 0
   wait 8
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   destroy 0
-  cmd20 0, 0, 0
+  load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   stop_camera
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 Script_08353944:
@@ -296,7 +297,7 @@ Script_08353944:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 176
   indicator 1, 0, 0
   wait 15
@@ -319,7 +320,7 @@ Script_083539bc:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0

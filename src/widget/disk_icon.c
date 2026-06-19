@@ -2,34 +2,31 @@
 #include "global.h"
 #include "widget.h"
 
-static void DiskIcon_Init(struct Widget *w);
-static void DiskIcon_Update(struct Widget *w);
-static void DiskIcon_Die(struct Widget *w);
+static void DiskIcon_Init(struct Widget* w);
+static void DiskIcon_Update(struct Widget* w);
+static void DiskIcon_Die(struct Widget* w);
 
 // clang-format off
 const WidgetRoutine gDiskIconRoutine = {
-    [ENTITY_INIT] =      DiskIcon_Init,
-    [ENTITY_UPDATE] =    DiskIcon_Update,
-    [ENTITY_DIE] =       DiskIcon_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)DiskIcon_Init,
+    [ENTITY_UPDATE] =    (void*)DiskIcon_Update,
+    [ENTITY_DIE] =       (void*)DiskIcon_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-void CreateDiskIcon(struct Coord *c, u8 n, u8 r2) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+void CreateDiskIcon(Coords32* c, u8 n, u8 r2) {
+  struct Widget* w = AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 10);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
     (w->s).coord = *c;
     (w->s).work[0] = n;
     (w->s).work[1] = r2;
   }
 }
 
-static void DiskIcon_Init(struct Widget *w) {
+static void DiskIcon_Init(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
@@ -43,7 +40,7 @@ static void DiskIcon_Init(struct Widget *w) {
   DiskIcon_Update(w);
 }
 
-NAKED static void DiskIcon_Update(struct Widget *w) {
+NAKED static void DiskIcon_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	adds r4, r0, #0\n\
@@ -59,7 +56,7 @@ NAKED static void DiskIcon_Update(struct Widget *w) {
 	cmp r1, #0x6d\n\
 	bls _080E7D68\n\
 _080E7D2E:\n\
-	ldr r0, _080E7D3C @ =gSystemSavedataManager\n\
+	ldr r0, _080E7D3C @ =gSystemSavedata\n\
 	adds r0, #0x4b\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #0\n\
@@ -67,7 +64,7 @@ _080E7D2E:\n\
 	ldr r1, _080E7D40 @ =0x0000B00B\n\
 	b _080E7D56\n\
 	.align 2, 0\n\
-_080E7D3C: .4byte gSystemSavedataManager\n\
+_080E7D3C: .4byte gSystemSavedata\n\
 _080E7D40: .4byte 0x0000B00B\n\
 _080E7D44:\n\
 	cmp r0, #1\n\
@@ -89,7 +86,7 @@ _080E7D56:\n\
 	.align 2, 0\n\
 _080E7D64: .4byte 0x0000B20B\n\
 _080E7D68:\n\
-	ldr r0, _080E7D78 @ =gSystemSavedataManager\n\
+	ldr r0, _080E7D78 @ =gSystemSavedata\n\
 	adds r0, #0x4b\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #0\n\
@@ -97,7 +94,7 @@ _080E7D68:\n\
 	ldr r1, _080E7D7C @ =0x0000B00B\n\
 	b _080E7D86\n\
 	.align 2, 0\n\
-_080E7D78: .4byte gSystemSavedataManager\n\
+_080E7D78: .4byte gSystemSavedata\n\
 _080E7D7C: .4byte 0x0000B00B\n\
 _080E7D80:\n\
 	cmp r0, #1\n\
@@ -159,7 +156,7 @@ _080E7DEA:\n\
 	ldrb r0, [r4, #0xd]\n\
 	cmp r0, #2\n\
 	bne _080E7E32\n\
-	ldr r0, _080E7E08 @ =gSystemSavedataManager\n\
+	ldr r0, _080E7E08 @ =gSystemSavedata\n\
 	adds r0, #0x4b\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #0\n\
@@ -170,7 +167,7 @@ _080E7DEA:\n\
 	.align 2, 0\n\
 _080E7E00: .4byte 0x0000B20B\n\
 _080E7E04: .4byte gStageDiskManager\n\
-_080E7E08: .4byte gSystemSavedataManager\n\
+_080E7E08: .4byte gSystemSavedata\n\
 _080E7E0C:\n\
 	cmp r0, #1\n\
 	bne _080E7E20\n\
@@ -193,7 +190,7 @@ _080E7E2C:\n\
 	strb r0, [r4, #0xd]\n\
 _080E7E32:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	pop {r4}\n\
 	pop {r0}\n\
 	bx r0\n\
@@ -202,4 +199,4 @@ _080E7E40: .4byte 0x00007F02\n\
    .syntax divided\n");
 }
 
-static void DiskIcon_Die(struct Widget *w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }
+static void DiskIcon_Die(struct Widget* w) { SET_WIDGET_ROUTINE(w, ENTITY_EXIT); }

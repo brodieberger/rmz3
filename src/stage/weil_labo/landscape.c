@@ -1,13 +1,13 @@
-#include "blink.h"
 #include "global.h"
 #include "overworld.h"
+#include "palette_animation.h"
 
 #define STAGE (gOverworld.work.weilLabo)
 
-static void initWeilLabo(struct Coord* _ UNUSED);
-static void FUN_08015010(struct Coord* _ UNUSED);
-static void nop_08015244(struct Coord* _ UNUSED);
-static void exitWeilLabo(struct Coord* _ UNUSED);
+static void initWeilLabo(Coords32* _ UNUSED);
+static void FUN_08015010(Coords32* _ UNUSED);
+static void nop_08015244(Coords32* _ UNUSED);
+static void exitWeilLabo(Coords32* _ UNUSED);
 
 static const StageFunc sStageRoutine[4] = {
     initWeilLabo,
@@ -16,7 +16,7 @@ static const StageFunc sStageRoutine[4] = {
     exitWeilLabo,
 };
 
-static void initWeilLabo(struct Coord* _ UNUSED) {
+static void initWeilLabo(Coords32* _ UNUSED) {
   STAGE.unk_000 = 0;
   gOverworld.state[2] = 0;
   gOverworld.state[3] = 0;
@@ -35,79 +35,79 @@ static void initWeilLabo(struct Coord* _ UNUSED) {
   STAGE.unk_008 = 0;
 }
 
-static void FUN_08015010(struct Coord* _ UNUSED) {
+static void FUN_08015010(Coords32* _ UNUSED) {
   if ((TILESET_ID(0) == STAGE_WEILS_LABO) && (TILESET_IDX(0) == 0) && (gOverworld.state[0] == 0)) {
     if ((STAGE.unk_000 & (1 << 0)) == 0) {
       STAGE.unk_000 |= (1 << 0);
-      LoadBlink(259, 0);
-      LoadBlink(260, 0);
-      LoadBlink(261, 0);
-      LoadBlink(262, 0);
+      StartPaletteAnimation(259, 0);
+      StartPaletteAnimation(260, 0);
+      StartPaletteAnimation(261, 0);
+      StartPaletteAnimation(262, 0);
     }
-    UpdateBlinkMotionState(259);
-    UpdateBlinkMotionState(260);
-    UpdateBlinkMotionState(261);
-    UpdateBlinkMotionState(262);
+    StepPaletteAnimation(259);
+    StepPaletteAnimation(260);
+    StepPaletteAnimation(261);
+    StepPaletteAnimation(262);
   } else if (STAGE.unk_000 & (1 << 0)) {
     STAGE.unk_000 ^= (1 << 0);
-    ClearBlink(259);
-    ClearBlink(260);
-    ClearBlink(261);
-    ClearBlink(262);
+    RemovePaletteAnimation(259);
+    RemovePaletteAnimation(260);
+    RemovePaletteAnimation(261);
+    RemovePaletteAnimation(262);
   }
 
   if ((TILESET_ID(1) == STAGE_WEILS_LABO) && (TILESET_IDX(1) == 1)) {
     if ((STAGE.unk_000 & (1 << 1)) == 0) {
       STAGE.unk_000 |= (1 << 1);
-      LoadBlink(263, 0);
-      LoadBlink(264, 0);
-      LoadBlink(265, 0);
-      LoadBlink(266, 0);
+      StartPaletteAnimation(263, 0);
+      StartPaletteAnimation(264, 0);
+      StartPaletteAnimation(265, 0);
+      StartPaletteAnimation(266, 0);
     }
-    UpdateBlinkMotionState(263);
-    UpdateBlinkMotionState(264);
-    UpdateBlinkMotionState(265);
-    UpdateBlinkMotionState(266);
+    StepPaletteAnimation(263);
+    StepPaletteAnimation(264);
+    StepPaletteAnimation(265);
+    StepPaletteAnimation(266);
   } else if (STAGE.unk_000 & (1 << 1)) {
     STAGE.unk_000 ^= (1 << 1);
-    ClearBlink(263);
-    ClearBlink(264);
-    ClearBlink(265);
-    ClearBlink(266);
+    RemovePaletteAnimation(263);
+    RemovePaletteAnimation(264);
+    RemovePaletteAnimation(265);
+    RemovePaletteAnimation(266);
   }
 
   if ((TILESET_ID(1) == STAGE_WEILS_LABO) && (TILESET_IDX(1) == 3) && (gOverworld.state[0] == 0)) {
     if ((STAGE.unk_000 & (1 << 2)) == 0) {
       STAGE.unk_000 |= (1 << 2);
-      LoadBlink(267, 0);
-      LoadBlink(268, 0);
+      StartPaletteAnimation(267, 0);
+      StartPaletteAnimation(268, 0);
     }
-    UpdateBlinkMotionState(267);
-    UpdateBlinkMotionState(268);
+    StepPaletteAnimation(267);
+    StepPaletteAnimation(268);
   } else if (STAGE.unk_000 & (1 << 2)) {
     STAGE.unk_000 ^= (1 << 2);
-    ClearBlink(267);
-    ClearBlink(268);
+    RemovePaletteAnimation(267);
+    RemovePaletteAnimation(268);
   }
 
   STAGE.unk_008++;
 }
 
-static void nop_08015244(struct Coord* _ UNUSED) { return; }
+static void nop_08015244(Coords32* _ UNUSED) { return; }
 
-static void exitWeilLabo(struct Coord* _ UNUSED) {
-  ClearBlink(259);
-  ClearBlink(260);
-  ClearBlink(261);
-  ClearBlink(262);
-  ClearBlink(263);
-  ClearBlink(264);
-  ClearBlink(265);
-  ClearBlink(266);
-  ClearBlink(267);
-  ClearBlink(268);
-  ClearBlink(269);
-  ClearBlink(270);
+static void exitWeilLabo(Coords32* _ UNUSED) {
+  RemovePaletteAnimation(259);
+  RemovePaletteAnimation(260);
+  RemovePaletteAnimation(261);
+  RemovePaletteAnimation(262);
+  RemovePaletteAnimation(263);
+  RemovePaletteAnimation(264);
+  RemovePaletteAnimation(265);
+  RemovePaletteAnimation(266);
+  RemovePaletteAnimation(267);
+  RemovePaletteAnimation(268);
+  RemovePaletteAnimation(269);
+  RemovePaletteAnimation(270);
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
@@ -203,11 +203,11 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     const u16 n = l->bgIdx;
     BGCNT16(n >> 4) &= 0xFFFC;
-    BGCNT16(n >> 4) |= 1;
+    BGCNT16(n >> 4) |= BGCNT_PRIORITY(1);
     gBlendRegBuffer.bldclt = 0x3B44;
     gBlendRegBuffer.bldalpha = 0xC04;
-    SEA = PIXEL(832);
-    LoadBlink(234, 192);
+    gOverworld.sea = PIXEL(832);
+    StartPaletteAnimation(234, 192);
     l->unk_10 = 0;
     l->phase++;
   }
@@ -222,14 +222,14 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
   sin = SIN(l->unk_10);
   (l->scroll).y = -27 - (((s16)sin) >> 6);
 #endif
-  UpdateBlinkMotionState(234);
+  StepPaletteAnimation(234);
 }
 
 // 0x0801534c
 static void LayerExit_2(struct StageLayer* l UNUSED, const struct Stage* _ UNUSED) {
-  ClearBlink(234);
+  RemovePaletteAnimation(234);
   gBlendRegBuffer.bldclt = 0;
-  SEA = MAX_Y;
+  gOverworld.sea = MAX_Y;
 }
 
 // 0x08015378
@@ -246,7 +246,7 @@ static void FUN_08015390(struct StageLayer* l, const struct Stage* _ UNUSED) {
   if (l->phase == 0) {
     (l->scrollPower).x = 0xC0;
     (l->scrollPower).y = 0xC0;
-    if ((l->viewportCenterPixel).x < 5760) {
+    if ((l->viewportLeftTopPixel).x < 5760) {
       (l->scroll).x = 840;
     } else {
       (l->scroll).x = 1500;
@@ -292,7 +292,7 @@ const struct Stage gWeilLaboLandscape = {
   maps : {&sChunkMap1, &sChunkMap2, &sChunkMap3},
   bgIdx : {USE_BG1, USE_BG2, USE_BG3},
   prio : {3, 3, 3},
-  screenBase : {BGMAP_BLOCK(2), BGMAP_BLOCK(4), BGMAP_BLOCK(6)},
+  screenBase : {BGCNT_SCREENBASE(2), BGCNT_SCREENBASE(4), BGCNT_SCREENBASE(6)},
   scrollPower : {{0x100, 0x100}, {0x100, 0x100}, {0x100, 0x100}},
   scroll : {{0, 0}, {0, 0}, {0, 0}},
   tilesetOffset : sTilesetOffset,

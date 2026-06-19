@@ -1,61 +1,65 @@
-#include "blink.h"
 #include "game.h"
 #include "global.h"
+#include "palette_animation.h"
 #include "widget.h"
 
-static void MenuComp13_Init(struct Widget *w);
-static void MenuComp13_Update(struct Widget *w);
-static void MenuComp13_Die(struct Widget *w);
+struct Widget13 {
+  struct Entity s;
+  // props (16bytes, offset: 0x74..)
+  u8 unk_0[4];
+  motion_t unk_4;  // unk_78
+  u16 tileNum;
+  u8 unk_8;
+  u8 unk_9;
+  u8 palID;
+  u8 unk_b;
+  u8 unk_c;
+};
+static_assert(sizeof(struct Widget13) == sizeof(struct Widget));
+
+static void MenuComp13_Init(struct Widget* w);
+static void MenuComp13_Update(struct Widget* w);
+static void MenuComp13_Die(struct Widget13* w);
 
 // clang-format off
 const WidgetRoutine gMenuComp13Routine = {
-    [ENTITY_INIT] =      MenuComp13_Init,
-    [ENTITY_UPDATE] =    MenuComp13_Update,
-    [ENTITY_DIE] =       MenuComp13_Die,
-    [ENTITY_DISAPPEAR] = DeleteWidget,
-    [ENTITY_EXIT] =      (WidgetFunc)DeleteEntity,
+    [ENTITY_INIT] =      (void*)MenuComp13_Init,
+    [ENTITY_UPDATE] =    (void*)MenuComp13_Update,
+    [ENTITY_DIE] =       (void*)MenuComp13_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
-struct Widget *FUN_080e83d0(void *r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Entity* FUN_080e83d0(void* r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
+  struct Widget13* w = (struct Widget13*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 13);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)r0;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = r2;
-    (w->s).coord.x = x;
-    (w->s).coord.y = y;
-    (w->props).w13.unk_4 = r3;
-    (w->props).w13.unk_9 = r6;
-    (w->props).w13.unk_b = 0;
+    (w->s).unk_28 = (struct Entity*)r0;
+    (w->s).work[0] = r1, (w->s).work[1] = r2;
+    (w->s).coord.x = x, (w->s).coord.y = y;
+    w->unk_4 = r3;
+    w->unk_9 = r6;
+    w->unk_b = 0;
   }
-  return w;
+  return (void*)w;
 }
 
-struct Widget *FUN_080e844c(void *r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
-  struct Widget *w = (struct Widget *)AllocEntityFirst(gWidgetHeaderPtr);
+struct Entity* FUN_080e844c(void* r0, u8 r1, u8 r2, u16 r3, s32 x, s32 y, u8 r6) {
+  struct Widget13* w = (struct Widget13*)AllocEntityLast(gWidgetHeaderPtr);
   if (w != NULL) {
-    (w->s).taskCol = 16;
     INIT_WIDGET_ROUTINE(w, 13);
-    (w->s).tileNum = 0;
-    (w->s).palID = 0;
-    (w->s).unk_28 = (struct Entity *)r0;
-    (w->s).work[0] = r1;
-    (w->s).work[1] = r2;
-    (w->s).coord.x = x;
-    (w->s).coord.y = y;
-    (w->props).w13.unk_4 = r3;
-    (w->props).w13.unk_9 = r6;
-    (w->props).w13.unk_b = 1;
+    (w->s).unk_28 = (void*)r0;
+    (w->s).work[0] = r1, (w->s).work[1] = r2;
+    (w->s).coord.x = x, (w->s).coord.y = y;
+    w->unk_4 = r3;
+    w->unk_9 = r6;
+    w->unk_b = 1;
   }
-  return w;
+  return (void*)w;
 }
 
-NAKED static void MenuComp13_Init(struct Widget *w) {
+NAKED static void MenuComp13_Init(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -78,7 +82,7 @@ NAKED static void MenuComp13_Init(struct Widget *w) {
 	ldrb r0, [r6, #0x10]\n\
 	cmp r0, #0xa6\n\
 	bne _080E8512\n\
-	ldr r0, _080E8554 @ =gSystemSavedataManager\n\
+	ldr r0, _080E8554 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #0xc]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
@@ -103,7 +107,7 @@ _080E8512:\n\
 	mov sl, r2\n\
 	cmp r0, #0xa7\n\
 	bne _080E8538\n\
-	ldr r0, _080E8554 @ =gSystemSavedataManager\n\
+	ldr r0, _080E8554 @ =gSystemSavedata\n\
 	ldrb r1, [r0, #9]\n\
 	movs r2, #2\n\
 	adds r0, r2, #0\n\
@@ -119,7 +123,7 @@ _080E8538:\n\
 	ldr r0, _080E855C @ =0x0000B00A\n\
 	cmp r1, r0\n\
 	bne _080E856C\n\
-	ldr r0, _080E8554 @ =gSystemSavedataManager\n\
+	ldr r0, _080E8554 @ =gSystemSavedata\n\
 	adds r0, #0x4b\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #1\n\
@@ -128,7 +132,7 @@ _080E8538:\n\
 	b _080E856A\n\
 	.align 2, 0\n\
 _080E8550: .4byte gWidgetFnTable\n\
-_080E8554: .4byte gSystemSavedataManager\n\
+_080E8554: .4byte gSystemSavedata\n\
 _080E8558: .4byte 0x0000BB03\n\
 _080E855C: .4byte 0x0000B00A\n\
 _080E8560: .4byte 0x0000B10A\n\
@@ -143,7 +147,7 @@ _080E856C:\n\
 	ldr r0, _080E8588 @ =0x0000AA04\n\
 	cmp r1, r0\n\
 	bne _080E859C\n\
-	ldr r0, _080E858C @ =gSystemSavedataManager\n\
+	ldr r0, _080E858C @ =gSystemSavedata\n\
 	adds r0, #0x4a\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #1\n\
@@ -153,7 +157,7 @@ _080E856C:\n\
 	.align 2, 0\n\
 _080E8584: .4byte 0x0000B20A\n\
 _080E8588: .4byte 0x0000AA04\n\
-_080E858C: .4byte gSystemSavedataManager\n\
+_080E858C: .4byte gSystemSavedata\n\
 _080E8590: .4byte 0x0000AB04\n\
 _080E8594:\n\
 	cmp r0, #2\n\
@@ -194,7 +198,7 @@ _080E859C:\n\
 	lsrs r2, r2, #8\n\
 	subs r2, #0x8f\n\
 	strh r2, [r7]\n\
-	ldr r3, _080E8650 @ =gUnlockedElfPtr\n\
+	ldr r3, _080E8650 @ =gElfAvailability\n\
 	ldrb r0, [r6, #0x10]\n\
 	ldr r3, [r3]\n\
 	adds r0, r0, r3\n\
@@ -245,7 +249,7 @@ _080E8640: .4byte wDynamicGraphicTilenums\n\
 _080E8644: .4byte wDynamicMotionPalIDs\n\
 _080E8648: .4byte wStaticGraphicTilenums\n\
 _080E864C: .4byte wStaticMotionPalIDs\n\
-_080E8650: .4byte gUnlockedElfPtr\n\
+_080E8650: .4byte gElfAvailability\n\
 _080E8654: .4byte gElfMugshotGraphics\n\
 _080E8658: .4byte gElfMugshotGraphics+12\n\
 _080E865C:\n\
@@ -525,7 +529,7 @@ _080E8878:\n\
 	lsls r3, r3, #2\n\
 	adds r2, r3, #0\n\
 	orrs r1, r2\n\
-	bl LoadBlink\n\
+	bl StartPaletteAnimation\n\
 _080E8892:\n\
 	adds r0, r6, #0\n\
 	bl MenuComp13_Update\n\
@@ -542,7 +546,7 @@ _080E88A8: .4byte 0x00006401\n\
  .syntax divided\n");
 }
 
-NAKED static void MenuComp13_Update(struct Widget *w) {
+NAKED static void MenuComp13_Update(struct Widget* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -559,7 +563,7 @@ _080E88C0:\n\
 	ldrb r0, [r1]\n\
 	cmp r0, #0\n\
 	beq _080E88CE\n\
-	bl UpdateBlinkMotionState\n\
+	bl StepPaletteAnimation\n\
 _080E88CE:\n\
 	ldrb r0, [r5, #2]\n\
 	cmp r0, #2\n\
@@ -1981,7 +1985,7 @@ _080E9478:\n\
 	strb r0, [r4, #0xe]\n\
 _080E947E:\n\
 	adds r0, r4, #0\n\
-	bl UpdateMotionGraphic\n\
+	bl UpdateEntityAnim\n\
 	ldrb r0, [r4, #0xd]\n\
 	cmp r0, #1\n\
 	beq _080E94D4\n\
@@ -2086,19 +2090,19 @@ _080E9540: .4byte gBlendRegBuffer\n\
  .syntax divided\n");
 }
 
-static void MenuComp13_Die(struct Widget *w) {
+static void MenuComp13_Die(struct Widget13* w) {
   if ((w->s).work[1] != 0) {
-    const motion_t m = (w->props).w13.unk_4;
-    wDynamicGraphicTilenums[m >> 8] = (w->props).w13.tileNum;
-    wDynamicMotionPalIDs[m >> 8] = (w->props).w13.palID;
+    const motion_t m = w->unk_4;
+    wDynamicGraphicTilenums[m >> 8] = w->tileNum;
+    wDynamicMotionPalIDs[m >> 8] = w->palID;
   } else {
-    const motion_t m = (w->props).w13.unk_4;
-    wStaticGraphicTilenums[m >> 8] = (w->props).w13.tileNum;
-    wStaticMotionPalIDs[m >> 8] = (w->props).w13.palID;
+    const motion_t m = w->unk_4;
+    wStaticGraphicTilenums[m >> 8] = w->tileNum;
+    wStaticMotionPalIDs[m >> 8] = w->palID;
   }
 
-  if ((w->props).w13.unk_c != 0) {
-    ClearBlink((w->props).w13.unk_c);
+  if (w->unk_c != 0) {
+    RemovePaletteAnimation(w->unk_c);
   }
 
   (w->s).flags &= ~DISPLAY;

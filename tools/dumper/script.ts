@@ -1,11 +1,12 @@
-#!/usr/bin/env -S deno run --allow-read --unstable
+#!/usr/bin/env -S deno run --allow-read
 
 import { Command } from '@cliffy/command';
 import { Parser as _Parser } from '@binary-parser';
-import { Coord, toHex } from '../common/index.ts';
+import { BASE, Coord, ROM_PATH, toHex } from '../common/index.ts';
 
-const BASE = 0x0800_0000;
 const SIZE = 8;
+
+const SEPARATOR = '@;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@';
 
 type CommandArgs = {
   arg1: number;
@@ -13,26 +14,46 @@ type CommandArgs = {
   arg3: number;
 };
 
-const sequence: string[] = [];
-
 const Parser = new _Parser().endianness('little');
 
 const main = async () => {
-  const { args, options } = await new Command()
+  const { args } = await new Command()
     .name('script.ts')
     .version('1.0.0')
     .description(`Dump Zero3 command scripts`)
-    .arguments('<start:string>')
-    .option('--max', 'Max command length', { default: 1000 })
-    .usage('0x08354908 17')
+    .argument('<tbl:string>', 'スクリプトテーブルのアドレス')
+    .argument('<length:number>', 'スクリプトテーブルのエントリ数')
+    .usage('0x08357788 26')
     .parse(Deno.args);
 
-  const rom = Deno.readFileSync('baserom.gba');
-  const start = Number(args[0]);
-  let reachEnd = false;
-  const max = Number(options.max);
+  const rom = Deno.readFileSync(ROM_PATH);
+  const view = new DataView(rom.buffer);
+  const tbl = Number(args[0]);
+  const length = Number(args[1]);
 
-  for (let i = 0; !reachEnd && (i < max); i++) {
+  for (let i = 0; i < length; i++) {
+    const start = view.getUint32((tbl + (i * 4)) - BASE, true);
+    const hexaddr = toHex(start, 8).toLowerCase();
+    console.log(`Script_${i}_${hexaddr}: @ 0x${hexaddr}`);
+    printScript(rom, start, 1000);
+    console.log('');
+  }
+
+  console.log(SEPARATOR);
+  console.log('');
+
+  for (let i = 0; i < length; i++) {
+    const addr = view.getUint32((tbl + (i * 4)) - BASE, true);
+    const hexaddr = toHex(addr, 8).toLowerCase();
+    console.log(`  .4byte Script_${i}_${hexaddr} @ 0x${hexaddr}`); // e.g. .4byte Script_1_08355d94
+  }
+};
+
+const printScript = (rom: Uint8Array<ArrayBuffer>, start: number, max_size: number) => {
+  const sequence: string[] = [];
+  let reachEnd = false;
+
+  for (let i = 0; !reachEnd && (i < max_size); i++) {
     const addr = start + (i * SIZE) - BASE;
     const cmd = rom.subarray(addr, addr + SIZE);
     const args = cmd.subarray(1);
@@ -127,7 +148,7 @@ const main = async () => {
       }
 
       case 0x08: {
-        sequence.push(`cmd08 ${result.arg1}, ${result.arg2}, ${result.arg3}`);
+        sequence.push(`cmd08 ${result.arg1}, ${result.arg3}`);
         break;
       }
 
@@ -146,7 +167,7 @@ const main = async () => {
             break;
           }
           default: {
-            printUnkCommand(cmd[0], result);
+            sequence.push(printUnkCommand(cmd[0], result));
             break;
           }
         }
@@ -227,7 +248,7 @@ const main = async () => {
             break;
           }
           default: {
-            printUnkCommand(cmd[0], result);
+            sequence.push(printUnkCommand(cmd[0], result));
             break;
           }
         }
@@ -264,7 +285,7 @@ const main = async () => {
       case 0x14: {
         switch (result.arg1) {
           case 0x00: {
-            sequence.push(`wait_screeneffect`);
+            sequence.push(`wait_transition_end`);
             break;
           }
           case 0x01: {
@@ -280,7 +301,7 @@ const main = async () => {
             break;
           }
           default: {
-            sequence.push(`screeneffect ${result.arg1}`);
+            sequence.push(`start_transition ${result.arg1}`);
             break;
           }
         }
@@ -376,7 +397,7 @@ const main = async () => {
             break;
           }
           default: {
-            printUnkCommand(cmd[0], result);
+            sequence.push(printUnkCommand(cmd[0], result));
             break;
           }
         }
@@ -433,7 +454,7 @@ const main = async () => {
             break;
           }
           default: {
-            printUnkCommand(cmd[0], result);
+            sequence.push(printUnkCommand(cmd[0], result));
             break;
           }
         }
@@ -446,22 +467,22 @@ const main = async () => {
       }
 
       case 0x20: {
-        sequence.push(`cmd20 ${result.arg1}, ${result.arg2}, ${result.arg3}`);
+        sequence.push(`load_graphic_primitive`);
         break;
       }
 
       case 0x22: {
         switch (result.arg1) {
           case 0x00: {
-            sequence.push(`prepare_missionresult`);
+            sequence.push(`start_result_screen`);
             break;
           }
           case 0x01: {
-            sequence.push(`missionresult`);
+            sequence.push(`wait_for_result_screen_end`);
             break;
           }
           default: {
-            printUnkCommand(cmd[0], result);
+            sequence.push(printUnkCommand(cmd[0], result));
             break;
           }
         }
@@ -474,7 +495,7 @@ const main = async () => {
       }
 
       case 0x25: {
-        sequence.push(`cutscene ${result.arg1}`);
+        sequence.push(`play_movie ${result.arg1}`);
         break;
       }
 
@@ -485,19 +506,18 @@ const main = async () => {
       }
 
       default: {
-        printUnkCommand(cmd[0], result);
+        sequence.push(printUnkCommand(cmd[0], result));
         break;
       }
     }
   }
 
-  console.log(`Script_${toHex(start, 8).toLowerCase()}:`);
   sequence.forEach((line) => console.log(`  ${line}`));
 };
 
-const printUnkCommand = (cmd: number, args: CommandArgs) => {
+const printUnkCommand = (cmd: number, args: CommandArgs): string => {
   console.error(`unknown command: 0x${toHex(cmd, 2)}`);
-  sequence.push(`cmd${toHex(cmd, 2).toLowerCase()} ${args.arg1}, ${args.arg2}, ${args.arg3}`);
+  return `cmd${toHex(cmd, 2).toLowerCase()} ${args.arg1}, ${args.arg2}, ${args.arg3}`;
 };
 
 main();

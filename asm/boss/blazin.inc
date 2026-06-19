@@ -35,7 +35,7 @@ _0803EE40:
 	strb r0, [r4, #0xe]
 _0803EE66:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r4, #0x18]
 	ldrb r1, [r0, #9]
 	movs r2, #1
@@ -100,7 +100,7 @@ _0803EEC0:
 	strb r0, [r4, #0xe]
 _0803EEE8:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -128,7 +128,7 @@ _0803EF00:
 	strb r0, [r4, #0xe]
 _0803EF22:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -152,7 +152,7 @@ _0803EF42:
 _0803EF4C: .4byte 0xFFFFA200
 _0803EF50:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r1, #0
 	movs r0, #2
 	strb r0, [r4, #0xd]
@@ -209,7 +209,7 @@ _0803EFA2:
 	strb r1, [r5, #0xe]
 _0803EFB4:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _0803EFBA:
 	pop {r4, r5}
 	pop {r0}
@@ -275,7 +275,7 @@ _0803F00C:
 _0803F028:
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F054 @ =0x08361C80
+	ldr r1, _0803F054 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r1, #0
 	str r1, [r6, #0x60]
@@ -293,7 +293,7 @@ _0803F028:
 	b _0803F05C
 	.align 2, 0
 _0803F050: .4byte 0xFFFFA200
-_0803F054: .4byte 0x08361C80
+_0803F054: .4byte gBlazinCollisions+(24*1)
 _0803F058:
 	movs r0, #0x24
 	strb r0, [r6, #0x13]
@@ -335,7 +335,7 @@ _0803F07C:
 	strb r0, [r6, #0xe]
 _0803F0A2:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0803F262
 _0803F0AA:
 	ldr r0, [r6, #0x54]
@@ -345,7 +345,7 @@ _0803F0AA:
 	adds r0, r6, #0
 	bl setBlazinDirection
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r6, #0x68]
 	adds r0, #0x40
 	str r0, [r6, #0x68]
@@ -396,7 +396,7 @@ _0803F104:
 	mov sb, r1
 	cmp r3, r2
 	bne _0803F1E0
-	ldr r0, _0803F170 @ =gMission
+	ldr r0, _0803F170 @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -414,7 +414,7 @@ _0803F104:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F180 @ =0x080FED27
+	ldr r5, _0803F180 @ =BlazinEXModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -436,11 +436,11 @@ _0803F104:
 	lsrs r1, r0, #0x10
 	b _0803F252
 	.align 2, 0
-_0803F170: .4byte gMission
+_0803F170: .4byte gScore
 _0803F174: .4byte RNG_0202f388
 _0803F178: .4byte 0x000343FD
 _0803F17C: .4byte 0x00269EC3
-_0803F180: .4byte 0x080FED27
+_0803F180: .4byte BlazinEXModes
 _0803F184:
 	adds r0, r6, #0
 	bl howFarBlazin
@@ -455,7 +455,7 @@ _0803F184:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F1DC @ =0x080FECF4
+	ldr r5, _0803F1DC @ =BlazinModes
 	lsls r4, r3, #4
 	adds r4, r4, r3
 	adds r1, r4, r5
@@ -480,9 +480,9 @@ _0803F184:
 _0803F1D0: .4byte RNG_0202f388
 _0803F1D4: .4byte 0x000343FD
 _0803F1D8: .4byte 0x00269EC3
-_0803F1DC: .4byte 0x080FECF4
+_0803F1DC: .4byte BlazinModes
 _0803F1E0:
-	ldr r0, _0803F20C @ =gMission
+	ldr r0, _0803F20C @ =gScore
 	ldr r0, [r0]
 	ldrb r0, [r0, #1]
 	cmp r0, #4
@@ -500,14 +500,14 @@ _0803F1E0:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F21C @ =0x080FED27
+	ldr r5, _0803F21C @ =BlazinEXModes
 	b _0803F23E
 	.align 2, 0
-_0803F20C: .4byte gMission
+_0803F20C: .4byte gScore
 _0803F210: .4byte RNG_0202f388
 _0803F214: .4byte 0x000343FD
 _0803F218: .4byte 0x00269EC3
-_0803F21C: .4byte 0x080FED27
+_0803F21C: .4byte BlazinEXModes
 _0803F220:
 	adds r0, r6, #0
 	bl howFarBlazin
@@ -522,7 +522,7 @@ _0803F220:
 	lsrs r1, r0, #1
 	str r1, [r2]
 	lsrs r0, r0, #0x11
-	ldr r5, _0803F27C @ =0x080FECF4
+	ldr r5, _0803F27C @ =BlazinModes
 _0803F23E:
 	lsls r4, r3, #4
 	adds r4, r4, r3
@@ -553,7 +553,7 @@ _0803F262:
 _0803F270: .4byte RNG_0202f388
 _0803F274: .4byte 0x000343FD
 _0803F278: .4byte 0x00269EC3
-_0803F27C: .4byte 0x080FECF4
+_0803F27C: .4byte BlazinModes
 
 	thumb_func_start nop_0803f280
 nop_0803f280: @ 0x0803F280
@@ -660,7 +660,7 @@ _0803F33C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F398 @ =0x08361CB0
+	ldr r1, _0803F398 @ =gBlazinCollisions+(24*3)
 	bl SetDDP
 	ldrb r0, [r4, #0xe]
 	adds r0, #1
@@ -677,7 +677,7 @@ _0803F364:
 	adds r0, r0, r2
 	str r0, [r4, #0x58]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	cmp r0, #0
 	beq _0803F38E
@@ -692,7 +692,7 @@ _0803F38E:
 	b _0803F3E6
 	.align 2, 0
 _0803F394: .4byte 0xFFFFA200
-_0803F398: .4byte 0x08361CB0
+_0803F398: .4byte gBlazinCollisions+(24*3)
 _0803F39C:
 	adds r0, r4, #0
 	adds r0, #0xc8
@@ -707,7 +707,7 @@ _0803F39C:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F3F4 @ =0x08361C80
+	ldr r1, _0803F3F4 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
@@ -720,7 +720,7 @@ _0803F39C:
 	strb r0, [r4, #0xe]
 _0803F3D2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -736,7 +736,7 @@ _0803F3E8:
 	bx r0
 	.align 2, 0
 _0803F3F0: .4byte 0xFFFFA200
-_0803F3F4: .4byte 0x08361C80
+_0803F3F4: .4byte gBlazinCollisions+(24*1)
 _0803F3F8: .4byte 0xFFFFF000
 
 	thumb_func_start FUN_0803f3fc
@@ -781,7 +781,7 @@ _0803F434:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F47C @ =0x08361C80
+	ldr r1, _0803F47C @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r0, #0
 	strb r0, [r4, #0x13]
@@ -790,7 +790,7 @@ _0803F434:
 	strb r0, [r4, #0xe]
 _0803F460:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -801,11 +801,11 @@ _0803F460:
 	b _0803F52A
 	.align 2, 0
 _0803F478: .4byte 0xFFFFA200
-_0803F47C: .4byte 0x08361C80
+_0803F47C: .4byte gBlazinCollisions+(24*1)
 _0803F480:
 	adds r0, r4, #0
 	adds r0, #0x74
-	ldr r1, _0803F4F0 @ =0x08361CE0
+	ldr r1, _0803F4F0 @ =gBlazinCollisions+(24*5)
 	bl SetDDP
 	adds r0, r4, #0
 	bl blazin_080402a4
@@ -843,7 +843,7 @@ _0803F4A2:
 	strb r0, [r4, #0x13]
 _0803F4D2:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r1, r4, #0
 	adds r1, #0xcc
 	ldr r0, [r1]
@@ -856,7 +856,7 @@ _0803F4D2:
 	adds r0, #1
 	b _0803F52A
 	.align 2, 0
-_0803F4F0: .4byte 0x08361CE0
+_0803F4F0: .4byte gBlazinCollisions+(24*5)
 _0803F4F4: .4byte 0xFFFFA200
 _0803F4F8:
 	adds r0, r4, #0
@@ -875,7 +875,7 @@ _0803F4F8:
 	strb r0, [r4, #0xe]
 _0803F516:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r4, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -936,14 +936,14 @@ _0803F578:
 	bl SetMotion
 	adds r0, r5, #0
 	adds r0, #0x74
-	ldr r1, _0803F5C0 @ =0x08361C80
+	ldr r1, _0803F5C0 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
 	strb r0, [r5, #0xe]
 _0803F5A0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -957,7 +957,7 @@ _0803F5B2:
 	b _0803F708
 	.align 2, 0
 _0803F5BC: .4byte 0xFFFFA200
-_0803F5C0: .4byte 0x08361C80
+_0803F5C0: .4byte gBlazinCollisions+(24*1)
 _0803F5C4:
 	adds r0, r5, #0
 	adds r0, #0x74
@@ -1007,14 +1007,14 @@ _0803F610:
 	ldr r4, _0803F628 @ =0x080FED98
 	b _0803F6B6
 	.align 2, 0
-_0803F624: .4byte 0x08361D70
-_0803F628: .4byte 0x080FED98
+_0803F624: .4byte gBlazinCollisions+(11*24)
+_0803F628: .4byte u16_ARRAY_080fed66+(25*2)
 _0803F62C: .4byte 0xFFFFA200
 _0803F630:
 	movs r0, #0
 	strb r0, [r5, #0xf]
 	strb r0, [r5, #0x13]
-	ldr r4, _0803F6AC @ =0x080FED64
+	ldr r4, _0803F6AC @ =u16_080fed64
 	adds r0, r5, #0
 	adds r0, #0xc8
 	ldrh r1, [r0]
@@ -1074,10 +1074,10 @@ _0803F6A2:
 	strb r0, [r5, #0xe]
 	b _0803F6E2
 	.align 2, 0
-_0803F6AC: .4byte 0x080FED64
+_0803F6AC: .4byte u16_080fed64
 _0803F6B0: .4byte 0xFFFFA200
 _0803F6B4:
-	ldr r4, _0803F6EC @ =0x080FED64
+	ldr r4, _0803F6EC @ =u16_080fed64
 _0803F6B6:
 	ldrb r0, [r5, #0x13]
 	lsls r0, r0, #2
@@ -1102,14 +1102,14 @@ _0803F6B6:
 	strb r0, [r5, #0x12]
 _0803F6E2:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	b _0803F708
 	.align 2, 0
-_0803F6EC: .4byte 0x080FED64
+_0803F6EC: .4byte u16_080fed64
 _0803F6F0: .4byte 0xFFFFA200
 _0803F6F4:
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
 	strb r0, [r5, #0xe]
@@ -1193,7 +1193,7 @@ _0803F78A:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F7DC @ =0x08361C80
+	ldr r1, _0803F7DC @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	movs r0, #3
 	strb r0, [r6, #0x13]
@@ -1209,7 +1209,7 @@ _0803F7B6:
 	b _0803F99C
 _0803F7C2:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1220,7 +1220,7 @@ _0803F7D4:
 	b _0803F95C
 	.align 2, 0
 _0803F7D8: .4byte 0xFFFFA200
-_0803F7DC: .4byte 0x08361C80
+_0803F7DC: .4byte gBlazinCollisions+(24*1)
 _0803F7E0:
 	adds r0, r6, #0
 	adds r0, #0xc4
@@ -1242,7 +1242,7 @@ _0803F7EC:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F85C @ =0x08361D40
+	ldr r1, _0803F85C @ =gBlazinCollisions+(24*9)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
@@ -1256,7 +1256,7 @@ _0803F814:
 	b _0803F99C
 _0803F820:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1284,7 +1284,7 @@ _0803F84C:
 	b _0803F95A
 	.align 2, 0
 _0803F858: .4byte 0xFFFFA200
-_0803F85C: .4byte 0x08361D40
+_0803F85C: .4byte gBlazinCollisions+(24*9)
 _0803F860:
 	adds r0, r6, #0
 	adds r0, #0xc4
@@ -1333,7 +1333,7 @@ _0803F8AA:
 	cmp r1, #0
 	beq _0803F99C
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -1361,14 +1361,14 @@ _0803F8D0:
 	bl PlaySound
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F914 @ =0x08361C80
+	ldr r1, _0803F914 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
 	strb r0, [r6, #0xe]
 _0803F8FE:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1377,7 +1377,7 @@ _0803F8FE:
 	b _0803F95C
 	.align 2, 0
 _0803F910: .4byte 0xFFFFA200
-_0803F914: .4byte 0x08361C80
+_0803F914: .4byte gBlazinCollisions+(24*1)
 _0803F918:
 	adds r0, r6, #0
 	adds r0, #0xc8
@@ -1396,14 +1396,14 @@ _0803F918:
 	strb r0, [r1]
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803F968 @ =0x08361D40
+	ldr r1, _0803F968 @ =gBlazinCollisions+(24*9)
 	bl SetDDP
 	ldrb r0, [r6, #0xe]
 	adds r0, #1
 	strb r0, [r6, #0xe]
 _0803F948:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1419,7 +1419,7 @@ _0803F95C:
 	b _0803F9A2
 	.align 2, 0
 _0803F964: .4byte 0xFFFFA200
-_0803F968: .4byte 0x08361D40
+_0803F968: .4byte gBlazinCollisions+(24*9)
 _0803F96C:
 	ldrb r0, [r6, #0x12]
 	cmp r0, #0
@@ -1572,7 +1572,7 @@ _0803FA7A:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FAEC @ =0x08361CB0
+	ldr r1, _0803FAEC @ =gBlazinCollisions+(24*3)
 	bl SetDDP
 	movs r0, #0
 	strb r0, [r6, #0x13]
@@ -1600,7 +1600,7 @@ _0803FABA:
 	adds r0, r0, r1
 	str r0, [r6, #0x58]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	cmp r0, #0
 	beq _0803FAE2
@@ -1616,7 +1616,7 @@ _0803FAE2:
 	b _0803FC62
 	.align 2, 0
 _0803FAE8: .4byte 0xFFFFA200
-_0803FAEC: .4byte 0x08361CB0
+_0803FAEC: .4byte gBlazinCollisions+(24*3)
 _0803FAF0:
 	movs r0, #0x72
 	bl PlaySound
@@ -1633,7 +1633,7 @@ _0803FAF0:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FB48 @ =0x08361C80
+	ldr r1, _0803FB48 @ =gBlazinCollisions+(24*1)
 	bl SetDDP
 	ldr r0, [r6, #0x54]
 	ldr r1, [r6, #0x58]
@@ -1646,7 +1646,7 @@ _0803FAF0:
 	strb r0, [r6, #0xe]
 _0803FB2C:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r0, [r0]
@@ -1659,7 +1659,7 @@ _0803FB3E:
 	b _0803FC62
 	.align 2, 0
 _0803FB44: .4byte 0xFFFFA200
-_0803FB48: .4byte 0x08361C80
+_0803FB48: .4byte gBlazinCollisions+(24*1)
 _0803FB4C: .4byte 0xFFFFF000
 _0803FB50:
 	adds r0, r6, #0
@@ -1675,7 +1675,7 @@ _0803FB50:
 	bl SetMotion
 	adds r0, r6, #0
 	adds r0, #0x74
-	ldr r1, _0803FBB8 @ =0x08361D10
+	ldr r1, _0803FBB8 @ =gBlazinCollisions+(24*7)
 	bl SetDDP
 	movs r1, #0
 	movs r0, #0xf0
@@ -1687,7 +1687,7 @@ _0803FB50:
 	strb r0, [r6, #0xe]
 _0803FB82:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x71
 	ldrb r0, [r0]
@@ -1709,7 +1709,7 @@ _0803FB82:
 	b _0803FC62
 	.align 2, 0
 _0803FBB4: .4byte 0xFFFFA200
-_0803FBB8: .4byte 0x08361D10
+_0803FBB8: .4byte gBlazinCollisions+(24*7)
 _0803FBBC:
 	ldrb r1, [r6, #0xf]
 	movs r0, #0xf
@@ -1743,9 +1743,9 @@ _0803FBFA:
 	adds r0, #1
 	strb r0, [r6, #0xf]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r6, #0x12]
 	cmp r0, #0
 	beq _0803FC1C
@@ -1760,7 +1760,7 @@ _0803FC1C:
 	b _0803FC62
 _0803FC22:
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 	adds r0, r6, #0
 	adds r0, #0xc8
 	ldrh r1, [r0]
@@ -1781,7 +1781,7 @@ _0803FC22:
 	strb r0, [r6, #0xe]
 _0803FC4E:
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r6, #0
 	adds r0, #0x73
 	ldrb r1, [r0]
@@ -1836,14 +1836,14 @@ _0803FCA6:
 	cmp r0, #0
 	beq _0803FCB6
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 _0803FCB6:
 	movs r0, #0x72
 	bl isSoundPlaying
 	cmp r0, #0
 	beq _0803FCC6
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 _0803FCC6:
 	strb r6, [r5, #0x13]
 	movs r0, #0x74
@@ -1879,7 +1879,7 @@ _0803FCD4:
 	movs r3, #0
 	bl GotoMotion
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	movs r0, #1
 	strb r0, [r5, #0x13]
 _0803FD14:
@@ -1977,14 +1977,14 @@ _0803FDB6:
 	cmp r0, #0
 	beq _0803FDC6
 	movs r0, #0x48
-	bl stopSound
+	bl StopSound
 _0803FDC6:
 	movs r0, #0x72
 	bl isSoundPlaying
 	cmp r0, #0
 	beq _0803FDD6
 	movs r0, #0x72
-	bl stopSound
+	bl StopSound
 _0803FDD6:
 	ldr r0, _0803FDEC @ =pZero2
 	ldr r0, [r0]
@@ -2014,7 +2014,7 @@ _0803FDF8:
 	strb r0, [r5, #0xe]
 _0803FE0C:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x5c]
 	rsbs r1, r0, #0
 	lsls r1, r1, #3
@@ -2133,7 +2133,7 @@ blazin_0803fed8: @ 0x0803FED8
 	ands r0, r1
 	cmp r0, #0
 	beq _0803FF1E
-	ldr r2, _0803FF18 @ =0x08361DD0
+	ldr r2, _0803FF18 @ =gBlazinCoords
 	movs r0, #9
 	adds r1, r4, #0
 	bl ApplyElementEffect
@@ -2152,7 +2152,7 @@ blazin_0803fed8: @ 0x0803FED8
 	strb r6, [r4, #0xe]
 	b _0803FF1E
 	.align 2, 0
-_0803FF18: .4byte 0x08361DD0
+_0803FF18: .4byte gBlazinCoords
 _0803FF1C:
 	str r6, [r5]
 _0803FF1E:
@@ -2280,7 +2280,7 @@ blazin_0803ffdc: @ 0x0803FFDC
 	ands r0, r1
 	cmp r0, #0
 	bne _08040010
-	ldr r0, _0804000C @ =0x080FEE20
+	ldr r0, _0804000C @ =s32_ARRAY_080fee20
 	lsls r1, r2, #2
 	adds r1, r1, r0
 	ldr r0, [r1]
@@ -2288,9 +2288,9 @@ blazin_0803ffdc: @ 0x0803FFDC
 	b _08040018
 	.align 2, 0
 _08040008: .4byte 0xFFFFD800
-_0804000C: .4byte 0x080FEE20
+_0804000C: .4byte s32_ARRAY_080fee20
 _08040010:
-	ldr r0, _08040040 @ =0x080FEE20
+	ldr r0, _08040040 @ =s32_ARRAY_080fee20
 	lsls r1, r2, #2
 	adds r1, r1, r0
 	ldr r0, [r1]
@@ -2314,7 +2314,7 @@ _08040018:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08040040: .4byte 0x080FEE20
+_08040040: .4byte s32_ARRAY_080fee20
 
 	thumb_func_start blazin_08040044
 blazin_08040044: @ 0x08040044
@@ -2335,7 +2335,7 @@ blazin_08040044: @ 0x08040044
 	ands r0, r1
 	cmp r0, #0
 	bne _0804009C
-	ldr r0, _08040080 @ =0x080FEDA8
+	ldr r0, _08040080 @ =u8_ARRAY_080feda8
 	adds r0, r3, r0
 	ldrb r0, [r0]
 	lsls r0, r0, #0x18
@@ -2348,13 +2348,13 @@ blazin_08040044: @ 0x08040044
 	adds r0, r4, r5
 	b _08040086
 	.align 2, 0
-_08040080: .4byte 0x080FEDA8
+_08040080: .4byte u8_ARRAY_080feda8
 _08040084:
 	subs r0, r4, r5
 _08040086:
 	lsls r0, r0, #0x18
 	lsrs r4, r0, #0x18
-	ldr r2, _08040098 @ =0x080FEDB8
+	ldr r2, _08040098 @ =Coord_ARRAY_080fedb8
 	lsls r3, r3, #3
 	adds r0, r3, r2
 	ldr r0, [r0]
@@ -2362,9 +2362,9 @@ _08040086:
 	adds r0, r0, r1
 	b _080400CA
 	.align 2, 0
-_08040098: .4byte 0x080FEDB8
+_08040098: .4byte Coord_ARRAY_080fedb8
 _0804009C:
-	ldr r0, _080400B4 @ =0x080FEDA8
+	ldr r0, _080400B4 @ =u8_ARRAY_080feda8
 	adds r0, r3, r0
 	ldrb r1, [r0]
 	movs r0, #0x40
@@ -2376,13 +2376,13 @@ _0804009C:
 	subs r0, r4, r5
 	b _080400BA
 	.align 2, 0
-_080400B4: .4byte 0x080FEDA8
+_080400B4: .4byte u8_ARRAY_080feda8
 _080400B8:
 	adds r0, r4, r7
 _080400BA:
 	lsls r0, r0, #0x18
 	lsrs r4, r0, #0x18
-	ldr r2, _08040108 @ =0x080FEDB8
+	ldr r2, _08040108 @ =Coord_ARRAY_080fedb8
 	lsls r3, r3, #3
 	adds r0, r3, r2
 	ldr r1, [r0]
@@ -2420,7 +2420,7 @@ _080400CA:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08040108: .4byte 0x080FEDB8
+_08040108: .4byte Coord_ARRAY_080fedb8
 _0804010C: .4byte gSineTable
 
 	thumb_func_start createBlazinEXFireBall
@@ -2438,7 +2438,7 @@ createBlazinEXFireBall: @ 0x08040110
 	ands r0, r1
 	cmp r0, #0
 	bne _08040140
-	ldr r0, _0804013C @ =0x080FEE2C
+	ldr r0, _0804013C @ =BlazinFireballAngles
 	adds r0, r3, r0
 	movs r1, #0xd
 	muls r1, r2, r1
@@ -2448,9 +2448,9 @@ createBlazinEXFireBall: @ 0x08040110
 	lsrs r3, r1, #0x18
 	b _08040150
 	.align 2, 0
-_0804013C: .4byte 0x080FEE2C
+_0804013C: .4byte BlazinFireballAngles
 _08040140:
-	ldr r0, _080401C8 @ =0x080FEE2C
+	ldr r0, _080401C8 @ =BlazinFireballAngles
 	adds r0, r3, r0
 	movs r1, #0xd
 	muls r1, r2, r1
@@ -2520,7 +2520,7 @@ _080401BE:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080401C8: .4byte 0x080FEE2C
+_080401C8: .4byte BlazinFireballAngles
 _080401CC: .4byte gSineTable
 _080401D0: .4byte 0xFFFFE400
 
@@ -2548,7 +2548,7 @@ FUN_080401d4: @ 0x080401D4
 	ldr r0, _08040294 @ =gSineTable
 	mov r8, r0
 _080401FE:
-	ldr r0, _08040298 @ =0x080FEE2C
+	ldr r0, _08040298 @ =BlazinFireballAngles
 	adds r0, r2, r0
 	ldrb r0, [r0]
 	ldr r1, [sp]
@@ -2623,7 +2623,7 @@ _08040276:
 	.align 2, 0
 _08040290: .4byte 0x7FFFFFFF
 _08040294: .4byte gSineTable
-_08040298: .4byte 0x080FEE2C
+_08040298: .4byte BlazinFireballAngles
 _0804029C: .4byte 0xFFFFE400
 _080402A0: .4byte pZero2
 
@@ -2680,7 +2680,7 @@ blazin_080402fc: @ 0x080402FC
 	cmp r2, #1
 	bne _0804032A
 	movs r2, #0
-	ldr r5, _0804031C @ =0x080FED5A
+	ldr r5, _0804031C @ =UnkBlaizinModes_080fed5a
 	adds r3, r5, #0
 _0804030A:
 	ldrh r1, [r3]
@@ -2692,7 +2692,7 @@ _0804030A:
 	ble _0804030A
 	b _0804035C
 	.align 2, 0
-_0804031C: .4byte 0x080FED5A
+_0804031C: .4byte UnkBlaizinModes_080fed5a
 _08040320:
 	adds r0, r2, #1
 	movs r1, #5
@@ -2700,7 +2700,7 @@ _08040320:
 	b _08040346
 _0804032A:
 	movs r2, #0
-	ldr r5, _08040350 @ =0x080FED5A
+	ldr r5, _08040350 @ =UnkBlaizinModes_080fed5a
 	adds r3, r5, #0
 _08040330:
 	ldrh r1, [r3]
@@ -2721,7 +2721,7 @@ _08040346:
 	ldrh r0, [r0]
 	b _0804035C
 	.align 2, 0
-_08040350: .4byte 0x080FED5A
+_08040350: .4byte UnkBlaizinModes_080fed5a
 _08040354:
 	adds r3, #2
 	adds r2, #1
@@ -2793,57 +2793,3 @@ _080403BC:
 	bx r1
 	.align 2, 0
 
-	thumb_func_start setBlazinDirection
-setBlazinDirection: @ 0x080403C4
-	push {lr}
-	adds r2, r0, #0
-	ldr r0, _080403F8 @ =pZero2
-	ldr r0, [r0]
-	ldr r1, [r0, #0x54]
-	ldr r0, [r2, #0x54]
-	cmp r1, r0
-	ble _080403FC
-	ldrb r1, [r2, #0xa]
-	movs r3, #0x10
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	bne _08040422
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #1
-	strb r0, [r1]
-	subs r1, #2
-	ldrb r0, [r1]
-	orrs r0, r3
-	strb r0, [r1]
-	ldrb r0, [r2, #0xa]
-	orrs r0, r3
-	b _08040420
-	.align 2, 0
-_080403F8: .4byte pZero2
-_080403FC:
-	ldrb r1, [r2, #0xa]
-	movs r0, #0x10
-	ands r0, r1
-	cmp r0, #0
-	beq _08040422
-	adds r1, r2, #0
-	adds r1, #0x4c
-	movs r0, #0
-	strb r0, [r1]
-	adds r3, r2, #0
-	adds r3, #0x4a
-	ldrb r1, [r3]
-	subs r0, #0x11
-	ands r0, r1
-	strb r0, [r3]
-	ldrb r1, [r2, #0xa]
-	movs r0, #0xef
-	ands r0, r1
-_08040420:
-	strb r0, [r2, #0xa]
-_08040422:
-	pop {r0}
-	bx r0
-	.align 2, 0

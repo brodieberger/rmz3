@@ -4,6 +4,24 @@
 
 // Saber wave by cyberelf, Cottus
 
+// エルフで出せるやつ
+struct SaverWave {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct SaberWave_b4 {
+    struct Weapon* saber;  // 0xB4, projectile -> saber (if saber, this is null)
+    struct Zero* z;        // 0xB8
+    u8 props[4];           // 0xBC
+    u8 element;            // 0xC0
+    u8 atk;                // 0xC1
+    u8 flags;              // 0xC2
+    bool8 unk;             // 0xC3
+    u8 unk_c4[40];         // 0xC4
+  } props;
+};
+static_assert(sizeof(struct SaverWave) == sizeof(struct Weapon));
+
+// 0x08361338
 static const struct Collision sCollisions[16] = {
     [0] = {
       kind : DDP,
@@ -189,42 +207,34 @@ void Weapon5_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gSaberWaveRoutine = {
-    [ENTITY_INIT] =      Weapon5_Init,
-    [ENTITY_UPDATE] =    Weapon5_Update,
-    [ENTITY_DIE] =       Weapon5_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)Weapon5_Init,
+    [ENTITY_UPDATE] =    (void*)Weapon5_Update,
+    [ENTITY_DIE] =       (void*)Weapon5_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
-struct Weapon* CreateSaberWave(struct Zero* z, struct Weapon* saber, bool8 isProjectile) {
-  struct Weapon* w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
-    struct SaberWave_b4* b4;
-
+struct Entity* CreateSaberWave(struct Zero* z, struct Weapon* saber, bool8 isProjectile) {
+  struct SaverWave* p = (struct SaverWave*)AllocEntityLast(gWeaponHeaderPtr);
+  if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_SABER) {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SABER_WAVE);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = gWeaponPalIDs[0];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SABER_WAVE);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
     } else {
-      INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_SABER_WAVE);
-      (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = gWeaponPalIDs[1];
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_SABER_WAVE);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
     }
-    b4 = &w->props.wave;
-    b4->saber = saber;
-    b4->z = z;
-    (w->s).work[0] = isProjectile;
-    (w->s).work[1] = 0;
-    if (!isProjectile) {
-      CreateSaberWave(z, (struct Weapon*)w, TRUE);
-    }
+    (&p->props)->saber = saber;
+    (&p->props)->z = z;
+    (p->s).work[0] = isProjectile, (p->s).work[1] = 0;
+    if (!isProjectile) CreateSaberWave(z, (struct Weapon*)p, TRUE);
   }
-  return (struct Weapon*)w;
+  return (struct Entity*)p;
 }
 
 INCASM("asm/weapon/saber_wave.inc");

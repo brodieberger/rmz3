@@ -1,287 +1,282 @@
 #include "collision.h"
 #include "global.h"
-#include "mission.h"
 #include "motion.h"
 #include "overworld.h"
+#include "physics.h"
+#include "player/zero.h"
+#include "score.h"
 #include "sound.h"
 #include "vfx.h"
 #include "weapon.h"
 #include "zero.h"
 
-#define PROP (w->props.buster)
+struct ZeroBuster {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct ZeroBusterProps {
+    struct Zero* z;  // 0xB4
+    Coords32 c;      // 0xB8
+    u8 unk_c0;       // 0xC0
+    u8 element;      // 0xC1
+    u8 unk_c2;       // 0xC2
+    u8 unk_c3;       // 0xC3
+    u8 unk_c4[40];   // 0xC4
+  } props;
+};
+static_assert(sizeof(struct ZeroBuster) == sizeof(struct Weapon));
 
 #define BUSTER_BLIZZARD_ARROW 5
 
-static bool8 isBlocked(struct Weapon *w);
-static void onHit(struct Body *body, struct Coord *r1 UNUSED, struct Coord *r2 UNUSED);
-static void Buster_Update(struct Weapon *w);
-static u8 shouldDelete(struct Weapon *w);
-static bool8 buster_08037f78(struct Weapon *w, const struct Rect *size);
-static const WeaponFunc sBulletUpdate[6];
+static bool8 isBlocked(struct Weapon* w);
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
+static void Buster_Update(struct ZeroBuster* w);
+static u8 shouldDelete(struct Weapon* w);
+static bool8 buster_08037f78(struct Weapon* w, const struct Rect* size);
 static const motion_t sFullBulletMotions[4];
-static const struct Rect sFullBulletSize;
-static const struct Collision sSemiBulletCollisions[2];
-static const struct Collision sFullBulletCollisions[2];
-static const struct Collision sLaserShotCollisions[2];
 
-NAKED void MenuExit_Buster(struct Weapon *w) { INCCODE("asm/todo/MenuExit_Buster.inc"); }
+static const struct Collision sCollisions[];
 
-WIP struct Weapon *CreateWeaponBuster(struct Zero *z, struct Coord *c, u8 charge, bool8 xflip, bool8 yflip) {
-#if MODERN
-  struct Weapon *w;
-  struct Buster_b4 *b4;
+static const u8 sElements[4];
+
+NAKED void MenuExit_Buster(struct Weapon* w) { INCCODE("asm/todo/MenuExit_Buster.inc"); }
+
+struct Weapon* CreateWeaponBuster(struct Zero* z, Coords32* c, u8 charge, bool8 xflip, bool8 yflip) {
+  struct ZeroBuster* p;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct Weapon *)AllocEntityFirst(gWeaponHeaderPtr);
-  if (w != NULL) {
-    INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_Z_BUSTER);
-    (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-    (w->s).taskCol = 16;
+  p = (struct ZeroBuster*)AllocEntityLast(gWeaponHeaderPtr);
+  if (p != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_BUSTER) {
-      (w->s).tileNum = gWeaponTileNum[0];
-      (w->s).palID = 1;
-      SetWeaponElement(0, gSaberElements[(z->unk_b4).status.element]);
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_Z_BUSTER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[0], (p->s).palID = gWeaponPalIDs[0];
+      SetWeaponElement(0, ((&z->unk_b4)->status).element);
     } else {
-      (w->s).tileNum = gWeaponTileNum[1];
-      (w->s).palID = 1;
-      SetWeaponElement(1, gSaberElements[(z->unk_b4).status.element]);
+      INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_Z_BUSTER);
+      (p->s).flags2 &= ~ENTITY_FLAGS2_B6;
+      (p->s).renderPrio = 16;
+      (p->s).tileNum = gWeaponTileNum[1], (p->s).palID = gWeaponPalIDs[1];
+      SetWeaponElement(1, ((&z->unk_b4)->status).element);
     }
-    b4 = &PROP;
-    b4->z = z;
-    b4->c.x = c->x, b4->c.y = c->y;
-    (w->s).coord.x = (z->s).coord.x + c->x;
-    (w->s).coord.y = (z->s).coord.y + c->y;
-    (w->s).work[0] = charge;
-    (w->s).work[1] = 0;
-    if (xflip) {
-      (w->s).flags |= X_FLIP;
-    } else {
-      (w->s).flags &= ~X_FLIP;
-    }
-    (w->s).spr.xflip = xflip;
-    (w->s).spr.oam.xflip = xflip;
-    if (yflip) {
-      (w->s).flags |= Y_FLIP;
-    } else {
-      (w->s).flags &= ~Y_FLIP;
-    }
-    (w->s).spr.yflip = yflip;
-    (w->s).spr.oam.yflip = yflip;
-    b4->element = (z->unk_b4).status.element;
+    (p->props).z = z;
+    (p->props).c = *c;
+    (p->s).coord.x = (z->s).coord.x + c->x;
+    (p->s).coord.y = (z->s).coord.y + c->y;
+    (p->s).work[0] = charge, (p->s).work[1] = 0;
+    SET_XFLIP(p, xflip);
+    SET_YFLIP(p, yflip);
+    (&p->props)->element = ((&z->unk_b4)->status).element;
   }
-  return w;
-#else
-  INCCODE("asm/wip/CreateWeaponBuster.inc");
-#endif
+  return (void*)p;
 }
 
 // --------------------------------------------
 
-static void initLemonBullet(struct Weapon *w);
-static void initSemiBullet(struct Weapon *w);
-static void initFullBullet(struct Weapon *w);
-static void initLaserShot(struct Weapon *w);
-static void initBurstShotBullet(struct Weapon *w);
-static void initBlizzardArrowBullet(struct Weapon *w);
+static void initLemonBullet(struct ZeroBuster* p);
+static void initSemiBullet(struct ZeroBuster* p);
+static void initFullBullet(struct Weapon* p);
+static void initLaserShot(struct Weapon* p);
+static void initBurstShotBullet(struct ZeroBuster* p);
+static void initBlizzardArrowBullet(struct ZeroBuster* p);
 
-static void Buster_Init(struct Weapon *w) {
+static void Buster_Init(struct ZeroBuster* p) {
   // clang-format off
   static const WeaponFunc sInitalizer[6] = {
-      initLemonBullet,
-      initSemiBullet,
-      initFullBullet,
-      initLaserShot,
-      initBurstShotBullet,
-      initBlizzardArrowBullet,
+      (void*)initLemonBullet,
+      (void*)initSemiBullet,
+      (void*)initFullBullet,
+      (void*)initLaserShot,
+      (void*)initBurstShotBullet,
+      (void*)initBlizzardArrowBullet,
   };
   // clang-format on
-  struct Zero *z;
-  struct Body *body;
-  BodyFunc fn;
 
-  SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
-  (sInitalizer[(w->s).work[0]])(w);
-  (&PROP)->unk_c0 = 0;
-  (&PROP)->unk_c3 = 1;
+  SET_WEAPON_ROUTINE(p, ENTITY_UPDATE);
+  (sInitalizer[(p->s).work[0]])((void*)p);
+  (&p->props)->unk_c0 = 0;
+  (&p->props)->unk_c3 = 1;
 
-  z = (&PROP)->z;
-  z->bulletCount++;
+  (p->props).z->bulletCount++;
 
-  fn = onHit;
-  body = &w->body;
-  body->fn = fn;
+  {
+    BodyFunc fn = onCollision;
+    struct Body* body = &p->body;
+    body->fn = fn;
+  }
 
-  Buster_Update(w);
+  Buster_Update(p);
 }
 
 // --------------------------------------------
 
-static void LemonBullet_Update(struct Weapon *w);
+static void LemonBullet_Update(Object* p);
+static void SemiBullet_Update(Object* p);
+static void FullBullet_Update(struct ZeroBuster* p);
+static void LaserShot_Main(struct ZeroBuster* p);
+static void BurstShot_Main(struct ZeroBuster* p);
+static void BlizzardArrow_Update(struct ZeroBuster* p);
 
-static void Buster_Update(struct Weapon *w) {
-  struct Buster_b4 *b4 = &PROP;
-  if (b4->unk_c0 != 0) {
-    if ((w->s).work[0] == BUSTER_BLIZZARD_ARROW) {
-      (w->body).status = 0;
-      (w->body).prevStatus = 0;
-      (w->body).invincibleTime = 0;
-      (w->s).flags &= ~COLLIDABLE;
-      b4->unk_c0 = 0;
+static void Buster_Update(struct ZeroBuster* p) {
+  // clang-format off
+  static const WeaponFunc sBulletUpdates[6] = {
+    (void*)LemonBullet_Update,
+    (void*)SemiBullet_Update,
+    (void*)FullBullet_Update,
+    (void*)LaserShot_Main,
+    (void*)BurstShot_Main,
+    (void*)BlizzardArrow_Update,
+  };
+  // clang-format on
+
+  if ((&p->props)->unk_c0 != 0) {
+    if ((p->s).work[0] == BUSTER_BLIZZARD_ARROW) {
+      EXIT_BODY(p);
+      (&p->props)->unk_c0 = 0;
       return;
     }
 
-    (w->s).flags &= ~DISPLAY;
-    (w->s).flags &= ~FLIPABLE;
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
-    SET_WEAPON_ROUTINE(w, ENTITY_DISAPPEAR);
+    (p->s).flags &= ~DISPLAY;
+    (p->s).flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_WEAPON_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
 
-  (sBulletUpdate[(w->s).work[0]])(w);
-  UpdateMotionGraphic(&w->s);
+  (sBulletUpdates[(p->s).work[0]])((void*)p);
+  UpdateSpriteAnimation(p);
 }
 
-static void Buster_Die(struct Weapon *w) {
-  (w->body).status = 0;
-  (w->body).prevStatus = 0;
-  (w->body).invincibleTime = 0;
-  (w->s).flags &= ~COLLIDABLE;
-  SET_WEAPON_ROUTINE(w, ENTITY_EXIT);
+static void Buster_Die(Object* p) {
+  EXIT_BODY(p);
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
 }
 
-static void Buster_Delete(struct Weapon *w) {
-  (PROP.z)->bulletCount--;
-  DeleteEntity(&w->s);
+static void Buster_Delete(struct ZeroBuster* p) {
+  ((p->props).z)->bulletCount--;
+  DeleteEntity(&p->s);
 }
 
 static const struct Collision sLemonBulletCollisions[2];
 
-WIP static void initLemonBullet(struct Weapon *w) {
+NON_MATCH static void initLemonBullet(struct ZeroBuster* p) {
 #if MODERN
-  struct Body *body;
-  struct Zero *z = PROP.z;
-
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
-
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-
-  switch (gSystemSavedataManager.bullet) {
-    case BULLET_MOD_BLACK: {
-      SetMotion(&w->s, MOTION(0x85, 0x01));
-      break;
-    }
-    case BULLET_MOD_REALISTIC: {
-      SetMotion(&w->s, MOTION(0x85, 0x02));
-      break;
-    }
-    default: {
-      SetMotion(&w->s, MOTION(0x85, 0x00));
-      break;
-    }
-  }
-  PlaySound(SE_Z_BUSTER);
-
-  bool16 isVShot = FALSE;
-  if ((w->props.common).props[1][1] == ELEMENT_THUNDER) {
-    struct Zero_b4 *b4 = &(z->unk_b4);
-    isVShot = ((b4->status).exSkill & (1 << EXSKILL_ID_VSHOT)) != 0;
-  }
-
-  if ((w->s).flags & X_FLIP) {
-    (w->s).d.x = (0x98 * 8);
-  } else {
-    (w->s).d.x = -(0x98 * 8);
-  }
-
-  if (isVShot) {
-    if ((w->s).flags & Y_FLIP) {
-      (w->s).d.y = (0x98 * 2);
-    } else {
-      (w->s).d.y = -(0x98 * 2);
-    }
-  } else {
-    (w->s).d.y = 0;
-  }
-
-  (w->s).flags |= COLLIDABLE;
-
-  body = &w->body;
-  InitBody(body, sLemonBulletCollisions, &(w->s).coord, 1);
-  body->parent = (struct CollidableEntity *)w;
-  body->fn = NULL;
-
-  s32 atk = 2;
-  if (((z->s).mode[1] == ZERO_GROUND) && ((z->s).mode[2] == GROUND_DASH)) {
-    atk = 3;  // Dash buster
-  }
-  InitWeaponBody(body, sLemonBulletCollisions, atk + CalcBusterBonus(z), ELEMENT_NONE, -1, -1);
-#else
-  INCCODE("asm/wip/initLemonBullet.inc");
-#endif
-}
-
-static void initSemiBullet(struct Weapon *w) {
   bool16 isVShot;
   u8 atk, element;
-  struct Body *body;
-  struct Buster_b4 *b4 = &PROP;
-  struct Zero *z = b4->z;
+  struct ZeroBusterProps* s = &p->props;
+  struct Zero* z = s->z;
 
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
 
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, MOTION(DM134_UNK, 0));
-  PlaySound(SE_CHARGE_BUSTER);
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
 
-  element = b4->element;
+  {
+    u8 bullet = gSystemSavedata.bullet;
+    if (bullet == BULLET_MOD_REALISTIC) {
+      SetSpriteAnimation(p, MOTION(DM133_LEMON, 2));
+    } else if (bullet == BULLET_MOD_BLACK) {
+      SetSpriteAnimation(p, MOTION(DM133_LEMON, 1));
+    } else {
+      SetSpriteAnimation(p, MOTION(DM133_LEMON, 0));
+    }
+  }
+
+  PlaySound(SE_Z_BUSTER);
+
+  element = s->element;
   isVShot = FALSE;
   if (element == ELEMENT_THUNDER) {
     isVShot = (((&z->unk_b4)->status).exSkill & (1 << EXSKILL_ID_VSHOT)) >> EXSKILL_ID_VSHOT;
   }
 
-  if ((w->s).flags & X_FLIP) {
-    (w->s).d.x = PIXEL(6);
+  if ((p->s).flags & X_FLIP) {
+    (p->s).d.x = 0x4C0;
     if (isVShot) {
-      if ((w->s).flags & Y_FLIP) {
-        (w->s).d.y = 0x180;
+      if ((p->s).flags & Y_FLIP) {
+        (p->s).d.y = 0x130;
       } else {
-        (w->s).d.y = -0x180;
+        (p->s).d.y = -0x130;
       }
     } else {
-      (w->s).d.y = 0;
+      (p->s).d.y = 0;
     }
   } else {
-    (w->s).d.x = -PIXEL(6);
+    (p->s).d.x = -0x4C0;
     if (isVShot) {
-      if ((w->s).flags & Y_FLIP) {
-        (w->s).d.y = 0x180;
+      if ((p->s).flags & Y_FLIP) {
+        (p->s).d.y = 0x130;
       } else {
-        (w->s).d.y = -0x180;
+        (p->s).d.y = -0x130;
       }
     } else {
-      (w->s).d.y = 0;
+      (p->s).d.y = 0;
     }
   }
 
-  (w->s).flags |= COLLIDABLE;
+  _INIT_BODY(p, &sCollisions[0], 1);
 
-  body = &w->body;
-  InitBody(body, sSemiBulletCollisions, &(w->s).coord, 1);
-  body->parent = (struct CollidableEntity *)w;
-  body->fn = NULL;
-
-  atk = 6 + CalcBusterBonus(z);
-  InitWeaponBody(body, sSemiBulletCollisions, atk, -1, -1, -1);
+  z = s->z;
+  if ((((z->s).mode[1] == ZERO_GROUND) && ((z->s).mode[2] == GROUND_DASH))) {
+    atk = 3;  // Dash buster
+  } else {
+    atk = 2;
+  }
+  InitWeaponBody(&p->body, &sCollisions[0], (u8)(CalcBusterBonus(z) + atk), -1, -1, -1);
+#else
+  INCCODE("asm/wip/initLemonBullet.inc");
+#endif
 }
 
-NAKED static void initFullBullet(struct Weapon *w) {
+static void initSemiBullet(struct ZeroBuster* p) {
+  bool16 isVShot;
+  u8 element;
+  struct Zero* z = (p->props).z;
+
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
+
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetSpriteAnimation(p, MOTION(DM134_UNK, 0));
+  PlaySound(SE_CHARGE_BUSTER);
+
+  element = (&p->props)->element;
+  isVShot = FALSE;
+  if (element == ELEMENT_THUNDER) {
+    isVShot = (((&z->unk_b4)->status).exSkill & (1 << EXSKILL_ID_VSHOT)) >> EXSKILL_ID_VSHOT;
+  }
+
+  if ((p->s).flags & X_FLIP) {
+    (p->s).d.x = PIXEL(6);
+    if (isVShot) {
+      if ((p->s).flags & Y_FLIP) {
+        (p->s).d.y = 0x180;
+      } else {
+        (p->s).d.y = -0x180;
+      }
+    } else {
+      (p->s).d.y = 0;
+    }
+  } else {
+    (p->s).d.x = -PIXEL(6);
+    if (isVShot) {
+      if ((p->s).flags & Y_FLIP) {
+        (p->s).d.y = 0x180;
+      } else {
+        (p->s).d.y = -0x180;
+      }
+    } else {
+      (p->s).d.y = 0;
+    }
+  }
+
+  _INIT_BODY(p, &sCollisions[2], 1);
+  InitWeaponBody(&p->body, &sCollisions[2], (u8)(CalcBusterBonus(z) + 6), -1, -1, -1);
+}
+
+NAKED static void initFullBullet(struct Weapon* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -395,7 +390,7 @@ _080373F6:\n\
 	beq _08037454\n\
 	adds r1, r7, #0\n\
 	adds r1, #0xc0\n\
-	ldr r2, _08037450 @ =u8_ARRAY_0835ee9e\n\
+	ldr r2, _08037450 @ =sElements\n\
 	adds r0, r5, #0\n\
 	adds r0, #0xb4\n\
 	ldrb r0, [r0, #0xd]\n\
@@ -410,10 +405,10 @@ _080373F6:\n\
 	bl InitWeaponBody\n\
 	b _08037472\n\
 	.align 2, 0\n\
-_0803744C: .4byte sFullBulletCollisions\n\
-_08037450: .4byte u8_ARRAY_0835ee9e\n\
+_0803744C: .4byte sCollisions+(24*4)\n\
+_08037450: .4byte sElements\n\
 _08037454:\n\
-	ldr r1, _08037480 @ =u8_ARRAY_0835ee9e\n\
+	ldr r1, _08037480 @ =sElements\n\
 	adds r0, r5, #0\n\
 	adds r0, #0xb4\n\
 	ldrb r0, [r0, #0xd]\n\
@@ -436,11 +431,11 @@ _08037472:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_08037480: .4byte u8_ARRAY_0835ee9e\n\
+_08037480: .4byte sElements\n\
  .syntax divided\n");
 }
 
-NAKED static void initLaserShot(struct Weapon *w) {
+NAKED static void initLaserShot(struct Weapon* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -637,185 +632,116 @@ _08037588:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_08037614: .4byte sLaserShotCollisions\n\
+_08037614: .4byte sCollisions+(24*6)\n\
  .syntax divided\n");
 }
 
-static void initBurstShotBullet(struct Weapon *w) {
-  struct Body *body;
-  struct Zero *z = PROP.z;
+static void initBurstShotBullet(struct ZeroBuster* p) {
+  struct Zero* z = (p->props).z;
 
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
 
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, MOTION(DM083_BURST_SHOT_FIREWORK, 0x03));
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetSpriteAnimation(p, MOTION(DM083_BURST_SHOT_FIREWORK, 3));
   PlaySound(SE_CHARGE_BUSTER);
-  if ((w->s).flags & X_FLIP) {
-    (w->s).d.x = PIXEL(6);
+  if ((p->s).flags & X_FLIP) {
+    (p->s).d.x = PIXEL(6);
   } else {
-    (w->s).d.x = -PIXEL(6);
+    (p->s).d.x = -PIXEL(6);
   }
-  (w->s).d.y = 0;
-  (w->s).work[2] = 0x14;
-  (w->s).flags |= COLLIDABLE;
+  (p->s).d.y = 0;
+  (p->s).work[2] = 0x14;
 
-  body = &w->body;
-  InitBody(body, gBurstShotCollisions, &(w->s).coord, 1);
-  body->parent = (struct CollidableEntity *)w;
-  body->fn = NULL;
-
-  InitWeaponBody(body, gBurstShotCollisions, (u8)(CalcBusterBonus(z) + 6), ELEMENT_FLAME, ELEMENT_ENCHANTABLE, -1);
+  _INIT_BODY(p, &sCollisions[8], 1);
+  InitWeaponBody(&p->body, &sCollisions[8], (u8)(CalcBusterBonus(z) + 6), ELEMENT_FLAME, ELEMENT_ENCHANTABLE, -1);
 }
 
-static void initBlizzardArrowBullet(struct Weapon *w) {
-  struct Body *body;
-  struct Zero *z = PROP.z;
+static void initBlizzardArrowBullet(struct ZeroBuster* p) {
+  struct Zero* z = (p->props).z;
 
-  InitNonAffineMotion(&w->s);
-  ResetDynamicMotion(&w->s);
+  InitNonAffineMotion(&p->s);
+  ResetDynamicMotion(&p->s);
 
-  (w->s).flags |= DISPLAY;
-  (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, MOTION(DM082_BLIZZ_ARROW, 0));
+  (p->s).flags |= DISPLAY;
+  (p->s).flags |= FLIPABLE;
+  SetSpriteAnimation(p, MOTION(DM082_BLIZZ_ARROW, 0));
   PlaySound(SE_CHARGE_BUSTER);
-  (w->s).flags |= COLLIDABLE;
 
-  body = &w->body;
-  InitBody(body, gBlizzardArrowCollisions, &(w->s).coord, 1);
-  body->parent = (struct CollidableEntity *)w;
-  body->fn = NULL;
-  (w->s).work[2] = 0;
-
-  InitWeaponBody(body, gBlizzardArrowCollisions, (u8)(CalcBusterBonus(z) + 10), ELEMENT_ICE, -1, -1);
+  _INIT_BODY(p, &sCollisions[10], 1);
+  (p->s).work[2] = 0;
+  InitWeaponBody(&p->body, &sCollisions[10], (u8)(CalcBusterBonus(z) + 10), ELEMENT_ICE, -1, -1);
 }
 
-WIP static void LemonBullet_Update(struct Weapon *w) {
-#if MODERN
-  (w->s).coord.x += (w->s).d.x;
-  (w->s).coord.y += (w->s).d.y;
-  if (((w->s).mode[1] == 0) && isBlocked(w)) {
-    CreateParticle(&(w->s).coord, 6, ((w->s).flags >> 4) & 1);
-    (w->s).d.x = -(w->s).d.x;
-    RNG_0202f388 = LCG(RNG_0202f388);
-    if ((RNG_0202f388 >> 16) & 1) {
-      (w->s).d.y = (w->s).d.x;
+static void LemonBullet_Update(Object* p) {
+  bool8 dir;
+  (p->s).coord.x += (p->s).d.x;
+  (p->s).coord.y += (p->s).d.y;
+
+  if (((p->s).mode[1] == 0) && isBlocked((void*)p)) {  // 跳弾
+    CreateParticle(&(p->s).coord, 6, ((p->s).flags >> 4) & 1);
+    (p->s).d.x = -(p->s).d.x;
+    if (dir = RANDOM(RNG_0202f388) & 1, dir) {
+      (p->s).d.y = (p->s).d.x;
     } else {
-      (w->s).d.y = -(w->s).d.x;
+      (p->s).d.y = -(p->s).d.x;
     }
     PlaySound(SE_BLOCKED);
-    (w->body).status = 0;
-    (w->body).prevStatus = 0;
-    (w->body).invincibleTime = 0;
-    (w->s).flags &= ~COLLIDABLE;
-    (w->s).mode[1]++;
+    EXIT_BODY(p);
+    (p->s).mode[1]++;
   }
-  if (shouldDelete(w)) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
-  }
-#else
-  INCCODE("asm/wip/LemonBullet_Update.inc");
-#endif
+
+  if (shouldDelete((void*)p)) SET_WEAPON_ROUTINE(p, ENTITY_DIE);
 }
 
-NAKED static void SemiBullet_Main(struct Weapon *w) {
-  asm(".syntax unified\n\
-	push {r4, lr}\n\
-	adds r4, r0, #0\n\
-	ldrb r0, [r4, #0xd]\n\
-	cmp r0, #0\n\
-	bne _08037840\n\
-	ldr r1, _0803783C @ =Coord_0835ee7c\n\
-	adds r0, r4, #0\n\
-	bl buster_08037f78\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _08037850\n\
-	movs r1, #0x87\n\
-	lsls r1, r1, #8\n\
-	adds r0, r4, #0\n\
-	bl SetMotion\n\
-	ldrb r0, [r4, #0xd]\n\
-	adds r0, #1\n\
-	strb r0, [r4, #0xd]\n\
-	b _08037850\n\
-	.align 2, 0\n\
-_0803783C: .4byte Coord_0835ee7c\n\
-_08037840:\n\
-	ldr r0, [r4, #0x54]\n\
-	ldr r1, [r4, #0x5c]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x54]\n\
-	ldr r0, [r4, #0x58]\n\
-	ldr r1, [r4, #0x60]\n\
-	adds r0, r0, r1\n\
-	str r0, [r4, #0x58]\n\
-_08037850:\n\
-	adds r0, r4, #0\n\
-	bl isBlocked\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _08037876\n\
-	adds r0, r4, #0\n\
-	adds r0, #0x54\n\
-	ldrb r2, [r4, #0xa]\n\
-	lsrs r2, r2, #4\n\
-	movs r1, #1\n\
-	ands r2, r1\n\
-	movs r1, #6\n\
-	bl CreateParticle\n\
-	movs r0, #0x2b\n\
-	bl PlaySound\n\
-	b _08037882\n\
-_08037876:\n\
-	adds r0, r4, #0\n\
-	bl shouldDelete\n\
-	lsls r0, r0, #0x18\n\
-	cmp r0, #0\n\
-	beq _08037894\n\
-_08037882:\n\
-	ldr r1, _0803789C @ =gWeaponFnTable\n\
-	ldrb r0, [r4, #9]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	movs r1, #2\n\
-	str r1, [r4, #0xc]\n\
-	ldr r0, [r0]\n\
-	ldr r0, [r0, #8]\n\
-	str r0, [r4, #0x14]\n\
-_08037894:\n\
-	pop {r4}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_0803789C: .4byte gWeaponFnTable\n\
- .syntax divided\n");
-}
+// 0x08037810
+static void SemiBullet_Update(Object* p) {
+  static const struct Rect sSemiBulletSize = {PIXEL(0), PIXEL(4), PIXEL(10), PIXEL(8)};  // 0x0835ee7c
 
-static void FullBullet_Update(struct Weapon *w) {
-  if ((w->s).mode[1] == 0) {
-    if (buster_08037f78(w, &sFullBulletSize)) {
-      const motion_t *m = sFullBulletMotions;
-      struct Buster_b4 *b4 = &PROP;
-      SetMotion(&w->s, m[b4->element]);
-      (w->s).mode[1]++;
+  if ((p->s).mode[1] == 0) {
+    if (buster_08037f78((void*)p, &sSemiBulletSize)) {
+      SetSpriteAnimation(p, MOTION(DM135_UNK, 0));
+      (p->s).mode[1]++;
     }
   } else {
-    (w->s).coord.x += (w->s).d.x;
-    (w->s).coord.y += (w->s).d.y;
+    (p->s).coord.x += (p->s).d.x;
+    (p->s).coord.y += (p->s).d.y;
   }
 
-  if (isBlocked(w)) {
-    CreateParticle(&(w->s).coord, 6, ((w->s).flags >> 4) & 1);
+  if (isBlocked((void*)p)) {
+    CreateParticle(&(p->s).coord, 6, ((p->s).flags >> 4) & 1);
     PlaySound(SE_BLOCKED);
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
-  } else if (shouldDelete(w)) {
-    SET_WEAPON_ROUTINE(w, ENTITY_DIE);
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
+  } else if (shouldDelete((void*)p)) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
   }
 }
 
-NAKED static void LaserShot_Main(struct Weapon *w) {
+static void FullBullet_Update(struct ZeroBuster* p) {
+  static const struct Rect sFullBulletSize = {PIXEL(3), PIXEL(4), PIXEL(8), PIXEL(2)};
+
+  if ((p->s).mode[1] == 0) {
+    if (buster_08037f78((void*)p, &sFullBulletSize)) {
+      const motion_t* m = sFullBulletMotions;
+      SetSpriteAnimation(p, m[(&p->props)->element]);
+      (p->s).mode[1]++;
+    }
+  } else {
+    (p->s).coord.x += (p->s).d.x;
+    (p->s).coord.y += (p->s).d.y;
+  }
+
+  if (isBlocked((void*)p)) {
+    CreateParticle(&(p->s).coord, 6, ((p->s).flags >> 4) & 1);
+    PlaySound(SE_BLOCKED);
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
+  } else if (shouldDelete((void*)p)) {
+    SET_WEAPON_ROUTINE(p, ENTITY_DIE);
+  }
+}
+
+NAKED static void LaserShot_Main(struct ZeroBuster* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -988,7 +914,7 @@ _08037A68:\n\
 	ldr r0, _08037ABC @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	cmp r0, #0\n\
 	beq _08037A8A\n\
 	b _08037C0A\n\
@@ -1196,7 +1122,7 @@ _08037BF0:\n\
 	ldr r0, _08037C28 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	ldr r2, _08037C2C @ =s16_ARRAY_0835ee8c\n\
 	ldrb r1, [r4, #0x10]\n\
 	lsls r1, r1, #1\n\
@@ -1228,7 +1154,7 @@ _08037C30: .4byte gWeaponFnTable\n\
  .syntax divided\n");
 }
 
-NAKED static void BurstShot_Main(struct Weapon *w) {
+NAKED static void BurstShot_Main(struct ZeroBuster* w) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1490,41 +1416,39 @@ _08037E44: .4byte gWeaponFnTable\n\
  .syntax divided\n");
 }
 
-static void BlizzardArrow_Update(struct Weapon *w) {
-  struct Zero *z = PROP.z;
-  switch ((w->s).mode[1]) {
+static void BlizzardArrow_Update(struct ZeroBuster* p) {
+  struct Zero* z = (p->props).z;
+  switch ((p->s).mode[1]) {
     case 0: {
-      if ((w->s).motion.state == MOTION_NEXT) {
-        (w->s).work[2]++;
-        if ((w->s).work[2] > 4) {
-          (w->s).mode[1]++;
+      if ((p->s).motion.state == ANIM_NEXT_GOTO) {
+        (p->s).work[2]++;
+        if ((p->s).work[2] > 4) {
+          (p->s).mode[1]++;
           break;
         }
-        if ((w->s).work[2] > 1) {
-          CreateBlizzardArrow(z, &(w->s).coord, (w->s).work[2] - 2, ((w->s).flags >> 4) & 1);
+        if ((p->s).work[2] > 1) {
+          CreateBlizzardArrow(z, &(p->s).coord, (p->s).work[2] - 2, ((p->s).flags >> 4) & 1);
         }
       }
       break;
     }
 
     case 1: {
-      SetMotion(&w->s, MOTION(DM082_BLIZZ_ARROW, 0x01));
-      (w->s).work[2] = 0;
-      (w->s).mode[1]++;
+      SetSpriteAnimation(p, MOTION(DM082_BLIZZ_ARROW, 1));
+      (p->s).work[2] = 0;
+      (p->s).mode[1]++;
       break;
     }
 
     case 2: {
-      if ((w->s).motion.state == MOTION_END) {
-        SET_WEAPON_ROUTINE(w, ENTITY_DIE);
-      }
+      if (IsSpriteAnimEnd(p)) SET_WEAPON_ROUTINE(p, ENTITY_DIE);
       break;
     }
   }
 }
 
 // 0x08037ed8
-NAKED static u8 shouldDelete(struct Weapon *w) {
+NAKED static u8 shouldDelete(struct Weapon* w) {
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -1588,7 +1512,7 @@ _08037F4A:\n\
 	ldr r0, _08037F68 @ =gStageRun+232\n\
 	adds r1, r4, #0\n\
 	adds r1, #0x54\n\
-	bl CalcFromCamera\n\
+	bl Camera_GetDistance\n\
 	ldr r2, _08037F6C @ =s16_ARRAY_0835ee8c\n\
 	ldrb r1, [r4, #0x10]\n\
 	lsls r1, r1, #1\n\
@@ -1611,7 +1535,7 @@ _08037F72:\n\
  .syntax divided\n");
 }
 
-NAKED static bool8 buster_08037f78(struct Weapon *w, const struct Rect *size) {
+NAKED static bool8 buster_08037f78(struct Weapon* w, const struct Rect* size) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
@@ -1749,66 +1673,40 @@ _08038064:\n\
 }
 
 // 0x08038070
-static void onHit(struct Body *body, struct Coord *r1 UNUSED, struct Coord *r2 UNUSED) {
-  struct Body *enemy;
-  struct CollidableEntity *parent;
-  u8 uVar1, enemyStatus;
+static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
+  if (body->hitboxFlags & BODY_STATUS_B2) {
+    struct ZeroBuster* p = (struct ZeroBuster*)body->parent;
 
-  if (body->hitboxFlags & (1 << 2)) {
-    parent = body->parent;
-
-    if (gMission.weaponCount[WEAPON_BUSTER] < 0xFFFF) {
-      gMission.weaponCount[WEAPON_BUSTER]++;
-    }
-
-    if (!(body->enemy->status & BODY_STATUS_DEAD) || ((parent->s).work[0] == 0)) {
-      if ((parent->s).work[0] != 4) {
-        u8 *work = parent->work;
-        work[12] = 1;
+    IncWeaponUseCount(WEAPON_BUSTER);
+    if (!(body->enemy->status & BODY_STATUS_DEAD) || ((p->s).work[0] == 0)) {
+      if ((p->s).work[0] != 4) {
+        (&p->props)->unk_c0 = 1;
       }
     }
   }
 }
 
 // 弾丸がブロックされたか(硬いものにあたって弾かれたか)
-static bool8 isBlocked(struct Weapon *w) {
+static bool8 isBlocked(struct Weapon* w) {
   u32 status = (w->body).status;
   if (status & BODY_STATUS_BLOCKED) return TRUE;
   return FALSE;
 }
 
-// clang-format off
-static const WeaponFunc sBulletUpdate[6] = {
-  LemonBullet_Update,
-  SemiBullet_Main,
-  FullBullet_Update,
-  LaserShot_Main,
-  BurstShot_Main,
-  BlizzardArrow_Update,
-};
-// clang-format on
-
-const struct Coord Coord_0835ee7c = {0x4000000, 0x8000A00};
-static const struct Rect sFullBulletSize = {0x300, 0x400, 0x800, 0x200};
-
 const s16 s16_ARRAY_0835ee8c[9] = {
     0x0400, 0x2400, 0x2800, 0x4000, 0x2800, 0x2800, 0x2800, 0x2800, 0x2800,
 };
 
-const u8 u8_ARRAY_0835ee9e[4] = {
-    0,
-    1,
-    2,
-    3,
-};
+static const u8 sElements[4] = {0, 1, 2, 3};
 
-static const struct Collision sLemonBulletCollisions[2] = {
+// 0x0835eea4
+static const struct Collision sCollisions[14] = {
+    // Lemon
     {
       kind : DDP,
       faction : FACTION_ALLY,
       special : HALFABLE,
       damage : 2,
-      comboLv : 0,
       remaining : 1,
       layer : 0x00000001,
       range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(8)},
@@ -1817,21 +1715,18 @@ static const struct Collision sLemonBulletCollisions[2] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 255,
       remaining : 0,
       range : {PIXEL(0), PIXEL(0), PIXEL(8), PIXEL(8)},
     },
-};
-
-static const struct Collision sSemiBulletCollisions[2] = {
+    // Semi charge
     {
       kind : DDP,
       faction : FACTION_ALLY,
       special : HALFABLE,
       damage : 4,
-      nature : BODY_NATURE_B0,
+      nature : 0x01,
       comboLv : 1,
       remaining : 1,
       layer : 0x80000000,
@@ -1841,143 +1736,130 @@ static const struct Collision sSemiBulletCollisions[2] = {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 255,
       remaining : 0,
       range : {PIXEL(2), PIXEL(0), PIXEL(18), PIXEL(16)},
     },
-};
-
-static const struct Collision sFullBulletCollisions[2] = {
+    // Full charge
     {
       kind : DDP,
       faction : FACTION_ALLY,
       special : HALFABLE,
       damage : 8,
-      nature : ELEMENT_ENCHANTABLE,
+      nature : 0x02,
       comboLv : 1,
       remaining : 1,
-      layer : 2,
+      layer : 0x00000002,
       range : {PIXEL(6), PIXEL(0), PIXEL(24), PIXEL(20)},
     },
     {
       kind : DRP,
       faction : FACTION_ALLY,
       special : HALFABLE,
-      damage : 0,
       LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
+      hitzone : 255,
       remaining : 0,
-      layer : 0,
+      range : {PIXEL(6), PIXEL(0), PIXEL(24), PIXEL(20)},
+    },
+    // Laser shot
+    {
+      kind : DDP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 8,
+      atkType : 0x04,
+      nature : 0x02,
+      comboLv : 1,
+      remaining : 1,
+      layer : 0x00010000,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      LAYER(0xFFFFFFFF),
+      hitzone : 255,
+      remaining : 0,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    // Burst shot
+    {
+      kind : DDP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 8,
+      atkType : 0x06,
+      nature : 0x02,
+      comboLv : 1,
+      remaining : 1,
+      layer : 0x00000008,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      LAYER(0xFFFFFFFF),
+      hitzone : 255,
+      remaining : 0,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    // Blizzard arrow
+    {
+      kind : DDP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 8,
+      atkType : 0x07,
+      nature : 0x02,
+      comboLv : 1,
+      remaining : 1,
+      layer : 0x00000010,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      LAYER(0xFFFFFFFF),
+      hitzone : 255,
+      remaining : 0,
+      range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
+    },
+    // VShot
+    {
+      kind : DDP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      damage : 8,
+      nature : 0x02,
+      comboLv : 1,
+      remaining : 1,
+      layer : 0x00000002,
+      range : {PIXEL(6), PIXEL(0), PIXEL(24), PIXEL(20)},
+    },
+    {
+      kind : DRP,
+      faction : FACTION_ALLY,
+      special : HALFABLE,
+      LAYER(0xFFFFFFFF),
+      hitzone : 255,
+      remaining : 0,
       range : {PIXEL(6), PIXEL(0), PIXEL(24), PIXEL(20)},
     },
 };
 
-static const struct Collision sLaserShotCollisions[2] = {
-    {
-      kind : DDP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 8,
-      atkType : ATK_UNK4,
-      nature : ELEMENT_ENCHANTABLE,
-      comboLv : 1,
-      remaining : 1,
-      layer : 0x10000,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-    {
-      kind : DRP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 0,
-      LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
-      remaining : 0,
-      layer : 0,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-};
-
-const struct Collision gBurstShotCollisions[2] = {
-    {
-      kind : DDP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 8,
-      atkType : 6,
-      nature : ELEMENT_ENCHANTABLE,
-      comboLv : 1,
-      remaining : 1,
-      layer : 8,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-    {
-      kind : DRP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 0,
-      LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
-      remaining : 0,
-      layer : 0,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-};
-
-const struct Collision gBlizzardArrowCollisions[2] = {
-    {
-      kind : DDP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 8,
-      atkType : 7,
-      nature : ELEMENT_ENCHANTABLE,
-      comboLv : 1,
-      remaining : 1,
-      layer : 0x10,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-    {
-      kind : DRP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 0,
-      LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
-      remaining : 0,
-      range : {0x0, 0x0, 0x1000, 0x1000},
-    },
-};
-
-const struct Collision Hitbox_ARRAY_0835efc4[2] = {
-    {
-      kind : DDP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 8,
-      nature : ELEMENT_ENCHANTABLE,
-      comboLv : 1,
-      remaining : 1,
-      layer : 2,
-      range : {0x600, 0x0, 0x1800, 0x1400},
-    },
-    {
-      kind : DRP,
-      faction : FACTION_ALLY,
-      special : HALFABLE,
-      damage : 0,
-      LAYER(0xFFFFFFFF),
-      hitzone : 0xFF,
-      remaining : 0,
-      range : {0x600, 0x0, 0x1800, 0x1400},
-    },
-};
-
+// clang-format off
 const WeaponRoutine gBusterRoutine = {
-    Buster_Init, Buster_Update, Buster_Die, DeleteWeapon, Buster_Delete,
+    [ENTITY_INIT] =      (void*)Buster_Init,
+    [ENTITY_UPDATE] =    (void*)Buster_Update,
+    [ENTITY_DIE] =       (void*)Buster_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)Buster_Delete,    
 };
+// clang-format on
 
 static const motion_t sFullBulletMotions[4] = {
     MOTION(0x89, 0x00),
@@ -1985,5 +1867,3 @@ static const motion_t sFullBulletMotions[4] = {
     MOTION(0x8B, 0x00),
     MOTION(0x8C, 0x00),
 };
-
-#undef PROP

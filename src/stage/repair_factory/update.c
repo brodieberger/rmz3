@@ -341,7 +341,7 @@ _0801C644:\n\
 	beq _0801C69E\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r4, [r5]\n\
 	b _0801C69E\n\
 	.align 2, 0\n\
@@ -381,11 +381,11 @@ _0801C6A8:\n\
 	beq _0801C6D2\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r4]\n\
 _0801C6D2:\n\
 	movs r0, #0xa1\n\
-	bl playBGM\n\
+	bl PlayBGM\n\
 	movs r0, #0xa1\n\
 	str r0, [r4]\n\
 _0801C6DC:\n\
@@ -516,7 +516,7 @@ _0801C7C8:\n\
 	adds r2, r1, r0\n\
 	ldrb r0, [r4, #0xa]\n\
 	bics r3, r0\n\
-	ldr r1, _0801C81C @ =gMission\n\
+	ldr r1, _0801C81C @ =gScore\n\
 	movs r6, #7\n\
 	ldrsb r6, [r1, r6]\n\
 	movs r0, #0x80\n\
@@ -536,7 +536,7 @@ _0801C7C8:\n\
 	.align 2, 0\n\
 _0801C814: .4byte gStageRun\n\
 _0801C818: .4byte gCurStory\n\
-_0801C81C: .4byte gMission\n\
+_0801C81C: .4byte gScore\n\
 _0801C820:\n\
 	adds r1, r2, r3\n\
 	lsls r0, r1, #2\n\
@@ -639,7 +639,7 @@ _0801C8CE:\n\
 	beq _0801C8EA\n\
 	lsls r0, r0, #0x10\n\
 	lsrs r0, r0, #0x10\n\
-	bl fadeoutBGM\n\
+	bl FadeOutBGM\n\
 	str r5, [r7]\n\
 _0801C8EA:\n\
 	movs r1, #0xaa\n\

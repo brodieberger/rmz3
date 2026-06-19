@@ -2,39 +2,41 @@
 #include "global.h"
 #include "weapon.h"
 
-static const struct Collision sCollision;
-static const u8 sInitModes[4];
-
 static void Weapon6_Init(struct Weapon* w);
 static void Weapon6_Update(struct Weapon* w);
 static void Weapon6_Die(struct Weapon* w);
 
 // clang-format off
 const WeaponRoutine gWeapon6Routine = {
-    [ENTITY_INIT] =      Weapon6_Init,
-    [ENTITY_UPDATE] =    Weapon6_Update,
-    [ENTITY_DIE] =       Weapon6_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
+    [ENTITY_INIT] =      (WeaponFunc)Weapon6_Init,
+    [ENTITY_UPDATE] =    (WeaponFunc)Weapon6_Update,
+    [ENTITY_DIE] =       (WeaponFunc)Weapon6_Die,
+    [ENTITY_DISAPPEAR] = (WeaponFunc)DeleteWeapon,
     [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
 };
 // clang-format on
 
 void CreateWeapon6(s32 x, s32 y) {
-  struct Weapon* w = (struct Weapon*)AllocEntityLast(gWeaponHeaderPtr);
-  if (w != NULL) {
-    INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_06);
-    (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-    (w->s).taskCol = 16;
-    (w->s).tileNum = gWeaponTileNum[0];
-    (w->s).palID = gWeaponPalIDs[0];
-    ((w->s).coord).x = x;
-    ((w->s).coord).y = y;
-    (w->s).work[0] = 0;
+  struct Entity* p = AllocEntityFirst(gWeaponHeaderPtr);
+  if (p != NULL) {
+    INIT_WEAPON_ROUTINE(p, WEAPON_MOVE_06);
+    p->flags2 &= ~ENTITY_FLAGS2_B6;
+    p->renderPrio = 16;
+    p->tileNum = gWeaponTileNum[0];
+    p->palID = gWeaponPalIDs[0];
+    (p->coord).x = x;
+    (p->coord).y = y;
+    p->work[0] = 0;
   }
 }
 
 // 0x0803aaec
-static void onHit(struct Body* body UNUSED, struct Coord* r1 UNUSED, struct Coord* r2 UNUSED) { return; }
+static void onHit(struct Body* body UNUSED, Coords32* r1 UNUSED, Coords32* r2 UNUSED) { return; }
+
+// --------------------------------------------
+
+static const struct Collision sCollision;
+static const u8 sInitModes[];
 
 static void Weapon6_Init(struct Weapon* w) {
   SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
@@ -47,15 +49,15 @@ static void Weapon6_Init(struct Weapon* w) {
   Weapon6_Update(w);
 }
 
-static void nop_0803abf4(struct Weapon* w);
-static void updateWeapon6(struct Weapon* w);
+static void nop_0803abf4(void* _);
+static void _Weapon6_Update(struct Weapon* w);
 
 static void Weapon6_Update(struct Weapon* w) {
   static const WeaponFunc sUpdates1[1] = {
-      nop_0803abf4,
+      (WeaponFunc)nop_0803abf4,
   };
   static const WeaponFunc sUpdates2[1] = {
-      updateWeapon6,
+      (WeaponFunc)_Weapon6_Update,
   };
   if ((w->body).status & BODY_STATUS_B2) {
     SET_WEAPON_ROUTINE(w, ENTITY_DIE);
@@ -67,23 +69,22 @@ static void Weapon6_Update(struct Weapon* w) {
 }
 
 static void Weapon6_Die(struct Weapon* w) {
-  (w->body).status = 0;
-  (w->body).prevStatus = 0;
-  (w->body).invincibleTime = 0;
-  (w->s).flags &= ~COLLIDABLE;
+  EXIT_BODY(w);
   SET_WEAPON_ROUTINE(w, ENTITY_EXIT);
 }
 
-static void nop_0803abf4(struct Weapon* w) { return; }
+// --------------------------------------------
 
-static void updateWeapon6(struct Weapon* w) {
+static void nop_0803abf4(void* _) { return; }
+
+static void _Weapon6_Update(struct Weapon* w) {
   switch ((w->s).mode[2]) {
     case 0: {
       InitRotatableMotion(&w->s);
       (w->s).flags2 &= ~DYNAMIC;
       (w->s).tileNum = 0;
       (w->s).palID = 0;
-      SetMotion(&w->s, MOTION(SM033_FEFNIR_FIREBALL, 0));
+      SetSpriteAnimation(w, MOTION(SM033_FEFNIR_FIREBALL, 0));
       (w->s).angle = 64;
       (w->s).mode[2]++;
       FALLTHROUGH;
@@ -94,7 +95,7 @@ static void updateWeapon6(struct Weapon* w) {
       if (((w->s).coord.x - (u32)PIXEL(9808) > PIXEL(304)) || (y - (u32)PIXEL(436) > PIXEL(224))) {
         SET_WEAPON_ROUTINE(w, ENTITY_DIE);
       }
-      UpdateMotionGraphic(&w->s);
+      UpdateSpriteAnimation(w);
       break;
     }
   }

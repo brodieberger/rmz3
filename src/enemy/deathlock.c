@@ -10,10 +10,10 @@ void Deathlock_Die(struct Enemy* p);
 
 // clang-format off
 const EnemyRoutine gDeathlockRoutine = {
-    [ENTITY_INIT] =      Deathlock_Init,
-    [ENTITY_UPDATE] =    Deathlock_Update,
-    [ENTITY_DIE] =       Deathlock_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_INIT] =      (EnemyFunc)Deathlock_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)Deathlock_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Deathlock_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -74,6 +74,7 @@ static const EnemyFunc sDeads[4] = {
 
 // --------------------------------------------
 
+// 0x08369198
 static const struct Collision sCollisions[15] = {
     {
       kind : DRP,
@@ -212,6 +213,7 @@ static const struct Collision sCollisions[15] = {
 };
 
 // clang-format off
+// 0x08369300
 static const motion_t sMotions1[6] = {
     MOTION(SM116_DEATHLOCK, 1),
     MOTION(SM116_DEATHLOCK, 4),
@@ -222,12 +224,16 @@ static const motion_t sMotions1[6] = {
 };
 // clang-format on
 
+// 0x0836930c
 static const u8 sCollisionIdxs1[6] = {2, 4, 8, 10, 10, 12};
 
-static const struct Coord sElementCoord = {PIXEL(0), -PIXEL(12)};
+// 0x08369314
+static const Coords32 sElementCoord = {PIXEL(0), -PIXEL(12)};
 
+// 0x0836931C
 static const u8 sCollisionIdxs2[6] = {3, 6, 9, 11, 11, 13};
 
+// 0x08369322
 static const motion_t sMotions2[4] = {
     MOTION(SM116_DEATHLOCK, 17),
     MOTION(SM116_DEATHLOCK, 18),

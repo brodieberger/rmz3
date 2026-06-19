@@ -1,30 +1,46 @@
 #include "collision.h"
 #include "global.h"
-#include "mission.h"
 #include "motion.h"
 #include "overworld.h"
+#include "score.h"
 #include "sound.h"
 #include "weapon.h"
 #include "zero.h"
 
-#define PROP (w->props.rod)
+struct RecoilRod {
+  OBJECT_HDR;
+  // props (56bytes, offset: 0xB4..)
+  struct RecoilRodProps {
+    struct Zero* z;  // 0xB4
+    u8 element;      // 0xB8
+    u8 atk;          // 0xB9
+    u8 unk_06;       // 0xBA
+    u8 comboLv;      // 0xBB
+    u8 unk_08;       // 0xBC
+    u8 unk_09;       // 0xBD
+    u8 unk_0a;       // 0xBE
+    u8 unk_0b;       // 0xBF
+    u8 unk_0c[8];    // 0xC0
+    u8 unk_c8[36];   // 0xC8
+  } props;
+};
+static_assert(sizeof(struct RecoilRod) == sizeof(struct Weapon));
 
-void FUN_08039960(struct Body* body, struct Coord* r1, struct Coord* r2);
+static void onCollision(struct Body* body, Coords32* r1, Coords32* r2);
 
 static const u8 gRodElement[4];
 
 struct Weapon* CreateWeaponRod(struct Zero* z) {
-  struct Weapon* w;
-  struct Rod_b4* b4;
+  struct RecoilRod* w;
   u8 element;
 
   KillAllWeapons(DeleteSaber);
-  w = (struct Weapon*)AllocEntityFirst(gWeaponHeaderPtr);
+  w = (struct RecoilRod*)AllocEntityLast(gWeaponHeaderPtr);
   if (w != NULL) {
     if ((z->unk_b4).mainCopy == WEAPON_ROD) {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_RECOIL_ROD);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[0];
       (w->s).palID = gWeaponPalIDs[0];
       element = gRodElement[((&z->unk_b4)->status).element];
@@ -32,50 +48,50 @@ struct Weapon* CreateWeaponRod(struct Zero* z) {
     } else {
       INIT_WEAPON_ROUTINE(w, WEAPON_MOVE_RECOIL_ROD);
       (w->s).flags2 &= ~ENTITY_FLAGS2_B6;
-      (w->s).taskCol = 16;
+      (w->s).renderPrio = 16;
       (w->s).tileNum = gWeaponTileNum[1];
       (w->s).palID = gWeaponPalIDs[1];
       element = gRodElement[((&z->unk_b4)->status).element];
       SetWeaponElement(1, element);
     }
-    b4 = &PROP;
-    b4->z = z;
-    (w->s).work[0] = z->rodID;
-    (w->s).work[1] = 0;
+    (w->props).z = z;
+    (w->s).work[0] = z->rodID, (w->s).work[1] = 0;
   }
-  return w;
+  return (void*)w;
 }
 
 // clang-format off
+// 0x08360430
 static const motion_t sMotions[22] = {
-    MOTION(0x75, 0x00),
-    MOTION(0x75, 0x01),
-    MOTION(0x76, 0x00),
-    MOTION(0x76, 0x01),
-    MOTION(0x77, 0x00),
-    MOTION(0x77, 0x01),
-    MOTION(0x78, 0x00),
-    MOTION(0x79, 0x00),
-    MOTION(0x7A, 0x00),
-    MOTION(0x7B, 0x00),
-    MOTION(0x7C, 0x00),
-    MOTION(0x7D, 0x00),
-    MOTION(0x7E, 0x00),
-    MOTION(0x7F, 0x00),
-    MOTION(0x80, 0x00),
-    MOTION(0x81, 0x00),
-    MOTION(0x82, 0x00),
-    MOTION(0x83, 0x00),
-    MOTION(0x84, 0x00),
-    MOTION(0x7F, 0x01),
-    MOTION(0x82, 0x01),
-    MOTION(0x75, 0x02),
+    MOTION(DM117_ROD_FORWARD_1000, 0),
+    MOTION(DM117_ROD_FORWARD_1000, 1),
+    MOTION(DM118_ROD_DIAGONAL_UP, 0),
+    MOTION(DM118_ROD_DIAGONAL_UP, 1),
+    MOTION(DM119_ROD_DIAGONAL_DOWN, 0),
+    MOTION(DM119_ROD_DIAGONAL_DOWN, 1),
+    MOTION(DM120_ROD_FORWARD, 0),
+    MOTION(DM121_ROD_DIAGONAL_UP, 0),
+    MOTION(DM122_ROD_DIAGONAL_DOWN, 0),
+    MOTION(DM123_UNK, 0),
+    MOTION(DM124_UNK, 0),
+    MOTION(DM125_UNK, 0),
+    MOTION(DM126_UNK, 0),
+    MOTION(DM127_UNK, 0),
+    MOTION(DM128_UNK, 0),
+    MOTION(DM129_UNK, 0),
+    MOTION(DM130_UNK, 0),
+    MOTION(DM131_UNK, 0),
+    MOTION(DM132_UNK, 0),
+    MOTION(DM127_UNK, 1),
+    MOTION(DM130_UNK, 1),
+    MOTION(DM117_ROD_FORWARD_1000, 2),
 };
 // clang-format on
 
+// 0x0836045c
 static const u8 gRodElement[4] = {0, 1, 2, 3};
 
-const u8 u8_ARRAY_08360460[12] = {
+static const u8 u8_ARRAY_08360460[12] = {
     0, 1, 2, 0, 1, 2, 3, 0, 2, 2, 0, 0,
 };
 
@@ -1752,6 +1768,7 @@ const struct Collision* const PTR_ARRAY_083611d4[8] = {
 // clang-format on
 
 // clang-format off
+// 0x083611f4
 const struct Collision *const *const gRodHitboxes[22] = {
     PTR_ARRAY_08360ff4,
     PTR_ARRAY_08360ff4,
@@ -1778,17 +1795,17 @@ const struct Collision *const *const gRodHitboxes[22] = {
 };
 // clang-format on
 
-static void Rod_Init(struct Weapon* w);
+static void Rod_Init(struct RecoilRod* w);
 void Rod_Update(struct Weapon* w);
-void Rod_Die(struct Weapon* w);
+static void Rod_Die(struct Entity* p);
 
 // clang-format off
 const WeaponRoutine gRodRoutine = {
-    [ENTITY_INIT] =      Rod_Init,
-    [ENTITY_UPDATE] =    Rod_Update,
-    [ENTITY_DIE] =       Rod_Die,
-    [ENTITY_DISAPPEAR] = DeleteWeapon,
-    [ENTITY_EXIT] =      (WeaponFunc)DeleteEntity,    
+    [ENTITY_INIT] =      (void*)Rod_Init,
+    [ENTITY_UPDATE] =    (void*)Rod_Update,
+    [ENTITY_DIE] =       (void*)Rod_Die,
+    [ENTITY_DISAPPEAR] = (void*)DeleteWeapon,
+    [ENTITY_EXIT] =      (void*)DeleteEntity,    
 };
 // clang-format on
 
@@ -1797,20 +1814,22 @@ const u8 u8_ARRAY_08361260[12] = {
 };
 
 // r4,r5 の reg swapが解決できないだけ
-NON_MATCH static void Rod_Init(struct Weapon* w) {
+NON_MATCH static void Rod_Init(struct RecoilRod* w) {
 #if MODERN
-  const struct Collision* collisions;
+  struct Zero* z = (w->props).z;
   struct Body* body;
-  struct Zero* z = (&PROP)->z;
+  const struct Collision* collisions;
 
   SET_WEAPON_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   ResetDynamicMotion(&w->s);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;
-  SetMotion(&w->s, sMotions[(w->s).work[0]]);
+  SetSpriteAnimation(w, sMotions[(w->s).work[0]]);
+
   collisions = *gRodHitboxes[(w->s).work[0]];
   INIT_BODY(w, collisions, 1, NULL);
+
   if ((w->s).work[0] == 21) {
     PlaySound(SE_THOUSAND);
   } else if ((w->s).work[0] < 11) {
@@ -1818,40 +1837,38 @@ NON_MATCH static void Rod_Init(struct Weapon* w) {
   } else {
     PlaySound(SE_CHARGE_RECOIL);
   }
-  (&PROP)->comboLv = 1;
-  if ((gRodHitboxes[(w->s).work[0]][1]->nature) & (1 << 1)) {
-    (&PROP)->element = gRodElement[((&z->unk_b4)->status).element];
-    (&PROP)->atk = 8;
-  } else {
-    (&PROP)->element = gRodElement[0];
-    (&PROP)->atk = 8;
-    if (sMotions[(w->s).work[0]] & 1) {
-      (&PROP)->comboLv = 2;
-    }
-  }
-  if ((w->s).work[0] == 21) {
-    (&PROP)->atk = 6;
-  }
 
-  (&PROP)->atk += CalcRodBonus(z);
-  if ((&PROP)->comboLv != 0) {
+  (&w->props)->comboLv = 1;
+  if ((gRodHitboxes[(w->s).work[0]][1]->nature) & (1 << 1)) {
+    (&w->props)->element = gRodElement[((&z->unk_b4)->status).element];
+    (&w->props)->atk = 8;
+  } else {
+    (&w->props)->element = gRodElement[0];
+    (&w->props)->atk = 8;
+    if (sMotions[(w->s).work[0]] & 1) (&w->props)->comboLv = 2;
+  }
+  if ((w->s).work[0] == 21) (&w->props)->atk = 6;
+
+  (&w->props)->atk += CalcRodBonus(z);
+
+  if ((&w->props)->comboLv != 0) {
     body = &w->body;
-    InitWeaponBody(body, collisions, (&PROP)->atk, (&PROP)->element, -1, (&PROP)->comboLv);
+    InitWeaponBody(body, collisions, (&w->props)->atk, (&w->props)->element, -1, (&w->props)->comboLv);
   } else {
     body = &w->body;
-    InitWeaponBody(body, collisions, (&PROP)->atk, (&PROP)->element, -1, -1);
+    InitWeaponBody(body, collisions, (&w->props)->atk, (&w->props)->element, -1, -1);
   }
-  (&PROP)->unk_06 = 0;
+  (&w->props)->unk_06 = 0;
   if ((((&z->unk_b4)->status).exSkill & (1 << EXSKILL_ID_SOUL)) && (((w->s).work[0] == 12) || ((w->s).work[0] == 15))) {
     if (((&z->unk_b4)->status).element == ELEMENT_FLAME) {
-      (&PROP)->unk_06 = 1;
+      (&w->props)->unk_06 = 1;
     } else {
-      (&PROP)->unk_06 = 2;
+      (&w->props)->unk_06 = 2;
     }
   }
-  (&PROP)->unk_08 = 1;
-  body->fn = FUN_08039960;
-  Rod_Update(w);
+  (&w->props)->unk_08 = 1;
+  body->fn = onCollision;
+  Rod_Update((void*)w);
 #else
   INCCODE("asm/wip/Rod_Init.inc");
 #endif
@@ -1859,4 +1876,34 @@ NON_MATCH static void Rod_Init(struct Weapon* w) {
 
 INCASM("asm/weapon/rod.inc");
 
-#undef PROP
+static void Rod_Die(struct Entity* p) {
+  p->flags &= ~DISPLAY;
+  SET_WEAPON_ROUTINE(p, ENTITY_EXIT);
+}
+
+struct Entity* CreateWeapon13(struct Zero* z, u8 n);
+
+// 0x08039960
+static void onCollision(struct Body* body, Coords32* r1, Coords32* r2) {
+  struct RecoilRod* p = (struct RecoilRod*)body->parent;
+  Object* q = (Object*)body->enemy->parent;
+  struct Zero* z = (p->props).z;
+  if (body->hitboxFlags & BODY_STATUS_B2) {
+    IncWeaponUseCount(WEAPON_ROD);
+
+    if (body->hitboxFlags & BODY_STATUS_B2) {
+      if (((p->s).work[0] >= 11) && ((p->s).work[0] < 21)) {
+        p = (struct RecoilRod*)body->parent;
+        CreateWeapon13((p->props).z, u8_ARRAY_08360460[(p->s).work[0] - 11]);
+      }
+      if (((p->s).work[0] == 13) && ((p->s).coord.y < (q->s).coord.y)) {
+        (p->s).work[0] = 19;
+        z->unk_135 = 1;
+      }
+      if (((p->s).work[0] == 16) && ((p->s).coord.y < (q->s).coord.y)) {
+        (p->s).work[0] = 20;
+        z->unk_135 = 1;
+      }
+    }
+  }
+}

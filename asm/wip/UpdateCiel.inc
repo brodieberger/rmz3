@@ -97,7 +97,7 @@ _080DB000:
 	strb r0, [r5, #0xd]
 _080DB030:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x1e]
 	lsls r0, r0, #8
 	adds r2, r5, #0
@@ -390,7 +390,7 @@ _080DB298: .4byte gGameState
 _080DB29C: .4byte 0x0000C206
 _080DB2A0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080DB2D0 @ =gOverworld
 	ldr r1, _080DB2D4 @ =0x0002D024
 	adds r0, r0, r1
@@ -428,7 +428,7 @@ _080DB2E8: .4byte gGameState
 _080DB2EC: .4byte gInChat
 _080DB2F0:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	adds r0, #0x8b
 	str r0, [r5, #0x54]
@@ -448,7 +448,7 @@ _080DB306:
 	b _080DB3FC
 _080DB316:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -477,7 +477,7 @@ _080DB346:
 	b _080DB3F0
 _080DB34E:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -490,7 +490,7 @@ _080DB34E:
 _080DB364: .4byte 0x0000C20E
 _080DB368:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, [r5, #0x54]
 	subs r0, #0x8b
 	str r0, [r5, #0x54]
@@ -509,7 +509,7 @@ _080DB368:
 _080DB38C: .4byte 0xFFFFE800
 _080DB390:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -536,7 +536,7 @@ _080DB390:
 	b _080DB346
 _080DB3C6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r5, #0x12]
 	subs r0, #1
 	strb r0, [r5, #0x12]
@@ -560,7 +560,7 @@ _080DB3F0:
 	b _080DB3FC
 _080DB3F6:
 	adds r0, r5, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080DB3FC:
 	pop {r4, r5}
 	pop {r0}

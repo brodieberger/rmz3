@@ -4,150 +4,6 @@
 	
 	.text
 
-	thumb_func_start FUN_080c2e7c
-FUN_080c2e7c: @ 0x080C2E7C
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080C2EC8 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C2EC0
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C2ECC @ =gVFXFnTable
-	movs r1, #0x3d
-	strb r1, [r3, #9]
-	adds r0, #0xf4
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r5, [r3, #0x10]
-	strb r0, [r3, #0x11]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-_080C2EC0:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C2EC8: .4byte gVFXHeaderPtr
-_080C2ECC: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c2ed0
-FUN_080c2ed0: @ 0x080C2ED0
-	push {r4, r5, r6, r7, lr}
-	mov r7, r8
-	push {r7}
-	adds r5, r0, #0
-	mov r8, r3
-	lsls r1, r1, #0x18
-	lsrs r6, r1, #0x18
-	lsls r2, r2, #0x10
-	lsrs r7, r2, #0x10
-	ldr r0, _080C2F34 @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r4, r0, #0
-	cmp r4, #0
-	beq _080C2F26
-	adds r0, #0x25
-	movs r3, #0
-	movs r2, #1
-	strb r2, [r0]
-	ldr r0, _080C2F38 @ =gVFXFnTable
-	movs r1, #0x3d
-	strb r1, [r4, #9]
-	adds r0, #0xf4
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r4, #0x14]
-	movs r0, #0
-	strh r3, [r4, #0x20]
-	adds r1, r4, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r6, [r4, #0x10]
-	strb r2, [r4, #0x11]
-	ldr r0, [r5]
-	str r0, [r4, #0x54]
-	ldr r0, [r5, #4]
-	str r0, [r4, #0x58]
-	adds r0, r4, #0
-	adds r0, #0x74
-	strh r7, [r0]
-	mov r0, r8
-	str r0, [r4, #0x78]
-_080C2F26:
-	adds r0, r4, #0
-	pop {r3}
-	mov r8, r3
-	pop {r4, r5, r6, r7}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C2F34: .4byte gVFXHeaderPtr
-_080C2F38: .4byte gVFXFnTable
-
-	thumb_func_start FUN_080c2f3c
-FUN_080c2f3c: @ 0x080C2F3C
-	push {r4, r5, lr}
-	adds r4, r0, #0
-	lsls r1, r1, #0x18
-	lsrs r5, r1, #0x18
-	ldr r0, _080C2F8C @ =gVFXHeaderPtr
-	ldr r0, [r0]
-	bl AllocEntityFirst
-	adds r3, r0, #0
-	cmp r3, #0
-	beq _080C2F82
-	adds r1, r3, #0
-	adds r1, #0x25
-	movs r2, #0
-	movs r0, #1
-	strb r0, [r1]
-	ldr r0, _080C2F90 @ =gVFXFnTable
-	movs r1, #0x3d
-	strb r1, [r3, #9]
-	adds r0, #0xf4
-	ldr r0, [r0]
-	ldr r0, [r0]
-	str r0, [r3, #0x14]
-	movs r0, #0
-	strh r2, [r3, #0x20]
-	adds r1, r3, #0
-	adds r1, #0x22
-	strb r0, [r1]
-	strb r5, [r3, #0x10]
-	movs r0, #2
-	strb r0, [r3, #0x11]
-	ldr r0, [r4]
-	str r0, [r3, #0x54]
-	ldr r0, [r4, #4]
-	str r0, [r3, #0x58]
-_080C2F82:
-	adds r0, r3, #0
-	pop {r4, r5}
-	pop {r1}
-	bx r1
-	.align 2, 0
-_080C2F8C: .4byte gVFXHeaderPtr
-_080C2F90: .4byte gVFXFnTable
-
 	thumb_func_start VFX61_Init
 VFX61_Init: @ 0x080C2F94
 	push {r4, r5, lr}
@@ -476,7 +332,7 @@ _080C31F6:
 	adds r0, r0, r1
 	str r0, [r4, #0x54]
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C320C:
 	pop {r4, r5}
 	pop {r0}
@@ -646,7 +502,7 @@ _080C3366:
 	adds r0, r0, r1
 	str r0, [r6, #0x54]
 	adds r0, r6, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C337C:
 	add sp, #0x10
 	pop {r4, r5, r6}
@@ -803,7 +659,7 @@ _080C349C:
 	adds r0, r0, r1
 	str r0, [r7, #0x54]
 	adds r0, r7, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 _080C34B2:
 	pop {r3, r4}
 	mov r8, r3

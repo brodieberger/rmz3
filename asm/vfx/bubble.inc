@@ -301,7 +301,7 @@ _080B30B0: .4byte gVFXFnTable
 FUN_080b30b4: @ 0x080B30B4
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	adds r0, #8
 	strb r0, [r4, #0x12]
@@ -324,7 +324,7 @@ FUN_080b30b4: @ 0x080B30B4
 	ldr r0, _080B3134 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080B3116
 	ldr r0, _080B3138 @ =gOverworld
@@ -370,7 +370,7 @@ _080B3140: .4byte gVFXFnTable
 FUN_080b3144: @ 0x080B3144
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	adds r0, #1
 	strb r0, [r4, #0x12]
@@ -396,7 +396,7 @@ FUN_080b3144: @ 0x080B3144
 	ldr r0, _080B31C8 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080B31AC
 	ldr r0, _080B31CC @ =gOverworld
@@ -442,7 +442,7 @@ _080B31D4: .4byte gVFXFnTable
 FUN_080b31d8: @ 0x080B31D8
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	adds r0, #8
 	strb r0, [r4, #0x12]
@@ -473,7 +473,7 @@ _080B31F4:
 	ldr r0, _080B3268 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080B3248
 	ldr r0, _080B326C @ =gOverworld
@@ -520,7 +520,7 @@ _080B3274: .4byte gVFXFnTable
 FUN_080b3278: @ 0x080B3278
 	push {r4, lr}
 	adds r4, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldrb r0, [r4, #0x12]
 	adds r0, #1
 	strb r0, [r4, #0x12]
@@ -554,7 +554,7 @@ _080B329A:
 	ldr r0, _080B3310 @ =gStageRun+232
 	adds r1, r4, #0
 	adds r1, #0x54
-	bl CalcFromCamera
+	bl Camera_GetDistance
 	cmp r0, #0
 	bne _080B32EE
 	ldr r0, _080B3314 @ =gOverworld

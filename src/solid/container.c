@@ -1,9 +1,12 @@
 #include "collision.h"
 #include "global.h"
 #include "overworld.h"
+#include "physics.h"
 #include "pickup.h"
 #include "solid.h"
 #include "vfx.h"
+
+// ゼロが壊すとアイテムとかディスクが出る箱
 
 static const struct Collision sCollision;
 static const struct SlashedEnemy sSlashedEnemies[4];
@@ -18,27 +21,24 @@ const SolidRoutine gContainerRoutine = {
     [ENTITY_INIT] =      Container_Init,
     [ENTITY_UPDATE] =    Solid35_Update,
     [ENTITY_DIE] =       Solid35_Die,
-    [ENTITY_DISAPPEAR] = DeleteSolid,
+    [ENTITY_DISAPPEAR] = (void*)DeleteSolid,
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
 
-WIP static void Container_Init(struct Solid* p) {
-#if MODERN
+static void Container_Init(struct Solid* p) {
   const s32 n = SM226_CRASH_CONTAINER + (p->s).work[0];
   LOAD_STATIC_GRAPHIC(n);
 
   InitNonAffineMotion(&p->s);
   (p->s).flags |= DISPLAY;
   (p->s).flags |= FLIPABLE;
-  SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 0x00));
-  (p->s).flags &= ~X_FLIP;
-  (p->s).spr.xflip = FALSE;
-  (p->s).spr.oam.xflip = FALSE;
+  SetSpriteAnimation(p, MOTION(SM226_CRASH_CONTAINER, 0));
+  SET_XFLIP(p, FALSE);
   INIT_BODY(p, &sCollision, 6, NULL);
-  (p->s).flags2 |= ENTITY_HAZARD;
+  (p->s).flags2 |= ENTI_PHYSICS;
   (p->s).size = &sSize;
-  (p->s).hazardAttr = METATILE_GROUND;
+  (p->s).physicsAttr = SHAPE_BLOCK;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
 
   if (FUN_080098a4((p->s).coord.x - PIXEL(12), (p->s).coord.y) != 0) {
@@ -49,9 +49,6 @@ WIP static void Container_Init(struct Solid* p) {
   }
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   Solid35_Update(p);
-#else
-  INCCODE("asm/wip/Container_Init.inc");
-#endif
 }
 
 static void Solid35_Update(struct Solid* p) {
@@ -60,14 +57,14 @@ static void Solid35_Update(struct Solid* p) {
     Solid35_Die(p);
     return;
   }
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
 }
 
 static void FUN_080dc434(struct Solid* p);
 static void FUN_080dc524(struct Solid* p);
 
 static void Solid35_Die(struct Solid* p) {
-  static const SolidFunc PTR_ARRAY_08371550[2] = {
+  static const SolidFunc sDeads[2] = {
       FUN_080dc434,
       FUN_080dc524,
   };
@@ -78,18 +75,15 @@ static void Solid35_Die(struct Solid* p) {
     } else {
       (p->s).mode[1] = 0;
     }
-    (p->body).status = 0;
-    (p->body).prevStatus = 0;
-    (p->body).invincibleTime = 0;
-    (p->s).flags &= ~COLLIDABLE;
-    (p->s).flags2 &= ~ENTITY_HAZARD;
+    EXIT_BODY(p);
+    (p->s).flags2 &= ~ENTI_PHYSICS;
   }
-  (PTR_ARRAY_08371550[(p->s).mode[1]])(p);
+  (sDeads[(p->s).mode[1]])(p);
 }
 
 static void FUN_080dc434(struct Solid* p) {
   u8 diskNo;
-  struct Coord c;
+  Coords32 c;
 
   c.x = (p->s).coord.x - PIXEL(4);
   c.y = (p->s).coord.y - PIXEL(15);
@@ -103,7 +97,7 @@ static void FUN_080dc434(struct Solid* p) {
   c.x = (p->s).coord.x;
   c.y = (p->s).coord.y - PIXEL(12);
   CreateSmoke(1, &c);
-  if ((p->s).coord.y > SEA) {
+  if ((p->s).coord.y > gOverworld.sea) {
     PlaySound(SE_UNK_31);
   } else {
     PlaySound(SE_ZAKO_EXPLODE);
@@ -121,16 +115,16 @@ static void FUN_080dc434(struct Solid* p) {
 
 static void FUN_080dc524(struct Solid* p) {
   u8 diskNo;
-  struct Coord c;
+  Coords32 c;
 
   if ((p->s).mode[2] == 0) {
-    SetMotion(&p->s, MOTION(SM226_CRASH_CONTAINER, 2));
+    SetSpriteAnimation(p, MOTION(SM226_CRASH_CONTAINER, 2));
     (p->s).work[2] = 32;
     CreateSlashedEnemy(&(p->s).coord, &sSlashedEnemies[3], 0, 0);
     (p->s).mode[2]++;
   }
 
-  UpdateMotionGraphic(&p->s);
+  UpdateSpriteAnimation(p);
   (p->s).work[2]--;
   if ((p->s).work[2] == 0xFF) {
     c.x = (p->s).coord.x + PIXEL(11);
@@ -145,7 +139,7 @@ static void FUN_080dc524(struct Solid* p) {
     c.x = (p->s).coord.x + PIXEL(10);
     c.y = (p->s).coord.y - PIXEL(8);
     CreateSmoke(1, &c);
-    if ((p->s).coord.y > SEA) {
+    if ((p->s).coord.y > gOverworld.sea) {
       PlaySound(SE_UNK_31);
     } else {
       PlaySound(SE_ZAKO_EXPLODE);
@@ -166,10 +160,7 @@ static const struct Collision sCollision = {
   kind : DRP,
   faction : FACTION_ENEMY,
   damage : 0,
-  atkType : 0xFF,
-  element : 0xFF,
-  nature : 0xFF,
-  comboLv : 0xFF,
+  LAYER(0xFFFFFFFF),
   hitzone : 1,
   hardness : HARDNESS_B3,
   remaining : 0,

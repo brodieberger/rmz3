@@ -76,12 +76,12 @@ _080D9836:
 	strb r0, [r4, #0xe]
 _080D983C:
 	adds r0, r4, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	ldr r0, _080D9870 @ =gTextWindow+8
 	ldrh r0, [r0, #2]
 	cmp r0, #0
 	bne _080D98DE
-	ldr r2, _080D9874 @ =gSystemSavedataManager
+	ldr r2, _080D9874 @ =gSystemSavedata
 	ldrb r1, [r2, #0xf]
 	movs r0, #0x10
 	ands r0, r1
@@ -100,7 +100,7 @@ _080D983C:
 	b _080D98DE
 	.align 2, 0
 _080D9870: .4byte gTextWindow+8
-_080D9874: .4byte gSystemSavedataManager
+_080D9874: .4byte gSystemSavedata
 _080D9878: .4byte 0x0000029E
 _080D987C:
 	movs r0, #0xa8
@@ -163,7 +163,7 @@ _080D98E4: .4byte gInChat
 FUN_080d98e8: @ 0x080D98E8
 	push {r4, r5, lr}
 	adds r5, r0, #0
-	bl UpdateMotionGraphic
+	bl UpdateEntityAnim
 	adds r0, r5, #0
 	adds r0, #0xba
 	ldrh r1, [r0]
@@ -651,7 +651,7 @@ _080D9CD0:
 andrew_080d9cd8: @ 0x080D9CD8
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
-	ldr r0, _080D9D14 @ =gSystemSavedataManager
+	ldr r0, _080D9D14 @ =gSystemSavedata
 	ldrb r1, [r0, #0xc]
 	movs r0, #0x10
 	ands r0, r1
@@ -679,7 +679,7 @@ andrew_080d9cd8: @ 0x080D9CD8
 	strh r3, [r0]
 	b _080D9D54
 	.align 2, 0
-_080D9D14: .4byte gSystemSavedataManager
+_080D9D14: .4byte gSystemSavedata
 _080D9D18:
 	ldr r2, _080D9D84 @ =sMotions
 	ldrb r0, [r6, #0x10]
@@ -741,7 +741,7 @@ _080D9D88: .4byte sCollisions
 	thumb_func_start andrew_080d9d8c
 andrew_080d9d8c: @ 0x080D9D8C
 	push {lr}
-	ldr r0, _080D9DB8 @ =gSystemSavedataManager
+	ldr r0, _080D9DB8 @ =gSystemSavedata
 	ldrb r1, [r0, #0xc]
 	movs r0, #0x10
 	ands r0, r1
@@ -762,7 +762,7 @@ andrew_080d9d8c: @ 0x080D9D8C
 	ldr r0, _080D9DC0 @ =0x000002D1
 	b _080D9EAE
 	.align 2, 0
-_080D9DB8: .4byte gSystemSavedataManager
+_080D9DB8: .4byte gSystemSavedata
 _080D9DBC: .4byte gCurStory
 _080D9DC0: .4byte 0x000002D1
 _080D9DC4:
@@ -901,7 +901,7 @@ _080D9EB4: .4byte 0x0000023E
 alouette_080d9eb8: @ 0x080D9EB8
 	push {r4, r5, r6, lr}
 	adds r6, r0, #0
-	ldr r0, _080D9F00 @ =gSystemSavedataManager
+	ldr r0, _080D9F00 @ =gSystemSavedata
 	ldrb r1, [r0, #9]
 	movs r0, #2
 	ands r0, r1
@@ -935,7 +935,7 @@ alouette_080d9eb8: @ 0x080D9EB8
 	bl ForceEntityPalette
 	b _080D9F3A
 	.align 2, 0
-_080D9F00: .4byte gSystemSavedataManager
+_080D9F00: .4byte gSystemSavedata
 _080D9F04: .4byte sMotions
 _080D9F08:
 	ldr r2, _080D9F80 @ =sMotions
@@ -2140,63 +2140,63 @@ _080DA7F4: @ jump table
 	.4byte _080DA86C @ case 7
 	.4byte _080DA878 @ case 8
 _080DA818:
-	ldr r0, _080DA820 @ =gSystemSavedataManager
+	ldr r0, _080DA820 @ =gSystemSavedata
 	ldrb r1, [r0, #0x12]
 	movs r0, #0x10
 	b _080DA87E
 	.align 2, 0
-_080DA820: .4byte gSystemSavedataManager
+_080DA820: .4byte gSystemSavedata
 _080DA824:
-	ldr r0, _080DA82C @ =gSystemSavedataManager
+	ldr r0, _080DA82C @ =gSystemSavedata
 	ldrb r1, [r0, #0xe]
 	movs r0, #0x80
 	b _080DA87E
 	.align 2, 0
-_080DA82C: .4byte gSystemSavedataManager
+_080DA82C: .4byte gSystemSavedata
 _080DA830:
-	ldr r0, _080DA838 @ =gSystemSavedataManager
+	ldr r0, _080DA838 @ =gSystemSavedata
 	ldrb r1, [r0, #0x11]
 	movs r0, #0x40
 	b _080DA87E
 	.align 2, 0
-_080DA838: .4byte gSystemSavedataManager
+_080DA838: .4byte gSystemSavedata
 _080DA83C:
-	ldr r0, _080DA844 @ =gSystemSavedataManager
+	ldr r0, _080DA844 @ =gSystemSavedata
 	ldrb r1, [r0, #0x11]
 	movs r0, #0x80
 	b _080DA87E
 	.align 2, 0
-_080DA844: .4byte gSystemSavedataManager
+_080DA844: .4byte gSystemSavedata
 _080DA848:
-	ldr r0, _080DA850 @ =gSystemSavedataManager
+	ldr r0, _080DA850 @ =gSystemSavedata
 	ldrb r1, [r0, #0x12]
 	movs r0, #4
 	b _080DA87E
 	.align 2, 0
-_080DA850: .4byte gSystemSavedataManager
+_080DA850: .4byte gSystemSavedata
 _080DA854:
-	ldr r0, _080DA85C @ =gSystemSavedataManager
+	ldr r0, _080DA85C @ =gSystemSavedata
 	ldrb r1, [r0, #0xe]
 	movs r0, #0x10
 	b _080DA87E
 	.align 2, 0
-_080DA85C: .4byte gSystemSavedataManager
+_080DA85C: .4byte gSystemSavedata
 _080DA860:
-	ldr r0, _080DA868 @ =gSystemSavedataManager
+	ldr r0, _080DA868 @ =gSystemSavedata
 	ldrb r1, [r0, #0xe]
 	movs r0, #0x40
 	b _080DA87E
 	.align 2, 0
-_080DA868: .4byte gSystemSavedataManager
+_080DA868: .4byte gSystemSavedata
 _080DA86C:
-	ldr r0, _080DA874 @ =gSystemSavedataManager
+	ldr r0, _080DA874 @ =gSystemSavedata
 	ldrb r1, [r0, #0xd]
 	movs r0, #0x40
 	b _080DA87E
 	.align 2, 0
-_080DA874: .4byte gSystemSavedataManager
+_080DA874: .4byte gSystemSavedata
 _080DA878:
-	ldr r0, _080DA8C0 @ =gSystemSavedataManager
+	ldr r0, _080DA8C0 @ =gSystemSavedata
 	ldrb r1, [r0, #0x12]
 	movs r0, #0x20
 _080DA87E:
@@ -2233,7 +2233,7 @@ _080DA87E:
 	str r0, [r6, #0x14]
 	b _080DA92E
 	.align 2, 0
-_080DA8C0: .4byte gSystemSavedataManager
+_080DA8C0: .4byte gSystemSavedata
 _080DA8C4: .4byte gSolidFnTable
 _080DA8C8:
 	ldrb r1, [r6, #0xa]
@@ -2560,7 +2560,7 @@ _080DAB3C: .4byte 0x0000029E
 FUN_080dab40: @ 0x080DAB40
 	push {r4, r5, r6, r7, lr}
 	adds r6, r0, #0
-	ldr r0, _080DAB88 @ =gSystemSavedataManager
+	ldr r0, _080DAB88 @ =gSystemSavedata
 	ldrb r0, [r0, #0xa]
 	movs r7, #1
 	adds r2, r7, #0
@@ -2595,7 +2595,7 @@ FUN_080dab40: @ 0x080DAB40
 	str r0, [r6, #0x14]
 	b _080DABF4
 	.align 2, 0
-_080DAB88: .4byte gSystemSavedataManager
+_080DAB88: .4byte gSystemSavedata
 _080DAB8C: .4byte gSolidFnTable
 _080DAB90:
 	ldrb r1, [r6, #0xa]
@@ -2682,7 +2682,7 @@ FUN_080dac28: @ 0x080DAC28
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0x16
 	bne _080DAC42
-	ldr r0, _080DAC90 @ =gSystemSavedataManager
+	ldr r0, _080DAC90 @ =gSystemSavedata
 	ldrb r1, [r0, #8]
 	movs r0, #0x40
 	ands r0, r1
@@ -2694,7 +2694,7 @@ _080DAC42:
 	ldrb r0, [r6, #0x10]
 	cmp r0, #0x19
 	bne _080DAC98
-	ldr r0, _080DAC90 @ =gSystemSavedataManager
+	ldr r0, _080DAC90 @ =gSystemSavedata
 	ldrb r1, [r0, #0xb]
 	movs r0, #0x40
 	ands r0, r1
@@ -2731,7 +2731,7 @@ _080DAC58:
 	str r0, [r6, #0x14]
 	b _080DAD00
 	.align 2, 0
-_080DAC90: .4byte gSystemSavedataManager
+_080DAC90: .4byte gSystemSavedata
 _080DAC94: .4byte gSolidFnTable
 _080DAC98:
 	ldr r2, _080DAD08 @ =sMotions

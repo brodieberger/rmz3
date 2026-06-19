@@ -14,7 +14,7 @@ const EnemyRoutine gBurnableWoodRoutine = {
     [ENTITY_INIT] =      BurnableWood_Init,
     [ENTITY_UPDATE] =    BurnableWood_Update,
     [ENTITY_DIE] =       BurnableWood_Die,
-    [ENTITY_DISAPPEAR] = DeleteEnemy,
+    [ENTITY_DISAPPEAR] = (void*)DeleteEnemy,
     [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
 };
 // clang-format on
@@ -26,22 +26,22 @@ static void BurnableWood_Init(struct Enemy* p) {
   (p->s).coord.x += PIXEL(8);
   (p->s).coord.y += PIXEL(8) + 1;
   if (FUN_0800e284((p->s).coord.x, (p->s).coord.y)) {
-    (p->s).flags2 |= ENTITY_HAZARD;
+    (p->s).flags2 |= ENTI_PHYSICS;
     (p->s).size = &sSize;
-    (p->s).hazardAttr = METATILE_GROUND;
+    (p->s).physicsAttr = SHAPE_BLOCK;
   }
-  SET_ZAKO_ROUTINE(p, ENTITY_UPDATE);
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   BurnableWood_Update(p);
 }
 
 static void BurnableWood_Update(struct Enemy* p) {
   if (FUN_0800e284((p->s).coord.x, (p->s).coord.y) == 0) {
-    (p->s).flags2 &= ~ENTITY_HAZARD;
-    SET_ZAKO_ROUTINE(p, ENTITY_DIE);
+    (p->s).flags2 &= ~ENTI_PHYSICS;
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
   }
 }
 
 static void BurnableWood_Die(struct Enemy* p) {
-  SET_ZAKO_ROUTINE(p, ENTITY_EXIT);
+  SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
   return;
 }

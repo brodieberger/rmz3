@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/entity.h"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 
 .balign 4
 .section .rodata
@@ -106,7 +107,7 @@ Entity_0834f6dc:
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Script_0834f6ec:
-  eventflag 0, 7, 0
+  cutscene_start CS_OCEAN_MISSION
   spawn 0, Entity_0834f5fc
   reset_camera Camera_0834f5a4
   lock
@@ -114,21 +115,21 @@ Script_0834f6ec:
   wait 1
   spawn 3, Entity_0834f67c
   visible 0, FALSE
-  wait_screeneffect
-  play_bgm 331
+  wait_transition_end
+  play_bgm BGM_MISSION_INSTRUCTION
   wait 15
   force 6, 0, 0
   wait 60
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 75
   destroy 3
   message 1, 0, 0x0500
   wait_msgbox_end
   stop_bgm
   wait 15
-  eventflag 1, 0, 0
+  cutscene_end
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 14, 0, 2621440
   indicator 1, 2, 0
   wait 45
@@ -143,7 +144,7 @@ Script_0834f7e4:
   reset_camera Camera_0834f578
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   indicator 1, 2, 0
   wait 45
   play_bgm 172
@@ -156,8 +157,8 @@ Script_0834f844:
   spawn 0, Entity_0834f5fc
   reset_camera Camera_0834f578
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 172
   indicator 1, 0, 0
   wait_indicator_end
@@ -166,7 +167,7 @@ Script_0834f844:
   end
 
 Script_0834f89c:
-  eventflag 0, 8, 0
+  cutscene_start CS_MEET_CHILDRE
   lock
   force 0, 0, 0
   force 8, 0, 0
@@ -175,21 +176,21 @@ Script_0834f89c:
   spawn 3, Entity_0834f69c
   spawn 4, Entity_0834f68c
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 233472
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 75
-  emotion 4, 0x1000, 0x00FFE400, 0
+  emotion_bubble 4, 16, -28, 0
   wait 75
   entityflag 4, 0, TRUE
   wait 45
-  message 1, 0, 0x0503
+  message 1, 0, 0x0503 @ なんだ、オマエは？
   wait_msgbox_end
   wait 15
   change_camera_mode 1
-  adjust_camera 1, 0, 4
-  adjust_camera 3, 0, 286720
-  adjust_camera 4, 0, 122880
+  set_chase_mode 4
+  set_camera_target_x 1120*PX
+  set_camera_target_y 480*PX
   wait 60
   entityflag 4, 0, FALSE
   entityflag 3, 0, TRUE
@@ -198,14 +199,14 @@ Script_0834f89c:
   wait 45
   destroy 4
   change_camera_mode 6
-  adjust_camera 1, 0, 4
+  set_chase_mode 4
   adjust_camera 11, 0, 217088
   wait 60
   message 1, 0, 0x0504
   wait_msgbox_end
   wait 15
   entityflag 3, 1, TRUE
-  eventflag 1, 0, 0
+  cutscene_end
   release
   resume 1
   end
@@ -215,7 +216,7 @@ Script_0834f9f4:
   reset_camera Camera_0834f5d0
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   spawn 3, Entity_0834f69c
   play_bgm 172
   entityflag 3, 1, TRUE
@@ -227,8 +228,8 @@ Script_0834fa4c:
   spawn 0, Entity_0834f60c
   reset_camera Camera_0834f5d0
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 172
   indicator 1, 0, 0
   wait_indicator_end
@@ -242,8 +243,8 @@ Script_0834fab4:
   spawn 0, Entity_0834f61c
   reset_camera Camera_0834f578
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 172
   indicator 1, 0, 0
   wait_indicator_end
@@ -256,10 +257,10 @@ Script_0834fb0c:
   spawn 1, Entity_0834f6ac
   stop_bgm
   pause
-  eventflag 0, 9, 0
+  cutscene_start CS_OCEAN_MIDBOSS
   force 9, 0, 1732608
   lock
-  emotion 0, 0x1000, 0x00FFD800, 0
+  emotion_bubble 0, 16, -40, 0
   wait 75
   play_bgm 223
   message 1, 0, 0x0508
@@ -278,7 +279,7 @@ Script_0834fb0c:
   entityflag 1, 3, TRUE
   stop_bgm
   wait 120
-  play_bgm 167
+  play_bgm BGM_ANTAN
   wait 190
   forcekeyinput 0x00002000
   wait 40
@@ -288,7 +289,7 @@ Script_0834fb0c:
   wait_msgbox_end
   stop_bgm
   wait 60
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   wait 60
   release
@@ -300,11 +301,11 @@ Script_0834fc64:
   spawn 1, Entity_0834f6bc
   stop_bgm
   pause
-  eventflag 0, 9, 0
+  cutscene_start CS_OCEAN_MIDBOSS
   force 9, 0, 6768*PX
   lock
   wait 60
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   release
   play_bgm BGM_MIDDLE_BOSS
@@ -317,7 +318,7 @@ Script_0834fccc:
   reset_camera Camera_0834f578
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   entityflag 1, 0, TRUE
   release
   play_bgm BGM_MIDDLE_BOSS
@@ -328,7 +329,7 @@ Script_0834fd24:
   lock
   stop_bgm
   wait 120
-  cmd08 1, 0, 2
+  cmd08_wait_set 1
   destroy 1
   spawn 3, Entity_0834f6cc
   entityflag 3, 1, TRUE
@@ -341,8 +342,8 @@ Script_0834fd7c:
   spawn 0, Entity_0834f63c
   reset_camera Camera_0834f578
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm 172
   indicator 1, 0, 0
   wait_indicator_end
@@ -356,8 +357,8 @@ Script_0834fde4:
   spawn 0, Entity_0834f64c
   reset_camera Camera_0834f578
   lock
-  screeneffect 9
-  wait_screeneffect
+  start_transition 9
+  wait_transition_end
   play_bgm BGM_GUARDER_ROOM
   indicator 1, 0, 0
   wait_indicator_end
@@ -369,14 +370,14 @@ Script_0834fe3c:
   spawn 1, Entity_0834f6dc
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 10, 0
+  cutscene_start CS_OCEAN_BOSS
   walkto 11328*PX
   lock
   wait 30
   triumphant_message 0, 0x050D
   message 1, 0, 0x050C
   wait_msgbox_end
-  eventflag 1, 0, 0
+  cutscene_end
   entityflag 1, 0, TRUE
   stop_bgm
   wait 120
@@ -384,7 +385,7 @@ Script_0834fe3c:
   wait_indicator_end
   force 1, 0, 0
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -392,10 +393,10 @@ Script_0834fee4:
   spawn 1, Entity_0834f6dc
   forcekeyinput DPAD_RIGHT
   pause
-  eventflag 0, 10, 0
+  cutscene_start CS_OCEAN_BOSS
   walkto 11328*PX
   lock
-  eventflag 1, 0, 0
+  cutscene_end
   triumphant_message 0, 0x050D
   entityflag 1, 0, TRUE
   stop_bgm
@@ -403,7 +404,7 @@ Script_0834fee4:
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -413,7 +414,7 @@ Script_0834ff6c:
   reset_camera Camera_0834f578
   lock
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   triumphant_message 0, 0x050D
   entityflag 1, 0, TRUE
   stop_bgm
@@ -421,7 +422,7 @@ Script_0834ff6c:
   warning_indicator
   wait_indicator_end
   release
-  play_bgm 188
+  play_bgm BGM_BOSS_BATTLE
   resume 1
   end
 
@@ -433,29 +434,29 @@ Script_0834ffec:
   message 1, 0, 0x050E
   wait_msgbox_end
   entityflag 1, 7, TRUE
-  cmd08 1, 0, 2
+  cmd08_wait_set 1
   force 4, 0, 0
   wait 8
   force 5, 0, 0
-  screeneffect 6
-  wait_screeneffect
+  start_transition 6
+  wait_transition_end
   wait 32
   destroy 1
   destroy 0
-  cmd20 0, 0, 0
+  load_graphic_primitive
   stop_camera
-  cmd06 0, 5, 65535
-  screeneffect 5
+  backdrop_color 0xFFFF
+  start_transition 5
   wait 90
-  prepare_missionresult
-  missionresult
+  start_result_screen
+  wait_for_result_screen_end
   end
 
 Script_083500ac:
   spawn 0, Entity_0834f66c
   reset_camera Camera_0834f578
   lock
-  screeneffect 9
+  start_transition 9
   play_bgm 172
   release
   resume 0
@@ -468,7 +469,7 @@ Script_083500ec:
   wait 1
   visible 0, FALSE
   normal_screen
-  wait_screeneffect
+  wait_transition_end
   play_bgm 172
   indicator 1, 0, 0
   wait 15
@@ -490,7 +491,7 @@ Script_08350164:
   force 5, 0, 0
   wait 60
   blackout_screen
-  wait_screeneffect
+  wait_transition_end
   wait 30
   destroy 0
   force 1, 0, 0
