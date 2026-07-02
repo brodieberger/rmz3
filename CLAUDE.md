@@ -102,6 +102,18 @@ are the biggest sources of "logically identical but bytes don't match":
   to `int` even if it looks safer.
 - **Compile flags in use (vanilla, non-modern):**
   `-mthumb-interwork -Wimplicit -Wparentheses -Werror -O2 -fshort-enums -fhex-asm`
+- **Repeated writes through a struct's pointer field can need asymmetric
+  caching.** For `X.ptrField[idx] |= a; X.ptrField[idx] |= b;` (same
+  computed index, same field, used twice), agbcc may schedule the field
+  *read* before the *index* is computed, even though the two are
+  independent — cache the field into a local pointer in its own statement
+  placed *before* computing the index (`u8* p = X.ptrField; idx = ...;
+  *(p + idx) |= a;`). The caching may need to apply to only the **first**
+  occurrence — a second, seemingly-identical occurrence right after can
+  need to re-read `X.ptrField` directly rather than reusing the cached
+  local. Don't assume the two occurrences must be written symmetrically;
+  try the asymmetric version if the symmetric one doesn't match. See the
+  `unlockAllSecretDisk` worked example below.
 
 ## Getting started on a function
 
@@ -135,10 +147,66 @@ candidate. It randomly mutates declaration order, expression shape, and
 temporaries, keeping anything that improves the match score, and is
 specifically good at exactly the regalloc problems agbcc causes. Feed it
 your current best-effort C plus the captured target from
-`.decomp_cache/<symbol>.target.s`. If the permuter also plateaus without
-reaching 100%, that's a signal the *structure* is still wrong somewhere
-(wrong field width, missed inlining, an implicit memcpy) — re-examine the
-diff for a structural cause rather than continuing to permute.
+`.decomp_cache/<symbol>.target.s`.
+
+**If permuter *also* plateaus with zero improvement over many thousands of
+iterations** (not just your manual attempts), treat that as a stronger
+signal than "run it longer": it usually means the *statement-level
+structure* is still wrong (an instruction-order bug, not just register
+noise), and undirected random mutation is unlikely to discover an entirely
+new structural pattern (like an asymmetric caching trick — see the agbcc
+quirks list above) from scratch within a reasonable budget. What actually
+works in that situation:
+1. Go back to the raw target disassembly and look for something genuinely
+   *independent-but-reordered* (two instructions with no data dependency
+   on each other, emitted in a different order than your candidate) — not
+   just swapped registers. That's the real bug.
+2. Fix that one structural thing by hand. The match % can look *worse*
+   immediately after — register-allocation noise can now dominate the
+   score once the structural bug is gone, which is fine.
+3. **Re-run permuter against the corrected structure.** A search that
+   plateaued for 80,000+ iterations against the wrong structure can find
+   an exact match in a few hundred once the structure is right — pure
+   register-allocation noise is exactly what permuter is good at, it just
+   can't get there if the fundamental shape is still wrong.
+
+Don't expect Ghidra's decompilation to hand you the fix here either — it's
+a **sanity check on logic and real symbol names, not a structural
+template.** Applying Ghidra's literal pseudo-C shape (e.g. exactly where
+it inserts a temp variable, or `do-while` vs `for`) can make the match
+*worse*, since Ghidra reconstructs code for human readability, not to
+preserve the statement-level shape that controls instruction scheduling.
+Use it to confirm the logic and cross-check field/global names against
+real headers — but verify any *structural* hint by actually testing it.
+
+### Setting up decomp-permuter for this project
+
+This repo doesn't use the `GLOBAL_ASM` convention `import.py` expects, so
+its automatic setup won't work — build the permuter directory by hand:
+
+- **Don't feed it the real project `.c` file as `base.c`.** `pycparser`
+  (which permuter uses to parse/mutate C) chokes on some GNU attribute
+  syntax used elsewhere in this project's real header graph, and it'll
+  fail on the whole file even though the offending syntax is unrelated to
+  your function. Instead hand-write a minimal, self-contained `base.c`:
+  just the typedefs/struct/macros/extern decls your one function actually
+  needs, with **no** `#include` of project headers at all.
+- **Don't point `target.o` at the real built object file either.**
+  Permuter's scorer disassembles the *entire* `.o` with no symbol
+  filtering, so a multi-function object (e.g. a whole `.c` file's `.o`)
+  gets compared against nonsense from unrelated functions. Instead extract
+  just the target function's original assembly (from the `NAKED` block or
+  `.inc` file) into its own `.s` with `.thumb_func` / `.global <funcname>`
+  directives, and assemble that alone:
+  `arm-none-eabi-as -mcpu=arm7tdmi -march=armv4t -mthumb -mthumb-interwork -g target.s -o target.o`
+- `compile.sh` just needs to replicate this project's real
+  preprocess+agbcc+assemble pipeline (see the vanilla compile flags
+  above). Permuter calls it as `compile.sh <c_file> -o <o_file>`
+  (`$1`/`$3`).
+- The mainline `simonlindholm/decomp-permuter` is sufficient — no need to
+  chase ARM- or agbcc-named forks. Every fork drives the same `agbcc`
+  binary this project already has; only the search algorithm differs, and
+  it's the input (a structurally-correct candidate) that matters most.
 
 ## Worked examples
 
@@ -192,3 +260,78 @@ static void DiskLoop_Exit(struct GameState* g) {
   SetGameMode(g, GAMEMODE(MAINGAME, OVERWORLD, 3, 5));
 }
 ```
+
+### unlockAllSecretDisk — asymmetric pointer-field caching
+
+Target disassembly (loop body only — this is the part that resisted a
+dozen+ manual attempts and 84,000+ permuter iterations before the
+structural bug below was found):
+
+```asm
+_080F8C3C:
+	ldr r2, [r6]        @ r6 = &gStageDiskManager (cached before the loop)
+	lsrs r4, r5, #2     @ r5 = loop counter i
+	adds r2, r2, r4
+	adds r3, r5, #0
+	ands r3, r7          @ r7 = 3 (cached before the loop)
+	movs r0, #1
+	lsls r0, r3
+	ldrb r1, [r2]
+	orrs r0, r1
+	strb r0, [r2]
+	ldr r2, [r6]         @ re-read the field — NOT reusing a cached pointer
+	adds r2, r2, r4
+	movs r0, #0x10
+	lsls r0, r3
+	ldrb r1, [r2]
+	orrs r0, r1
+	strb r0, [r2]
+	adds r0, r5, #1
+	lsls r0, r0, #0x18
+	lsrs r5, r0, #0x18
+	cmp r5, #0xb3
+	bls _080F8C3C
+```
+
+Matching C:
+
+```c
+void unlockAllSecretDisk(u8* flagbits) {
+  u8* base;
+  u8 i;
+  u8 shift;
+  gStageDiskManager.disk = flagbits;
+  _CpuFastFill(0, flagbits, 32);
+  CpuFill32(0, flagbits + 0x20, 16);
+  i = 0;
+  do {
+    base = gStageDiskManager.disk;
+    shift = i >> 2;
+    *(base + shift) |= (1 << (i & 3));
+    *(gStageDiskManager.disk + shift) |= (0x10 << (i & 3));
+    i = (i + 1) & 0xff;
+  } while (i < DISK_COUNT);
+  clearStageDisk();
+}
+```
+
+The key details, in order of how hard they were to find:
+
+1. `ldr` (read `gStageDiskManager.disk`) had to be scheduled *before*
+   `lsrs` (compute `i >> 2`), even though the two have no data dependency
+   on each other. Every phrasing that computed the index first — a `for`
+   loop, `for` with the index inlined, `for` with the index in its own
+   local, flipping the operand order in the pointer addition — produced
+   the same wrong order regardless. What fixed it: assigning
+   `gStageDiskManager.disk` to a local pointer (`base`) in its **own
+   statement**, placed textually before the shift is computed.
+2. That fix alone left the right instructions in the wrong registers (a
+   pure 3-register rotation) — declaration order and loop shape
+   (`do-while` vs `for`) made zero difference across 6+ tries.
+   Re-running decomp-permuter against this *now-structurally-correct*
+   candidate found the exact register assignment in 291 iterations.
+3. The permuter's winning candidate revealed the asymmetry: `base` is
+   only reused for the **first** `|=`; the second one re-reads
+   `gStageDiskManager.disk` directly rather than reusing `base`. Writing
+   both occurrences the same way (both through `base`, or both inlined)
+   never matched — only the asymmetric version did.
