@@ -1611,16 +1611,20 @@ void clearSecretDiskDataHard(u8* flagbits) {
  * @note 0x080f8c14
  */
 void unlockAllSecretDisk(u8* flagbits) {
+  u8* base;
   u8 i;
   u8 shift;
   gStageDiskManager.disk = flagbits;
   _CpuFastFill(0, flagbits, 32);
   CpuFill32(0, flagbits + 0x20, 16);
-  for (i = 0; i < DISK_COUNT; i++) {
+  i = 0;
+  do {
+    base = gStageDiskManager.disk;
     shift = i >> 2;
-    gStageDiskManager.disk[shift] |= (1 << (i & 3));
-    gStageDiskManager.disk[shift] |= (0x10 << (i & 3));
-  }
+    *(base + shift) |= (1 << (i & 3));
+    *(gStageDiskManager.disk + shift) |= (0x10 << (i & 3));
+    i = (i + 1) & 0xff;
+  } while (i < DISK_COUNT);
   clearStageDisk();
 }
 
