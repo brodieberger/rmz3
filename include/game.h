@@ -118,6 +118,12 @@ void OverworldLoop_ManageSaveData(struct GameState* g);
 void OverworldLoop_CmdRoomTalk(struct GameState* g);
 u16 handleWrapTwoChoice(struct GameState* g);
 
+extern const u8 gFreeRunStageIDs[16];
+extern const str_id_t gFreeRunStageNameIdxs[FREE_STAGE_COUNT];
+#if AP
+void CmdRoomTalk_OtherStates(struct GameState* g);
+#endif
+
 void DrawHUD(struct GameState* _);
 void CheckItemGain(struct GameState* p);
 

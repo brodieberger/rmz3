@@ -112,6 +112,31 @@ void PrintOptionMessage2(TextID n) {
   (&gTextWindow.text)->textType = 0;
 }
 
+#if AP
+/*
+  PrintOptionMessage1 for a message that is not in the text banks, AKA AP's new prompts
+*/
+void PrintOptionMessagePtr(const char_t* s) {
+  TextWindowText* w = &gTextWindow.text;
+  w->start = (char_t*)s;
+  w->textType = TW_OPTION;
+  if ((w->state).u8[0] == TWK_MUGSHOT) {
+    w->next = w->start;
+    w->mode = TWM_TYPING;
+    (w->state).u8[1] = 5;
+  } else {
+    resetTextWindow(w);
+    setupTextWindow(w);
+    if (w->mugshot != 0) {
+      (w->state).u32 = TWK_MUGSHOT;
+    } else {
+      (w->state).u32 = TWK_INLINE;
+    }
+  }
+  w->flag = 1;
+}
+#endif
+
 void PrintResultInline(TextID t, bool16 ng) {
   TextWindowText* w = &gTextWindow.text;
 

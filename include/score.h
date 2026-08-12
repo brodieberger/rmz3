@@ -60,6 +60,9 @@ extern struct MissionScore gScore;  // addr:0x0202fe20
 void ClearPlayInfo(struct TotalScore* p);
 void ResetMissionScore(u8 stageID, struct TotalScore* total_score);
 void AddMissionDamage(u16 damage);
+#if AP
+u8 CalcScoreRank(s32 score);
+#endif
 
 static inline void IncWeaponUseCount(s32 idx) {
   if (gScore.weaponCount[idx] < 0xFFFF) gScore.weaponCount[idx]++;

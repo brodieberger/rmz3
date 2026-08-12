@@ -1350,7 +1350,7 @@ Deathlock: @ Graphic 116, 0x085d8208
 	.4byte gStaticMotionGraphics_149-. @ src
 	.4byte (gStaticMotionGraphics_149_Palettes - gStaticMotionGraphics_149) | (0 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 .if ENGLISH
-	.2byte 1288, (LZ77 | BPP4) 	@ rowsize(unused), props — 161 tiles
+	.2byte 1288, (LZ77 | BPP4) 	@ rowsize(unused), props, 161 tiles
 .else
 	.2byte 896, (LZ77 | BPP4) 	@ rowsize(unused), props
 .endif
@@ -1615,7 +1615,7 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 176
 	.4byte gStaticMotionGraphics_176-. @ src
-	.4byte 136 | (473 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_176_Palettes - gStaticMotionGraphics_176) | (473 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 40, (LZ77 | BPP4) 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_176_Palettes-. @ src offset
@@ -3244,7 +3244,15 @@ gStaticMotionGraphics_175:
 	.incbin "sprites/static/exlife/green/sheet.gbapal"
 
 gStaticMotionGraphics_176:
+.if AP
+  @ Results-screen disk icon, drawn locked.
+  @ Padded back to the vanilla size so nothing after it moves. LZ77 stops at the length
+  @ in its own header, so the padding is never read. Keep the AP sheet <= 136 bytes.
+  .incbin "sprites/static/result_disk/default/sheet-ap.4bpp.lz"
+  .space 136 - (. - gStaticMotionGraphics_176)
+.else
 	.incbin "sprites/static/result_disk/default/sheet.4bpp.lz"
+.endif
 gStaticMotionGraphics_176_Palettes:
 	.incbin "sprites/static/result_disk/default/sheet.gbapal"
 

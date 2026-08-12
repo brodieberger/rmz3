@@ -3,17 +3,18 @@
 
 #include "global.h"
 
+struct SquareCursorWidget;
 struct Widget;
 
 struct ResultState {
   u8 mode[4];  // 現在実行する処理を決める
   s16 frame;
-  u16 unk_06;
+  s16 unk_06;
   u16 unk_08;
   u16 unk_0a;
   u32 unk_0c;
   u32 rank;
-  void* vfx;
+  struct SquareCursorWidget* cursor;  // 0x14, disk picker on the secret-disk step
   u8 codenamePrefix;
   u8 codenameSuffix;
   u16 unk_1a;

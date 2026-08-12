@@ -28,7 +28,11 @@ Start:
 
 Text_OpenSecretDisk_YouGotTheSecretDisk: @ 0x08378AAE
 	@ EN: You got the / Secret Disk!
-		.if ENGLISH
+	@ AP: This will probably change later when I actually do the on screen stuff.
+		.if AP
+		.string "You got the {RED}{VARIABLE}{RED_END}$"
+		.string "Secret Disk!$"
+		.elseif ENGLISH
 		.string "You got the {RED}{VARIABLE}{RED_END}▼"
 		.string "Secret Disk!$"
 		.else

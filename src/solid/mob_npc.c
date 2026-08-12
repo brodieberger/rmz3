@@ -1,12 +1,21 @@
+#include "ap.h"
 #include "collision.h"
+#include "constants/diskno.h"
+#include "definition.h"
 #include "global.h"
 #include "solid.h"
+#include "stagerun.h"
+#include "story.h"
+#include "string_ids.h"
+#include "text.h"
+#include "text_window.h"
 
 // レジスタンスベースのモブキャラ
 
 struct MobObject {
   OBJECT_HDR;
-  u8 unk_00[8];     // 0xB4
+  u8 unk_00[6];     // 0xB4
+  TextID textID;    // 0xBA, 直前に表示したテキストID
   s16 unk_08;       // 0xBC
   motion_t motion;  // 0xBE
   u8 unk_0c[4];     // 0xC0
@@ -153,7 +162,7 @@ static void mob_neutral_080d95a8(struct MobObject* p);
 static void FUN_080d95f8(struct Solid* p);
 static void FUN_080d9734(struct MobObject* p);
 void mob_chat_080d97b4(struct Solid* p);
-void FUN_080d98e8(struct Solid* p);
+void FUN_080d98e8(struct MobObject* p);
 
 static void MobNPC_Update(struct Solid* p) {
   // clang-format off
@@ -376,7 +385,70 @@ static void FUN_080d9734(struct MobObject* p) {
   }
 }
 
-INCASM("asm/solid/mob_npc.inc");
+INCASM("asm/solid/mob_npc_1.inc");
+
+/*
+  The NPC reward, as a location check.
+*/
+#if AP
+#define NPC_DISK_REWARD(diskNo, stringNo) ((void)0)
+#else
+#define NPC_DISK_REWARD(diskNo, stringNo)              \
+  {                                                    \
+    UNLOCK_DISK(gStageDiskManager.disk, (diskNo));     \
+    gTextPrinter.variable = (char_t*)STRING(stringNo); \
+    PrintTextWindow(0x100, 0x5A);                      \
+  }
+#endif
+
+// Not exactly sure what this variable means, but on 9 it awards items
+#define TEXT_REWARD_REACHED (gTextWindow.text.unk_16 == 9)
+
+NON_MATCH_AP void FUN_080d98e8(struct MobObject* p) {
+#if MODERN || AP
+  UpdateSpriteAnimation(p);
+
+#if AP
+  ApMarkNpcDialogueChecked(p->textID);
+#endif
+
+  if ((p->textID == 0x241) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_106_40EC, 907);
+  if ((p->textID == 0x2CF) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_106_40EC, 907);
+  if ((p->textID == 0x247) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_HELLBAT_SCHILT, 916);
+  if ((p->textID == 0x24E) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_ALOUETTE, 969);
+  if ((p->textID == 0x253) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_DOIGT, 975);
+  if (p->textID == 0x25A) NPC_DISK_REWARD(DISK_CERVEAU, 967);
+  if (p->textID == 0x25D) NPC_DISK_REWARD(DISK_ELF_MULAQ, 844);
+  if ((p->textID == 0x271) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_AUTRUCHE, 973);
+  if (p->textID == 0x284) NPC_DISK_REWARD(DISK_HIRONDELLE, 974);
+  if (p->textID == 0x2A6) NPC_DISK_REWARD(DISK_ELF_BEETACK, 858);
+
+  // E-Crystal payouts, these are from the E-Reader npcs.
+  if (p->textID == 0x2C8) gECrystalGainAmount += 0x20;
+  if (p->textID == 0x2C0) gECrystalGainAmount += 0x34;
+  if (p->textID == 0x2C2) gECrystalGainAmount += 0x20;
+  if (p->textID == 0x2C4) gECrystalGainAmount += 0x34;
+  if (p->textID == 0x2C6) gECrystalGainAmount += 0x28;
+  if (p->textID == 0x2BC) gECrystalGainAmount += 0x20;
+  if (p->textID == 0x2BE) gECrystalGainAmount += 0x34;
+  if (p->textID == 0x2BA) gECrystalGainAmount += 0x64;
+  if (p->textID == 0x2CA) gECrystalGainAmount += 0x34;
+  if ((p->textID == 0x2B6) && TEXT_REWARD_REACHED) {
+    gECrystalGainAmount += 0xC8;
+    gCurStory.s.counts[24]++;
+  }
+  if (p->textID == 0x2B4) gECrystalGainAmount += 0x34;
+  if ((p->textID == 0x2B1) && TEXT_REWARD_REACHED) NPC_DISK_REWARD(DISK_ELF_MILVY, 823);
+  if (p->textID == 0x2B8) gECrystalGainAmount += 0x50;
+
+  (p->s).mode[1] = 0;
+  (p->s).mode[2] = 0;
+#else
+  INCCODE("asm/solid/mob_npc_98e8.inc");
+#endif
+}
+
+INCASM("asm/solid/mob_npc_2.inc");
 
 void andrew_080d9cd8(struct Solid* p);
 void alouette_080d9eb8(struct Solid* p);

@@ -1,5 +1,7 @@
 #include "link.h"
 
+#include "ap.h"
+
 #include "global.h"
 #include "mmbn4.h"
 
@@ -754,7 +756,24 @@ u8 GetLinkState(void) { return gLink.state; }
 static u8 unused_GetRecvCmdIndex(void) { return gLink.recvCmdIndex; }
 
 // 0x08003090
+#if AP
+/*
+  	12 bytes are dead in vanilla (nothing calls unused_Set0x02001500), so the
+  	used th them as the trampoline.
+	NEEDS TO BE EXCATLY 12 BYTES
+*/
+NAKED void ApFrameHook(bool32 b) {
+  asm(".syntax unified\n\
+	ldr r3, _ApFrameHookPtr\n\
+	ldr r3, [r3]\n\
+	bx r3\n\
+	.align 2, 0\n\
+_ApFrameHookPtr: .4byte gApFrameHookFn\n\
+ .syntax divided\n");
+}
+#else
 static void unused_Set0x02001500(u8 val) { u8_02001500 = val; }
+#endif
 
 u8 SioLink_GetPlayerStatus(u8 idx) { return gLink.unk_2a[idx]; }
 

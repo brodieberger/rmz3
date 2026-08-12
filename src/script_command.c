@@ -1258,7 +1258,12 @@ static bool32 Cmd_eventflag(struct VM* vm) {
     case 0: {  // cutscene_start, イベント区間の開始を示す
       vm->eventID = c->val2;
       if (!FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
-        if (FLAG(gSystemSavedata.flags, vm->eventID)) {  // すでに見たことのあるイベントならスキップ可能にする
+#if AP
+        // AP: every cutscene is skippable, not just ones already seen.
+        if (TRUE) {
+#else
+        if (FLAG(gSystemSavedata.flags, vm->eventID)) {
+#endif  // すでに見たことのあるイベントならスキップ可能にする
           gStageRun.missionStatus |= SKIPPABLE_CUTSCENE;
         }
       }

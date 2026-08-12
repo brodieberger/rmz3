@@ -39,12 +39,25 @@ struct Widget* createMenuWeaponIcon(void* g, weapon_t weapon, bool8 isSubWeapon,
 
 static void MenuWeapon_Init(struct Widget* w) {
   s32 x, y;
+#if AP
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
+  u8 unlocked = ((g->z2)->unk_b4).status.unlockedWeapon;
+#endif
 
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   InitNonAffineMotion(&w->s);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;
+#if AP
+  // Grey out weapons not sent yet
+  if (!(unlocked & (1 << (w->s).work[0]))) {
+    SetSpriteAnimation(w, MOTION(SM014_CHIPICON, 6));
+  } else {
+    SetSpriteAnimation(w, sWeaponIconMotions[(w->s).work[0]]);
+  }
+#else
   SetSpriteAnimation(w, sWeaponIconMotions[(w->s).work[0]]);
+#endif
   (w->s).spr.xflip = FALSE;
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;

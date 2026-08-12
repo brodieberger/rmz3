@@ -83,6 +83,15 @@ extern struct SoundInfo* SOUND_INFO_PTR;
 #define NORETURN
 #endif
 
+/*
+  NON_MATCH_AP is NON_MATCH that the AP build also compiles.
+*/
+#if MODERN || AP
+#define NON_MATCH_AP
+#else
+#define NON_MATCH_AP __attribute__((naked))
+#endif
+
 #define static_assert(cond) extern char assertion[(cond) ? 1 : -1]
 
 #endif  // GUARD_GBA_DEFINES

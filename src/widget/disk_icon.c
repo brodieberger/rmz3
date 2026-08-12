@@ -37,6 +37,10 @@ static void DiskIcon_Init(struct Widget* w) {
   (w->s).spr.oam.xflip = FALSE;
   (w->s).flags &= ~X_FLIP;
   (w->s).spr.oam.priority = 0;
+#if AP
+// Draw every results-screen disk locked
+  (w->s).mode[1] = 2;
+#endif
   DiskIcon_Update(w);
 }
 

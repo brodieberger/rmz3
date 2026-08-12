@@ -1,5 +1,6 @@
 #include "game.h"
 
+#include "ap.h"
 #include "global.h"
 #include "system.h"
 
@@ -19,7 +20,7 @@ void Process_Game(struct Process* p) {
   FUN_08002428(p);
   do {
     scenes[gGameState.mode[0]](&gGameState);
-    SwitchProcess(TRUE);
+    ApFrameHook(TRUE);
   } while (TRUE);
 }
 

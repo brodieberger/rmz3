@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "game.h"
 #include "global.h"
 
@@ -5,12 +6,20 @@ static const u8 MissionBitfields_083861e8[MISSION_COUNT];
 static const str_id_t StageNameIdxs[MISSION_COUNT];
 static const TextID MissionSummaryTextIDs[MISSION_COUNT];
 static const TextID MissionAskTextIDs[MISSION_COUNT];
-static const u8 u8_ARRAY_0838623c[16];
-static const TextID FreeRunStageTextIDs[FREE_STAGE_COUNT];
 static const TextID FreeRunStageConfirmTextIDs[FREE_STAGE_COUNT];
 
-// 0x080F10B8
-NAKED void OverworldLoop_CmdRoomTalk(struct GameState* g) {
+#if AP
+/*
+  Branch out into new function due to limited size of text/data fields.
+*/
+void OverworldLoop_CmdRoomTalk(struct GameState* g) {
+  ApCmdRoomTalk(g);
+}
+#define CMD_ROOM_TALK_ASM CmdRoomTalk_OtherStates
+#else
+#define CMD_ROOM_TALK_ASM OverworldLoop_CmdRoomTalk
+#endif
+NAKED void CMD_ROOM_TALK_ASM(struct GameState* g) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -916,7 +925,7 @@ _080F1862:\n\
 	movs r2, #0\n\
 	ldr r0, _080F1A40 @ =gScore\n\
 	ldr r6, [r0]\n\
-	ldr r7, _080F1A44 @ =u8_ARRAY_0838623c\n\
+	ldr r7, _080F1A44 @ =gFreeRunStageIDs\n\
 	movs r0, #1\n\
 	mov ip, r0\n\
 _080F1870:\n\
@@ -1006,7 +1015,7 @@ _080F190C:\n\
 	ble _080F197E\n\
 	ldr r3, _080F1A4C @ =StringOfsTable\n\
 	mov sb, r3\n\
-	ldr r4, _080F1A50 @ =FreeRunStageTextIDs\n\
+	ldr r4, _080F1A50 @ =gFreeRunStageNameIdxs\n\
 	mov r8, r4\n\
 _080F191A:\n\
 	lsls r1, r2, #0x10\n\
@@ -1164,10 +1173,10 @@ _080F1A2A:\n\
 	.align 2, 0\n\
 _080F1A3C: .4byte gTextWindow+8\n\
 _080F1A40: .4byte gScore\n\
-_080F1A44: .4byte u8_ARRAY_0838623c\n\
+_080F1A44: .4byte gFreeRunStageIDs\n\
 _080F1A48: .4byte gJoypad\n\
 _080F1A4C: .4byte StringOfsTable\n\
-_080F1A50: .4byte FreeRunStageTextIDs\n\
+_080F1A50: .4byte gFreeRunStageNameIdxs\n\
 _080F1A54: .4byte gStringData\n\
 _080F1A58: .4byte Unicode_CursorUp\n\
 _080F1A5C: .4byte Unicode_CursorDown\n\
@@ -1261,7 +1270,7 @@ _080F1B06:\n\
 	beq _080F1B14\n\
 	b _080F1D84\n\
 _080F1B14:\n\
-	ldr r1, _080F1B48 @ =u8_ARRAY_0838623c\n\
+	ldr r1, _080F1B48 @ =gFreeRunStageIDs\n\
 	movs r2, #4\n\
 	ldrsh r0, [r5, r2]\n\
 	adds r0, r0, r1\n\
@@ -1284,7 +1293,7 @@ _080F1B14:\n\
 	b _080F1CF0\n\
 	.align 2, 0\n\
 _080F1B44: .4byte gStageRun\n\
-_080F1B48: .4byte u8_ARRAY_0838623c\n\
+_080F1B48: .4byte gFreeRunStageIDs\n\
 _080F1B4C: .4byte 0x00006260\n\
 _080F1B50: .4byte 0x00006270\n\
 _080F1B54: .4byte 0x000064AC\n\
@@ -1588,11 +1597,11 @@ static const TextID MissionAskTextIDs[MISSION_COUNT] = {
     0x0015, 0x0017, 0x0019, 0x001B, 0x001D, 0x001F, 0x0021, 0x0023, 0x0025, 0x0027, 0x0029, 0x002B,
 };
 
-static const u8 u8_ARRAY_0838623c[16] = {
+const u8 gFreeRunStageIDs[16] = {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 0,
 };
 
-static const TextID FreeRunStageTextIDs[FREE_STAGE_COUNT] = {
+const str_id_t gFreeRunStageNameIdxs[FREE_STAGE_COUNT] = {
     0x002F, 0x0030, 0x0031, 0x0032, 0x0033, 0x0034, 0x0035, 0x0036, 0x0037, 0x0038, 0x0039, 0x003A, 0x003B, 0x003C, 0x003D,
 };
 

@@ -129,6 +129,9 @@ extern const struct Palette gPalette_Capcom;
 extern const struct Graphic gGraphic_MiscMenu;
 extern const struct Palette gPalette_MiscMenu;
 
+extern const struct Graphic gGraphic_CodeName;
+extern const struct Palette gPalette_CodeName;
+
 extern const u32 gBgMapOffsets[134];
 
 extern const u32 gStageTilesetOffsets[19];

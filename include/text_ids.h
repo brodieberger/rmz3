@@ -162,6 +162,7 @@
 #define TEXT_SYSTEM_LEVIATHAN_SMINI_GAME 0x00D7                                  // Leviathan's mini game / added!
 #define TEXT_SYSTEM_PHANTOM_SMINI_GAME 0x00D8                                    // Phantom's mini game / added!
 #define TEXT_OPEN_SECRET_DISK_YOU_GOT_THE_SECRET_DISK 0x0100                     // You got the / Secret Disk!
+#define TEXT_OPEN_SECRET_DISK_YOU_CANNOT_ANALYZE_THIS 0x0101                     // You cannot analyze this / disk here.
 #define TEXT_OPEN_SECRET_DISK_YOU_CAPTURED_THE_EX_SKILLOF_ALIAS6 0x010A          // You captured the EX skill / of Deathtanz Mantisk! / You got
 #define TEXT_OPEN_SECRET_DISK_UNLOCK_EX_SKILL_3 0x010B                           // You captured the EX skill / of Childre Inarabitta! / You got
 #define TEXT_OPEN_SECRET_DISK_UNLOCK_EX_SKILL_2 0x010C                           // You captured the EX skill / of Blazin' Flizard! / You got th

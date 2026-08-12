@@ -1,9 +1,19 @@
+#include "ap.h"
 #include "config.h"
+#include "constants/bg.h"
+#include "constants/motion/static.h"
 #include "entity.h"
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
 #include "menu.h"
+#include "palette_animation.h"
+#include "string_ids.h"
+#include "widget.h"
+#include "widget/cursor_square.h"
+#include "text.h"
+#include "score.h"
+#include "zero.h"
 
 // 08547280 のidx
 const u8 u8_ARRAY_08386378[16] = {
@@ -78,6 +88,14 @@ static void MainMenuFocusLoop_Body(struct GameState* g);
 static void MainMenuFocusLoop_Foot(struct GameState* g);
 static void MainMenuFocusLoop_Escape(struct GameState* g);
 
+u8 CheckUnlockedFoot(struct GameState* g, u8 r1);
+
+struct Widget* CreateMenuHPGauge(struct GameState* g, u8 x, u8 r2);
+struct Widget* CreateMenuComp1(struct GameState* g, u8 kind, u8 r2);
+struct Widget* createMenuWeaponIcon(void* g, weapon_t weapon, bool8 isSubWeapon, bool8 r3);
+struct Widget* CreateSubtankIcon(struct GameState* g, u8 r1, u8 r2);
+struct Entity* CreateArmorIcons(struct GameState* g, u8 r1, u8 r2);
+
 // メインメニューで選択されているもの
 // clang-format off
 const MenuLoopFunc gMainMenuFocusLoops[8] = {
@@ -101,7 +119,231 @@ void EachMenuLoop_MainMenu(struct GameState* g) {
 }
 
 // 01 02 00 xx
-NAKED static void MainMenuLoop_Init(struct GameState* m) {
+NON_MATCH_AP static void MainMenuLoop_Init(struct GameState* g) {
+#if MODERN || AP
+  struct Zero* z = g->z2;
+  struct ZeroStatus* st;
+  struct TotalScore* total;
+  u8* subtankHP;
+  u32 v;
+  u32 t;
+  u16* map;
+  u8 col;
+  u8 i;
+
+  map = g->menuBgMap1;
+
+  if (GetMaxHP(z) < z->body.hp) {
+    z->body.hp = GetMaxHP(z);
+  }
+
+  MENU->unk_00[0] = 0;
+  MENU->unk_00[2] = 0;
+  MENU->unk_00[3] = 0xFF;
+  MENU->frame = 0;
+  MENU->closingCursor = 0;
+  MENU->subtankCount = 0;
+
+  st = &(&z->unk_b4)->status;
+  MENU->portraitColor = st->body;
+  if (st->menuZeroColor == 2) MENU->portraitColor = 7;
+  if (st->menuZeroColor == 1) MENU->portraitColor = 6;
+  MENU->plttAnimID = 0;
+
+  LoadGraphic(BG_GRAPHIC(BG_MAIN_MENU), CHAR_BASE(1));
+  LoadPalette(BG_PALETTE(BG_MAIN_MENU), 0);
+  LoadGraphic(&gGraphic_CodeName, CHAR_BASE(1));
+  LoadPalette(&gPalette_CodeName, 0);
+  CpuFastCopy(BGMAP(BG_MAIN_MENU), g->menuBgMap1, 960 * 2);
+
+  // Extra lives, rank, play time and E-Crystals are baked into the BG map as glyph tiles
+  total = gScore.total;
+  v = total->extraLife;
+  map[12] = (v + 0x148) | 0x4000;
+  map[44] = (v + 0x168) | 0x4000;
+
+  v = (u8)(6 - total->rank);
+  map[76] = (v + 0x140) | 0x4000;
+  map[108] = (v + 0x160) | 0x4000;
+
+  t = total->playTime;
+  map[79] = ((u8)(t / (60 * 60 * 60 * 10)) + 0x174) | 0x6000;
+  map[80] = ((u8)(t / (60 * 60 * 60) % 10) + 0x174) | 0x6000;
+  v = t / (60 * 60) % 60;
+  map[82] = ((u8)(v / 10) + 0x174) | 0x6000;
+  map[83] = ((u8)(v % 10) + 0x174) | 0x6000;
+  v = t / 60 % 60;
+  map[85] = ((u8)(v / 10) + 0x174) | 0x6000;
+  map[86] = ((u8)(v % 10) + 0x174) | 0x6000;
+
+  if (st->EC > 999) map[89] = ((u8)((u16)(st->EC / 1000) % 10) + 0x174) | 0x6000;
+  if (st->EC > 99) map[90] = ((u8)((u16)(st->EC / 100) % 10) + 0x174) | 0x6000;
+  if (st->EC > 9) map[91] = ((u8)((u16)(st->EC / 10) % 10) + 0x174) | 0x6000;
+  map[92] = ((u8)(st->EC % 10) + 0x174) | 0x6000;
+
+  // The HP gauge's end caps use a different tile set per max HP
+  subtankHP = st->subtankHP;
+  if (getMaxHP1x(z) == 20) {
+    for (i = 0; i <= 1; i++) {
+      map[i * 32 + 137] = (i * 32 + 0x109) | 0x2000;
+      map[i * 32 + 138] = (i * 32 + 0x10A) | 0x2000;
+      map[i * 32 + 139] = (i * 32 + 0x10B) | 0x2000;
+      map[i * 32 + 140] = (i * 32 + 0x107) | 0x2000;
+      map[i * 32 + 141] = (i * 32 + 0x108) | 0x2000;
+    }
+  } else if (getMaxHP1x(z) == 24) {
+    for (i = 0; i <= 1; i++) {
+      map[i * 32 + 137] = (i * 32 + 0x109) | 0x2000;
+      map[i * 32 + 138] = (i * 32 + 0x10C) | 0x2000;
+      map[i * 32 + 139] = (i * 32 + 0x10D) | 0x2000;
+      map[i * 32 + 140] = (i * 32 + 0x10E) | 0x2000;
+      map[i * 32 + 141] = (i * 32 + 0x108) | 0x2000;
+    }
+  } else if (getMaxHP1x(z) == 28) {
+    for (i = 0; i <= 1; i++) {
+      map[i * 32 + 137] = (i * 32 + 0x109) | 0x2000;
+      map[i * 32 + 138] = (i * 32 + 0x10C) | 0x2000;
+      map[i * 32 + 139] = (i * 32 + 0x10F) | 0x2000;
+      map[i * 32 + 140] = (i * 32 + 0x110) | 0x2000;
+      map[i * 32 + 141] = (i * 32 + 0x111) | 0x2000;
+    }
+  } else if (getMaxHP1x(z) == 32) {
+    for (i = 0; i <= 1; i++) {
+      map[i * 32 + 137] = (i * 32 + 0x109) | 0x2000;
+      map[i * 32 + 138] = (i * 32 + 0x10C) | 0x2000;
+      map[i * 32 + 139] = (i * 32 + 0x10F) | 0x2000;
+      map[i * 32 + 140] = (i * 32 + 0x112) | 0x2000;
+      map[i * 32 + 141] = (i * 32 + 0x113) | 0x2000;
+    }
+  }
+
+#if !AP
+  total = gScore.total;
+  if (total->codenamePrefix == 0) {
+    for (i = 0; i <= 7; i++) {
+      map[143 + i] = (u8_ARRAY_083863e8[total->codenameSuffix * 2] + 0x300 + i) | 0xF000;
+    }
+  } else {
+    for (i = 0; i <= 7; i++) {
+      map[143 + i] = (u8_ARRAY_083863d0[total->codenamePrefix * 2] + 0x300 + i) | 0xF000;
+    }
+
+    total = gScore.total;
+    col = u8_ARRAY_083863d0[total->codenamePrefix * 2 + 1];
+    if (col + u8_ARRAY_083863e8[total->codenameSuffix * 2 + 1] > 9) {
+      col = (s8)col - ((col + u8_ARRAY_083863e8[total->codenameSuffix * 2 + 1]) - 9);
+    }
+    if (u8_ARRAY_083863e8[MENU->unk_00[0] * 2 + 1] == 8) col++;
+
+    for (i = 0; i < u8_ARRAY_083863e8[total->codenameSuffix * 2 + 1]; i++) {
+      map[175 + col + i] = (u8_ARRAY_083863e8[total->codenameSuffix * 2] + 0x300 + i) | 0xF000;
+    }
+  }
+#else
+	// Replace codename prefix with disk count
+  v = gAp.disksOwned;
+  map[146] = (v % 10 + 0x174) | 0x6000;
+  if (v > 9) map[145] = (v / 10 % 10 + 0x174) | 0x6000;
+  if (v > 99) map[144] = (v / 100 % 10 + 0x174) | 0x6000;
+
+  v = gApSeedConfig.requiredDisks;
+
+  // Get numbers into the right spot
+  if (v > 99) {
+    map[148] = (v / 100 % 10 + 0x174) | 0x6000;
+    map[149] = (v / 10 % 10 + 0x174) | 0x6000;
+    map[150] = (v % 10 + 0x174) | 0x6000;
+  } else if (v > 9) {
+    map[148] = (v / 10 % 10 + 0x174) | 0x6000;
+    map[149] = (v % 10 + 0x174) | 0x6000;
+  } else {
+    map[148] = (v + 0x174) | 0x6000;
+  }
+#endif
+
+  StartPaletteAnimation(4, 0);
+  if (MENU->portraitColor != 0) {
+    StartPaletteAnimation(MENU->portraitColor + 0xAB, 0);
+    StepPaletteAnimation(MENU->portraitColor + 0xAB);
+    RemovePaletteAnimation(MENU->portraitColor + 0xAB);
+  }
+
+  LOAD_STATIC_GRAPHIC(SM014_CHIPICON);
+  LOAD_STATIC_GRAPHIC(SM015_MENUITEM);
+  LOAD_STATIC_GRAPHIC(SM129_SUBTANK);
+
+  for (i = 0; i < (u8)getMaxHP1x(z) >> 2; i++) {
+    CreateMenuHPGauge(g, i, 0);
+  }
+
+  MENU->enabledItems = 0;
+
+  CreateMenuComp1(g, 0, 0);
+  MENU->mc_14 = createMenuWeaponIcon(g, st->weapons[0], 0, 0);
+  MENU->enabledItems |= 1;
+
+  CreateMenuComp1(g, 1, 0);
+  MENU->mc_18 = createMenuWeaponIcon(g, st->weapons[1], 1, 0);
+  MENU->enabledItems |= 2;
+
+  for (i = 0; i <= 3; i++) {
+    if (subtankHP[i] != 0xFF) {
+      CreateSubtankIcon(g, i, MENU->subtankCount);
+      MENU->subtankCount++;
+    }
+  }
+  if (MENU->subtankCount != 0) {
+    CreateMenuComp1(g, 2, 0);
+    MENU->enabledItems |= 4;
+  }
+
+  if (st->unlockedHead & 2) goto hasHead;
+  if (st->unlockedHead & 4) goto hasHead;
+  if (st->unlockedHead & 8) goto hasHead;
+  goto noHead;
+hasHead:
+  CreateMenuComp1(g, 3, 0);
+  CreateArmorIcons(g, 0, 0);
+  MENU->enabledItems |= 8;
+noHead:
+
+  if (st->unlockedBody & 2) goto hasBody;
+  if (st->unlockedBody & 4) goto hasBody;
+  if (st->unlockedBody & 0x10) goto hasBody;
+  if (st->unlockedBody & 0x20) goto hasBody;
+  if (st->unlockedBody & 8) goto hasBody;
+  goto noBody;
+hasBody:
+  CreateMenuComp1(g, 4, 0);
+  CreateArmorIcons(g, 0, 1);
+  MENU->enabledItems |= 0x10;
+noBody:
+
+  if (st->unlockedFoot & 2) goto hasFoot;
+  if (st->unlockedFoot & 4) goto hasFoot;
+  if (st->unlockedFoot & 8) goto hasFoot;
+  if (st->unlockedFoot & 0x10) goto hasFoot;
+  if (st->unlockedFoot & 0x20) goto hasFoot;
+  if (st->unlockedFoot & 0x40) goto hasFoot;
+  if (st->unlockedFoot & 0x80) goto hasFoot;
+  goto noFoot;
+hasFoot:
+  CreateMenuComp1(g, 5, 0);
+  CreateArmorIcons(g, 0, 2);
+  MENU->enabledItems |= 0x20;
+noFoot:
+
+  MENU->unk_20 = 0;
+  CreateMenuComp1(g, 6, 0);
+  MENU->enabledItems |= 0x40;
+
+  if (MENU->enabledItems & 0x38) {
+    CopyBgMap(g->menuBgMap1, SELF_REL_PTR(&gBgMapOffsets[BG_ZERO_3D_0]), 12, 7);
+  }
+
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
+  g->mode[2] = 2;
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -1173,6 +1415,7 @@ _080F4668: .4byte 0x00000ED8\n\
 _080F466C: .4byte gBgMapOffsets+(24*4)\n\
 _080F4670: .4byte gVideoRegBuffer+6\n\
  .syntax divided\n");
+#endif
 }
 
 // 01 02 01 xx
@@ -1361,7 +1604,85 @@ _080F47D8: .4byte 0x00000DCC\n\
 // --------------------------------------------
 
 // 01 02 01 00
-NAKED static void MainMenuFocusLoop_NoFocus(struct GameState* g) {
+/*
+  May the player abort out of what they are doing right now?
+
+  Vanilla: only when not on a mission. AP inverts that -- leaving is how you get
+  back out to go somewhere else -- so any stage not listed in gApStageNoEscape is
+  leavable too.
+
+  Defined once because three places ask it: the gate in MainMenuFocusLoop_NoFocus
+  and the two labels in printMainMenuString. If they disagree, the menu either
+  offers an exit that then refuses, or refuses one that would have worked.
+*/
+#if AP
+#define MAY_ESCAPE_NOW (!IS_MISSION || ApMayLeaveStage(gScore.stageID))
+#else
+#define MAY_ESCAPE_NOW (!IS_MISSION)
+#endif
+
+NON_MATCH_AP static void MainMenuFocusLoop_NoFocus(struct GameState* g) {
+#if MODERN || AP
+  s32 dir;
+  u8 prev;
+  u8 next;
+
+  MENU->unk_4b = 0;
+  if (TrySlideMenu(g)) {
+    return;
+  }
+
+  if (gJoypad[0].pressed & A_BUTTON) {
+    u8 cur = MENU->unk_00[0];
+    if (cur <= 5) {
+      g->mode[3] = cur + 1;
+      if (MENU->unk_00[0] == 2) {
+        MENU->unk_00[1] = 0;
+      }
+      PlaySound(SE_YES);
+    } else if (MAY_ESCAPE_NOW) {
+      g->mode[3] = cur + 1;
+      PlaySound(SE_YES);
+    } else {
+      PlaySound(SE_NOT_ALLOWED);
+    }
+    return;
+  }
+
+  dir = 0xFF;
+  if (gJoypad[0].field3_0x6 & DPAD_UP) dir = 0;
+  if (gJoypad[0].field3_0x6 & DPAD_RIGHT) dir = 1;
+  if (gJoypad[0].field3_0x6 & DPAD_DOWN) dir = 2;
+  if (gJoypad[0].field3_0x6 & DPAD_LEFT) dir = 3;
+
+  prev = MENU->unk_00[0];
+  if (dir == 0xFF) {
+    return;
+  }
+
+  next = u8_ARRAY_ARRAY_08386398[prev][dir];
+  if ((MENU->enabledItems >> next) & 1) {
+    MENU->unk_00[0] = next;
+  } else {
+  next_candidate:
+    if ((next == 4) && (dir == 0) && ((MENU->enabledItems & 8) == 0)) {
+      MENU->unk_00[0] = 1;
+    } else {
+      next = u8_ARRAY_ARRAY_083863b4[next][dir];
+      if (next == 0xFF) {
+        MENU->unk_00[0] = 0;
+      } else if ((MENU->enabledItems >> next) & 1) {
+        MENU->unk_00[0] = next;
+      } else {
+        goto next_candidate;
+      }
+    }
+  }
+
+  if (prev != MENU->unk_00[0]) {
+    PlaySound(SE_CURSOR);
+  }
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
@@ -1531,375 +1852,142 @@ _080F4908:\n\
 _080F4914: .4byte u8_ARRAY_ARRAY_083863b4\n\
 _080F4918: .4byte 0x00000DCC\n\
  .syntax divided\n");
+#endif
 }
 
 // 01 02 01 01
-NAKED static void MainMenuFocusLoop_MainWeapon(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	sub sp, #4\n\
-	adds r5, r0, #0\n\
-	ldr r1, _080F4940 @ =0x000064AC\n\
-	adds r0, r5, r1\n\
-	ldr r7, [r0]\n\
-	ldr r2, _080F4944 @ =0x00000DCC\n\
-	adds r4, r5, r2\n\
-	ldr r0, _080F4948 @ =0x00000E17\n\
-	adds r6, r5, r0\n\
-	ldrb r2, [r6]\n\
-	cmp r2, #1\n\
-	beq _080F4998\n\
-	cmp r2, #1\n\
-	bgt _080F494C\n\
-	cmp r2, #0\n\
-	beq _080F4954\n\
-	b _080F4A6C\n\
-	.align 2, 0\n\
-_080F4940: .4byte 0x000064AC\n\
-_080F4944: .4byte 0x00000DCC\n\
-_080F4948: .4byte 0x00000E17\n\
-_080F494C:\n\
-	cmp r2, #2\n\
-	bne _080F4952\n\
-	b _080F4A5C\n\
-_080F4952:\n\
-	b _080F4A6C\n\
-_080F4954:\n\
-	ldr r2, _080F4994 @ =0x00000E1D\n\
-	adds r1, r5, r2\n\
-	movs r0, #1\n\
-	strb r0, [r1]\n\
-	ldr r0, [r4, #0x14]\n\
-	ldrb r0, [r0, #0xd]\n\
-	cmp r0, #2\n\
-	bhi _080F4966\n\
-	b _080F4A6C\n\
-_080F4966:\n\
-	adds r0, r5, #0\n\
-	movs r1, #0\n\
-	movs r2, #0\n\
-	bl CreateSquareCursor\n\
-	str r0, [r4, #0x1c]\n\
-	adds r1, r7, #0\n\
-	adds r1, #0xb4\n\
-	ldrb r1, [r1, #0xc]\n\
-	strb r1, [r4, #1]\n\
-	ldrb r1, [r4, #1]\n\
-	lsls r1, r1, #4\n\
-	adds r1, #0x44\n\
-	adds r0, #0x74\n\
-	strh r1, [r0]\n\
-	ldr r0, [r4, #0x1c]\n\
-	adds r0, #0x76\n\
-	movs r1, #0x38\n\
-	strh r1, [r0]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-	b _080F4A6C\n\
-	.align 2, 0\n\
-_080F4994: .4byte 0x00000E1D\n\
-_080F4998:\n\
-	ldr r3, _080F49C4 @ =gJoypad\n\
-	ldrh r1, [r3, #4]\n\
-	movs r0, #3\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F49E4\n\
-	ldr r0, [r4, #0x1c]\n\
-	adds r0, #0x78\n\
-	strb r2, [r0]\n\
-	strb r2, [r4, #5]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-	ldrh r1, [r3, #4]\n\
-	movs r0, #2\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F49C8\n\
-	movs r0, #3\n\
-	bl PlaySound\n\
-	b _080F4A6C\n\
-	.align 2, 0\n\
-_080F49C4: .4byte gJoypad\n\
-_080F49C8:\n\
-	adds r1, r7, #0\n\
-	adds r1, #0xb4\n\
-	ldrb r0, [r1, #0xd]\n\
-	ldrb r2, [r4, #1]\n\
-	cmp r0, r2\n\
-	bne _080F49D8\n\
-	ldrb r0, [r1, #0xc]\n\
-	strb r0, [r1, #0xd]\n\
-_080F49D8:\n\
-	ldrb r0, [r4, #1]\n\
-	strb r0, [r1, #0xc]\n\
-	movs r0, #2\n\
-	bl PlaySound\n\
-	b _080F4A6C\n\
-_080F49E4:\n\
-	adds r0, r7, #0\n\
-	adds r0, #0xb4\n\
-	ldrb r1, [r0, #0x16]\n\
-	movs r0, #0xc\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4A2C\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x10\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4A10\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #1\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	str r3, [sp]\n\
-	bl PlaySound\n\
-	ldr r3, [sp]\n\
-_080F4A10:\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x20\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4A46\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #3\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-	b _080F4A46\n\
-_080F4A2C:\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x30\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4A46\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #1\n\
-	movs r1, #1\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-_080F4A46:\n\
-	ldr r1, _080F4A58 @ =0x00000DCC\n\
-	adds r0, r5, r1\n\
-	ldr r1, [r0, #0x1c]\n\
-	ldrb r0, [r0, #1]\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x44\n\
-	adds r1, #0x74\n\
-	strh r0, [r1]\n\
-	b _080F4A6C\n\
-	.align 2, 0\n\
-_080F4A58: .4byte 0x00000DCC\n\
-_080F4A5C:\n\
-	ldr r2, _080F4A74 @ =0x00000E1D\n\
-	adds r1, r5, r2\n\
-	movs r0, #1\n\
-	strb r0, [r1]\n\
-	ldrb r0, [r4, #5]\n\
-	cmp r0, #0\n\
-	bne _080F4A6C\n\
-	strb r0, [r5, #3]\n\
-_080F4A6C:\n\
-	add sp, #4\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F4A74: .4byte 0x00000E1D\n\
- .syntax divided\n");
+static void MainMenuFocusLoop_MainWeapon(struct GameState* g) {
+  struct Zero* z = g->z2;
+
+  switch (MENU->unk_4b) {
+    case 0: {
+      MENU->unk_51 = 1;
+      if ((MENU->mc_14)->s.mode[1] <= 2) {
+        return;
+      }
+      MENU->cursor = (struct SquareCursorWidget*)CreateSquareCursor(g, FALSE, 0);
+      MENU->unk_00[1] = ((&z->unk_b4)->status).weapons[0];
+      (MENU->cursor)->px = (MENU->unk_00[1] << 4) + 0x44;
+      (MENU->cursor)->py = 0x38;
+      MENU->unk_4b++;
+      break;
+    }
+    case 1: {
+#if AP
+      // If weapon is locked, deny and play a sound
+      if ((gJoypad[0].pressed & A_BUTTON)
+          && !(((&z->unk_b4)->status).unlockedWeapon & (1 << MENU->unk_00[1]))) {
+        PlaySound(SE_NOT_ALLOWED);
+        break;
+      }
+#endif
+      if (gJoypad[0].pressed & (A_BUTTON | B_BUTTON)) {
+        (MENU->cursor)->dead = TRUE;
+        MENU->closingCursor = 1;
+        MENU->unk_4b++;
+        if (gJoypad[0].pressed & B_BUTTON) {
+          PlaySound(SE_NO);
+        } else {
+          if (((&z->unk_b4)->status).weapons[1] == MENU->unk_00[1]) {
+            ((&z->unk_b4)->status).weapons[1] = ((&z->unk_b4)->status).weapons[0];
+          }
+          ((&z->unk_b4)->status).weapons[0] = MENU->unk_00[1];
+          PlaySound(SE_YES);
+        }
+        break;
+      }
+
+      if (((&z->unk_b4)->status).unlockedWeapon & 0xC) {
+        if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 3;
+          PlaySound(SE_CURSOR);
+        }
+        if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 3) & 3;
+          PlaySound(SE_CURSOR);
+        }
+      } else if (gJoypad[0].field3_0x6 & (DPAD_LEFT | DPAD_RIGHT)) {
+        MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 1;
+        PlaySound(SE_CURSOR);
+      }
+      (MENU->cursor)->px = (MENU->unk_00[1] << 4) + 0x44;
+      break;
+    }
+    case 2: {
+      MENU->unk_51 = 1;
+      if (MENU->closingCursor == 0) {
+        g->mode[3] = 0;
+      }
+      break;
+    }
+  }
 }
 
-NAKED static void MainMenuFocusLoop_SubWeapon(struct GameState* p) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	sub sp, #4\n\
-	adds r5, r0, #0\n\
-	ldr r1, _080F4A9C @ =0x000064AC\n\
-	adds r0, r5, r1\n\
-	ldr r7, [r0]\n\
-	ldr r2, _080F4AA0 @ =0x00000DCC\n\
-	adds r4, r5, r2\n\
-	ldr r0, _080F4AA4 @ =0x00000E17\n\
-	adds r6, r5, r0\n\
-	ldrb r2, [r6]\n\
-	cmp r2, #1\n\
-	beq _080F4AF4\n\
-	cmp r2, #1\n\
-	bgt _080F4AA8\n\
-	cmp r2, #0\n\
-	beq _080F4AB0\n\
-	b _080F4BC8\n\
-	.align 2, 0\n\
-_080F4A9C: .4byte 0x000064AC\n\
-_080F4AA0: .4byte 0x00000DCC\n\
-_080F4AA4: .4byte 0x00000E17\n\
-_080F4AA8:\n\
-	cmp r2, #2\n\
-	bne _080F4AAE\n\
-	b _080F4BB8\n\
-_080F4AAE:\n\
-	b _080F4BC8\n\
-_080F4AB0:\n\
-	ldr r2, _080F4AF0 @ =0x00000E1D\n\
-	adds r1, r5, r2\n\
-	movs r0, #1\n\
-	strb r0, [r1]\n\
-	ldr r0, [r4, #0x18]\n\
-	ldrb r0, [r0, #0xd]\n\
-	cmp r0, #2\n\
-	bhi _080F4AC2\n\
-	b _080F4BC8\n\
-_080F4AC2:\n\
-	adds r0, r5, #0\n\
-	movs r1, #0\n\
-	movs r2, #0\n\
-	bl CreateSquareCursor\n\
-	str r0, [r4, #0x1c]\n\
-	adds r1, r7, #0\n\
-	adds r1, #0xb4\n\
-	ldrb r1, [r1, #0xd]\n\
-	strb r1, [r4, #1]\n\
-	ldrb r1, [r4, #1]\n\
-	lsls r1, r1, #4\n\
-	adds r1, #0x44\n\
-	adds r0, #0x74\n\
-	strh r1, [r0]\n\
-	ldr r0, [r4, #0x1c]\n\
-	adds r0, #0x76\n\
-	movs r1, #0x50\n\
-	strh r1, [r0]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-	b _080F4BC8\n\
-	.align 2, 0\n\
-_080F4AF0: .4byte 0x00000E1D\n\
-_080F4AF4:\n\
-	ldr r3, _080F4B20 @ =gJoypad\n\
-	ldrh r1, [r3, #4]\n\
-	movs r0, #3\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4B40\n\
-	ldr r0, [r4, #0x1c]\n\
-	adds r0, #0x78\n\
-	strb r2, [r0]\n\
-	strb r2, [r4, #5]\n\
-	ldrb r0, [r6]\n\
-	adds r0, #1\n\
-	strb r0, [r6]\n\
-	ldrh r1, [r3, #4]\n\
-	movs r0, #2\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4B24\n\
-	movs r0, #3\n\
-	bl PlaySound\n\
-	b _080F4BC8\n\
-	.align 2, 0\n\
-_080F4B20: .4byte gJoypad\n\
-_080F4B24:\n\
-	adds r1, r7, #0\n\
-	adds r1, #0xb4\n\
-	ldrb r0, [r1, #0xc]\n\
-	ldrb r2, [r4, #1]\n\
-	cmp r0, r2\n\
-	bne _080F4B34\n\
-	ldrb r0, [r1, #0xd]\n\
-	strb r0, [r1, #0xc]\n\
-_080F4B34:\n\
-	ldrb r0, [r4, #1]\n\
-	strb r0, [r1, #0xd]\n\
-	movs r0, #2\n\
-	bl PlaySound\n\
-	b _080F4BC8\n\
-_080F4B40:\n\
-	adds r0, r7, #0\n\
-	adds r0, #0xb4\n\
-	ldrb r1, [r0, #0x16]\n\
-	movs r0, #0xc\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4B88\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x10\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4B6C\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #1\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	str r3, [sp]\n\
-	bl PlaySound\n\
-	ldr r3, [sp]\n\
-_080F4B6C:\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x20\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4BA2\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #3\n\
-	movs r1, #3\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-	b _080F4BA2\n\
-_080F4B88:\n\
-	ldrh r1, [r3, #6]\n\
-	movs r0, #0x30\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F4BA2\n\
-	ldrb r0, [r4, #1]\n\
-	adds r0, #1\n\
-	movs r1, #1\n\
-	ands r0, r1\n\
-	strb r0, [r4, #1]\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-_080F4BA2:\n\
-	ldr r1, _080F4BB4 @ =0x00000DCC\n\
-	adds r0, r5, r1\n\
-	ldr r1, [r0, #0x1c]\n\
-	ldrb r0, [r0, #1]\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x44\n\
-	adds r1, #0x74\n\
-	strh r0, [r1]\n\
-	b _080F4BC8\n\
-	.align 2, 0\n\
-_080F4BB4: .4byte 0x00000DCC\n\
-_080F4BB8:\n\
-	ldr r2, _080F4BD0 @ =0x00000E1D\n\
-	adds r1, r5, r2\n\
-	movs r0, #1\n\
-	strb r0, [r1]\n\
-	ldrb r0, [r4, #5]\n\
-	cmp r0, #0\n\
-	bne _080F4BC8\n\
-	strb r0, [r5, #3]\n\
-_080F4BC8:\n\
-	add sp, #4\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F4BD0: .4byte 0x00000E1D\n\
- .syntax divided\n");
+static void MainMenuFocusLoop_SubWeapon(struct GameState* g) {
+  struct Zero* z = g->z2;
+
+  switch (MENU->unk_4b) {
+    case 0: {
+      MENU->unk_51 = 1;
+      if ((MENU->mc_18)->s.mode[1] <= 2) {
+        return;
+      }
+      MENU->cursor = (struct SquareCursorWidget*)CreateSquareCursor(g, FALSE, 0);
+      MENU->unk_00[1] = ((&z->unk_b4)->status).weapons[1];
+      (MENU->cursor)->px = (MENU->unk_00[1] << 4) + 0x44;
+      (MENU->cursor)->py = 0x50;
+      MENU->unk_4b++;
+      break;
+    }
+    case 1: {
+#if AP
+      // If weapon is locked, deny and play a sound
+      if ((gJoypad[0].pressed & A_BUTTON)
+          && !(((&z->unk_b4)->status).unlockedWeapon & (1 << MENU->unk_00[1]))) {
+        PlaySound(SE_NOT_ALLOWED);
+        break;
+      }
+#endif
+      if (gJoypad[0].pressed & (A_BUTTON | B_BUTTON)) {
+        (MENU->cursor)->dead = TRUE;
+        MENU->closingCursor = 1;
+        MENU->unk_4b++;
+        if (gJoypad[0].pressed & B_BUTTON) {
+          PlaySound(SE_NO);
+        } else {
+          if (((&z->unk_b4)->status).weapons[0] == MENU->unk_00[1]) {
+            ((&z->unk_b4)->status).weapons[0] = ((&z->unk_b4)->status).weapons[1];
+          }
+          ((&z->unk_b4)->status).weapons[1] = MENU->unk_00[1];
+          PlaySound(SE_YES);
+        }
+        break;
+      }
+
+      if (((&z->unk_b4)->status).unlockedWeapon & 0xC) {
+        if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 3;
+          PlaySound(SE_CURSOR);
+        }
+        if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 3) & 3;
+          PlaySound(SE_CURSOR);
+        }
+      } else if (gJoypad[0].field3_0x6 & (DPAD_LEFT | DPAD_RIGHT)) {
+        MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 1;
+        PlaySound(SE_CURSOR);
+      }
+      (MENU->cursor)->px = (MENU->unk_00[1] << 4) + 0x44;
+      break;
+    }
+    case 2: {
+      MENU->unk_51 = 1;
+      if (MENU->closingCursor == 0) {
+        g->mode[3] = 0;
+      }
+      break;
+    }
+  }
 }
 
 NAKED static void MainMenuFocusLoop_Subtank(struct GameState* g) {
@@ -3197,271 +3285,88 @@ _080F55F4: .4byte gBgMapOffsets\n\
 }
 
 // メインメニューで一番下に、 "メインでそうびしているブキ" のような文字列を表示
-NAKED void printMainMenuString(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r4, r0, #0\n\
-	ldr r1, _080F5614 @ =0x000064AC\n\
-	adds r0, r4, r1\n\
-	ldr r5, [r0]\n\
-	ldrb r0, [r4, #3]\n\
-	cmp r0, #7\n\
-	bls _080F560A\n\
-	b _080F5812\n\
-_080F560A:\n\
-	lsls r0, r0, #2\n\
-	ldr r1, _080F5618 @ =_080F561C\n\
-	adds r0, r0, r1\n\
-	ldr r0, [r0]\n\
-	mov pc, r0\n\
-	.align 2, 0\n\
-_080F5614: .4byte 0x000064AC\n\
-_080F5618: .4byte _080F561C\n\
-_080F561C: @ jump table\n\
-	.4byte _080F563C @ case 0\n\
-	.4byte _080F568C @ case 1\n\
-	.4byte _080F56B8 @ case 2\n\
-	.4byte _080F56E4 @ case 3\n\
-	.4byte _080F573A @ case 4\n\
-	.4byte _080F5768 @ case 5\n\
-	.4byte _080F5798 @ case 6\n\
-	.4byte _080F57C8 @ case 7\n\
-_080F563C:\n\
-	ldr r0, _080F565C @ =0x00000DCC\n\
-	adds r2, r4, r0\n\
-	ldrb r0, [r2]\n\
-	cmp r0, #6\n\
-	bne _080F5678\n\
-	ldr r0, _080F5660 @ =gCurStory\n\
-	ldrb r1, [r0, #4]\n\
-	movs r0, #0x20\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F5668\n\
-	ldr r0, _080F5664 @ =StringOfsTable\n\
-	movs r1, #0x99\n\
-	lsls r1, r1, #2\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F565C: .4byte 0x00000DCC\n\
-_080F5660: .4byte gCurStory\n\
-_080F5664: .4byte StringOfsTable\n\
-_080F5668:\n\
-	ldr r0, _080F5674 @ =StringOfsTable\n\
-	movs r2, #0x9a\n\
-	lsls r2, r2, #2\n\
-	adds r0, r0, r2\n\
-	b _080F57DA\n\
-	.align 2, 0\n\
-_080F5674: .4byte StringOfsTable\n\
-_080F5678:\n\
-	ldr r1, _080F5688 @ =StringOfsTable\n\
-	ldrb r0, [r2]\n\
-	movs r2, #0x96\n\
-	lsls r2, r2, #1\n\
-	adds r0, r0, r2\n\
-	lsls r0, r0, #1\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F5688: .4byte StringOfsTable\n\
-_080F568C:\n\
-	ldr r0, _080F56A8 @ =0x00000DCC\n\
-	adds r2, r4, r0\n\
-	ldr r1, _080F56AC @ =0x00000E17\n\
-	adds r0, r4, r1\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	bne _080F569C\n\
-	b _080F5812\n\
-_080F569C:\n\
-	ldr r1, _080F56B0 @ =StringOfsTable\n\
-	ldrb r0, [r2, #1]\n\
-	ldr r2, _080F56B4 @ =0x00000135\n\
-	adds r0, r0, r2\n\
-	lsls r0, r0, #1\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F56A8: .4byte 0x00000DCC\n\
-_080F56AC: .4byte 0x00000E17\n\
-_080F56B0: .4byte StringOfsTable\n\
-_080F56B4: .4byte 0x00000135\n\
-_080F56B8:\n\
-	ldr r0, _080F56D4 @ =0x00000DCC\n\
-	adds r2, r4, r0\n\
-	ldr r1, _080F56D8 @ =0x00000E17\n\
-	adds r0, r4, r1\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	bne _080F56C8\n\
-	b _080F5812\n\
-_080F56C8:\n\
-	ldr r1, _080F56DC @ =StringOfsTable\n\
-	ldrb r0, [r2, #1]\n\
-	ldr r2, _080F56E0 @ =0x00000135\n\
-	adds r0, r0, r2\n\
-	lsls r0, r0, #1\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F56D4: .4byte 0x00000DCC\n\
-_080F56D8: .4byte 0x00000E17\n\
-_080F56DC: .4byte StringOfsTable\n\
-_080F56E0: .4byte 0x00000135\n\
-_080F56E4:\n\
-	ldr r1, _080F571C @ =0x00000E17\n\
-	adds r0, r4, r1\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	bne _080F56F0\n\
-	b _080F5812\n\
-_080F56F0:\n\
-	ldr r0, _080F5720 @ =StringOfsTable\n\
-	ldr r2, _080F5724 @ =0x00000272\n\
-	adds r0, r0, r2\n\
-	ldrh r0, [r0]\n\
-	ldr r1, _080F5728 @ =gStringData\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	movs r2, #0x12\n\
-	bl PrintString\n\
-	ldr r0, _080F572C @ =0x00000E1B\n\
-	adds r1, r4, r0\n\
-	adds r0, r5, #0\n\
-	adds r0, #0xbc\n\
-	ldrb r1, [r1]\n\
-	adds r0, r0, r1\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #9\n\
-	bhi _080F5730\n\
-.if REGION_US\n\
-	movs r1, #0x12\n\
-.else\n\
-	movs r1, #0xc\n\
-.endif\n\
-	b _080F5732\n\
-	.align 2, 0\n\
-_080F571C: .4byte 0x00000E17\n\
-_080F5720: .4byte StringOfsTable\n\
-_080F5724: .4byte 0x00000272\n\
-_080F5728: .4byte gStringData\n\
-_080F572C: .4byte 0x00000E1B\n\
-_080F5730:\n\
-.if REGION_US\n\
-	movs r1, #0x13\n\
-.else\n\
-	movs r1, #0xd\n\
-.endif\n\
-_080F5732:\n\
-	movs r2, #0x12\n\
-	bl PrintNumber\n\
-	b _080F5812\n\
-_080F573A:\n\
-	ldr r2, _080F5760 @ =0x00000DCC\n\
-	adds r1, r4, r2\n\
-	adds r2, #0x4b\n\
-	adds r0, r4, r2\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	beq _080F5812\n\
-	ldrb r1, [r1, #1]\n\
-	adds r0, r4, #0\n\
-	bl CheckUnlockedFoot\n\
-	ldr r1, _080F5764 @ =StringOfsTable\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x17\n\
-	movs r2, #0x9d\n\
-	lsls r2, r2, #2\n\
-	adds r0, r0, r2\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F5760: .4byte 0x00000DCC\n\
-_080F5764: .4byte StringOfsTable\n\
-_080F5768:\n\
-	ldr r0, _080F578C @ =0x00000DCC\n\
-	adds r1, r4, r0\n\
-	ldr r2, _080F5790 @ =0x00000E17\n\
-	adds r0, r4, r2\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	beq _080F5812\n\
-	ldrb r1, [r1, #1]\n\
-	adds r0, r4, #0\n\
-	bl CheckUnlockedFoot\n\
-	ldr r1, _080F5794 @ =StringOfsTable\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x17\n\
-	movs r2, #0x9f\n\
-	lsls r2, r2, #2\n\
-	adds r0, r0, r2\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F578C: .4byte 0x00000DCC\n\
-_080F5790: .4byte 0x00000E17\n\
-_080F5794: .4byte StringOfsTable\n\
-_080F5798:\n\
-	ldr r0, _080F57BC @ =0x00000DCC\n\
-	adds r1, r4, r0\n\
-	ldr r2, _080F57C0 @ =0x00000E17\n\
-	adds r0, r4, r2\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	beq _080F5812\n\
-	ldrb r1, [r1, #1]\n\
-	adds r0, r4, #0\n\
-	bl CheckUnlockedFoot\n\
-	ldr r1, _080F57C4 @ =StringOfsTable\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x17\n\
-	movs r2, #0xa2\n\
-	lsls r2, r2, #2\n\
-	adds r0, r0, r2\n\
-	b _080F57D8\n\
-	.align 2, 0\n\
-_080F57BC: .4byte 0x00000DCC\n\
-_080F57C0: .4byte 0x00000E17\n\
-_080F57C4: .4byte StringOfsTable\n\
-_080F57C8:\n\
-	ldr r0, _080F57EC @ =gCurStory\n\
-	ldrb r1, [r0, #4]\n\
-	movs r0, #0x20\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F57FC\n\
-	ldr r0, _080F57F0 @ =StringOfsTable\n\
-	ldr r1, _080F57F4 @ =0x00000266\n\
-_080F57D8:\n\
-	adds r0, r0, r1\n\
-_080F57DA:\n\
-	ldrh r0, [r0]\n\
-	ldr r1, _080F57F8 @ =gStringData\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	movs r2, #0x12\n\
-	bl PrintString\n\
-	b _080F5812\n\
-	.align 2, 0\n\
-_080F57EC: .4byte gCurStory\n\
-_080F57F0: .4byte StringOfsTable\n\
-_080F57F4: .4byte 0x00000266\n\
-_080F57F8: .4byte gStringData\n\
-_080F57FC:\n\
-	ldr r0, _080F5818 @ =StringOfsTable\n\
-	movs r2, #0x9a\n\
-	lsls r2, r2, #2\n\
-	adds r0, r0, r2\n\
-	ldrh r0, [r0]\n\
-	ldr r1, _080F581C @ =gStringData\n\
-	adds r0, r0, r1\n\
-	movs r1, #1\n\
-	movs r2, #0x12\n\
-	bl PrintString\n\
-_080F5812:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F5818: .4byte StringOfsTable\n\
-_080F581C: .4byte gStringData\n\
- .syntax divided\n");
+// X coordinate of the sub-tank's HP value (the menu width is different in US version)
+#if IS_US
+#define SUBTANK_NUMBER_X 0x12
+#else
+#define SUBTANK_NUMBER_X 0x0C
+#endif
+
+
+void printMainMenuString(struct GameState* g) {
+  struct Zero* z = g->z2;
+
+  switch (g->mode[3]) {
+    case 0: {
+      if (MENU->unk_00[0] == 6) {
+        if (MAY_ESCAPE_NOW) {
+          PrintString(STRING(STR_MAINMENU_DESC + 6), 1, 0x12);
+        } else {
+          PrintString(STRING(STR_MAINMENU_ESCAPE_DENIED), 1, 0x12);
+        }
+      } else {
+        PrintString(STRING(STR_MAINMENU_DESC + MENU->unk_00[0]), 1, 0x12);
+      }
+      break;
+    }
+    case 1: {
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+      break;
+    }
+    case 2: {
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+      break;
+    }
+    case 3: {
+      u8 hp;
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_SUBTANK), 1, 0x12);
+      hp = (z->unk_b4).status.subtankHP[MENU->unk_4f];
+      if (hp <= 9) {
+        PrintNumber(hp, SUBTANK_NUMBER_X, 0x12);
+      } else {
+        PrintNumber(hp, SUBTANK_NUMBER_X + 1, 0x12);
+      }
+      break;
+    }
+    case 4: {
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_HEAD + CheckUnlockedFoot(g, MENU->unk_00[1])), 1, 0x12);
+      break;
+    }
+    case 5: {
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_BODY + CheckUnlockedFoot(g, MENU->unk_00[1])), 1, 0x12);
+      break;
+    }
+    case 6: {
+      if (MENU->unk_4b == 0) {
+        return;
+      }
+      PrintString(STRING(STR_MAINMENU_FOOT + CheckUnlockedFoot(g, MENU->unk_00[1])), 1, 0x12);
+      break;
+    }
+    case 7: {
+      if (MAY_ESCAPE_NOW) {
+        PrintString(STRING(STR_MAINMENU_ESCAPE_CONFIRM), 1, 0x12);
+      } else {
+        PrintString(STRING(STR_MAINMENU_ESCAPE_DENIED), 1, 0x12);
+      }
+      break;
+    }
+  }
 }
 
 NAKED u8 CheckUnlockedHead(struct GameState* g, u8 r1) {

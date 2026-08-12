@@ -40,6 +40,7 @@ $(SPRITE_GFX_DIR)/dynamic/zero/door/sheet/4.4bpp: GFX_OPTS := -mheight 4
 $(SPRITE_GFX_DIR)/static/omega_white/sword/sheet.4bpp: GFX_OPTS := -num_tiles 233
 $(SPRITE_GFX_DIR)/static/omega_white/body/sheet.4bpp: GFX_OPTS := -num_tiles 244
 $(SPRITE_GFX_DIR)/static/result_disk/default/sheet.4bpp: GFX_OPTS := -num_tiles 5
+$(SPRITE_GFX_DIR)/static/result_disk/default/sheet-ap.4bpp: GFX_OPTS := -num_tiles 5
 $(SPRITE_GFX_DIR)/static/result_disk/blue/sheet.4bpp: GFX_OPTS := -num_tiles 5
 $(SPRITE_GFX_DIR)/static/result_disk/red/sheet.4bpp: GFX_OPTS := -num_tiles 5
 $(SPRITE_GFX_DIR)/static/61/sheet.4bpp: GFX_OPTS := -num_tiles 29

@@ -66,6 +66,9 @@ void PrintNormalMessage(TextID n);
 void PrintTextWindow(TextID n, u16 kind);
 void PrintOptionMessage1(TextID n);
 void PrintOptionMessage2(TextID n);
+#if AP
+void PrintOptionMessagePtr(const char_t* s);
+#endif
 void PrintResultInline(TextID t, bool16 ng);
 
 #endif  // GUARD_RMZ3_TEXT_WINDOW_H

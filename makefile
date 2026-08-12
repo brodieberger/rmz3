@@ -97,14 +97,31 @@ else
   HITBLOOD := 1
 endif
 
+# Archipelago build. AP=1 produces the randomizer ROM: 16MB
+AP ?= 0
+ifeq ($(AP),1)
+  ifneq ($(REGION),us)
+    $(error AP=1 requires REGION=us)
+  endif
+  APSUF := -ap
+else ifneq ($(AP),0)
+  $(error AP must be 0 or 1, got '$(AP)')
+else
+  APSUF :=
+endif
+
 # Build target
-RONNAME = $(NAME)$(MODIFIERS)$(RGNSUF)
+RONNAME = $(NAME)$(MODIFIERS)$(RGNSUF)$(APSUF)
 SHA1FILE := $(NAME)$(RGNSUF).sha1
 BUILD_DIR := build/$(RONNAME)
 ROM = $(RONNAME).gba
 ELF = $(RONNAME).elf
 
+ifeq ($(AP),1)
+all: $(ROM)
+else
 all: $(ROM) compare
+endif
 
 # Tools
 TOOL = $(DEVKITARM)/bin
@@ -139,7 +156,7 @@ include make_tools.mk
 # Flags
 ARCH := -mcpu=arm7tdmi -march=armv4t -mthumb 
 ASFLAGS := $(ARCH) -mthumb-interwork -g
-ASM_DEFSYMS := --defsym REGION_US=$(ISUS) --defsym HIT_BLOOD=$(HITBLOOD) --defsym ENGLISH=$(ENGLISHDEF)
+ASM_DEFSYMS := --defsym REGION_US=$(ISUS) --defsym HIT_BLOOD=$(HITBLOOD) --defsym ENGLISH=$(ENGLISHDEF) --defsym AP=$(AP)
 ASFLAGS += $(ASM_DEFSYMS)
 
 CFLAGS := -mthumb-interwork  -Wimplicit -Wparentheses -Werror -O2 -fshort-enums
@@ -155,7 +172,7 @@ else
 	CFLAGS += $(ARCH) $(CPPFLAGS) -Wno-pointer-to-int-cast -fno-toplevel-reorder -fno-aggressive-loop-optimizations -Wno-address-of-packed-member
 	LIBPATH := -L $(shell dirname $(shell $(AGBCC) --print-file-name=libgcc.a)) -L $(shell dirname $(shell $(AGBCC) --print-file-name=libc.a))
 endif
-CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD)
+CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD) -DAP=$(AP)
 LDFLAGS := $(LIBPATH) -lgcc -lc
 
 include assets.mk
@@ -196,6 +213,9 @@ endif
 LDSCRIPT = ld_script$(MODIFIERS).ld
 ifeq ($(REGION),us)
 LDSCRIPT = ld_script-us.ld
+endif
+ifeq ($(AP),1)
+LDSCRIPT = ld_script-us-ap.ld
 endif
 LD_INC := $(wildcard linker/*.txt)
 LD_BUILD := $(addprefix $(BUILD_DIR)/, $(LD_INC))
@@ -285,7 +305,7 @@ $(BUILD_DIR)/%.o: %.s
 
 # gcc rejects a bare --defsym; route it through -Wa.
 $(BUILD_DIR)/%.o: %.sx
-	$(TOOL)/arm-none-eabi-gcc -c $(CPPFLAGS) $(filter-out --defsym REGION_US=% HIT_BLOOD=% ENGLISH=%,$(ASFLAGS)) -Wa,--defsym,REGION_US=$(ISUS),--defsym,HIT_BLOOD=$(HITBLOOD),--defsym,ENGLISH=$(ENGLISHDEF) $< -o $@
+	$(TOOL)/arm-none-eabi-gcc -c $(CPPFLAGS) $(filter-out --defsym REGION_US=% HIT_BLOOD=% ENGLISH=% AP=%,$(ASFLAGS)) -Wa,--defsym,REGION_US=$(ISUS),--defsym,HIT_BLOOD=$(HITBLOOD),--defsym,ENGLISH=$(ENGLISHDEF),--defsym,AP=$(AP) $< -o $@
 
 $(ASM_s_OBJS:.o=.d): $(BUILD_DIR)/%.d: %.s
 	$(SCANINC) -M $@ -I include $<

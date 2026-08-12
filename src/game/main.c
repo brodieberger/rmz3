@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "config.h"
 #include "cyberelf.h"
@@ -385,6 +386,13 @@ static void GameLoop_NewGame(struct GameState* g) {
   clearSecretDiskData((g->save).disk);
   clearUnlockedCyberElfData((g->save).elf);
   ClearZeroStatus(&(g->save).status);
+#if AP
+  // This byte will be used to save AP related things in save RAM.
+  (g->save).unused_240[AP_TAKEN_BYTE] = 0;
+  (g->save).unused_240[AP_APPLIED_BYTE] = 0;
+  (g->save).unused_240[AP_APPLIED_BYTE + 1] = 0;
+  MemFill32(0, (g->save).savedDisk, 48);
+#endif
   if ((gSystemSavedata.hardmodeLock == (gSineTable[8] & 0xFF)) && (gJoypad[0].input & L_BUTTON)) {
     (&(g->save))->gamemode = 1;
     SET_FLAG((g->save).story.gameflags, FLAG_HARD);
@@ -708,8 +716,8 @@ NAKED static void GameLoop_SwitchCyberSpace(struct GameState* g) { INCCODE("asm/
  * @brief ランの終了 (ミッションクリア、プレイヤー死亡、エスケープ、フリーランでボスがいた部屋に到着) 後の処理
  * @note 0x080ef400
  */
-NON_MATCH static void GameLoop_EndRun(struct GameState* g) {
-#if MODERN
+NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
+#if MODERN || AP
   UpdateStoryFlag();
   if (FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
     ExitProcess();
@@ -744,7 +752,8 @@ NON_MATCH static void GameLoop_EndRun(struct GameState* g) {
     }
   }
 
-  if (!IS_MISSION) {
+  /* A rerun leaves like a free run. The story routing below is wrong for a cleared stage. */
+  if (!IS_MISSION || ApInMissionRerun()) {
     (g->save).stageID = STAGE_BASE;
     LoadStageRun(STAGE_BASE, 9);
     SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
@@ -794,6 +803,9 @@ NON_MATCH static void GameLoop_EndRun(struct GameState* g) {
           } else if ((g->save).stageID == STAGE_WEILS_LABO) {
             SetGameMode(g, GAMEMODE(MAINGAME, UNLOCK_MINIGAME, 0, 0));
             return;
+          } else {
+            (g->save).stageID = STAGE_BASE;
+            LoadStageRun(STAGE_BASE, 7);
           }
           SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
           return;
@@ -802,6 +814,7 @@ NON_MATCH static void GameLoop_EndRun(struct GameState* g) {
         if ((g->save).stageID == STAGE_BASE) {
           (g->save).stageID = STAGE_SUB_ARCADIA;
           InitStageRun(STAGE_SUB_ARCADIA);
+          SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
           return;
         }
 
@@ -912,12 +925,14 @@ static void GameLoop_GameOver(struct GameState* g) {
           }
           LoadStoryData((g->save).stageID, &(g->save).savedStory);
           StoreStoryData(&(g->save).story);
+#if !AP
           {
             void* src = (g->save).savedDisk;
             void* dst = (g->save).disk;
             u32 bytesize = 48;
             MemCopy32(src, dst, bytesize);
           }
+#endif
           {
             void* src = (g->save).savedElf;
             void* dst = (g->save).elf;

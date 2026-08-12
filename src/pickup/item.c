@@ -1,9 +1,19 @@
+#include "ap.h"
+#include "camera.h"
 #include "collision.h"
 #include "entity.h"
 #include "global.h"
+#include "physics.h"
 #include "pickup.h"
+#include "score.h"
+#include "sound.h"
+#include "stagerun.h"
+#include "story.h"
+#include "text_window.h"
+#include "zero.h"
 
 static const struct Collision sCollision;
+extern const motion_t gMapItemMotions[9];
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
 static void MapItem_Init(Pickup* p);
@@ -127,7 +137,59 @@ _080E0A76:\n\
  .syntax divided\n");
 }
 
-NAKED static void MapItem_Init(Pickup* p) {
+NON_MATCH_AP static void MapItem_Init(Pickup* p) {
+#if MODERN || AP
+  motion_t m;
+
+  if ((u8)(p->work[0] - ITEM_SUBTANK1) <= 1) {
+    const ColorGraphic* cg;
+    s32 n = 0;
+    if (p->work[0] == ITEM_SUBTANK2) {
+      n = 1;
+    }
+#if AP
+    // The taken flag stops the pickup coming back when you re enter the stage
+    if (gGameState.save.unused_240[AP_TAKEN_BYTE] & (AP_TAKEN_SUBTANK1 << n)) {
+#else
+    if (pZero2->unk_b4.status.subtankHP[n] != 0xFF) {
+#endif
+      p->flags &= ~DISPLAY;
+      p->flags &= ~FLIPABLE;
+      EXIT_BODY(p);
+      SET_ITEM_ROUTINE(p, ENTITY_DISAPPEAR);
+      return;
+    }
+    cg = &gStaticMotionGraphics[SM229_SUBTANK];
+    LoadGraphic(&cg->g, (void*)(BG_VRAM_SIZE + ((wStaticGraphicTilenums[SM229_SUBTANK] - cg->g.tileId) << 5)));
+    LoadPalette(&cg->pal, 0x200 + ((wStaticMotionPalIDs[SM229_SUBTANK] - cg->pal.dst) << 5));
+  }
+
+  m = gMapItemMotions[p->work[0]];
+  if (p->work[0] <= ITEM_LIFE_L) {
+    m += gSystemSavedata.lifeEnergy << 8;
+  } else if (p->work[0] <= ITEM_EC_L) {
+    m += gSystemSavedata.crystal << 8;
+  } else if (p->work[0] == ITEM_EXLIFE) {
+    m += gSystemSavedata.extraLife << 8;
+  }
+
+  InitNonAffineMotion((void*)p);
+  SetSpriteAnimation(p, m);
+  p->flags |= DISPLAY;
+  p->flags |= FLIPABLE;
+  INIT_BODY(p, &sCollision, 64, onCollision);
+  p->y = (p->coord).y;
+  p->z = NULL;
+
+  if (p->work[1] >= 2) {
+    (p->d).y = PIXEL(0);
+  } else {
+    (p->d).y = -PIXEL(4);
+  }
+  p->work[2] = 240;
+  SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
+  MapItem_Update(p);
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r6, r0, #0\n\
@@ -315,9 +377,119 @@ _080E0BFC:\n\
 _080E0C04: .4byte 0xFFFFFC00\n\
 _080E0C08: .4byte gPickupFnTable\n\
  .syntax divided\n");
+#endif
 }
 
-NAKED static void MapItem_Update(Pickup* p) {
+NON_MATCH_AP static void MapItem_Update(Pickup* p) {
+#if MODERN || AP
+  UpdateSpriteAnimation(p);
+
+  // 消滅間際は点滅させる
+  if (p->work[1] == 0) {
+    u8 t = --p->work[2];
+    if (t <= 0x3b) {
+      if (t & 2) {
+        p->flags |= DISPLAY;
+      } else {
+        p->flags &= ~DISPLAY;
+      }
+    }
+  }
+
+  if (((p->body).status & BODY_STATUS_B2) && (p->z != NULL)) {
+    // ゼロが拾った (バイッスが有効なら取得量2倍)
+    if (p->work[0] == ITEM_LIFE_S) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gLifeRecoverAmount += 0x10;
+      gLifeRecoverAmount += 0x10;
+    } else if (p->work[0] == ITEM_LIFE_M) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gLifeRecoverAmount += 0x20;
+      gLifeRecoverAmount += 0x20;
+    } else if (p->work[0] == ITEM_LIFE_L) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gLifeRecoverAmount += 0x100;
+      gLifeRecoverAmount += 0x100;
+    } else if (p->work[0] == ITEM_EC_S) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gECrystalGainAmount += 4;
+      gECrystalGainAmount += 4;
+    } else if (p->work[0] == ITEM_EC_L) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gECrystalGainAmount += 0x10;
+      gECrystalGainAmount += 0x10;
+    } else if (p->work[0] == ITEM_EXLIFE) {
+      if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) {
+        if ((gScore.total)->extraLife <= 8) (gScore.total)->extraLife++;
+      }
+      if ((gScore.total)->extraLife <= 8) (gScore.total)->extraLife++;
+      PlaySound(SE_NOTIFICATION);
+    } else if (p->work[0] == ITEM_SUBTANK1) {
+#if AP
+      ApMarkLocationChecked(AP_LOC_SUBTANK_1);
+      gGameState.save.unused_240[AP_TAKEN_BYTE] |= AP_TAKEN_SUBTANK1;
+#else
+      ((&pZero2->unk_b4)->status).subtankHP[0] = 0;
+      PrintTextWindow(0x102, 0x5A);
+#endif
+    } else if (p->work[0] == ITEM_SUBTANK2) {
+#if AP
+      ApMarkLocationChecked(AP_LOC_SUBTANK_2);
+      gGameState.save.unused_240[AP_TAKEN_BYTE] |= AP_TAKEN_SUBTANK2;
+#else
+      ((&pZero2->unk_b4)->status).subtankHP[1] = 0;
+      PrintTextWindow(0x102, 0x5A);
+#endif
+    }
+
+    p->flags &= ~DISPLAY;
+    p->flags &= ~FLIPABLE;
+    EXIT_BODY(p);
+    SET_ITEM_ROUTINE(p, ENTITY_DISAPPEAR);
+  } else {
+    // 寿命切れ or 画面から離れすぎたら消す
+    if ((p->work[2] == 0) || (Camera_GetDistance(&gStageRun.vm.camera, &p->coord) > PIXEL(128))) {
+      SET_ITEM_ROUTINE(p, ENTITY_DIE);
+    }
+
+    if (p->mode[1] == 0) {
+      // 落下中
+      if ((p->coord.y >= p->y) && (FUN_080098a4(p->coord.x, p->coord.y) != 0)) {
+        p->coord.y = FUN_08009f6c(p->coord.x, p->coord.y);
+        p->d.y = 0;
+        p->mode[1]++;
+      } else if (FUN_080098a4(p->coord.x, p->y) != 0) {
+        if (FUN_08009f6c(p->coord.x, p->y) < p->coord.y - PIXEL(7)) {
+          p->y = FUN_0800a134(p->coord.x, p->y);
+        }
+      }
+      p->coord.y += p->d.y;
+      if (p->d.y < PIXEL(7)) p->d.y += 0x40;
+    } else {
+      // 着地後、地形に沿って移動する
+      s32 y = FUN_08009f6c(p->coord.x, p->coord.y);
+      s32 dx;
+      if (y < p->coord.y) {
+        p->coord.y = y;
+        p->d.y = 0;
+      } else if (y > p->coord.y) {
+        if (p->d.y == 0) {
+          if (y > p->coord.y + PIXEL(7)) {
+            p->d.y = 0x40;
+            p->coord.y += 0x40;
+          } else {
+            p->coord.y = y;
+          }
+        } else {
+          if (p->d.y < PIXEL(7)) p->d.y += 0x40;
+          p->coord.y += p->d.y;
+        }
+      }
+
+      dx = FUN_0800a40c(p->coord.x, p->coord.y + PIXEL(4));
+      if (dx != 0) {
+        if (FUN_080098a4(p->coord.x + dx, p->coord.y - PIXEL(4)) == 0) {
+          p->coord.x += dx;
+        }
+      }
+    }
+  }
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	adds r4, r0, #0\n\
@@ -713,6 +885,7 @@ _080E0F08:\n\
 _080E0F10: .4byte 0x000006FF\n\
 _080E0F14: .4byte 0xFFFFFC00\n\
  .syntax divided\n");
+#endif
 }
 
 static void MapItem_Die(struct Entity* p) {

@@ -1239,9 +1239,12 @@ Str_16F3:
 .endif
 
 @ EN: Abort completed missions.
+@ AP: Press A to return to hub.
 sEscape:: @ 0x083741a1
 Str_1701:
-.if ENGLISH
+.if AP
+  .string "Press A to return to hub.$"
+.elseif ENGLISH
   .string "Abort completed missions.$"
 .else
   .string "ボスをたおしたエリアなら、いつでもだっしゅつできる$"

@@ -1327,7 +1327,12 @@ TitleLogo_Pal:
 TitleLogo_End:
 
 MenuMain_Tiles:
-.if ENGLISH
+.if AP
+@ "Code Name" redrawn as "Disks", and its last tile (0xED) as the '/' of the disk counter.
+MenuMainAp_Start:
+  .incbin "graphics/bg/menu_main-en-ap.4bpp.lz"
+  .space 7016 - (. - MenuMainAp_Start)
+.elseif ENGLISH
   .incbin "graphics/bg/menu_main-en.4bpp.lz"
 .else
   .incbin "graphics/bg/menu_main.4bpp.lz"

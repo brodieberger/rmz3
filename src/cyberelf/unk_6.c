@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "cyberelf.h"
 #include "global.h"
 #include "spawn.h"
@@ -18,12 +19,19 @@ static const u8 sFusionPenalties[7];
 static void Elf6_Init(struct Elf* e);
 static void Elf6_Update(struct Elf* e);
 static void Elf6_Die(struct Elf* e);
+#if AP
+static void Elf6_Die_Ap(struct Elf* e);
+#endif
 
 // clang-format off
 const ElfRoutine gElf6Routine = {
     [ENTITY_INIT] =      Elf6_Init,
     [ENTITY_UPDATE] =    Elf6_Update,
+#if AP
+    [ENTITY_DIE] =       Elf6_Die_Ap,
+#else
     [ENTITY_DIE] =       Elf6_Die,
+#endif
     [ENTITY_DISAPPEAR] = (void*)DeleteElf,
     [ENTITY_EXIT] =      (ElfFunc)DeleteEntity,
 };
@@ -313,6 +321,18 @@ _080E3894: .4byte gElfFnTable\n\
 _080E3898: .4byte wMOSAIC\n\
  .syntax divided\n");
 }
+
+#if AP
+/*
+  work[0] 6 is the fusion elf that forces an A rank.
+*/
+static void Elf6_Die_Ap(struct Elf* e) {
+  if (((e->s).mode[1] == 0) && ((e->s).work[0] == 6)) {
+    ApSetRankElf();
+  }
+  Elf6_Die(e);
+}
+#endif
 
 NAKED static void Elf6_Die(struct Elf* e) {
   asm(".syntax unified\n\

@@ -119,7 +119,10 @@ Tilemap_LogoDemo:
 Tilemap_20:
 	.4byte 0x10001
   .2byte	32, 20 @ w8, h8
-.if ENGLISH
+.if AP
+@ Code Name redrawn as "Disks"
+.incbin "data/bgmaps/menu/020-en-ap.bin"
+.elseif ENGLISH
 .incbin "data/bgmaps/menu/020-en.bin"
 .else
 .incbin "data/bgmaps/menu/020.bin"
@@ -449,11 +452,16 @@ Tilemap_98:
   .2byte	32, 32 @ w8, h8
 .incbin "data/bgmaps/todo/098.bin"
 
+@ Remove the average score from the results screen
 Tilemap_100:
 	.4byte 0x10001
   .2byte 30, 20  @ w8, h8
 .if ENGLISH
+.if AP
+.incbin "data/bgmaps/todo/100-en-ap.bin"
+.else
 .incbin "data/bgmaps/todo/100-en.bin"
+.endif
 .else
 .incbin "data/bgmaps/todo/100.bin"
 .endif

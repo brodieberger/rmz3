@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
@@ -1446,6 +1447,14 @@ void FUN_0802c010(struct Zero* z) {
   bool8 xflip;
 
   gStageRun.missionStatus &= ~MISSION_STAY;
+#if AP
+    /*
+      Catches deaths that insta kill I think.
+    */
+  if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
+    ApOnZeroDied();
+  }
+#endif
   gStageRun.missionStatus |= MISSION_PLAYER_DEAD;
   EXIT_BODY(z);
   PlaySound(SE_ZERO_STUN);

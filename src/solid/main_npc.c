@@ -1,10 +1,13 @@
+#include "ap.h"
 #include "collision.h"
 #include "entity.h"
 #include "game.h"
 #include "global.h"
 #include "solid.h"
+#include "stagerun.h"
 #include "story.h"
 #include "text.h"
+#include "zero.h"
 
 static void MainNPC_Init(struct Solid* p);
 static void MainNPC_Update(struct Solid* p);
@@ -109,6 +112,134 @@ static void deleteMainNPC(struct Solid* p) {
 }
 
 NAKED static void UpdateCiel(struct Solid* p) { INCCODE("asm/wip/UpdateCiel.inc"); }
+
+extern const struct Collision Collision_ARRAY_083713b0[2];
+
+NON_MATCH_AP void UpdateCerveau(struct Solid* p) {
+#if MODERN || AP
+#if !AP
+  struct ZeroStatus* status;  // only the vanilla grant path uses this
+#endif
+
+  switch ((p->s).mode[1]) {
+    case 0: {
+      if ((gCurStory.s.gameflags[2] & ((1 << (FLAG_LATER4_DONE & 7)) | (1 << (FLAG_BRAIN_CONTROL & 7)))) == (1 << (FLAG_LATER4_DONE & 7))) {
+        (p->s).flags &= ~DISPLAY;
+        (p->s).flags &= ~FLIPABLE;
+        EXIT_BODY(p);
+        SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
+        break;
+      }
+      (p->s).flags |= DISPLAY;
+      (p->s).flags |= FLIPABLE;
+      InitNonAffineMotion(&p->s);
+      SET_XFLIP(p, TRUE);
+      INIT_BODY(p, Collision_ARRAY_083713b0, 0, NULL);
+      (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
+      SetMotion(&p->s, MOTION(SM194_CERVEAU, 0));
+      (p->s).mode[1]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      UpdateEntityAnim(&p->s);
+      if (!((p->body).status & BODY_STATUS_CHAT)) {
+        break;
+      }
+      if (!gInChat) {
+        break;
+      }
+      if (gCollisionManager.talkTo != &p->body) {
+        break;
+      }
+      SET_XFLIP(p, FALSE);
+      if (!FLAG(gCurStory.s.gameflags, FLAG_9)) {
+        gCurStory.s.gameflags[1] |= (1 << (FLAG_9 & 7));
+        PrintNormalMessage(0x1307);  // シミュレーションの結果が出るまで...
+        FUN_08021cb4(&gStageRun.vm, gStageScriptList[STAGE_BASE][5], &p->s);
+        (p->s).mode[1] = 3;
+        break;
+      }
+      SetGameMode(&gGameState, GAMEMODE(MAINGAME, OVERWORLD, 3, 0));
+      (p->s).mode[1]++;
+      break;
+    }
+    case 2: {
+      UpdateEntityAnim(&p->s);
+      if (gGameState.mode[2] != 0) {
+        break;
+      }
+      gInChat = FALSE;
+      SET_XFLIP(p, TRUE);
+      (p->s).mode[1] = 1;
+      break;
+    }
+    case 3: {
+      UpdateEntityAnim(&p->s);
+      if ((&gTextWindow.text)->mode != 0) {
+        break;
+      }
+#if AP
+      ApMarkLocationChecked(AP_LOC_ROD);
+      ApMarkLocationChecked(AP_LOC_SHIELD);
+#else
+      // Unlock the rod and shield
+      (&pZero2->unk_b4)->status.unlockedWeapon |= (1 << WEAPON_ROD);
+      (&pZero2->unk_b4)->status.unlockedWeapon |= (1 << WEAPON_SHIELD);
+      status = &(gGameState.save).status;
+      status->unlockedWeapon |= (1 << WEAPON_ROD);
+      status->unlockedWeapon |= (1 << WEAPON_SHIELD);
+#endif
+      SetMotion(&p->s, MOTION(SM194_CERVEAU, 1));
+      (p->s).work[2] = 8;
+      (p->s).mode[1]++;
+      break;
+    }
+    case 4: {
+      UpdateEntityAnim(&p->s);
+      if (--(p->s).work[2] != 0) {
+        break;
+      }
+      SetMotion(&p->s, MOTION(SM194_CERVEAU, 2));
+      (p->s).work[2] = 30;
+      (p->s).mode[1]++;
+      break;
+    }
+    case 5: {
+      UpdateEntityAnim(&p->s);
+      if (--(p->s).work[2] != 0) {
+        break;
+      }
+      SetMotion(&p->s, MOTION(SM194_CERVEAU, 1));
+      (p->s).work[2] = 8;
+      (p->s).mode[1]++;
+      break;
+    }
+    case 6: {
+      UpdateEntityAnim(&p->s);
+      if (--(p->s).work[2] != 0) {
+        break;
+      }
+      SetMotion(&p->s, MOTION(SM194_CERVEAU, 0));
+      (p->s).mode[1]++;
+      break;
+    }
+    case 7: {
+      UpdateEntityAnim(&p->s);
+      if ((gStageRun.vm).active & VM_ACTIVE) {
+        break;
+      }
+      SET_XFLIP(p, TRUE);
+      (p->s).mode[1] = 1;
+      break;
+    }
+    default: {
+      break;
+    }
+  }
+#else
+  INCCODE("asm/wip/UpdateCerveau.inc");
+#endif
+}
 
 INCASM("asm/solid/main_npc.inc");
 

@@ -1,14 +1,21 @@
+#include "ap.h"
 #include "result.h"
 
 #include "game.h"
 #include "global.h"
+#include "input.h"
 #include "palette_animation.h"
 #include "score.h"
+#include "sound.h"
 #include "sprite.h"
 #include "stagerun.h"
 #include "story.h"
+#include "string_ids.h"
+#include "text.h"
+#include "text_ids.h"
 #include "text_window.h"
 #include "widget.h"
+#include "widget/cursor_square.h"
 #include "zero.h"
 
 #define STAGE_CHIP_NONE 0
@@ -41,6 +48,7 @@ void CalcMissionScore(void);
 u8 CalcElfPenalty(Player* p);
 
 void CreateDiskIcon(Coords32* c, u8 n, u8 r2);
+u16 OpenSecretDisk(struct GameState* g, u8 disk_no, bool8 is_result);
 
 // 0x08023f00
 void ResultScreen_Init(struct ResultState* p) {
@@ -73,8 +81,8 @@ static bool32 FUN_080248f0(struct ResultState* p);
  * @return まだリザルト画面かどうか (TRUE: まだリザルト画面, FALSE: リザルト画面が終了)
  * @note 0x0802400c
  */
-NON_MATCH bool32 ResultScreen_Update(struct ResultState* p) {
-#if MODERN
+NON_MATCH_AP bool32 ResultScreen_Update(struct ResultState* p) {
+#if MODERN || AP
   switch (p->mode[0]) {
     case 0: {
       p->rank = (gScore.total)->rank;
@@ -190,7 +198,229 @@ NON_MATCH bool32 ResultScreen_Update(struct ResultState* p) {
 #endif
 }
 
-NAKED static bool32 printPlayerAllScore(struct ResultState* p) {
+/**
+ * @return TRUE: still counting, FALSE: the whole tally is drawn
+ */
+NON_MATCH_AP static bool32 printPlayerAllScore(struct ResultState* p) {
+#if MODERN || AP
+  bool32 fast = FALSE;
+
+  if (gJoypad[0].input & (A_BUTTON | B_BUTTON | START_BUTTON)) {
+    fast = TRUE;
+    p->frame = 20001;
+  }
+
+  switch (p->mode[1]) {
+    case 0: {
+      printNumOnResultScreen((s8)gScore.missionPoint * 5, 0x10, 2);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 1: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 2: {
+      p->frame++;
+      if (CountUpResultScore(gScore.eachScore[0], p->frame, 3, 0x18, 2) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 3: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      printNumOnResultScreen(gScore.clearTime / (60 * 60), 0x0E, 3);
+      printNumOnResultScreen((gScore.clearTime / 60) % 60, 0x11, 3);
+      printNumOnResultScreen(0, 0x10, 3);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 4: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 5: {
+      p->frame++;
+      if (CountUpResultScore(gScore.eachScore[1], p->frame, 3, 0x18, 3) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 6: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      printNumOnResultScreen(gScore.enemyCount, 0x11, 4);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 7: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 8: {
+      p->frame++;
+      if (CountUpResultScore(gScore.eachScore[2], p->frame, 3, 0x18, 4) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 9: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      printNumOnResultScreen(gScore.totalDamage, 0x11, 5);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 10: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 11: {
+      p->frame++;
+      if (CountUpResultScore(gScore.eachScore[3], p->frame, 3, 0x18, 5) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 12: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      printNumOnResultScreen(gScore.retryCount, 0x11, 6);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 13: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 14: {
+      p->frame++;
+      if (CountUpResultScore(gScore.eachScore[4], p->frame, 3, 0x18, 6) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 15: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      printNumOnResultScreen((gScore.total)->fusionCount, 0x11, 7);
+      if (!fast) PlaySound(SE_RESULT);
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 16: {
+      p->frame++;
+      if (p->frame <= 7) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 17: {
+      p->frame++;
+      if (CountUpResultScore((s8)gScore.eachScore[5], p->frame, 3, 0x18, 7) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 18: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 19: {
+      p->frame++;
+      if (CountUpResultScore(gScore.resultScore, p->frame, 3, 0x18, 9) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 20: {
+      p->frame++;
+      if (p->frame <= 14) break;
+      p->frame = 0;
+#if AP
+      /*
+        Skip the AVERAGE row
+      */
+      p->mode[1] = 22;
+      break;
+#else
+      p->mode[1]++;
+      FALLTHROUGH;
+#endif
+    }
+    case 21: {
+      p->frame++;
+      if (CountUpResultScore((gScore.total)->scoreSum / (gScore.total)->clearCount, p->frame, 3, 0x18, 10) == TRUE) break;
+      p->frame = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 22: {
+      p->frame++;
+      if (p->frame <= 29) break;
+#if AP
+      /*
+        This mission's rank, NOT the lifetime average (TotalScore.rank)
+
+        The rank elf and easyExSkill still give the check without earning the rank.
+      */
+      PrintResultRank(CalcScoreRank(gScore.resultScore));
+#else
+      PrintResultRank((gScore.total)->rank);
+#endif
+      PlaySound(SE_CUTSCENE);
+      p->unk_06 = 0;
+      p->mode[1]++;
+      FALLTHROUGH;
+    }
+    case 23: {
+      p->unk_06++;
+      if (p->unk_06 <= 59) break;
+      if (gStageRun.id != STAGE_WEILS_LABO) {
+        p->codenamePrefix = (gScore.total)->codenamePrefix;
+        p->codenameSuffix = (gScore.total)->codenameSuffix;
+      } else {
+        p->codenamePrefix = (gScore.total)->clearCodenamePrefix;
+        p->codenameSuffix = (gScore.total)->clearCodenameSuffix;
+      }
+      PrintCodeName1(p);
+      PrintCodeName2(p);
+      PlaySound(SE_UNK_c7);
+      return FALSE;
+    }
+  }
+  return TRUE;
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, lr}\n\
 	sub sp, #4\n\
@@ -773,6 +1003,7 @@ _08024776:\n\
 	pop {r1}\n\
 	bx r1\n\
  .syntax divided\n");
+#endif
 }
 
 #define PLAYER_STATE(z) (&((z)->unk_b4))
@@ -785,6 +1016,17 @@ _08024776:\n\
 static bool32 getStageRewardChip(struct ResultState* p) {
   struct GameState* g = &gGameState;
   struct Zero* player = g->z2;
+#if AP
+  /*
+    No OP on get getStageRewardChip. These will be given through checks.
+  */
+  (void)g, (void)player;
+  if (p->mode[1] == 0) {
+    p->mode[1]++;
+    ApMarkStageCleared();
+  }
+  return FALSE;
+#endif
 
   if (p->mode[1] == 0) {
     if (sStageChipTypes[gStageRun.id] != STAGE_CHIP_NONE) {
@@ -831,6 +1073,14 @@ static bool32 getStageRewardChip(struct ResultState* p) {
 static bool32 getStageRewardExSkill(struct ResultState* p) {
   struct GameState* g = &gGameState;
   struct Zero* player = g->z2;
+#if AP
+  /*
+    No OP on get getStageRewardExSkill. These will be given through checks. 
+	(ApMarkStageCleared, which is a part of getStageRewardChip)
+  */
+  (void)g, (void)player, (void)p;
+  return FALSE;
+#endif
 
   if ((PLAYER_STATE(player)->status).menuZeroColor == MZC_HARD) return FALSE;
 
@@ -855,8 +1105,80 @@ static bool32 getStageRewardExSkill(struct ResultState* p) {
 
 #undef PLAYER_STATE
 
-// 0x080248f0
-NAKED static bool32 FUN_080248f0(struct ResultState* p) {
+/**
+ * @brief ステージ中に取ったシークレットディスクを解析する
+ * @return TRUE: still on this step, FALSE: step finished
+ * @note 0x080248f0
+ */
+NON_MATCH_AP static bool32 FUN_080248f0(struct ResultState* p) {
+#if MODERN || AP
+  TextID text;
+
+  if (p->mode[1] == 0) {
+    p->cursor = (struct SquareCursorWidget*)CreateSquareCursor((struct GameState*)p, FALSE, 0);
+    p->cursor->px = 24;
+    p->cursor->py = 114;
+    p->unk_06 = 0;
+    p->mode[1]++;
+  }
+
+  if ((&gTextWindow.text)->mode != 0) return TRUE;
+
+  text = 0;
+  p->frame = p->unk_06;
+  if (gStageDiskManager.stageDiskCount != 0) {
+    if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+      p->unk_06 = (p->unk_06 != 0) ? p->unk_06 - 1 : gStageDiskManager.stageDiskCount;
+    }
+    if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+      p->unk_06++;
+      if (p->unk_06 > gStageDiskManager.stageDiskCount) p->unk_06 = 0;
+    }
+  }
+  if (p->frame != p->unk_06) PlaySound(SE_CURSOR);
+
+  if (p->unk_06 != 0) {
+    s32 slot;
+    if (gJoypad[0].pressed & A_BUTTON) {
+#if AP
+      /*
+        Disks are not openable in this menu
+      */
+      text = TEXT_OPEN_SECRET_DISK_YOU_CANNOT_ANALYZE_THIS;
+#else
+      u8 diskNo = gStageDiskManager.stageDiskIDs[p->unk_06 - 1];
+      if (((gStageDiskManager.disk[diskNo >> 2] >> ((diskNo & 3) + 4)) & 1) == 0) {
+        text = OpenSecretDisk(&gGameState, diskNo, TRUE);
+        if (text == 0) text = TEXT_OPEN_SECRET_DISK_YOU_CANNOT_ANALYZE_THIS;
+      } else {
+        PlaySound(SE_NOT_ALLOWED);
+      }
+#endif
+    } else if (gJoypad[0].pressed & (B_BUTTON | START_BUTTON)) {
+      p->unk_06 = 0;
+    }
+    slot = p->unk_06;
+    p->cursor->px = slot * 16 + 32;
+  } else {
+    p->cursor->px = 24;
+    if (gJoypad[0].pressed & (A_BUTTON | B_BUTTON | START_BUTTON)) return FALSE;
+  }
+
+  if (text != 0) {
+    if (text == TEXT_OPEN_SECRET_DISK_YOU_CANNOT_ANALYZE_THIS) {
+      PrintResultInline(text, TRUE);
+    } else {
+      PrintResultInline(text, FALSE);
+    }
+  } else {
+#if AP
+    PrintString(STRING(STR_RESULT_END_HINT), 1, 18);  // nothing here can be analyzed
+#else
+    PrintString(STRING(STR_RESULT_ANALYZE_HINT), 1, 18);
+#endif
+  }
+  return TRUE;
+#else
   asm(".syntax unified\n\
 	push {r4, r5, lr}\n\
 	adds r4, r0, #0\n\
@@ -1053,6 +1375,7 @@ _08024A66:\n\
 _08024A6C: .4byte StringOfsTable\n\
 _08024A70: .4byte gStringData\n\
  .syntax divided\n");
+#endif
 }
 
 /*

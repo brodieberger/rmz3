@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "score.h"
 
 #include "game.h"
@@ -82,6 +83,7 @@ void ResetMissionScore(u8 stageID, struct TotalScore* total_score) {
   gScore.elfPenalty = 0;
   gScore.eachScore[0] = gScore.eachScore[1] = gScore.eachScore[2] = gScore.eachScore[3] = gScore.eachScore[4] = gScore.eachScore[5] = 0;
   gScore.weaponCount[0] = gScore.weaponCount[1] = gScore.weaponCount[2] = gScore.weaponCount[3] = 0;
+  ApResetMissionFlags();
 }
 
 static void unused_08019790(void) {}
@@ -102,6 +104,15 @@ static const s32 sRankBorder[7] = {
     [RANK_S] = 65535,
 };
 // clang-format on
+
+#if AP
+u8 CalcScoreRank(s32 score) {
+  s32 rank;
+  for (rank = 0; score >= sRankBorder[rank]; rank++) {
+  }
+  return rank;
+}
+#endif
 
 // clang-format off
 const u8 gCodeNameSuffixs[6][8] = {

@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "game.h"
 #include "global.h"
@@ -90,6 +91,10 @@ void InitStageRun(u8 stageID) {
 }
 
 void LoadStageRun(u8 stageID, u8 checkPoint) {
+#if AP
+  bool32 rerun = ApTakeMissionRerun(stageID);
+#endif
+
   gStageRun.id = stageID;
   gStageRun.checkpoint = checkPoint;
   gStageRun.checkpointResultScreen = 0xFF;
@@ -102,6 +107,14 @@ void LoadStageRun(u8 stageID, u8 checkPoint) {
   } else {
     SET_FLAG(gGameState.save.story.gameflags, IS_FREERUN);
   }
+#if AP
+  /*
+    "RETRY MISSION" from the Cmd room
+  */
+  if (rerun) {
+    CLEAR_FLAG(gGameState.save.story.gameflags, IS_FREERUN);
+  }
+#endif
 
   LoadStoryData(stageID, &gGameState.save.story);
   clearStageDisk();
@@ -111,7 +124,9 @@ void LoadStageRun(u8 stageID, u8 checkPoint) {
   gGameState.save.savedRank = (gScore.total)->rank;
   StoreStoryData(&gGameState.save.savedStory);
 
+#if !AP
   MemCopy32(gGameState.save.disk, gGameState.save.savedDisk, 48);
+#endif
   MemCopy32(gGameState.save.elf, gGameState.save.savedElf, 76);
 }
 
@@ -128,7 +143,11 @@ void ClearStageRun(Renderer* r) {
   Camera_Reset(&gStageRun.vm.camera, &gDefaultCameraTemplate, r);
   ResetLandscape(gStageID32s[id], &gStageRun.vm.camera.viewport);
 
+#if AP
+  if (ApInMissionRerun() || !(gMissionDones & (1 << gStageMissionBitTable[id]))) {
+#else
   if (!(gMissionDones & (1 << gStageMissionBitTable[id]))) {
+#endif
     InitSpawnManager(gStageID8s[id], FALSE);
   } else {
     InitSpawnManager(gStageID8s[id], TRUE);
@@ -307,6 +326,14 @@ static bool32 CheckMissionFail(struct StageRun* p) {
   const GameCommand* c;
   struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
   if ((z != NULL) && ((((z->body).status & BODY_STATUS_DEAD) || ((z->body).hp == 0)))) {
+#if AP
+    /*
+      Catches deaths that reach hp == 0.
+    */
+    if (!(gStageRun.missionStatus & MISSION_PLAYER_DEAD)) {
+      ApOnZeroDied();
+    }
+#endif
     gStageRun.missionStatus &= ~MISSION_STAY;
     gStageRun.missionStatus |= MISSION_PLAYER_DEAD;
   }

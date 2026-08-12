@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "config.h"
 #include "cyberelf.h"
@@ -36,6 +37,8 @@ void ClearZeroStatus(struct ZeroStatus* p) {
   p->maxHP = 64;
   p->dying = FALSE;
   p->menuZeroColor = MZC_NORMAL;
+  // AP
+  ApApplyStartingWeapons(p);
 }
 
 void ClearZeroStatusHard(struct ZeroStatus* p) {
@@ -63,6 +66,8 @@ void ClearZeroStatusHard(struct ZeroStatus* p) {
   p->maxHP = 64;
   p->dying = FALSE;
   p->menuZeroColor = MZC_HARD;
+  // Hard mode
+  ApApplyStartingWeapons(p);
 }
 
 void ClearZeroStatusUltimate(struct ZeroStatus* p) {
@@ -100,7 +105,12 @@ void FUN_080321d4(struct ZeroStatus* p) {
   p->satelites[0] = ELF_NONE, p->satelites[1] = ELF_NONE;
   p->head = HEAD_CHIP_NONE, p->body = BODY_CHIP_NONE, p->foot = FOOT_CHIP_NONE;
   p->exSkill = 0;
+#if !AP
+  /*
+    This fixes new game plus replacing items
+  */
   p->unlockedWeapon = ((1 << WEAPON_BUSTER) | (1 << WEAPON_SABER));
+#endif
   (p->keyMap).unk_a = 0;
   p->charge[0] = 0, p->charge[1] = 0;
   for (i = 0; i < 4; i++) {
@@ -111,6 +121,7 @@ void FUN_080321d4(struct ZeroStatus* p) {
   p->fusions = 0;
   p->maxHP = 64;
   p->dying = FALSE;
+  ApFixEquippedWeapons(p);
 }
 
 /**

@@ -55,16 +55,22 @@ struct ElfMenuState {
 // ResultState とメモリ共有
 struct MenuState {
   u8 unk_00[4];
-  u16 frame;
+  u8 frame;
+  u8 closingCursor;  // 0x05, カーソルWidgetに終了を指示してから実際に消えるまで立つフラグ
   u16 unk_06;
   u16 unk_08;
   u8 unk_0a;
   u8 unk_0b;
-  u32 unk_0c;
-  u32 rank;
+  u8 unk_0c[2];
+  u8 subtankCount;  // 0x0E, how many sub-tank icons were created
+  u8 enabledItems;  // 0x0F, bitfield indicating whether each item in MainMenu is selectable.
+  u8 portraitColor;  // 0x10, colour of the status portrait: ZeroStatus.body, or 6/7 when menuZeroColor is 1/2
+  u8 plttAnimID;  // 0x11, palette animation for the status portrait, swapped by MainMenuLoop_Update
+  u16 pad_12;
   struct Widget* mc_14;  // e.g. 0203d938
   struct Widget* mc_18;  // e.g. 0203d830
-  u8 unk_1c[8];
+  struct SquareCursorWidget* cursor;  // 0x1C, 武器/パーツ選択中に出る四角いカーソル
+  u32 unk_20;
 
   struct ExSkillMenuState exskill;
   struct KeyConfigMenuState kc;  // 0x2c..
@@ -84,6 +90,7 @@ struct MenuState {
 };
 
 bool8 TrySlideMenu(struct GameState* g);
+void PrintNumber(u16 n, u8 x, u8 y);
 
 struct BgMapHeader;
 void CopyBgMap(u16* dst, struct BgMapHeader* src, u8 x, u8 y);

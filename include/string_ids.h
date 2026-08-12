@@ -14,17 +14,27 @@
 #define STR_RANK 40                    // "Lv.F".."Lv.S"; STRING(STR_RANK + rank)
 #define STR_CYBERELF_NAME 100          // cyber-elf names; STRING(STR_CYBERELF_NAME + elfId)
 #define STR_CYBERELF_NONE 174          // "None", shown for an empty cyber-elf slot
+#define STR_MAINMENU_DESC 300          // main-menu item descriptions
+#define STR_MAINMENU_ESCAPE_CONFIRM 307  // escape prompt shown while the Escape item is focused (free run only)
+#define STR_MAINMENU_ESCAPE_DENIED 308   // shown instead of the above during a mission, when escaping is not allowed
+#define STR_MAINMENU_WEAPON 309        // main/sub weapon names; STRING(STR_MAINMENU_WEAPON + MenuState.unk_00[1])
+#define STR_MAINMENU_SUBTANK 313       // sub-tank label, printed with the tank's HP number beside it
+#define STR_MAINMENU_HEAD 314          // head-chip descriptions
+#define STR_MAINMENU_BODY 318          // body-chip descriptions
+#define STR_MAINMENU_FOOT 324          // foot-chip descriptions
 #define STR_EXSKILL_NAME 450           // EX-skill names; STRING(STR_EXSKILL_NAME + selected)
 #define STR_EXSKILL_DESC_NONE 462      // "None learned" description, shown when no EX-skill is equipped
 #define STR_EXSKILL_DESC 463           // EX-skill descriptions; STRING(STR_EXSKILL_DESC + selected)
 #define STR_EXSKILL_DESC_NONE2 475     // "None learned" description (second/right pane, slot 13)
+#define STR_RESULT_ANALYZE_HINT 476    // "Press A BUTTON to analyze.", results-screen disk picker
+#define STR_RESULT_END_HINT 477        // "Press B BUTTON to end.", the same line under AP where nothing analyzes
 #define STR_GAMEOVER_CONTINUE_SEL 520  // game-over "Continue", highlighted variant (drawn when this item is selected)
 #define STR_GAMEOVER_CONTINUE 521      // game-over "Continue", normal variant
 #define STR_GAMEOVER_RESTART_SEL 522   // game-over "Restart from save", highlighted
 #define STR_GAMEOVER_RESTART 523       // game-over "Restart from save", normal
 #define STR_GAMEOVER_QUIT_SEL 524      // game-over "Quit the game", highlighted
 #define STR_GAMEOVER_QUIT 525          // game-over "Quit the game", normal
-#define STR_DISK_092 892               // disk "092" — the Secret Disk Cerveau gives you (inserted as a text variable)
+#define STR_DISK_092 892               // disk "092", the Secret Disk Cerveau gives you (inserted as a text variable)
 #define STR_MINIGAME_RULES 1088        // "RULES" header on the minigame rules screen
 
 #endif  // GUARD_RMZ3_STRING_IDS_H

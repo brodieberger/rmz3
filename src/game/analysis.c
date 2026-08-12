@@ -1,5 +1,6 @@
 #include "disk.h"
 #include "game.h"
+#include "ap.h"
 #include "global.h"
 #include "palette_animation.h"
 #include "text.h"
@@ -22,8 +23,11 @@ static void DiskLoop_Exit(struct GameState* g);
 static void sd_analysis_080f8408(struct GameState* g);
 
 void MainLoop_Disk(struct GameState* g) {
+// Switch to AP inventory and Game Inventory upon entering secret disk analysis screen.
+  ApUseApDiskInventory(g);
   sDiskLoops[g->mode[1]](g);
   sd_analysis_080f8408(g);
+  ApUseGameDiskInventory(g);
   return;
 }
 
@@ -2033,6 +2037,14 @@ void getDiskInStageRun(u8 disk_id) {
   UNLOCK_DISK(flagbits, disk_id);
   gStageDiskManager.stageDiskIDs[gStageDiskManager.stageDiskCount] = disk_id;
   gStageDiskManager.stageDiskCount++;
+
+  /*
+    Almost every secret disk in the game is awarded through here. In-level pickups
+    (pickup/disk.c) and Cerveau (main_overworld/cerveau_talk.c).
+
+	The mob chats (other NPCS) are done in some other wack way that I haven't looked at yet.
+  */
+  ApMarkLocationChecked((u16)disk_id + 1);
 }
 
 bool8 allSecretDiskFound(void) {
