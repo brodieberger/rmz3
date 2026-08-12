@@ -53,6 +53,16 @@ NAKED static void ChargeEffect_Update(struct VFX* vfx) {
 	push {r7}\n\
 	adds r4, r0, #0\n\
 	ldr r6, [r4, #0x28]\n\
+.if REGION_US\n\
+	adds r0, r6, #0\n\
+	adds r0, #0x8c\n\
+	ldr r0, [r0]\n\
+	movs r1, #0x80\n\
+	lsls r1, r1, #2\n\
+	ands r0, r1\n\
+	cmp r0, #0\n\
+	bne _080B33D8\n\
+.endif\n\
 	adds r0, r6, #0\n\
 	adds r0, #0xa4\n\
 	movs r1, #0\n\

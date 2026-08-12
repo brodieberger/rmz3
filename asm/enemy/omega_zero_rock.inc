@@ -52,8 +52,8 @@ OmegaZeroRock_Init: @ 0x0808B620
 	bx r0
 	.align 2, 0
 _0808B680: .4byte gEnemyFnTable
-_0808B684: .4byte 0x08368D78
-_0808B688: .4byte 0x08368D48
+_0808B684: .4byte sInitModes
+_0808B688: .4byte sCollisions
 _0808B68C: .4byte onCollision
 
 	thumb_func_start OmegaZeroRock_Update
@@ -83,8 +83,8 @@ _0808B6BE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808B6C4: .4byte 0x08368D40
-_0808B6C8: .4byte 0x08368D44
+_0808B6C4: .4byte sUpdates1
+_0808B6C8: .4byte sUpdates2
 
 	thumb_func_start OmegaZeroRock_Die
 OmegaZeroRock_Die: @ 0x0808B6CC
@@ -111,7 +111,7 @@ OmegaZeroRock_Die: @ 0x0808B6CC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808B6FC: .4byte 0x08368D7A
+_0808B6FC: .4byte sMotions
 _0808B700: .4byte gEnemyFnTable
 
 	thumb_func_start nop_0808b704

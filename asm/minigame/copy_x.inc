@@ -102,8 +102,8 @@ _080FA5F6:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080FA624: .4byte 0x0810E25C
-_080FA628: .4byte 0x0810E264
+_080FA624: .4byte Unicode_SCORE_0810e25c
+_080FA628: .4byte Unicode_HI_SCORE_0810e264
 
 	thumb_func_start copyx_minigame_080fa62c
 copyx_minigame_080fa62c: @ 0x080FA62C
@@ -254,8 +254,8 @@ _080FA752:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080FA75C: .4byte 0x0810E25C
-_080FA760: .4byte 0x0810E264
+_080FA75C: .4byte Unicode_SCORE_0810e25c
+_080FA760: .4byte Unicode_HI_SCORE_0810e264
 
 	thumb_func_start copyx_minigame_080fa764
 copyx_minigame_080fa764: @ 0x080FA764
@@ -374,6 +374,6 @@ _080FA84C:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080FA854: .4byte 0x0810E25C
-_080FA858: .4byte 0x0810E264
+_080FA854: .4byte Unicode_SCORE_0810e25c
+_080FA858: .4byte Unicode_HI_SCORE_0810e264
 

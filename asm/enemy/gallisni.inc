@@ -253,8 +253,8 @@ _0808717A:
 	movs r0, #1
 	b _080871AC
 	.align 2, 0
-_08087180: .4byte 0x0836868C
-_08087184: .4byte 0x083686AC
+_08087180: .4byte sUpdates1
+_08087184: .4byte sUpdates2
 _08087188:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -320,7 +320,7 @@ _080871F4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080871FC: .4byte 0x08368750
+_080871FC: .4byte sElementCoord
 
 	thumb_func_start Gallisni_Init
 Gallisni_Init: @ 0x08087200
@@ -385,8 +385,8 @@ _08087270:
 	bx r0
 	.align 2, 0
 _0808727C: .4byte gEnemyFnTable
-_08087280: .4byte 0x08368758
-_08087284: .4byte 0x083686D8
+_08087280: .4byte sInitModes
+_08087284: .4byte sCollisions
 _08087288: .4byte FUN_08086ff0
 
 	thumb_func_start Gallisni_Update
@@ -493,8 +493,8 @@ _08087356:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808735C: .4byte 0x0836868C
-_08087360: .4byte 0x083686AC
+_0808735C: .4byte sUpdates1
+_08087360: .4byte sUpdates2
 
 	thumb_func_start Gallisni_Die
 Gallisni_Die: @ 0x08087364
@@ -508,7 +508,7 @@ Gallisni_Die: @ 0x08087364
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08087378: .4byte 0x083686CC
+_08087378: .4byte sDeads
 
 	thumb_func_start nop_0808737c
 nop_0808737c: @ 0x0808737C
@@ -579,7 +579,7 @@ _080873EC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080873F4: .4byte 0x08368708
+_080873F4: .4byte gGallisniRoutine+0x90
 _080873F8: .4byte 0x00020001
 
 	thumb_func_start FUN_080873fc
@@ -607,7 +607,7 @@ _08087424:
 	bx r0
 	.align 2, 0
 _0808742C: .4byte 0x00006703
-_08087430: .4byte 0x08368720
+_08087430: .4byte gGallisniRoutine+0xa8
 
 	thumb_func_start FUN_08087434
 FUN_08087434: @ 0x08087434
@@ -666,9 +666,9 @@ _0808749A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080874A0: .4byte 0x083686D8
+_080874A0: .4byte sCollisions
 _080874A4: .4byte 0x00006701
-_080874A8: .4byte 0x083686F0
+_080874A8: .4byte gGallisniRoutine+0x78
 
 	thumb_func_start FUN_080874ac
 FUN_080874ac: @ 0x080874AC
@@ -725,7 +725,7 @@ _08087508:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08087510: .4byte 0x083686D8
+_08087510: .4byte sCollisions
 _08087514: .4byte 0x00006702
 
 	thumb_func_start FUN_08087518
@@ -757,7 +757,7 @@ _08087528:
 	orrs r0, r1
 	b _08087556
 	.align 2, 0
-_0808754C: .4byte 0x08368708
+_0808754C: .4byte gGallisniRoutine+0x90
 _08087550:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1308,7 +1308,7 @@ _08087950:
 	bx r0
 	.align 2, 0
 _08087974: .4byte 0xFFFFF000
-_08087978: .4byte 0x0836875A
+_08087978: .4byte sMotions
 _0808797C: .4byte gScore
 _08087980: .4byte 0x0000270E
 _08087984: .4byte gEnemyFnTable
@@ -1325,7 +1325,11 @@ FUN_08087988: @ 0x08087988
 	beq _08087A58
 	b _08087A9E
 _0808799A:
+.if REGION_US && !HIT_BLOOD
+	movs r2, #0
+.else
 	movs r3, #0
+.endif
 	ldr r0, _080879BC @ =pZero2
 	ldr r0, [r0]
 	ldr r0, [r0, #0x54]
@@ -1333,10 +1337,18 @@ _0808799A:
 	subs r0, r0, r1
 	cmp r0, #0
 	ble _080879AC
+.if REGION_US && !HIT_BLOOD
+	movs r2, #1
+.else
 	movs r3, #1
+.endif
 _080879AC:
+.if REGION_US && !HIT_BLOOD
+	adds r4, r2, #0
+.else
 	adds r4, r3, #0
 	adds r2, r4, #0
+.endif
 	cmp r4, #0
 	beq _080879C0
 	ldrb r1, [r6, #0xa]
@@ -1383,6 +1395,7 @@ _080879C6:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r6, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r6, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r6, #0x58]
@@ -1393,6 +1406,7 @@ _080879C6:
 	add r1, sp, #8
 	adds r3, r4, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r4, #1
 	adds r0, r0, r4
@@ -1462,7 +1476,7 @@ _08087A9E:
 	bx r0
 	.align 2, 0
 _08087AA8: .4byte 0x00006707
-_08087AAC: .4byte 0x08368760
+_08087AAC: .4byte gGallisniRoutine+0xe8
 
 	thumb_func_start FUN_08087ab0
 FUN_08087ab0: @ 0x08087AB0
@@ -1530,7 +1544,7 @@ _08087AC0:
 	str r1, [r5, #0x60]
 	b _08087B50
 	.align 2, 0
-_08087B38: .4byte 0x08368738
+_08087B38: .4byte gGallisniRoutine+0xc0
 _08087B3C: .4byte 0x00006703
 _08087B40: .4byte pZero2
 _08087B44: .4byte 0xFFFFE800

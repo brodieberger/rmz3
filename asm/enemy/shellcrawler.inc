@@ -207,7 +207,7 @@ Shellcrawler_Init: @ 0x08095EBC
 	b _0809604E
 	.align 2, 0
 _08095F04: .4byte gEnemyFnTable
-_08095F08: .4byte 0x0836A11C
+_08095F08: .4byte gShellcrawlerRoutine+0xa4
 _08095F0C: .4byte FUN_08096348
 _08095F10:
 	movs r0, #0
@@ -252,7 +252,7 @@ _08095F10:
 	.align 2, 0
 _08095F60: .4byte gSystemSavedata
 _08095F64: .4byte gCurStory
-_08095F68: .4byte 0x0836A08C
+_08095F68: .4byte sCollisions
 _08095F6C:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -299,7 +299,7 @@ _08095FBA:
 	orrs r0, r1
 	b _08095FDE
 	.align 2, 0
-_08095FC8: .4byte 0x0836A08C
+_08095FC8: .4byte sCollisions
 _08095FCC: .4byte FUN_08096348
 _08095FD0: .4byte 0x0000DB01
 _08095FD4: .4byte pZero2
@@ -509,7 +509,7 @@ _08096124:
 	bl SetDDP
 	b _08096172
 	.align 2, 0
-_08096164: .4byte 0x0836A0EC
+_08096164: .4byte gShellcrawlerRoutine+0x74
 _08096168:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -587,10 +587,10 @@ _080961D6:
 	bl _call_via_r1
 	b _080962CA
 	.align 2, 0
-_080961F8: .4byte 0x0836A1AC
+_080961F8: .4byte gShellcrawlerRoutine+0x134
 _080961FC: .4byte 0x00020001
-_08096200: .4byte 0x0836A20C
-_08096204: .4byte 0x0836A238
+_08096200: .4byte sUpdates1
+_08096204: .4byte sUpdates2
 _08096208:
 	ldr r0, [r5]
 	bl isKilled
@@ -605,7 +605,7 @@ _08096208:
 	bl SetDDP
 	b _08096232
 	.align 2, 0
-_08096224: .4byte 0x0836A08C
+_08096224: .4byte sCollisions
 _08096228:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -618,7 +618,7 @@ _08096232:
 	str r0, [r4, #0x60]
 	b _080962B4
 	.align 2, 0
-_0809623C: .4byte 0x0836A0BC
+_0809623C: .4byte gShellcrawlerRoutine+0x44
 _08096240:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -750,7 +750,7 @@ _08096340:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08096344: .4byte 0x0836A264
+_08096344: .4byte sDeads
 
 	thumb_func_start FUN_08096348
 FUN_08096348: @ 0x08096348
@@ -850,7 +850,7 @@ _080963D2:
 	.align 2, 0
 _08096404: .4byte gEnemyFnTable
 _08096408: .4byte 0x0000DB08
-_0809640C: .4byte 0x0836A0BC
+_0809640C: .4byte gShellcrawlerRoutine+0x44
 _08096410:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -872,7 +872,7 @@ _0809642E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08096434: .4byte 0x0836A1AC
+_08096434: .4byte gShellcrawlerRoutine+0x134
 
 	thumb_func_start FUN_08096438
 FUN_08096438: @ 0x08096438
@@ -1059,13 +1059,17 @@ FUN_08096570:
 	.byte 0x10, 0xB5, 0x04, 0x1C, 0xA0, 0x7B, 0x00, 0x28, 0x02, 0xD0, 0x01, 0x28, 0x1F, 0xD0, 0x40, 0xE0
 	.byte 0x20, 0x66, 0x20, 0x7C, 0x00, 0x28, 0x09, 0xD1, 0xE0, 0x6D, 0x00, 0x28, 0x02, 0xDA, 0xDB, 0x21
 	.byte 0x09, 0x02, 0x07, 0xE0, 0x00, 0x49, 0x05, 0xE0, 0x02, 0xDB, 0x00, 0x00, 0xE0, 0x6D, 0x00, 0x28
-	.byte 0x06, 0xDA, 0x02, 0x49, 0x20, 0x1C, 0x80, 0xF7, 0xDF, 0xFF, 0x05, 0xE0, 0x0F, 0xDB, 0x00, 0x00
-	.byte 0x15, 0x49, 0x20, 0x1C, 0x80, 0xF7, 0xD8, 0xFF, 0xA0, 0x7B, 0x01, 0x30, 0xA0, 0x73, 0xA0, 0x6D
-	.byte 0x21, 0x6E, 0x40, 0x18, 0xA0, 0x65, 0x40, 0x31, 0x21, 0x66, 0xE0, 0x20, 0xC0, 0x00, 0x81, 0x42
-	.byte 0x00, 0xDD, 0x20, 0x66, 0x60, 0x6D, 0xE1, 0x6D, 0x40, 0x18, 0x60, 0x65, 0x20, 0x1C, 0xFF, 0xF7
-	.byte 0x23, 0xFC, 0x20, 0x1C, 0xFF, 0xF7, 0xF0, 0xFB, 0x00, 0x06, 0x00, 0x28, 0x06, 0xD0, 0x20, 0x7C
-	.byte 0x00, 0x28, 0x00, 0xD0, 0x06, 0x20, 0x60, 0x73, 0x01, 0x20, 0xA0, 0x73, 0x20, 0x1C, 0x81, 0xF7
-	.byte 0x2D, 0xF8, 0x10, 0xBC, 0x01, 0xBC, 0x00, 0x47, 0x05, 0xDB, 0x00, 0x00
+	.byte 0x06, 0xDA, 0x02, 0x49, 0x20, 0x1C
+	bl SetMotion
+	.byte 0x05, 0xE0, 0x0F, 0xDB, 0x00, 0x00, 0x15, 0x49, 0x20, 0x1C
+	bl SetMotion
+	.byte 0xA0, 0x7B, 0x01, 0x30, 0xA0, 0x73, 0xA0, 0x6D, 0x21, 0x6E, 0x40, 0x18, 0xA0, 0x65, 0x40, 0x31
+	.byte 0x21, 0x66, 0xE0, 0x20, 0xC0, 0x00, 0x81, 0x42, 0x00, 0xDD, 0x20, 0x66, 0x60, 0x6D, 0xE1, 0x6D
+	.byte 0x40, 0x18, 0x60, 0x65, 0x20, 0x1C, 0xFF, 0xF7, 0x23, 0xFC, 0x20, 0x1C, 0xFF, 0xF7, 0xF0, 0xFB
+	.byte 0x00, 0x06, 0x00, 0x28, 0x06, 0xD0, 0x20, 0x7C, 0x00, 0x28, 0x00, 0xD0, 0x06, 0x20, 0x60, 0x73
+	.byte 0x01, 0x20, 0xA0, 0x73, 0x20, 0x1C
+	bl UpdateEntityAnim
+	.byte 0x10, 0xBC, 0x01, 0xBC, 0x00, 0x47, 0x05, 0xDB, 0x00, 0x00
 
 	thumb_func_start FUN_0809660c
 FUN_0809660c: @ 0x0809660C
@@ -1186,7 +1190,7 @@ _080966E2:
 	.align 2, 0
 _080966E8: .4byte gEnemyHeaderPtr
 _080966EC: .4byte gEnemyFnTable
-_080966F0: .4byte 0x0836A14C
+_080966F0: .4byte gShellcrawlerRoutine+0xd4
 _080966F4: .4byte 0x0000DB0E
 _080966F8: .4byte 0x00000107
 
@@ -1261,7 +1265,7 @@ _0809677A:
 	bx r0
 	.align 2, 0
 _08096780: .4byte 0x0000DB10
-_08096784: .4byte 0x0836A08C
+_08096784: .4byte sCollisions
 _08096788: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0809678c
@@ -1776,7 +1780,7 @@ _08096B4C:
 	bl SetDDP
 	b _08096B72
 	.align 2, 0
-_08096B64: .4byte 0x0836A08C
+_08096B64: .4byte sCollisions
 _08096B68:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -1792,7 +1796,7 @@ _08096B7A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08096B80: .4byte 0x0836A1DC
+_08096B80: .4byte gShellcrawlerRoutine+0x164
 
 	thumb_func_start FUN_08096b84
 FUN_08096b84: @ 0x08096B84
@@ -1877,6 +1881,178 @@ _08096C24: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08096c28
 FUN_08096c28: @ 0x08096C28
+.if REGION_US
+	push	{r4, r5, r6, lr}
+	sub	sp, #8
+	adds	r4, r0, #0
+	ldrb	r0, [r4, #14]
+	cmp	r0, #1
+	beq _US_080967A0
+	cmp	r0, #1
+	bgt _US_08096726
+	cmp	r0, #0
+	beq _US_0809672E
+	b _US_08096852
+_US_08096726:
+	cmp	r0, #2
+	bne _US_0809672C
+	b _US_0809682C
+_US_0809672C:
+	b _US_08096852
+_US_0809672E:
+	adds	r1, r4, #0
+	adds	r1, #188
+	ldrb	r0, [r1, #0]
+	adds	r6, r4, #0
+	adds	r6, #180
+	cmp	r0, #0
+	bne _US_08096750
+	movs	r0, #1
+	strb	r0, [r1, #0]
+	movs	r1, #0
+	ldr	r0, [r6, #0]
+	cmp	r0, #0
+	ble _US_0809674A
+	movs	r1, #1
+_US_0809674A:
+	adds	r0, r4, #0
+	bl FUN_080c6934
+_US_08096750:
+	ldr	r0, [r4, #84]
+	str	r0, [sp, #0]
+	ldr	r0, [r4, #88]
+	ldr	r1, _US_0809681C
+	adds	r0, r0, r1
+	str	r0, [sp, #4]
+	movs	r5, #0
+	ldr	r0, [r6, #0]
+	cmp	r0, #0
+	ble _US_08096766
+	movs	r5, #1
+_US_08096766:
+	ldr	r1, _US_08096820
+	adds	r0, r4, #0
+	bl SetMotion
+	lsls	r1, r5, #10
+	movs	r0, #128
+	lsls	r0, r0, #2
+	subs	r0, r0, r1
+	str	r0, [r4, #92]
+	movs	r1, #0
+	movs	r0, #20
+	strb	r0, [r4, #18]
+	adds	r0, r4, #0
+	adds	r0, #140
+	str	r1, [r0, #0]
+	adds	r0, #4
+	str	r1, [r0, #0]
+	adds	r0, #4
+	strb	r1, [r0, #0]
+	ldrb	r1, [r4, #10]
+	movs	r0, #251
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	adds	r0, r4, #0
+	bl FUN_080c6880
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+_US_080967A0:
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #92]
+	adds	r0, r0, r1
+	str	r0, [r4, #84]
+	lsls	r0, r1, #4
+	subs	r0, r0, r1
+	lsls	r0, r0, #4
+	cmp	r0, #0
+	bge _US_080967B4
+	adds	r0, #255
+_US_080967B4:
+	asrs	r0, r0, #8
+	str	r0, [r4, #92]
+	adds	r0, r4, #0
+	bl FUN_08095e28
+	ldrb	r0, [r4, #18]
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	bne _US_08096814
+	ldrb	r1, [r4, #10]
+	movs	r0, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldr	r0, [r4, #84]
+	str	r0, [sp, #0]
+	ldr	r0, [r4, #88]
+	ldr	r1, _US_0809681C
+	adds	r0, r0, r1
+	str	r0, [sp, #4]
+	movs	r0, #1
+	mov	r1, sp
+	bl CreateSmoke
+	movs	r0, #42
+	bl PlaySound
+	adds	r5, r4, #0
+	adds	r5, #84
+	movs	r0, #2
+	adds	r1, r5, #0
+	bl TryDropItem
+	ldr	r2, _US_08096824
+	ldrh	r1, [r2, #12]
+	ldr	r0, _US_08096828
+	cmp	r1, r0
+	bhi _US_08096806
+	adds	r0, r1, #1
+	strh	r0, [r2, #12]
+_US_08096806:
+	adds	r0, r4, #0
+	adds	r1, r5, #0
+	bl TryDropZakoDisk
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+_US_08096814:
+	adds	r0, r4, #0
+	bl UpdateEntityAnim
+	b _US_08096852
+	.align 2, 0
+_US_0809681C: .4byte 0xFFFFF800
+_US_08096820: .4byte 0x0000DB09
+_US_08096824: .4byte gScore
+_US_08096828: .4byte 0x0000270E
+_US_0809682C:
+	ldrb	r1, [r4, #10]
+	movs	r0, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldrb	r0, [r4, #18]
+_US_08096836:
+	cmp	r0, #0
+	beq _US_08096840
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	b _US_08096852
+_US_08096840:
+	ldr	r1, _US_0809685C
+	ldrb	r0, [r4, #9]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	movs	r1, #4
+	str	r1, [r4, #12]
+	ldr	r0, [r0, #0]
+	ldr	r0, [r0, #16]
+	str	r0, [r4, #20]
+_US_08096852:
+	add	sp, #8
+	pop	{r4, r5, r6}
+	pop	{r0}
+	bx	r0
+	movs	r0, r0
+	.align 2, 0
+_US_0809685C: .4byte gEnemyFnTable
+.else
 	push {r4, r5, r6, lr}
 	sub sp, #8
 	adds r5, r0, #0
@@ -2050,9 +2226,161 @@ _08096D76:
 	bx r0
 	.align 2, 0
 _08096D80: .4byte gEnemyFnTable
+.endif
 
 	thumb_func_start FUN_08096d84
 FUN_08096d84: @ 0x08096D84
+.if REGION_US
+	push	{r4, r5, lr}
+	sub	sp, #8
+	adds	r4, r0, #0
+	ldrb	r1, [r4, #14]
+	cmp	r1, #1
+	beq _US_080968BC
+	cmp	r1, #1
+	bgt _US_08096876
+	cmp	r1, #0
+	beq _US_0809687C
+	b _US_0809697A
+_US_08096876:
+	cmp	r1, #2
+	beq _US_08096954
+	b _US_0809697A
+_US_0809687C:
+	adds	r0, r4, #0
+	adds	r0, #140
+	str	r1, [r0, #0]
+	adds	r0, #4
+	str	r1, [r0, #0]
+	adds	r0, #4
+	strb	r1, [r0, #0]
+	ldrb	r1, [r4, #10]
+	movs	r0, #251
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	movs	r2, #0
+	adds	r0, r4, #0
+	adds	r0, #180
+	ldr	r0, [r0, #0]
+	cmp	r0, #0
+	ble _US_080968A0
+	movs	r2, #1
+_US_080968A0:
+	lsls	r1, r2, #2
+	adds	r1, r1, r2
+	lsls	r1, r1, #8
+	movs	r0, #160
+	lsls	r0, r0, #2
+	subs	r0, r0, r1
+	str	r0, [r4, #92]
+	ldr	r0, _US_08096948
+	str	r0, [r4, #96]
+	movs	r0, #20
+	strb	r0, [r4, #18]
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+_US_080968BC:
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #92]
+	adds	r0, r0, r1
+	str	r0, [r4, #84]
+	ldr	r0, [r4, #88]
+	ldr	r1, [r4, #96]
+	adds	r0, r0, r1
+	str	r0, [r4, #88]
+	adds	r1, #64
+	str	r1, [r4, #96]
+	movs	r0, #224
+	lsls	r0, r0, #3
+	cmp	r1, r0
+	ble _US_080968DA
+	str	r0, [r4, #96]
+_US_080968DA:
+	adds	r0, r4, #0
+	bl UpdateEntityAnim
+	ldrb	r0, [r4, #18]
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	beq _US_080968FA
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #88]
+	bl FUN_080098a4
+	lsls	r0, r0, #16
+	cmp	r0, #0
+	beq _US_0809697A
+_US_080968FA:
+	ldr	r0, [r4, #84]
+	str	r0, [sp, #0]
+	ldr	r0, [r4, #88]
+	movs	r1, #128
+	lsls	r1, r1, #1
+	adds	r0, r0, r1
+	str	r0, [sp, #4]
+	movs	r0, #1
+	mov	r1, sp
+	bl CreateSmoke
+	adds	r0, r4, #0
+	mov	r1, sp
+	bl FUN_080c68cc
+	movs	r0, #42
+	bl PlaySound
+	adds	r5, r4, #0
+	adds	r5, #84
+	movs	r0, #2
+	adds	r1, r5, #0
+	bl TryDropItem
+	ldr	r2, _US_0809694C
+	ldrh	r1, [r2, #12]
+	ldr	r0, _US_08096950
+	cmp	r1, r0
+	bhi _US_08096938
+	adds	r0, r1, #1
+	strh	r0, [r2, #12]
+_US_08096938:
+	adds	r0, r4, #0
+	adds	r1, r5, #0
+	bl TryDropZakoDisk
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+	b _US_0809697A
+	.align 2, 0
+_US_08096948: .4byte 0xFFFFFB80
+_US_0809694C: .4byte gScore
+_US_08096950: .4byte 0x0000270E
+_US_08096954:
+	ldrb	r1, [r4, #10]
+	movs	r0, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldrb	r0, [r4, #18]
+	cmp	r0, #0
+	beq _US_08096968
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	b _US_0809697A
+_US_08096968:
+	ldr	r1, _US_08096984
+	ldrb	r0, [r4, #9]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	movs	r1, #4
+	str	r1, [r4, #12]
+	ldr	r0, [r0, #0]
+	ldr	r0, [r0, #16]
+	str	r0, [r4, #20]
+_US_0809697A:
+	add	sp, #8
+	pop	{r4, r5}
+	pop	{r0}
+	bx	r0
+	movs	r0, r0
+	.align 2, 0
+_US_08096984: .4byte gEnemyFnTable
+.else
 	push {r4, r5, lr}
 	sub sp, #8
 	adds r4, r0, #0
@@ -2201,9 +2529,140 @@ _08096E9E:
 	bx r0
 	.align 2, 0
 _08096EA8: .4byte gEnemyFnTable
+.endif
 
 	thumb_func_start FUN_08096eac
 FUN_08096eac: @ 0x08096EAC
+.if REGION_US
+	push	{r4, r5, r6, lr}
+	adds	r5, r0, #0
+	ldrb	r0, [r5, #14]
+	cmp	r0, #0
+	beq _US_08096998
+	cmp	r0, #1
+	beq _US_08096A46
+	b _US_08096A86
+_US_08096998:
+	adds	r0, r5, #0
+	adds	r0, #116
+	ldr	r1, _US_080969B4
+	bl SetDDP
+	ldrb	r0, [r5, #16]
+	cmp	r0, #0
+	bne _US_080969BC
+	ldr	r1, _US_080969B8
+	adds	r0, r5, #0
+	bl SetMotion
+	b _US_080969C4
+	movs	r0, r0
+	.align 2, 0
+_US_080969B4: .4byte sCollisions+(10*0x18)
+_US_080969B8: .4byte 0x0000DB04
+_US_080969BC:
+	ldr	r1, _US_08096A2C
+	adds	r0, r5, #0
+	bl SetMotion
+_US_080969C4:
+	adds	r0, r5, #0
+	bl UpdateEntityAnim
+	ldr	r0, _US_08096A30
+	ldr	r2, [r0, #0]
+	ldr	r1, [r5, #84]
+	ldr	r0, [r2, #84]
+	subs	r1, r1, r0
+	str	r1, [r5, #92]
+	ldr	r0, [r5, #88]
+	ldr	r3, _US_08096A34
+	adds	r0, r0, r3
+	ldr	r2, [r2, #88]
+	subs	r0, r0, r2
+	str	r0, [r5, #96]
+	asrs	r1, r1, #8
+	adds	r6, r1, #0
+	muls	r6, r1
+	asrs	r0, r0, #8
+	adds	r1, r0, #0
+	muls	r1, r0
+	adds	r0, r1, #0
+	adds	r6, r6, r0
+	adds	r0, r6, #0
+	bl Sqrt
+	lsls	r0, r0, #16
+	lsrs	r6, r0, #8
+	cmp	r6, #0
+	beq _US_08096A38
+	ldr	r0, [r5, #92]
+	lsls	r0, r0, #8
+	adds	r1, r6, #0
+	bl __divsi3
+	adds	r4, r0, #0
+	str	r4, [r5, #92]
+	ldr	r0, [r5, #96]
+	lsls	r0, r0, #8
+	adds	r1, r6, #0
+	bl __divsi3
+	lsls	r1, r4, #1
+	adds	r1, r1, r4
+	lsls	r1, r1, #1
+	str	r1, [r5, #92]
+	lsls	r1, r0, #1
+	adds	r1, r1, r0
+	lsls	r1, r1, #1
+	str	r1, [r5, #96]
+	b _US_08096A40
+	movs	r0, r0
+	.align 2, 0
+_US_08096A2C: .4byte 0x0000DB0F
+_US_08096A30: .4byte pZero2
+_US_08096A34: .4byte 0xFFFFE800
+_US_08096A38:
+	movs	r0, #192
+	lsls	r0, r0, #3
+	str	r0, [r5, #92]
+	str	r6, [r5, #96]
+_US_08096A40:
+	ldrb	r0, [r5, #14]
+	adds	r0, #1
+	strb	r0, [r5, #14]
+_US_08096A46:
+	ldr	r0, [r5, #84]
+	ldr	r1, [r5, #92]
+	adds	r0, r0, r1
+	str	r0, [r5, #84]
+_US_08096A4E:
+	ldr	r0, [r5, #96]
+	adds	r0, #64
+	str	r0, [r5, #96]
+	movs	r1, #224
+	lsls	r1, r1, #3
+	cmp	r0, r1
+	ble _US_08096A5E
+	str	r1, [r5, #96]
+_US_08096A5E:
+	ldr	r1, [r5, #88]
+	ldr	r0, [r5, #96]
+	adds	r1, r1, r0
+	str	r1, [r5, #88]
+	ldr	r0, [r5, #84]
+	bl FUN_080098a4
+	lsls	r0, r0, #16
+	cmp	r0, #0
+	bne _US_08096A80
+	adds	r0, r5, #0
+	adds	r0, #140
+	ldr	r0, [r0, #0]
+	movs	r1, #4
+	ands	r0, r1
+	cmp	r0, #0
+	beq _US_08096A86
+_US_08096A80:
+	adds	r0, r5, #0
+	bl FUN_08096b84
+_US_08096A86:
+	pop	{r4, r5, r6}
+	pop	{r0}
+	bx	r0
+.else
 	push {r4, r5, r6, lr}
 	adds r5, r0, #0
 	ldrb r0, [r5, #0xe]
@@ -2225,7 +2684,7 @@ _08096EBC:
 	bl SetMotion
 	b _08096EE8
 	.align 2, 0
-_08096ED8: .4byte 0x0836A17C
+_08096ED8: .4byte gShellcrawlerRoutine+0x104
 _08096EDC: .4byte 0x0000DB04
 _08096EE0:
 	ldr r1, _08096F50 @ =0x0000DB0F
@@ -2329,3 +2788,4 @@ _08096FAA:
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0
+.endif

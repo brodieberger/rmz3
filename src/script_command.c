@@ -732,7 +732,11 @@ _08022D4C:\n\
 	lsls r2, r2, #1\n\
 	adds r1, r5, #1\n\
 	str r1, [sp]\n\
+.if REGION_US\n\
+	movs r1, #1\n\
+.else\n\
 	movs r1, #6\n\
+.endif\n\
 _08022D84:\n\
 	movs r3, #0\n\
 	bl PrintRows\n\
@@ -756,7 +760,11 @@ _08022D98:\n\
 	lsrs r3, r3, #0x10\n\
 	adds r1, r5, #1\n\
 	str r1, [sp]\n\
+.if REGION_US\n\
+	movs r1, #1\n\
+.else\n\
 	movs r1, #6\n\
+.endif\n\
 _08022DB6:\n\
 	movs r2, #0\n\
 	bl PrintRows\n\

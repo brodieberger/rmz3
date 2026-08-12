@@ -1,6 +1,7 @@
 #include "mmbn4.h"
 
 #include "global.h"
+#include "config.h"
 
 // TODO: MMBN4との通信処理と、カードeリーダー周りの処理を別ファイルに分割できるか検討
 
@@ -10,12 +11,15 @@ void DisableSerial(void);
 
 // clang-format off
 // 0x080006c8
+// Written through the symbols rather than as literals: these move by 0x280 in
+// US, where the SRAM checksum buffer sits ahead of them.
+#define SIO_BUF(off) ((void*)((u8*)&Unk02000db0 + (off)))
 const struct Unk_080006c8 UnkMmbn4Datas[5] = {
-    {(void*)0x02000fb0, (void*)0x02000db0, (void*)0x02000dc0, 4},
-    {(void*)0x02000fb0, (void*)0x02000db0, (void*)0x02000eb0, 0},
-    {(void*)0x02000fb0, (void*)0x02000db0, (void*)0x02000dc0, 4},
-    {(void*)0x02000fb0, (void*)0x02000db0, (void*)0x02000dc0, 0},
-    {(void*)0x02000fb0, (void*)0x02000db0, (void*)0x02000dc0, 4},
+    {SIO_BUF(0x200), &Unk02000db0, &Unk02000dc0, 4},
+    {SIO_BUF(0x200), &Unk02000db0, SIO_BUF(0x100), 0},
+    {SIO_BUF(0x200), &Unk02000db0, &Unk02000dc0, 4},
+    {SIO_BUF(0x200), &Unk02000db0, &Unk02000dc0, 0},
+    {SIO_BUF(0x200), &Unk02000db0, &Unk02000dc0, 4},
 };
 // clang-format on
 
@@ -141,8 +145,8 @@ NAKED void EReader_CopyReceivedChunk(void) {
 _080014C2:\n\
 	ldr r1, [r6, #0x30]\n\
 	movs r2, #0\n\
-	ldr r7, _080014E0 @ =0x02000FB0\n\
-	ldr r5, _080014E4 @ =0x020010C0\n\
+	ldr r7, _080014E0 @ =Unk_02000db0+0x1e0\n\
+	ldr r5, _080014E4 @ =Unk_02000db0+0x2f0\n\
 _080014CA:\n\
 	ldrh r0, [r5, r1]\n\
 	strh r0, [r7, r2]\n\
@@ -157,8 +161,8 @@ _080014CA:\n\
 _080014DE:\n\
 	pop {r4, r5, r6, r7, pc}\n\
 	.align 2, 0\n\
-_080014E0: .4byte 0x02000FB0\n\
-_080014E4: .4byte 0x020010C0\n\
+_080014E0: .4byte Unk_02000db0+0x1e0\n\
+_080014E4: .4byte Unk_02000db0+0x2f0\n\
 _080014E8: .4byte gUnk02000d50\n\
  .syntax divided\n");
 }
@@ -173,14 +177,18 @@ NAKED void EReader_SioBeginCardRead(void) {
 	ldrh r1, [r1]\n\
 	movs r2, #0\n\
 	bl SioLink_SetTransmitParams\n\
-	ldr r0, _0800150C @ =0x020014C0\n\
+	ldr r0, _0800150C @ =Unk_02000db0+0x6f0\n\
 	movs r1, #4\n\
 	strb r1, [r0, #1]\n\
 	pop {pc}\n\
 	.align 2, 0\n\
+.if REGION_US\n\
+_08001504: .4byte 0x425A3345\n\
+.else\n\
 _08001504: .4byte 0x425A334A\n\
+.endif\n\
 _08001508: .4byte _08001510\n\
-_0800150C: .4byte 0x020014C0\n\
+_0800150C: .4byte Unk_02000db0+0x6f0\n\
 _08001510:\n\
 	.byte 0x10, 0x10, 0x00, 0x00\n\
  .syntax divided\n");
@@ -191,7 +199,7 @@ _08001510:\n\
 NAKED u16 EReader_SioGetCardId(void) {
   asm(".syntax unified\n\
 	push {r4, r6, lr}\n\
-	ldr r4, _08001530 @ =0x020014C0\n\
+	ldr r4, _08001530 @ =Unk_02000db0+0x6f0\n\
 	movs r1, #0x38\n\
 	ldrb r0, [r4]\n\
 	tst r0, r0\n\
@@ -206,7 +214,7 @@ _08001522:\n\
 	ands r0, r1\n\
 	pop {r4, r6, pc}\n\
 	.align 2, 0\n\
-_08001530: .4byte 0x020014C0\n\
+_08001530: .4byte Unk_02000db0+0x6f0\n\
 _08001534: .4byte gUnk02000d50\n\
  .syntax divided\n");
 }
@@ -216,7 +224,7 @@ _08001534: .4byte gUnk02000d50\n\
 NAKED void EReader_SioInitDataReceive(void) {
   asm(".syntax unified\n\
 	push {lr}\n\
-	ldr r0, _0800156C @ =0x020014C0\n\
+	ldr r0, _0800156C @ =Unk_02000db0+0x6f0\n\
 	movs r1, #0x20\n\
 	bl clearMemory16\n\
 	bl SioLink_ClearAllBuffers\n\
@@ -236,7 +244,7 @@ NAKED void EReader_SioInitDataReceive(void) {
 	.align 2, 0\n\
 _08001564: .4byte 0x00004000\n\
 _08001568: .4byte gUnk02000d50\n\
-_0800156C: .4byte 0x020014C0\n\
+_0800156C: .4byte Unk_02000db0+0x6f0\n\
  .syntax divided\n");
 }
 
@@ -252,7 +260,7 @@ NAKED u8 EReader_SioVerifyCardData(void) {
 	beq _0800159C\n\
 	bl EReader_ValidateAndStoreCardId\n\
 	bne _080015A0\n\
-	ldr r5, _080015A4 @ =0x020014C0\n\
+	ldr r5, _080015A4 @ =Unk_02000db0+0x6f0\n\
 	ldrh r0, [r5, #0x10]\n\
 	movs r1, #0\n\
 	movs r2, #0xa\n\
@@ -270,7 +278,7 @@ _080015A0:\n\
 	adds r0, r6, #0\n\
 	pop {r5, r6, r7, pc}\n\
 	.align 2, 0\n\
-_080015A4: .4byte 0x020014C0\n\
+_080015A4: .4byte Unk_02000db0+0x6f0\n\
  .syntax divided\n");
 }
 
@@ -299,7 +307,7 @@ _080015C0: .4byte 0x0000A380\n\
 NAKED bool8 EReader_ValidateAndStoreCardId(void) {
   asm(".syntax unified\n\
 	push {r5, lr}\n\
-	ldr r5, _080015E4 @ =0x020014C0\n\
+	ldr r5, _080015E4 @ =Unk_02000db0+0x6f0\n\
 	movs r0, #4\n\
 	bl FUN_08000ed4\n\
 	tst r1, r1\n\
@@ -314,7 +322,7 @@ _080015D8:\n\
 	strh r0, [r5, #0x10]\n\
 	pop {r5, pc}\n\
 	.align 2, 0\n\
-_080015E4: .4byte 0x020014C0\n\
+_080015E4: .4byte Unk_02000db0+0x6f0\n\
  .syntax divided\n");
 }
 
@@ -336,7 +344,7 @@ _080015FA:\n\
 	bl FUN_08001690\n\
 	cmp r0, #0xff\n\
 	beq _0800164C\n\
-	ldr r4, _08001654 @ =0x020014C0\n\
+	ldr r4, _08001654 @ =Unk_02000db0+0x6f0\n\
 	movs r3, #0xc\n\
 	movs r7, #0\n\
 	movs r5, #0\n\
@@ -382,7 +390,7 @@ _0800164C:\n\
 	tst r6, r6\n\
 	pop {r4, r5, r6, r7, pc}\n\
 	.align 2, 0\n\
-_08001654: .4byte 0x020014C0\n\
+_08001654: .4byte Unk_02000db0+0x6f0\n\
 _08001658: .4byte gUnk02000d50\n\
  .syntax divided\n");
 }
@@ -390,7 +398,7 @@ _08001658: .4byte gUnk02000d50\n\
 NAKED void FUN_0800165c(u16 param_1, u16 param_2, u16 param_3) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
-	ldr r4, _08001688 @ =0x02000FB0\n\
+	ldr r4, _08001688 @ =Unk_02000db0+0x1e0\n\
 	strh r0, [r4, #8]\n\
 	strh r1, [r4, #6]\n\
 	strh r2, [r4, #4]\n\
@@ -406,17 +414,44 @@ NAKED void FUN_08001670(u16 param_1, u16 param_2, u16 param_3) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
 	bl FUN_0800165c\n\
-	ldr r4, _08001688 @ =0x02000FB0\n\
+	ldr r4, _08001688 @ =Unk_02000db0+0x1e0\n\
 	bl GetLastSendQueueCount\n\
 	strh r0, [r4, #0xc]\n\
 	bl GetLastRecvQueueCount\n\
 	strh r0, [r4, #0xe]\n\
 	pop {r4, pc}\n\
 	.align 2, 0\n\
-_08001688: .4byte 0x02000FB0\n\
+.if REGION_US\n\
+_08001688: .4byte 0x02001230\n\
+_0800168C: .4byte 0x42345745\n\
+.else\n\
+_08001688: .4byte Unk_02000db0+0x1e0\n\
 _0800168C: .4byte 0x4234574A\n\
+.endif\n\
  .syntax divided\n");
 }
+
+#if IS_US
+/* US-only e-Reader SIO setup: like FUN_08001670 but forces the ready-flag at
+   [r4,#0xa] to 0xF0.  FUN_08001154 calls this in place of FUN_08001670 on US. */
+NAKED void mmbn4_080016b8(u16 param_1, u16 param_2, u16 param_3) {
+  asm(".syntax unified\n\
+	push {r4, lr}\n\
+	bl FUN_0800165c\n\
+	ldr r4, _080016D4 @ =0x02001230\n\
+	bl GetLastSendQueueCount\n\
+	strh r0, [r4, #0xc]\n\
+	bl GetLastRecvQueueCount\n\
+	strh r0, [r4, #0xe]\n\
+	movs r0, #0xf0\n\
+	strh r0, [r4, #0xa]\n\
+	pop {r4, pc}\n\
+	.align 2, 0\n\
+_080016D4: .4byte 0x02001230\n\
+_080016D8: .4byte 0x42345745\n\
+ .syntax divided\n");
+}
+#endif
 
 NAKED void* FUN_08001690(u32 r0) {
   asm(".syntax unified\n\
@@ -427,7 +462,7 @@ NAKED void* FUN_08001690(u32 r0) {
 	beq _0800169E\n\
 	movs r0, #1\n\
 _0800169E:\n\
-	ldr r4, _08001728 @ =0x020014C0\n\
+	ldr r4, _08001728 @ =Unk_02000db0+0x6f0\n\
 	strb r0, [r4]\n\
 	ldr r1, _0800172C @ =0x08001730\n\
 	ldr r6, [r1, #4]\n\
@@ -463,7 +498,7 @@ NAKED static void* mmbn4_080016c8(void* r0) {
 	beq _080016D6\n\
 	movs r0, #1\n\
 _080016D6:\n\
-	ldr r4, _08001728 @ =0x020014C0\n\
+	ldr r4, _08001728 @ =Unk_02000db0+0x6f0\n\
 	strb r0, [r4]\n\
 	movs r5, #0\n\
 _080016DC:\n\
@@ -510,10 +545,14 @@ _08001724:\n\
 _08001726:\n\
 	pop {r4, r5, r6, r7, pc}\n\
 	.align 2, 0\n\
-_08001728: .4byte 0x020014C0\n\
+_08001728: .4byte Unk_02000db0+0x6f0\n\
 _0800172C: .4byte _08001730\n\
 _08001730: .4byte Unk02000db0, Unk02000dc0\n\
+.if REGION_US\n\
+_08001738: .4byte 0x42345745\n\
+.else\n\
 _08001738: .4byte 0x4234574A\n\
+.endif\n\
 _0800173C: .4byte _08001740\n\
 _08001740:\n\
 	.byte 0x00, 0x40, 0x00, 0x00, 0x00, 0x02, 0x00, 0x00\n\

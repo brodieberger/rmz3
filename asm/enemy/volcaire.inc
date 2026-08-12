@@ -1657,7 +1657,11 @@ _08077FA0: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08077fa4
 FUN_08077fa4: @ 0x08077FA4
+.if REGION_US && !HIT_BLOOD
+	push {r4, r5, r6, lr}
+.else
 	push {r4, r5, r6, r7, lr}
+.endif
 	sub sp, #0x10
 	adds r6, r0, #0
 	ldrb r0, [r6, #0xe]
@@ -1667,6 +1671,20 @@ FUN_08077fa4: @ 0x08077FA4
 	beq _0807806E
 	b _080780B4
 _08077FB6:
+.if REGION_US && !HIT_BLOOD
+	movs r5, #0
+	ldr r0, _08077FD8 @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r6, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _08077FC8
+	movs r5, #1
+_08077FC8:
+	adds r2, r5, #0
+	cmp r5, #0
+.else
 	movs r3, #0
 	ldr r0, _08077FD8 @ =pZero2
 	ldr r0, [r0]
@@ -1680,6 +1698,7 @@ _08077FC8:
 	adds r7, r3, #0
 	adds r2, r7, #0
 	cmp r7, #0
+.endif
 	beq _08077FDC
 	ldrb r1, [r6, #0xa]
 	movs r0, #0x10
@@ -1707,7 +1726,11 @@ _08077FE2:
 	ands r0, r2
 	orrs r0, r1
 	strb r0, [r3]
+.if REGION_US && !HIT_BLOOD
+	lsls r5, r5, #8
+.else
 	lsls r5, r7, #8
+.endif
 	ldr r0, [r6, #0x54]
 	subs r0, r0, r5
 	str r0, [r6, #0x54]
@@ -1725,6 +1748,7 @@ _08077FE2:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r6, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r6, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r6, #0x58]
@@ -1735,6 +1759,7 @@ _08077FE2:
 	add r1, sp, #8
 	adds r3, r7, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x80
 	subs r0, r0, r5
 	str r0, [sp, #8]
@@ -1795,7 +1820,11 @@ _080780AE:
 	bl MaybeKillVolcaire
 _080780B4:
 	add sp, #0x10
+.if REGION_US && !HIT_BLOOD
+	pop {r4, r5, r6}
+.else
 	pop {r4, r5, r6, r7}
+.endif
 	pop {r0}
 	bx r0
 	.align 2, 0

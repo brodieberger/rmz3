@@ -7,7 +7,7 @@
 	lsls r0, r3, #4
 	adds r0, r0, r3
 	lsls r0, r0, #3
-	ldr r1, _0800934C @ =0x02002220
+	ldr r1, _0800934C @ =gOverworld+0x20
 	mov r8, r1
 	add r0, r8
 	mov ip, r0
@@ -51,7 +51,7 @@
 	bl ResetLayerGraphic
 	b _0800938E
 	.align 2, 0
-_0800934C: .4byte 0x02002220
+_0800934C: .4byte gOverworld+0x20
 _08009350: .4byte 0x80000001
 _08009354: .4byte 0x0002C004
 _08009358:

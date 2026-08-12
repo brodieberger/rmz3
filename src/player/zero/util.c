@@ -1,4 +1,5 @@
 #include "collision.h"
+#include "config.h"
 #include "cyberelf.h"
 #include "global.h"
 #include "mod.h"
@@ -543,6 +544,9 @@ u8 GetZeroColor(struct Zero* z) {
 }
 
 void InstantlyKilling(struct Zero* z) {
+#if IS_US
+  if (((z->body).status & BODY_STATUS_DEAD) != 0) return;
+#endif
   if ((z->body).hp != 0) {
     if (((z->body).invincibleTime == 0) || (z->unk_149 != 0)) {
       if (IsElfUsed(z, ELF_PUTITE)) {
@@ -581,7 +585,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(1), -PIXEL(14), PIXEL(16), PIXEL(30)},
@@ -593,7 +597,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(2), -PIXEL(10), PIXEL(26), PIXEL(22)},
@@ -605,7 +609,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(7), -PIXEL(15), PIXEL(16), PIXEL(30)},
@@ -617,7 +621,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(2), -PIXEL(10), PIXEL(26), PIXEL(22)},
@@ -629,7 +633,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(1), -PIXEL(14), PIXEL(16), PIXEL(30)},
@@ -641,7 +645,7 @@ const struct Collision gZeroCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3,
+      hardness : HARDNESS_B3 | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(2), -PIXEL(14), PIXEL(26), PIXEL(30)},
@@ -657,7 +661,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(1), -PIXEL(14), PIXEL(16), PIXEL(30)},
@@ -669,7 +673,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(2), -PIXEL(10), PIXEL(26), PIXEL(22)},
@@ -681,7 +685,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       unk_0a : 0x04,
       remaining : 0,
       range : {-PIXEL(7), -PIXEL(15), PIXEL(16), PIXEL(30)},
@@ -693,7 +697,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(2), -PIXEL(10), PIXEL(26), PIXEL(22)},
@@ -705,7 +709,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(1), -PIXEL(14), PIXEL(16), PIXEL(30)},
@@ -717,7 +721,7 @@ const struct Collision gZeroProtoCollisions[POSTURE_COUNT] = {
       damage : 0,
       LAYER(0xFFFFFFFF),
       hitzone : 1,
-      hardness : HARDNESS_B3 | HARDNESS_WEAK,
+      hardness : HARDNESS_B3 | HARDNESS_WEAK | ZERO_HARDNESS_EXTRA,
       remaining : 0,
       layer : 0xFFFFFFFF,
       range : {-PIXEL(2), -PIXEL(14), PIXEL(26), PIXEL(30)},

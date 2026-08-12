@@ -1,4 +1,5 @@
 #include "collision.h"
+#include "config.h"
 #include "entity.h"
 #include "global.h"
 #include "overworld.h"
@@ -97,9 +98,16 @@ static void updatePhantomTeleporter(struct PhantomTeleporterObject* p) {
       if (gInTransport || (gStageRun.vm.unk_004 & 1)) {
         if ((p->body).status & BODY_STATUS_TELEPORTAL) {
           if (p->player != NULL) {
-            gStageRun.vm.unk_004 |= (1 << 1);
-            (p->s).work[2] = 30;
-            (p->s).mode[2]++;
+#if IS_US
+            if ((u32)((pZero2->s).coord.x - (p->s).coord.x + 0x2000) <= 0x4000 &&
+                (u32)((pZero2->s).coord.y - (p->s).coord.y + 0x2000) <= 0x4000) {
+#endif
+              gStageRun.vm.unk_004 |= (1 << 1);
+              (p->s).work[2] = 30;
+              (p->s).mode[2]++;
+#if IS_US
+            }
+#endif
           }
         }
       }
@@ -162,12 +170,21 @@ static void updatePhantomTeleporter(struct PhantomTeleporterObject* p) {
         PlaySound(SE_TENSOU);
         resetSateliteElfPosition(pZero2);
         (pZero2->s).mode[1] = 10, (pZero2->s).mode[2] = 4, (pZero2->s).mode[3] = 0;
+#if IS_US
+        (p->s).mode[2] = 0;
+#else
         p->player = NULL;
         (p->s).mode[2] = 0;
+#endif
       }
       break;
     }
   }
+#if IS_US
+  // US clears the toucher every frame instead of only on the warp, so
+  // onCollision has to re-latch it each frame to keep it set.
+  p->player = NULL;
+#endif
 }
 
 static const struct Collision sCollisions[2] = {

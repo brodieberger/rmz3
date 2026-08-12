@@ -81,8 +81,8 @@ _080657F6:
 	bx r0
 	.align 2, 0
 _08065814: .4byte gEnemyFnTable
-_08065818: .4byte 0x08365CF0
-_0806581C: .4byte 0x08365CD8
+_08065818: .4byte u8_ARRAY_08365cf0
+_0806581C: .4byte gMegamilpaNodeHitbox+0x18
 
 	thumb_func_start MegamilpaNode_Update
 MegamilpaNode_Update: @ 0x08065820
@@ -127,8 +127,8 @@ _0806586C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08065874: .4byte 0x08365CA8
-_08065878: .4byte 0x08365CB4
+_08065874: .4byte sMegamilpaNodeUpdates1
+_08065878: .4byte sMegamilpaNodeUpdates2
 
 	thumb_func_start MegamilpaNode_Die
 MegamilpaNode_Die: @ 0x0806587C
@@ -272,7 +272,7 @@ _0806597C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08065984: .4byte 0x08365CD8
+_08065984: .4byte gMegamilpaNodeHitbox+0x18
 
 	thumb_func_start MegamilpaNode_08065988
 MegamilpaNode_08065988: @ 0x08065988
@@ -333,7 +333,7 @@ _080659DE:
 	strh r0, [r1]
 	b _08065CA8
 	.align 2, 0
-_080659F4: .4byte 0x08365CD8
+_080659F4: .4byte gMegamilpaNodeHitbox+0x18
 _080659F8:
 	ldrb r0, [r5, #0xe]
 	adds r0, #1
@@ -366,7 +366,7 @@ _08065A00:
 	orrs r3, r0
 	b _08065A3C
 	.align 2, 0
-_08065A34: .4byte 0x08365CC0
+_08065A34: .4byte gMegamilpaNodeHitbox
 _08065A38:
 	movs r0, #0xef
 	ands r3, r0
@@ -712,7 +712,7 @@ _08065CA8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08065CB8: .4byte 0x08365CF2
+_08065CB8: .4byte sMegamilpaNodeMotions
 
 	thumb_func_start MegamilpaNode_08065cbc
 MegamilpaNode_08065cbc: @ 0x08065CBC
@@ -769,7 +769,7 @@ _08065CF4:
 	bl GotoMotion
 	b _08065D54
 	.align 2, 0
-_08065D30: .4byte 0x08365CD8
+_08065D30: .4byte gMegamilpaNodeHitbox+0x18
 _08065D34: .4byte 0x0000A00B
 _08065D38:
 	ldr r4, _08065D8C @ =0x0000A005
@@ -841,7 +841,7 @@ _08065D98:
 	orrs r1, r0
 	b _08065DCC
 	.align 2, 0
-_08065DC4: .4byte 0x08365CC0
+_08065DC4: .4byte gMegamilpaNodeHitbox
 _08065DC8:
 	movs r0, #0xef
 	ands r1, r0
@@ -1041,7 +1041,7 @@ _08065F38:
 	strb r0, [r5, #0xd]
 	b _08065F7A
 	.align 2, 0
-_08065F50: .4byte 0x08365CD8
+_08065F50: .4byte gMegamilpaNodeHitbox+0x18
 _08065F54:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xfe

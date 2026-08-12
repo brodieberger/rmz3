@@ -2301,8 +2301,14 @@ _0805AC58: .4byte 0x0000640D
 
 	thumb_func_start blizzack_0805ac5c
 blizzack_0805ac5c: @ 0x0805AC5C
+.if HIT_BLOOD
 	push {r4, r5, r6, lr}
+.else
+	push {r4, r5, lr}
+.endif
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldr r3, _0805ACEC @ =gStageRun
 	ldrh r2, [r3, #8]
@@ -2339,9 +2345,16 @@ _0805AC84:
 	ble _0805ACA6
 	movs r2, #1
 _0805ACA6:
+.if REGION_US && !HIT_BLOOD
+	@ with the blood spawn gone r5 no longer has to survive; US reuses r0.
+	adds r0, r4, #0
+	adds r0, #0xc4
+	strb r2, [r0]
+.else
 	adds r5, r4, #0
 	adds r5, #0xc4
 	strb r2, [r5]
+.endif
 	ldr r1, _0805ACF8 @ =0x0000B40B
 	adds r0, r4, #0
 	bl SetMotion
@@ -2353,9 +2366,14 @@ _0805ACA6:
 	movs r1, #0x80
 	lsls r1, r1, #9
 	ands r0, r1
+.if HIT_BLOOD
 	adds r6, r2, #0
+.else
+	adds r3, r2, #0
+.endif
 	cmp r0, #0
 	beq _0805AD00
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -2368,6 +2386,7 @@ _0805ACA6:
 	movs r0, #0
 	mov r1, sp
 	bl FUN_080b2b40
+.endif
 	movs r0, #2
 	b _0805AD02
 	.align 2, 0
@@ -2375,7 +2394,9 @@ _0805ACEC: .4byte gStageRun
 _0805ACF0: .4byte 0x0000FFFE
 _0805ACF4: .4byte pZero2
 _0805ACF8: .4byte 0x0000B40B
+.if HIT_BLOOD
 _0805ACFC: .4byte 0xFFFFE400
+.endif
 _0805AD00:
 	movs r0, #1
 _0805AD02:
@@ -2385,7 +2406,11 @@ _0805AD02:
 	strb r1, [r4, #0xe]
 	ldr r0, [r4, #0x2c]
 	strb r1, [r0, #0xf]
+.if HIT_BLOOD
 	str r2, [r6]
+.else
+	str r2, [r3]
+.endif
 	adds r0, r4, #0
 	adds r0, #0x90
 	str r2, [r0]
@@ -2395,8 +2420,12 @@ _0805AD02:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r4, #0xa]
+.if HIT_BLOOD
 	add sp, #8
 	pop {r4, r5, r6}
+.else
+	pop {r4, r5}
+.endif
 	pop {r0}
 	bx r0
 	.align 2, 0

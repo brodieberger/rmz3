@@ -730,8 +730,8 @@ _0801001E:
 	bx r0
 	.align 2, 0
 _08010024: .4byte gVideoRegBuffer+4
-_08010028: .4byte 0x08522398
-_0801002C: .4byte 0x085223A0
+_08010028: .4byte gBgMapOffsets+0xf8
+_0801002C: .4byte gBgMapOffsets+0x100
 _08010030: .4byte gBlendRegBuffer
 _08010034: .4byte 0x00003D42
 _08010038: .4byte gWindowRegBuffer

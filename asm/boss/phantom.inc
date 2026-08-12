@@ -47,7 +47,7 @@ _0805F0EA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F0F0: .4byte 0x0836543C
+_0805F0F0: .4byte PTR_ARRAY_0836543c
 
 	thumb_func_start FUN_0805f0f4
 FUN_0805f0f4: @ 0x0805F0F4
@@ -131,7 +131,7 @@ FUN_0805f180: @ 0x0805F180
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F194: .4byte 0x0836544C
+_0805F194: .4byte PTR_ARRAY_0836544c
 
 	thumb_func_start phantom_0805f198
 phantom_0805f198: @ 0x0805F198
@@ -234,7 +234,7 @@ _0805F25E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F264: .4byte 0x08365320
+_0805F264: .4byte gPhantomBossRoutine+0x120
 _0805F268: .4byte sCollisions
 
 	thumb_func_start FUN_0805f26c
@@ -249,7 +249,7 @@ FUN_0805f26c: @ 0x0805F26C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F280: .4byte 0x08365454
+_0805F280: .4byte PTR_ARRAY_08365454
 
 	thumb_func_start FUN_0805f284
 FUN_0805f284: @ 0x0805F284
@@ -353,7 +353,7 @@ FUN_0805f338: @ 0x0805F338
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F34C: .4byte 0x0836545C
+_0805F34C: .4byte PTR_ARRAY_0836545c
 
 	thumb_func_start FUN_0805f350
 FUN_0805f350: @ 0x0805F350
@@ -435,7 +435,7 @@ FUN_0805f3d0: @ 0x0805F3D0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F3E4: .4byte 0x08365464
+_0805F3E4: .4byte PTR_ARRAY_08365464
 
 	thumb_func_start FUN_0805f3e8
 FUN_0805f3e8: @ 0x0805F3E8
@@ -624,7 +624,7 @@ FUN_0805f54c: @ 0x0805F54C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F560: .4byte 0x0836547C
+_0805F560: .4byte PTR_ARRAY_0836547c
 
 	thumb_func_start FUN_0805f564
 FUN_0805f564: @ 0x0805F564
@@ -638,7 +638,7 @@ FUN_0805f564: @ 0x0805F564
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F578: .4byte 0x08365494
+_0805F578: .4byte PTR_ARRAY_08365494
 
 	thumb_func_start FUN_0805f57c
 FUN_0805f57c: @ 0x0805F57C
@@ -814,7 +814,7 @@ FUN_0805f6b0: @ 0x0805F6B0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F6C4: .4byte 0x083654A8
+_0805F6C4: .4byte PTR_ARRAY_083654a8
 
 	thumb_func_start FUN_0805f6c8
 FUN_0805f6c8: @ 0x0805F6C8
@@ -924,7 +924,7 @@ FUN_0805f76c: @ 0x0805F76C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F780: .4byte 0x083654B8
+_0805F780: .4byte PTR_ARRAY_083654b8
 
 	thumb_func_start FUN_0805f784
 FUN_0805f784: @ 0x0805F784
@@ -1021,7 +1021,7 @@ FUN_0805f820: @ 0x0805F820
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F834: .4byte 0x083654C4
+_0805F834: .4byte PTR_ARRAY_083654c4
 
 	thumb_func_start FUN_0805f838
 FUN_0805f838: @ 0x0805F838
@@ -1168,7 +1168,7 @@ FUN_0805f934: @ 0x0805F934
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805F948: .4byte 0x083654D8
+_0805F948: .4byte PTR_ARRAY_083654d8
 
 	thumb_func_start FUN_0805f94c
 FUN_0805f94c: @ 0x0805F94C
@@ -1289,7 +1289,7 @@ FUN_0805fa10: @ 0x0805FA10
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805FA24: .4byte 0x083654EC
+_0805FA24: .4byte PTR_ARRAY_083654ec
 
 	thumb_func_start FUN_0805fa28
 FUN_0805fa28: @ 0x0805FA28
@@ -1318,7 +1318,7 @@ FUN_0805fa44: @ 0x0805FA44
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805FA58: .4byte 0x08365504
+_0805FA58: .4byte PTR_ARRAY_08365504
 
 	thumb_func_start FUN_0805fa5c
 FUN_0805fa5c: @ 0x0805FA5C
@@ -1741,7 +1741,7 @@ FUN_0805fd5c: @ 0x0805FD5C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805FD70: .4byte 0x08365520
+_0805FD70: .4byte PTR_ARRAY_08365520
 
 	thumb_func_start FUN_0805fd74
 FUN_0805fd74: @ 0x0805FD74
@@ -2010,7 +2010,7 @@ FUN_0805ff64: @ 0x0805FF64
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805FF78: .4byte 0x0836552C
+_0805FF78: .4byte PTR_ARRAY_0836552c
 
 	thumb_func_start FUN_0805ff7c
 FUN_0805ff7c: @ 0x0805FF7C
@@ -2231,7 +2231,7 @@ FUN_080600fc: @ 0x080600FC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08060110: .4byte 0x08365544
+_08060110: .4byte PTR_ARRAY_08365544
 
 	thumb_func_start FUN_08060114
 FUN_08060114: @ 0x08060114

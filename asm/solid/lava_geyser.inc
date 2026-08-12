@@ -26,8 +26,8 @@ Solid7_Update: @ 0x080CC8F8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CC924: .4byte 0x0836FF7C
-_080CC928: .4byte 0x0836FF94
+_080CC924: .4byte sSolid7Updates1
+_080CC928: .4byte sSolid7Updates2
 
 	thumb_func_start Solid7_Die
 Solid7_Die: @ 0x080CC92C
@@ -144,7 +144,7 @@ _080CC9F2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CC9F8: .4byte 0x0836FFAC
+_080CC9F8: .4byte sCollisions
 _080CC9FC: .4byte gOverworld
 _080CCA00: .4byte 0x0002D02C
 _080CCA04: .4byte 0xFFFFFE00
@@ -404,9 +404,9 @@ _080CCBFA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CCC00: .4byte 0x0836FFDC
+_080CCC00: .4byte sSize
 _080CCC04: .4byte 0x00000811
-_080CCC08: .4byte 0x0836FFAC
+_080CCC08: .4byte sCollisions
 _080CCC0C: .4byte 0xFFFFFE00
 _080CCC10: .4byte RNG_0202f388
 _080CCC14: .4byte 0x000343FD
@@ -476,9 +476,9 @@ _080CCC90:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CCC98: .4byte 0x0836FFDC
+_080CCC98: .4byte sSize
 _080CCC9C: .4byte 0x00000801
-_080CCCA0: .4byte 0x0836FFC4
+_080CCCA0: .4byte sSolid7Updates2+0x30
 
 	thumb_func_start FUN_080ccca4
 FUN_080ccca4: @ 0x080CCCA4

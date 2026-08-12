@@ -438,6 +438,7 @@ _0806631C:\n\
 _08066328:\n\
 	adds r0, r0, r1\n\
 	str r0, [sp, #4]\n\
+.if HIT_BLOOD\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xbe\n\
 	ldrb r0, [r0]\n\
@@ -476,6 +477,7 @@ _0806636C:\n\
 	mov r1, sp\n\
 	movs r3, #0\n\
 	bl FUN_080b2b40\n\
+.endif\n\
 _0806637A:\n\
 	adds r1, r7, #0\n\
 	adds r1, #0x54\n\

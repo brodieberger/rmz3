@@ -158,7 +158,7 @@ static const struct Collision sCollisions[] = {
       faction : FACTION_ENEMY,
       LAYER(0xFFFFFFFF),
       hitzone : 255,
-      hardness : 8,
+      hardness : HARDNESS_B3,
       remaining : 0,
       priorityLayer : 0xFFFFFFFF,
       range : {PIXEL(0), PIXEL(57), PIXEL(32), PIXEL(111)},

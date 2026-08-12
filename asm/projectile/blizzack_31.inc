@@ -75,9 +75,9 @@ Projectile31_Init: @ 0x080AA808
 	b _080AA8C4
 	.align 2, 0
 _080AA894: .4byte 0x0000640F
-_080AA898: .4byte 0x0836C32C
-_080AA89C: .4byte 0x0836C35C
-_080AA8A0: .4byte 0x0836C36C
+_080AA898: .4byte sCollisions
+_080AA89C: .4byte s32_ARRAY_0836c35c
+_080AA8A0: .4byte s32_ARRAY_0836c36c
 _080AA8A4:
 	ldr r2, _080AA91C @ =0x0836C35C
 	ldrb r1, [r6, #0x11]
@@ -138,10 +138,10 @@ _080AA8C4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AA91C: .4byte 0x0836C35C
-_080AA920: .4byte 0x0836C36C
+_080AA91C: .4byte s32_ARRAY_0836c35c
+_080AA920: .4byte s32_ARRAY_0836c36c
 _080AA924: .4byte 0xFFFFD000
-_080AA928: .4byte 0x0836C38C
+_080AA928: .4byte s32_ARRAY_0836c38c
 _080AA92C: .4byte gProjectileFnTable
 
 	thumb_func_start Projectile31_Update

@@ -46,8 +46,12 @@ _080EC028:
 	bl intro_080ed108
 	movs r3, #8
 	ldrsh r0, [r5, r3]
+.if REGION_US
+	ldr r1, _US_080EC048 @ =0x0000010D
+.else
 	movs r1, #0x8e
 	lsls r1, r1, #1
+.endif
 	cmp r0, r1
 	bgt _080EC07E
 	cmp r0, r1
@@ -64,6 +68,9 @@ _080EC050: .4byte gVideoRegBuffer
 _080EC054: .4byte 0x0000F0FF
 _080EC058: .4byte gBlendRegBuffer
 _080EC05C: .4byte 0x00000235
+.if REGION_US
+_US_080EC048: .4byte 0x0000010D
+.endif
 _080EC060: .4byte 0x0000C7FF
 _080EC064:
 	cmp r0, #0xb7
@@ -91,7 +98,11 @@ _080EC07E:
 	bl intro_080ed480
 	b _080EC0C4
 	.align 2, 0
+.if REGION_US
+_080EC098: .4byte 0x00000117
+.else
 _080EC098: .4byte 0x0000012B
+.endif
 _080EC09C:
 	cmp r1, #0xc7
 	ble _080EC0AA
@@ -115,7 +126,11 @@ _080EC0B8:
 _080EC0C4:
 	movs r2, #8
 	ldrsh r1, [r5, r2]
+.if REGION_US
+	movs r0, #0x87
+.else
 	movs r0, #0x9f
+.endif
 	lsls r0, r0, #1
 	cmp r1, r0
 	ble _080EC0D6

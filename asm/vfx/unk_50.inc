@@ -115,7 +115,7 @@ VFX50_Update: @ 0x080C0914
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C0928: .4byte 0x0836F178
+_080C0928: .4byte sUpdates
 
 	thumb_func_start VFX50_Die
 VFX50_Die: @ 0x080C092C

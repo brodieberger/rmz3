@@ -1,3 +1,4 @@
+#include "config.h"
 #include "game.h"
 #include "global.h"
 #include "widget.h"
@@ -262,7 +263,11 @@ static void FUN_080e78cc(struct Widget* w) {
   }
 
   if ((&(g->sceneState).menu.elf)->unk_e != 0) {
+#if IS_US
+    (w->s).coord.x = PIXEL(193);  // 英語版はメニューが広いぶんカーソルが右寄り
+#else
     (w->s).coord.x = PIXEL(185);
+#endif
   } else {
     (w->s).coord.x = PIXEL(145);
   }

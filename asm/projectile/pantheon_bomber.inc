@@ -140,7 +140,7 @@ PantheonBombProjectile_Init: @ 0x080AD0BC
 	strb r6, [r7, #0xf]
 	b _080AD17A
 	.align 2, 0
-_080AD110: .4byte 0x0836C84C
+_080AD110: .4byte sCollisions
 _080AD114: .4byte gProjectileFnTable
 _080AD118:
 	cmp r6, #1
@@ -201,7 +201,7 @@ _080AD17A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD190: .4byte 0x0836C84C
+_080AD190: .4byte sCollisions
 _080AD194: .4byte gProjectileFnTable
 
 	thumb_func_start PantheonBombProjectile_Update
@@ -257,7 +257,7 @@ _080AD1FC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD200: .4byte 0x0836C844
+_080AD200: .4byte sUpdates
 
 	thumb_func_start PantheonBombProjectile_Die
 PantheonBombProjectile_Die: @ 0x080AD204
@@ -510,7 +510,7 @@ _080AD3F4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD3FC: .4byte 0x0836C87C
+_080AD3FC: .4byte gPantheonBombProjectileRoutine+0x4c
 _080AD400: .4byte gProjectileFnTable
 
 	thumb_func_start pantheonBombBlastAI
@@ -560,7 +560,7 @@ _080AD420:
 	strb r0, [r2]
 	b _080AD490
 	.align 2, 0
-_080AD45C: .4byte 0x0836C894
+_080AD45C: .4byte gPantheonBombProjectileRoutine+0x64
 _080AD460: .4byte 0x0000690E
 _080AD464: .4byte 0xFFFFFD80
 _080AD468:

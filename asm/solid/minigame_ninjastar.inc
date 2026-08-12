@@ -74,8 +74,8 @@ _080D92DE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080D92E4: .4byte 0x08371180
-_080D92E8: .4byte 0x08371188
+_080D92E4: .4byte sUpdates1
+_080D92E8: .4byte sUpdates2
 
 	thumb_func_start MgNinjaStar_Die
 MgNinjaStar_Die: @ 0x080D92EC
@@ -135,7 +135,7 @@ _080D932A:
 	b _080D935C
 	.align 2, 0
 _080D934C: .4byte 0xFFFFFF00
-_080D9350: .4byte 0x08371194
+_080D9350: .4byte Rect_ARRAY_08371194
 _080D9354:
 	ldrb r1, [r4, #0xb]
 	movs r0, #0xf7
@@ -257,7 +257,7 @@ _080D9410:
 	b _080D9444
 	.align 2, 0
 _080D9434: .4byte 0xFFFFFF00
-_080D9438: .4byte 0x0837119C
+_080D9438: .4byte Rect_ARRAY_08371194+0x8
 _080D943C:
 	ldrb r1, [r5, #0xb]
 	movs r0, #0xf7

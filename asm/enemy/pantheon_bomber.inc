@@ -95,7 +95,7 @@ PantheonBomber_Init: @ 0x08085D6C
 	.align 2, 0
 _08085DB8: .4byte gSystemSavedata
 _08085DBC: .4byte gCurStory
-_08085DC0: .4byte 0x08368534
+_08085DC0: .4byte sCollisions
 _08085DC4:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -171,7 +171,7 @@ _08085E4A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08085E5C: .4byte 0x08368534
+_08085E5C: .4byte sCollisions
 _08085E60: .4byte FUN_0808665c
 _08085E64: .4byte 0xFFFFF800
 _08085E68: .4byte gEnemyFnTable
@@ -236,8 +236,8 @@ _08085ED0:
 	str r6, [r5]
 	b _08085F10
 	.align 2, 0
-_08085EE8: .4byte 0x08368504
-_08085EEC: .4byte 0x0836854C
+_08085EE8: .4byte sUpdates1
+_08085EEC: .4byte gPantheonBomberRoutine+0x5c
 _08085EF0:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -245,7 +245,7 @@ _08085EF0:
 	bl SetDDP
 	b _08085F10
 	.align 2, 0
-_08085EFC: .4byte 0x08368564
+_08085EFC: .4byte gPantheonBomberRoutine+0x74
 _08085F00:
 	ldr r0, _08085F18 @ =0x0836851C
 	ldrb r1, [r4, #0xd]
@@ -259,7 +259,7 @@ _08085F10:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08085F18: .4byte 0x0836851C
+_08085F18: .4byte sUpdates2
 
 	thumb_func_start PantheonBomber_Die
 PantheonBomber_Die: @ 0x08085F1C
@@ -431,6 +431,7 @@ _08086068:
 	rsbs r0, r0, #0
 _0808607C:
 	str r0, [r7, #0x5c]
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xba
 	ldrb r0, [r0]
@@ -469,6 +470,7 @@ _080860BC:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _080860CA:
 	adds r1, r7, #0
 	adds r1, #0x54
@@ -807,7 +809,7 @@ _08086390:
 	bx r0
 	.align 2, 0
 _08086398: .4byte 0x00006904
-_0808639C: .4byte 0x08368534
+_0808639C: .4byte sCollisions
 
 	thumb_func_start nop_080863a0
 nop_080863a0: @ 0x080863A0
@@ -871,7 +873,7 @@ _08086402:
 	.align 2, 0
 _08086408: .4byte 0x00006904
 _0808640C: .4byte 0x00FFFF00
-_08086410: .4byte 0x08368534
+_08086410: .4byte sCollisions
 
 	thumb_func_start nop_08086414
 nop_08086414: @ 0x08086414
@@ -947,9 +949,9 @@ _080864AA:
 	b _080865B4
 	.align 2, 0
 _080864AC: .4byte 0x00006903
-_080864B0: .4byte 0x08368534
+_080864B0: .4byte sCollisions
 _080864B4: .4byte 0x00FFFF00
-_080864B8: .4byte 0x0836854C
+_080864B8: .4byte gPantheonBomberRoutine+0x5c
 _080864BC:
 	movs r1, #0xd2
 	lsls r1, r1, #7
@@ -1108,7 +1110,7 @@ _080865EE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080865F4: .4byte 0x08368564
+_080865F4: .4byte gPantheonBomberRoutine+0x74
 
 	thumb_func_start nop_080865f8
 nop_080865f8: @ 0x080865F8
@@ -1144,7 +1146,7 @@ _0808661E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08086624: .4byte 0x08368564
+_08086624: .4byte gPantheonBomberRoutine+0x74
 
 	thumb_func_start pBomber_08086628
 pBomber_08086628: @ 0x08086628
@@ -1173,7 +1175,7 @@ _08086650:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08086658: .4byte 0x083685AC
+_08086658: .4byte sElementCoord
 
 	thumb_func_start FUN_0808665c
 FUN_0808665c: @ 0x0808665C

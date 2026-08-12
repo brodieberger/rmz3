@@ -250,7 +250,7 @@ VFX37_Init: @ 0x080BC848
 	bx r0
 	.align 2, 0
 _080BC888: .4byte gVFXFnTable
-_080BC88C: .4byte 0x0836EDF0
+_080BC88C: .4byte u8_ARRAY_0836edf0
 
 	thumb_func_start VFX37_Update
 VFX37_Update: @ 0x080BC890
@@ -264,7 +264,7 @@ VFX37_Update: @ 0x080BC890
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080BC8A4: .4byte 0x0836EDD4
+_080BC8A4: .4byte PTR_ARRAY_0836edd4
 
 	thumb_func_start VFX37_Die
 VFX37_Die: @ 0x080BC8A8
@@ -449,7 +449,7 @@ _080BC9C4:
 	orrs r0, r1
 	b _080BCA2A
 	.align 2, 0
-_080BCA00: .4byte 0x0836EDF8
+_080BCA00: .4byte motion_t_ARRAY_0836edf8
 _080BCA04: .4byte RNG_0202f388
 _080BCA08: .4byte 0x000343FD
 _080BCA0C: .4byte 0x00269EC3
@@ -591,7 +591,7 @@ _080BCB00:
 	.align 2, 0
 _080BCB0C: .4byte 0x00003302
 _080BCB10: .4byte gStageRun+232
-_080BCB14: .4byte 0x0836EDFE
+_080BCB14: .4byte s16_ARRAY_0836edfe
 _080BCB18:
 	ldrb r0, [r4, #0xa]
 	movs r1, #0xfe
@@ -1090,7 +1090,7 @@ _080BCEB8:
 	bl UpdateEntityAnim
 	b _080BCF5E
 	.align 2, 0
-_080BCED0: .4byte 0x0836EE0A
+_080BCED0: .4byte motion_t_ARRAY_0836ee0a
 _080BCED4: .4byte RNG_0202f388
 _080BCED8: .4byte 0x000343FD
 _080BCEDC: .4byte 0x00269EC3

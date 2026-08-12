@@ -5,6 +5,13 @@
 
 #define FONT_BOLD 0x7800
 
+// The US bold sheet drops the katakana half and puts the ASCII block second.
+#if IS_US
+#define BOLD_ASCII 64
+#else
+#define BOLD_ASCII 0
+#endif
+
 extern const rgb555 gFontPalette[96];
 
 static s32 printStringWithLen(u8 start_x8, u8 start_y8, char_t* s, u16 len);
@@ -26,7 +33,7 @@ void LoadAsciiBold(void) {
   };  // 0x080ff15c
 
   u8 val;
-  CpuFastCopy(gFontBold, (void*)(CHAR_BASE(0) + VRAM + FONT_BOLD), 2048);
+  CpuFastCopy(&gFontBold[BOLD_ASCII], (void*)(CHAR_BASE(0) + VRAM + FONT_BOLD), 2048);
   val = 0;
   CpuFastCopy(sDefaultBGPalette, gPaletteManager.buf, 32);
   gTextPrinter.startX = val;  // 0
@@ -54,7 +61,7 @@ NON_MATCH void ResetCharTiles(void) {
 }
 
 void LoadKatakanaBold(void) {
-  const void* src = &gFontBold[64];
+  const void* src = &gFontBold[BOLD_ASCII + 64];
   void* dst = (void*)(VRAM + 0x7000 + CHAR_BASE(0));
   CpuFastCopy(src, dst, 64 * TILE_SIZE_4BPP);
 }
@@ -516,7 +523,7 @@ _080E9E9C:\n\
 _080E9EB4:\n\
 	cmp r0, #0xf9\n\
 	bne _080E9EE4\n\
-	ldr r3, _080E9EE0 @ =0x020308A4\n\
+	ldr r3, _080E9EE0 @ =gTextPrinter+0x594\n\
 	ldr r2, [r3]\n\
 	adds r0, r6, #0\n\
 	ldr r1, [sp]\n\
@@ -536,7 +543,7 @@ _080E9EB4:\n\
 	mov r8, r2\n\
 	b _080E9FB6\n\
 	.align 2, 0\n\
-_080E9EE0: .4byte 0x020308A4\n\
+_080E9EE0: .4byte gTextPrinter+0x594\n\
 _080E9EE4:\n\
 	cmp r0, #0xf8\n\
 	bhi _080E9FB6\n\
@@ -693,7 +700,7 @@ _080E9FFC:\n\
 	cmp r2, #0\n\
 	bne _080E9FFC\n\
 _080EA00C:\n\
-	ldr r5, _080EA050 @ =0x0203089C\n\
+	ldr r5, _080EA050 @ =gTextPrinter+0x58c\n\
 	ldr r2, [r5]\n\
 	cmp r2, #0\n\
 	beq _080EA02C\n\
@@ -728,7 +735,7 @@ _080EA02C:\n\
 	.align 2, 0\n\
 _080EA048: .4byte gTextPrinter\n\
 _080EA04C: .4byte 0x00000FFF\n\
-_080EA050: .4byte 0x0203089C\n\
+_080EA050: .4byte gTextPrinter+0x58c\n\
 _080EA054:\n\
 	ldr r0, [r2]\n\
 	str r0, [r5]\n\

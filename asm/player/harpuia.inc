@@ -79,8 +79,8 @@ _08035176:
 	.align 2, 0
 _080351A8: .4byte 0xFFFFF800
 _080351AC: .4byte 0xFFFF9C00
-_080351B0: .4byte 0x0835EAD0
-_080351B4: .4byte 0x0835EAE4
+_080351B0: .4byte sHarpuiaUpdates1
+_080351B4: .4byte sHarpuiaUpdates2
 _080351B8:
 	ldrb r0, [r2, #0xc]
 	cmp r0, #0
@@ -226,8 +226,8 @@ _080352CC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080352D4: .4byte 0x0835EAD0
-_080352D8: .4byte 0x0835EAE4
+_080352D4: .4byte sHarpuiaUpdates1
+_080352D8: .4byte sHarpuiaUpdates2
 _080352DC: .4byte 0x00000137
 _080352E0: .4byte 0x00000287
 _080352E4: .4byte 0xFFFF9C00
@@ -370,7 +370,7 @@ _080353D6:
 	bx r0
 	.align 2, 0
 _080353DC: .4byte 0x0000BE21
-_080353E0: .4byte 0x0835EAF8
+_080353E0: .4byte sCollisions
 
 	thumb_func_start FUN_080353e4
 FUN_080353e4: @ 0x080353E4
@@ -566,10 +566,10 @@ _0803552E:
 	b _080355AA
 	.align 2, 0
 _08035548: .4byte 0x0000BE22
-_0803554C: .4byte 0x0835EB10
+_0803554C: .4byte sHarpuiaUpdates2+0x2c
 _08035550: .4byte 0x00FFFF00
 _08035554: .4byte 0x00010500
-_08035558: .4byte 0x0835EAF8
+_08035558: .4byte sCollisions
 _0803555C:
 	ldr r1, _080355B0 @ =0x0000BE23
 	adds r0, r4, #0
@@ -614,9 +614,9 @@ _080355AA:
 	bx r0
 	.align 2, 0
 _080355B0: .4byte 0x0000BE23
-_080355B4: .4byte 0x0835EB10
+_080355B4: .4byte sHarpuiaUpdates2+0x2c
 _080355B8: .4byte 0x00FFFF00
-_080355BC: .4byte 0x0835EAF8
+_080355BC: .4byte sCollisions
 
 	thumb_func_start FUN_080355c0
 FUN_080355c0: @ 0x080355C0

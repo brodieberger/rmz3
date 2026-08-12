@@ -532,11 +532,18 @@ _0806731C:\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xb8\n\
 	ldrb r0, [r0]\n\
+.if REGION_US && !HIT_BLOOD\n\
+	cmp r0, #0\n\
+	bne _08067348\n\
+	ldr r3, _08067344 @ =0xFFFFF800\n\
+	adds r0, r1, r3\n\
+.else\n\
 	adds r3, r1, #0\n\
 	cmp r0, #0\n\
 	bne _08067348\n\
 	ldr r1, _08067344 @ =0xFFFFF800\n\
 	adds r0, r3, r1\n\
+.endif\n\
 	str r0, [sp]\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #4\n\
@@ -547,11 +554,16 @@ _08067344: .4byte 0xFFFFF800\n\
 _08067348:\n\
 	movs r0, #0x80\n\
 	lsls r0, r0, #4\n\
+.if REGION_US && !HIT_BLOOD\n\
+	adds r1, r1, r0\n\
+.else\n\
 	adds r1, r3, r0\n\
+.endif\n\
 	str r1, [sp]\n\
 	adds r0, r2, r0\n\
 _08067352:\n\
 	str r0, [sp, #4]\n\
+.if HIT_BLOOD\n\
 	adds r0, r7, #0\n\
 	adds r0, #0xba\n\
 	ldrb r0, [r0]\n\
@@ -589,6 +601,7 @@ _08067390:\n\
 	mov r1, sp\n\
 	movs r3, #0\n\
 	bl FUN_080b2b40\n\
+.endif\n\
 _0806739E:\n\
 	ldrb r0, [r7, #0x11]\n\
 	cmp r0, #0\n\
@@ -704,8 +717,13 @@ _08067444:\n\
 	ldr r0, _080674F0 @ =0x000343FD\n\
 	adds r4, r1, #0\n\
 	muls r4, r0, r4\n\
+.if REGION_US && !HIT_BLOOD\n\
+	ldr r3, _080674F4 @ =0x00269EC3\n\
+	adds r4, r4, r3\n\
+.else\n\
 	ldr r0, _080674F4 @ =0x00269EC3\n\
 	adds r4, r4, r0\n\
+.endif\n\
 	lsls r4, r4, #1\n\
 	lsrs r0, r4, #1\n\
 	str r0, [r2]\n\
@@ -787,8 +805,13 @@ _0806751C:\n\
 	ldr r0, _080675A0 @ =0x000343FD\n\
 	adds r4, r1, #0\n\
 	muls r4, r0, r4\n\
+.if REGION_US && !HIT_BLOOD\n\
+	ldr r0, _080675A4 @ =0x00269EC3\n\
+	adds r4, r4, r0\n\
+.else\n\
 	ldr r1, _080675A4 @ =0x00269EC3\n\
 	adds r4, r4, r1\n\
+.endif\n\
 	lsls r4, r4, #1\n\
 	lsrs r0, r4, #1\n\
 	str r0, [r2]\n\
@@ -851,11 +874,18 @@ _080675B8:\n\
 	ldrb r0, [r7, #0x11]\n\
 	cmp r0, #0\n\
 	bne _0806764C\n\
+.if REGION_US && !HIT_BLOOD\n\
+	movs r1, #0x54\n\
+	adds r1, r1, r7\n\
+	mov r8, r1\n\
+	movs r0, #1\n\
+.else\n\
 	movs r0, #0x54\n\
 	adds r0, r0, r7\n\
 	mov r8, r0\n\
 	movs r0, #1\n\
 	mov r1, r8\n\
+.endif\n\
 	bl TryDropItem\n\
 	movs r0, #1\n\
 	mov r1, sp\n\
@@ -867,8 +897,13 @@ _080675B8:\n\
 	ldr r0, _08067678 @ =0x000343FD\n\
 	adds r4, r1, #0\n\
 	muls r4, r0, r4\n\
+.if REGION_US && !HIT_BLOOD\n\
+	ldr r3, _0806767C @ =0x00269EC3\n\
+	adds r4, r4, r3\n\
+.else\n\
 	ldr r1, _0806767C @ =0x00269EC3\n\
 	adds r4, r4, r1\n\
+.endif\n\
 	lsls r4, r4, #1\n\
 	lsrs r0, r4, #1\n\
 	str r0, [r2]\n\

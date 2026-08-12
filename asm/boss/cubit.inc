@@ -226,8 +226,8 @@ _080527D4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080527DC: .4byte 0x08363970
-_080527E0: .4byte 0x083639A0
+_080527DC: .4byte sUpdates1
+_080527E0: .4byte sUpdates2
 
 	thumb_func_start Cubit_Die
 Cubit_Die: @ 0x080527E4
@@ -241,7 +241,7 @@ Cubit_Die: @ 0x080527E4
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080527F8: .4byte 0x083639D0
+_080527F8: .4byte sDeads
 
 	thumb_func_start cubitDeath0
 cubitDeath0: @ 0x080527FC
@@ -350,7 +350,9 @@ _080528C0:
 	thumb_func_start cubitDeath1
 cubitDeath1: @ 0x080528C8
 	push {r4, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
 	cmp r0, #0x19
@@ -459,13 +461,16 @@ _080529C8: .4byte gStageRun
 _080529CC:
 	movs r0, #0
 	str r0, [r4, #0x60]
+.if HIT_BLOOD
 	ldr r2, [r4, #0x54]
 	str r2, [sp]
 	ldr r3, [r4, #0x58]
 	str r3, [sp, #4]
+.endif
 	ldrb r1, [r4, #0xa]
 	movs r0, #0x10
 	ands r0, r1
+.if HIT_BLOOD
 	cmp r0, #0
 	beq _080529E4
 	str r2, [sp]
@@ -510,6 +515,7 @@ _08052A28:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _08052A36:
 	movs r0, #0x2f
 	bl PlaySound
@@ -582,12 +588,12 @@ _08052AB0:
 	ldr r1, _08052AC4 @ =0x08363A88
 	b _08052AE6
 	.align 2, 0
-_08052AC4: .4byte 0x08363A88
+_08052AC4: .4byte gCubitRoutine+0x12c
 _08052AC8:
 	ldr r1, _08052ACC @ =0x08363A90
 	b _08052AE6
 	.align 2, 0
-_08052ACC: .4byte 0x08363A90
+_08052ACC: .4byte gCubitRoutine+0x134
 _08052AD0:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0x10
@@ -597,7 +603,7 @@ _08052AD0:
 	ldr r1, _08052AE0 @ =0x08363A78
 	b _08052AE6
 	.align 2, 0
-_08052AE0: .4byte 0x08363A78
+_08052AE0: .4byte sExplosionCoords
 _08052AE4:
 	ldr r1, _08052B0C @ =0x08363A80
 _08052AE6:
@@ -622,7 +628,7 @@ _08052B04:
 	strb r0, [r4, #0xe]
 	b _08052B3C
 	.align 2, 0
-_08052B0C: .4byte 0x08363A80
+_08052B0C: .4byte gCubitRoutine+0x124
 _08052B10:
 	movs r0, #0x30
 	strb r0, [r4, #0x12]
@@ -649,7 +655,9 @@ _08052B34:
 	ands r0, r1
 	strb r0, [r4, #0xa]
 _08052B3C:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -1514,7 +1522,7 @@ _0805319A:
 	b _08053216
 	.align 2, 0
 _08053200: .4byte 0x0000B019
-_08053204: .4byte 0x08363A20
+_08053204: .4byte gCubitRoutine+0xc4
 _08053208: .4byte 0xFFFFD800
 _0805320C: .4byte gElFxManager
 _08053210:
@@ -3238,7 +3246,7 @@ _08053F60:
 	b _08053FDA
 	.align 2, 0
 _08053FC8: .4byte 0x0000B019
-_08053FCC: .4byte 0x08363A20
+_08053FCC: .4byte gCubitRoutine+0xc4
 _08053FD0: .4byte 0xFFFFD800
 _08053FD4:
 	ldrb r1, [r7, #0xa]
@@ -3909,7 +3917,7 @@ cubit_080544c0: @ 0x080544C0
 	b _0805450A
 	.align 2, 0
 _08054500: .4byte 0x0000B019
-_08054504: .4byte 0x08363A70
+_08054504: .4byte gCubitRoutine+0x114
 _08054508:
 	ldr r2, _0805452C @ =0x08363A68
 _0805450A:
@@ -3931,7 +3939,7 @@ _08054522:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_0805452C: .4byte 0x08363A68
+_0805452C: .4byte sElementCoords
 
 	thumb_func_start FUN_08054530
 FUN_08054530: @ 0x08054530
@@ -4042,7 +4050,7 @@ _080545E4:
 	ble _080545E4
 	b _0805466A
 	.align 2, 0
-_080545F4: .4byte 0x08363AA0
+_080545F4: .4byte gCubitRoutine+0x144
 _080545F8:
 	movs r2, #0
 	ldr r5, _08054610 @ =0x08363AA0
@@ -4057,7 +4065,7 @@ _080545FE:
 	ble _080545FE
 	b _0805466A
 	.align 2, 0
-_08054610: .4byte 0x08363AA0
+_08054610: .4byte gCubitRoutine+0x144
 _08054614:
 	cmp r2, #1
 	bne _08054656
@@ -4079,7 +4087,7 @@ _0805462E:
 	subs r0, r1, r0
 	b _0805464E
 	.align 2, 0
-_08054638: .4byte 0x08363A98
+_08054638: .4byte u16_ARRAY_ARRAY_08363a98
 _0805463C:
 	adds r3, #2
 	adds r2, #1
@@ -4112,7 +4120,7 @@ _0805466A:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08054670: .4byte 0x08363A98
+_08054670: .4byte u16_ARRAY_ARRAY_08363a98
 
 	thumb_func_start cubit_08054674
 cubit_08054674: @ 0x08054674

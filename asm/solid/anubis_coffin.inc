@@ -97,7 +97,7 @@ _080CDE10: .4byte 0x00001DFF
 _080CDE14: .4byte pZero2
 _080CDE18: .4byte 0xFFFFF400
 _080CDE1C: .4byte 0xFFFFE200
-_080CDE20: .4byte 0x08370220
+_080CDE20: .4byte sAnubisCoffinCollisions+0x18
 _080CDE24:
 	adds r0, r7, #0
 	adds r0, #0x74
@@ -130,8 +130,8 @@ _080CDE56:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CDE64: .4byte 0x08370208
-_080CDE68: .4byte 0x08370238
+_080CDE64: .4byte sAnubisCoffinCollisions
+_080CDE68: .4byte Rect_08370238
 
 	thumb_func_start nop_080cde6c
 nop_080cde6c: @ 0x080CDE6C
@@ -190,8 +190,8 @@ AnubisCoffin_Init: @ 0x080CDE70
 	bx r0
 	.align 2, 0
 _080CDED8: .4byte gSolidFnTable
-_080CDEDC: .4byte 0x08370240
-_080CDEE0: .4byte 0x08370208
+_080CDEDC: .4byte u8_ARRAY_08370240
+_080CDEE0: .4byte sAnubisCoffinCollisions
 _080CDEE4: .4byte nop_080cde6c
 
 	thumb_func_start AnubisCoffin_Update
@@ -216,8 +216,8 @@ AnubisCoffin_Update: @ 0x080CDEE8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CDF14: .4byte 0x083701F0
-_080CDF18: .4byte 0x083701FC
+_080CDF14: .4byte sAnubisCoffinUpdates1
+_080CDF18: .4byte sAnubisCoffinUpdates2
 
 	thumb_func_start AnubisCoffin_Die
 AnubisCoffin_Die: @ 0x080CDF1C
@@ -287,7 +287,7 @@ _080CDF5C:
 	ldr r2, _080CDF90 @ =0xFFFF7800
 	b _080CDFA6
 	.align 2, 0
-_080CDF8C: .4byte 0x08370238
+_080CDF8C: .4byte Rect_08370238
 _080CDF90: .4byte 0xFFFF7800
 _080CDF94:
 	ldr r1, _080CDFB8 @ =0x00004B01

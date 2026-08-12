@@ -293,14 +293,14 @@ _08015612:
 _0801561C: .4byte gOverworld
 _08015620: .4byte 0x0002D024
 _08015624: .4byte gVideoRegBuffer+4
-_08015628: .4byte 0x085223D0
-_0801562C: .4byte 0x085223D8
+_08015628: .4byte gBgMapOffsets+0x130
+_0801562C: .4byte gBgMapOffsets+0x138
 _08015630: .4byte gOverworld+180260
-_08015634: .4byte 0x087044F0
-_08015638: .4byte 0x08704540
-_0801563C: .4byte 0x0870454C
-_08015640: .4byte 0x08704554
-_08015644: .4byte 0x08704560
+_08015634: .4byte gStageTilesetOffsets+0x40
+_08015638: .4byte gSnowTilesetGraphics+0x44
+_0801563C: .4byte gSnowTilesetGraphics+0x50
+_08015640: .4byte gSnowTilesetGraphics+0x58
+_08015644: .4byte gSnowTilesetGraphics+0x64
 _08015648: .4byte gVideoRegBuffer+0xE
 _0801564C: .4byte _08015650
 _08015650: @ jump table
@@ -452,13 +452,13 @@ _08015788:
 	bx r0
 	.align 2, 0
 _08015790: .4byte 0x0002C002
-_08015794: .4byte 0x085223D0
-_08015798: .4byte 0x085223D8
-_0801579C: .4byte 0x087044F0
-_080157A0: .4byte 0x08704540
-_080157A4: .4byte 0x0870454C
-_080157A8: .4byte 0x08704554
-_080157AC: .4byte 0x08704560
+_08015794: .4byte gBgMapOffsets+0x130
+_08015798: .4byte gBgMapOffsets+0x138
+_0801579C: .4byte gStageTilesetOffsets+0x40
+_080157A0: .4byte gSnowTilesetGraphics+0x44
+_080157A4: .4byte gSnowTilesetGraphics+0x50
+_080157A8: .4byte gSnowTilesetGraphics+0x58
+_080157AC: .4byte gSnowTilesetGraphics+0x64
 
 	thumb_func_start FUN_080157b0
 FUN_080157b0: @ 0x080157B0
@@ -641,8 +641,8 @@ _08015910: .4byte gOverworld
 _08015914: .4byte 0x0002D024
 _08015918: .4byte 0x0002C002
 _0801591C: .4byte 0x0002D025
-_08015920: .4byte 0x085223C4
-_08015924: .4byte 0x085223CC
+_08015920: .4byte gBgMapOffsets+0x124
+_08015924: .4byte gBgMapOffsets+0x12c
 _08015928: .4byte gVideoRegBuffer+4
 _0801592C:
 	ldr r0, _08015A04 @ =0x085223C0
@@ -755,8 +755,8 @@ _080159C2:
 	adds r0, #0x90
 	b _08015B06
 	.align 2, 0
-_08015A04: .4byte 0x085223C0
-_08015A08: .4byte 0x085223C8
+_08015A04: .4byte gBgMapOffsets+0x120
+_08015A08: .4byte gBgMapOffsets+0x128
 _08015A0C: .4byte gVideoRegBuffer+4
 _08015A10: .4byte gOverworld
 _08015A14: .4byte 0x0002D025
@@ -1449,8 +1449,8 @@ FUN_08015f7c: @ 0x08015F7C
 _08015FB0: .4byte gOverworld
 _08015FB4: .4byte 0x0002D026
 _08015FB8: .4byte gStageTilesetOffsets+(18*4)
-_08015FBC: .4byte 0x08705268
-_08015FC0: .4byte 0x08705274
+_08015FBC: .4byte gSnowTilesetGraphics+0xd6c
+_08015FC0: .4byte gSnowTilesetGraphics+0xd78
 _08015FC4:
 	ldr r6, _08016010 @ =gStageTilesetOffsets+(18*4)
 	ldrh r0, [r7, #0x10]
@@ -1490,7 +1490,7 @@ _08015FFE:
 	bx r0
 	.align 2, 0
 _08016010: .4byte gStageTilesetOffsets+(18*4)
-_08016014: .4byte 0x0870527C
+_08016014: .4byte gSnowTilesetGraphics+0xd80
 
 	thumb_func_start FUN_08016018
 FUN_08016018: @ 0x08016018

@@ -94,7 +94,7 @@ Shelluno_Init: @ 0x080789FC
 	.align 2, 0
 _08078A48: .4byte gSystemSavedata
 _08078A4C: .4byte gCurStory
-_08078A50: .4byte 0x0836759C
+_08078A50: .4byte sCollisions
 _08078A54:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -131,7 +131,7 @@ _08078A6C:
 	strb r0, [r2]
 	b _08078ABE
 	.align 2, 0
-_08078A98: .4byte 0x0836759C
+_08078A98: .4byte sCollisions
 _08078A9C:
 	movs r2, #1
 	ldrb r1, [r6, #0xa]
@@ -266,7 +266,7 @@ _08078B7C:
 	strb r1, [r0]
 	b _08078C20
 	.align 2, 0
-_08078BB0: .4byte 0x0836756C
+_08078BB0: .4byte sUpdates1
 _08078BB4:
 	ldr r0, _08078BF0 @ =gOverworld
 	ldr r1, _08078BF4 @ =0x0002C00C
@@ -328,7 +328,7 @@ _08078C20:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08078C28: .4byte 0x08367584
+_08078C28: .4byte sUpdates2
 
 	thumb_func_start Shelluno_Die
 Shelluno_Die: @ 0x08078C2C
@@ -477,6 +477,7 @@ _08078D54:
 	adds r0, r3, r0
 _08078D5E:
 	str r0, [sp, #4]
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xba
 	ldrb r0, [r0]
@@ -514,6 +515,7 @@ _08078D9C:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _08078DAA:
 	ldr r1, [sp, #4]
 	ldr r3, _08078E44 @ =0xFFFFF800
@@ -525,6 +527,34 @@ _08078DAA:
 	ldr r3, _08078E48 @ =RNG_0202f388
 	ldr r0, [r3]
 	ldr r6, _08078E4C @ =0x000343FD
+.if REGION_US && !HIT_BLOOD
+	muls r0, r6, r0
+	ldr r4, _08078E50 @ =0x00269EC3
+	adds r0, r0, r4
+	lsls r0, r0, #1
+	lsrs r2, r0, #1
+	lsrs r0, r0, #0x11
+	movs r5, #0xf
+	ands r0, r5
+	subs r0, #8
+	lsls r0, r0, #8
+	ldr r1, [sp]
+	adds r0, r0, r1
+	str r0, [sp]
+	adds r1, r2, #0
+	muls r1, r6, r1
+	adds r1, r1, r4
+	lsls r1, r1, #1
+	lsrs r2, r1, #1
+	str r2, [r3]
+	lsrs r1, r1, #0x11
+	ands r1, r5
+	subs r1, #8
+	lsls r1, r1, #8
+	ldr r2, [sp, #4]
+	adds r1, r1, r2
+	str r1, [sp, #4]
+.else
 	adds r1, r0, #0
 	muls r1, r6, r1
 	ldr r4, _08078E50 @ =0x00269EC3
@@ -551,11 +581,38 @@ _08078DAA:
 	ldr r1, [sp, #4]
 	adds r1, r1, r2
 	str r1, [sp, #4]
+.endif
 	movs r2, #1
 	str r3, [sp, #0x24]
 	bl CreateBubble
 	ldr r3, [sp, #0x24]
 	ldr r0, [r3]
+.if REGION_US && !HIT_BLOOD
+	muls r0, r6, r0
+	adds r0, r0, r4
+	lsls r0, r0, #1
+	lsrs r2, r0, #1
+	lsrs r0, r0, #0x11
+	ands r0, r5
+	subs r0, #8
+	lsls r0, r0, #8
+	ldr r1, [sp]
+	adds r0, r0, r1
+	str r0, [sp]
+	adds r1, r2, #0
+	muls r1, r6, r1
+	adds r1, r1, r4
+	lsls r1, r1, #1
+	lsrs r2, r1, #1
+	str r2, [r3]
+	lsrs r1, r1, #0x11
+	ands r1, r5
+	subs r1, #8
+	lsls r1, r1, #8
+	ldr r2, [sp, #4]
+	adds r1, r1, r2
+	str r1, [sp, #4]
+.else
 	adds r1, r0, #0
 	muls r1, r6, r1
 	adds r1, r1, r4
@@ -580,6 +637,7 @@ _08078DAA:
 	ldr r1, [sp, #4]
 	adds r1, r1, r2
 	str r1, [sp, #4]
+.endif
 	movs r2, #0
 	bl CreateBubble
 	adds r1, r7, #0
@@ -1298,7 +1356,7 @@ _080793F4:
 	bl PushoutToRight2
 	b _08079432
 	.align 2, 0
-_0807941C: .4byte 0x0836759C
+_0807941C: .4byte sCollisions
 _08079420: .4byte 0xFFFFF400
 _08079424:
 	movs r3, #0xc0
@@ -1640,7 +1698,7 @@ _080796C0:
 	adds r0, #1
 	bl _0807A002
 	.align 2, 0
-_080796C8: .4byte 0x083675CC
+_080796C8: .4byte gShellunoRoutine+0x74
 _080796CC: .4byte 0xFFFFF000
 _080796D0: .4byte 0x00003501
 _080796D4: .4byte 0xFFFFE800
@@ -2266,7 +2324,7 @@ _08079B7E:
 	ble _08079BCC
 	b _08079BE0
 	.align 2, 0
-_08079BB8: .4byte 0x083675CC
+_08079BB8: .4byte gShellunoRoutine+0x74
 _08079BBC: .4byte pZero2
 _08079BC0: .4byte 0x00003BFF
 _08079BC4:
@@ -2524,7 +2582,7 @@ _08079D98:
 	bl PushoutToRight2
 	b _08079DDA
 	.align 2, 0
-_08079DC0: .4byte 0x083675CC
+_08079DC0: .4byte gShellunoRoutine+0x74
 _08079DC4: .4byte 0x00003501
 _08079DC8: .4byte 0xFFFFF400
 _08079DCC:
@@ -2863,8 +2921,8 @@ _0807A056:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A05C: .4byte 0x083675E4
-_0807A060: .4byte 0x083675CC
+_0807A05C: .4byte gShellunoRoutine+0x8c
+_0807A060: .4byte gShellunoRoutine+0x74
 
 	thumb_func_start FUN_0807a064
 FUN_0807a064: @ 0x0807A064
@@ -2925,7 +2983,7 @@ _0807A0A2:
 	bl FUN_0800a05c
 	b _0807A0CE
 	.align 2, 0
-_0807A0C4: .4byte 0x083675E4
+_0807A0C4: .4byte gShellunoRoutine+0x8c
 _0807A0C8:
 	ldr r0, [r4, #0x58]
 	ldr r1, [r4, #0x60]
@@ -2952,7 +3010,7 @@ _0807A0F0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A0F8: .4byte 0x083675CC
+_0807A0F8: .4byte gShellunoRoutine+0x74
 
 	thumb_func_start FUN_0807a0fc
 FUN_0807a0fc: @ 0x0807A0FC
@@ -2999,7 +3057,7 @@ _0807A110:
 	b _0807A164
 	.align 2, 0
 _0807A14C: .4byte 0x00003509
-_0807A150: .4byte 0x083675FC
+_0807A150: .4byte gShellunoRoutine+0xa4
 _0807A154: .4byte pZero2
 _0807A158: .4byte 0xFFFFFD80
 _0807A15C:
@@ -3118,7 +3176,7 @@ _0807A23A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A240: .4byte 0x0836759C
+_0807A240: .4byte sCollisions
 
 	thumb_func_start FUN_0807a244
 FUN_0807a244: @ 0x0807A244
@@ -3313,7 +3371,7 @@ _0807A3A8:
 	movs r0, #2
 	b _0807A3D2
 	.align 2, 0
-_0807A3C8: .4byte 0x0836762C
+_0807A3C8: .4byte sElementCoord
 _0807A3CC:
 	cmp r2, #0x30
 	bne _0807A3D6

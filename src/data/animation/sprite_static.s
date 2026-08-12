@@ -406,8 +406,16 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/resistance_base/ciel_comp/2/metasprite.inc"
 .include "sprites/static/resistance_base/ciel_comp/3/metasprite.inc"
 .include "sprites/static/resistance_base/ciel_comp/4/metasprite.inc"
+.if ENGLISH
+.include "sprites/static/logo/megaman/metasprite-en.inc"
+.else
 .include "sprites/static/logo/megaman/metasprite.inc"
+.endif
+.if ENGLISH
+.include "sprites/static/logo/z/metasprite-en.inc"
+.else
 .include "sprites/static/logo/z/metasprite.inc"
+.endif
 .include "sprites/static/missile_platform/metasprite.inc"
 .include "sprites/static/mother_elf/152/metasprite.inc"
 .include "sprites/static/volcano/coffin/metasprite.inc"
@@ -431,8 +439,14 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/ecrystal/ball/metasprite.inc"
 .include "sprites/static/ecrystal/green/metasprite.inc"
 .include "sprites/static/exlife/default/metasprite.inc"
+.if ENGLISH
+@ US shares one metasprite for all three ex-life colours
+gStaticMetaSprite_exlife_blue = gStaticMetaSprite_exlife_default
+gStaticMetaSprite_exlife_green = gStaticMetaSprite_exlife_default
+.else
 .include "sprites/static/exlife/blue/metasprite.inc"
 .include "sprites/static/exlife/green/metasprite.inc"
+.endif
 .include "sprites/static/result_disk/default/metasprite.inc"
 .include "sprites/static/result_disk/blue/metasprite.inc"
 .include "sprites/static/result_disk/red/metasprite.inc"
@@ -509,6 +523,11 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/boss_human/tretista/metasprite.inc"
 .include "sprites/static/boss_human/volteel/metasprite.inc"
 .include "sprites/static/253/metasprite.inc"
+.if ENGLISH
+@ US keeps 0x1ac bytes here that JP does not, before the motion command
+@ table. Unreferenced and absent from the JP ROM.
+.incbin "sprites/static/us_static_tail.bin"
+.endif
 
   .balign 4
 .global gStaticMotionCmdTable
@@ -915,7 +934,11 @@ gStaticMotionCmdTable:
 .include "sprites/static/resistance_base/ciel_comp/2/sequence.inc"
 .include "sprites/static/resistance_base/ciel_comp/3/sequence.inc"
 .include "sprites/static/resistance_base/ciel_comp/4/sequence.inc"
+.if ENGLISH
+.include "sprites/static/logo/megaman/sequence-en.inc"
+.else
 .include "sprites/static/logo/megaman/sequence.inc"
+.endif
 .include "sprites/static/logo/z/sequence.inc"
 .include "sprites/static/missile_platform/sequence.inc"
 .include "sprites/static/mother_elf/152/sequence.inc"
@@ -1010,6 +1033,16 @@ gStaticMotionCmdTable:
 .include "sprites/static/243/sequence.inc"
 .include "sprites/static/copy_x_minigame_slot/sequence.inc"
 .include "sprites/static/boss_human/hellbat/sequence.inc"
+.if ENGLISH
+@ US shares hellbat's sequence across every boss_human portrait
+gStaticAnimationSequence_boss_human_childre = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_blazin = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_deathtanz = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_glacierle = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_cubit = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_tretista = gStaticAnimationSequence_boss_human_hellbat
+gStaticAnimationSequence_boss_human_volteel = gStaticAnimationSequence_boss_human_hellbat
+.else
 .include "sprites/static/boss_human/childre/sequence.inc"
 .include "sprites/static/boss_human/blazin/sequence.inc"
 .include "sprites/static/boss_human/deathtanz/sequence.inc"
@@ -1017,6 +1050,7 @@ gStaticMotionCmdTable:
 .include "sprites/static/boss_human/cubit/sequence.inc"
 .include "sprites/static/boss_human/tretista/sequence.inc"
 .include "sprites/static/boss_human/volteel/sequence.inc"
+.endif
 .include "sprites/static/253/sequence.inc"
 
 .balign 4

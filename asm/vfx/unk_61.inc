@@ -177,7 +177,7 @@ _080C30E0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C30E4: .4byte 0x0836F424
+_080C30E4: .4byte sUpdates
 
 	thumb_func_start VFX61_Die
 VFX61_Die: @ 0x080C30E8
@@ -631,7 +631,7 @@ _080C345C:
 	orrs r0, r1
 	b _080C348A
 	.align 2, 0
-_080C3474: .4byte 0x0836F490
+_080C3474: .4byte PTR_s32_ARRAY_0836f490
 _080C3478: .4byte RNG_0202f388
 _080C347C: .4byte 0x000343FD
 _080C3480: .4byte 0x00269EC3

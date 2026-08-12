@@ -1,4 +1,5 @@
 #include "collision.h"
+#include "config.h"
 #include "cyberelf.h"
 #include "disk.h"
 #include "element.h"
@@ -99,7 +100,7 @@ NAKED static void PostProcess_CyberSpaceColorFilter(void) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	movs r5, #0\n\
-	ldr r1, _080EE300 @ =0x02000108\n\
+	ldr r1, _080EE300 @ =gUnkSineTableIdx\n\
 	ldrb r0, [r1]\n\
 	adds r0, #1\n\
 	strb r0, [r1]\n\
@@ -206,11 +207,16 @@ _080EE2C4:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080EE300: .4byte 0x02000108\n\
+_080EE300: .4byte gUnkSineTableIdx\n\
 _080EE304: .4byte gSineTable\n\
 _080EE308: .4byte gCyberSpaceColorHashtable\n\
 _080EE30C: .4byte u16_ARRAY_083860b0\n\
-_080EE310: .4byte gSpawnManager+0x22A\n\
+_080EE310:\n\
+.if REGION_US\n\
+	.4byte gSpawnManager+0x2EA\n\
+.else\n\
+	.4byte gSpawnManager+0x22A\n\
+.endif\n\
 _080EE314: .4byte 0x05000200\n\
 _080EE318: .4byte 0x001F001F\n\
 _080EE31C: .4byte 0x05000240\n\
@@ -429,7 +435,14 @@ static void GameLoop_PreOverworld(struct GameState* g) {
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
+#if IS_US
+  BGCNT16(0) = BGCNT_CHARBASE(2) | BGCNT_TXT512x256;
+#endif
   RESET_BGOFS(0);
+#if IS_US
+  EnableBG0(gGameState.bg0, SCREEN_BASE(0), 1408, 0x3C0);
+  LoadAsciiBold();
+#endif
   g->unk_1ed8 = 0xFFFFFFFF;
   g->inMenu = FALSE;
   Renderer_Init(&g->rendererMain);
@@ -817,7 +830,11 @@ static void GameLoop_GameOver(struct GameState* g) {
       s16 i;
       g->mode[3] = FALSE;
       for (i = 0; i < GAME_SECTOR_NUM; i++) {
+#if IS_US
+        if (ValidateSectorWithChecksum(i, sizeof(GameSavedata))) g->mode[3] = TRUE;
+#else
         if (ValidateSector(i, sizeof(GameSavedata))) g->mode[3] = TRUE;
+#endif
       }
       gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
       gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
@@ -884,6 +901,9 @@ static void GameLoop_GameOver(struct GameState* g) {
         if (g->unk_006 == 0) {
           (gScore.total)->extraLife = 2;
           (gScore.total)->rank = (g->save).savedRank;
+#if IS_US
+          (gScore.total)->fusionCount = 0;
+#endif
           {
             void* src = &(g->save).zeroAsset;
             void* dst = &(g->save).status;
@@ -1020,7 +1040,9 @@ static void GameLoop_SkieEventScene(struct GameState* g) {
   gPaletteManager.buf[0] = RGB_BLACK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
+#if !IS_US
   gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;
   LoadAsciiBold();
+#endif
   SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
 }

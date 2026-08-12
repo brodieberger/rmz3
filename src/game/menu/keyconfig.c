@@ -690,6 +690,92 @@ static void KcMenuLoop_Exit(struct GameState* g) {
 
 NAKED void FUN_080f60bc(u16* p, KEY_INPUT key, u16 r2, u8 r3) {
   asm(".syntax unified\n\
+.if REGION_US\n\
+	push	{r4, r5, r6, lr}\n\
+	adds	r6, r0, #0\n\
+	lsls	r1, r1, #16\n\
+	lsrs	r1, r1, #16\n\
+	adds	r5, r1, #0\n\
+	lsls	r2, r2, #16\n\
+	lsrs	r4, r2, #16\n\
+	lsls	r3, r3, #24\n\
+	lsrs	r3, r3, #24\n\
+	cmp	r1, #2\n\
+	beq _US_080F5C84\n\
+	cmp	r1, #2\n\
+	bgt _US_080F5C68\n\
+	cmp	r1, #1\n\
+	beq _US_080F5C7A\n\
+	b _US_080F5CA4\n\
+_US_080F5C68:\n\
+	movs	r0, #128\n\
+	lsls	r0, r0, #1\n\
+	cmp	r5, r0\n\
+	beq _US_080F5C98\n\
+	movs	r0, #128\n\
+	lsls	r0, r0, #2\n\
+	cmp	r5, r0\n\
+	beq _US_080F5C8E\n\
+	b _US_080F5CA4\n\
+_US_080F5C7A:\n\
+	lsls	r0, r4, #1\n\
+	adds	r0, r0, r6\n\
+	lsls	r1, r3, #12\n\
+	movs	r2, #161\n\
+	b _US_080F5CA0\n\
+_US_080F5C84:\n\
+	lsls	r0, r4, #1\n\
+	adds	r0, r0, r6\n\
+	lsls	r1, r3, #12\n\
+	movs	r2, #162\n\
+	b _US_080F5CA0\n\
+_US_080F5C8E:\n\
+	lsls	r0, r4, #1\n\
+	adds	r0, r0, r6\n\
+	lsls	r1, r3, #12\n\
+	movs	r2, #164\n\
+	b _US_080F5CA0\n\
+_US_080F5C98:\n\
+	lsls	r0, r4, #1\n\
+	adds	r0, r0, r6\n\
+	lsls	r1, r3, #12\n\
+	movs	r2, #165\n\
+_US_080F5CA0:\n\
+	orrs	r1, r2\n\
+	strh	r1, [r0, #0]\n\
+_US_080F5CA4:\n\
+	ldr	r0, _US_080F5CDC\n\
+	cmp	r4, r0\n\
+	bhi _US_080F5CD6\n\
+	lsls	r2, r4, #1\n\
+	adds	r2, r2, r6\n\
+	lsls	r1, r3, #12\n\
+	movs	r3, #205\n\
+	adds	r0, r1, #0\n\
+	orrs	r0, r3\n\
+	strh	r0, [r2, #4]\n\
+	movs	r3, #206\n\
+	adds	r0, r1, #0\n\
+	orrs	r0, r3\n\
+	strh	r0, [r2, #6]\n\
+	movs	r3, #207\n\
+	adds	r0, r1, #0\n\
+	orrs	r0, r3\n\
+	strh	r0, [r2, #8]\n\
+	movs	r3, #208\n\
+	adds	r0, r1, #0\n\
+	orrs	r0, r3\n\
+	strh	r0, [r2, #10]\n\
+	movs	r0, #209\n\
+	orrs	r1, r0\n\
+	strh	r1, [r2, #12]\n\
+_US_080F5CD6:\n\
+	pop	{r4, r5, r6}\n\
+	pop	{r0}\n\
+	bx	r0\n\
+	.align 2, 0\n\
+_US_080F5CDC: .4byte 0x0000013F\n\
+.else\n\
 	push {r4, r5, r6, r7, lr}\n\
 	adds r7, r0, #0\n\
 	lsls r1, r1, #0x10\n\
@@ -770,12 +856,568 @@ _080F6142:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _080F6148: .4byte 0x0000013F\n\
+.endif\n\
  .syntax divided\n");
 }
 
 // 0x080f614c
 NAKED static void FUN_080f614c(struct GameState* g, u16* r1) {
   asm(".syntax unified\n\
+.if REGION_US\n\
+	push	{r4, r5, r6, r7, lr}\n\
+	mov	r7, sl\n\
+	mov	r6, r9\n\
+	mov	r5, r8\n\
+	push	{r5, r6, r7}\n\
+	sub	sp, #20\n\
+	str	r0, [sp, #0]\n\
+	adds	r5, r1, #0\n\
+	ldr	r1, _US_080F5F74\n\
+	adds	r0, r0, r1\n\
+	ldr	r6, [r0, #0]\n\
+	movs	r4, #0\n\
+	ldr	r2, _US_080F5F78\n\
+	mov	sl, r2\n\
+	ldr	r0, _US_080F5F7C\n\
+	mov	r9, r0\n\
+	ldr	r1, _US_080F5F80\n\
+	mov	r8, r1\n\
+	movs	r2, #216\n\
+	adds	r2, r2, r6\n\
+	mov	ip, r2\n\
+	mov	r7, ip\n\
+_US_080F5D0C:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	adds	r3, #202\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, r9\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r7, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	add	r0, r8\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #4\n\
+	bls _US_080F5D0C\n\
+	movs	r4, #0\n\
+	movs	r0, #217\n\
+	adds	r0, r0, r6\n\
+	mov	r9, r0\n\
+	movs	r1, #136\n\
+	lsls	r1, r1, #2\n\
+	adds	r1, r6, r1\n\
+	str	r1, [sp, #12]\n\
+	movs	r2, #135\n\
+	lsls	r2, r2, #2\n\
+	adds	r2, r6, r2\n\
+	str	r2, [sp, #4]\n\
+	ldr	r0, _US_080F5F84\n\
+	adds	r0, r6, r0\n\
+	str	r0, [sp, #8]\n\
+	ldr	r1, _US_080F5F88\n\
+	adds	r1, r6, r1\n\
+	str	r1, [sp, #16]\n\
+	ldr	r2, _US_080F5F7C\n\
+	mov	r8, r2\n\
+	ldr	r7, _US_080F5F8C\n\
+	mov	r6, ip\n\
+_US_080F5D5E:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	adds	r3, #216\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, r8\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r6, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	adds	r0, r0, r7\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #4\n\
+	bls _US_080F5D5E\n\
+	movs	r4, #0\n\
+	ldr	r0, _US_080F5F7C\n\
+	mov	r8, r0\n\
+	ldr	r7, _US_080F5F90\n\
+	mov	r6, ip\n\
+_US_080F5D8E:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	adds	r3, #230\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, r8\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r6, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	adds	r0, r0, r7\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #5\n\
+	bls _US_080F5D8E\n\
+	movs	r4, #0\n\
+	ldr	r1, _US_080F5F94\n\
+	mov	r8, r1\n\
+	ldr	r2, _US_080F5F7C\n\
+	mov	ip, r2\n\
+	ldr	r7, _US_080F5F80\n\
+	mov	r6, r9\n\
+_US_080F5DC2:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	add	r3, r8\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, ip\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r6, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	adds	r0, r0, r7\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #4\n\
+	bls _US_080F5DC2\n\
+	movs	r4, #0\n\
+	movs	r0, #198\n\
+	lsls	r0, r0, #2\n\
+	mov	r8, r0\n\
+	ldr	r1, _US_080F5F7C\n\
+	mov	ip, r1\n\
+	ldr	r7, _US_080F5F8C\n\
+	mov	r6, r9\n\
+_US_080F5DF8:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	add	r3, r8\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, ip\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r6, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	adds	r0, r0, r7\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #4\n\
+	bls _US_080F5DF8\n\
+	movs	r4, #0\n\
+	ldr	r2, _US_080F5F98\n\
+	mov	r8, r2\n\
+	ldr	r0, _US_080F5F7C\n\
+	mov	ip, r0\n\
+	ldr	r7, _US_080F5F90\n\
+	mov	r6, r9\n\
+_US_080F5E2C:\n\
+	lsls	r3, r4, #1\n\
+	adds	r3, r3, r5\n\
+	add	r3, r8\n\
+	ldrh	r0, [r3, #0]\n\
+	mov	r2, ip\n\
+	ands	r2, r0\n\
+	ldrb	r1, [r6, #0]\n\
+	lsls	r0, r1, #1\n\
+	adds	r0, r0, r1\n\
+	adds	r0, r0, r7\n\
+	ldrb	r0, [r0, #0]\n\
+	lsls	r0, r0, #12\n\
+	orrs	r2, r0\n\
+	strh	r2, [r3, #0]\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r4, r0, #24\n\
+	cmp	r4, #4\n\
+	bls _US_080F5E2C\n\
+	ldr	r7, [sp, #12]\n\
+	ldrh	r1, [r7, #0]\n\
+	ldr	r2, [sp, #0]\n\
+	ldr	r0, _US_080F5F9C\n\
+	adds	r4, r2, r0\n\
+	ldrb	r0, [r4, #0]\n\
+	lsls	r0, r0, #2\n\
+	add	r0, sl\n\
+	ldrb	r3, [r0, #0]\n\
+	adds	r0, r5, #0\n\
+	movs	r2, #178\n\
+	bl FUN_080f60bc\n\
+	ldr	r2, [sp, #4]\n\
+	ldrh	r1, [r2, #0]\n\
+	ldrb	r0, [r4, #0]\n\
+	lsls	r0, r0, #2\n\
+	mov	r2, sl\n\
+	adds	r2, #1\n\
+	adds	r0, r0, r2\n\
+	ldrb	r3, [r0, #0]\n\
+	adds	r0, r5, #0\n\
+	movs	r2, #210\n\
+	bl FUN_080f60bc\n\
+	ldr	r0, [sp, #8]\n\
+	ldrh	r1, [r0, #0]\n\
+	ldrb	r0, [r4, #0]\n\
+	lsls	r0, r0, #2\n\
+	mov	r2, sl\n\
+	adds	r2, #2\n\
+	adds	r0, r0, r2\n\
+	ldrb	r3, [r0, #0]\n\
+	adds	r0, r5, #0\n\
+	movs	r2, #242\n\
+	bl FUN_080f60bc\n\
+	ldr	r6, [sp, #16]\n\
+	ldrh	r1, [r6, #0]\n\
+	movs	r2, #137\n\
+	lsls	r2, r2, #1\n\
+	ldrb	r0, [r4, #0]\n\
+	lsls	r0, r0, #2\n\
+	mov	r3, sl\n\
+	adds	r3, #3\n\
+	adds	r0, r0, r3\n\
+	ldrb	r3, [r0, #0]\n\
+	adds	r0, r5, #0\n\
+	bl FUN_080f60bc\n\
+	mov	r1, r9\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #0\n\
+	beq _US_080F5EC0\n\
+	b _US_080F5FC0\n\
+_US_080F5EC0:\n\
+	ldrh	r1, [r7, #0]\n\
+	movs	r2, #227\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	ldrh	r1, [r6, #0]\n\
+	movs	r2, #242\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	ldr	r2, _US_080F5FA0\n\
+	adds	r1, r5, r2\n\
+	ldr	r2, _US_080F5FA4\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldrh	r1, [r7, #0]\n\
+	movs	r2, #243\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	movs	r0, #247\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	ldr	r2, _US_080F5FA8\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F5FAC\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #248\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F5FB0\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #249\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F5FB4\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #250\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F5FB8\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #251\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r1, _US_080F5FBC\n\
+	adds	r0, r5, r1\n\
+	subs	r2, #44\n\
+	adds	r1, r2, #0\n\
+	strh	r1, [r0, #0]\n\
+	movs	r2, #252\n\
+	lsls	r2, r2, #2\n\
+	adds	r0, r5, r2\n\
+	strh	r1, [r0, #0]\n\
+	adds	r2, #2\n\
+	adds	r0, r5, r2\n\
+	strh	r1, [r0, #0]\n\
+	b _US_080F613E\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F5F74: .4byte 0x000064AC\n\
+_US_080F5F78: .4byte u8_ARRAY_ARRAY_08386459\n\
+_US_080F5F7C: .4byte 0x00000FFF\n\
+_US_080F5F80: .4byte u8_ARRAY_ARRAY_08386450\n\
+_US_080F5F84: .4byte 0x0000021E\n\
+_US_080F5F88: .4byte 0x00000222\n\
+_US_080F5F8C: .4byte u8_ARRAY_ARRAY_08386450+1\n\
+_US_080F5F90: .4byte u8_ARRAY_ARRAY_08386450+2\n\
+_US_080F5F94: .4byte 0x0000030A\n\
+_US_080F5F98: .4byte 0x00000326\n\
+_US_080F5F9C: .4byte 0x00000DF8\n\
+_US_080F5FA0: .4byte 0x000003CA\n\
+_US_080F5FA4: .4byte 0x000050D4\n\
+_US_080F5FA8: .4byte 0x000050C4\n\
+_US_080F5FAC: .4byte 0x000003DE\n\
+_US_080F5FB0: .4byte 0x000003E2\n\
+_US_080F5FB4: .4byte 0x000003E6\n\
+_US_080F5FB8: .4byte 0x000003EA\n\
+_US_080F5FBC: .4byte 0x000003EE\n\
+_US_080F5FC0:\n\
+	cmp	r0, #1\n\
+	bne _US_080F6088\n\
+	ldrh	r1, [r7, #0]\n\
+	movs	r2, #227\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	movs	r1, #242\n\
+	lsls	r1, r1, #2\n\
+	adds	r0, r5, r1\n\
+	ldr	r2, _US_080F606C\n\
+	adds	r4, r2, #0\n\
+	strh	r4, [r0, #0]\n\
+	adds	r1, #2\n\
+	adds	r0, r5, r1\n\
+	strh	r4, [r0, #0]\n\
+	ldrh	r1, [r6, #0]\n\
+	movs	r2, #243\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	movs	r2, #247\n\
+	lsls	r2, r2, #2\n\
+	adds	r1, r5, r2\n\
+	ldr	r2, _US_080F6070\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6074\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #248\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6078\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #249\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F607C\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #250\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6080\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #251\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r1, _US_080F6084\n\
+	adds	r0, r5, r1\n\
+	strh	r4, [r0, #0]\n\
+	movs	r2, #252\n\
+	lsls	r2, r2, #2\n\
+	adds	r0, r5, r2\n\
+	strh	r4, [r0, #0]\n\
+	adds	r1, #4\n\
+	adds	r0, r5, r1\n\
+	strh	r4, [r0, #0]\n\
+	b _US_080F613E\n\
+	.align 2, 0\n\
+_US_080F606C: .4byte 0x000050A0\n\
+_US_080F6070: .4byte 0x000050C4\n\
+_US_080F6074: .4byte 0x000003DE\n\
+_US_080F6078: .4byte 0x000003E2\n\
+_US_080F607C: .4byte 0x000003E6\n\
+_US_080F6080: .4byte 0x000003EA\n\
+_US_080F6084: .4byte 0x000003EE\n\
+_US_080F6088:\n\
+	ldr	r2, [sp, #12]\n\
+	ldrh	r1, [r2, #0]\n\
+	movs	r2, #227\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	movs	r1, #242\n\
+	lsls	r1, r1, #2\n\
+	adds	r0, r5, r1\n\
+	ldr	r2, _US_080F6150\n\
+	adds	r1, r2, #0\n\
+	strh	r1, [r0, #0]\n\
+	ldr	r2, _US_080F6154\n\
+	adds	r0, r5, r2\n\
+	strh	r1, [r0, #0]\n\
+	ldr	r0, [sp, #16]\n\
+	ldrh	r1, [r0, #0]\n\
+	movs	r2, #243\n\
+	lsls	r2, r2, #1\n\
+	adds	r0, r5, #0\n\
+	movs	r3, #5\n\
+	bl FUN_080f60bc\n\
+	movs	r2, #247\n\
+	lsls	r2, r2, #2\n\
+	adds	r1, r5, r2\n\
+	ldr	r2, _US_080F6158\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F615C\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #248\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6160\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #249\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6164\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #250\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #10\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6168\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #251\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F616C\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	movs	r0, #252\n\
+	lsls	r0, r0, #2\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+	ldr	r0, _US_080F6170\n\
+	adds	r1, r5, r0\n\
+	adds	r2, #1\n\
+	adds	r0, r2, #0\n\
+	strh	r0, [r1, #0]\n\
+_US_080F613E:\n\
+	add	sp, #20\n\
+	pop	{r3, r4, r5}\n\
+	mov	r8, r3\n\
+	mov	r9, r4\n\
+	mov	sl, r5\n\
+	pop	{r4, r5, r6, r7}\n\
+	pop	{r0}\n\
+	bx	r0\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F6150: .4byte 0x000050A0\n\
+_US_080F6154: .4byte 0x000003CA\n\
+_US_080F6158: .4byte 0x000050B8\n\
+_US_080F615C: .4byte 0x000003DE\n\
+_US_080F6160: .4byte 0x000003E2\n\
+_US_080F6164: .4byte 0x000003E6\n\
+_US_080F6168: .4byte 0x000003EA\n\
+_US_080F616C: .4byte 0x000003EE\n\
+_US_080F6170: .4byte 0x000003F2\n\
+.else\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
 	mov r6, sb\n\
@@ -1289,5 +1931,6 @@ _080F6584: .4byte 0x000003E2\n\
 _080F6588: .4byte 0x000003E6\n\
 _080F658C: .4byte 0x000003EA\n\
 _080F6590: .4byte 0x000003EE\n\
+.endif\n\
  .syntax divided\n");
 }

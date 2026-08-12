@@ -1,3 +1,4 @@
+#include "config.h"
 #include "gba/gba.h"
 #include "global.h"
 #include "sram.h"
@@ -39,7 +40,12 @@ const u16 gProcessStackPointerOffsets[3] = {
     0x3002a40 - 0x03001760,
 };
 
+#if IS_US
+// US was built nearly four months later than JP.
+static const ALIGNED(4) u8 sBuildDateTime[] = "Jul  8 2004 18:22:50";
+#else
 static const ALIGNED(4) u8 sBuildDateTime[] = "Mar 20 2004 01:33:22";
+#endif
 
 const saveFunc gSramRoutine[3] = {
     nop_080033d4,

@@ -749,6 +749,11 @@ _08089176:
 	str r0, [r4, #0x58]
 	b _0808919C
 _08089192:
+.if REGION_US
+	@ JP takes this for any work[0] outside {0,3}; US narrows it to 2.
+	cmp r0, #2
+	bne _0808919C
+.endif
 	adds r0, r4, #0
 	movs r1, #0
 	movs r2, #0

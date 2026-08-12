@@ -393,7 +393,7 @@ _080E38F6:\n\
 _080E392C:\n\
 	cmp r3, #0x23\n\
 	bne _080E3982\n\
-	ldr r5, _080E3968 @ =0x0202F33C\n\
+	ldr r5, _080E3968 @ =gTimeElfTimer\n\
 	ldrh r2, [r5]\n\
 	ldr r1, _080E396C @ =0x00007FFF\n\
 	adds r0, r1, #0\n\
@@ -414,7 +414,7 @@ _080E3958: .4byte gScore\n\
 _080E395C: .4byte u16_ARRAY_08371d5c\n\
 _080E3960: .4byte gCurStory\n\
 _080E3964: .4byte gGameState+25200\n\
-_080E3968: .4byte 0x0202F33C\n\
+_080E3968: .4byte gTimeElfTimer\n\
 _080E396C: .4byte 0x00007FFF\n\
 _080E3970: .4byte 0x0000FFFF\n\
 _080E3974:\n\

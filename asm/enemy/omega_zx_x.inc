@@ -81,7 +81,7 @@ _0809263E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08092648: .4byte 0x08369A78
+_08092648: .4byte sUpdates
 
 	thumb_func_start Enemy60_Die
 Enemy60_Die: @ 0x0809264C
@@ -95,7 +95,7 @@ Enemy60_Die: @ 0x0809264C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08092660: .4byte 0x08369A84
+_08092660: .4byte sDeads
 
 	thumb_func_start FUN_08092664
 FUN_08092664: @ 0x08092664
@@ -596,7 +596,7 @@ _08092A54:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08092A5C: .4byte 0x08369AD4
+_08092A5C: .4byte gEnemy60Routine+0xb0
 
 	thumb_func_start FUN_08092a60
 FUN_08092a60: @ 0x08092A60
@@ -729,7 +729,7 @@ _08092B46:
 	bx r0
 	.align 2, 0
 _08092B4C: .4byte 0x0000B601
-_08092B50: .4byte 0x08369B04
+_08092B50: .4byte gEnemy60Routine+0xe0
 
 	thumb_func_start FUN_08092b54
 FUN_08092b54: @ 0x08092B54
@@ -858,7 +858,7 @@ _08092C0C:
 	b _08092C56
 	.align 2, 0
 _08092C3C: .4byte 0x0000B602
-_08092C40: .4byte 0x08369AA4
+_08092C40: .4byte gEnemy60Routine+0x80
 _08092C44:
 	movs r1, #0
 	str r1, [r4, #0x2c]
@@ -1048,11 +1048,11 @@ _08092DBC:
 _08092DC0: .4byte 0x0000B603
 _08092DC4: .4byte gStageRun+232
 _08092DC8: .4byte 0x00001DFF
-_08092DCC: .4byte 0x08369CCC
+_08092DCC: .4byte sPixelCoords
 _08092DD0: .4byte RNG_0202f388
 _08092DD4: .4byte 0x000343FD
 _08092DD8: .4byte 0x00269EC3
-_08092DDC: .4byte 0x08369CD0
+_08092DDC: .4byte gEnemy60Routine+0x2ac
 _08092DE0:
 	ldr r1, _08092E6C @ =0x0000B602
 	adds r0, r4, #0
@@ -1415,7 +1415,7 @@ _080930D2:
 	movs r0, #0xe
 	b _080934B0
 	.align 2, 0
-_080930D8: .4byte 0x08369CF4
+_080930D8: .4byte gEnemy60Routine+0x2d0
 _080930DC:
 	ldrb r0, [r5, #0x12]
 	cmp r0, #0
@@ -1618,7 +1618,7 @@ _08093264: .4byte 0x000064AC
 _08093268: .4byte gPaletteManager
 _0809326C: .4byte 0x0000FFFF
 _08093270: .4byte 0x00000135
-_08093274: .4byte 0x08369A8C
+_08093274: .4byte sCollisions
 _08093278: .4byte u32_020302b0
 _0809327C: .4byte gWindowRegBuffer
 _08093280: .4byte gStageRun+232
@@ -1711,7 +1711,7 @@ _080932E0:
 	subs r0, r0, r1
 	asrs r0, r0, #9
 	str r0, [r2]
-	ldr r1, _08093404 @ =0x0203700C
+	ldr r1, _08093404 @ =gGameState+0x64ac
 	ldr r0, [r1]
 	ldrb r1, [r0, #0xa]
 	movs r3, #1
@@ -1785,7 +1785,7 @@ _0809339E:
 	str r0, [r2]
 	adds r0, r5, #0
 	bl UpdateEntityAnim
-	ldr r2, _08093404 @ =0x0203700C
+	ldr r2, _08093404 @ =gGameState+0x64ac
 	ldr r0, [r2]
 	ldrb r1, [r0, #0xa]
 	mov r0, sl
@@ -1808,9 +1808,9 @@ _0809339E:
 	strh r0, [r2]
 	b _08093436
 	.align 2, 0
-_080933FC: .4byte 0x08369A8C
+_080933FC: .4byte sCollisions
 _08093400: .4byte u32_020302b0
-_08093404: .4byte 0x0203700C
+_08093404: .4byte gGameState+0x64ac
 _08093408: .4byte gStageRun+232
 _0809340C: .4byte gWindowRegBuffer
 _08093410: .4byte u32_020302b4
@@ -1873,7 +1873,7 @@ _08093484: .4byte u32_020302ac
 _08093488: .4byte u32_020302b4
 _0809348C: .4byte u32_020302b0
 _08093490: .4byte 0x0000BFFF
-_08093494: .4byte 0x08369AA4
+_08093494: .4byte gEnemy60Routine+0x80
 _08093498:
 	adds r0, r5, #0
 	bl UpdateEntityAnim

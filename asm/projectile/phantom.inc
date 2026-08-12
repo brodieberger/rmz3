@@ -186,7 +186,7 @@ _080AF490:
 	str r1, [r5, #0x58]
 	b _080AF508
 	.align 2, 0
-_080AF4BC: .4byte 0x0836D424
+_080AF4BC: .4byte PTR_ARRAY_0836d424
 _080AF4C0:
 	ldr r0, _080AF510 @ =gStageRun+232
 	adds r1, r4, #0
@@ -278,7 +278,7 @@ _080AF562:
 	orrs r0, r1
 	b _080AF57A
 	.align 2, 0
-_080AF570: .4byte 0x0836D358
+_080AF570: .4byte gPhantomProjectileRoutine+0x44
 _080AF574:
 	ldrb r1, [r6, #0xa]
 	movs r0, #0xef
@@ -384,7 +384,7 @@ FUN_080af61c: @ 0x080AF61C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AF630: .4byte 0x0836D430
+_080AF630: .4byte PTR_ARRAY_0836d430
 
 	thumb_func_start FUN_080af634
 FUN_080af634: @ 0x080AF634
@@ -539,7 +539,7 @@ FUN_080af748: @ 0x080AF748
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AF75C: .4byte 0x0836D438
+_080AF75C: .4byte PTR_ARRAY_0836d438
 
 	thumb_func_start FUN_080af760
 FUN_080af760: @ 0x080AF760
@@ -730,7 +730,7 @@ FUN_080af8b0: @ 0x080AF8B0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AF8C4: .4byte 0x0836D440
+_080AF8C4: .4byte PTR_ARRAY_0836d440
 
 	thumb_func_start FUN_080af8c8
 FUN_080af8c8: @ 0x080AF8C8
@@ -865,7 +865,7 @@ FUN_080af9b0: @ 0x080AF9B0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AF9C4: .4byte 0x0836D44C
+_080AF9C4: .4byte PTR_ARRAY_0836d44c
 
 	thumb_func_start FUN_080af9c8
 FUN_080af9c8: @ 0x080AF9C8

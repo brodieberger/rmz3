@@ -123,7 +123,7 @@ _080CBC06:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CBC0C: .4byte 0x0836FE10
+_080CBC0C: .4byte Collision_ARRAY_0836fe10
 _080CBC10: .4byte onCollision
 
 	thumb_func_start ironStarAI
@@ -196,8 +196,8 @@ _080CBC92:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CBC98: .4byte 0x0836FE00
-_080CBC9C: .4byte 0x0836FE08
+_080CBC98: .4byte PTR_ARRAY_0836fe00
+_080CBC9C: .4byte PTR_ARRAY_0836fe08
 
 	thumb_func_start killIronStar
 killIronStar: @ 0x080CBCA0
@@ -272,7 +272,7 @@ _080CBCFE:
 	lsls r0, r0, #4
 	b _080CBD3A
 	.align 2, 0
-_080CBD20: .4byte 0x0836FE58
+_080CBD20: .4byte Coord_0836fe58
 _080CBD24: .4byte 0x00000801
 _080CBD28: .4byte 0x00002D01
 _080CBD2C: .4byte gOverworld
@@ -345,7 +345,7 @@ _080CBDAC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CBDB4: .4byte 0x0836FE40
+_080CBDB4: .4byte Collision_ARRAY_0836fe10+0x30
 _080CBDB8: .4byte gOverworld
 _080CBDBC: .4byte 0x0002C00C
 

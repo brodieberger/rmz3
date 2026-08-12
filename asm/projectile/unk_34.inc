@@ -257,7 +257,7 @@ Projectile34_Init: @ 0x080ACA18
 	strb r7, [r5, #0xd]
 	b _080ACAE6
 	.align 2, 0
-_080ACA6C: .4byte 0x0836C728
+_080ACA6C: .4byte sCollisions
 _080ACA70: .4byte gProjectileFnTable
 _080ACA74:
 	ldrb r0, [r5, #0x11]
@@ -288,7 +288,7 @@ _080ACA74:
 	strb r6, [r5, #0xd]
 	b _080ACAE6
 	.align 2, 0
-_080ACAAC: .4byte 0x0836C728
+_080ACAAC: .4byte sCollisions
 _080ACAB0: .4byte gProjectileFnTable
 _080ACAB4:
 	movs r0, #4
@@ -324,7 +324,7 @@ _080ACAE6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ACAF8: .4byte 0x0836C728
+_080ACAF8: .4byte sCollisions
 _080ACAFC: .4byte gProjectileFnTable
 
 	thumb_func_start Projectile34_Update
@@ -339,7 +339,7 @@ Projectile34_Update: @ 0x080ACB00
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ACB14: .4byte 0x0836C718
+_080ACB14: .4byte sUpdates
 
 	thumb_func_start Projectile34_Die
 Projectile34_Die:
@@ -490,7 +490,7 @@ _080ACC32:
 	b _080ACC7E
 	.align 2, 0
 _080ACC58: .4byte 0x00000A01
-_080ACC5C: .4byte 0x0836C740
+_080ACC5C: .4byte gProjectile34Routine+0x3c
 _080ACC60:
 	ldr r1, _080ACCC0 @ =0x00000A04
 	adds r0, r4, #0
@@ -540,7 +540,7 @@ _080ACC9E:
 	b _080ACCEA
 	.align 2, 0
 _080ACCC0: .4byte 0x00000A04
-_080ACCC4: .4byte 0x0836C758
+_080ACCC4: .4byte gProjectile34Routine+0x54
 _080ACCC8: .4byte RNG_0202f388
 _080ACCCC: .4byte 0x000343FD
 _080ACCD0: .4byte 0x00269EC3
@@ -761,12 +761,12 @@ _080ACE78:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ACE80: .4byte 0x0836C820
+_080ACE80: .4byte PTR_ARRAY_0836c820
 _080ACE84: .4byte RNG_0202f388
 _080ACE88: .4byte 0x000343FD
 _080ACE8C: .4byte 0x00269EC3
 _080ACE90: .4byte 0x00000C01
-_080ACE94: .4byte 0x0836C770
+_080ACE94: .4byte gProjectile34Routine+0x6c
 _080ACE98: .4byte 0xFFFFF700
 _080ACE9C: .4byte gProjectileFnTable
 
@@ -857,7 +857,7 @@ _080ACF28:
 	b _080ACF74
 	.align 2, 0
 _080ACF4C: .4byte 0x00000A01
-_080ACF50: .4byte 0x0836C740
+_080ACF50: .4byte gProjectile34Routine+0x3c
 _080ACF54:
 	ldr r1, _080ACFB8 @ =0x00000A04
 	adds r0, r4, #0
@@ -911,7 +911,7 @@ _080ACFAE:
 	b _080ACFFA
 	.align 2, 0
 _080ACFB8: .4byte 0x00000A04
-_080ACFBC: .4byte 0x0836C758
+_080ACFBC: .4byte gProjectile34Routine+0x54
 _080ACFC0: .4byte RNG_0202f388
 _080ACFC4: .4byte 0x000343FD
 _080ACFC8: .4byte 0x00269EC3

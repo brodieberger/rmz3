@@ -14,6 +14,9 @@ struct Unk_02000db0 {
 };
 static_assert(sizeof(struct Unk_02000db0) == 8);
 
+extern struct Unk_02000db0 Unk02000db0;
+extern struct Unk_02000db0 Unk02000dc0;
+
 // SIO（シリアルI/O）制御構造体
 // 0x02000d50
 struct Unk_02000d50 {

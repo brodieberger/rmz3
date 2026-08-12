@@ -324,8 +324,8 @@ _08080F16:
 	bx r0
 	.align 2, 0
 _08080F24: .4byte gEnemyFnTable
-_08080F28: .4byte 0x083680F0
-_08080F2C: .4byte 0x08368000
+_08080F28: .4byte sInitModes
+_08080F2C: .4byte sCollisions
 _08080F30: .4byte nop_08080eb8
 
 	thumb_func_start PantheonAquaModObj_Update
@@ -373,8 +373,8 @@ _08080F84:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080F8C: .4byte 0x08367FB0
-_08080F90: .4byte 0x08367FD8
+_08080F8C: .4byte sUpdates1
+_08080F90: .4byte sUpdates2
 
 	thumb_func_start PantheonAquaModObj_Die
 PantheonAquaModObj_Die: @ 0x08080F94
@@ -415,7 +415,7 @@ PantheonAquaModObj_Die: @ 0x08080F94
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08080FE0: .4byte 0x083680FA
+_08080FE0: .4byte sMotions
 _08080FE4: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08080fe8
@@ -515,6 +515,7 @@ _08081098: .4byte gSineTable
 _0808109C:
 	movs r0, #0x29
 	bl PlaySound
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -527,6 +528,7 @@ _0808109C:
 	add r1, sp, #8
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x28
 	str r0, [sp, #8]
 	movs r0, #0x30
@@ -565,13 +567,23 @@ _080810EA:
 	ldr r3, _080811EC @ =RNG_0202f388
 	ldr r7, _080811F0 @ =0x000343FD
 	ldr r6, _080811F4 @ =0x00269EC3
+.if REGION_US && !HIT_BLOOD
+	add r0, sp, #8
+	mov r8, r0
+.else
 	add r2, sp, #8
 	mov r8, r2
+.endif
 	movs r4, #2
 _08081112:
 	ldr r1, [r5, #0x54]
+.if REGION_US && !HIT_BLOOD
+	ldr r2, _080811F8 @ =0xFFFFF800
+	adds r1, r1, r2
+.else
 	ldr r0, _080811F8 @ =0xFFFFF800
 	adds r1, r1, r0
+.endif
 	ldr r0, [r3]
 	muls r0, r7, r0
 	adds r0, r0, r6
@@ -671,15 +683,17 @@ _080811D4:
 	pop {r0}
 	bx r0
 	.align 2, 0
+.if HIT_BLOOD
 _080811E0: .4byte 0xFFFFF000
-_080811E4: .4byte 0x08368100
+.endif
+_080811E4: .4byte gPantheonAquaModObjRoutine+0x164
 _080811E8: .4byte 0x00002709
 _080811EC: .4byte RNG_0202f388
 _080811F0: .4byte 0x000343FD
 _080811F4: .4byte 0x00269EC3
 _080811F8: .4byte 0xFFFFF800
 _080811FC: .4byte 0xFFFFE000
-_08081200: .4byte 0x08368102
+_08081200: .4byte gPantheonAquaModObjRoutine+0x166
 _08081204: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08081208
@@ -1182,7 +1196,7 @@ _080815C2:
 _080815F4: .4byte FUN_08080cbc
 _080815F8: .4byte gWindowRegBuffer
 _080815FC: .4byte gPaletteManager
-_08081600: .4byte 0x0836810A
+_08081600: .4byte u8_ARRAY_ARRAY_0836810a
 _08081604:
 	adds r1, r5, #0
 	adds r1, #0xb6
@@ -1262,7 +1276,7 @@ _08081670:
 	b _080816AA
 	.align 2, 0
 _0808169C: .4byte gPaletteManager
-_080816A0: .4byte 0x0836810A
+_080816A0: .4byte u8_ARRAY_ARRAY_0836810a
 _080816A4:
 	ldrb r0, [r7]
 	cmp r0, #0x78
@@ -1375,7 +1389,7 @@ _08081770: .4byte gWindowRegBuffer
 _08081774: .4byte 0x0000BFFF
 _08081778: .4byte gEnemyFnTable
 _0808177C: .4byte gPaletteManager
-_08081780: .4byte 0x0836810A
+_08081780: .4byte u8_ARRAY_ARRAY_0836810a
 _08081784:
 	mov r1, r8
 	ldrb r0, [r1]
@@ -1538,7 +1552,7 @@ _080818A0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080818AC: .4byte 0x08368018
+_080818AC: .4byte gPantheonAquaModObjRoutine+0x7c
 _080818B0: .4byte pZero2
 _080818B4: .4byte gSineTable
 
@@ -1758,7 +1772,7 @@ _08081A5A:
 	bl SetMotion
 	b _08081A9E
 	.align 2, 0
-_08081A6C: .4byte 0x08368030
+_08081A6C: .4byte gPantheonAquaModObjRoutine+0x94
 _08081A70: .4byte pZero2
 _08081A74: .4byte 0x00004D05
 _08081A78:
@@ -1949,7 +1963,7 @@ _08081BBE:
 	rsbs r2, r2, #0
 	b _08081BF0
 	.align 2, 0
-_08081BE4: .4byte 0x083680D8
+_08081BE4: .4byte gPantheonAquaModObjRoutine+0x13c
 _08081BE8:
 	adds r0, r6, #0
 	adds r0, #0xb4
@@ -2094,7 +2108,7 @@ _08081CB4:
 	bl SetMotion
 	b _08081D1C
 	.align 2, 0
-_08081D08: .4byte 0x08368060
+_08081D08: .4byte gPantheonAquaModObjRoutine+0xc4
 _08081D0C: .4byte pZero2
 _08081D10: .4byte 0x00004D06
 _08081D14:
@@ -2270,7 +2284,7 @@ _08081E3C:
 	bl SetMotion
 	b _08081E7C
 	.align 2, 0
-_08081E6C: .4byte 0x083680C0
+_08081E6C: .4byte gPantheonAquaModObjRoutine+0x124
 _08081E70: .4byte 0x00004D05
 _08081E74:
 	ldr r1, _08081EBC @ =0x00004D0A
@@ -2528,7 +2542,7 @@ _0808204A:
 	strb r0, [r4, #0x12]
 	b _080820AC
 	.align 2, 0
-_08082064: .4byte 0x08368090
+_08082064: .4byte gPantheonAquaModObjRoutine+0xf4
 _08082068: .4byte gStageRun+232
 _0808206C: .4byte 0xFFFF9000
 _08082070: .4byte RNG_0202f388

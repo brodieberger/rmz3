@@ -235,7 +235,11 @@ _08063A20: .4byte sPantheonGuardianUpdates2
 
 	thumb_func_start PantheonGuardian_Die
 PantheonGuardian_Die: @ 0x08063A24
+.if HIT_BLOOD
 	push {r4, r5, r6, r7, lr}
+.else
+	push {r4, r5, r6, lr}
+.endif
 	sub sp, #8
 	adds r4, r0, #0
 	ldr r0, _08063A6C @ =gCurStory
@@ -306,9 +310,14 @@ _08063ABC:
 	bl SetMotion
 	adds r0, r4, #0
 	adds r0, #0xb8
+.if HIT_BLOOD
 	ldrb r1, [r0]
 	adds r7, r0, #0
 	cmp r1, #0
+.else
+	ldrb r0, [r0]
+	cmp r0, #0
+.endif
 	beq _08063AF4
 	movs r2, #0
 	ldrb r1, [r4, #0xa]
@@ -350,11 +359,18 @@ _08063B16:
 	adds r1, r4, #0
 	adds r1, #0x8c
 	ldr r2, [r1]
+.if HIT_BLOOD
 	movs r5, #0x80
 	lsls r5, r5, #2
 	adds r0, r2, #0
 	ands r0, r5
 	adds r6, r1, #0
+.else
+	movs r0, #0x80
+	lsls r0, r0, #2
+	ands r0, r2
+	adds r5, r1, #0
+.endif
 	cmp r0, #0
 	beq _08063B86
 	adds r0, r4, #0
@@ -380,6 +396,7 @@ _08063B16:
 	ldr r1, _08063B70 @ =0xFFFFEC00
 	adds r0, r0, r1
 	str r0, [sp, #4]
+.if HIT_BLOOD
 	ldrb r0, [r7]
 	cmp r0, #0
 	beq _08063B74
@@ -401,12 +418,23 @@ _08063B80:
 	ldrb r0, [r4, #0xd]
 	adds r0, #1
 	b _08063B88
+.else
+	ldrb r0, [r4, #0xd]
+	adds r0, #1
+	b _08063B88
+	.align 2, 0
+_08063B70: .4byte 0xFFFFEC00
+.endif
 _08063B86:
 	movs r0, #0xa
 _08063B88:
 	strb r0, [r4, #0xd]
 	movs r1, #0
+.if HIT_BLOOD
 	str r1, [r6]
+.else
+	str r1, [r5]
+.endif
 	adds r0, r4, #0
 	adds r0, #0x90
 	str r1, [r0]
@@ -657,7 +685,11 @@ _08063D80:
 	str r0, [r4, #0x14]
 _08063D82:
 	add sp, #8
+.if HIT_BLOOD
 	pop {r4, r5, r6, r7}
+.else
+	pop {r4, r5, r6}
+.endif
 	pop {r0}
 	bx r0
 	.align 2, 0

@@ -2113,7 +2113,9 @@ _080510EC: .4byte gStageRun
 	thumb_func_start anubis_080510f0
 anubis_080510f0: @ 0x080510F0
 	push {r4, r5, r6, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
 	cmp r0, #4
@@ -2223,6 +2225,7 @@ _080511CA:
 	lsls r1, r6, #9
 	subs r0, r0, r1
 	str r0, [r4, #0x5c]
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -2233,6 +2236,7 @@ _080511CA:
 	mov r1, sp
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x32
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -2314,7 +2318,9 @@ _0805126E:
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _08051286:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

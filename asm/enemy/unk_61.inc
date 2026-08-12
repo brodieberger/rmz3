@@ -61,8 +61,8 @@ Enemy61_Init: @ 0x08093630
 	bx r0
 	.align 2, 0
 _080936A0: .4byte gEnemyFnTable
-_080936A4: .4byte 0x08369E00
-_080936A8: .4byte 0x08369D40
+_080936A4: .4byte sInitModes
+_080936A8: .4byte sCollisions
 _080936AC: .4byte onCollision
 
 	thumb_func_start Enemy61_Update
@@ -105,8 +105,8 @@ _080936F4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080936FC: .4byte 0x08369D38
-_08093700: .4byte 0x08369D3C
+_080936FC: .4byte sUpdates1
+_08093700: .4byte sUpdates2
 
 	thumb_func_start Enemy61_Die
 Enemy61_Die: @ 0x08093704
@@ -283,7 +283,7 @@ _08093826:
 	bl SetDDP
 	b _08093896
 	.align 2, 0
-_08093844: .4byte 0x08369DB8
+_08093844: .4byte gEnemy61Routine+0x94
 _08093848:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -291,7 +291,7 @@ _08093848:
 	bl SetDDP
 	b _08093896
 	.align 2, 0
-_08093854: .4byte 0x08369D58
+_08093854: .4byte gEnemy61Routine+0x34
 _08093858:
 	adds r0, r7, #0
 	subs r0, #0x11
@@ -308,7 +308,7 @@ _08093858:
 	bl SetDDP
 	b _08093896
 	.align 2, 0
-_08093878: .4byte 0x08369DD0
+_08093878: .4byte gEnemy61Routine+0xac
 _0809387C:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -316,7 +316,7 @@ _0809387C:
 	bl SetDDP
 	b _08093896
 	.align 2, 0
-_08093888: .4byte 0x08369D88
+_08093888: .4byte gEnemy61Routine+0x64
 _0809388C:
 	adds r0, r6, #0
 	adds r0, #0x74
@@ -343,7 +343,7 @@ _080938AE:
 	strb r0, [r6, #0xa]
 	b _08093904
 	.align 2, 0
-_080938B8: .4byte 0x08369D40
+_080938B8: .4byte sCollisions
 _080938BC:
 	ldrb r1, [r6, #0xa]
 	movs r0, #1
@@ -392,7 +392,7 @@ _08093904:
 	bl PlaySound
 	b _08093926
 	.align 2, 0
-_08093918: .4byte 0x08369DE8
+_08093918: .4byte s8_ARRAY_08369de8
 _0809391C:
 	cmp r4, #2
 	bne _08093926

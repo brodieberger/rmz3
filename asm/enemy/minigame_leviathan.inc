@@ -228,7 +228,7 @@ _0809A0FA:
 	bx r1
 	.align 2, 0
 _0809A100: .4byte gEnemyFnTable
-_0809A104: .4byte 0x0836A764
+_0809A104: .4byte u8_ARRAY_0836a764
 
 	thumb_func_start LeviathanMinigameEnemy_Init
 LeviathanMinigameEnemy_Init: @ 0x0809A108
@@ -292,7 +292,7 @@ _0809A152:
 	bx r0
 	.align 2, 0
 _0809A184: .4byte gEnemyFnTable
-_0809A188: .4byte 0x0836A76A
+_0809A188: .4byte u8_ARRAY_0836a76a
 _0809A18C: .4byte sMotions
 _0809A190: .4byte sCollisions
 _0809A194: .4byte nop_0809a0b4
@@ -324,8 +324,8 @@ _0809A1C6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809A1CC: .4byte 0x0836A68C
-_0809A1D0: .4byte 0x0836A6A8
+_0809A1CC: .4byte sUpdates1
+_0809A1D0: .4byte sUpdates2
 
 	thumb_func_start LeviathanMinigameEnemy_Die
 LeviathanMinigameEnemy_Die: @ 0x0809A1D4
@@ -339,7 +339,7 @@ LeviathanMinigameEnemy_Die: @ 0x0809A1D4
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809A1E8: .4byte 0x0836A6C4
+_0809A1E8: .4byte sDeads
 
 	thumb_func_start nop_0809a1ec
 nop_0809a1ec: @ 0x0809A1EC

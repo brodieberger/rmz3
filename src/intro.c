@@ -1,5 +1,17 @@
 #include "intro.h"
 
+#include "config.h"
+
+// 英語版はイントロのスクロール位置が多い
+#if IS_US
+#define INTRO_COORD_COUNT 13
+#define INTRO_HOLD_COUNT 12
+#define INTRO_COORD_PAIRS 22
+#else
+#define INTRO_COORD_COUNT 9
+#define INTRO_HOLD_COUNT 8
+#define INTRO_COORD_PAIRS 16
+#endif
 #include "game.h"
 #include "gfx.h"
 #include "global.h"
@@ -30,8 +42,8 @@ extern const struct Graphic gGraphic_OpeningAnim2;
 extern const struct Palette gPalette_OpeningAnim2;
 
 static const u8 u8_ARRAY_08385f9c[7];
-static const s32 s32_ARRAY_08385fec[8];
-static const s32 s32_ARRAY_ARRAY_0838600c[16];
+static const s32 s32_ARRAY_08385fec[INTRO_HOLD_COUNT];
+static const s32 s32_ARRAY_ARRAY_0838600c[INTRO_COORD_PAIRS];
 static const Coords32 s32_ARRAY_ARRAY_0838604c[4];
 
 // --------------------------------------------
@@ -78,9 +90,11 @@ void SetIntroMode(struct Intro* intro, u32 mode) {
 static void initGameSavedata(struct Intro* p);
 
 static void IntroLoop_CapcomInti(struct Intro* p) {
+#if !IS_US
   if (gJoypad[0].pressed) {
     p->titleFrame = 3;
   }
+#endif
   switch (p->mode[1]) {
     case 0: {
       initGameSavedata(p);
@@ -178,7 +192,11 @@ static void initGameSavedata(struct Intro* p) {
   p->saveOK = FALSE;
   sector = 0;
   do {
+#if IS_US
+    if (ValidateSectorWithChecksum(sector, sizeof(GameSavedata))) p->saveOK = 1;
+#else
     if (ValidateSector(sector, sizeof(GameSavedata))) p->saveOK = 1;
+#endif
     sector++;
   } while (sector < GAME_SECTOR_NUM);
 }
@@ -755,7 +773,7 @@ static void intro_080ed1d4(struct Intro* p) {
   p->unk_243 = 10;
 }
 
-static const Coords32 Coord_ARRAY_08385fa4[9];
+static const Coords32 Coord_ARRAY_08385fa4[INTRO_COORD_COUNT];
 static void FUN_080ed57c(motion_t m, s32 x, s32 y, u16 r3, u8 r4);
 
 NAKED static void intro_080ed2a0(struct Intro* p) {
@@ -785,7 +803,11 @@ _080ED2BC:\n\
 	lsls r1, r1, #2\n\
 	subs r4, r2, r1\n\
 	adds r0, r2, #0\n\
+.if REGION_US\n\
+	cmp r0, #0x95\n\
+.else\n\
 	cmp r0, #0x65\n\
+.endif\n\
 	ble _080ED2EC\n\
 	ldr r0, _080ED2E4 @ =0x00001010\n\
 	ldr r1, _080ED2E8 @ =gBlendRegBuffer\n\
@@ -829,7 +851,11 @@ _080ED324:\n\
 	ble _080ED32A\n\
 	movs r4, #0xc\n\
 _080ED32A:\n\
+.if REGION_US\n\
+	cmp r6, #0xb\n\
+.else\n\
 	cmp r6, #7\n\
+.endif\n\
 	bgt _080ED408\n\
 	cmp r4, #5\n\
 	bhi _080ED394\n\
@@ -981,7 +1007,11 @@ _080ED442:\n\
 _080ED45A:\n\
 	adds r5, #8\n\
 	adds r6, #1\n\
+.if REGION_US\n\
+	cmp r6, #0xc\n\
+.else\n\
 	cmp r6, #8\n\
+.endif\n\
 	bgt _080ED464\n\
 	b _080ED2BC\n\
 _080ED464:\n\
@@ -1090,7 +1120,11 @@ _080ED4BC:\n\
 	lsrs r3, r3, #0x10\n\
 	movs r0, #0x3f\n\
 	ands r3, r0\n\
+.if REGION_US\n\
+	adds r3, #0xc1\n\
+.else\n\
 	adds r3, #0xd0\n\
+.endif\n\
 	movs r0, #0\n\
 	str r0, [sp]\n\
 	adds r0, r5, #0\n\
@@ -1102,7 +1136,11 @@ _080ED4BC:\n\
 	movs r1, #1\n\
 	add sb, r1\n\
 	mov r3, sb\n\
+.if REGION_US\n\
+	cmp r3, #0xa\n\
+.else\n\
 	cmp r3, #6\n\
+.endif\n\
 	ble _080ED4BC\n\
 	add sp, #0xc\n\
 	pop {r3, r4, r5}\n\
@@ -1362,14 +1400,22 @@ _080ED7CC:\n\
 	movs r4, #0x10\n\
 	b _080ED826\n\
 _080ED7D6:\n\
+.if REGION_US\n\
+	cmp r4, #0x4b\n\
+.else\n\
 	cmp r4, #0x67\n\
+.endif\n\
 	bgt _080ED824\n\
 	ldr r1, _080ED80C @ =gSineTable\n\
 	mov sb, r1\n\
 	movs r2, #0\n\
 	ldrsh r0, [r0, r2]\n\
 	subs r0, #0x30\n\
+.if REGION_US\n\
+	lsls r0, r0, #4\n\
+.else\n\
 	lsls r0, r0, #3\n\
+.endif\n\
 	movs r1, #7\n\
 	bl __divsi3\n\
 	adds r0, #0x40\n\
@@ -1384,16 +1430,26 @@ _080ED7D6:\n\
 	movs r1, #0x80\n\
 	lsls r1, r1, #1\n\
 	subs r5, r1, r0\n\
+.if REGION_US\n\
+	cmp r4, #0x3b\n\
+.else\n\
 	cmp r4, #0x47\n\
+.endif\n\
 	bgt _080ED810\n\
 	movs r4, #0x10\n\
 	b _080ED826\n\
 	.align 2, 0\n\
 _080ED80C: .4byte gSineTable\n\
 _080ED810:\n\
+.if REGION_US\n\
+	lsls r0, r7, #0x1a\n\
+	movs r1, #0xa0\n\
+	lsls r1, r1, #0x17\n\
+.else\n\
 	lsls r0, r7, #0x19\n\
 	movs r1, #0xb0\n\
 	lsls r1, r1, #0x18\n\
+.endif\n\
 	adds r0, r0, r1\n\
 	lsrs r0, r0, #0x17\n\
 	add r0, sb\n\
@@ -1556,16 +1612,28 @@ static const u8 u8_ARRAY_08385f9c[7] = {
     0xF2, 0xF3, 0xF4, 0xF5, 0xF6, 0xF7, 0xF8,
 };
 
-static const Coords32 Coord_ARRAY_08385fa4[9] = {
+static const Coords32 Coord_ARRAY_08385fa4[INTRO_COORD_COUNT] = {
+#if IS_US
+    {0x1B00, 0x3200}, {0x2D00, 0x3200}, {0x3B00, 0x3200}, {0x4700, 0x3200}, {0x5600, 0x3200}, {0x6500, 0x3200}, {0x7300, 0x3200}, {0x8300, 0x3200}, {0x9300, 0x3200}, {0xA100, 0x3200}, {0xB100, 0x3200}, {0xD200, 0x3200}, {0x8D00, 0x3200},
+#else
     {0x1900, 0x3000}, {0x2D00, 0x3000}, {0x4200, 0x3000}, {0x5800, 0x3000}, {0x6F00, 0x3000}, {0x8B00, 0x3200}, {0xA200, 0x3000}, {0xC600, 0x3000}, {0x9800, 0x3000},
+#endif
 };
 
-static const s32 s32_ARRAY_08385fec[8] = {
+static const s32 s32_ARRAY_08385fec[INTRO_HOLD_COUNT] = {
+#if IS_US
+    0xA000, 0xA000, 0xA000, 0xA000, 0xA000, 0xA000, 0xA000, 0x5000, 0x5000, 0x5000, 0x5000, 0x5000,
+#else
     0xA000, 0xA000, 0xA000, 0xA000, 0xA000, 0x5000, 0x5000, 0x5000,
+#endif
 };
 
-static const s32 s32_ARRAY_ARRAY_0838600c[16] = {
+static const s32 s32_ARRAY_ARRAY_0838600c[INTRO_COORD_PAIRS] = {
+#if IS_US
+    0x00001B00, 0x00003200, 0x00002D00, 0x00003200, 0x00003B00, 0x00003200, 0x00004700, 0x00003200, 0x00005600, 0x00003200, 0x00006500, 0x00003200, 0x00007300, 0x00003200, 0x00008300, 0x00003200, 0x00009300, 0x00003200, 0x0000A100, 0x00003200, 0x0000B100, 0x00003200,
+#else
     0x00001900, 0x00003000, 0x00002D00, 0x00003000, 0x00004200, 0x00003000, 0x00005800, 0x00003000, 0x00006F00, 0x00003000, 0x00008B00, 0x00003200, 0x0000A200, 0x00003000, 0x0000C600, 0x00003000,
+#endif
 };
 
 static const Coords32 s32_ARRAY_ARRAY_0838604c[4] = {
@@ -2006,7 +2074,11 @@ _080EDD52:\n\
 	adds r1, r5, r3\n\
 	ldrb r1, [r1]\n\
 	subs r2, r2, r1\n\
+.if REGION_US\n\
+	movs r1, #6\n\
+.else\n\
 	movs r1, #8\n\
+.endif\n\
 	bl PrintString\n\
 	adds r4, #1\n\
 	lsls r4, r4, #0x10\n\
@@ -2102,8 +2174,13 @@ static void FUN_080eddb8(struct Intro* p) {
   }
 
   StepPaletteAnimation(0x40);
+#if IS_US
+  PrintString(STRING(1088), 12, 2);  // sMinigameRules (0x083763c4)
+  PrintString(STRING(sMinigameRuleStrings[p->unk_242]), 2, 4);
+#else
   PrintString(STRING(1088), 13, 2);  // sMinigameRules (0x083763c4)
   PrintString(STRING(sMinigameRuleStrings[p->unk_242]), 3, 4);
+#endif
 }
 
 static void FUN_080edf04(struct Intro* p) {

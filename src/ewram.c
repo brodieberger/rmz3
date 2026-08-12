@@ -49,6 +49,11 @@ EWRAM_DATA u8 sChecksumAvailable = 0;
 EWRAM_DATA u16 sSendNonzeroCheck = 0;
 EWRAM_DATA u16 sRecvNonzeroCheck = 0;
 
+#if IS_US
+// US のみ: ValidateSectorWithChecksum がセクタのデータ部分を読み込む作業バッファ
+EWRAM_DATA ALIGNED(16) u8 gSectorDataBuffer[SECTOR_DATA_MAX] = {};  // 0x02000010
+#endif
+
 EWRAM_DATA ALIGNED(16) SectorHeader gSaveHeader = {};  // 0x02000010
 
 EWRAM_DATA SoundID SoundID1 = MUS_DUMMY;

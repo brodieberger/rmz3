@@ -106,7 +106,12 @@ gAreaX2_Terrain:
 gEnergyFacility_Terrain:
   gEnergyFacility_Tiles:     .incbin "data/stage/energy_facility/metatile.bin"
   gEnergyFacility_TileAttrs: .incbin "data/stage/energy_facility/metatile_attr.bin"
-  gEnergyFacility_Chunks:    .incbin "data/stage/energy_facility/screen.bin"
+  gEnergyFacility_Chunks:
+.if ENGLISH
+    .incbin "data/stage/energy_facility/screen-en.bin"
+.else
+    .incbin "data/stage/energy_facility/screen.bin"
+.endif
 
 @ 0x086c3e60
 gSnowyPlains_Terrain:

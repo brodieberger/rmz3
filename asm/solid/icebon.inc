@@ -427,6 +427,7 @@ _080CA4B4:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -437,6 +438,7 @@ _080CA4B4:
 	add r1, sp, #8
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x80
 	lsls r1, r6, #8
 	subs r0, r0, r1

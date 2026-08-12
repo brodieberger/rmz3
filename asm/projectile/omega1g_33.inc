@@ -144,7 +144,7 @@ OmegaGoldProjectile_Init: @ 0x080AC448
 	strb r5, [r6, #0xd]
 	b _080AC4E8
 	.align 2, 0
-_080AC498: .4byte 0x0836C644
+_080AC498: .4byte gOmegaGoldProjectileRoutine+0x50
 _080AC49C: .4byte gProjectileFnTable
 _080AC4A0:
 	adds r0, r6, #0
@@ -192,7 +192,7 @@ _080AC4E8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AC4FC: .4byte 0x0836C614
+_080AC4FC: .4byte sCollisions
 _080AC500: .4byte 0xFFFFFF00
 _080AC504: .4byte gProjectileFnTable
 
@@ -208,7 +208,7 @@ OmegaGoldProjectile_Update: @ 0x080AC508
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AC51C: .4byte 0x0836C608
+_080AC51C: .4byte sUpdates
 
 	thumb_func_start OmegaGoldProjectile_Die
 OmegaGoldProjectile_Die: @ 0x080AC520
@@ -451,7 +451,7 @@ _080AC6EC:
 	bx r0
 	.align 2, 0
 _080AC6F4: .4byte 0x00000A07
-_080AC6F8: .4byte 0x0836C65C
+_080AC6F8: .4byte gOmegaGoldProjectileRoutine+0x68
 _080AC6FC: .4byte gSineTable
 
 	thumb_func_start FUN_080ac700
@@ -585,10 +585,10 @@ _080AC7F4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AC7FC: .4byte 0x0836C6F4
+_080AC7FC: .4byte PTR_ARRAY_0836c6f4
 _080AC800: .4byte RNG_0202f388
 _080AC804: .4byte 0x000343FD
 _080AC808: .4byte 0x00269EC3
 _080AC80C: .4byte 0x00000C01
-_080AC810: .4byte 0x0836C644
+_080AC810: .4byte gOmegaGoldProjectileRoutine+0x50
 _080AC814: .4byte gProjectileFnTable

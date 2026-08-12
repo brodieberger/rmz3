@@ -34,7 +34,7 @@ leviathan_minigame_080fb594: @ 0x080FB594
 	bx r0
 	.align 2, 0
 _080FB5D4: .4byte 0x00000DCC
-_080FB5D8: .4byte 0x0810E2AC
+_080FB5D8: .4byte Unicode_REST_0810e2ac
 
 	thumb_func_start leviathan_minigame_080fb5dc
 leviathan_minigame_080fb5dc: @ 0x080FB5DC
@@ -104,7 +104,7 @@ _080FB658: .4byte 0x00000DCC
 _080FB65C: .4byte RNG_0202f388
 _080FB660: .4byte 0x000343FD
 _080FB664: .4byte 0x00269EC3
-_080FB668: .4byte 0x08386BB0
+_080FB668: .4byte u8_ARRAY_08386bb0
 
 	thumb_func_start leviathan_minigame_080fb66c
 leviathan_minigame_080fb66c: @ 0x080FB66C
@@ -262,7 +262,7 @@ _080FB74A:
 _080FB7AC: .4byte RNG_0202f388
 _080FB7B0: .4byte 0x000343FD
 _080FB7B4: .4byte 0x00269EC3
-_080FB7B8: .4byte 0x08386BC0
+_080FB7B8: .4byte u8_ARRAY_08386bc0
 _080FB7BC: .4byte 0x00042400
 _080FB7C0:
 	ldr r4, _080FB810 @ =RNG_0202f388
@@ -676,7 +676,7 @@ leviathanMinigame: @ 0x080FBB0C
 	b _080FBB48
 	.align 2, 0
 _080FBB38: .4byte 0x00000DCC
-_080FBB3C: .4byte 0x08386BA4
+_080FBB3C: .4byte LeviathanMinigameLoops
 _080FBB40:
 	ldr r1, _080FBB68 @ =0x0001869F
 	cmp r0, r1

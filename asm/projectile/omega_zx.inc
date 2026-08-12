@@ -174,7 +174,7 @@ OmegaZXProjectile_Update: @ 0x080B0114
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B0128: .4byte 0x0836D468
+_080B0128: .4byte sUpdates
 
 	thumb_func_start OmegaZXProjectile_Die
 OmegaZXProjectile_Die: @ 0x080B012C
@@ -290,7 +290,7 @@ _080B0206:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B020C: .4byte 0x0836D624
+_080B020C: .4byte gOmegaZXProjectileRoutine+0x1d0
 _080B0210: .4byte 0xFFFFFB00
 
 	thumb_func_start FUN_080b0214
@@ -628,7 +628,7 @@ _080B0492:
 	bl __divsi3
 	b _080B04D6
 	.align 2, 0
-_080B04C4: .4byte 0x0836D63C
+_080B04C4: .4byte gOmegaZXProjectileRoutine+0x1e8
 _080B04C8: .4byte 0x0000B901
 _080B04CC: .4byte pZero2
 _080B04D0:
@@ -822,7 +822,7 @@ _080B05E4:
 	b _080B0666
 	.align 2, 0
 _080B063C: .4byte pZero2
-_080B0640: .4byte 0x0836D654
+_080B0640: .4byte gOmegaZXProjectileRoutine+0x200
 _080B0644: .4byte gStageRun+232
 _080B0648: .4byte 0x000027FF
 _080B064C:
@@ -869,7 +869,7 @@ _080B069A:
 	b _080B06E2
 	.align 2, 0
 _080B069C: .4byte pZero2
-_080B06A0: .4byte 0x0836D66C
+_080B06A0: .4byte gOmegaZXProjectileRoutine+0x218
 _080B06A4:
 	adds r3, r7, #0
 	adds r3, #0xb4
@@ -1122,7 +1122,7 @@ _080B089C:
 	strb r0, [r6, #0xe]
 	b _080B0BA4
 	.align 2, 0
-_080B08B8: .4byte 0x0836D69C
+_080B08B8: .4byte gOmegaZXProjectileRoutine+0x248
 _080B08BC: .4byte 0x00000133
 _080B08C0: .4byte 0xFFFFFD00
 _080B08C4:
@@ -1596,7 +1596,7 @@ _080B0C40:
 	bl UpdateEntityAnim
 	b _080B0C98
 	.align 2, 0
-_080B0C48: .4byte 0x0836D6CC
+_080B0C48: .4byte gOmegaZXProjectileRoutine+0x278
 _080B0C4C: .4byte 0x0000BA02
 _080B0C50:
 	adds r0, r5, #0
@@ -1893,7 +1893,7 @@ _080B0E6A:
 	ands r0, r1
 	strh r0, [r3]
 _080B0EBC:
-	ldr r1, _080B0F94 @ =0x020302DC
+	ldr r1, _080B0F94 @ =u32_020302dc
 	ldr r4, [r7, #0x54]
 	ldr r3, _080B0F98 @ =0xFFFF8801
 	adds r4, r4, r3
@@ -1905,14 +1905,14 @@ _080B0EBC:
 	subs r0, #0x10
 	mov sl, r0
 	str r0, [r1]
-	ldr r0, _080B0F9C @ =0x020302C4
+	ldr r0, _080B0F9C @ =PTR_020302c4
 	mov r8, r0
-	ldr r0, _080B0FA0 @ =0x020302D4
+	ldr r0, _080B0FA0 @ =u32_020302d4
 	mov r1, sl
 	str r1, [r0]
 	mov r0, r8
 	str r1, [r0]
-	ldr r1, _080B0FA4 @ =0x020302CC
+	ldr r1, _080B0FA4 @ =u32_020302cc
 	movs r0, #0
 	str r0, [r1]
 	ldr r0, [r7, #0x64]
@@ -1924,7 +1924,7 @@ _080B0EBC:
 	ldr r2, _080B0FA8 @ =0x020302E4
 	str r0, [r2]
 	subs r4, r4, r1
-	ldr r1, _080B0FAC @ =0x020302C8
+	ldr r1, _080B0FAC @ =s32_020302c8
 	str r4, [r1]
 	ldr r2, [r7, #0x68]
 	movs r1, #0xa0
@@ -1950,11 +1950,11 @@ _080B0EBC:
 	adds r1, r5, #0
 	bl __divsi3
 	adds r2, r0, #0
-	ldr r4, _080B0FAC @ =0x020302C8
+	ldr r4, _080B0FAC @ =s32_020302c8
 	str r2, [r4]
-	ldr r0, _080B0FB0 @ =0x020302D0
+	ldr r0, _080B0FB0 @ =u32_020302d0
 	str r6, [r0]
-	ldr r0, _080B0FB4 @ =0x020302D8
+	ldr r0, _080B0FB4 @ =u32_020302d8
 	mov r1, sb
 	str r1, [r0]
 	ldr r0, [r7, #0x2c]
@@ -1993,16 +1993,16 @@ _080B0F84: .4byte 0x0000FFFF
 _080B0F88: .4byte gStageRun+232
 _080B0F8C: .4byte 0x00003FFF
 _080B0F90: .4byte 0x0000BFFF
-_080B0F94: .4byte 0x020302DC
+_080B0F94: .4byte u32_020302dc
 _080B0F98: .4byte 0xFFFF8801
-_080B0F9C: .4byte 0x020302C4
-_080B0FA0: .4byte 0x020302D4
-_080B0FA4: .4byte 0x020302CC
-_080B0FA8: .4byte 0x020302E4
-_080B0FAC: .4byte 0x020302C8
-_080B0FB0: .4byte 0x020302D0
-_080B0FB4: .4byte 0x020302D8
-_080B0FB8: .4byte 0x020302C0
+_080B0F9C: .4byte PTR_020302c4
+_080B0FA0: .4byte u32_020302d4
+_080B0FA4: .4byte u32_020302cc
+_080B0FA8: .4byte s32_020302e4
+_080B0FAC: .4byte s32_020302c8
+_080B0FB0: .4byte u32_020302d0
+_080B0FB4: .4byte u32_020302d8
+_080B0FB8: .4byte PTR_020302c0
 _080B0FBC:
 	ldr r1, [r7, #0x28]
 	ldr r0, [r1, #0x54]
@@ -2049,11 +2049,11 @@ _080B1014:
 	ldr r1, [r7, #0x2c]
 	cmp r1, #0
 	beq _080B1048
-	ldr r0, _080B1068 @ =0x020302DC
+	ldr r0, _080B1068 @ =u32_020302dc
 	ldr r0, [r0]
 	str r0, [r1, #0x74]
 	ldr r1, [r7, #0x2c]
-	ldr r0, _080B106C @ =0x020302D0
+	ldr r0, _080B106C @ =u32_020302d0
 	ldr r0, [r0]
 	str r0, [r1, #0x78]
 	ldr r1, [r7, #0x2c]
@@ -2062,14 +2062,14 @@ _080B1014:
 	str r0, [r1, #0x7c]
 	ldr r0, [r7, #0x2c]
 	adds r0, #0x80
-	ldr r1, _080B1074 @ =0x020302D8
+	ldr r1, _080B1074 @ =u32_020302d8
 	ldr r1, [r1]
 	str r1, [r0]
 	ldr r1, [r7, #0x2c]
 	ldr r0, _080B1078 @ =0x020302E4
 	ldr r0, [r0]
 	str r0, [r1, #0x5c]
-	ldr r0, _080B107C @ =0x020302C8
+	ldr r0, _080B107C @ =s32_020302c8
 	ldr r0, [r0]
 	str r0, [r1, #0x64]
 _080B1048:
@@ -2089,12 +2089,12 @@ _080B105E:
 	b _080B109C
 	.align 2, 0
 _080B1064: .4byte gWindowRegBuffer
-_080B1068: .4byte 0x020302DC
-_080B106C: .4byte 0x020302D0
-_080B1070: .4byte 0x020302C0
-_080B1074: .4byte 0x020302D8
-_080B1078: .4byte 0x020302E4
-_080B107C: .4byte 0x020302C8
+_080B1068: .4byte u32_020302dc
+_080B106C: .4byte u32_020302d0
+_080B1070: .4byte PTR_020302c0
+_080B1074: .4byte u32_020302d8
+_080B1078: .4byte s32_020302e4
+_080B107C: .4byte s32_020302c8
 _080B1080:
 	ldr r2, _080B10AC @ =gWindowRegBuffer
 	ldrh r1, [r2]
@@ -2194,7 +2194,7 @@ _080B113A:
 	strb r0, [r5, #0xe]
 	b _080B1162
 	.align 2, 0
-_080B1140: .4byte 0x0836D6E4
+_080B1140: .4byte gOmegaZXProjectileRoutine+0x290
 _080B1144: .4byte 0x0000BB06
 _080B1148: .4byte gStageRun+232
 _080B114C: .4byte 0x00003FFF
@@ -2313,6 +2313,6 @@ _080B1220:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B1228: .4byte 0x0836D48C
+_080B1228: .4byte sCollisions
 _080B122C: .4byte pZero2
 _080B1230: .4byte gProjectileFnTable

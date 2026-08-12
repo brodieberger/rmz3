@@ -6,7 +6,11 @@
 	sub sp, #0x10
 	str r0, [sp]
 	ldr r4, _08017D2C @ =gSpawnManager
+.if REGION_US
+	movs r1, #0xb4
+.else
 	movs r1, #0x84
+.endif
 	lsls r1, r1, #2
 	adds r0, r4, r1
 	ldrb r0, [r0]
@@ -20,12 +24,20 @@
 	lsls r0, r0, #0x18
 	lsrs r0, r0, #0x18
 	mov sl, r0
+.if REGION_US
+	movs r2, #0xb5
+.else
 	movs r2, #0x85
+.endif
 	lsls r2, r2, #2
 	adds r0, r4, r2
 	ldr r0, [r0]
 	mov r8, r0
+.if REGION_US
+	movs r3, #0xb6
+.else
 	movs r3, #0x86
+.endif
 	lsls r3, r3, #2
 	adds r0, r4, r3
 	ldr r0, [r0]
@@ -43,7 +55,11 @@ _08017CA8:
 	ands r0, r1
 	cmp r0, #0
 	bne _08017DA8
+.if REGION_US
+	movs r0, #0xba
+.else
 	movs r0, #0x8a
+.endif
 	lsls r0, r0, #2
 	adds r1, r4, r0
 	ldrb r0, [r1]
@@ -72,7 +88,11 @@ _08017CD6:
 	mov r1, sl
 	bl FUN_08018d10
 _08017CE8:
+.if REGION_US
+	movs r2, #0xb1
+.else
 	movs r2, #0x81
+.endif
 	lsls r2, r2, #2
 	adds r0, r4, r2
 	ldr r4, [r0]
@@ -112,7 +132,11 @@ _08017D30: .4byte gAreaCheckers
 _08017D34: .4byte gCurStory
 _08017D38: .4byte gSystemSavedata
 _08017D3C: .4byte 0x000032DA
+.if REGION_US
+_08017D40: .4byte 0x000002E9  @ gSpawnManager.mmbn4EnemiesEnabled
+.else
 _08017D40: .4byte 0x00000229
+.endif
 _08017D44:
 	adds r0, r1, #0
 	bl DeleteStageEntity
@@ -163,10 +187,18 @@ _08017D98:
 	b _08017EC2
 	.align 2, 0
 _08017DA0: .4byte gSpawnManager
+.if REGION_US
+_08017DA4: .4byte 0x000002E9  @ gSpawnManager.mmbn4EnemiesEnabled
+.else
 _08017DA4: .4byte 0x00000229
+.endif
 _08017DA8:
 	ldr r0, _08017DCC @ =gSpawnManager
+.if REGION_US
+	movs r3, #0xba
+.else
 	movs r3, #0x8a
+.endif
 	lsls r3, r3, #2
 	adds r2, r0, r3
 	ldrb r1, [r2]
@@ -177,7 +209,11 @@ _08017DB8:
 	movs r0, #0
 	strb r0, [r2]
 	ldr r1, _08017DCC @ =gSpawnManager
+.if REGION_US
+	movs r2, #0xb1
+.else
 	movs r2, #0x81
+.endif
 	lsls r2, r2, #2
 	adds r0, r1, r2
 	ldr r4, [r0]
@@ -320,7 +356,11 @@ _08017EC2:
 	ldrb r0, [r0]
 	cmp r0, #0
 	bne _08017F4C
+.if REGION_US
+	movs r2, #0xb1
+.else
 	movs r2, #0x81
+.endif
 	lsls r2, r2, #2
 	adds r0, r1, r2
 	ldr r4, [r0]
@@ -395,7 +435,11 @@ _08017F4C:
 	mov r1, sl
 	bl FUN_08018c00
 	ldr r3, _08017FA8 @ =gSpawnManager
+.if REGION_US
+	movs r1, #0xb1
+.else
 	movs r1, #0x81
+.endif
 	lsls r1, r1, #2
 	adds r0, r3, r1
 	ldr r4, [r0]
@@ -426,10 +470,22 @@ _08017F7A:
 	b _08017FF2
 	.align 2, 0
 _08017FA8: .4byte gSpawnManager
+.if REGION_US
+_08017FAC: .4byte 0x000002E9  @ gSpawnManager.mmbn4EnemiesEnabled
+.else
 _08017FAC: .4byte 0x00000229
+.endif
 _08017FB0: .4byte gCurStory
+.if REGION_US
+_08017FB4: .4byte 0x000002E6  @ gSpawnManager.enemiesDeleted
+.else
 _08017FB4: .4byte 0x00000226
+.endif
+.if REGION_US
+_08017FB8: .4byte 0x000002E7  @ gSpawnManager.mettaursEnabled
+.else
 _08017FB8: .4byte 0x00000227
+.endif
 _08017FBC:
 	adds r0, r1, #0
 	bl DeleteStageEntity
@@ -485,7 +541,11 @@ _08018016:
 	ldr r0, [r3, #4]
 	asrs r0, r0, #0xc
 	str r0, [sp, #8]
+.if REGION_US
+	movs r1, #0xb9
+.else
 	movs r1, #0x89
+.endif
 	lsls r1, r1, #2
 	adds r0, r4, r1
 	ldrh r7, [r0]
@@ -522,7 +582,11 @@ _08018056:
 	bge _08018056
 _08018066:
 	ldr r3, _0801815C @ =gSpawnManager
+.if REGION_US
+	movs r1, #0xb9
+.else
 	movs r1, #0x89
+.endif
 	lsls r1, r1, #2
 	adds r0, r3, r1
 	strh r7, [r0]
@@ -574,7 +638,11 @@ _080180A6:
 	b _0801820C
 _080180C4:
 	lsls r1, r4, #0xc
+.if REGION_US
+	movs r2, #0xb7
+.else
 	movs r2, #0x87
+.endif
 	lsls r2, r2, #2
 	adds r0, r6, r2
 	ldr r0, [r0]
@@ -582,7 +650,11 @@ _080180C4:
 	bge _080180D4
 	b _0801820C
 _080180D4:
+.if REGION_US
+	movs r3, #0xb8
+.else
 	movs r3, #0x88
+.endif
 	lsls r3, r3, #2
 	adds r0, r6, r3
 	ldr r0, [r0]
@@ -605,7 +677,11 @@ _080180E2:
 	beq _080180FE
 	b _0801820C
 _080180FE:
+.if REGION_US
+	movs r2, #0xb3
+.else
 	movs r2, #0x83
+.endif
 	lsls r2, r2, #2
 	adds r0, r6, r2
 	ldrh r0, [r0]
@@ -652,10 +728,30 @@ _0801811A:
 	b _080181D0
 	.align 2, 0
 _0801815C: .4byte gSpawnManager
+.if REGION_US
+_08018160: .4byte 0x000002E7  @ gSpawnManager.mettaursEnabled
+.else
 _08018160: .4byte 0x00000227
+.endif
+.if REGION_US
+_08018164: .4byte 0x000002D1
+.else
 _08018164: .4byte 0x00000211
+.endif
+.if REGION_US
+_08018168: .4byte 0x000002CE
+.else
+.if REGION_US
+_08018168: .4byte 0x000002CE
+.else
 _08018168: .4byte 0x0000020E
+.endif
+.endif
+.if REGION_US
+_0801816C: .4byte 0x000002E6  @ gSpawnManager.enemiesDeleted
+.else
 _0801816C: .4byte 0x00000226
+.endif
 _08018170:
 	ldr r1, _0801819C @ =gSpawnManager+0x229
 	ldrb r0, [r1]
@@ -679,7 +775,12 @@ _08018170:
 	strb r0, [r2, #0x10]
 	b _080181CE
 	.align 2, 0
-_0801819C: .4byte gSpawnManager+0x229 @ gSpawnManager.mmbn4EnemiesEnabled
+_0801819C:
+.if REGION_US
+	.4byte gSpawnManager+0x2E9
+.else
+	.4byte gSpawnManager+0x229
+.endif  @ gSpawnManager.mmbn4EnemiesEnabled
 _080181A0:
 	ldrh r1, [r5, #6]
 	lsls r1, r1, #3
@@ -753,7 +854,11 @@ _0801821A:
 	ldr r0, [r0, #4]
 	str r0, [sp, #8]
 	ldr r1, _080182B4 @ =gSpawnManager
+.if REGION_US
+	movs r2, #0xb1
+.else
 	movs r2, #0x81
+.endif
 	lsls r2, r2, #2
 	adds r0, r1, r2
 	ldr r4, [r0]
@@ -761,7 +866,11 @@ _0801821A:
 	bne _08018236
 	b _0801835A
 _08018236:
+.if REGION_US
+	movs r3, #0xb9
+.else
 	movs r3, #0x89
+.endif
 	lsls r3, r3, #2
 	adds r1, r1, r3
 	mov r8, r1

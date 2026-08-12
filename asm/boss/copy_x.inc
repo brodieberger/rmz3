@@ -106,7 +106,7 @@ _08055BB0:
 	strb r0, [r4, #0x12]
 	b _08055C04
 	.align 2, 0
-_08055BF4: .4byte 0x08363C78
+_08055BF4: .4byte gCopyXRoutine+0x124
 _08055BF8:
 	cmp r0, #0x2f
 	bgt _08055C02
@@ -351,7 +351,7 @@ _08055DB0:
 	b _08055DD6
 	.align 2, 0
 _08055DC8: .4byte 0xFFFFFC00
-_08055DCC: .4byte 0x08363CD8
+_08055DCC: .4byte gCopyXRoutine+0x184
 _08055DD0: .4byte 0x000002BF
 _08055DD4:
 	ldr r0, _08055DF4 @ =0xFFFFFD40
@@ -810,7 +810,7 @@ _0805611A:
 	b _08056158
 	.align 2, 0
 _08056140: .4byte 0xFFFFFC80
-_08056144: .4byte 0x08363CA8
+_08056144: .4byte gCopyXRoutine+0x154
 _08056148:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -899,7 +899,7 @@ _080561DC:
 	bgt _08056206
 	b _08056266
 	.align 2, 0
-_080561F0: .4byte 0x08363C48
+_080561F0: .4byte gCopyXRoutine+0xf4
 _080561F4: .4byte pZero2
 _080561F8: .4byte 0xFFFFFE00
 _080561FC:
@@ -2656,7 +2656,7 @@ _08056F0E:
 	strb r0, [r4, #0x12]
 	b _08056F68
 	.align 2, 0
-_08056F40: .4byte 0x08363C78
+_08056F40: .4byte gCopyXRoutine+0x124
 _08056F44:
 	cmp r1, #1
 	bne _08056F70
@@ -2828,7 +2828,7 @@ _08057088:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08057090: .4byte 0x08363C78
+_08057090: .4byte gCopyXRoutine+0x124
 
 	thumb_func_start copyx_08057094
 copyx_08057094: @ 0x08057094

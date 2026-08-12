@@ -567,7 +567,11 @@ _080F2A2A:\n\
 	.align 2, 0\n\
 _080F2A88: .4byte gStageRun\n\
 _080F2A8C: .4byte gSpawnManager\n\
+.if REGION_US\n\
+_080F2A90: .4byte 0x000002CE\n\
+.else\n\
 _080F2A90: .4byte 0x0000020E\n\
+.endif\n\
 _080F2A94: .4byte 0x00000ECC\n\
 _080F2A98:\n\
 	ldr r0, _080F2AE0 @ =gBlendRegBuffer\n\
@@ -755,7 +759,11 @@ _080F2BF8:\n\
 	.align 2, 0\n\
 _080F2C14: .4byte gStageRun\n\
 _080F2C18: .4byte gSpawnManager\n\
+.if REGION_US\n\
+_080F2C1C: .4byte 0x000002CE\n\
+.else\n\
 _080F2C1C: .4byte 0x0000020E\n\
+.endif\n\
 _080F2C20: .4byte 0x0000FFFE\n\
  .syntax divided\n");
 }

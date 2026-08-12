@@ -330,7 +330,7 @@ Ghost77_Update: @ 0x080C8404
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C8418: .4byte 0x0836F984
+_080C8418: .4byte sUpdates
 
 	thumb_func_start Ghost77_Die
 Ghost77_Die: @ 0x080C841C
@@ -498,7 +498,7 @@ _080C8546:
 	strb r0, [r5, #0x12]
 	b _080C8586
 	.align 2, 0
-_080C8558: .4byte 0x0836F998
+_080C8558: .4byte motion_t_ARRAY_0836f998
 _080C855C:
 	ldr r0, [r5, #0x60]
 	subs r0, #0x33
@@ -609,7 +609,7 @@ _080C861C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C8624: .4byte 0x0836F998
+_080C8624: .4byte motion_t_ARRAY_0836f998
 
 	thumb_func_start FUN_080c8628
 FUN_080c8628: @ 0x080C8628

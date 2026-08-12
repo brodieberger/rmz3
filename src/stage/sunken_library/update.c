@@ -706,7 +706,7 @@ _0801F7B4:\n\
 	subs r3, #1\n\
 	cmp r3, #0\n\
 	bge _0801F7B4\n\
-	ldr r5, _0801F830 @ =0x0202FFF0\n\
+	ldr r5, _0801F830 @ =gStageRun+0x190\n\
 	adds r4, r5, #4\n\
 	movs r3, #0x1f\n\
 	ldr r7, _0801F834 @ =0x000343FD\n\
@@ -765,7 +765,7 @@ _0801F7FC:\n\
 	bx r0\n\
 	.align 2, 0\n\
 _0801F82C: .4byte gSunkenLibDiskRoomIdxs\n\
-_0801F830: .4byte 0x0202FFF0\n\
+_0801F830: .4byte gStageRun+0x190\n\
 _0801F834: .4byte 0x000343FD\n\
 _0801F838: .4byte 0x00269EC3\n\
 _0801F83C: .4byte gStageRun\n\

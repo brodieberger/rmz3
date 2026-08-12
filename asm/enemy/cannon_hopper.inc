@@ -1203,8 +1203,9 @@ _080978C4: .4byte sDeads
 
 	thumb_func_start FUN_080978c8
 FUN_080978c8:
-	.byte 0xC1, 0x6A, 0x0A, 0x1C, 0xB4, 0x32, 0x03, 0x48
-	.byte 0x00, 0x68, 0x40, 0x6D, 0x49, 0x6D, 0x40, 0x1A, 0x10, 0x60, 0x70, 0x47, 0x40, 0xF3, 0x02, 0x02
+	.byte 0xC1, 0x6A, 0x0A, 0x1C, 0xB4, 0x32, 0x03, 0x48, 0x00, 0x68, 0x40, 0x6D, 0x49, 0x6D, 0x40, 0x1A
+	.byte 0x10, 0x60, 0x70, 0x47
+	.4byte pZero2
 
 	thumb_func_start FUN_080978e0
 FUN_080978e0:
@@ -2313,6 +2314,408 @@ _0809810C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08098110
 FUN_08098110: @ 0x08098110
+.if REGION_US
+	push	{r4, r5, r6, lr}
+	sub	sp, #8
+	adds	r4, r0, #0
+	ldrb	r0, [r4, #14]
+	cmp	r0, #1
+	bne _US_08097BFA
+	b _US_08097DC8
+_US_08097BFA:
+	cmp	r0, #1
+	bgt _US_08097C04
+	cmp	r0, #0
+	beq _US_08097C0C
+	b _US_08097ED2
+_US_08097C04:
+	cmp	r0, #2
+	bne _US_08097C0A
+	b _US_08097EAC
+_US_08097C0A:
+	b _US_08097ED2
+_US_08097C0C:
+	movs	r5, #0
+	adds	r0, r4, #0
+	adds	r0, #190
+	ldrb	r0, [r0, #0]
+	cmp	r0, #2
+	beq _US_08097C4C
+	cmp	r0, #2
+	bgt _US_08097C22
+	cmp	r0, #1
+	beq _US_08097C30
+	b _US_08097C2A
+_US_08097C22:
+	cmp	r0, #3
+	beq _US_08097C68
+	cmp	r0, #4
+	beq _US_08097C8C
+_US_08097C2A:
+	adds	r6, r4, #0
+	adds	r6, #74
+	b _US_08097CD2
+_US_08097C30:
+	ldr	r5, _US_08097C48
+	ldrb	r1, [r4, #10]
+	movs	r0, #32
+	ands	r0, r1
+	adds	r6, r4, #0
+	adds	r6, #74
+	cmp	r0, #0
+	beq _US_08097CD2
+	movs	r5, #144
+	lsls	r5, r5, #5
+	b _US_08097CD2
+	movs	r0, r0
+	.align 2, 0
+_US_08097C48: .4byte 0xFFFFEE00
+_US_08097C4C:
+	ldr	r5, _US_08097C64
+	ldrb	r1, [r4, #10]
+	movs	r0, #32
+	ands	r0, r1
+	adds	r6, r4, #0
+	adds	r6, #74
+	cmp	r0, #0
+	beq _US_08097CD2
+	movs	r5, #192
+	lsls	r5, r5, #5
+	b _US_08097CD2
+	movs	r0, r0
+	.align 2, 0
+_US_08097C64: .4byte 0xFFFFE800
+_US_08097C68:
+	ldr	r5, _US_08097C88
+	ldrb	r1, [r4, #10]
+	movs	r0, #32
+	ands	r0, r1
+	cmp	r0, #0
+	beq _US_08097C78
+	movs	r5, #140
+	lsls	r5, r5, #6
+_US_08097C78:
+	lsrs	r0, r1, #5
+	movs	r2, #1
+	bics	r2, r0
+	cmp	r2, #0
+	beq _US_08097CB0
+	movs	r0, #32
+	orrs	r0, r1
+	b _US_08097CB4
+	.align 2, 0
+_US_08097C88: .4byte 0xFFFFDD00
+_US_08097C8C:
+	.2byte 0x4D07
+	ldrb	r1, [r4, #10]
+	movs	r0, #32
+	ands	r0, r1
+	cmp	r0, #0
+	beq _US_08097C9C
+	movs	r5, #172
+	lsls	r5, r5, #6
+_US_08097C9C:
+	lsrs	r0, r1, #5
+	movs	r2, #1
+	bics	r2, r0
+	cmp	r2, #0
+	beq _US_08097CB0
+	movs	r0, #32
+	orrs	r0, r1
+	b _US_08097CB4
+	.align 2, 0
+_US_08097CAC: .4byte 0xFFFFD500
+_US_08097CB0:
+	.2byte 0x20DF
+	ands	r0, r1
+_US_08097CB4:
+	strb	r0, [r4, #10]
+	adds	r0, r2, #0
+	adds	r1, r4, #0
+	adds	r1, #77
+	strb	r0, [r1, #0]
+	adds	r3, r4, #0
+	adds	r3, #74
+	lsls	r0, r0, #5
+	ldrb	r2, [r3, #0]
+	movs	r1, #33
+	negs	r1, r1
+	ands	r1, r2
+	orrs	r1, r0
+	strb	r1, [r3, #0]
+	adds	r6, r3, #0
+_US_08097CD2:
+	ldr	r1, [r4, #88]
+	adds	r1, r1, r5
+	str	r1, [r4, #88]
+	ldr	r0, [r4, #84]
+	bl FUN_080098a4
+	lsls	r0, r0, #16
+	cmp	r0, #0
+	beq _US_08097D18
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #88]
+	bl PushoutToUp1
+	adds	r5, r0, #0
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #88]
+	bl PushoutToDown1
+	adds	r1, r0, #0
+	cmp	r5, #0
+	bgt _US_08097D12
+	cmp	r1, #0
+	bge _US_08097D06
+	ldr	r0, [r4, #88]
+	adds	r0, r0, r5
+	b _US_08097D16
+_US_08097D06:
+	negs	r0, r5
+	cmp	r0, r1
+	bge _US_08097D12
+	ldr	r0, [r4, #88]
+	adds	r0, r0, r5
+	b _US_08097D16
+_US_08097D12:
+	ldr	r0, [r4, #88]
+	adds	r0, r0, r1
+_US_08097D16:
+	str	r0, [r4, #88]
+_US_08097D18:
+	ldr	r1, _US_08097D4C
+	adds	r0, r4, #0
+	bl SetMotion
+	ldr	r0, [r4, #84]
+	str	r0, [sp, #0]
+	ldr	r0, [r4, #88]
+	ldr	r1, _US_08097D50
+	adds	r0, r0, r1
+	str	r0, [sp, #4]
+	movs	r3, #0
+	adds	r0, r4, #0
+	adds	r0, #180
+	ldr	r0, [r0, #0]
+	cmp	r0, #0
+	ble _US_08097D3A
+	movs	r3, #1
+_US_08097D3A:
+	movs	r0, #1
+	adds	r2, r3, #0
+	eors	r2, r0
+	cmp	r2, #0
+	beq _US_08097D54
+	ldrb	r1, [r4, #10]
+	movs	r0, #16
+	orrs	r0, r1
+	b _US_08097D5A
+	.align 2, 0
+_US_08097D4C: .4byte 0x0000DC07
+_US_08097D50: .4byte 0xFFFFF000
+_US_08097D54:
+	ldrb	r1, [r4, #10]
+	movs	r0, #239
+	ands	r0, r1
+_US_08097D5A:
+	strb	r0, [r4, #10]
+	adds	r1, r2, #0
+_US_08097D5E:
+	adds	r0, r4, #0
+	adds	r0, #76
+	movs	r5, #0
+	strb	r1, [r0, #0]
+	lsls	r1, r1, #4
+	ldrb	r2, [r6, #0]
+	movs	r0, #17
+	negs	r0, r0
+	ands	r0, r2
+	orrs	r0, r1
+	strb	r0, [r6, #0]
+	movs	r0, #128
+	lsls	r0, r0, #1
+	lsls	r1, r3, #9
+	subs	r0, r0, r1
+	str	r0, [r4, #92]
+	ldr	r0, [r4, #96]
+	asrs	r0, r0, #1
+	str	r0, [r4, #96]
+	adds	r0, r4, #0
+	bl FUN_080c6e24
+	ldr	r0, [r4, #92]
+	movs	r1, #180
+	muls	r0, r1
+	cmp	r0, #0
+	bge _US_08097D96
+	adds	r0, #255
+_US_08097D96:
+	asrs	r0, r0, #8
+	str	r0, [r4, #92]
+	ldr	r0, [r4, #96]
+	muls	r0, r1
+	cmp	r0, #0
+	bge _US_08097DA4
+	adds	r0, #255
+_US_08097DA4:
+	asrs	r0, r0, #8
+	str	r0, [r4, #96]
+	adds	r0, r4, #0
+	adds	r0, #140
+	str	r5, [r0, #0]
+	adds	r0, #4
+	str	r5, [r0, #0]
+	adds	r0, #4
+	strb	r5, [r0, #0]
+	ldrb	r1, [r4, #10]
+	movs	r0, #251
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	movs	r0, #20
+	strb	r0, [r4, #18]
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+_US_08097DC8:
+	ldr	r1, [r4, #88]
+	ldr	r0, [r4, #96]
+	adds	r1, r1, r0
+	str	r1, [r4, #88]
+	ldr	r0, [r4, #84]
+	bl PushoutToUp1
+	adds	r5, r0, #0
+	cmp	r5, #0
+	bge _US_08097DE2
+	ldr	r0, [r4, #88]
+	adds	r0, r0, r5
+	str	r0, [r4, #88]
+_US_08097DE2:
+	ldr	r0, [r4, #84]
+	ldr	r1, [r4, #92]
+	adds	r0, r0, r1
+	str	r0, [r4, #84]
+	cmp	r1, #0
+	ble _US_08097DFC
+	ldr	r1, [r4, #88]
+	bl PushoutToLeft1
+	adds	r5, r0, #0
+	cmp	r5, #0
+	bge _US_08097E0E
+	b _US_08097E08
+_US_08097DFC:
+	ldr	r1, [r4, #88]
+	bl PushoutToRight1
+	adds	r5, r0, #0
+	cmp	r5, #0
+	ble _US_08097E0E
+_US_08097E08:
+	ldr	r0, [r4, #84]
+	adds	r0, r0, r5
+	str	r0, [r4, #84]
+_US_08097E0E:
+	ldr	r1, [r4, #92]
+	lsls	r0, r1, #3
+	subs	r0, r0, r1
+	lsls	r0, r0, #5
+	adds	r0, r0, r1
+	cmp	r0, #0
+	bge _US_08097E1E
+	adds	r0, #255
+_US_08097E1E:
+	asrs	r0, r0, #8
+	str	r0, [r4, #92]
+	ldr	r2, [r4, #96]
+	cmp	r2, #0
+	bne _US_08097E32
+	ldrb	r1, [r4, #10]
+	movs	r0, #32
+	ands	r0, r1
+	cmp	r0, #0
+	beq _US_08097E42
+_US_08097E32:
+	adds	r0, r2, #0
+	adds	r0, #64
+	str	r0, [r4, #96]
+	movs	r1, #224
+	lsls	r1, r1, #3
+	cmp	r0, r1
+	ble _US_08097E42
+	str	r1, [r4, #96]
+_US_08097E42:
+	ldrb	r0, [r4, #18]
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	bne _US_08097E98
+	ldrb	r1, [r4, #10]
+	movs	r0, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldr	r0, [r4, #84]
+	str	r0, [sp, #0]
+	ldr	r0, [r4, #88]
+	ldr	r1, _US_08097EA0
+	adds	r0, r0, r1
+	str	r0, [sp, #4]
+	movs	r0, #1
+	mov	r1, sp
+	bl CreateSmoke
+	movs	r0, #42
+	bl PlaySound
+	adds	r5, r4, #0
+	adds	r5, #84
+	movs	r0, #1
+	adds	r1, r5, #0
+	bl TryDropItem
+	ldr	r2, _US_08097EA4
+	ldrh	r1, [r2, #12]
+	ldr	r0, _US_08097EA8
+	cmp	r1, r0
+	bhi _US_08097E8A
+	adds	r0, r1, #1
+	strh	r0, [r2, #12]
+_US_08097E8A:
+	adds	r0, r4, #0
+	adds	r1, r5, #0
+	bl TryDropZakoDisk
+	ldrb	r0, [r4, #14]
+	adds	r0, #1
+	strb	r0, [r4, #14]
+_US_08097E98:
+	adds	r0, r4, #0
+	bl UpdateEntityAnim
+	b _US_08097ED2
+	.align 2, 0
+_US_08097EA0: .4byte 0xFFFFF000
+_US_08097EA4: .4byte gScore
+_US_08097EA8: .4byte 0x0000270E
+_US_08097EAC:
+	ldrb	r1, [r4, #10]
+	movs	r0, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldrb	r0, [r4, #18]
+	cmp	r0, #0
+	beq _US_08097EC0
+	subs	r0, #1
+	strb	r0, [r4, #18]
+	b _US_08097ED2
+_US_08097EC0:
+	ldr	r1, _US_08097EDC
+	ldrb	r0, [r4, #9]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	movs	r1, #4
+	str	r1, [r4, #12]
+	ldr	r0, [r0, #0]
+	ldr	r0, [r0, #16]
+	str	r0, [r4, #20]
+_US_08097ED2:
+	add	sp, #8
+	pop	{r4, r5, r6}
+	pop	{r0}
+	bx	r0
+	movs	r0, r0
+	.align 2, 0
+_US_08097EDC: .4byte gEnemyFnTable
+.else
 	push {r4, r5, r6, r7, lr}
 	sub sp, #8
 	adds r5, r0, #0
@@ -2524,12 +2927,14 @@ _0809827E:
 	ands r0, r2
 	orrs r0, r1
 	strb r0, [r6]
+.if HIT_BLOOD
 	movs r2, #0x80
 	lsls r2, r2, #2
 	movs r0, #0
 	mov r1, sp
 	adds r3, r4, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x80
 	lsls r0, r0, #1
 	lsls r4, r4, #9
@@ -2715,6 +3120,7 @@ _08098406:
 	bx r0
 	.align 2, 0
 _08098410: .4byte gEnemyFnTable
+.endif
 
 	thumb_func_start FUN_08098414
 FUN_08098414: @ 0x08098414

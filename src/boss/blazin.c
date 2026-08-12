@@ -397,7 +397,9 @@ static void blazinDeath0(struct Boss* p) {
 NAKED static void blazinDeath1(struct Boss* p) {
   asm(".syntax unified\n\
 	push {r4, lr}\n\
+.if HIT_BLOOD\n\
 	sub sp, #8\n\
+.endif\n\
 	adds r4, r0, #0\n\
 	ldrb r0, [r4, #0xe]\n\
 	cmp r0, #0x19\n\
@@ -503,13 +505,16 @@ _0803EC78: .4byte gStageRun\n\
 _0803EC7C:\n\
 	movs r0, #0\n\
 	str r0, [r4, #0x60]\n\
+.if HIT_BLOOD\n\
 	ldr r2, [r4, #0x54]\n\
 	str r2, [sp]\n\
 	ldr r3, [r4, #0x58]\n\
 	str r3, [sp, #4]\n\
+.endif\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0x10\n\
 	ands r0, r1\n\
+.if HIT_BLOOD\n\
 	cmp r0, #0\n\
 	beq _0803EC94\n\
 	str r2, [sp]\n\
@@ -554,6 +559,7 @@ _0803ECD8:\n\
 	mov r1, sp\n\
 	movs r3, #0\n\
 	bl FUN_080b2b40\n\
+.endif\n\
 _0803ECE6:\n\
 	movs r0, #0x2f\n\
 	bl PlaySound\n\
@@ -720,7 +726,9 @@ _0803EE18:\n\
 	ands r0, r1\n\
 	strb r0, [r4, #0xa]\n\
 _0803EE20:\n\
+.if HIT_BLOOD\n\
 	add sp, #8\n\
+.endif\n\
 	pop {r4}\n\
 	pop {r0}\n\
 	bx r0\n\

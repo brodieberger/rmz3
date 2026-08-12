@@ -7,7 +7,9 @@
 	thumb_func_start PantheonHunter_Die
 PantheonHunter_Die: @ 0x08064ACC
 	push {r4, r5, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r5, [r4, #0xe]
 	cmp r5, #0
@@ -31,8 +33,13 @@ PantheonHunter_Die: @ 0x08064ACC
 	beq _08064B04
 _08064AFC:
 	strb r5, [r4, #0xd]
+.if REGION_US && !HIT_BLOOD
+	adds r3, r4, #0
+	adds r3, #0x8c
+.else
 	adds r5, r4, #0
 	adds r5, #0x8c
+.endif
 	b _08064B42
 _08064B04:
 	adds r1, r4, #0
@@ -41,9 +48,14 @@ _08064B04:
 	movs r0, #0x80
 	lsls r0, r0, #9
 	ands r2, r0
+.if REGION_US && !HIT_BLOOD
+	adds r3, r1, #0
+.else
 	adds r5, r1, #0
+.endif
 	cmp r2, #0
 	beq _08064B40
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -58,16 +70,23 @@ _08064B04:
 	movs r0, #0
 	mov r1, sp
 	bl FUN_080b2b40
+.endif
 	movs r0, #1
 	strb r0, [r4, #0xd]
 	b _08064B42
+.if HIT_BLOOD
 	.align 2, 0
 _08064B3C: .4byte 0xFFFFEC00
+.endif
 _08064B40:
 	strb r2, [r4, #0xd]
 _08064B42:
 	movs r1, #0
+.if REGION_US && !HIT_BLOOD
+	str r1, [r3]
+.else
 	str r1, [r5]
+.endif
 	adds r0, r4, #0
 	adds r0, #0x90
 	str r1, [r0]
@@ -127,7 +146,9 @@ _08064BAC:
 	adds r0, r4, #0
 	bl _call_via_r1
 _08064BBC:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4, r5}
 	pop {r0}
 	bx r0

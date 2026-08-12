@@ -932,10 +932,15 @@ FUN_0807d478: @ 0x0807D478
 	cmp r0, #0
 	beq _0807D48C
 	cmp r0, #1
+.if REGION_US && !HIT_BLOOD
+	beq _0807D5A0
+	b _0807D5B8
+.else
 	bne _0807D48A
 	b _0807D5A0
 _0807D48A:
 	b _0807D5B8
+.endif
 _0807D48C:
 	movs r2, #0
 	ldr r0, _0807D4AC @ =pZero2
@@ -1015,10 +1020,13 @@ _0807D4CA:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r6, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r6, #0x54]
 	str r0, [sp, #8]
+.endif
 	ldr r0, [r6, #0x58]
 	str r0, [sp, #0xc]
+.if HIT_BLOOD
 	ldrb r0, [r6, #0x10]
 	cmp r0, #1
 	bne _0807D540
@@ -1038,6 +1046,7 @@ _0807D544:
 	movs r2, #0x80
 	lsls r2, r2, #2
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	str r1, [sp, #8]
 	ldrb r0, [r6, #0x10]
@@ -1050,6 +1059,10 @@ _0807D544:
 	movs r0, #0x60
 	subs r0, r0, r1
 	b _0807D570
+.if !HIT_BLOOD
+	.align 2, 0
+_0807D53C: .4byte sMotions+(11*2)
+.endif
 _0807D568:
 	lsls r0, r7, #1
 	adds r0, r0, r7

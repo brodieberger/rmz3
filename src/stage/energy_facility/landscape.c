@@ -316,15 +316,15 @@ _08012298: .4byte gOverworld\n\
 _0801229C: .4byte 0x000007D6\n\
 _080122A0: .4byte gStageTilesetOffsets+(18*4)\n\
 _080122A4: .4byte 0x0002D034\n\
-_080122A8: .4byte 0x08704CA0\n\
+_080122A8: .4byte gSnowTilesetGraphics+0x7a4\n\
 _080122AC: .4byte gCurStory\n\
 _080122B0: .4byte 0x0002D039\n\
-_080122B4: .4byte 0x08704E08\n\
+_080122B4: .4byte gSnowTilesetGraphics+0x90c\n\
 _080122B8: .4byte 0x0002D038\n\
-_080122BC: .4byte 0x08704DB8\n\
+_080122BC: .4byte gSnowTilesetGraphics+0x8bc\n\
 _080122C0: .4byte 0x0002D036\n\
-_080122C4: .4byte 0x08704C3C\n\
-_080122C8: .4byte 0x08704C48\n\
+_080122C4: .4byte gSnowTilesetGraphics+0x740\n\
+_080122C8: .4byte gSnowTilesetGraphics+0x74c\n\
 _080122CC:\n\
 	cmp r1, #0xc5\n\
 	bhi _08012308\n\
@@ -351,7 +351,7 @@ _080122CC:\n\
 	adds r1, r1, r4\n\
 	b _0801236C\n\
 	.align 2, 0\n\
-_08012304: .4byte 0x08704C50\n\
+_08012304: .4byte gSnowTilesetGraphics+0x754\n\
 _08012308:\n\
 	ldr r0, _08012324 @ =0x00000179\n\
 	cmp r1, r0\n\
@@ -367,8 +367,8 @@ _08012308:\n\
 	b _08012372\n\
 	.align 2, 0\n\
 _08012324: .4byte 0x00000179\n\
-_08012328: .4byte 0x08704C8C\n\
-_0801232C: .4byte 0x08704C98\n\
+_08012328: .4byte gSnowTilesetGraphics+0x790\n\
+_0801232C: .4byte gSnowTilesetGraphics+0x79c\n\
 _08012330:\n\
 	ldr r0, _0801237C @ =0x0000018B\n\
 	cmp r1, r0\n\
@@ -562,18 +562,18 @@ _080124AE:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080124BC: .4byte 0x08704C3C\n\
-_080124C0: .4byte 0x08704C48\n\
+_080124BC: .4byte gSnowTilesetGraphics+0x740\n\
+_080124C0: .4byte gSnowTilesetGraphics+0x74c\n\
 _080124C4: .4byte gCurStory\n\
 _080124C8: .4byte gStageTilesetOffsets+(18*4)\n\
 _080124CC: .4byte gOverworld\n\
 _080124D0: .4byte 0x0002D03C\n\
-_080124D4: .4byte 0x08704D90\n\
+_080124D4: .4byte gSnowTilesetGraphics+0x894\n\
 _080124D8: .4byte 0x0002D03E\n\
-_080124DC: .4byte 0x08704EA8\n\
+_080124DC: .4byte gSnowTilesetGraphics+0x9ac\n\
 _080124E0: .4byte 0x0002D035\n\
-_080124E4: .4byte 0x0834283C\n\
-_080124E8: .4byte 0x08704CDC\n\
+_080124E4: .4byte u8_ARRAY_0834283c\n\
+_080124E8: .4byte gSnowTilesetGraphics+0x7e0\n\
  .syntax divided\n");
 }
 

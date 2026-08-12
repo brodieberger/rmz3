@@ -50,8 +50,8 @@ _0801303A:
 	bx r0
 	.align 2, 0
 _08013040: .4byte gVideoRegBuffer+4
-_08013044: .4byte 0x085223D4
-_08013048: .4byte 0x085223DC
+_08013044: .4byte gBgMapOffsets+0x134
+_08013048: .4byte gBgMapOffsets+0x13c
 
 	thumb_func_start FUN_0801304c
 FUN_0801304c: @ 0x0801304C
@@ -336,8 +336,8 @@ _0801325A:
 	bx r0
 	.align 2, 0
 _08013260: .4byte gVideoRegBuffer+4
-_08013264: .4byte 0x085223D4
-_08013268: .4byte 0x085223DC
+_08013264: .4byte gBgMapOffsets+0x134
+_08013268: .4byte gBgMapOffsets+0x13c
 
 	thumb_func_start snowyplains_0801326c
 snowyplains_0801326c: @ 0x0801326C
@@ -561,7 +561,7 @@ FUN_080133e8: @ 0x080133E8
 	.align 2, 0
 _08013408: .4byte 0xFFFFF800
 _0801340C: .4byte 0x0000018B
-_08013410: .4byte 0x08343F58
+_08013410: .4byte MetatilePatch_08343f58
 _08013414:
 	ldr r0, _08013420 @ =0x00000193
 	cmp r5, r0
@@ -570,7 +570,7 @@ _08013414:
 	b _08013444
 	.align 2, 0
 _08013420: .4byte 0x00000193
-_08013424: .4byte 0x08343F58
+_08013424: .4byte MetatilePatch_08343f58
 _08013428:
 	ldr r0, _08013434 @ =0x000001AB
 	cmp r5, r0
@@ -579,7 +579,7 @@ _08013428:
 	b _08013444
 	.align 2, 0
 _08013434: .4byte 0x000001AB
-_08013438: .4byte 0x08343F60
+_08013438: .4byte MetatilePatch_08343f60
 _0801343C:
 	ldr r0, _0801345C @ =0x000001B9
 	cmp r5, r0
@@ -597,7 +597,7 @@ _08013444:
 	b _0801347A
 	.align 2, 0
 _0801345C: .4byte 0x000001B9
-_08013460: .4byte 0x08343F68
+_08013460: .4byte MetatilePatch_08343f68
 _08013464:
 	ldr r4, _08013480 @ =0x08343F50
 	adds r0, r5, #0
@@ -613,4 +613,4 @@ _0801347A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08013480: .4byte 0x08343F50
+_08013480: .4byte MetatilePatch_08343f50

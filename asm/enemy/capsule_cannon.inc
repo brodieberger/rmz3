@@ -140,7 +140,7 @@ _080856A0:
 _080856FC: .4byte gEnemyFnTable
 _08085700: .4byte gSystemSavedata
 _08085704: .4byte gCurStory
-_08085708: .4byte 0x083684B8
+_08085708: .4byte gCapsuleCannonRoutine+0x74
 _0808570C:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -165,7 +165,7 @@ _08085724:
 	bl UpdateEntityAnim
 	b _080857A4
 	.align 2, 0
-_0808573C: .4byte 0x083684B8
+_0808573C: .4byte gCapsuleCannonRoutine+0x74
 _08085740: .4byte 0x00006801
 _08085744:
 	ldr r0, _08085778 @ =gSystemSavedata
@@ -197,7 +197,7 @@ _08085744:
 	.align 2, 0
 _08085778: .4byte gSystemSavedata
 _0808577C: .4byte gCurStory
-_08085780: .4byte 0x08368488
+_08085780: .4byte sCollisions
 _08085784:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -226,7 +226,7 @@ _080857A4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080857B8: .4byte 0x08368488
+_080857B8: .4byte sCollisions
 
 	thumb_func_start CapsuleCannon_Update
 CapsuleCannon_Update: @ 0x080857BC
@@ -290,8 +290,8 @@ _0808581E:
 	bl SetDDP
 	b _0808584E
 	.align 2, 0
-_0808583C: .4byte 0x08368458
-_08085840: .4byte 0x083684B8
+_0808583C: .4byte sUpdates1
+_08085840: .4byte gCapsuleCannonRoutine+0x74
 _08085844:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -302,7 +302,7 @@ _0808584E:
 	str r0, [r5]
 	b _08085868
 	.align 2, 0
-_08085854: .4byte 0x08368488
+_08085854: .4byte sCollisions
 _08085858:
 	ldr r0, _08085870 @ =0x08368470
 	ldrb r1, [r4, #0xd]
@@ -316,7 +316,7 @@ _08085868:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08085870: .4byte 0x08368470
+_08085870: .4byte sUpdates2
 
 	thumb_func_start CapsuleCannon_Die
 CapsuleCannon_Die: @ 0x08085874
@@ -605,7 +605,7 @@ _08085A90:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08085A98: .4byte 0x08368488
+_08085A98: .4byte sCollisions
 
 	thumb_func_start FUN_08085a9c
 FUN_08085a9c:
@@ -694,7 +694,7 @@ _08085B3E:
 	strb r0, [r4, #0xe]
 	b _08085C04
 	.align 2, 0
-_08085B48: .4byte 0x083684B8
+_08085B48: .4byte gCapsuleCannonRoutine+0x74
 _08085B4C:
 	ldr r3, [r4, #0x54]
 	str r3, [sp]
@@ -883,8 +883,8 @@ FUN_08085c4c: @ 0x08085C4C
 	bl SetDDP
 	b _08085CB6
 	.align 2, 0
-_08085CA0: .4byte 0x083684E8
-_08085CA4: .4byte 0x083684D0
+_08085CA0: .4byte sElementCoord
+_08085CA4: .4byte gCapsuleCannonRoutine+0x8c
 _08085CA8:
 	cmp r1, #0x30
 	bne _08085CB6
@@ -898,7 +898,7 @@ _08085CB6:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08085CC0: .4byte 0x083684D0
+_08085CC0: .4byte gCapsuleCannonRoutine+0x8c
 
 	thumb_func_start FUN_08085cc4
 FUN_08085cc4: @ 0x08085CC4

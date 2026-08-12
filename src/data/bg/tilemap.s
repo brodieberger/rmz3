@@ -34,7 +34,7 @@ gBgMapOffsets: @ 0x085222A0
   .4byte Tilemap_72-., Tilemap_73-., Tilemap_74-., Tilemap_75-., Tilemap_76-. @ 72..76: Weil Labo
   .4byte Tilemap_77-., Tilemap_78-. @ 77, 78: Snowy Plains
   .4byte Tilemap_79-., Tilemap_80-. @ 79, 80: Energy Facility
-  .4byte 82084, 83624, 85164, 86448, 87732, 89016, 90300, 91584, 92868, 93368, 95420, 97472, 99524, 101576, 103628, 105680, 107732, 109784, 140, 111832, 113036, 114320, 116372, 120, 116, 117648, 117988, 118376, 100, 96, 92, 118656, 119940, 121864, 123148, 124432, 126484, 127768, 129052, 130336, 131620, 133672, 134956, 136240, 137524, 139576, 141628, 142912
+  .4byte Tilemap_81-., Tilemap_82-., Tilemap_83-., Tilemap_84-., Tilemap_85-., Tilemap_86-., Tilemap_87-., Tilemap_88-., Tilemap_89-., Tilemap_90-., Tilemap_91-., Tilemap_92-., Tilemap_93-., Tilemap_94-., Tilemap_95-., Tilemap_96-., Tilemap_97-., Tilemap_98-., Tilemap_Capcom-., Tilemap_100-., Tilemap_101-., Tilemap_102-., Tilemap_103-., Tilemap_Capcom-., Tilemap_Capcom-., Tilemap_106-., Tilemap_107-., Tilemap_108-., Tilemap_Capcom-., Tilemap_Capcom-., Tilemap_Capcom-., Tilemap_112-., Tilemap_113-., Tilemap_114-., Tilemap_115-., Tilemap_116-., Tilemap_117-., Tilemap_118-., Tilemap_119-., Tilemap_120-., Tilemap_121-., Tilemap_122-., Tilemap_123-., Tilemap_124-., Tilemap_125-., Tilemap_126-., Tilemap_127-., Tilemap_128-.
   .4byte Tilemap_129-. @ 129
   .4byte Tilemap_130-., Tilemap_131-., Tilemap_132-. @ 130, 131, 132
   .4byte Tilemap_133-. @ 133
@@ -47,17 +47,29 @@ dummy: @ タイルマップデータが存在しないグラフィックデー�
 Tilemap_Capcom:
   .4byte 0x10001 @ 不明 (全てのタイルマップがこの値), .2byte 0x1, 0x1 で、何かの倍率とか？
   .2byte 32, 20  @ w8, h8
+.if ENGLISH
+  .incbin "data/bgmaps/misc/000-en.bin"
+.else
   .incbin "data/bgmaps/misc/000.bin"
+.endif
 
 Tilemap_Inti:
   .4byte 0x10001
   .2byte 32, 20  @ w8, h8
+.if ENGLISH
+  .incbin "data/bgmaps/misc/001-en.bin"
+.else
   .incbin "data/bgmaps/misc/001.bin"
+.endif
 
 Tilemap_2:
 	.4byte 0x10001
   .2byte 30, 20  @ w8, h8
+.if ENGLISH
+  .incbin "data/bgmaps/misc/002-en.bin"
+.else
   .incbin "data/bgmaps/misc/002.bin"
+.endif
 
 Tilemap_TitleZero:
 	.4byte 0x10001
@@ -86,18 +98,32 @@ Tilemap_7:
 
 Tilemap_8:
 	.4byte 0x10001
+.if ENGLISH
+	.2byte	24, 5 @ w8, h8
+  .incbin "data/bgmaps/misc/008-en.bin"
+.else
 	.2byte	23, 5 @ w8, h8
   .incbin "data/bgmaps/misc/008.bin"
+.endif
 
 Tilemap_LogoDemo:
 	.4byte 0x10001
+.if ENGLISH
+	.2byte	12, 4 @ w8, h8
+  .incbin "data/bgmaps/misc/018-en.bin"
+.else
 	.2byte	11, 4 @ w8, h8
   .incbin "data/bgmaps/misc/018.bin"
+.endif
 
 Tilemap_20:
 	.4byte 0x10001
   .2byte	32, 20 @ w8, h8
+.if ENGLISH
+.incbin "data/bgmaps/menu/020-en.bin"
+.else
 .incbin "data/bgmaps/menu/020.bin"
+.endif
 
 Tilemap_21:
 	.4byte 0x10001
@@ -107,7 +133,11 @@ Tilemap_21:
 Tilemap_22:
 	.4byte 0x10001
   .2byte	32, 20 @ w8, h8
+.if ENGLISH
+  .incbin "data/bgmaps/menu/022-en.bin"
+.else
   .incbin "data/bgmaps/menu/022.bin"
+.endif
 
 Tilemap_23:
 	.4byte 0x10001
@@ -422,12 +452,21 @@ Tilemap_98:
 Tilemap_100:
 	.4byte 0x10001
   .2byte 30, 20  @ w8, h8
+.if ENGLISH
+.incbin "data/bgmaps/todo/100-en.bin"
+.else
 .incbin "data/bgmaps/todo/100.bin"
+.endif
 
 Tilemap_101:
 	.4byte 0x10001
+.if ENGLISH
+  .2byte	30, 20
+.incbin "data/bgmaps/todo/101-en.bin"
+.else
   .2byte	32, 20
 .incbin "data/bgmaps/todo/101.bin"
+.endif
 
 Tilemap_102:
 	.4byte 0x10001

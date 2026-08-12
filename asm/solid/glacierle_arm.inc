@@ -81,8 +81,8 @@ _080CE940:
 	bx r0
 	.align 2, 0
 _080CE9B4: .4byte gSolidFnTable
-_080CE9B8: .4byte 0x08370538
-_080CE9BC: .4byte 0x08370340
+_080CE9B8: .4byte u8_ARRAY_08370538
+_080CE9BC: .4byte sGlacierleArmCollisions
 _080CE9C0: .4byte onCollision
 
 	thumb_func_start GlacierleArm_Update
@@ -157,8 +157,8 @@ _080CEA4C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CEA54: .4byte 0x08370330
-_080CEA58: .4byte 0x08370338
+_080CEA54: .4byte sGlacierleArmUpdates1
+_080CEA58: .4byte sGlacierleArmUpdates2
 
 	thumb_func_start GlacierleArm_Die
 GlacierleArm_Die: @ 0x080CEA5C
@@ -237,7 +237,7 @@ _080CEADC:
 	str r0, [r4, #0x14]
 	b _080CEB1E
 	.align 2, 0
-_080CEAF0: .4byte 0x0837053A
+_080CEAF0: .4byte u8_ARRAY_0837053a
 _080CEAF4: .4byte gSolidFnTable
 _080CEAF8:
 	adds r0, r4, #0
@@ -377,9 +377,9 @@ _080CEBD0:
 	strb r2, [r4, #0xe]
 	b _080CEC48
 	.align 2, 0
-_080CEBF4: .4byte 0x0837054E
-_080CEBF8: .4byte 0x08370544
-_080CEBFC: .4byte 0x08370340
+_080CEBF4: .4byte sGlacierleArmMotions
+_080CEBF8: .4byte sGlacierleArmCollisionIdx
+_080CEBFC: .4byte sGlacierleArmCollisions
 _080CEC00: .4byte gStageRun
 _080CEC04: .4byte pZero2
 _080CEC08: .4byte 0x00002FFF

@@ -56,7 +56,7 @@ _080EE89A:
 	mov r3, sl
 	cmp r3, #0
 	bne _080EE980
-	ldr r4, _080EE928 @ =0x0202F33C
+	ldr r4, _080EE928 @ =gTimeElfTimer
 	ldrh r1, [r4]
 	adds r2, r1, #0
 	cmp r2, #0
@@ -84,7 +84,7 @@ _080EE918: .4byte gMatrixCount
 _080EE91C: .4byte gWhitePaintFlags
 _080EE920: .4byte 0x01000008
 _080EE924: .4byte gCurStory
-_080EE928: .4byte 0x0202F33C
+_080EE928: .4byte gTimeElfTimer
 _080EE92C: .4byte 0x00007FFF
 _080EE930:
 	cmp r2, #0xb3
@@ -103,13 +103,13 @@ _080EE944:
 	movs r0, #0x26
 	bl PlaySound
 _080EE954:
-	ldr r1, _080EE960 @ =0x0202F33C
+	ldr r1, _080EE960 @ =gTimeElfTimer
 	ldrh r0, [r1]
 	subs r0, #1
 	strh r0, [r1]
 	b _080EE980
 	.align 2, 0
-_080EE960: .4byte 0x0202F33C
+_080EE960: .4byte gTimeElfTimer
 _080EE964:
 	bl TurnUpBGM
 	ldrb r0, [r5, #8]

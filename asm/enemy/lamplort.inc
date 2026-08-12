@@ -144,6 +144,7 @@ _0806C548:
 	ldrb r1, [r0]
 	mov r0, sp
 	bl FUN_080b9e68
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xbb
 	ldrb r0, [r0]
@@ -184,6 +185,7 @@ _0806C5B4:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _0806C5C2:
 	adds r1, r7, #0
 	adds r1, #0x54
@@ -196,6 +198,10 @@ _0806C5D0:
 	adds r0, #1
 	strb r0, [r7, #0xe]
 	b _0806C7DC
+.if !HIT_BLOOD
+	.align 2, 0
+_0806C590: .4byte 0x0000190A
+.endif
 _0806C5D8:
 	adds r0, r7, #0
 	bl UpdateEntityAnim

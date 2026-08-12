@@ -425,6 +425,29 @@ _080E3D54: @ jump table
 	.4byte _080E3EB0 @ case 45
 	.4byte _080E3EB0 @ case 46
 	.4byte _080E3EB0 @ case 47
+.if REGION_US
+_080E3E14:
+	adds r0, r4, #0
+	adds r0, #0xb4
+	ldrh r1, [r0, #4]
+	adds r1, #3
+	movs r2, #0
+	strh r1, [r0, #4]
+	strb r2, [r0, #0xa]
+	b _080E3E32
+_080E3E24:
+	adds r0, r4, #0
+	adds r0, #0xb4
+	ldrh r1, [r0, #4]
+	adds r1, #3
+	movs r2, #0
+	strh r1, [r0, #4]
+	strb r2, [r0, #0xb]
+_080E3E32:
+	movs r0, #6
+	bl PlaySound
+	b _080E3EB0
+.else
 _080E3E14:
 	adds r1, r4, #0
 	adds r1, #0xb4
@@ -449,6 +472,7 @@ _080E3E32:
 	b _080E3EB0
 	.align 2, 0
 _080E3E3C: .4byte 0x00000103
+.endif
 _080E3E40:
 	adds r1, r4, #0
 	adds r1, #0xb4

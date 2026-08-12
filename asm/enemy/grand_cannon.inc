@@ -362,6 +362,19 @@ slashGrandCannon: @ 0x080696CC
 	beq _08069792
 	b _080697AA
 _080696DE:
+.if REGION_US && !HIT_BLOOD
+	movs r2, #0
+	ldr r0, _08069700 @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r5, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _080696F0
+	movs r2, #1
+_080696F0:
+	adds r6, r2, #0
+.else
 	movs r3, #0
 	ldr r0, _08069700 @ =pZero2
 	ldr r0, [r0]
@@ -374,6 +387,7 @@ _080696DE:
 _080696F0:
 	adds r6, r3, #0
 	adds r2, r6, #0
+.endif
 	cmp r6, #0
 	beq _08069704
 	ldrb r1, [r5, #0xa]
@@ -420,6 +434,7 @@ _0806970A:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -430,6 +445,7 @@ _0806970A:
 	add r1, sp, #8
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r6, #1
 	adds r0, r0, r6

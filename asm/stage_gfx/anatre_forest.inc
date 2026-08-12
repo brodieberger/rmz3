@@ -319,10 +319,10 @@ _0801097A:
 	b _08010A20
 	.align 2, 0
 _080109C8: .4byte 0x0000010D
-_080109CC: .4byte 0x08340134
+_080109CC: .4byte Coord_ARRAY_ARRAY_08340134
 _080109D0: .4byte gOverworld+184360
-_080109D4: .4byte 0x08340140
-_080109D8: .4byte 0x083401D5
+_080109D4: .4byte gAnatreForestLandscape+0x98
+_080109D8: .4byte gAnatreForestLandscape+0x12d
 _080109DC:
 	cmp r0, #1
 	bne _080109F4
@@ -449,7 +449,7 @@ _08010A6C:
 	b _08010AD2
 	.align 2, 0
 _08010AC4: .4byte gVideoRegBuffer+12
-_08010AC8: .4byte 0x083401D4
+_08010AC8: .4byte u8_ARRAY_083401d4
 _08010ACC:
 	cmp r2, #0xef
 	ble _08010AD2
@@ -585,12 +585,12 @@ _08010BA4:
 	.align 2, 0
 _08010BC0: .4byte gWindowRegBuffer
 _08010BC4: .4byte 0x00002001
-_08010BC8: .4byte 0x083401D4
-_08010BCC: .4byte 0x083401E8
+_08010BC8: .4byte u8_ARRAY_083401d4
+_08010BCC: .4byte Rect_ARRAY_083401e8
 _08010BD0: .4byte gVideoRegBuffer
 _08010BD4: .4byte gOverworld+184360
-_08010BD8: .4byte 0x08340200
-_08010BDC: .4byte 0x08340220
+_08010BD8: .4byte Coord_ARRAY_08340200
+_08010BDC: .4byte Coord_ARRAY_08340220
 
 	thumb_func_start FUN_08010be0
 FUN_08010be0: @ 0x08010BE0
@@ -792,7 +792,7 @@ _08010D5C: .4byte 0xFFFEC000
 _08010D60: .4byte 0x00013FFF
 _08010D64: .4byte gOverworld
 _08010D68: .4byte 0x0002D02C
-_08010D6C: .4byte 0x08340270
+_08010D6C: .4byte MetatilePatch_08340270
 
 	thumb_func_start FUN_08010d70
 FUN_08010d70: @ 0x08010D70
@@ -903,7 +903,7 @@ _08010E3C:
 	bl PatchMetatileMap
 	b _08010E7C
 	.align 2, 0
-_08010E48: .4byte 0x08340278
+_08010E48: .4byte MetatilePatch_08340278
 _08010E4C:
 	ldr r0, _08010E9C @ =0x001B2FFF
 	cmp r4, r0
@@ -944,4 +944,4 @@ _08010E96:
 	bx r0
 	.align 2, 0
 _08010E9C: .4byte 0x001B2FFF
-_08010EA0: .4byte 0x08340278
+_08010EA0: .4byte MetatilePatch_08340278

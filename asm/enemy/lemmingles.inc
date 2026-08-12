@@ -1662,7 +1662,11 @@ _0806F270: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0806f274
 FUN_0806f274: @ 0x0806F274
+.if HIT_BLOOD
 	push {r4, r5, r6, r7, lr}
+.else
+	push {r4, r5, r6, lr}
+.endif
 	sub sp, #0x10
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
@@ -1672,6 +1676,7 @@ FUN_0806f274: @ 0x0806F274
 	beq _0806F36C
 	b _0806F3BC
 _0806F286:
+.if HIT_BLOOD
 	movs r3, #0
 	ldr r0, _0806F328 @ =pZero2
 	ldr r0, [r0]
@@ -1683,6 +1688,7 @@ _0806F286:
 	movs r3, #1
 _0806F298:
 	adds r7, r3, #0
+.endif
 	movs r6, #0
 	ldrb r0, [r4, #0x10]
 	cmp r0, #1
@@ -1711,6 +1717,7 @@ _0806F2B0:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r4, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r4, #0x58]
@@ -1721,6 +1728,12 @@ _0806F2B0:
 	add r1, sp, #8
 	adds r3, r7, #0
 	bl FUN_080b2b40
+.else
+	ldr r2, [r4, #0x54]
+	str r2, [sp, #8]
+	ldr r1, [r4, #0x58]
+	str r1, [sp, #0xc]
+.endif
 	ldr r0, [r4, #0x5c]
 	cmp r0, #0
 	bge _0806F2EC
@@ -1729,8 +1742,12 @@ _0806F2EC:
 	asrs r0, r0, #2
 	str r0, [sp, #8]
 	str r5, [sp, #0xc]
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
+.else
+	adds r0, r2, #0
+.endif
 	bl FUN_08009f6c
 	adds r1, r0, #0
 	ldr r0, [r4, #0x58]
@@ -1754,7 +1771,9 @@ _0806F2EC:
 	bl FUN_080b84f4
 	b _0806F354
 	.align 2, 0
+.if HIT_BLOOD
 _0806F328: .4byte pZero2
+.endif
 _0806F32C: .4byte 0x00001D12
 _0806F330: .4byte 0x000003FF
 _0806F334: .4byte sMotions+(11*2)
@@ -1826,7 +1845,11 @@ _0806F3A2:
 	bl FUN_0806f1dc
 _0806F3BC:
 	add sp, #0x10
+.if HIT_BLOOD
 	pop {r4, r5, r6, r7}
+.else
+	pop {r4, r5, r6}
+.endif
 	pop {r0}
 	bx r0
 	.align 2, 0

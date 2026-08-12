@@ -133,7 +133,7 @@ FUN_080b1b28: @ 0x080B1B28
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B1B3C: .4byte 0x0836D7CC
+_080B1B3C: .4byte PTR_ARRAY_0836d7cc
 
 	thumb_func_start FUN_080b1b40
 FUN_080b1b40:
@@ -235,7 +235,7 @@ _080B1BE0:
 	lsls r1, r1, #7
 	b _080B1C52
 	.align 2, 0
-_080B1C28: .4byte 0x0836D7DC
+_080B1C28: .4byte Collision_ARRAY_0836d7dc
 _080B1C2C:
 	cmp r0, #1
 	bne _080B1C60
@@ -260,7 +260,7 @@ _080B1C52:
 	bl SetMotion
 	b _080B1C8C
 	.align 2, 0
-_080B1C5C: .4byte 0x0836D7F4
+_080B1C5C: .4byte gProjectile45Routine+0x3c
 _080B1C60:
 	adds r4, r5, #0
 	adds r4, #0x74
@@ -305,7 +305,7 @@ _080B1CAE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B1CB4: .4byte 0x0836D80C
+_080B1CB4: .4byte gProjectile45Routine+0x54
 _080B1CB8: .4byte FUN_080b2178
 
 	thumb_func_start FUN_080b1cbc
@@ -419,7 +419,7 @@ _080B1D52:
 	ldr r1, _080B1D98 @ =0x00000E08
 	b _080B1DC0
 	.align 2, 0
-_080B1D94: .4byte 0x0836D824
+_080B1D94: .4byte gProjectile45Routine+0x6c
 _080B1D98: .4byte 0x00000E08
 _080B1D9C:
 	cmp r0, #1
@@ -444,7 +444,7 @@ _080B1DC0:
 	bl SetMotion
 	b _080B1DFA
 	.align 2, 0
-_080B1DC8: .4byte 0x0836D83C
+_080B1DC8: .4byte gProjectile45Routine+0x84
 _080B1DCC: .4byte 0x00000E07
 _080B1DD0:
 	adds r4, r5, #0
@@ -508,7 +508,7 @@ _080B1E1C:
 	str r0, [r5, #0x58]
 	b _080B1E94
 	.align 2, 0
-_080B1E4C: .4byte 0x0836D854
+_080B1E4C: .4byte gProjectile45Routine+0x9c
 _080B1E50: .4byte 0x00000E09
 _080B1E54: .4byte FUN_080b21c0
 _080B1E58: .4byte 0xFFFFF800
@@ -749,7 +749,7 @@ _080B2030:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B2038: .4byte 0x0836D86C
+_080B2038: .4byte gProjectile45Routine+0xb4
 _080B203C: .4byte 0xFFFC4000
 _080B2040: .4byte gStageRun+232
 
@@ -878,7 +878,7 @@ _080B2126:
 	bl Camera_GetDistance
 	b _080B216C
 	.align 2, 0
-_080B2138: .4byte 0x0836D884
+_080B2138: .4byte gProjectile45Routine+0xcc
 _080B213C: .4byte FUN_080b2204
 _080B2140: .4byte 0x0000AA04
 _080B2144: .4byte 0xFFFC4000

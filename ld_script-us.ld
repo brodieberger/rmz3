@@ -1,0 +1,76 @@
+/* US (REGION=us) layout. Starts as a copy of ld_script.ld; re-derived until rmz3-us.gba matches rmz3-us.sha1. */
+OUTPUT_FORMAT("elf32-littlearm", "elf32-bigarm", "elf32-littlearm")
+OUTPUT_ARCH(arm)
+MEMORY {
+    ewram   : ORIGIN = 0x02000000, LENGTH = 4M - 4k
+    iwram   : ORIGIN = 0x03000000, LENGTH = 32k
+		rom     : ORIGIN = (0x08000000), LENGTH = 8M
+}
+
+gMaxLines = 0;
+gNumMusicPlayers = 15;
+/* US .rodata fill before sprite_dynamic is 0x5704 smaller than JP (JP 0x19f04). */
+gPadTerrainTail = 0;
+gPadSpriteStaticTail = 0;
+gPadSpriteDynamic = 0;  /* US fills this gap with us_gap.o instead */
+
+SECTIONS {
+	. = 0x2000000;
+	ewram (NOLOAD) :
+	ALIGN(4)
+    {
+      INCLUDE "linker/ewram.txt"
+    } >ewram = 0x00
+
+	. = 0x3000000;
+    iwram (NOLOAD) :
+    ALIGN(4)
+    {
+        src/libs/m4a.o(.bss.code);
+        INCLUDE "linker/iwram.txt"
+    } >iwram = 0x00
+
+    . = 0x8000000;
+    .text :
+    ALIGN(4)
+    {
+      src/rom_header.o (.text);
+			src/crt0.o (.text);
+			src/sprite2.o (.text);
+			src/sprite2.o (.rodata);
+			src/sprite2.o (.data);
+			src/mmbn4.o (.rodata);
+			src/mmbn4.o (.text);
+			src/main.o (.text);
+			INCLUDE "linker/text.txt"
+    } >rom = 0x00
+
+	lib_text :
+	ALIGN(4)
+	{
+		src/libs/m4a_1.o (.text);
+		src/libs/m4a.o (.text);
+		src/libs/libagbsyscall.o (.text);
+		src/libs/agb_sram.o (.text);
+		*libgcc.a:*_call_via_rX*.o(.text);
+		*libgcc.a:*_divsi3*.o(.text);
+		*libgcc.a:*_dvmd_tls*.o(.text);
+		*libgcc.a:*_modsi3*.o(.text);
+		*libgcc.a:*_udivsi3*.o(.text);
+		*libgcc.a:*_umodsi3*.o(.text);
+		*libc.a:*memcpy*.o(.text);
+		*libc.a:*memset*.o(.text);
+	} >rom = 0x00
+
+	.rodata :
+	ALIGN(4)
+	{
+			INCLUDE "linker/rodata.txt"
+	} >rom = 0x00
+
+    /* Discard everything not specifically mentioned above. */
+	/DISCARD/ :
+    {
+        *(*);
+    }
+}

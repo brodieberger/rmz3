@@ -166,7 +166,9 @@ _0806D46C: .4byte gEnemyFnTable
 	thumb_func_start FUN_0806d470
 FUN_0806d470: @ 0x0806D470
 	push {r4, r5, r6, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r2, [r4, #0xe]
 	cmp r2, #0
@@ -190,6 +192,7 @@ _0806D48E:
 	adds r5, r1, #0
 	cmp r2, #0
 	beq _0806D4E6
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -202,6 +205,10 @@ _0806D48E:
 	movs r0, #0
 	mov r1, sp
 	bl FUN_080b2b40
+.else
+	ldr r2, [r4, #0x54]
+	ldr r1, [r4, #0x58]
+.endif
 	ldr r0, [r4, #0x2c]
 	cmp r0, #0
 	beq _0806D4CC
@@ -209,14 +216,23 @@ _0806D48E:
 _0806D4C2:
 	strb r0, [r4, #0xd]
 	b _0806D4E8
+.if HIT_BLOOD
 	.align 2, 0
 _0806D4C8: .4byte 0xFFFFEC00
+.endif
 _0806D4CC:
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	movs r2, #0xb0
 	lsls r2, r2, #4
 	adds r1, r1, r2
+.else
+	movs r0, #0xb0
+	lsls r0, r0, #4
+	adds r1, r1, r0
+	adds r0, r2, #0
+.endif
 	bl FUN_080098a4
 	lsls r0, r0, #0x10
 	lsrs r0, r0, #0x10
@@ -251,7 +267,9 @@ _0806D508:
 	ldr r1, [r1]
 	adds r0, r4, #0
 	bl _call_via_r1
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

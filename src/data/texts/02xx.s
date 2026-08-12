@@ -5,38 +5,55 @@
 @ preproc: treat "label::" as ".global label ; label:"
 
 TextOfs_CielChats:: @ 0x08379684
-	.2byte (Text0-Start), (Text1-Start), (Text2-Start), (Text3-Start), (Text4-Start), (Text5-Start), (Text6-Start), (Text7-Start)
-	.2byte (Text8-Start), (Text9-Start), (Text10-Start), (Text11-Start), (Text12-Start), (Text13-Start), (Text14-Start), (Text15-Start)
-	.2byte (Text16-Start), (Text17-Start), (Text18-Start), (Text19-Start), (Text20-Start), (Text21-Start), (Text22-Start), (Text23-Start)
-	.2byte (Text24-Start), (Text25-Start), (Text26-Start), (Text27-Start), (Text28-Start), (Text29-Start), (Text30-Start), (Text31-Start)
-	.2byte (Text32-Start), (Text33-Start), (Text34-Start), (Text35-Start), (Text36-Start), (Text37-Start), (Text38-Start), (Text39-Start)
-	.2byte (Text40-Start), (Text41-Start), (Text42-Start), (Text43-Start), (Text44-Start), (Text45-Start), (Text46-Start), (Text47-Start)
-	.2byte (Text48-Start), (Text49-Start), (Text50-Start), (Text51-Start), (Text52-Start), (Text53-Start), (Text54-Start), (Text55-Start)
-	.2byte (Text56-Start), (Text57-Start), (Text58-Start), (Text59-Start), (Text60-Start), (Text61-Start), (Text62-Start), (Text63-Start)
-	.2byte (Text64-Start), (Text65-Start), (Text66-Start), (Text67-Start), (Text68-Start), (Text69-Start), (Text70-Start), (Text71-Start)
-	.2byte (Text72-Start), (Text73-Start), (Text74-Start), (Text75-Start), (Text76-Start), (Text77-Start), (Text78-Start), (Text79-Start)
-	.2byte (Text80-Start), (Text81-Start), (Text82-Start), (Text83-Start), (Text84-Start), (Text85-Start), (Text86-Start), (Text87-Start)
-	.2byte (Text88-Start), (Text89-Start), (Text90-Start), (Text91-Start), (Text92-Start), (Text93-Start), (Text94-Start), (Text95-Start)
-	.2byte (Text96-Start), (Text97-Start), (Text98-Start), (Text99-Start), (Text100-Start), (Text101-Start), (Text102-Start), (Text103-Start)
-	.2byte (Text104-Start), (Text105-Start), (Text106-Start), (Text107-Start), (Text108-Start), (Text109-Start), (Text110-Start), (Text111-Start)
-	.2byte (Text112-Start), (Text113-Start), (Text114-Start), (Text115-Start), (Text116-Start), (Text117-Start), (Text118-Start), (Text119-Start)
-	.2byte (Text120-Start), (Text121-Start), (Text122-Start), (Text123-Start), (Text124-Start), (Text125-Start), (Text126-Start), (Text127-Start)
-	.2byte (Text128-Start), (Text129-Start), (Text130-Start), (Text131-Start), (Text132-Start), (Text133-Start), (Text134-Start), (Text135-Start)
-	.2byte (Text136-Start), (Text137-Start), (Text138-Start), (Text139-Start), (Text140-Start), (Text141-Start), (Text142-Start), (Text143-Start)
-	.2byte (Text144-Start), (Text145-Start), (Text146-Start), (Text147-Start), (Text148-Start), (Text149-Start), (Text150-Start), (Text151-Start)
-	.2byte (Text152-Start), (Text153-Start), (Text154-Start), (Text155-Start), (Text156-Start), (Text157-Start), (Text158-Start), (Text159-Start)
-	.2byte (Text160-Start), (Text161-Start), (Text162-Start), (Text163-Start), (Text164-Start), (Text165-Start), (Text166-Start), (Text167-Start)
-	.2byte (Text168-Start), (Text169-Start), (Text170-Start), (Text171-Start), (Text172-Start), (Text173-Start), (Text174-Start), (Text175-Start)
-	.2byte (Text176-Start), (Text177-Start), (Text178-Start), (Text179-Start), (Text180-Start), (Text181-Start), (Text182-Start), (Text183-Start)
-	.2byte (Text184-Start), (Text185-Start), (Text186-Start), (Text187-Start), (Text188-Start), (Text189-Start), (Text190-Start), (Text191-Start)
-	.2byte (Text192-Start), (Text193-Start), (Text194-Start), (Text195-Start), (Text196-Start), (Text197-Start), (Text198-Start), (Text199-Start)
-	.2byte (Text200-Start), (Text201-Start), (Text202-Start), (Text203-Start), (Text204-Start), (Text205-Start), (Text206-Start), (Text207-Start)
-	.2byte (Text208-Start), (Text209-Start), (Text210-Start), (Text211-Start), (Text212-Start), (Text213-Start)
+	.2byte (Text_CielChats_ZeroIGuessI-Start), (Text_CielChats_ZeroIHateToThink-Start), (Text_CielChats_ZeroWhatShouldIDo-Start), (Text_CielChats_ZeroThereAreSome-Start), (Text_CielChats_ZeroIfDrWeilTakes-Start), (Text_CielChats_ZeroIBelieveInYou-Start), (Text_CielChats_ZeroPleaseBeCareful-Start), (Text_CielChats_WhatSThisDonT-Start)
+	.2byte (Text_CielChats_OhZeroSorryICouldn-Start), (Text_CielChats_IGotSoCaughtUp-Start), (Text_CielChats_DrWeilHeLlStop-Start), (Text_CielChats_AboutHarpuiaHisInternalBody-Start), (Text_CielChats_OhItSYouZero-Start), (Text_CielChats_ZeroIWouldnTBe-Start), (Text_CielChats_YouCanGetDisks-Start), (Text_CielChats_WhatSThis-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias1-Start), (Text_CielChats_WhatSThis_Alias2-Start), (Text_CielChats_WhatSThis_Alias3-Start), (Text_CielChats_WhatSThis_Alias4-Start), (Text_CielChats_WhatSThis_Alias5-Start), (Text_CielChats_WhatSThis_Alias6-Start), (Text_CielChats_WhatSThis_Alias7-Start), (Text_CielChats_WhatSThis_Alias8-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias9-Start), (Text_CielChats_WhatSThis_Alias10-Start), (Text_CielChats_WhatSThis_Alias11-Start), (Text_CielChats_WhatSThis_Alias12-Start), (Text_CielChats_WhatSThis_Alias13-Start), (Text_CielChats_WhatSThis_Alias14-Start), (Text_CielChats_WhatSThis_Alias15-Start), (Text_CielChats_WhatSThis_Alias16-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias17-Start), (Text_CielChats_WhatSThis_Alias18-Start), (Text_CielChats_WhatSThis_Alias19-Start), (Text_CielChats_WhatSThis_Alias20-Start), (Text_CielChats_WhatSThis_Alias21-Start), (Text_CielChats_WhatSThis_Alias22-Start), (Text_CielChats_WhatSThis_Alias23-Start), (Text_CielChats_WhatSThis_Alias24-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias25-Start), (Text_CielChats_WhatSThis_Alias26-Start), (Text_CielChats_WhatSThis_Alias27-Start), (Text_CielChats_WhatSThis_Alias28-Start), (Text_CielChats_WhatSThis_Alias29-Start), (Text_CielChats_WhatSThis_Alias30-Start), (Text_CielChats_WhatSThis_Alias31-Start), (Text_CielChats_WhatSThis_Alias32-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias33-Start), (Text_CielChats_WhatSThis_Alias34-Start), (Text_CielChats_WhatSThis_Alias35-Start), (Text_CielChats_WhatSThis_Alias36-Start), (Text_CielChats_WhatSThis_Alias37-Start), (Text_CielChats_WhatSThis_Alias38-Start), (Text_CielChats_WhatSThis_Alias39-Start), (Text_CielChats_WhatSThis_Alias40-Start)
+	.2byte (Text_CielChats_WhatSThis_Alias41-Start), (Text_CielChats_WhatSThis_Alias42-Start), (Text_CielChats_WhatSThis_Alias43-Start), (Text_CielChats_WhatSThis_Alias44-Start), (Text_CielChats_WhatSThis_Alias45-Start), (Text_CielChats_WhatSThis_Alias46-Start), (Text_CielChats_ByTheWaySonWhere-Start), (Text_CielChats_HeyZeroWhenYouHave-Start)
+	.2byte (Text_CielChats_OhItSYouZero_2-Start), (Text_CielChats_OhItSYouZero_2_Alias1-Start), (Text_CielChats_SoWhippersnapperTheResistanceBase-Start), (Text_CielChats_HmmWhatThat-Start), (Text_CielChats_OhHeyZeroIVe-Start), (Text_CielChats_IWonderWhereMy-Start), (Text_CielChats_OhZeroDidYouReally-Start), (Text_CielChats_CreaPreaDoTheyRemember-Start)
+	.2byte (Text_CielChats_HeyZeroWhatWasOn-Start), (Text_CielChats_HeyZeroWhatIsWeil-Start), (Text_CielChats_ZeroIMScaredEven-Start), (Text_CielChats_HiYaZeroItS-Start), (Text_CielChats_HiYaZeroItS_Alias1-Start), (Text_CielChats_BusyBusyBusyIThink-Start), (Text_CielChats_OhItSYouZero_3-Start), (Text_CielChats_ZeroDidYouCheckOut-Start)
+	.2byte (Text_CielChats_WhatSDrWeil-Start), (Text_CielChats_ZeroAtAllCosts-Start), (Text_CielChats_OhItSYouZero_4-Start), (Text_CielChats_OhHeyIFoundThis-Start), (Text_CielChats_AboutTheDiskI-Start), (Text_CielChats_ZeroYouReOkayEven-Start), (Text_CielChats_ZeroIKnowYouRe-Start), (Text_CielChats_HmphSoWhatAboutWeil-Start)
+	.2byte (Text_CielChats_IWonTSubmitTo-Start), (Text_CielChats_TheLullInAttacks-Start), (Text_CielChats_AhYesIfYou-Start), (Text_CielChats_HaveYouStudied-Start), (Text_CielChats_IMSoGladThat-Start), (Text_CielChats_OhMrZero-Start), (Text_CielChats_MrZeroDonTYou-Start), (Text_CielChats_HeyThereZeroHaveYou-Start)
+	.2byte (Text_CielChats_HeyThereZeroHaveYou_Alias1-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias2-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias3-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias4-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias5-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias6-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias7-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias8-Start)
+	.2byte (Text_CielChats_HeyThereZeroHaveYou_Alias9-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias10-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias11-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias12-Start), (Text_CielChats_HeyThereZeroHaveYou_Alias13-Start), (Text_CielChats_OhYes-Start), (Text_CielChats_HeyZeroHaveYouHeard-Start), (Text_CielChats_HeyZeroHaveYouHeard_2-Start)
+	.2byte (Text_CielChats_DidYouComeTo-Start), (Text_CielChats_HeyZeroByTheWay-Start), (Text_CielChats_ZeroIJustKnowIt-Start), (Text_CielChats_HeyHeyHowSThe-Start), (Text_CielChats_DidYouTakeThe-Start), (Text_CielChats_HeyThereNewGuy-Start), (Text_CielChats_SoIHeardThat-Start), (Text_CielChats_EvenIfDrWeil-Start)
+	.2byte (Text_CielChats_DrWeilHuhQuiteA-Start), (Text_CielChats_NiceToMeetYouMy-Start), (Text_CielChats_AboutCyberElvesWantTo-Start), (Text_CielChats_IUnderstandMr-Start), (Text_CielChats_IHopeMrHarpuia-Start), (Text_CielChats_MrZeroDrWeilHas-Start), (Text_CielChats_MrZeroThereIsnT-Start), (Text_CielChats_Hmm-Start)
+	.2byte (Text_CielChats_TheRecoilRodIs-Start), (Text_CielChats_OhItSYouZero_5-Start), (Text_CielChats_ThereSNoTimeTo-Start), (Text_CielChats_RegardlessOfWhat-Start), (Text_CielChats_OhZeroILlGive-Start), (Text_CielChats_MaybeILlThinkUp-Start), (Text_CielChats_HelloMrZeroIM-Start), (Text_CielChats_KeepUpTheGood-Start)
+	.2byte (Text_CielChats_HelloMrZeroIWonder-Start), (Text_CielChats_IWonderIfILl-Start), (Text_CielChats_KeepUpTheGood_2-Start), (Text_CielChats_MrZeroEvenSomeoneLike-Start), (Text_CielChats_SubjectOfInterest-Start), (Text_CielChats_SubjectOfInterest_2-Start), (Text_CielChats_SubjectOfInterest_3-Start), (Text_CielChats_MrZeroBeforeIWorked-Start)
+	.2byte (Text_CielChats_MrZeroBeforeIWorked_Alias1-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias2-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias3-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias4-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias5-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias6-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias7-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias8-Start)
+	.2byte (Text_CielChats_MrZeroBeforeIWorked_Alias9-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias10-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias11-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias12-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias13-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias14-Start), (Text_CielChats_MrZeroBeforeIWorked_Alias15-Start), (Text_CielChats_OhMrZeroHaveYou-Start)
+	.2byte (Text_CielChats_IJustGlancedTo-Start), (Text_CielChats_ToChangeTopicsDidYou-Start), (Text_CielChats_YouReEffortsAre-Start), (Text_CielChats_AhMrZeroCyberElves-Start), (Text_CielChats_AhMrZeroLatelyI-Start), (Text_CielChats_AhMrZeroLatelyI_Alias1-Start), (Text_CielChats_AhMrZeroLatelyI_Alias2-Start), (Text_CielChats_ThatDiskIGave-Start)
+	.2byte (Text_CielChats_OhMrZeroOldNews-Start), (Text_CielChats_ILookedThroughMy-Start), (Text_CielChats_OhMrZeroSometimesSnow-Start), (Text_CielChats_OhMrZeroIsIt-Start), (Text_CielChats_SpeakingOfWhich-Start), (Text_CielChats_AhMrZeroIWas-Start), (Text_CielChats_IWonderWhere-Start), (Text_CielChats_IsTheDarkElfS-Start)
+	.2byte (Text_CielChats_AhMrZero-Start), (Text_CielChats_AhMrZero_2-Start), (Text_CielChats_IMCertainThat-Start), (Text_CielChats_MsCielAndDr-Start), (Text_CielChats_MrZeroThisBigRoom-Start), (Text_CielChats_IWonderIfItWas-Start), (Text_CielChats_ZeroHowAreYouI-Start), (Text_CielChats_DonTTellCiel-Start)
+	.2byte (Text_CielChats_MrZeroIWentTo-Start), (Text_CielChats_YouKnowIWas-Start), (Text_CielChats_HeyMrZeroThanksFor-Start), (Text_CielChats_IDonTHaveAny-Start), (Text_CielChats_MrZeroMrZeroLooks-Start), (Text_CielChats_ICanTDoNearly-Start), (Text_CielChats_AhMrZeroFancyMeeting-Start), (Text_CielChats_IMSorryIDon-Start)
+	.2byte (Text_CielChats_AhMrZeroHibouShared-Start), (Text_CielChats_OhMaybeHibouIsOn-Start), (Text_CielChats_MrZeroThereAreThings-Start), (Text_CielChats_MrZeroIDonT-Start), (Text_CielChats_MrZeroIWasJust-Start), (Text_CielChats_OnAnotherNoteLatelyI-Start), (Text_CielChats_OhMrZeroOurLife-Start), (Text_CielChats_MrZero-Start)
+	.2byte (Text_CielChats_MrZeroDoYouKnow-Start), (Text_CielChats_DespiteHowCalm-Start), (Text_CielChats_MrZeroThisResistanceBase-Start), (Text_CielChats_MrZeroYouCanT-Start), (Text_CielChats_HeyZero-Start), (Text_CielChats_ByTheWay-Start), (Text_CielChats_HeyZeroWhenYouHave_2-Start), (Text_CielChats_OhItSYouZero_6-Start)
+	.2byte (Text_CielChats_HeyWhippersnapperWellISuppose-Start), (Text_CielChats_SoWhippersnapperTheResistanceBase_2-Start), (Text_CielChats_HmmWhatThat_2-Start), (Text_CielChats_HeyWhippersnapperWhatWasOn-Start), (Text_CielChats_ThisElfHasA-Start), (Text_CielChats_ItHasAWarmLight-Start)
 
 Text_CielChats:: @ 0x08379830
 Start:
 
-Text0: @ 0x08379830
+Text_CielChats_ZeroIGuessI: @ 0x08379830
+	@ EN: Zero...I guess I / got out of control / back there. / But when I imagine / somebody getting / hurt...I... / Everything just / turns black... / There must be some / other way... / I will not give up / until peace is / secured.
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...I guess I\n"
+		.string "got out of control\n"
+		.string "back there.▼"
+		.string "But when I imagine\n"
+		.string "somebody getting\n"
+		.string "hurt...I...▼"
+		.string "Everything just\n"
+		.string "turns black...▼"
+		.string "There must be some\n"
+		.string "other way...▼"
+		.string "I will not give up\n"
+		.string "until peace is\n"
+		.string "secured.$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…\n"
 		.string "さっきはとりみだしちゃって\n"
@@ -52,8 +69,22 @@ Text0: @ 0x08379830
 		.string "わたしは、あきらめないわ！\n"
 		.string "みんながシアワセに\n"
 		.string "生きられる世界を…$"
+	.endif
 
-Text1: @ 0x083798BC
+Text_CielChats_ZeroIHateToThink: @ 0x083798BC
+	@ EN: Zero... / I hate to think that / I might trouble you / again, Zero... / But without you, / humans and Reploids / will never be able / to coexist / peacefully.
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "I hate to think that\n"
+		.string "I might trouble you\n"
+		.string "again, Zero...▼"
+		.string "But without you,\n"
+		.string "humans and Reploids\n"
+		.string "will never be able▼"
+		.string "to coexist\n"
+		.string "peacefully.$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…▼"
 		.string "またゼロには めいわくを\n"
@@ -61,8 +92,31 @@ Text1: @ 0x083798BC
 		.string "人間とレプリロイドが\n"
 		.string "共存できる その日まで\n"
 		.string "チカラをかしてほしいの$"
+	.endif
 
-Text2: @ 0x08379907
+Text_CielChats_ZeroWhatShouldIDo: @ 0x08379907
+	@ EN: Zero... / What should I do? / I never wanted to / cause pain or grief / to anyone... / If only I had never / made the Ciel / System... / None of this would / have happened... / ... / I'm sorry, Zero... / Everyone is out / doing their best / fighting for us, / yet I'm always here, / feeling sorry for / myself...
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "What should I do?▼"
+		.string "I never wanted to\n"
+		.string "cause pain or grief\n"
+		.string "to anyone...▼"
+		.string "If only I had never\n"
+		.string "made the Ciel\n"
+		.string "System...▼"
+		.string "None of this would\n"
+		.string "have happened...▼"
+		.string "...▼"
+		.string "I'm sorry, Zero...▼"
+		.string "Everyone is out\n"
+		.string "doing their best\n"
+		.string "fighting for us,▼"
+		.string "yet I'm always here,\n"
+		.string "feeling sorry for\n"
+		.string "myself...$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ……▼"
 		.string "わたし…どうしたらいいの…▼"
@@ -79,8 +133,28 @@ Text2: @ 0x08379907
 		.string "戦ってくれているのに▼"
 		.string "こんな弱気な\n"
 		.string "発言ばかりして…$"
+	.endif
 
-Text3: @ 0x083799A2
+Text_CielChats_ZeroThereAreSome: @ 0x083799A2
+	@ EN: Zero... / There are some / in the Resistance... / who question why you / saved him, when he's / a Neo Arcadian, / and what's more / one of the Four / Guardians... / But you know what? / I... I believe that / someday he'll / understand us... / and come to help / our cause...
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "There are some\n"
+		.string "in the Resistance...▼"
+		.string "who question why you\n"
+		.string "saved him, when he's\n"
+		.string "a Neo Arcadian,▼"
+		.string "and what's more\n"
+		.string "one of the Four\n"
+		.string "Guardians...▼"
+		.string "But you know what?▼"
+		.string "I... I believe that\n"
+		.string "someday he'll\n"
+		.string "understand us...▼"
+		.string "and come to help\n"
+		.string "our cause...$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…▼"
 		.string "レジスタンスの中にはね…▼"
@@ -93,8 +167,22 @@ Text3: @ 0x083799A2
 		.string "リカイして…▼"
 		.string "チカラになってくれるような\n"
 		.string "気がするのよ…$"
+	.endif
 
-Text4: @ 0x08379A24
+Text_CielChats_ZeroIfDrWeilTakes: @ 0x08379A24
+	@ EN: Zero... / If Dr. Weil takes / control of the / world... / our terrible history / will repeat again... / We cannot... / No...MUST not allow / that to happen...
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "If Dr. Weil takes\n"
+		.string "control of the\n"
+		.string "world...▼"
+		.string "our terrible history\n"
+		.string "will repeat again...▼"
+		.string "We cannot...▼"
+		.string "No...MUST not allow\n"
+		.string "that to happen...$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…▼"
 		.string "ドクター・バイルがこの世界を\n"
@@ -104,28 +192,114 @@ Text4: @ 0x08379A24
 		.string "何としても…▼"
 		.string "そう…何としても\n"
 		.string "それだけは、ソシしないと…$"
+	.endif
 
-Text5: @ 0x08379A82
+Text_CielChats_ZeroIBelieveInYou: @ 0x08379A82
+	@ EN: Zero... / I believe in you, / but... / Please don't bite / off more than you / can chew...
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "I believe in you,\n"
+		.string "but...▼"
+		.string "Please don't bite\n"
+		.string "off more than you\n"
+		.string "can chew...$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…▼"
 		.string "あなたのチカラを\n"
 		.string "信じているけど…▼"
 		.string "無理はしないでね…$"
+	.endif
 
-Text6: @ 0x08379AA7
+Text_CielChats_ZeroPleaseBeCareful: @ 0x08379AA7
+	@ EN: Zero... / Please be careful...
+	.if ENGLISH
+	.string "{WINDOW 0x40}"
+		.string "Zero...▼"
+		.string "Please be careful...$"
+	.else
 	.string "{WINDOW 0x40}"
 		.string "ゼロ…▼"
 		.string "気をつけてね…$"
+	.endif
 
-Text7: @ 0x08379AB6
+Text_CielChats_WhatSThisDonT: @ 0x08379AB6
+	@ EN: What's this? / Don't you have to / go to see Ciel? / You shouldn't make / a young lady wait!
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "What's this?▼"
+		.string "Don't you have to\n"
+		.string "go to see Ciel?▼"
+		.string "You shouldn't make\n"
+		.string "a young lady wait!$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "おや？▼"
 		.string "シエルのところへ\n"
 		.string "行かなくていいのかい？▼"
 		.string "あんまり女のコを\n"
 		.string "またせるもんじゃないぞ！$"
+	.endif
 
-Text8: @ 0x08379AE9
+Text_CielChats_OhZeroSorryICouldn: @ 0x08379AE9
+	@ EN: Oh, Zero... / Sorry I couldn't fix / up your weapons in / time... / Since there haven't / been any attacks / from Neo Arcadia... / I thought I'd just / upgrade your / weapons instead... / But it ended up / taking more time / than I expected... / Sorry about that... / But I was able to / make some pretty / good improvements / to your weapons. / By the way...about / your Recoil Rod... / Do you want to know / how to use it? / Sure do. / Not really... / I see, I see! / The Recoil Rod can / blast enemies with / a charge, and you / can also aim down / and shoot to fly / up into the air! / Certain barriers can / only be destroyed / with the charge / attack, so don't / hesitate to give / it a try. / Doigt and I spent a / month putting it / together for you, / so use it well! / Of course, the trick / with new weapons is / to give them a try, / and get used to / them! / I see. You don't / even care at all, / do you? / If Doigt could hear / that from outside of / the room / he'd sure be / disappointed.
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "Oh, Zero...▼"
+		.string "Sorry I couldn't fix\n"
+		.string "up your weapons in\n"
+		.string "time...▼"
+		.string "Since there haven't\n"
+		.string "been any attacks\n"
+		.string "from Neo Arcadia...▼"
+		.string "I thought I'd just\n"
+		.string "upgrade your\n"
+		.string "weapons instead...▼"
+		.string "But it ended up\n"
+		.string "taking more time\n"
+		.string "than I expected...▼"
+		.string "Sorry about that...\n"
+		.string "But I was able to\n"
+		.string "make some pretty▼"
+		.string "good improvements\n"
+		.string "to your weapons.▼"
+		.string "By the way...about\n"
+		.string "your Recoil Rod...\n"
+		.string "Do you want to know▼"
+		.string "{F6 0x01}how to use it?\n"
+		.string "  Sure do.\n"
+		.string "  Not really...▼"
+		.string "I see, I see!▼"
+		.string "The Recoil Rod can\n"
+		.string "blast enemies with\n"
+		.string "a charge, and you▼"
+		.string "can also aim down\n"
+		.string "and shoot to fly\n"
+		.string "up into the air!▼"
+		.string "Certain barriers can\n"
+		.string "only be destroyed\n"
+		.string "with the charge▼"
+		.string "attack, so don't\n"
+		.string "hesitate to give\n"
+		.string "it a try.▼"
+		.string "Doigt and I spent a\n"
+		.string "month putting it\n"
+		.string "together for you,▼"
+		.string "so use it well!▼"
+		.string "Of course, the trick\n"
+		.string "with new weapons is\n"
+		.string "to give them a try,▼"
+		.string "and get used to\n"
+		.string "them!{RETURN}{ANSWER 0x01}I see. You don't\n"
+		.string "even care at all,\n"
+		.string "do you?▼"
+		.string "If Doigt could hear\n"
+		.string "that from outside of\n"
+		.string "the room▼"
+		.string "he'd sure be\n"
+		.string "disappointed.$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "おお、ゼロか…▼"
 		.string "ブキのメンテナンスが\n"
@@ -166,8 +340,28 @@ Text8: @ 0x08379AE9
 		.string "知りたくないのか▼"
 		.string "へやの外にいる\n"
 		.string "ドワが聞いたら、ガッカリするぞ$"
+	.endif
 
-Text9: @ 0x08379CCA
+Text_CielChats_IGotSoCaughtUp: @ 0x08379CCA
+	@ EN: I got so caught up / in making your / weapons... / that I worked for 10 / days without taking / any E-Crystals, and / almost ended up / shutting down. / Hah hah hah... / Oh yes... I have / something to give / to you. / It's no use to me / anyway, so have this / disk.
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "I got so caught up\n"
+		.string "in making your\n"
+		.string "weapons...▼"
+		.string "that I worked for 10\n"
+		.string "days without taking\n"
+		.string "any E-Crystals, and▼"
+		.string "almost ended up\n"
+		.string "shutting down.\n"
+		.string "Hah hah hah...▼"
+		.string "Oh yes... I have\n"
+		.string "something to give\n"
+		.string "to you.▼"
+		.string "It's no use to me\n"
+		.string "anyway, so have this\n"
+		.string "disk.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "キミのブキを作るのに\n"
 		.string "ムチュウになりすぎて▼"
@@ -181,8 +375,28 @@ Text9: @ 0x08379CCA
 		.string "わたしがもっていても\n"
 		.string "しかたないから▼"
 		.string "このディスクをキミにやろう！{F5 0x09}$"
+	.endif
 
-Text10: @ 0x08379D4E
+Text_CielChats_DrWeilHeLlStop: @ 0x08379D4E
+	@ EN: Dr. Weil... / He'll stop at / nothing to get what / he wants... / It's just dreadful. / Zero! / We can't let Weil / get away with this! / First we must find / out where he is... / I imagine Ciel and / the others are doing / all they can to find / him by analyzing / the data.
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "Dr. Weil...▼"
+		.string "He'll stop at\n"
+		.string "nothing to get what\n"
+		.string "he wants...▼"
+		.string "It's just dreadful.▼"
+		.string "Zero!\n"
+		.string "We can't let Weil\n"
+		.string "get away with this!▼"
+		.string "First we must find\n"
+		.string "out where he is...▼"
+		.string "I imagine Ciel and\n"
+		.string "the others are doing\n"
+		.string "all they can to find▼"
+		.string "him by analyzing\n"
+		.string "the data.$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "ドクター・バイル…▼"
 		.string "ほしいものを手に入れるためなら\n"
@@ -196,8 +410,23 @@ Text10: @ 0x08379D4E
 		.string "おそらく 今\n"
 		.string "シエルたちが ヒッシで\n"
 		.string "カイセキしてくれているだろう$"
+	.endif
 
-Text11: @ 0x08379DE4
+Text_CielChats_AboutHarpuiaHisInternalBody: @ 0x08379DE4
+	@ EN: About Harpuia... / His internal body / temperature seems / to be rising / because of his / wound from Omega... / Fortunately, the / wound isn't deep, / so there's no need / to be too concerned.
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "About Harpuia...▼"
+		.string "His internal body\n"
+		.string "temperature seems\n"
+		.string "to be rising▼"
+		.string "because of his\n"
+		.string "wound from Omega...▼"
+		.string "Fortunately, the\n"
+		.string "wound isn't deep,\n"
+		.string "so there's no need▼"
+		.string "to be too concerned.$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "ハルピュイアのことだが…▼"
 		.string "オメガのコウゲキをうけたせいで\n"
@@ -205,8 +434,21 @@ Text11: @ 0x08379DE4
 		.string "ジョウショウしているようだ…▼"
 		.string "さいわい、キズはあさいから\n"
 		.string "しんぱいはないのだがな$"
+	.endif
 
-Text12: @ 0x08379E3A
+Text_CielChats_OhItSYouZero: @ 0x08379E3A
+	@ EN: Oh, it's you, Zero... / Dr. Weil is a / dreadful person. / Your missions from / here on out will be / harder than ever... / Zero... / Be vigilant...
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "Oh, it's you, Zero...▼"
+		.string "Dr. Weil is a\n"
+		.string "dreadful person.▼"
+		.string "Your missions from\n"
+		.string "here on out will be\n"
+		.string "harder than ever...▼"
+		.string "Zero...\n"
+		.string "Be vigilant...$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "おお、ゼロか…▼"
 		.string "ドクター・バイルは\n"
@@ -215,8 +457,28 @@ Text12: @ 0x08379E3A
 		.string "ますます手ごわくなるはずだ…▼"
 		.string "ゼロ…\n"
 		.string "ユダンはキンモツだぞ…$"
+	.endif
 
-Text13: @ 0x08379E86
+Text_CielChats_ZeroIWouldnTBe: @ 0x08379E86
+	@ EN: Zero... / I wouldn't be over- / stating things if / I said the future / rests in your hands. / I believe in you. / You can lead us to / the future that Ciel / envisions for us... / It isn't luck or a / miracle that you've / made it this far... / It's proof positive / that you are the / legendary Reploid.
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "Zero...▼"
+		.string "I wouldn't be over-\n"
+		.string "stating things if\n"
+		.string "I said the future▼"
+		.string "rests in your hands.▼"
+		.string "I believe in you.▼"
+		.string "You can lead us to\n"
+		.string "the future that Ciel\n"
+		.string "envisions for us...▼"
+		.string "It isn't luck or a\n"
+		.string "miracle that you've\n"
+		.string "made it this far...▼"
+		.string "It's proof positive\n"
+		.string "that you are the\n"
+		.string "legendary Reploid.$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "ゼロ…▼"
 		.string "ここからさきの戦いは\n"
@@ -232,60 +494,82 @@ Text13: @ 0x08379E86
 		.string "キミがまぎれもなく\n"
 		.string "伝説のレプリロイドである\n"
 		.string "アカシなんだ$"
+	.endif
 
-Text14: @ 0x08379F2E
+Text_CielChats_YouCanGetDisks: @ 0x08379F2E
+	@ EN: You can get disks / from all kinds of / people. Make sure / to make your rounds / and try talking to / people often!
+	.if ENGLISH
+	.string "{WINDOW 0x43}"
+		.string "You can get disks\n"
+		.string "from all kinds of\n"
+		.string "people. Make sure▼"
+		.string "to make your rounds\n"
+		.string "and try talking to\n"
+		.string "people often!$"
+	.else
 	.string "{WINDOW 0x43}"
 		.string "ディスクは、いろんな人から\n"
 		.string "もらえると思うから\n"
 		.string "まめに会いに行ったほうがいいぞ！$"
+	.endif
 
-Text15: @ 0x08379F5D
-Text16: @ 0x08379F5D
-Text17: @ 0x08379F5D
-Text18: @ 0x08379F5D
-Text19: @ 0x08379F5D
-Text20: @ 0x08379F5D
-Text21: @ 0x08379F5D
-Text22: @ 0x08379F5D
-Text23: @ 0x08379F5D
-Text24: @ 0x08379F5D
-Text25: @ 0x08379F5D
-Text26: @ 0x08379F5D
-Text27: @ 0x08379F5D
-Text28: @ 0x08379F5D
-Text29: @ 0x08379F5D
-Text30: @ 0x08379F5D
-Text31: @ 0x08379F5D
-Text32: @ 0x08379F5D
-Text33: @ 0x08379F5D
-Text34: @ 0x08379F5D
-Text35: @ 0x08379F5D
-Text36: @ 0x08379F5D
-Text37: @ 0x08379F5D
-Text38: @ 0x08379F5D
-Text39: @ 0x08379F5D
-Text40: @ 0x08379F5D
-Text41: @ 0x08379F5D
-Text42: @ 0x08379F5D
-Text43: @ 0x08379F5D
-Text44: @ 0x08379F5D
-Text45: @ 0x08379F5D
-Text46: @ 0x08379F5D
-Text47: @ 0x08379F5D
-Text48: @ 0x08379F5D
-Text49: @ 0x08379F5D
-Text50: @ 0x08379F5D
-Text51: @ 0x08379F5D
-Text52: @ 0x08379F5D
-Text53: @ 0x08379F5D
-Text54: @ 0x08379F5D
-Text55: @ 0x08379F5D
-Text56: @ 0x08379F5D
-Text57: @ 0x08379F5D
-Text58: @ 0x08379F5D
-Text59: @ 0x08379F5D
-Text60: @ 0x08379F5D
-Text61: @ 0x08379F5D
+Text_CielChats_WhatSThis: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias1: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias2: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias3: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias4: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias5: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias6: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias7: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias8: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias9: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias10: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias11: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias12: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias13: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias14: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias15: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias16: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias17: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias18: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias19: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias20: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias21: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias22: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias23: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias24: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias25: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias26: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias27: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias28: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias29: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias30: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias31: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias32: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias33: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias34: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias35: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias36: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias37: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias38: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias39: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias40: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias41: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias42: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias43: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias44: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias45: @ 0x08379F5D
+Text_CielChats_WhatSThis_Alias46: @ 0x08379F5D
+	@ EN: What's this? / You must be the / new whippersnapper! / ...hah, I'm kidding. / Even MY memory isn't / quite that bad!
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "What's this?\n"
+		.string "You must be the\n"
+		.string "new whippersnapper!▼"
+		.string "...hah, I'm kidding.▼"
+		.string "Even MY memory isn't\n"
+		.string "quite that bad!$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "おや？\n"
 		.string "そこのわかいの\n"
@@ -294,8 +578,23 @@ Text61: @ 0x08379F5D
 		.string "いくらワシでも\n"
 		.string "そこまで ものおぼえは\n"
 		.string "悪くはないぞ！$"
+	.endif
 
-Text62: @ 0x08379FA4
+Text_CielChats_ByTheWaySonWhere: @ 0x08379FA4
+	@ EN: By the way, son... / Where's the young / lad with the long / blonde hair, / who was in the / commander's room / until just recently? / Well, it's nothing / really. There was / just this thing...
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "By the way, son...▼"
+		.string "Where's the young\n"
+		.string "lad with the long\n"
+		.string "blonde hair,▼"
+		.string "who was in the\n"
+		.string "commander's room\n"
+		.string "until just recently?▼"
+		.string "Well, it's nothing\n"
+		.string "really. There was\n"
+		.string "just this thing...$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "ところで、わかいの▼"
 		.string "さいきんまで、シレイシツにいた\n"
@@ -304,8 +603,102 @@ Text62: @ 0x08379FA4
 		.string "まぁ、べつにこれといった\n"
 		.string "用があるわけじゃないのだが\n"
 		.string "ちょっと気になったものでな…$"
+	.endif
 
-Text63: @ 0x0837A009
+Text_CielChats_HeyZeroWhenYouHave: @ 0x0837A009
+	@ EN: Hey, Zero... / When you have a / moment, won't you / listen to my story? / Can I tell you? / Yes / No / A long time ago... / I was a teacher at / a school... / Back then, there / were many humans... / It is no falsehood / to say we lived in / harmony together... / I have so many good / memories of those / days... / The one I remember / most vividly is when / we went on a picnic. / There was a girl who / had forgotten to / bring her lunch... / And when lunchtime / came, she sat alone / by herself. / All her friends were / too busy talking and / eating to notice. / She hard a hard time / fitting in. Didn't / speak up much... / She didn't know how / to tell her friends / she forgot lunch. / When I saw her, I / figured that as much / had happened. / So I gave her some / doughnuts I had made / that morning. / Oh? Bored already? / Yes / No / Ah, bored I see... / There's more I want / to tell you, but, / oh well... / I see... no time eh? / Can't be helped... / Sorry to bother you / when you're busy... / You know, before I / taught, I worked / at a bread factory. / And before that I / was a sailor. / Oops... / Went off track... / I was telling you / about my giving / the girl a doughnut. / She didn't thank me / and ran off with her / head bowed... / I thought she was / going off to be with / her friends... / But on the way home, / The girl got off the / bus and gave me / something. / It was a short / letter and a / piece of clover. / The letter said: / "Mr. Andrew, I'm / sorry I didn't find / you a 4-leaf clover" / Written in tiny / letters. / That was her way / of saying "Thank / you." / Whenever I pass by / the harbor where the / school was, I recall / the sweet voices of / children calling to / me, "Mr. Andrew"...
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "Hey, Zero...▼"
+		.string "When you have a\n"
+		.string "moment, won't you\n"
+		.string "listen to my story?▼"
+		.string "{F6 0x01}Can I tell you?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "A long time ago...\n"
+		.string "I was a teacher at\n"
+		.string "a school...▼"
+		.string "Back then, there\n"
+		.string "were many humans...▼"
+		.string "It is no falsehood\n"
+		.string "to say we lived in\n"
+		.string "harmony together...▼"
+		.string "I have so many good\n"
+		.string "memories of those\n"
+		.string "days...▼"
+		.string "The one I remember\n"
+		.string "most vividly is when\n"
+		.string "we went on a picnic.▼"
+		.string "There was a girl who\n"
+		.string "had forgotten to\n"
+		.string "bring her lunch...▼"
+		.string "And when lunchtime\n"
+		.string "came, she sat alone\n"
+		.string "by herself.▼"
+		.string "All her friends were\n"
+		.string "too busy talking and\n"
+		.string "eating to notice.▼"
+		.string "She hard a hard time\n"
+		.string "fitting in. Didn't\n"
+		.string "speak up much...▼"
+		.string "She didn't know how\n"
+		.string "to tell her friends\n"
+		.string "she forgot lunch.▼"
+		.string "When I saw her, I\n"
+		.string "figured that as much\n"
+		.string "had happened.▼"
+		.string "So I gave her some\n"
+		.string "doughnuts I had made\n"
+		.string "that morning.▼"
+		.string "{F6 0x02}Oh? Bored already?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Ah, bored I see...▼"
+		.string "There's more I want\n"
+		.string "to tell you, but,\n"
+		.string "oh well...{RETURN}{ANSWER 0x01}I see... no time eh?\n"
+		.string "Can't be helped...▼"
+		.string "Sorry to bother you\n"
+		.string "when you're busy...{RETURN}{ANSWER 0x02}You know, before I\n"
+		.string "taught, I worked\n"
+		.string "at a bread factory.▼"
+		.string "And before that I\n"
+		.string "was a sailor.▼"
+		.string "Oops...\n"
+		.string "Went off track...▼"
+		.string "I was telling you\n"
+		.string "about my giving\n"
+		.string "the girl a doughnut.▼"
+		.string "She didn't thank me\n"
+		.string "and ran off with her\n"
+		.string "head bowed...▼"
+		.string "I thought she was\n"
+		.string "going off to be with\n"
+		.string "her friends...▼"
+		.string "But on the way home,▼"
+		.string "The girl got off the\n"
+		.string "bus and gave me\n"
+		.string "something.▼"
+		.string "It was a short\n"
+		.string "letter and a\n"
+		.string "piece of clover.▼"
+		.string "The letter said:▼"
+		.string "{0xE9}Mr. Andrew, I'm\n"
+		.string "sorry I didn't find\n"
+		.string "you a 4-leaf clover{0xE9}▼"
+		.string "Written in tiny\n"
+		.string "letters.▼"
+		.string "That was her way\n"
+		.string "of saying {0xE9}Thank\n"
+		.string "you.{0xE9}▼"
+		.string "Whenever I pass by\n"
+		.string "the harbor where the\n"
+		.string "school was, I recall▼"
+		.string "the sweet voices of\n"
+		.string "children calling to\n"
+		.string "me, {0xE9}Mr. Andrew{0xE9}...$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "なぁ、ゼロ…▼"
 		.string "時間があったら\n"
@@ -391,9 +784,104 @@ Text63: @ 0x0837A009
 		.string "今にも、こどもたちの\n"
 		.string "「アンドリューせんせい」と\n"
 		.string "呼ぶ声が聞こえてきそうじゃ…$"
+	.endif
 
-Text64: @ 0x0837A429
-Text65: @ 0x0837A429
+Text_CielChats_OhItSYouZero_2: @ 0x0837A429
+Text_CielChats_OhItSYouZero_2_Alias1: @ 0x0837A429
+	@ EN: Oh, it's you, Zero. / By the way, did I / ever tell you about / my younger days? / Yes / No / Ah, yes... / do you remember what / the story was about? / Yes / No / Really?! / I'm gonna quiz you / to see if you do! / Before teaching I... / Was a sailor / Was a bread maker / Wrong. / Before teaching I / worked at a bread / factory... / Nobody pays any / attention to my / stories anymore... / Is that so? Guess / I haven't then. / It'd probably bore / you anyway... / Of course you / don't... / It can't be helped, / my stories are all / boring anyway... / Wow, that's correct! / But maybe you just / got lucky. / Next question: / As a teacher, my / fondest memory / was of when I... / ...went to a: / Festival / Picnic / Nope. / Well...I suppose / my stories are all / useless anyway... / Well done! / How about this? / On the picnic, / a girl forgot her / lunch. I saw this... / ...and gave her: / A hamburger / A doughnut / ... / Incorrect. / I had my hopes up / for a second there / ...*sigh*... / Yes! That's correct! / And in return for / the doughnut, she... / ...gave me a: / 3-leaf clover / 4-leaf clover / Yes, that's right. / She looked hard for / a 4-leaf clover... / But couldn't find / one... / And now, the last / question for you! / The girl's name was: / I don't know / Jasmine / Ooh! Fantastic! / That was a trick / question! / Thanks for humoring / an old Reploid... / Here's a token of / my appreciation. / Take this disk I / have! / ... / Not 4, but 3-leaf... / It's obvious you / weren't really / paying attention! / I never told you / what her name was! / Ah well, I guess / it's only natural / that you'd be bored / by an old geezer's / ramblings...
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "Oh, it's you, Zero.▼"
+		.string "By the way, did I\n"
+		.string "ever tell you about▼"
+		.string "{F6 0x01}my younger days?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Ah, yes...\n"
+		.string "do you remember what▼"
+		.string "{F6 0x02}the story was about?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Really?!▼"
+		.string "I'm gonna quiz you\n"
+		.string "to see if you do!▼"
+		.string "{F6 0x03}Before teaching I...\n"
+		.string "  Was a sailor\n"
+		.string "  Was a bread maker▼"
+		.string "Wrong.▼"
+		.string "Before teaching I\n"
+		.string "worked at a bread\n"
+		.string "factory...▼"
+		.string "Nobody pays any\n"
+		.string "attention to my\n"
+		.string "stories anymore...{RETURN}{ANSWER 0x01}Is that so? Guess\n"
+		.string "I haven't then.▼"
+		.string "It'd probably bore\n"
+		.string "you anyway...{RETURN}{ANSWER 0x02}Of course you\n"
+		.string "don't...▼"
+		.string "It can't be helped,\n"
+		.string "my stories are all\n"
+		.string "boring anyway...{RETURN}{ANSWER 0x03}Wow, that's correct!\n"
+		.string "But maybe you just\n"
+		.string "got lucky.▼"
+		.string "Next question:▼"
+		.string "As a teacher, my\n"
+		.string "fondest memory\n"
+		.string "was of when I...▼"
+		.string "{F6 0x04}...went to a:\n"
+		.string "  Festival\n"
+		.string "  Picnic▼"
+		.string "Nope.▼"
+		.string "Well...I suppose\n"
+		.string "my stories are all\n"
+		.string "useless anyway...{RETURN}{ANSWER 0x04}Well done!\n"
+		.string "How about this?▼"
+		.string "On the picnic,\n"
+		.string "a girl forgot her\n"
+		.string "lunch. I saw this...▼"
+		.string "{F6 0x05}...and gave her:\n"
+		.string "  A hamburger\n"
+		.string "  A doughnut▼"
+		.string "...▼"
+		.string "Incorrect.▼"
+		.string "I had my hopes up\n"
+		.string "for a second there\n"
+		.string "...*sigh*...{RETURN}{ANSWER 0x05}Yes! That's correct!\n"
+		.string "And in return for\n"
+		.string "the doughnut, she...▼"
+		.string "{F6 0x06}...gave me a:\n"
+		.string "  3-leaf clover\n"
+		.string "  4-leaf clover▼"
+		.string "Yes, that's right.▼"
+		.string "She looked hard for\n"
+		.string "a 4-leaf clover...▼"
+		.string "But couldn't find\n"
+		.string "one...▼"
+		.string "And now, the last\n"
+		.string "question for you!▼"
+		.string "{F6 0x07}The girl's name was:\n"
+		.string "  I don't know\n"
+		.string "  Jasmine▼"
+		.string "Ooh! Fantastic!\n"
+		.string "That was a trick\n"
+		.string "question!▼"
+		.string "Thanks for humoring\n"
+		.string "an old Reploid...▼"
+		.string "Here's a token of\n"
+		.string "my appreciation.▼"
+		.string "Take this disk I\n"
+		.string "have!{F5 0x09}{RETURN}{ANSWER 0x06}...▼"
+		.string "Not 4, but 3-leaf...▼"
+		.string "It's obvious you\n"
+		.string "weren't really\n"
+		.string "paying attention!{RETURN}{ANSWER 0x07}I never told you\n"
+		.string "what her name was!▼"
+		.string "Ah well, I guess\n"
+		.string "it's only natural\n"
+		.string "that you'd be bored▼"
+		.string "by an old geezer's\n"
+		.string "ramblings...$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "おぉ、ゼロか…▼"
 		.string "そういや\n"
@@ -478,8 +966,22 @@ Text65: @ 0x0837A429
 		.string "まぁ、年よりのむかし話など\n"
 		.string "きょうみがなくて\n"
 		.string "とうぜんじゃろうな…$"
+	.endif
 
-Text66: @ 0x0837A837
+Text_CielChats_SoWhippersnapperTheResistanceBase: @ 0x0837A837
+	@ EN: So, whippersnapper, / The Resistance Base / has really been / active lately... / Are we going to be / relocating again? / Figures. Just when I / was beginning to / feel settled.
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "So, whippersnapper,▼"
+		.string "The Resistance Base\n"
+		.string "has really been\n"
+		.string "active lately...▼"
+		.string "Are we going to be\n"
+		.string "relocating again?▼"
+		.string "Figures. Just when I\n"
+		.string "was beginning to\n"
+		.string "feel settled.$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "なぁ、わかいの…▼"
 		.string "なんだか、さいきん\n"
@@ -489,16 +991,42 @@ Text66: @ 0x0837A837
 		.string "するんかいのう？▼"
 		.string "やっと ここでのくらしにも\n"
 		.string "なれてきたというのにのう…$"
+	.endif
 
-Text67: @ 0x0837A893
+Text_CielChats_HmmWhatThat: @ 0x0837A893
+	@ EN: Hmm? What that? / We're not moving? / And here I thought / we were leaving like / we did last year...
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "Hmm? What that?\n"
+		.string "We're not moving?▼"
+		.string "And here I thought\n"
+		.string "we were leaving like\n"
+		.string "we did last year...$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "ん？ なに？\n"
 		.string "ひっこしするんじゃないのか？▼"
 		.string "ワシはてっきりまた\n"
 		.string "1年ちょっと前のように\n"
 		.string "ひっこしするものだとばかり…$"
+	.endif
 
-Text68: @ 0x0837A8D2
+Text_CielChats_OhHeyZeroIVe: @ 0x0837A8D2
+	@ EN: Oh, hey, Zero! / I've been waiting / here the whole time / for Ciel. / She came in and left / again right away... / This little guy is a / bit worn out, so I'd / like it fixed... / I guess Ciel must / be busy...
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Oh, hey, Zero!▼"
+		.string "I've been waiting\n"
+		.string "here the whole time\n"
+		.string "for Ciel.▼"
+		.string "She came in and left\n"
+		.string "again right away...▼"
+		.string "This little guy is a\n"
+		.string "bit worn out, so I'd\n"
+		.string "like it fixed...▼"
+		.string "I guess Ciel must\n"
+		.string "be busy...$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "あっ、ゼロ〜！▼"
 		.string "わたしね、\n"
@@ -511,8 +1039,29 @@ Text68: @ 0x0837A8D2
 		.string "なおしてもらいたいのになぁ…▼"
 		.string "シエルおねえちゃん、\n"
 		.string "いそがしいのかな…$"
+	.endif
 
-Text69: @ 0x0837A94F
+Text_CielChats_IWonderWhereMy: @ 0x0837A94F
+	@ EN: I wonder where my / little Crea and Prea / went... / They are my precious / Baby Elves... / Did you know that I / could talk to them / a little...? / At first it was just / "MiMiMiMi" and / other baby babble. / Zero, please let me / know if you find / them! / Promise me... / okay?
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "I wonder where my\n"
+		.string "little Crea and Prea\n"
+		.string "went...▼"
+		.string "They are my precious\n"
+		.string "Baby Elves...▼"
+		.string "Did you know that I\n"
+		.string "could talk to them\n"
+		.string "a little...?▼"
+		.string "At first it was just\n"
+		.string "{0xE9}MiMiMiMi{0xE9} and\n"
+		.string "other baby babble.▼"
+		.string "Zero, please let me\n"
+		.string "know if you find\n"
+		.string "them!▼"
+		.string "Promise me...\n"
+		.string "okay?$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "どこに行ったのかな…\n"
 		.string "わたしのクリエとプリエ…▼"
@@ -528,14 +1077,38 @@ Text69: @ 0x0837A94F
 		.string "また見つけたら、おしえて！▼"
 		.string "ぜったいだよ\n"
 		.string "やくそくね！$"
+	.endif
 
-Text70: @ 0x0837A9E8
+Text_CielChats_OhZeroDidYouReally: @ 0x0837A9E8
+	@ EN: Oh, Zero! / Did you really find / Crea and Prea?
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Oh, Zero!▼"
+		.string "Did you really find\n"
+		.string "Crea and Prea?$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "あっ、ゼロ！▼"
 		.string "クリエとプリエが\n"
 		.string "いたって本当？$"
+	.endif
 
-Text71: @ 0x0837AA04
+Text_CielChats_CreaPreaDoTheyRemember: @ 0x0837AA04
+	@ EN: Crea...Prea... / Do they remember me? / Probably... / Don't think so... / Hurray! That makes / me so happy! / I'll give you this! / You're horrible! / I hate you, Zero! / I was going to give / you this disk, but I / changed my mind!
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Crea...Prea...▼"
+		.string "{F6 0x01}Do they remember me?\n"
+		.string "  Probably...\n"
+		.string "  Don't think so...▼"
+		.string "Hurray! That makes\n"
+		.string "me so happy!▼"
+		.string "I'll give you this!{F5 0x09}{RETURN}{ANSWER 0x01}You're horrible!\n"
+		.string "I hate you, Zero!▼"
+		.string "I was going to give\n"
+		.string "you this disk, but I\n"
+		.string "changed my mind!$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "クリエとプリエ…▼"
 		.string "{F6 0x01}わたしのことおぼえてくれてるかな？\n"
@@ -548,8 +1121,35 @@ Text71: @ 0x0837AA04
 		.string "せっかく、このディスク\n"
 		.string "あげようと思ったのに\n"
 		.string "やっぱりあげなーい！$"
+	.endif
 
-Text72: @ 0x0837AA88
+Text_CielChats_HeyZeroWhatWasOn: @ 0x0837AA88
+	@ EN: Hey, Zero? / What was on that / disk that I gave / you? / I hope it's / something useful. / Well that disk... / I found it when I / was going to clean / this little guy up! / It's probably / Menart's idea of a / prank. / Did you know that he / used the computer / here without / permission, and also / drew graffiti all / over the walls? / Rocinolle and I / cleaned every last / bit of it up!
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Hey, Zero?▼"
+		.string "What was on that\n"
+		.string "disk that I gave\n"
+		.string "you?▼"
+		.string "I hope it's\n"
+		.string "something useful.▼"
+		.string "Well that disk...▼"
+		.string "I found it when I\n"
+		.string "was going to clean\n"
+		.string "this little guy up!▼"
+		.string "It's probably\n"
+		.string "Menart's idea of a\n"
+		.string "prank.▼"
+		.string "Did you know that he\n"
+		.string "used the computer\n"
+		.string "here without▼"
+		.string "permission, and also\n"
+		.string "drew graffiti all\n"
+		.string "over the walls?▼"
+		.string "Rocinolle and I\n"
+		.string "cleaned every last\n"
+		.string "bit of it up!$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "ねぇ、ゼロ？▼"
 		.string "わたしがあげたディスクの中には\n"
@@ -570,8 +1170,24 @@ Text72: @ 0x0837AA88
 		.string "わたしとロシニョルおばさんで\n"
 		.string "ガンバって\n"
 		.string "ぜ〜んぶ 消したんだから！$"
+	.endif
 
-Text73: @ 0x0837AB78
+Text_CielChats_HeyZeroWhatIsWeil: @ 0x0837AB78
+	@ EN: Hey, Zero... / What is Weil trying / to accomplish? / It's the scientist's / job to plan for the / future, right? / But, Weil is / planning something / terrible, isn't he? / I just hate people / like Weil...
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Hey, Zero...▼"
+		.string "What is Weil trying\n"
+		.string "to accomplish?▼"
+		.string "It's the scientist's\n"
+		.string "job to plan for the\n"
+		.string "future, right?▼"
+		.string "But, Weil is\n"
+		.string "planning something\n"
+		.string "terrible, isn't he?▼"
+		.string "I just hate people\n"
+		.string "like Weil...$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "ねぇ、ゼロ…▼"
 		.string "バイルは\n"
@@ -583,8 +1199,21 @@ Text73: @ 0x0837AB78
 		.string "バイルは悪いことを\n"
 		.string "しようとしてるんだよね？▼"
 		.string "バイルなんて、大きらい…$"
+	.endif
 
-Text74: @ 0x0837ABE4
+Text_CielChats_ZeroIMScaredEven: @ 0x0837ABE4
+	@ EN: Zero... / I'm scared... / Even when I hold on / to this little guy, / I'm still scared... / Zero... / Please stay...Don't / ever go away...
+	.if ENGLISH
+	.string "{WINDOW 0x44}"
+		.string "Zero...▼"
+		.string "I'm scared...▼"
+		.string "Even when I hold on\n"
+		.string "to this little guy,\n"
+		.string "I'm still scared...▼"
+		.string "Zero...\n"
+		.string "Please stay...Don't\n"
+		.string "ever go away...$"
+	.else
 	.string "{WINDOW 0x44}"
 		.string "ゼロ…▼"
 		.string "こわいよぉ…▼"
@@ -593,9 +1222,27 @@ Text74: @ 0x0837ABE4
 		.string "ゼロ…\n"
 		.string "ここにいてよ…\n"
 		.string "どこにも行っちゃいやだよ…$"
+	.endif
 
-Text75: @ 0x0837AC27
-Text76: @ 0x0837AC27
+Text_CielChats_HiYaZeroItS: @ 0x0837AC27
+Text_CielChats_HiYaZeroItS_Alias1: @ 0x0837AC27
+	@ EN: Hi-ya, Zero! / It's been 2 months / since Mr. Elpizo / left here. / I wonder when I'll / be promoted to / commander... / I don't think there / is a more qualified / successor... / If that weren't / possible, I might be / an operator instead!
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "Hi-ya, Zero!▼"
+		.string "It's been 2 months\n"
+		.string "since Mr. Elpizo\n"
+		.string "left here.▼"
+		.string "I wonder when I'll\n"
+		.string "be promoted to\n"
+		.string "commander...▼"
+		.string "I don't think there\n"
+		.string "is a more qualified\n"
+		.string "successor...▼"
+		.string "If that weren't\n"
+		.string "possible, I might be\n"
+		.string "an operator instead!$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "やぁ、ゼロ！！▼"
 		.string "エルピスさんが\n"
@@ -609,8 +1256,20 @@ Text76: @ 0x0837AC27
 		.string "思うんだけどなぁ…▼"
 		.string "まぁ、無理なら\n"
 		.string "オペレーターでもいいんだけどね$"
+	.endif
 
-Text77: @ 0x0837ACAF
+Text_CielChats_BusyBusyBusyIThink: @ 0x0837ACAF
+	@ EN: Busy, busy, busy! / I think I work the / hardest of everyone / here at the base! / Zero, when you see / everyone, tell them / how hard I work!
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "Busy, busy, busy!▼"
+		.string "I think I work the\n"
+		.string "hardest of everyone\n"
+		.string "here at the base!▼"
+		.string "Zero, when you see\n"
+		.string "everyone, tell them\n"
+		.string "how hard I work!$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "あー、いそがしい、いそがしい▼"
 		.string "やっぱりこのレジスタンスベースで\n"
@@ -619,8 +1278,37 @@ Text77: @ 0x0837ACAF
 		.string "ゼロ、みんなに会ったら\n"
 		.string "ボクのはたらきぶりを\n"
 		.string "伝えておいてよ！$"
+	.endif
 
-Text78: @ 0x0837AD06
+Text_CielChats_OhItSYouZero_3: @ 0x0837AD06
+	@ EN: ... / Oh, it's you, Zero. / I'm so busy, I / didn't notice you / were talking to me. / Um, Zero? / Do you think that / I've lost a little / bit of weight? / You do, right? / Yeah... / Not really... / I knew it! / So, you could tell? / Aw, shucks...! / It just goes to show / how hard I've been / working! / I feel pretty good / today. Here, take / this! / WHAT?! / That's harsh... / Even Reploids have / feelings, you know.
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "...▼"
+		.string "Oh, it's you, Zero.▼"
+		.string "I'm so busy, I\n"
+		.string "didn't notice you\n"
+		.string "were talking to me.▼"
+		.string "Um, Zero?▼"
+		.string "Do you think that\n"
+		.string "I've lost a little\n"
+		.string "bit of weight?▼"
+		.string "{F6 0x01}You do, right?\n"
+		.string "  Yeah...\n"
+		.string "  Not really...▼"
+		.string "I knew it!\n"
+		.string "So, you could tell?▼"
+		.string "Aw, shucks...!▼"
+		.string "It just goes to show\n"
+		.string "how hard I've been\n"
+		.string "working!▼"
+		.string "I feel pretty good\n"
+		.string "today. Here, take\n"
+		.string "this!{F5 0x09}{RETURN}{ANSWER 0x01}WHAT?!▼"
+		.string "That's harsh...▼"
+		.string "Even Reploids have\n"
+		.string "feelings, you know.$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "………▼"
 		.string "ああ、ゼロか▼"
@@ -645,8 +1333,19 @@ Text78: @ 0x0837AD06
 		.string "そりゃないよ、ゼロ▼"
 		.string "レプリロイドだって\n"
 		.string "キズつくんだぞ…$"
+	.endif
 
-Text79: @ 0x0837ADEA
+Text_CielChats_ZeroDidYouCheckOut: @ 0x0837ADEA
+	@ EN: Zero! / Did you check out / that disk? / Wasn't it quite a / testimony to all / my hard work?
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "Zero!▼"
+		.string "Did you check out\n"
+		.string "that disk?▼"
+		.string "Wasn't it quite a\n"
+		.string "testimony to all\n"
+		.string "my hard work?$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "ゼロ！▼"
 		.string "さっきボクがあげたディスク、\n"
@@ -654,8 +1353,22 @@ Text79: @ 0x0837ADEA
 		.string "ボクのはたらきぶりが、\n"
 		.string "よーくわかる\n"
 		.string "ディスクだと思わないかい？$"
+	.endif
 
-Text80: @ 0x0837AE29
+Text_CielChats_WhatSDrWeil: @ 0x0837AE29
+	@ EN: What's Dr. Weil / trying to / accomplish? / I wonder if he's / planning on hoarding / the E-Crystals... / If so, then my one / enjoyment in life / will be gone...
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "What's Dr. Weil\n"
+		.string "trying to\n"
+		.string "accomplish?▼"
+		.string "I wonder if he's\n"
+		.string "planning on hoarding\n"
+		.string "the E-Crystals...▼"
+		.string "If so, then my one\n"
+		.string "enjoyment in life\n"
+		.string "will be gone...$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "ドクター・バイルって\n"
 		.string "いったい何が目的なんだ？▼"
@@ -665,8 +1378,22 @@ Text80: @ 0x0837AE29
 		.string "そんなことになったら\n"
 		.string "ボクのユイイツの\n"
 		.string "たのしみがなくなっちゃうよ…$"
+	.endif
 
-Text81: @ 0x0837AE93
+Text_CielChats_ZeroAtAllCosts: @ 0x0837AE93
+	@ EN: Zero! At all costs, / please stop Weil's / vile scheme! / I'm not good at / much, so I respect / you Zero! / I hope you continue / to support us in the / Resistance!
+	.if ENGLISH
+	.string "{WINDOW 0x48}"
+		.string "Zero! At all costs,\n"
+		.string "please stop Weil's\n"
+		.string "vile scheme!▼"
+		.string "I'm not good at\n"
+		.string "much, so I respect\n"
+		.string "you Zero!▼"
+		.string "I hope you continue\n"
+		.string "to support us in the\n"
+		.string "Resistance!$"
+	.else
 	.string "{WINDOW 0x48}"
 		.string "ゼロ！ 何としてでも\n"
 		.string "バイルの計画を\n"
@@ -677,8 +1404,24 @@ Text81: @ 0x0837AE93
 		.string "これからも、ずっと\n"
 		.string "ボクたちレジスタンスの\n"
 		.string "ささえでいてくれよ、ゼロ！$"
+	.endif
 
-Text82: @ 0x0837AF00
+Text_CielChats_OhItSYouZero_4: @ 0x0837AF00
+	@ EN: Oh, it's you, Zero. / I just can't stand / work! / My job? / My job is to watch / the harbor all day. / All day, every day! / Heh, just kidding! / If that Hibou heard / me say that he'd / sure be mad.
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "Oh, it's you, Zero.▼"
+		.string "I just can't stand\n"
+		.string "work!▼"
+		.string "My job?▼"
+		.string "My job is to watch\n"
+		.string "the harbor all day.\n"
+		.string "All day, every day!▼"
+		.string "Heh, just kidding!▼"
+		.string "If that Hibou heard\n"
+		.string "me say that he'd\n"
+		.string "sure be mad.$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "なんだ、ゼロか▼"
 		.string "しごとなんて\n"
@@ -690,8 +1433,48 @@ Text82: @ 0x0837AF00
 		.string "…なんてね！▼"
 		.string "こんなこと イブーのヤローが\n"
 		.string "聞いたら、おこるんだろうな$"
+	.endif
 
-Text83: @ 0x0837AF6E
+Text_CielChats_OhHeyIFoundThis: @ 0x0837AF6E
+	@ EN: Oh, hey! / I found this disk / underneath this / load... / Do you want it? / Sure... / No thanks... / Well... / You're not expecting / to get it for free, / are you? / Let me think... / Alright! You can / have it if you / answer my question. / Do you know that / small Reploid down / the hall? / The one that carries / a book with him / wherever he goes. / Answer me this! / What's his name? / Menart / Perroquiet / Uh... / I'M Menart! / How could you forget / my name! / Hmm... / Well if you don't / want it, you won't / have it. / So, you knew. / Very well, then. / Here, take it, as I / promised!
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "Oh, hey!▼"
+		.string "I found this disk\n"
+		.string "underneath this\n"
+		.string "load...▼"
+		.string "{F6 0x01}Do you want it?\n"
+		.string "  Sure...\n"
+		.string "  No thanks...▼"
+		.string "Well...▼"
+		.string "You're not expecting\n"
+		.string "to get it for free,\n"
+		.string "are you?▼"
+		.string "Let me think...▼"
+		.string "Alright! You can\n"
+		.string "have it if you\n"
+		.string "answer my question.▼"
+		.string "Do you know that\n"
+		.string "small Reploid down\n"
+		.string "the hall?▼"
+		.string "The one that carries\n"
+		.string "a book with him\n"
+		.string "wherever he goes.▼"
+		.string "Answer me this!▼"
+		.string "{F6 0x02}What's his name?\n"
+		.string "  Menart\n"
+		.string "  Perroquiet▼"
+		.string "Uh...▼"
+		.string "I'M Menart!▼"
+		.string "How could you forget\n"
+		.string "my name!{RETURN}{ANSWER 0x01}Hmm...▼"
+		.string "Well if you don't\n"
+		.string "want it, you won't\n"
+		.string "have it.{RETURN}{ANSWER 0x02}So, you knew.▼"
+		.string "Very well, then.▼"
+		.string "Here, take it, as I\n"
+		.string "promised!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "あっ、そうだ！▼"
 		.string "このニモツの下に\n"
@@ -726,24 +1509,60 @@ Text83: @ 0x0837AF6E
 		.string "しゃーねぇーな▼"
 		.string "ほら、やくそくだ\n"
 		.string "もっていけよ！！{F5 0x09}$"
+	.endif
 
-Text84: @ 0x0837B0CD
+Text_CielChats_AboutTheDiskI: @ 0x0837B0CD
+	@ EN: About the disk I / gave you... / To tell you the / truth, I don't know / what's on it.
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "About the disk I\n"
+		.string "gave you...▼"
+		.string "To tell you the\n"
+		.string "truth, I don't know\n"
+		.string "what's on it.$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "さっきオマエにやった\n"
 		.string "ディスクなんだけど…▼"
 		.string "実はオレも\n"
 		.string "中に何が入っているのか\n"
 		.string "知らないんだよね$"
+	.endif
 
-Text85: @ 0x0837B105
+Text_CielChats_ZeroYouReOkayEven: @ 0x0837B105
+	@ EN: Zero!! / You're okay, even / after that dive / with the missile? / Wow, you really are / a legendary Reploid.
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "Zero!!▼"
+		.string "You're okay, even\n"
+		.string "after that dive\n"
+		.string "with the missile?▼"
+		.string "Wow, you really are\n"
+		.string "a legendary Reploid.$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "ゼロ！！▼"
 		.string "ミサイルごと おちたって言うのに\n"
 		.string "ヘイキなのか！？▼"
 		.string "さすが 伝説のレプリロイド\n"
 		.string "そのカラダ、だてじゃねぇな$"
+	.endif
 
-Text86: @ 0x0837B145
+Text_CielChats_ZeroIKnowYouRe: @ 0x0837B145
+	@ EN: Zero! / I know you're pretty / tough, but don't / overdo it! / For us Reploids, our / bodies are all we / have! / That might sound / strange coming from / someone like me...
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "Zero!▼"
+		.string "I know you're pretty\n"
+		.string "tough, but don't\n"
+		.string "overdo it!▼"
+		.string "For us Reploids, our\n"
+		.string "bodies are all we\n"
+		.string "have!▼"
+		.string "That might sound\n"
+		.string "strange coming from\n"
+		.string "someone like me...$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "ゼロ！▼"
 		.string "オマエがタフなのは、わかるけど\n"
@@ -752,24 +1571,59 @@ Text86: @ 0x0837B145
 		.string "カラダがシホンだからな！▼"
 		.string "何もしてねぇオレが\n"
 		.string "言うのも なんだけどさ$"
+	.endif
 
-Text87: @ 0x0837B19A
+Text_CielChats_HmphSoWhatAboutWeil: @ 0x0837B19A
+	@ EN: Hmph! / So what about Weil! / Zero! Just don't / lose to him, / alright?
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "Hmph!▼"
+		.string "So what about Weil!▼"
+		.string "Zero! Just don't\n"
+		.string "lose to him,\n"
+		.string "alright?$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "ヘン！▼"
 		.string "バイルが何だって言うんだよ！▼"
 		.string "ゼロ！\n"
 		.string "あんなヤローに\n"
 		.string "まけんじゃねぇぞ！$"
+	.endif
 
-Text88: @ 0x0837B1C7
+Text_CielChats_IWonTSubmitTo: @ 0x0837B1C7
+	@ EN: I won't submit to / Weil, even if he / becomes ruler! / I'll live my life / as I please!
+	.if ENGLISH
+	.string "{WINDOW 0x4F}"
+		.string "I won't submit to\n"
+		.string "Weil, even if he\n"
+		.string "becomes ruler!▼"
+		.string "I'll live my life\n"
+		.string "as I please!$"
+	.else
 	.string "{WINDOW 0x4F}"
 		.string "オレは、たとえバイルに\n"
 		.string "この世界が のっとられても\n"
 		.string "ぜってぇ したがわねぇからな！▼"
 		.string "オレはオレの生きたいように\n"
 		.string "生きるだけさ！$"
+	.endif
 
-Text89: @ 0x0837B20D
+Text_CielChats_TheLullInAttacks: @ 0x0837B20D
+	@ EN: The lull in attacks / from Neo Arcadia had / me optimistic... / But it seems they're / on the move... / I just hope they / don't come here... / For my job, the / quieter things are, / the better.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "The lull in attacks\n"
+		.string "from Neo Arcadia had\n"
+		.string "me optimistic...▼"
+		.string "But it seems they're\n"
+		.string "on the move...▼"
+		.string "I just hope they\n"
+		.string "don't come here...▼"
+		.string "For my job, the\n"
+		.string "quieter things are,\n"
+		.string "the better.$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "ここのところ、\n"
 		.string "ネオ・アルカディアのコウゲキが\n"
@@ -781,8 +1635,29 @@ Text89: @ 0x0837B20D
 		.string "わたしのしごとは、\n"
 		.string "ヒマならヒマであるほど\n"
 		.string "よいわけだからね$"
+	.endif
 
-Text90: @ 0x0837B283
+Text_CielChats_AhYesIfYou: @ 0x0837B283
+	@ EN: Ah, yes...if you / have some time, do / visit old Andrew. / Let's see, I think / he's on the 3rd / floor. / Oh! / Speaking of old / Andrew, I just / remembered... / This disk belongs to / old Andrew. / But since he's no / good with machines, / you just go ahead / and take it.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "Ah, yes...if you\n"
+		.string "have some time, do\n"
+		.string "visit old Andrew.▼"
+		.string "Let's see, I think\n"
+		.string "he's on the 3rd\n"
+		.string "floor.▼"
+		.string "Oh!▼"
+		.string "Speaking of old\n"
+		.string "Andrew, I just\n"
+		.string "remembered...▼"
+		.string "This disk belongs to\n"
+		.string "old Andrew.\n"
+		.string "But since he's no▼"
+		.string "good with machines,\n"
+		.string "you just go ahead\n"
+		.string "and take it.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "そうそう、また時間があったら\n"
 		.string "アンドリューおじいさんの\n"
@@ -798,8 +1673,24 @@ Text90: @ 0x0837B283
 		.string "でも、アンドリューおじいさんは\n"
 		.string "機械にくわしくないから\n"
 		.string "あなたがもっていなさい{F5 0x09}$"
+	.endif
 
-Text91: @ 0x0837B324
+Text_CielChats_HaveYouStudied: @ 0x0837B324
+	@ EN: Have you studied / what's on that / disk? / You see, that was / an ID card from when / old Andrew worked / at a bread factory. / Hmm...I wonder how / young he was back / then... / He's such an enigma.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "Have you studied\n"
+		.string "what's on that\n"
+		.string "disk?▼"
+		.string "You see, that was▼"
+		.string "an ID card from when\n"
+		.string "old Andrew worked\n"
+		.string "at a bread factory.▼"
+		.string "Hmm...I wonder how\n"
+		.string "young he was back\n"
+		.string "then...▼"
+		.string "He's such an enigma.$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "さっきのディスク、\n"
 		.string "もうカイセキしたのかしら？▼"
@@ -812,16 +1703,38 @@ Text91: @ 0x0837B324
 		.string "おじいさんだったのかしら…▼"
 		.string "なぞだらけね、\n"
 		.string "あのおじいさん$"
+	.endif
 
-Text92: @ 0x0837B396
+Text_CielChats_IMSoGladThat: @ 0x0837B396
+	@ EN: I'm so glad that Mr. / Harpuia is better. / Mr. Zero, remember / to take care of / yourself.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "I'm so glad that Mr.\n"
+		.string "Harpuia is better.▼"
+		.string "Mr. Zero, remember\n"
+		.string "to take care of\n"
+		.string "yourself.$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "ハルピュイアさんも\n"
 		.string "ゲンキになって よかったわ▼"
 		.string "ゼロさん、\n"
 		.string "あなたもカラダには\n"
 		.string "気をつけてね$"
+	.endif
 
-Text93: @ 0x0837B3C8
+Text_CielChats_OhMrZero: @ 0x0837B3C8
+	@ EN: Oh, Mr. Zero. / I found this disk / while cleaning. / It won't do me much / good, so go ahead / and take it. / Here.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "Oh, Mr. Zero.\n"
+		.string "I found this disk\n"
+		.string "while cleaning.▼"
+		.string "It won't do me much\n"
+		.string "good, so go ahead\n"
+		.string "and take it.▼"
+		.string "Here.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "あら、ゼロさん\n"
 		.string "さっきね、ここをソウジしてたら\n"
@@ -830,8 +1743,23 @@ Text93: @ 0x0837B3C8
 		.string "見る機会はないから\n"
 		.string "あなたにあげるわ▼"
 		.string "はい{F5 0x09}$"
+	.endif
 
-Text94: @ 0x0837B417
+Text_CielChats_MrZeroDonTYou: @ 0x0837B417
+	@ EN: Mr. Zero, don't you / overwork yourself. / I've helped a lot / of injured Reploids, / but... / Every time I do, my / heart just aches.. / And it's not a / sadness that fades / over time, you see.
+	.if ENGLISH
+	.string "{WINDOW 0x4A}"
+		.string "Mr. Zero, don't you\n"
+		.string "overwork yourself.▼"
+		.string "I've helped a lot\n"
+		.string "of injured Reploids,\n"
+		.string "but...▼"
+		.string "Every time I do, my\n"
+		.string "heart just aches..▼"
+		.string "And it's not a\n"
+		.string "sadness that fades\n"
+		.string "over time, you see.$"
+	.else
 	.string "{WINDOW 0x4A}"
 		.string "ゼロさん、\n"
 		.string "あまり無理をしちゃ\n"
@@ -845,21 +1773,42 @@ Text94: @ 0x0837B417
 		.string "それは、けっして\n"
 		.string "なれることのない\n"
 		.string "かなしみね…$"
+	.endif
 
-Text95: @ 0x0837B48A
-Text96: @ 0x0837B48A
-Text97: @ 0x0837B48A
-Text98: @ 0x0837B48A
-Text99: @ 0x0837B48A
-Text100: @ 0x0837B48A
-Text101: @ 0x0837B48A
-Text102: @ 0x0837B48A
-Text103: @ 0x0837B48A
-Text104: @ 0x0837B48A
-Text105: @ 0x0837B48A
-Text106: @ 0x0837B48A
-Text107: @ 0x0837B48A
-Text108: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias1: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias2: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias3: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias4: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias5: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias6: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias7: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias8: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias9: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias10: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias11: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias12: @ 0x0837B48A
+Text_CielChats_HeyThereZeroHaveYou_Alias13: @ 0x0837B48A
+	@ EN: Hey there, Zero! / Have you heard? / The appearance of / Omega, who has the / same signature as / the Dark Elf, has / caused a rift in / our world. / The rift is called / Cyberspace. / A mysterious doorway / connects it to the / real world. / Inside Cyberspace, / Cyber-elf abilities / auto-activate.
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Hey there, Zero!▼"
+		.string "Have you heard?▼"
+		.string "The appearance of\n"
+		.string "Omega, who has the\n"
+		.string "same signature as▼"
+		.string "the Dark Elf, has\n"
+		.string "caused a rift in\n"
+		.string "our world.▼"
+		.string "The rift is called\n"
+		.string "Cyberspace.▼"
+		.string "A mysterious doorway\n"
+		.string "connects it to the\n"
+		.string "real world.▼"
+		.string "Inside Cyberspace,\n"
+		.string "Cyber-elf abilities\n"
+		.string "auto-activate.$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "やぁ、ゼロ！▼"
 		.string "キミは知ってるかい？▼"
@@ -873,8 +1822,45 @@ Text108: @ 0x0837B48A
 		.string "中に入ると、\n"
 		.string "サイバーエルフのノウリョクが\n"
 		.string "自動的に発動するんだって$"
+	.endif
 
-Text109: @ 0x0837B52F
+Text_CielChats_OhYes: @ 0x0837B52F
+	@ EN: Oh, yes... / About Cyberspace... / Want to know more? / Yes / Not really... / Then let me explain. / Some elves activate / when you go into / Cyberspace... / But not all elves / do. / Only elves with the / A mark on the / lower left of the / icon activate. / They activate even / when not grown, and / they also don't die. / There are also no / penalties for using / elves! / But, when you enter / Cyberspace, you lose / five mission points. / Also, in Cyberspace / you get no Secret / Disks from foes. / And you can't fight / bosses while still / inside! / Oh, is that right? / That's fine, if you / already know.
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Oh, yes...\n"
+		.string "About Cyberspace...▼"
+		.string "{F6 0x01}Want to know more?\n"
+		.string "  Yes\n"
+		.string "  Not really...▼"
+		.string "Then let me explain.▼"
+		.string "Some elves activate\n"
+		.string "when you go into\n"
+		.string "Cyberspace...▼"
+		.string "But not all elves\n"
+		.string "do.▼"
+		.string "Only elves with the\n"
+		.string "{RED}A{RED_END} mark on the\n"
+		.string "lower left of the▼"
+		.string "icon activate.▼"
+		.string "They activate even\n"
+		.string "when not grown, and\n"
+		.string "they also don't die.▼"
+		.string "There are also no\n"
+		.string "penalties for using\n"
+		.string "elves!▼"
+		.string "But, when you enter\n"
+		.string "Cyberspace, you lose\n"
+		.string "five mission points.▼"
+		.string "Also, in Cyberspace\n"
+		.string "you get no Secret\n"
+		.string "Disks from foes.▼"
+		.string "And you can't fight\n"
+		.string "bosses while still\n"
+		.string "inside!{RETURN}{ANSWER 0x01}Oh, is that right?▼"
+		.string "That's fine, if you\n"
+		.string "already know.$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "そうそう…\n"
 		.string "サイバーくうかんについてだけど▼"
@@ -906,8 +1892,29 @@ Text109: @ 0x0837B52F
 		.string "ボスとは戦えないよ！{RETURN}{ANSWER 0x01}ああ、そうかい▼"
 		.string "聞かなくても、わかるのなら\n"
 		.string "それでも かまわないよ$"
+	.endif
 
-Text110: @ 0x0837B6D1
+Text_CielChats_HeyZeroHaveYouHeard: @ 0x0837B6D1
+	@ EN: Hey, Zero! / Have you heard? / Cyberspace is a / wholly uncharted / territory for us. / For all we know, the / spirits of the dead / could be in there. / Hah hah hah... / Just kidding. / But, it's not as if / I've checked every / corner of / Cyberspace, so who / knows what could be / in there!
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Hey, Zero!▼"
+		.string "Have you heard?▼"
+		.string "Cyberspace is a\n"
+		.string "wholly uncharted\n"
+		.string "territory for us.▼"
+		.string "For all we know, the\n"
+		.string "spirits of the dead\n"
+		.string "could be in there.▼"
+		.string "Hah hah hah...\n"
+		.string "Just kidding.▼"
+		.string "But, it's not as if\n"
+		.string "I've checked every\n"
+		.string "corner of▼"
+		.string "Cyberspace, so who\n"
+		.string "knows what could be\n"
+		.string "in there!$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "やぁ、ゼロ！▼"
 		.string "キミは知ってるかい？▼"
@@ -924,8 +1931,42 @@ Text110: @ 0x0837B6D1
 		.string "まぁ、でも\n"
 		.string "そんなことがあっても\n"
 		.string "フシギじゃないけどね$"
+	.endif
 
-Text111: @ 0x0837B78F
+Text_CielChats_HeyZeroHaveYouHeard_2: @ 0x0837B78F
+	@ EN: Hey, Zero! / Have you heard? / The night sky is / absolutely / beautiful here. / I love writing poems / while stargazing. / Want to hear one? / Sure / Um, no... / OK, here goes... / Fighting ends. / Tomorrow offers the / promise of peace. / But to those who / fall and vanish with / the night sky, / dawn never comes... / What do you think? / Pretty good, / wouldn't you say? / Hah hah hah... / Sorry, sorry. / It's not really a / poem that I made. / It's from an ancient / text that I read a / long time ago. / Really? Oh well... / Never mind then.
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Hey, Zero!▼"
+		.string "Have you heard?▼"
+		.string "The night sky is\n"
+		.string "absolutely\n"
+		.string "beautiful here.▼"
+		.string "I love writing poems\n"
+		.string "while stargazing.▼"
+		.string "{F6 0x01}Want to hear one?\n"
+		.string "  Sure\n"
+		.string "  Um, no...▼"
+		.string "OK, here goes...▼"
+		.string "Fighting ends.\n"
+		.string "Tomorrow offers the\n"
+		.string "promise of peace.▼"
+		.string "But to those who\n"
+		.string "fall and vanish with\n"
+		.string "the night sky,▼"
+		.string "dawn never comes...▼"
+		.string "What do you think?\n"
+		.string "Pretty good,\n"
+		.string "wouldn't you say?▼"
+		.string "Hah hah hah...\n"
+		.string "Sorry, sorry.▼"
+		.string "It's not really a\n"
+		.string "poem that I made.▼"
+		.string "It's from an ancient\n"
+		.string "text that I read a\n"
+		.string "long time ago.{RETURN}{ANSWER 0x01}Really? Oh well...\n"
+		.string "Never mind then.$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "やぁ、ゼロ！▼"
 		.string "キミは知ってるかい？▼"
@@ -955,14 +1996,139 @@ Text111: @ 0x0837B78F
 		.string "古いショモツにのっていた\n"
 		.string "ぶんしょうなのさ{RETURN}{ANSWER 0x01}なんだ\n"
 		.string "ガッカリだなぁ$"
+	.endif
 
-Text112: @ 0x0837B8D2
+Text_CielChats_DidYouComeTo: @ 0x0837B8D2
+	@ EN: Did you come to / listen to a poem? / Hmm, sorry. I just / don't feel up to it.
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Did you come to\n"
+		.string "listen to a poem?▼"
+		.string "Hmm, sorry. I just\n"
+		.string "don't feel up to it.$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "ポエムを聞きに来たのかい？\n"
 		.string "う〜ん、ごめん\n"
 		.string "今はそんな気分じゃないんだ…$"
+	.endif
 
-Text113: @ 0x0837B8FE
+Text_CielChats_HeyZeroByTheWay: @ 0x0837B8FE
+	@ EN: Hey, Zero! / By the way, have you / recalled your old / memories yet? / It's been a while / since Ciel woke you / so I figured that / you'd have recalled / something after all / these discussions. / Can I test you? / Sure / No thanks... / I'm going to ask you / 3 questions, OK? / The first one is / about when Ciel / discovered you. / Ciel was looking for / you underground, and / a Reploid lost his / life protecting / Ciel. So, the / question is... / What was his name? / Colbor / Milan / OK, next! / Who was in charge / of the Resistance / in Ciel's absence? / Do you remember? / Elpizo / Hibou / OK, next! / What's the name of / The forest Hyleg / Ourobockle protected / Do you remember? / Forest of Notus / Forest of Dysis / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Hm, you're memory / circuits must still / be on the fritz. / OK, next! / Who was in charge / of the Resistance / in Ciel's absence? / Do you remember? / Elpizo / Hibou / Ok, next! / What's the name of / The forest Hyleg / Ourobockle protected / Do you remember? / Forest of Notus / Forest of Dysis / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Ok, next! / What's the name of / The forest Hyleg / Ourobockle protected / Do you remember? / Forest of Notus / Forest of Dysis / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Wow, incredible!! / All correct! / Alright! I'll give / you this! Use it / well! / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Ok, next! / What's the name of / The forest Hyleg / Ourobockle protected / Do you remember? / Forest of Notus / Forest of Dysis / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Do you remember? / Forest of Notus / Forest of Dysis / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it! / Too bad. I can't / give you anything / since you failed... / Try again, anytime / you feel like it!
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Hey, Zero!▼"
+		.string "By the way, have you\n"
+		.string "recalled your old\n"
+		.string "memories yet?▼"
+		.string "It's been a while\n"
+		.string "since Ciel woke you\n"
+		.string "so I figured that▼"
+		.string "you'd have recalled\n"
+		.string "something after all\n"
+		.string "these discussions.▼"
+		.string "{F6 0x00}Can I test you?\n"
+		.string "  Sure\n"
+		.string "  No thanks...▼"
+		.string "I'm going to ask you\n"
+		.string "3 questions, OK?▼"
+		.string "The first one is\n"
+		.string "about when Ciel\n"
+		.string "discovered you.▼"
+		.string "Ciel was looking for\n"
+		.string "you underground, and\n"
+		.string "a Reploid lost his▼"
+		.string "life protecting\n"
+		.string "Ciel. So, the\n"
+		.string "question is...▼"
+		.string "{F6 0x01}What was his name?\n"
+		.string "  Colbor\n"
+		.string "  Milan▼"
+		.string "OK, next!▼"
+		.string "Who was in charge\n"
+		.string "of the Resistance\n"
+		.string "in Ciel's absence?▼"
+		.string "{F6 0x02}Do you remember?\n"
+		.string "  Elpizo\n"
+		.string "  Hibou▼"
+		.string "OK, next!▼"
+		.string "What's the name of\n"
+		.string "The forest Hyleg\n"
+		.string "Ourobockle protected▼"
+		.string "{F6 0x03}Do you remember?\n"
+		.string "  Forest of Notus\n"
+		.string "  Forest of Dysis▼"
+		.string "Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x00}Hm, you're memory\n"
+		.string "circuits must still\n"
+		.string "be on the fritz.{RETURN}{ANSWER 0x01}OK, next!▼"
+		.string "Who was in charge\n"
+		.string "of the Resistance\n"
+		.string "in Ciel's absence?▼"
+		.string "{F6 0x04}Do you remember?\n"
+		.string "  Elpizo\n"
+		.string "  Hibou▼"
+		.string "Ok, next!▼"
+		.string "What's the name of\n"
+		.string "The forest Hyleg\n"
+		.string "Ourobockle protected▼"
+		.string "{F6 0x05}Do you remember?\n"
+		.string "  Forest of Notus\n"
+		.string "  Forest of Dysis▼"
+		.string "Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x03}Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x04}Ok, next!▼"
+		.string "What's the name of\n"
+		.string "The forest Hyleg\n"
+		.string "Ourobockle protected▼"
+		.string "{F6 0x06}Do you remember?\n"
+		.string "  Forest of Notus\n"
+		.string "  Forest of Dysis▼"
+		.string "Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x05}Wow, incredible!!\n"
+		.string "All correct!▼"
+		.string "Alright! I'll give\n"
+		.string "you this! Use it\n"
+		.string "well!{F5 0x09}{RETURN}{ANSWER 0x06}Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x02}Ok, next!▼"
+		.string "What's the name of\n"
+		.string "The forest Hyleg\n"
+		.string "Ourobockle protected▼"
+		.string "{F6 0x07}Do you remember?\n"
+		.string "  Forest of Notus\n"
+		.string "  Forest of Dysis▼"
+		.string "Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{F6 0x08}Do you remember?\n"
+		.string "  Forest of Notus\n"
+		.string "  Forest of Dysis▼"
+		.string "{ANSWER 0x07}Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!{RETURN}{ANSWER 0x08}Too bad. I can't\n"
+		.string "give you anything\n"
+		.string "since you failed...▼"
+		.string "Try again, anytime\n"
+		.string "you feel like it!$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "やぁ、ゼロ！▼"
 		.string "そういや、キミはまだ\n"
@@ -1074,16 +2240,46 @@ Text113: @ 0x0837B8FE
 		.string "何もあげられないなぁ…▼"
 		.string "気が向いたら、もういちど\n"
 		.string "チャレンジしてみてよ！$"
+	.endif
 
-Text114: @ 0x0837BEAB
+Text_CielChats_ZeroIJustKnowIt: @ 0x0837BEAB
+	@ EN: Zero! / I just know it! / I know you can / overcome any hurdle, / no matter how high!
+	.if ENGLISH
+	.string "{WINDOW 0x58}"
+		.string "Zero!▼"
+		.string "I just know it!▼"
+		.string "I know you can\n"
+		.string "overcome any hurdle,\n"
+		.string "no matter how high!$"
+	.else
 	.string "{WINDOW 0x58}"
 		.string "ゼロ！▼"
 		.string "ボクは知ってるよ！▼"
 		.string "キミなら、このさき\n"
 		.string "どんな現実が まちうけていようと\n"
 		.string "のりこえていけるってことを！$"
+	.endif
 
-Text115: @ 0x0837BEE8
+Text_CielChats_HeyHeyHowSThe: @ 0x0837BEE8
+	@ EN: Hey, hey! How's the / new guy doing? / Oh, pardon me! / Can't keep calling / the legendary 'roid / the "new guy"! / It's been so boring / since that Elpizo / left here. / No one complains / when I skip work, / And I don't have any / stories to tell. / There's just no / excitement anymore.
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "Hey, hey! How's the\n"
+		.string "new guy doing?▼"
+		.string "Oh, pardon me!▼"
+		.string "Can't keep calling\n"
+		.string "the legendary 'roid\n"
+		.string "the {0xE9}new guy{0xE9}!▼"
+		.string "It's been so boring\n"
+		.string "since that Elpizo\n"
+		.string "left here.▼"
+		.string "No one complains\n"
+		.string "when I skip work,▼"
+		.string "And I don't have any\n"
+		.string "stories to tell.▼"
+		.string "There's just no\n"
+		.string "excitement anymore.$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "ようよう！\n"
 		.string "ゲンキにしてたか、新入りさん！▼"
@@ -1100,8 +2296,27 @@ Text115: @ 0x0837BEE8
 		.string "話もねぇしよぉ▼"
 		.string "なんか いまひとつ\n"
 		.string "はりあいがないんだよね$"
+	.endif
 
-Text116: @ 0x0837BFA1
+Text_CielChats_DidYouTakeThe: @ 0x0837BFA1
+	@ EN: Did you take the / disk lying there? / That disk is pretty / much just my / personal profile. / Wonder what would / possess someone to / write about me... / It was as accurate / as could be, but / surely there's / something more / interesting to write / about.
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "Did you take the\n"
+		.string "disk lying there?▼"
+		.string "That disk is pretty\n"
+		.string "much just my\n"
+		.string "personal profile.▼"
+		.string "Wonder what would\n"
+		.string "possess someone to\n"
+		.string "write about me...▼"
+		.string "It was as accurate\n"
+		.string "as could be, but\n"
+		.string "surely there's▼"
+		.string "something more\n"
+		.string "interesting to write\n"
+		.string "about.$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "そこにあったディスク…\n"
 		.string "もう、もっていっちゃったかい？▼"
@@ -1112,8 +2327,32 @@ Text116: @ 0x0837BFA1
 		.string "いくら事実とは言え、\n"
 		.string "もっとマシなことを\n"
 		.string "かいてほしいよなぁ$"
+	.endif
 
-Text117: @ 0x0837C018
+Text_CielChats_HeyThereNewGuy: @ 0x0837C018
+	@ EN: Hey there, new guy! / I mean, greetings, / O legendary Reploid! / Heh heh. / I head a rumor / that... / Harpuia is injured / and sleeping in the / maintenance room. / Is that true? / Now's the chance to / finish Harpuia off, / don't you think? / Well, I know you're / not into underhanded / tactics like that. / Don't get mad at me, / it was just a / suggestion.
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "Hey there, new guy!\n"
+		.string "I mean, greetings,\n"
+		.string "O legendary Reploid!▼"
+		.string "Heh heh.\n"
+		.string "I head a rumor\n"
+		.string "that...▼"
+		.string "Harpuia is injured\n"
+		.string "and sleeping in the\n"
+		.string "maintenance room.▼"
+		.string "Is that true?▼"
+		.string "Now's the chance to\n"
+		.string "finish Harpuia off,\n"
+		.string "don't you think?▼"
+		.string "Well, I know you're\n"
+		.string "not into underhanded\n"
+		.string "tactics like that.▼"
+		.string "Don't get mad at me,\n"
+		.string "it was just a\n"
+		.string "suggestion.$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "よう！ 新入り…\n"
 		.string "じゃなかった、\n"
@@ -1132,8 +2371,25 @@ Text117: @ 0x0837C018
 		.string "ヤツじゃないのは知ってるけどよ▼"
 		.string "おこらないでくれよ\n"
 		.string "ちょっと言ってみたかっただけさ$"
+	.endif
 
-Text118: @ 0x0837C0DB
+Text_CielChats_SoIHeardThat: @ 0x0837C0DB
+	@ EN: So, I heard that / Harpuia's room is / locked, hm? / Can't I just take / a little peek / inside? / Heh heh...It's not / every day that a / plain old 'roid like / me gets to see / somebody special / like that, y'know...
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "So, I heard that\n"
+		.string "Harpuia's room is\n"
+		.string "locked, hm?▼"
+		.string "Can't I just take\n"
+		.string "a little peek\n"
+		.string "inside?▼"
+		.string "Heh heh...It's not\n"
+		.string "every day that a\n"
+		.string "plain old 'roid like▼"
+		.string "me gets to see\n"
+		.string "somebody special\n"
+		.string "like that, y'know...$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "ハルピュイアのいるへやには\n"
 		.string "カギが、かかってるみたいだな？▼"
@@ -1145,8 +2401,30 @@ Text118: @ 0x0837C0DB
 		.string "したっぱレプリロイドにゃ▼"
 		.string "なかなか お目にかかれない\n"
 		.string "おえらいさんだからねぇ…$"
+	.endif
 
-Text119: @ 0x0837C154
+Text_CielChats_EvenIfDrWeil: @ 0x0837C154
+	@ EN: Even if Dr. Weil / were to take over / the world... / Even if my meager / life were to just / end... / Right up to that / last moment, I'll / believe in you. / It ain't no joke / when I call you the / "legendary Reploid." / Heh heh...bet you / didn't expect me to / say that, hm? / Well, forget I even / said it, then!
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "Even if Dr. Weil\n"
+		.string "were to take over\n"
+		.string "the world...▼"
+		.string "Even if my meager\n"
+		.string "life were to just\n"
+		.string "end...▼"
+		.string "Right up to that\n"
+		.string "last moment, I'll\n"
+		.string "believe in you.▼"
+		.string "It ain't no joke\n"
+		.string "when I call you the\n"
+		.string "{0xE9}legendary Reploid.{0xE9}▼"
+		.string "Heh heh...bet you\n"
+		.string "didn't expect me to\n"
+		.string "say that, hm?▼"
+		.string "Well, forget I even\n"
+		.string "said it, then!$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "たとえ この世が\n"
 		.string "ドクター・バイルの手の中に\n"
@@ -1163,16 +2441,46 @@ Text119: @ 0x0837C154
 		.string "ヘヘへヘ…\n"
 		.string "ガラにもないセリフってか？▼"
 		.string "まぁ、今の話はわすれてくれ！$"
+	.endif
 
-Text120: @ 0x0837C20C
+Text_CielChats_DrWeilHuhQuiteA: @ 0x0837C20C
+	@ EN: Dr. Weil, huh... / Quite a nasty one, / I'd say. / That laugh of his / gives me goose / bumps!
+	.if ENGLISH
+	.string "{WINDOW 0x57}"
+		.string "Dr. Weil, huh...▼"
+		.string "Quite a nasty one,\n"
+		.string "I'd say.▼"
+		.string "That laugh of his\n"
+		.string "gives me goose\n"
+		.string "bumps!$"
+	.else
 	.string "{WINDOW 0x57}"
 		.string "ドクター・バイルねぇ…▼"
 		.string "オイラが言うのもなんだが\n"
 		.string "いやなヤツだねぇ▼"
 		.string "あのわらい声を聞いてると\n"
 		.string "さむけがするね$"
+	.endif
 
-Text121: @ 0x0837C248
+Text_CielChats_NiceToMeetYouMy: @ 0x0837C248
+	@ EN: Nice to meet you, my / name is Perroquiet. / Oh, it's Mr. Zero! / Sorry about that. / I have poor vision. / But that aside, Ms. / Ciel's research is / just incredible. / Incomplete as it is, / I think that the / miracle of undying / Cyber-elves shows / the fruits of her / labor.
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "Nice to meet you, my\n"
+		.string "name is Perroquiet.▼"
+		.string "Oh, it's Mr. Zero!▼"
+		.string "Sorry about that.\n"
+		.string "I have poor vision.▼"
+		.string "But that aside, Ms.\n"
+		.string "Ciel's research is\n"
+		.string "just incredible.▼"
+		.string "Incomplete as it is,\n"
+		.string "I think that the\n"
+		.string "miracle of undying▼"
+		.string "Cyber-elves shows\n"
+		.string "the fruits of her\n"
+		.string "labor.$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "わたくし、ペロケともうします\n"
 		.string "はじめまして………▼"
@@ -1187,8 +2495,52 @@ Text121: @ 0x0837C248
 		.string "サイバーエルフができたのは▼"
 		.string "そのケンキュウのセイカだと\n"
 		.string "思いますよ$"
+	.endif
 
-Text122: @ 0x0837C2E3
+Text_CielChats_AboutCyberElvesWantTo: @ 0x0837C2E3
+	@ EN: About Cyber-elves... / Want to know more? / Sure / No thanks... / Ms. Ciel's research / says that there are / 2 types of elves: / Fusion elves, and / Satellite elves. / Fusion elves perish, / as it has always / been. / For example, when / an elf turns in a / Sub Tank or destroys / some enemy units. / Then, there's the / newer type, the / Satellite elves. / These elves can be / equipped and removed / freely, and they / won't perish. But, / you can only equip / two at a time. / One each in / Satellite 1 and / Satellite 2. / There is no penalty / for using Satellite / elves. / Some Fusion elves / can be upgraded / into Satellites. / Is that so? / I'm the type that / won't quit talking. / So I can understand / if you don't really / want to listen.
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "About Cyber-elves...▼"
+		.string "{F6 0x01}Want to know more?\n"
+		.string "  Sure\n"
+		.string "  No thanks...▼"
+		.string "Ms. Ciel's research\n"
+		.string "says that there are\n"
+		.string "2 types of elves:▼"
+		.string "Fusion elves, and\n"
+		.string "Satellite elves.▼"
+		.string "Fusion elves perish,\n"
+		.string "as it has always\n"
+		.string "been.▼"
+		.string "For example, when\n"
+		.string "an elf turns in a\n"
+		.string "Sub Tank or destroys▼"
+		.string "some enemy units.▼"
+		.string "Then, there's the\n"
+		.string "newer type, the\n"
+		.string "Satellite elves.▼"
+		.string "These elves can be\n"
+		.string "equipped and removed\n"
+		.string "freely, and they▼"
+		.string "won't perish. But,\n"
+		.string "you can only equip\n"
+		.string "two at a time.▼"
+		.string "One each in\n"
+		.string "Satellite 1 and\n"
+		.string "Satellite 2.▼"
+		.string "There is no penalty\n"
+		.string "for using Satellite\n"
+		.string "elves.▼"
+		.string "Some Fusion elves\n"
+		.string "can be upgraded\n"
+		.string "into Satellites.{RETURN}{ANSWER 0x01}Is that so?▼"
+		.string "I'm the type that\n"
+		.string "won't quit talking.▼"
+		.string "So I can understand\n"
+		.string "if you don't really\n"
+		.string "want to listen.$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "サイバーエルフについてですが…▼"
 		.string "{F6 0x01}もっと知りたいですか？\n"
@@ -1228,8 +2580,27 @@ Text122: @ 0x0837C2E3
 		.string "あまり話を聞きたくないという\n"
 		.string "ゼロさんのキモチは\n"
 		.string "わからなくもないです$"
+	.endif
 
-Text123: @ 0x0837C4CB
+Text_CielChats_IUnderstandMr: @ 0x0837C4CB
+	@ EN: I understand Mr. / Harpuia is in the / maintenance room. / I've heard that he's / brilliant, so I'd / like to talk to him. / But, I suppose he is / from Neo Arcadia and / all... / Yet, if he would / only help us, Ms. / Ciel's research / would most certainly / benefit.
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "I understand Mr.\n"
+		.string "Harpuia is in the\n"
+		.string "maintenance room.▼"
+		.string "I've heard that he's\n"
+		.string "brilliant, so I'd\n"
+		.string "like to talk to him.▼"
+		.string "But, I suppose he is\n"
+		.string "from Neo Arcadia and\n"
+		.string "all...▼"
+		.string "Yet, if he would\n"
+		.string "only help us, Ms.\n"
+		.string "Ciel's research▼"
+		.string "would most certainly\n"
+		.string "benefit.$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "ハルピュイアさんが、\n"
 		.string "メンテナンス・ルームに\n"
@@ -1243,16 +2614,45 @@ Text123: @ 0x0837C4CB
 		.string "チカラをあわせることができれば\n"
 		.string "シエルさんのケンキュウも\n"
 		.string "はかどりそうなものなのに…$"
+	.endif
 
-Text124: @ 0x0837C573
+Text_CielChats_IHopeMrHarpuia: @ 0x0837C573
+	@ EN: I hope Mr. Harpuia / gets well soon, even / if he is the enemy! / There are so many / things I'd like to / discuss with him, / if only he weren't / from the other side. / It's really too bad.
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "I hope Mr. Harpuia\n"
+		.string "gets well soon, even\n"
+		.string "if he is the enemy!▼"
+		.string "There are so many\n"
+		.string "things I'd like to\n"
+		.string "discuss with him,▼"
+		.string "if only he weren't\n"
+		.string "from the other side.\n"
+		.string "It's really too bad.$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "テキとは言え、ハルピュイアさん\n"
 		.string "はやく よくなるといいですね！▼"
 		.string "テキじゃなければ\n"
 		.string "話してみたいことが\n"
 		.string "たくさんあるのに、ザンネンです…$"
+	.endif
 
-Text125: @ 0x0837C5BB
+Text_CielChats_MrZeroDrWeilHas: @ 0x0837C5BB
+	@ EN: Mr. Zero... / Dr. Weil has finally / showed his true / colors. / This was all his / doing, from the very / beginning... / That Dr. Weil... / What a pitiful / soul.
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "Mr. Zero...▼"
+		.string "Dr. Weil has finally\n"
+		.string "showed his true\n"
+		.string "colors.▼"
+		.string "This was all his\n"
+		.string "doing, from the very\n"
+		.string "beginning...▼"
+		.string "That Dr. Weil...\n"
+		.string "What a pitiful\n"
+		.string "soul.$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "ゼロさん…▼"
 		.string "ついにドクター・バイルが\n"
@@ -1263,8 +2663,22 @@ Text125: @ 0x0837C5BB
 		.string "ドクター・バイル…\n"
 		.string "とてつもなく\n"
 		.string "おそろしい考えのもちぬしです…$"
+	.endif
 
-Text126: @ 0x0837C624
+Text_CielChats_MrZeroThereIsnT: @ 0x0837C624
+	@ EN: Mr. Zero... / There isn't much / time left! / Dr. Weil is inching / ever closer to / his ambitions. / Mr. Zero! / Please find him / and defeat him!
+	.if ENGLISH
+	.string "{WINDOW 0x4C}"
+		.string "Mr. Zero...▼"
+		.string "There isn't much\n"
+		.string "time left!▼"
+		.string "Dr. Weil is inching\n"
+		.string "ever closer to\n"
+		.string "his ambitions.▼"
+		.string "Mr. Zero!\n"
+		.string "Please find him\n"
+		.string "and defeat him!$"
+	.else
 	.string "{WINDOW 0x4C}"
 		.string "ゼロさん…▼"
 		.string "のこされた時間は\n"
@@ -1275,8 +2689,25 @@ Text126: @ 0x0837C624
 		.string "ゼロさん！\n"
 		.string "かならずバイルを見つけ出して\n"
 		.string "たおしてください！$"
+	.endif
 
-Text127: @ 0x0837C689
+Text_CielChats_Hmm: @ 0x0837C689
+	@ EN: Hmm? / Oh, it's you Zero. / Did you get your / new weapon from / Cerveau? / If not, you should / go get it soon. / Let me know how it / works when you do. / I can't really test / its potential / in the lab...
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "Hmm?\n"
+		.string "Oh, it's you Zero.▼"
+		.string "Did you get your\n"
+		.string "new weapon from\n"
+		.string "Cerveau?▼"
+		.string "If not, you should\n"
+		.string "go get it soon.▼"
+		.string "Let me know how it\n"
+		.string "works when you do.▼"
+		.string "I can't really test\n"
+		.string "its potential\n"
+		.string "in the lab...$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "ん？\n"
 		.string "ゼロくんか▼"
@@ -1289,8 +2720,21 @@ Text127: @ 0x0837C689
 		.string "作ったのはいいが\n"
 		.string "自分では実戦で\n"
 		.string "ためせないからのう…$"
+	.endif
 
-Text128: @ 0x0837C6FB
+Text_CielChats_TheRecoilRodIs: @ 0x0837C6FB
+	@ EN: The Recoil Rod is / strongest when / charged. / It incorporates / features from Triple / and Chain Rods... / It will require some / effort to master it.
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "The Recoil Rod is\n"
+		.string "strongest when\n"
+		.string "charged.▼"
+		.string "It incorporates\n"
+		.string "features from Triple\n"
+		.string "and Chain Rods...▼"
+		.string "It will require some\n"
+		.string "effort to master it.$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "リコイルロッドは\n"
 		.string "チャージした時に\n"
@@ -1300,8 +2744,25 @@ Text128: @ 0x0837C6FB
 		.string "リコイルロッドなのだが…▼"
 		.string "うまく使いこなすには\n"
 		.string "自分のドリョクもヒツヨウじゃな$"
+	.endif
 
-Text129: @ 0x0837C76D
+Text_CielChats_OhItSYouZero_5: @ 0x0837C76D
+	@ EN: Oh! It's you, Zero! / Are you finding the / Recoil Rod useful? / I'm busy developing / yet another new / weapon! / ...er, well, not / really. I'm actually / totally drained from / working on the / Recoil Rod. I need / some time off.
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "Oh! It's you, Zero!\n"
+		.string "Are you finding the\n"
+		.string "Recoil Rod useful?▼"
+		.string "I'm busy developing\n"
+		.string "yet another new\n"
+		.string "weapon!▼"
+		.string "...er, well, not\n"
+		.string "really. I'm actually\n"
+		.string "totally drained from▼"
+		.string "working on the\n"
+		.string "Recoil Rod. I need\n"
+		.string "some time off.$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "おぉ、ゼロくんか！\n"
 		.string "リコイルロッドは\n"
@@ -1314,8 +2775,19 @@ Text129: @ 0x0837C76D
 		.string "つかれてしまって▼"
 		.string "当分、何もする気が\n"
 		.string "おこらないよ$"
+	.endif
 
-Text130: @ 0x0837C7E9
+Text_CielChats_ThereSNoTimeTo: @ 0x0837C7E9
+	@ EN: There's no time to / rest. Cerveau and I / have to make weapons / for the entire / Resistance. That is / no small task!
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "There's no time to\n"
+		.string "rest. Cerveau and I\n"
+		.string "have to make weapons▼"
+		.string "for the entire\n"
+		.string "Resistance. That is\n"
+		.string "no small task!$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "レジスタンスたちのブキも\n"
 		.string "また 作らないといけないし\n"
@@ -1323,8 +2795,25 @@ Text130: @ 0x0837C7E9
 		.string "いくらなんでも、\n"
 		.string "ワシとセルヴォだけじゃ\n"
 		.string "タイヘンなリョウだよ$"
+	.endif
 
-Text131: @ 0x0837C833
+Text_CielChats_RegardlessOfWhat: @ 0x0837C833
+	@ EN: Regardless of what / power Dr. Weil may / wield... / I can confidently / say our Resistance / will never lose! / That's because you, / Ciel, and all of us / are united together! / Zero! / You carry the hopes / of all of us here!
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "Regardless of what\n"
+		.string "power Dr. Weil may\n"
+		.string "wield...▼"
+		.string "I can confidently\n"
+		.string "say our Resistance\n"
+		.string "will never lose!▼"
+		.string "That's because you,\n"
+		.string "Ciel, and all of us\n"
+		.string "are united together!▼"
+		.string "Zero!▼"
+		.string "You carry the hopes\n"
+		.string "of all of us here!$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "ドクター・バイルが\n"
 		.string "どんなに強いチカラを\n"
@@ -1338,8 +2827,20 @@ Text131: @ 0x0837C833
 		.string "ゼロくん！▼"
 		.string "レジスタンスみんなの思いを\n"
 		.string "その手に たくしたぞ！$"
+	.endif
 
-Text132: @ 0x0837C8C2
+Text_CielChats_OhZeroILlGive: @ 0x0837C8C2
+	@ EN: Oh, Zero. I'll give / you this disk. / I meant to hand it / to you a second ago, / then I blanked. / But don't expect too / much of it!
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "Oh, Zero. I'll give\n"
+		.string "you this disk.▼"
+		.string "I meant to hand it\n"
+		.string "to you a second ago,\n"
+		.string "then I blanked.▼"
+		.string "But don't expect too\n"
+		.string "much of it!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "あっ、ゼロくん\n"
 		.string "このディスクをキミにやろう▼"
@@ -1347,13 +2848,40 @@ Text132: @ 0x0837C8C2
 		.string "ぼーっと、考えごとをしていたら\n"
 		.string "わすれてしまってな▼"
 		.string "キタイはしないでおくれ！{F5 0x09}$"
+	.endif
 
-Text133: @ 0x0837C916
+Text_CielChats_MaybeILlThinkUp: @ 0x0837C916
+	@ EN: Maybe I'll think up / a new weapon or two.
+	.if ENGLISH
+	.string "{WINDOW 0x50}"
+		.string "Maybe I'll think up\n"
+		.string "a new weapon or two.$"
+	.else
 	.string "{WINDOW 0x50}"
 		.string "また、新しいブキのアイデアでも\n"
 		.string "考えるとするかのう$"
+	.endif
 
-Text134: @ 0x0837C934
+Text_CielChats_HelloMrZeroIM: @ 0x0837C934
+	@ EN: Hello, Mr. Zero. / I'm sure you've / forgotten my name. / I'm Autruche. / I've been carrying / loads around here / for years. / Sometimes I wish I / could do something / else, but there just / isn't anything that / I'm good at... / Sorry, I didn't mean / to gripe to you, / Mr. Zero.
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "Hello, Mr. Zero.▼"
+		.string "I'm sure you've\n"
+		.string "forgotten my name.\n"
+		.string "I'm Autruche.▼"
+		.string "I've been carrying\n"
+		.string "loads around here\n"
+		.string "for years.▼"
+		.string "Sometimes I wish I\n"
+		.string "could do something\n"
+		.string "else, but there just▼"
+		.string "isn't anything that\n"
+		.string "I'm good at...▼"
+		.string "Sorry, I didn't mean\n"
+		.string "to gripe to you,\n"
+		.string "Mr. Zero.$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "やぁ、ゼロさん▼"
 		.string "どうせ、ボクの名前なんて\n"
@@ -1368,14 +2896,44 @@ Text134: @ 0x0837C934
 		.string "すみません…\n"
 		.string "聞きたくもないのに\n"
 		.string "ゼロさんに ぐちってしまって$"
+	.endif
 
-Text135: @ 0x0837C9CD
+Text_CielChats_KeepUpTheGood: @ 0x0837C9CD
+	@ EN: Keep up the good / work, Mr. Zero. / I'll be working hard / too...Yes indeed...
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "Keep up the good\n"
+		.string "work, Mr. Zero.▼"
+		.string "I'll be working hard\n"
+		.string "too...Yes indeed...$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "ゼロさんもガンバってください▼"
 		.string "ボクもガンバりますよ…\n"
 		.string "えぇ、ガンバりますとも$"
+	.endif
 
-Text136: @ 0x0837C9F6
+Text_CielChats_HelloMrZeroIWonder: @ 0x0837C9F6
+	@ EN: Hello, Mr. Zero. / I wonder if I'd be / good at anything / besides loading. / What do you think? / Sure / ... / You're just saying / that to make me / feel better, right? / Mr. Zero, I don't / need sympathy. / Yeah, it figures. / I knew you'd think / that... / It's fine... / Really, it is...
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "Hello, Mr. Zero.▼"
+		.string "I wonder if I'd be\n"
+		.string "good at anything\n"
+		.string "besides loading.▼"
+		.string "{F6 0x01}What do you think?\n"
+		.string "  Sure\n"
+		.string "  ...▼"
+		.string "You're just saying\n"
+		.string "that to make me\n"
+		.string "feel better, right?▼"
+		.string "Mr. Zero, I don't\n"
+		.string "need sympathy.{RETURN}{ANSWER 0x01}Yeah, it figures.\n"
+		.string "I knew you'd think\n"
+		.string "that...▼"
+		.string "It's fine...\n"
+		.string "Really, it is...$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "やぁ、ゼロさん▼"
 		.string "ボクって、にもつはこび以外に\n"
@@ -1392,16 +2950,40 @@ Text136: @ 0x0837C9F6
 		.string "そう思ってるんだ…▼"
 		.string "いいんです…\n"
 		.string "いいんですよ、べつに$"
+	.endif
 
-Text137: @ 0x0837CAA2
+Text_CielChats_IWonderIfILl: @ 0x0837CAA2
+	@ EN: I wonder if I'll be / working here in / storage forever. / Well, I guess I / can't complain... / It's just...
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "I wonder if I'll be\n"
+		.string "working here in\n"
+		.string "storage forever.▼"
+		.string "Well, I guess I\n"
+		.string "can't complain...\n"
+		.string "It's just...$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "ボクは いっしょう\n"
 		.string "このソウコの中で\n"
 		.string "はたらき続けるのかなぁ▼"
 		.string "まぁ、いいや\n"
 		.string "それでも…$"
+	.endif
 
-Text138: @ 0x0837CAD2
+Text_CielChats_KeepUpTheGood_2: @ 0x0837CAD2
+	@ EN: Keep up the good / work, Mr. Zero. / Even I don't want to / have to work for / that Weil guy. / Besides, he'd / probably have me / scrapped, anyway.
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "Keep up the good\n"
+		.string "work, Mr. Zero.▼"
+		.string "Even I don't want to\n"
+		.string "have to work for\n"
+		.string "that Weil guy.▼"
+		.string "Besides, he'd\n"
+		.string "probably have me\n"
+		.string "scrapped, anyway.$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "ゼロさん\n"
 		.string "ガンバってください▼"
@@ -1411,16 +2993,53 @@ Text138: @ 0x0837CAD2
 		.string "まぁ、したがうも何も\n"
 		.string "まっさきに わたしが\n"
 		.string "ショブンされちゃうでしょうけど$"
+	.endif
 
-Text139: @ 0x0837CB2F
+Text_CielChats_MrZeroEvenSomeoneLike: @ 0x0837CB2F
+	@ EN: Mr. Zero... / Even someone like / myself hopes for / peace. / Conflict is tiring / and meaningless.
+	.if ENGLISH
+	.string "{WINDOW 0x54}"
+		.string "Mr. Zero...▼"
+		.string "Even someone like\n"
+		.string "myself hopes for\n"
+		.string "peace.▼"
+		.string "Conflict is tiring\n"
+		.string "and meaningless.$"
+	.else
 	.string "{WINDOW 0x54}"
 		.string "ゼロさん…▼"
 		.string "こんな わたしでも\n"
 		.string "平和をのぞんでいるんですよ▼"
 		.string "あらそいなんて、つかれるだけで\n"
 		.string "何のイミもないですから$"
+	.endif
 
-Text140: @ 0x0837CB6E
+Text_CielChats_SubjectOfInterest: @ 0x0837CB6E
+	@ EN: Subject of interest? / Omega / Dr. Weil / Omega is a giant Reploid / with the same energy / signature as the Dark Elf. / Some say that Omega was / involved in the Elf / Wars. / The records state that / a century ago, Omega was / ejected into Space... / There is no other data / available on Omega. / Ending session. / Dr. Weil used the Dark Elf / a century ago, causing the / Elf Wars. / He was banished from / Neo Arcadia. / He is a scientist who / excels at bringing dead / Reploids back to life.
+	.if ENGLISH
+	.string "{WINDOW 0x02}"
+		.string "{F6 0x02}Subject of interest?\n"
+		.string "  Omega\n"
+		.string "  Dr. Weil▼"
+		.string "Omega is a giant Reploid\n"
+		.string "with the same energy\n"
+		.string "signature as the Dark Elf.▼"
+		.string "Some say that Omega was\n"
+		.string "involved in the Elf\n"
+		.string "Wars.▼"
+		.string "The records state that\n"
+		.string "a century ago, Omega was\n"
+		.string "ejected into Space...▼"
+		.string "There is no other data\n"
+		.string "available on Omega.{RETURN}{ANSWER 0x01}Ending session.{RETURN}{ANSWER 0x02}Dr. Weil used the Dark Elf\n"
+		.string "a century ago, causing the\n"
+		.string "Elf Wars.▼"
+		.string "He was banished from\n"
+		.string "Neo Arcadia.▼"
+		.string "He is a scientist who\n"
+		.string "excels at bringing dead\n"
+		.string "Reploids back to life.$"
+	.else
 	.string "{WINDOW 0x02}"
 		.string "{F6 0x02}ナニニツイテ シラベマスカ？\n"
 		.string "  オメガについて\n"
@@ -1442,8 +3061,36 @@ Text140: @ 0x0837CB6E
 		.string "イチド死ンダ レプリロイドヲ\n"
 		.string "フッカツサセル ギジュツニ\n"
 		.string "スグレタ 科学者デス$"
+	.endif
 
-Text141: @ 0x0837CCA9
+Text_CielChats_SubjectOfInterest_2: @ 0x0837CCA9
+	@ EN: Subject of interest? / Dark Elf / Harpuia / Dark Elf is a Cyber-elf / originally designed to / end the Maverick Wars. / X used her to bring a / prompt end to the conflict. / Afterward, she was stolen / by Dr. Weil, subsequently / causing the Elf Wars. / There is no other data / available on the Dark Elf. / Ending session. / The shrewd General Harpuia / is one of the Four / Guardians, and is a Reploid / cloned from X's DNA. / Filling the void left by / the destruction of Copy X, / he became leader of / Neo Arcadia. / He was rendered unconscious / by an attack from Omega, / and remains so today.
+	.if ENGLISH
+	.string "{WINDOW 0x02}"
+		.string "{F6 0x02}Subject of interest?\n"
+		.string "  Dark Elf\n"
+		.string "  Harpuia▼"
+		.string "Dark Elf is a Cyber-elf\n"
+		.string "originally designed to\n"
+		.string "end the Maverick Wars.▼"
+		.string "X used her to bring a\n"
+		.string "prompt end to the conflict.▼"
+		.string "Afterward, she was stolen\n"
+		.string "by Dr. Weil, subsequently\n"
+		.string "causing the Elf Wars.▼"
+		.string "There is no other data\n"
+		.string "available on the Dark Elf.{RETURN}{ANSWER 0x01}Ending session.{RETURN}{ANSWER 0x02}The shrewd General Harpuia\n"
+		.string "is one of the Four\n"
+		.string "Guardians, and is a Reploid▼"
+		.string "cloned from X's DNA.▼"
+		.string "Filling the void left by\n"
+		.string "the destruction of Copy X,\n"
+		.string "he became leader of▼"
+		.string "Neo Arcadia.▼"
+		.string "He was rendered unconscious\n"
+		.string "by an attack from Omega,\n"
+		.string "and remains so today.$"
+	.else
 	.string "{WINDOW 0x02}"
 		.string "{F6 0x02}ナニニツイテ シラベマスカ？\n"
 		.string "  ダークエルフについて\n"
@@ -1468,8 +3115,34 @@ Text141: @ 0x0837CCA9
 		.string "現在ハ オメガノ コウゲキヲ\n"
 		.string "ウケテ イシキヲ ウシナッタ\n"
 		.string "ジョウタイデス$"
+	.endif
 
-Text142: @ 0x0837CE2E
+Text_CielChats_SubjectOfInterest_3: @ 0x0837CE2E
+	@ EN: Subject of interest? / Menart / Ciel / Menart is the coolest / Reploid in the universe. / He is the kindest, / smartest, and most hard- / working one of them all. / ... / I do not recall entering / this data into my system... / ... / Commencing shutdown. / Ciel is a human girl with / an empathic connection / to Cyber-elves. / Also, she is a highly / talented scientist who has / devoted herself to / research on energies. / She recently completed / the Ciel System...
+	.if ENGLISH
+	.string "{WINDOW 0x02}"
+		.string "{F6 0x02}Subject of interest?\n"
+		.string "  Menart\n"
+		.string "  Ciel▼"
+		.string "Menart is the coolest\n"
+		.string "Reploid in the universe.▼"
+		.string "He is the kindest,\n"
+		.string "smartest, and most hard-\n"
+		.string "working one of them all.▼"
+		.string "...▼"
+		.string "I do not recall entering\n"
+		.string "this data into my system...▼"
+		.string "...▼"
+		.string "Commencing shutdown.{RETURN}{ANSWER 0x02}Ciel is a human girl with\n"
+		.string "an empathic connection\n"
+		.string "to Cyber-elves.▼"
+		.string "Also, she is a highly\n"
+		.string "talented scientist who has\n"
+		.string "devoted herself to▼"
+		.string "research on energies.▼"
+		.string "She recently completed\n"
+		.string "the Ciel System...$"
+	.else
 	.string "{WINDOW 0x02}"
 		.string "{F6 0x02}ナニニツイテ シラベマスカ？\n"
 		.string "  メナートについて\n"
@@ -1494,23 +3167,34 @@ Text142: @ 0x0837CE2E
 		.string "ツイ サイキン\n"
 		.string "システマ・シエルヲ\n"
 		.string "カンセイサセタバカリ…$"
+	.endif
 
-Text143: @ 0x0837CF4F
-Text144: @ 0x0837CF4F
-Text145: @ 0x0837CF4F
-Text146: @ 0x0837CF4F
-Text147: @ 0x0837CF4F
-Text148: @ 0x0837CF4F
-Text149: @ 0x0837CF4F
-Text150: @ 0x0837CF4F
-Text151: @ 0x0837CF4F
-Text152: @ 0x0837CF4F
-Text153: @ 0x0837CF4F
-Text154: @ 0x0837CF4F
-Text155: @ 0x0837CF4F
-Text156: @ 0x0837CF4F
-Text157: @ 0x0837CF4F
-Text158: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias1: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias2: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias3: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias4: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias5: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias6: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias7: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias8: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias9: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias10: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias11: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias12: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias13: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias14: @ 0x0837CF4F
+Text_CielChats_MrZeroBeforeIWorked_Alias15: @ 0x0837CF4F
+	@ EN: Mr. Zero! / Before I worked here / I was a security / guard in the desert. / Of course, that was / over a year ago.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero!▼"
+		.string "Before I worked here\n"
+		.string "I was a security\n"
+		.string "guard in the desert.▼"
+		.string "Of course, that was\n"
+		.string "over a year ago.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！▼"
 		.string "わたしは、ここで はたらく前は\n"
@@ -1518,8 +3202,21 @@ Text158: @ 0x0837CF4F
 		.string "していたんですよ▼"
 		.string "もう、1年以上も\n"
 		.string "前の話なんですけど$"
+	.endif
 
-Text159: @ 0x0837CF94
+Text_CielChats_OhMrZeroHaveYou: @ 0x0837CF94
+	@ EN: Oh, Mr. Zero? / Have you been using / Cyberspace? / I think that place / is more than just a / shortcut. / There must be some / secrets to it.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, Mr. Zero?▼"
+		.string "Have you been using\n"
+		.string "Cyberspace?▼"
+		.string "I think that place\n"
+		.string "is more than just a\n"
+		.string "shortcut.▼"
+		.string "There must be some\n"
+		.string "secrets to it.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ところで、ゼロさん▼"
 		.string "サイバーくうかんって\n"
@@ -1529,15 +3226,41 @@ Text159: @ 0x0837CF94
 		.string "気がするんですよ▼"
 		.string "ぜったい、何か\n"
 		.string "ヒミツがありますよ$"
+	.endif
 
-Text160: @ 0x0837CFF5
+Text_CielChats_IJustGlancedTo: @ 0x0837CFF5
+	@ EN: I just glanced to / the east a moment / ago... / Enemy activity is on / the rise.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "I just glanced to\n"
+		.string "the east a moment\n"
+		.string "ago...▼"
+		.string "Enemy activity is on\n"
+		.string "the rise.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "さきほど、ここからヒガシのそらを\n"
 		.string "ながめていたのですが…▼"
 		.string "テキが以前よりも活発に\n"
 		.string "なりはじめていますね$"
+	.endif
 
-Text161: @ 0x0837D02F
+Text_CielChats_ToChangeTopicsDidYou: @ 0x0837D02F
+	@ EN: To change topics... / Did you know that / the core of Rainbow / Devil consists of / the head of a / Pantheon? / Oh? / You did? / I thought I was the / only one who knew / that...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "To change topics...▼"
+		.string "Did you know that\n"
+		.string "the core of Rainbow\n"
+		.string "Devil consists of▼"
+		.string "the head of a\n"
+		.string "Pantheon?▼"
+		.string "Oh?\n"
+		.string "You did?▼"
+		.string "I thought I was the\n"
+		.string "only one who knew\n"
+		.string "that...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "話はかわりますけど…▼"
 		.string "レインボーデビルのコアって\n"
@@ -1548,16 +3271,42 @@ Text161: @ 0x0837D02F
 		.string "なんだ、わたししか知らない\n"
 		.string "ジョウホウだと\n"
 		.string "思っていたのに…$"
+	.endif
 
-Text162: @ 0x0837D090
+Text_CielChats_YouReEffortsAre: @ 0x0837D090
+	@ EN: You're efforts are / an inspiration to us / all, Mr. Zero! / I'll wring Dr. / Weil's neck myself / if I have to!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "You're efforts are\n"
+		.string "an inspiration to us\n"
+		.string "all, Mr. Zero!▼"
+		.string "I'll wring Dr.\n"
+		.string "Weil's neck myself\n"
+		.string "if I have to!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさんがガンバってるんです！\n"
 		.string "わたしたちレジスタンスも\n"
 		.string "最後まで あきらめませんよ！▼"
 		.string "ドクター・バイルなんて\n"
 		.string "わたしが うちおとしてやります！！$"
+	.endif
 
-Text163: @ 0x0837D0DE
+Text_CielChats_AhMrZeroCyberElves: @ 0x0837D0DE
+	@ EN: Ah, Mr. Zero... / Cyber-elves have / gotten easier to / use, haven't they? / All thanks to those / late nights Ms. Ciel / spent researching. / It'd be really neat / if elves became even / more easier to use.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Ah, Mr. Zero...▼"
+		.string "Cyber-elves have\n"
+		.string "gotten easier to\n"
+		.string "use, haven't they?▼"
+		.string "All thanks to those\n"
+		.string "late nights Ms. Ciel\n"
+		.string "spent researching.▼"
+		.string "It'd be really neat\n"
+		.string "if elves became even\n"
+		.string "more easier to use.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "そういや、ゼロさん▼"
 		.string "むかしにくらべると\n"
@@ -1568,10 +3317,27 @@ Text163: @ 0x0837D0DE
 		.string "ケンキュウしてくれたからですね▼"
 		.string "このさきも もっと\n"
 		.string "使いやすくなるといいですよね$"
+	.endif
 
-Text164: @ 0x0837D14E
-Text165: @ 0x0837D14E
-Text166: @ 0x0837D14E
+Text_CielChats_AhMrZeroLatelyI: @ 0x0837D14E
+Text_CielChats_AhMrZeroLatelyI_Alias1: @ 0x0837D14E
+Text_CielChats_AhMrZeroLatelyI_Alias2: @ 0x0837D14E
+	@ EN: Ah, Mr. Zero! / Lately I've been so / bored...my trigger / finger is itching. / But I suppose that's / nothing to complain / about, right? / Oh, yes! / I can't make out / what's on this / disk... / You can have it!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Ah, Mr. Zero!▼"
+		.string "Lately I've been so\n"
+		.string "bored...my trigger\n"
+		.string "finger is itching.▼"
+		.string "But I suppose that's\n"
+		.string "nothing to complain\n"
+		.string "about, right?▼"
+		.string "Oh, yes!▼"
+		.string "I can't make out\n"
+		.string "what's on this\n"
+		.string "disk...▼"
+		.string "You can have it!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "あっ、ゼロさん！▼"
 		.string "さいきんはヒマでヒマで…\n"
@@ -1583,8 +3349,26 @@ Text166: @ 0x0837D14E
 		.string "このディスクなんですけど\n"
 		.string "わたしでは カイセキできないので…▼"
 		.string "ゼロさんにさしあげますよ！{F5 0x09}$"
+	.endif
 
-Text167: @ 0x0837D1D2
+Text_CielChats_ThatDiskIGave: @ 0x0837D1D2
+	@ EN: That disk I gave / you... / Did you decode it? / Yes / No... / Yup! I knew you / would, Mr. Zero! / Your decisiveness is / such an inspiration! / Oh, my! / Not yet? / You really should / have Mr. Cerveau / take a look at it.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "That disk I gave\n"
+		.string "you...▼"
+		.string "{F6 0x01}Did you decode it?\n"
+		.string "  Yes\n"
+		.string "  No...▼"
+		.string "Yup! I knew you\n"
+		.string "would, Mr. Zero!▼"
+		.string "Your decisiveness is\n"
+		.string "such an inspiration!{RETURN}{ANSWER 0x01}Oh, my!\n"
+		.string "Not yet?▼"
+		.string "You really should\n"
+		.string "have Mr. Cerveau\n"
+		.string "take a look at it.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "さっきのディスクなんですけど…▼"
 		.string "{F6 0x01}もうカイセキしてくれました？\n"
@@ -1597,8 +3381,25 @@ Text167: @ 0x0837D1D2
 		.string "まだなんですか▼"
 		.string "はやくセルヴォさんに\n"
 		.string "カイセキしてもらってくださいね$"
+	.endif
 
-Text168: @ 0x0837D258
+Text_CielChats_OhMrZeroOldNews: @ 0x0837D258
+	@ EN: Oh, Mr. Zero... / Old news I guess, / but do you remember / the Crystal Cave? / Go to the very end / of the 2nd Crystal / area, and go back to / the left. Then, / Z Panels will rain / down. / ... / Sorry it's old news.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, Mr. Zero...▼"
+		.string "Old news I guess,\n"
+		.string "but do you remember\n"
+		.string "the Crystal Cave?▼"
+		.string "Go to the very end\n"
+		.string "of the 2nd Crystal\n"
+		.string "area, and go back to▼"
+		.string "the left. Then,\n"
+		.string "Z Panels will rain\n"
+		.string "down.▼"
+		.string "...▼"
+		.string "Sorry it's old news.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ところで、ゼロさん▼"
 		.string "ちょっと古い話になりますけど\n"
@@ -1612,8 +3413,22 @@ Text168: @ 0x0837D258
 		.string "ふってくるんですよ▼"
 		.string "………▼"
 		.string "古い話ですみません$"
+	.endif
 
-Text169: @ 0x0837D2DE
+Text_CielChats_ILookedThroughMy: @ 0x0837D2DE
+	@ EN: I looked through my / binoculars just now / and saw a missile. / It was well out of / the range of this / cannon... / All I could do was / just hold the / trigger and watch...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "I looked through my\n"
+		.string "binoculars just now\n"
+		.string "and saw a missile.▼"
+		.string "It was well out of\n"
+		.string "the range of this\n"
+		.string "cannon...▼"
+		.string "All I could do was\n"
+		.string "just hold the\n"
+		.string "trigger and watch...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "さきほど、ソウガンキョウを\n"
 		.string "のぞいていたら、かすかに\n"
@@ -1624,8 +3439,20 @@ Text169: @ 0x0837D2DE
 		.string "ボウゼンとトリガーを\n"
 		.string "にぎったまま、見てるほか\n"
 		.string "ありませんでした…$"
+	.endif
 
-Text170: @ 0x0837D34A
+Text_CielChats_OhMrZeroSometimesSnow: @ 0x0837D34A
+	@ EN: Oh, Mr. Zero... / Sometimes snow falls / out of season at / this base. / Well, Leviathan / might be behind it / I guess.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, Mr. Zero...▼"
+		.string "Sometimes snow falls\n"
+		.string "out of season at\n"
+		.string "this base.▼"
+		.string "Well, Leviathan\n"
+		.string "might be behind it\n"
+		.string "I guess.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ところで、ゼロさん▼"
 		.string "このレジスタンスベースは\n"
@@ -1634,8 +3461,22 @@ Text170: @ 0x0837D34A
 		.string "もしかしたら\n"
 		.string "レヴィアタンのしわざかも\n"
 		.string "しれませんね$"
+	.endif
 
-Text171: @ 0x0837D396
+Text_CielChats_OhMrZeroIsIt: @ 0x0837D396
+	@ EN: Oh, Mr. Zero... / Is it true that Dr. / Weil is behind / the Elf Wars? / If that's true, do / we even stand a / chance? / Oh, my. It's just / frightful.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, Mr. Zero...▼"
+		.string "Is it true that Dr.\n"
+		.string "Weil is behind\n"
+		.string "the Elf Wars?▼"
+		.string "If that's true, do\n"
+		.string "we even stand a\n"
+		.string "chance?▼"
+		.string "Oh, my. It's just\n"
+		.string "frightful.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ああ…ゼロさん▼"
 		.string "バイルが、はるかむかしに\n"
@@ -1645,8 +3486,20 @@ Text171: @ 0x0837D396
 		.string "わたしたちに\n"
 		.string "かちめなど あるのでしょうか？▼"
 		.string "ああ…おそろしい$"
+	.endif
 
-Text172: @ 0x0837D3F6
+Text_CielChats_SpeakingOfWhich: @ 0x0837D3F6
+	@ EN: Speaking of which, / how is it that Weil / can fly? / Oh, I guess he is a / scientist! That's / probably not even a / challenge for him!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Speaking of which,\n"
+		.string "how is it that Weil\n"
+		.string "can fly?▼"
+		.string "Oh, I guess he is a\n"
+		.string "scientist! That's\n"
+		.string "probably not even a▼"
+		.string "challenge for him!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "そう言えば、ゼロさん\n"
 		.string "バイルって、どうやって\n"
@@ -1654,8 +3507,21 @@ Text172: @ 0x0837D3F6
 		.string "あっ！ 科学者ですもんね…\n"
 		.string "それくらいの発明は\n"
 		.string "カンタンにできますよね！$"
+	.endif
 
-Text173: @ 0x0837D448
+Text_CielChats_AhMrZeroIWas: @ 0x0837D448
+	@ EN: Ah, Mr. Zero. / I was just cleaning / this room, and I / came across a Secret / Disk. It must be / around somewhere. / If you find it, it's / yours.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Ah, Mr. Zero.▼"
+		.string "I was just cleaning\n"
+		.string "this room, and I▼"
+		.string "came across a Secret\n"
+		.string "Disk. It must be\n"
+		.string "around somewhere.▼"
+		.string "If you find it, it's\n"
+		.string "yours.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "あっ、ゼロさん▼"
 		.string "今、わたしはこのへやの\n"
@@ -1666,8 +3532,22 @@ Text173: @ 0x0837D448
 		.string "かってに、\n"
 		.string "もっていってくださって\n"
 		.string "かまわないですよ$"
+	.endif
 
-Text174: @ 0x0837D4B3
+Text_CielChats_IWonderWhere: @ 0x0837D4B3
+	@ EN: I wonder where / Mr. Elpizo's / subordinates went / off to. They were / in this room until / just recently. / Perhaps they felt / uncomfortable now / Mr. Elpizo has gone?
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "I wonder where\n"
+		.string "Mr. Elpizo's\n"
+		.string "subordinates went▼"
+		.string "off to. They were\n"
+		.string "in this room until\n"
+		.string "just recently.▼"
+		.string "Perhaps they felt\n"
+		.string "uncomfortable now\n"
+		.string "Mr. Elpizo has gone?$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "そういや、少し前まで\n"
 		.string "このへやにいた\n"
@@ -1676,8 +3556,21 @@ Text174: @ 0x0837D4B3
 		.string "エルピスさんがいなくなって\n"
 		.string "ここに いづらくなって\n"
 		.string "しまったのでしょうか？$"
+	.endif
 
-Text175: @ 0x0837D50D
+Text_CielChats_IsTheDarkElfS: @ 0x0837D50D
+	@ EN: Is the Dark Elf's / power as intense / as people say? / If that were true, / it would be no / surprise if another / guy like Mr. Elpizo / came along.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Is the Dark Elf's\n"
+		.string "power as intense\n"
+		.string "as people say?▼"
+		.string "If that were true,\n"
+		.string "it would be no\n"
+		.string "surprise if another▼"
+		.string "guy like Mr. Elpizo\n"
+		.string "came along.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "ダークエルフのチカラって\n"
 		.string "それほどまでに\n"
@@ -1685,8 +3578,20 @@ Text175: @ 0x0837D50D
 		.string "だとしたら、だい2の\n"
 		.string "エルピスさんみたいな人が\n"
 		.string "現れてもフシギじゃありません$"
+	.endif
 
-Text176: @ 0x0837D55B
+Text_CielChats_AhMrZero: @ 0x0837D55B
+	@ EN: Ah, Mr. Zero! / Good to see you! / I'm taking a break / after patrolling / the second floor. / So, don't think I'm / just slacking off.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Ah, Mr. Zero!\n"
+		.string "Good to see you!▼"
+		.string "I'm taking a break\n"
+		.string "after patrolling\n"
+		.string "the second floor.▼"
+		.string "So, don't think I'm\n"
+		.string "just slacking off.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "あっ、ゼロさん！\n"
 		.string "おつかれさまです！▼"
@@ -1695,8 +3600,67 @@ Text176: @ 0x0837D55B
 		.string "やすんでいるところです▼"
 		.string "けっして サボってるわけじゃ\n"
 		.string "ありませんよ$"
+	.endif
 
-Text177: @ 0x0837D5A9
+Text_CielChats_AhMrZero_2: @ 0x0837D5A9
+	@ EN: Ah, Mr. Zero! / Good to see you! / I found a Secret / Disk while on patrol / just now... / If you can answer my / question, then I'll / give it to you! / Deal? / Sure / No... / Alright! You're / pretty confident, / Mr. Zero! / Here we go! / What's the name of / the shrimp-like / Mechaniloid / found in desert / or snowy areas? / Do you know? / Shrimpolin / Trampoline / Ooh, correct! / You're pretty good! / Next question. / What is the name of / the Mechaniloid that / jumps out of the / lava at Aegis / Volcano? / Do you know? / Lamplort / Volcaire / I'm sorry, that is / incorrect. / Try again some time. / Oh you don't want / it then... / I'm sorry, that is / incorrect. / Try again some time. / Correct again! / Very good Mr. Zero! / The next one's hard. / How many doors are / there that you can / enter in the Old / Residential Area? / 6 / 7 / I'm sorry, that is / incorrect. / Try again some time. / Wow! All questions / answered correctly! / Here, this is yours, / as promised!
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Ah, Mr. Zero!\n"
+		.string "Good to see you!▼"
+		.string "I found a Secret\n"
+		.string "Disk while on patrol\n"
+		.string "just now...▼"
+		.string "If you can answer my\n"
+		.string "question, then I'll\n"
+		.string "give it to you!▼"
+		.string "{F6 0x01}Deal?\n"
+		.string "  Sure\n"
+		.string "  No...▼"
+		.string "Alright! You're\n"
+		.string "pretty confident,\n"
+		.string "Mr. Zero!▼"
+		.string "Here we go!▼"
+		.string "What's the name of\n"
+		.string "the shrimp-like\n"
+		.string "Mechaniloid▼"
+		.string "found in desert\n"
+		.string "or snowy areas?▼"
+		.string "{F6 0x02}Do you know?\n"
+		.string "  Shrimpolin\n"
+		.string "  Trampoline▼"
+		.string "Ooh, correct!\n"
+		.string "You're pretty good!\n"
+		.string "Next question.▼"
+		.string "What is the name of\n"
+		.string "the Mechaniloid that\n"
+		.string "jumps out of the▼"
+		.string "lava at Aegis\n"
+		.string "Volcano?▼"
+		.string "{F6 0x03}Do you know?\n"
+		.string "  Lamplort\n"
+		.string "  Volcaire▼"
+		.string "I'm sorry, that is\n"
+		.string "incorrect.▼"
+		.string "Try again some time.{RETURN}{ANSWER 0x01}Oh you don't want\n"
+		.string "it then...{RETURN}{ANSWER 0x02}I'm sorry, that is\n"
+		.string "incorrect.▼"
+		.string "Try again some time.{RETURN}{ANSWER 0x03}Correct again!\n"
+		.string "Very good Mr. Zero!\n"
+		.string "The next one's hard.▼"
+		.string "How many doors are\n"
+		.string "there that you can\n"
+		.string "enter in the Old▼"
+		.string "{F6 0x04}Residential Area?\n"
+		.string "  6\n"
+		.string "  7▼"
+		.string "I'm sorry, that is\n"
+		.string "incorrect.▼"
+		.string "Try again some time.{RETURN}{ANSWER 0x04}Wow! All questions\n"
+		.string "answered correctly!▼"
+		.string "Here, this is yours,\n"
+		.string "as promised!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "あっ、ゼロさん！\n"
 		.string "おつかれさまです！▼"
@@ -1746,8 +3710,20 @@ Text177: @ 0x0837D5A9
 		.string "ぜんもんセイカイです▼"
 		.string "では、やくそくどおり\n"
 		.string "このディスクをあげましょう！{F5 0x09}$"
+	.endif
 
-Text178: @ 0x0837D7F8
+Text_CielChats_IMCertainThat: @ 0x0837D7F8
+	@ EN: I'm certain that / there's something / great on that disk / I gave you. / When I picked it up / it just felt very / heavy.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "I'm certain that\n"
+		.string "there's something\n"
+		.string "great on that disk▼"
+		.string "I gave you.▼"
+		.string "When I picked it up\n"
+		.string "it just felt very\n"
+		.string "heavy.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "さっき さしあげたディスクは\n"
 		.string "おそらく とてもいいものだと\n"
@@ -1755,16 +3731,49 @@ Text178: @ 0x0837D7F8
 		.string "何しろ ひろった時に\n"
 		.string "ずっしりとした おもみを\n"
 		.string "感じましたから$"
+	.endif
 
-Text179: @ 0x0837D842
+Text_CielChats_MsCielAndDr: @ 0x0837D842
+	@ EN: Ms. Ciel and Dr. / Weil are both / scientists. / How can they be / so different in / their thinking? / It's just scary to / think about...
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Ms. Ciel and Dr.\n"
+		.string "Weil are both\n"
+		.string "scientists.▼"
+		.string "How can they be\n"
+		.string "so different in\n"
+		.string "their thinking?▼"
+		.string "It's just scary to\n"
+		.string "think about...$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "シエルさんもドクター・バイルも\n"
 		.string "同じ科学者なのに▼"
 		.string "どうして 180度\n"
 		.string "考え方がちがうのでしょう…▼"
 		.string "ああ、おそろしい…$"
+	.endif
 
-Text180: @ 0x0837D886
+Text_CielChats_MrZeroThisBigRoom: @ 0x0837D886
+	@ EN: Mr. Zero! / This big room / doesn't get any / use at all. / I was just cleaning / up that locker... / and inside it / I found some / E-Crystals. / Then I noticed that / it's Hibou's locker. / I hear he's on a / diet so he won't be / needing these. / Here, Mr. Zero!
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Mr. Zero!▼"
+		.string "This big room\n"
+		.string "doesn't get any\n"
+		.string "use at all.▼"
+		.string "I was just cleaning\n"
+		.string "up that locker...▼"
+		.string "and inside it\n"
+		.string "I found some\n"
+		.string "E-Crystals.▼"
+		.string "Then I noticed that\n"
+		.string "it's Hibou's locker.▼"
+		.string "I hear he's on a\n"
+		.string "diet so he won't be\n"
+		.string "needing these.▼"
+		.string "Here, Mr. Zero!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "ゼロさん！▼"
 		.string "このへやって\n"
@@ -1780,16 +3789,52 @@ Text180: @ 0x0837D886
 		.string "ダイエットしているそうですから\n"
 		.string "イブーには ひつようないでしょう▼"
 		.string "全部、ゼロさんにあげますよ{F5 0x09}$"
+	.endif
 
-Text181: @ 0x0837D92F
+Text_CielChats_IWonderIfItWas: @ 0x0837D92F
+	@ EN: I wonder if it was / wrong to give you / those E-Crystals. / But Hibou has a bad / memory anyway, so / he won't notice.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "I wonder if it was\n"
+		.string "wrong to give you\n"
+		.string "those E-Crystals.▼"
+		.string "But Hibou has a bad\n"
+		.string "memory anyway, so\n"
+		.string "he won't notice.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "イブーにだまって\n"
 		.string "Eクリスタルを\n"
 		.string "あげちゃって、まずかったかな▼"
 		.string "でも、カレは ものおぼえが悪いから\n"
 		.string "気づいてないかもしれないな$"
+	.endif
 
-Text182: @ 0x0837D973
+Text_CielChats_ZeroHowAreYouI: @ 0x0837D973
+	@ EN: Zero, how are you? / I'm so glad I could / meet you again! / Do you remember me? / Yes / No... / Of course you do! / That's right! / You rescued me when / I was captured at / that secret base! / I'm so happy you / remembered me! / Here, let me give / you some E-Crystals! / *SMOOCH!* / You're terrible! / Even though you've / kissed me before... / Shoot, you probably / forget every girl...
+	.if ENGLISH
+	.string "{WINDOW 0x5C}"
+		.string "Zero, how are you?▼"
+		.string "I'm so glad I could\n"
+		.string "meet you again!▼"
+		.string "{F6 0x01}Do you remember me?\n"
+		.string "  Yes\n"
+		.string "  No...▼"
+		.string "Of course you do!▼"
+		.string "That's right!▼"
+		.string "You rescued me when\n"
+		.string "I was captured at\n"
+		.string "that secret base!▼"
+		.string "I'm so happy you\n"
+		.string "remembered me!▼"
+		.string "Here, let me give\n"
+		.string "you some E-Crystals!▼"
+		.string "*SMOOCH!*{F5 0x09}{RETURN}{ANSWER 0x01}You're terrible!\n"
+		.string "Even though you've\n"
+		.string "kissed me before...▼"
+		.string "Shoot, you probably\n"
+		.string "forget every girl...$"
+	.else
 	.string "{WINDOW 0x5C}"
 		.string "ゼロ、ひさしぶりね！▼"
 		.string "またこうして 会えるなんて\n"
@@ -1810,16 +3855,49 @@ Text182: @ 0x0837D973
 		.string "あなたにキスしたことだって\n"
 		.string "あるのに…▼"
 		.string "ゼロって わすれっぽいのね…$"
+	.endif
 
-Text183: @ 0x0837DA3F
+Text_CielChats_DonTTellCiel: @ 0x0837DA3F
+	@ EN: Don't tell Ciel / about that, OK? / Human girls get / angry over little / things like that.
+	.if ENGLISH
+	.string "{WINDOW 0x5C}"
+		.string "Don't tell Ciel\n"
+		.string "about that, OK?▼"
+		.string "Human girls get\n"
+		.string "angry over little\n"
+		.string "things like that.$"
+	.else
 	.string "{WINDOW 0x5C}"
 		.string "さっきのこと、\n"
 		.string "シエルにはナイショよ！▼"
 		.string "人間の女のコって\n"
 		.string "つまんないことで\n"
 		.string "おこったりするから$"
+	.endif
 
-Text184: @ 0x0837DA74
+Text_CielChats_MrZeroIWentTo: @ 0x0837DA74
+	@ EN: Mr. Zero! / I went to the harbor / to go stargazing... / and a shooting star / came down and hit me / on the head. Now I / have a big bruise! / On closer inspection / I realized it was in / fact E-Crystals. / And these are those / very E-Crystals. / Every time I look at / them, I remember / that incident. / Let me give these / E-Crystals to you, / Mr. Zero.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "Mr. Zero!▼"
+		.string "I went to the harbor\n"
+		.string "to go stargazing...\n"
+		.string "and a shooting star▼"
+		.string "came down and hit me\n"
+		.string "on the head. Now I\n"
+		.string "have a big bruise!▼"
+		.string "On closer inspection\n"
+		.string "I realized it was in\n"
+		.string "fact E-Crystals.▼"
+		.string "And these are those\n"
+		.string "very E-Crystals.▼"
+		.string "Every time I look at\n"
+		.string "them, I remember\n"
+		.string "that incident.▼"
+		.string "Let me give these\n"
+		.string "E-Crystals to you,\n"
+		.string "Mr. Zero.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "ゼロさん！▼"
 		.string "この前、ミナトに出て\n"
@@ -1838,8 +3916,25 @@ Text184: @ 0x0837DA74
 		.string "だから\n"
 		.string "このEクリスタルは\n"
 		.string "ゼロさんにあげます{F5 0x09}$"
+	.endif
 
-Text185: @ 0x0837DB3A
+Text_CielChats_YouKnowIWas: @ 0x0837DB3A
+	@ EN: You know, I was / thinking... / how is it possible / for E-Crystals to / fall out of the sky? / Could a seagull have / dropped them as a / practical joke? / Or maybe it was a / flying fish... / Life is full of / mysteries.
+	.if ENGLISH
+	.string "{WINDOW 0x6C}"
+		.string "You know, I was\n"
+		.string "thinking...\n"
+		.string "how is it possible▼"
+		.string "for E-Crystals to\n"
+		.string "fall out of the sky?▼"
+		.string "Could a seagull have\n"
+		.string "dropped them as a\n"
+		.string "practical joke?▼"
+		.string "Or maybe it was a\n"
+		.string "flying fish...▼"
+		.string "Life is full of\n"
+		.string "mysteries.$"
+	.else
 	.string "{WINDOW 0x6C}"
 		.string "それにしても\n"
 		.string "そらから Eクリスタルが\n"
@@ -1852,8 +3947,30 @@ Text185: @ 0x0837DB3A
 		.string "いや、それとも\n"
 		.string "イタズラずきのトビウオかなぁ…▼"
 		.string "ちょっとしたミステリーですね$"
+	.endif
 
-Text186: @ 0x0837DBB5
+Text_CielChats_HeyMrZeroThanksFor: @ 0x0837DBB5
+	@ EN: Hey, Mr. Zero! / Thanks for saving me / that time. / If it weren't for / you, Mr. Zero, I'd / still be locked up. / That deer monster / would have frozen me / and sent me to the / bottom of the ocean. / I'm only here thanks / to you, Mr. Zero. / Please let me thank / you for that... / It's not much but / please accept these / E-Crystals.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Hey, Mr. Zero!▼"
+		.string "Thanks for saving me\n"
+		.string "that time.▼"
+		.string "If it weren't for\n"
+		.string "you, Mr. Zero, I'd\n"
+		.string "still be locked up.▼"
+		.string "That deer monster\n"
+		.string "would have frozen me\n"
+		.string "and sent me to the▼"
+		.string "bottom of the ocean.▼"
+		.string "I'm only here thanks\n"
+		.string "to you, Mr. Zero.▼"
+		.string "Please let me thank\n"
+		.string "you for that...▼"
+		.string "It's not much but\n"
+		.string "please accept these\n"
+		.string "E-Crystals.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさんじゃないですか！▼"
 		.string "あの時は\n"
@@ -1871,16 +3988,44 @@ Text186: @ 0x0837DBB5
 		.string "ほんの少しですが\n"
 		.string "わたしのEクリスタルを\n"
 		.string "うけとってください{F5 0x09}$"
+	.endif
 
-Text187: @ 0x0837DC71
+Text_CielChats_IDonTHaveAny: @ 0x0837DC71
+	@ EN: I don't have any / more E-Crystals. / to give, Mr. Zero. / I'll shut down if I / give you them all!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "I don't have any\n"
+		.string "more E-Crystals.\n"
+		.string "to give, Mr. Zero.▼"
+		.string "I'll shut down if I\n"
+		.string "give you them all!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "もうゼロさんにあげられる\n"
 		.string "Eクリスタルは\n"
 		.string "もってないですよ▼"
 		.string "全部あげちゃうと\n"
 		.string "わたしが動けなくなっちゃいますし$"
+	.endif
 
-Text188: @ 0x0837DCAE
+Text_CielChats_MrZeroMrZeroLooks: @ 0x0837DCAE
+	@ EN: Mr. Zero! Mr. Zero! / Looks like you're / on a patrol of the / Resistance Base. / So, Mr. Zero, is it / hard to raise / Cyber-elves? / I wish to help you / in any way I can, so / please, Mr. Zero... / Use these E-Crystals / for raising your / Cyber-elves.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero! Mr. Zero!▼"
+		.string "Looks like you're\n"
+		.string "on a patrol of the\n"
+		.string "Resistance Base.▼"
+		.string "So, Mr. Zero, is it\n"
+		.string "hard to raise\n"
+		.string "Cyber-elves?▼"
+		.string "I wish to help you\n"
+		.string "in any way I can, so\n"
+		.string "please, Mr. Zero...▼"
+		.string "Use these E-Crystals\n"
+		.string "for raising your\n"
+		.string "Cyber-elves.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！ ゼロさん！▼"
 		.string "レジスタンスベースの\n"
@@ -1894,8 +4039,19 @@ Text188: @ 0x0837DCAE
 		.string "このEクリスタルを\n"
 		.string "サイバーエルフを\n"
 		.string "そだてるのに使ってください{F5 0x09}$"
+	.endif
 
-Text189: @ 0x0837DD3A
+Text_CielChats_ICanTDoNearly: @ 0x0837DD3A
+	@ EN: I can't do nearly as / much as you, / Mr. Zero, but... / My desire to fight / for peace is as / strong as anybody's!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "I can't do nearly as\n"
+		.string "much as you,\n"
+		.string "Mr. Zero, but...▼"
+		.string "My desire to fight\n"
+		.string "for peace is as\n"
+		.string "strong as anybody's!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "わたしのできることなんて\n"
 		.string "ゼロさんに くらべれば\n"
@@ -1903,8 +4059,32 @@ Text189: @ 0x0837DD3A
 		.string "平和のために\n"
 		.string "戦いたいという気もちは\n"
 		.string "だれにも まけませんよ$"
+	.endif
 
-Text190: @ 0x0837DD89
+Text_CielChats_AhMrZeroFancyMeeting: @ 0x0837DD89
+	@ EN: Ah, Mr. Zero! / Fancy meeting you / here. / Oh? You don't / remember me? / I was working / security for the / subway long ago. / Now that I think / about it, that place / was the perfect / target for the / enemy. / I know that I have / you, Mr. Zero, to / thank for my safety. / It's not much, but / please accept these / E-Crystals.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Ah, Mr. Zero!▼"
+		.string "Fancy meeting you\n"
+		.string "here.▼"
+		.string "Oh? You don't\n"
+		.string "remember me?▼"
+		.string "I was working\n"
+		.string "security for the\n"
+		.string "subway long ago.▼"
+		.string "Now that I think\n"
+		.string "about it, that place\n"
+		.string "was the perfect▼"
+		.string "target for the\n"
+		.string "enemy.▼"
+		.string "I know that I have\n"
+		.string "you, Mr. Zero, to\n"
+		.string "thank for my safety.▼"
+		.string "It's not much, but\n"
+		.string "please accept these\n"
+		.string "E-Crystals.{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "あっ、ゼロさん！▼"
 		.string "こんなところで\n"
@@ -1923,8 +4103,19 @@ Text190: @ 0x0837DD89
 		.string "ほんの少しですが\n"
 		.string "わたしのEクリスタルを\n"
 		.string "さしあげますよ{F5 0x09}$"
+	.endif
 
-Text191: @ 0x0837DE40
+Text_CielChats_IMSorryIDon: @ 0x0837DE40
+	@ EN: I'm sorry, I don't / have any more E- / Crystals to give. / I wonder if there's / a way to get them / fast and easy.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "I'm sorry, I don't\n"
+		.string "have any more E-\n"
+		.string "Crystals to give.▼"
+		.string "I wonder if there's\n"
+		.string "a way to get them\n"
+		.string "fast and easy.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ざんねんですが、\n"
 		.string "Eクリスタルは\n"
@@ -1932,8 +4123,29 @@ Text191: @ 0x0837DE40
 		.string "てっとりばやく\n"
 		.string "かせぐ ほうほうは\n"
 		.string "ないものでしょうかねぇ$"
+	.endif
 
-Text192: @ 0x0837DE79
+Text_CielChats_AhMrZeroHibouShared: @ 0x0837DE79
+	@ EN: Ah, Mr. Zero! / Hibou shared some of / his E-Crystals with / me the other day. / I was surprised that / Hibou would do such / a thing. / I wonder... / He said he gained / 15 kilograms, so he / might be dieting... / What's that Reploid / think he's doing? / Sorry that it's / hand-me-down, but / take these please!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Ah, Mr. Zero!▼"
+		.string "Hibou shared some of\n"
+		.string "his E-Crystals with\n"
+		.string "me the other day.▼"
+		.string "I was surprised that\n"
+		.string "Hibou would do such\n"
+		.string "a thing.▼"
+		.string "I wonder...▼"
+		.string "He said he gained\n"
+		.string "15 kilograms, so he\n"
+		.string "might be dieting...▼"
+		.string "What's that Reploid\n"
+		.string "think he's doing?▼"
+		.string "Sorry that it's\n"
+		.string "hand-me-down, but\n"
+		.string "take these please!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "あっ、ゼロさん！▼"
 		.string "この前、イブーに会ったら\n"
@@ -1951,8 +4163,19 @@ Text192: @ 0x0837DE79
 		.string "もらいもので しつれいですが\n"
 		.string "ゼロさんにも少し\n"
 		.string "わけてさしあげますよ！{F5 0x09}$"
+	.endif
 
-Text193: @ 0x0837DF37
+Text_CielChats_OhMaybeHibouIsOn: @ 0x0837DF37
+	@ EN: Oh! / Maybe Hibou is on / a diet so he can be / an operator! / That chair would be / too small for him...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh!▼"
+		.string "Maybe Hibou is on\n"
+		.string "a diet so he can be\n"
+		.string "an operator!▼"
+		.string "That chair would be\n"
+		.string "too small for him...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "あっ！▼"
 		.string "もしかしたら、イブーは\n"
@@ -1960,8 +4183,31 @@ Text193: @ 0x0837DF37
 		.string "ダイエットしてるのかも！▼"
 		.string "あのイスは イブーには\n"
 		.string "ちょっとキュウクツですからね$"
+	.endif
 
-Text194: @ 0x0837DF7E
+Text_CielChats_MrZeroThereAreThings: @ 0x0837DF7E
+	@ EN: Mr. Zero! / There are things I / ponder about every / day. / Like, why do people / wage wars out of / greed? / I'm perfectly happy / with a few E- / Crystals. / What about you, / Mr. Zero? / It's the little / things in life / that really count! / Here, let me share / some of my blessings / with you, Mr. Zero!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero!▼"
+		.string "There are things I\n"
+		.string "ponder about every\n"
+		.string "day.▼"
+		.string "Like, why do people\n"
+		.string "wage wars out of\n"
+		.string "greed?▼"
+		.string "I'm perfectly happy\n"
+		.string "with a few E-\n"
+		.string "Crystals.▼"
+		.string "What about you,\n"
+		.string "Mr. Zero?▼"
+		.string "It's the little\n"
+		.string "things in life\n"
+		.string "that really count!▼"
+		.string "Here, let me share\n"
+		.string "some of my blessings\n"
+		.string "with you, Mr. Zero!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！▼"
 		.string "わたしには、\n"
@@ -1979,8 +4225,20 @@ Text194: @ 0x0837DF7E
 		.string "では、ゼロさんにも\n"
 		.string "小さなシアワセを\n"
 		.string "わけてさしあげますよ！{F5 0x09}$"
+	.endif
 
-Text195: @ 0x0837E039
+Text_CielChats_MrZeroIDonT: @ 0x0837E039
+	@ EN: Mr. Zero. / I don't have any / more E-Crystals! / Don't be greedy. / If you are, you'll / end up just like / Weil and Elpizo.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero.▼"
+		.string "I don't have any\n"
+		.string "more E-Crystals!▼"
+		.string "Don't be greedy.▼"
+		.string "If you are, you'll\n"
+		.string "end up just like\n"
+		.string "Weil and Elpizo.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん▼"
 		.string "もうEクリスタルは\n"
@@ -1989,8 +4247,29 @@ Text195: @ 0x0837E039
 		.string "ヨクボウのままに生きると\n"
 		.string "バイルやエルピスのように\n"
 		.string "なってしまいますよ$"
+	.endif
 
-Text196: @ 0x0837E088
+Text_CielChats_MrZeroIWasJust: @ 0x0837E088
+	@ EN: Mr. Zero! / I was just cleaning / under this bed. / You'd be surprised / what you can find / down there! / Most of it useless / junk, of course... / Sometimes I get / lucky and find some / E-Crystals. / It wouldn't be right / hoard them all to / myself... / Here, Mr. Zero, / I'll give you some!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero!▼"
+		.string "I was just cleaning\n"
+		.string "under this bed.▼"
+		.string "You'd be surprised\n"
+		.string "what you can find\n"
+		.string "down there!▼"
+		.string "Most of it useless\n"
+		.string "junk, of course...▼"
+		.string "Sometimes I get\n"
+		.string "lucky and find some\n"
+		.string "E-Crystals.▼"
+		.string "It wouldn't be right\n"
+		.string "hoard them all to\n"
+		.string "myself...▼"
+		.string "Here, Mr. Zero,\n"
+		.string "I'll give you some!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！▼"
 		.string "今、このベッドの下を\n"
@@ -2008,8 +4287,20 @@ Text196: @ 0x0837E088
 		.string "気がひけるので、▼"
 		.string "ゼロさんにも\n"
 		.string "さしあげますよ！{F5 0x09}$"
+	.endif
 
-Text197: @ 0x0837E147
+Text_CielChats_OnAnotherNoteLatelyI: @ 0x0837E147
+	@ EN: On another note... / Lately I've been / hearing the sound of / a cat or baby... / There are no Baby / Elves here, so what / could it be?
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "On another note...▼"
+		.string "Lately I've been\n"
+		.string "hearing the sound of\n"
+		.string "a cat or baby...▼"
+		.string "There are no Baby\n"
+		.string "Elves here, so what\n"
+		.string "could it be?$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "カンケイない話ですけど…▼"
 		.string "さいきん、どこからともなく\n"
@@ -2018,8 +4309,28 @@ Text197: @ 0x0837E147
 		.string "もう、ベビーエルフは\n"
 		.string "ここには いないはずだし、\n"
 		.string "いったい何なんでしょうね$"
+	.endif
 
-Text198: @ 0x0837E1A4
+Text_CielChats_OhMrZeroOurLife: @ 0x0837E1A4
+	@ EN: Oh, Mr. Zero! / Our life here in the / Resistance has / improved a lot, / All thanks to you, / Mr. Zero! / In the past I had to / watch friends die / before my own eyes. / I really am grateful / to you, Mr. Zero! / I know! / As a token of my / gratitude, take / these E-Crystals!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, Mr. Zero!▼"
+		.string "Our life here in the\n"
+		.string "Resistance has\n"
+		.string "improved a lot,▼"
+		.string "All thanks to you,\n"
+		.string "Mr. Zero!▼"
+		.string "In the past I had to\n"
+		.string "watch friends die\n"
+		.string "before my own eyes.▼"
+		.string "I really am grateful\n"
+		.string "to you, Mr. Zero!▼"
+		.string "I know!▼"
+		.string "As a token of my\n"
+		.string "gratitude, take\n"
+		.string "these E-Crystals!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさんじゃないですか！▼"
 		.string "ゼロさんのおかげで\n"
@@ -2034,8 +4345,26 @@ Text198: @ 0x0837E1A4
 		.string "カンシャの気もちとして\n"
 		.string "Eクリスタルを\n"
 		.string "ゼロさんにあげますよ！{F5 0x09}$"
+	.endif
 
-Text199: @ 0x0837E24C
+Text_CielChats_MrZero: @ 0x0837E24C
+	@ EN: Mr. Zero... / Will we ever achieve / peace again? / People said that / when the energy / crisis is solved, / we would finally / have peace, but... / I don't see what our / being branded / Mavericks has to do / with the energy / crisis...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero...\n"
+		.string "Will we ever achieve\n"
+		.string "peace again?▼"
+		.string "People said that\n"
+		.string "when the energy\n"
+		.string "crisis is solved,▼"
+		.string "we would finally\n"
+		.string "have peace, but...▼"
+		.string "I don't see what our\n"
+		.string "being branded\n"
+		.string "Mavericks has to do▼"
+		.string "with the energy\n"
+		.string "crisis...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん…\n"
 		.string "いつになったら\n"
@@ -2048,8 +4377,37 @@ Text199: @ 0x0837E24C
 		.string "エネルギー不足は\n"
 		.string "カンケイない話のような\n"
 		.string "気がするのですが…$"
+	.endif
 
-Text200: @ 0x0837E2D4
+Text_CielChats_MrZeroDoYouKnow: @ 0x0837E2D4
+	@ EN: Mr. Zero! / Do you know the / operators in the / commander's room? / The redhead is / Ms. Rouge, and the / blond is Ms. Joan. / But, I've never / heard them called by / their names... / Maybe it's because / they once worked / for Mr. Elpizo... / It's only been 2 / months since Mr. / Elpizo left... / Oh, my! I'm rambling / now. Didn't mean to / bother you. / I know you're busy, / Mr. Zero... / Here, please accept / these E-Crystals as / an apology!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero!▼"
+		.string "Do you know the\n"
+		.string "operators in the\n"
+		.string "commander's room?▼"
+		.string "The redhead is\n"
+		.string "Ms. Rouge, and the\n"
+		.string "blond is Ms. Joan.▼"
+		.string "But, I've never\n"
+		.string "heard them called by\n"
+		.string "their names...▼"
+		.string "Maybe it's because\n"
+		.string "they once worked\n"
+		.string "for Mr. Elpizo...▼"
+		.string "It's only been 2\n"
+		.string "months since Mr.\n"
+		.string "Elpizo left...▼"
+		.string "Oh, my! I'm rambling\n"
+		.string "now. Didn't mean to\n"
+		.string "bother you.▼"
+		.string "I know you're busy,\n"
+		.string "Mr. Zero...▼"
+		.string "Here, please accept\n"
+		.string "these E-Crystals as\n"
+		.string "an apology!{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！▼"
 		.string "シレイシツにいる\n"
@@ -2075,16 +4433,56 @@ Text200: @ 0x0837E2D4
 		.string "おわびと言っては なんですが\n"
 		.string "Eクリスタルを\n"
 		.string "さしあげますね！{F5 0x09}$"
+	.endif
 
-Text201: @ 0x0837E3E8
+Text_CielChats_DespiteHowCalm: @ 0x0837E3E8
+	@ EN: Despite how calm / Ms. Rouge and Ms. / Joan appear, if / you called them by / name, I bet they'd / be bowled over!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Despite how calm\n"
+		.string "Ms. Rouge and Ms.\n"
+		.string "Joan appear, if▼"
+		.string "you called them by\n"
+		.string "name, I bet they'd\n"
+		.string "be bowled over!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ルージュさんと\n"
 		.string "ジョーヌさんのこと、▼"
 		.string "いきなり名前で呼んだら\n"
 		.string "あのレイセイな ふたりでも\n"
 		.string "おどろかれることでしょうね$"
+	.endif
 
-Text202: @ 0x0837E428
+Text_CielChats_MrZeroThisResistanceBase: @ 0x0837E428
+	@ EN: Mr. Zero. / This Resistance Base / is dependent upon / E-Crystals, too. / Especially the / teleporter in the / commander's room. / It uses plenty of / power. / Compared to that, / our needs are really / quite humble. / Hm? What am I trying / to say, you ask? / Hah hah hah? / Just, that no one / would even notice / if I took a few / E-Crystals from / storage... / Don't tell, Mr. / Zero! Here, will / this be enough to / keep you quiet?
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero.▼"
+		.string "This Resistance Base\n"
+		.string "is dependent upon\n"
+		.string "E-Crystals, too.▼"
+		.string "Especially the\n"
+		.string "teleporter in the\n"
+		.string "commander's room.▼"
+		.string "It uses plenty of\n"
+		.string "power.▼"
+		.string "Compared to that,\n"
+		.string "our needs are really\n"
+		.string "quite humble.▼"
+		.string "Hm? What am I trying\n"
+		.string "to say, you ask?▼"
+		.string "Hah hah hah?▼"
+		.string "Just, that no one\n"
+		.string "would even notice\n"
+		.string "if I took a few▼"
+		.string "E-Crystals from\n"
+		.string "storage...▼"
+		.string "Don't tell, Mr.\n"
+		.string "Zero! Here, will\n"
+		.string "this be enough to▼"
+		.string "keep you quiet?{F5 0x09}$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん▼"
 		.string "ここのレジスタンスベースも\n"
@@ -2104,24 +4502,61 @@ Text202: @ 0x0837E428
 		.string "ナイショですよ、ゼロさん！\n"
 		.string "これは、口止めリョウです\n"
 		.string "もらってください{F5 0x09}$"
+	.endif
 
-Text203: @ 0x0837E505
+Text_CielChats_MrZeroYouCanT: @ 0x0837E505
+	@ EN: Mr. Zero! / You can't tell / anyone about this. / You don't talk much, / so my secret is safe / with you, right?
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Mr. Zero!▼"
+		.string "You can't tell\n"
+		.string "anyone about this.▼"
+		.string "You don't talk much,\n"
+		.string "so my secret is safe\n"
+		.string "with you, right?$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ゼロさん！▼"
 		.string "さっきの話、\n"
 		.string "だれにも言ってはいけませんよ▼"
 		.string "ゼロさんは無口だから\n"
 		.string "だいじょうぶだと思いますけど$"
+	.endif
 
-Text204: @ 0x0837E542
+Text_CielChats_HeyZero: @ 0x0837E542
+	@ EN: Hey, Zero! / Remember me? / Hah hah hah hah! / It's me, Andrew! / Surprised?
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Hey, Zero!\n"
+		.string "Remember me?▼"
+		.string "Hah hah hah hah!▼"
+		.string "It's me, Andrew!\n"
+		.string "Surprised?$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "おーい、ゼロ！\n"
 		.string "ワシがだれかわかるかな？▼"
 		.string "ハハハハハハ…▼"
 		.string "アンドリューじゃ！\n"
 		.string "おどろいたかい？$"
+	.endif
 
-Text205: @ 0x0837E574
+Text_CielChats_ByTheWay: @ 0x0837E574
+	@ EN: By the way, / whippersnapper... / Where's the young / lad with the long / blonde hair, / who was in the / commander's room / until just recently? / Well, it's nothing / really. There was / just this thing...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "By the way,\n"
+		.string "whippersnapper...▼"
+		.string "Where's the young\n"
+		.string "lad with the long\n"
+		.string "blonde hair,▼"
+		.string "who was in the\n"
+		.string "commander's room\n"
+		.string "until just recently?▼"
+		.string "Well, it's nothing\n"
+		.string "really. There was\n"
+		.string "just this thing...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ところで、わかいの▼"
 		.string "さいきんまで、シレイシツにいた\n"
@@ -2130,8 +4565,105 @@ Text205: @ 0x0837E574
 		.string "まぁ、べつにこれといった\n"
 		.string "用があるわけじゃないのだが\n"
 		.string "ちょっと気になったものでな…$"
+	.endif
 
-Text206: @ 0x0837E5D9
+Text_CielChats_HeyZeroWhenYouHave_2: @ 0x0837E5D9
+	@ EN: Hey, Zero... / When you have a / moment, won't you / listen to my story? / Can I tell you? / Yes / No / A long time ago... / I was a teacher at / a school... / In fact, I'd say I / was just about this / young. / Back then, there / were many humans... / It is no falsehood / to say we lived in / harmony together... / I have so many good / memories of those / days... / The one I remember / most vividly is when / we went on a picnic. / There was a girl who / had forgotten to / bring her lunch... / And when lunchtime / came, she sat alone / by herself. / All her friends were / too busy talking and / eating to notice. / She hard a hard time / fitting in. Didn't / speak up much... / She didn't know how / to tell her friends / she forgot lunch. / When I saw her, I / figured that as much / had happened. / So I gave her some / doughnuts I had made / that morning. / Oh? Bored already? / Yes / No / Ah, bored I see... / There's more I want / to tell you, but, / oh well... / I see... no time eh? / Can't be helped... / Sorry to bother you / when you're busy... / You know, before I / taught, I worked / at a bread factory. / And before that I / was a sailor. / Oops... / Went off track... / I was telling you / about my giving / the girl a doughnut. / She didn't thank me / and ran off with her / head bowed... / I thought she was / going off to be with / her friends... / But on the way home, / The girl got off the / bus and gave me / something. / It was a short / letter and a / piece of clover. / The letter said: / "Mr. Andrew, I'm / sorry I didn't find / you a 4-leaf clover" / Written in tiny / letters. / That was her way / of saying "Thank / you." / Whenever I pass by / the harbor where the / school was, I recall / the sweet voices of / children calling to / me, "Mr. Andrew"...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Hey, Zero...▼"
+		.string "When you have a\n"
+		.string "moment, won't you\n"
+		.string "listen to my story?▼"
+		.string "{F6 0x01}Can I tell you?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "A long time ago...\n"
+		.string "I was a teacher at\n"
+		.string "a school...▼"
+		.string "In fact, I'd say I\n"
+		.string "was just about this\n"
+		.string "young.▼"
+		.string "Back then, there\n"
+		.string "were many humans...▼"
+		.string "It is no falsehood\n"
+		.string "to say we lived in\n"
+		.string "harmony together...▼"
+		.string "I have so many good\n"
+		.string "memories of those\n"
+		.string "days...▼"
+		.string "The one I remember\n"
+		.string "most vividly is when\n"
+		.string "we went on a picnic.▼"
+		.string "There was a girl who\n"
+		.string "had forgotten to\n"
+		.string "bring her lunch...▼"
+		.string "And when lunchtime\n"
+		.string "came, she sat alone\n"
+		.string "by herself.▼"
+		.string "All her friends were\n"
+		.string "too busy talking and\n"
+		.string "eating to notice.▼"
+		.string "She hard a hard time\n"
+		.string "fitting in. Didn't\n"
+		.string "speak up much...▼"
+		.string "She didn't know how\n"
+		.string "to tell her friends\n"
+		.string "she forgot lunch.▼"
+		.string "When I saw her, I\n"
+		.string "figured that as much\n"
+		.string "had happened.▼"
+		.string "So I gave her some\n"
+		.string "doughnuts I had made\n"
+		.string "that morning.▼"
+		.string "{F6 0x02}Oh? Bored already?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Ah, bored I see...▼"
+		.string "There's more I want\n"
+		.string "to tell you, but,\n"
+		.string "oh well...{RETURN}{ANSWER 0x01}I see... no time eh?\n"
+		.string "Can't be helped...▼"
+		.string "Sorry to bother you\n"
+		.string "when you're busy...{RETURN}{ANSWER 0x02}You know, before I\n"
+		.string "taught, I worked\n"
+		.string "at a bread factory.▼"
+		.string "And before that I\n"
+		.string "was a sailor.▼"
+		.string "Oops...\n"
+		.string "Went off track...▼"
+		.string "I was telling you\n"
+		.string "about my giving\n"
+		.string "the girl a doughnut.▼"
+		.string "She didn't thank me\n"
+		.string "and ran off with her\n"
+		.string "head bowed...▼"
+		.string "I thought she was\n"
+		.string "going off to be with\n"
+		.string "her friends...▼"
+		.string "But on the way home,▼"
+		.string "The girl got off the\n"
+		.string "bus and gave me\n"
+		.string "something.▼"
+		.string "It was a short\n"
+		.string "letter and a\n"
+		.string "piece of clover.▼"
+		.string "The letter said:▼"
+		.string "{0xE9}Mr. Andrew, I'm\n"
+		.string "sorry I didn't find\n"
+		.string "you a 4-leaf clover{0xE9}▼"
+		.string "Written in tiny\n"
+		.string "letters.▼"
+		.string "That was her way\n"
+		.string "of saying {0xE9}Thank\n"
+		.string "you.{0xE9}▼"
+		.string "Whenever I pass by\n"
+		.string "the harbor where the\n"
+		.string "school was, I recall▼"
+		.string "the sweet voices of\n"
+		.string "children calling to\n"
+		.string "me, {0xE9}Mr. Andrew{0xE9}...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "なぁ、ゼロ…▼"
 		.string "時間があったら\n"
@@ -2219,8 +4751,108 @@ Text206: @ 0x0837E5D9
 		.string "今にも、こどもたちの\n"
 		.string "「アンドリューせんせい」と\n"
 		.string "呼ぶ声が聞こえてきそうじゃ…$"
+	.endif
 
-Text207: @ 0x0837EA11
+Text_CielChats_OhItSYouZero_6: @ 0x0837EA11
+	@ EN: Oh, it's you, Zero. / You think it looks / funny that I'm so / young, don't you? / Well, you'll get / used to it. / By the way, did I / ever tell you about / my younger days? / Yes / No / Ah, yes... / do you remember what / the story was about? / Yes / No / Really?! / I'm gonna quiz you / to see if you do! / Before teaching I... / Was a sailor / Was a bread maker / Wrong. / Before teaching I / worked at a bread / factory... / Nobody pays any / attention to my / stories anymore... / Is that so? Guess / I haven't then. / It'd probably bore / you anyway... / Of course you / don't... / It can't be helped, / my stories are all / boring anyway... / Wow, that's correct! / But maybe you just / got lucky. / Next question: / As a teacher, my / fondest memory / was of when I... / ...went to a: / Festival / Picnic / Nope. / Well...I suppose / my stories are all / useless anyway... / Well done! / How about this? / On the picnic, / a girl forgot her / lunch. I saw this... / ...and gave her: / A hamburger / A doughnut / ... / Incorrect. / I had my hopes up / for a second there / ...*sigh*... / Yes! That's correct! / And in return for / the doughnut, she... / ...gave me a: / 3-leaf clover / 4-leaf clover / Yes, that's right. / She looked hard for / a 4-leaf clover... / But couldn't find / one... / And now, the last / question for you! / The girl's name was: / I don't know / Jasmine / Ooh! Fantastic! / That was a trick / question! / Thanks for humoring / an old Reploid... / Here's a token of / my appreciation. / Take this disk I / have! / ... / Not 4, but 3-leaf... / It's obvious you / weren't really / paying attention! / I never told you / what her name was! / Ah well, I guess / it's only natural / that you'd be bored / by an old geezer's / ramblings...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Oh, it's you, Zero.▼"
+		.string "You think it looks\n"
+		.string "funny that I'm so\n"
+		.string "young, don't you?▼"
+		.string "Well, you'll get\n"
+		.string "used to it.▼"
+		.string "By the way, did I\n"
+		.string "ever tell you about▼"
+		.string "{F6 0x01}my younger days?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Ah, yes...\n"
+		.string "do you remember what▼"
+		.string "{F6 0x02}the story was about?\n"
+		.string "  Yes\n"
+		.string "  No▼"
+		.string "Really?!▼"
+		.string "I'm gonna quiz you\n"
+		.string "to see if you do!▼"
+		.string "{F6 0x03}Before teaching I...\n"
+		.string "  Was a sailor\n"
+		.string "  Was a bread maker▼"
+		.string "Wrong.▼"
+		.string "Before teaching I\n"
+		.string "worked at a bread\n"
+		.string "factory...▼"
+		.string "Nobody pays any\n"
+		.string "attention to my\n"
+		.string "stories anymore...{RETURN}{ANSWER 0x01}Is that so? Guess\n"
+		.string "I haven't then.▼"
+		.string "It'd probably bore\n"
+		.string "you anyway...{RETURN}{ANSWER 0x02}Of course you\n"
+		.string "don't...▼"
+		.string "It can't be helped,\n"
+		.string "my stories are all\n"
+		.string "boring anyway...{RETURN}{ANSWER 0x03}Wow, that's correct!\n"
+		.string "But maybe you just\n"
+		.string "got lucky.▼"
+		.string "Next question:▼"
+		.string "As a teacher, my\n"
+		.string "fondest memory\n"
+		.string "was of when I...▼"
+		.string "{F6 0x04}...went to a:\n"
+		.string "  Festival\n"
+		.string "  Picnic▼"
+		.string "Nope.▼"
+		.string "Well...I suppose\n"
+		.string "my stories are all\n"
+		.string "useless anyway...{RETURN}{ANSWER 0x04}Well done!\n"
+		.string "How about this?▼"
+		.string "On the picnic,\n"
+		.string "a girl forgot her\n"
+		.string "lunch. I saw this...▼"
+		.string "{F6 0x05}...and gave her:\n"
+		.string "  A hamburger\n"
+		.string "  A doughnut▼"
+		.string "...▼"
+		.string "Incorrect.▼"
+		.string "I had my hopes up\n"
+		.string "for a second there\n"
+		.string "...*sigh*...{RETURN}{ANSWER 0x05}Yes! That's correct!\n"
+		.string "And in return for\n"
+		.string "the doughnut, she...▼"
+		.string "{F6 0x06}...gave me a:\n"
+		.string "  3-leaf clover\n"
+		.string "  4-leaf clover▼"
+		.string "Yes, that's right.▼"
+		.string "She looked hard for\n"
+		.string "a 4-leaf clover...▼"
+		.string "But couldn't find\n"
+		.string "one...▼"
+		.string "And now, the last\n"
+		.string "question for you!▼"
+		.string "{F6 0x07}The girl's name was:\n"
+		.string "  I don't know\n"
+		.string "  Jasmine▼"
+		.string "Ooh! Fantastic!\n"
+		.string "That was a trick\n"
+		.string "question!▼"
+		.string "Thanks for humoring\n"
+		.string "an old Reploid...▼"
+		.string "Here's a token of\n"
+		.string "my appreciation.▼"
+		.string "Take this disk I\n"
+		.string "have!{F5 0x09}{RETURN}{ANSWER 0x06}...▼"
+		.string "Not 4, but 3-leaf...▼"
+		.string "It's obvious you\n"
+		.string "weren't really\n"
+		.string "paying attention!{RETURN}{ANSWER 0x07}I never told you\n"
+		.string "what her name was!▼"
+		.string "Ah well, I guess\n"
+		.string "it's only natural\n"
+		.string "that you'd be bored▼"
+		.string "by an old geezer's\n"
+		.string "ramblings...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "おぉ、ゼロか…▼"
 		.string "やっぱり、ワシのわかいすがたは\n"
@@ -2308,16 +4940,44 @@ Text207: @ 0x0837EA11
 		.string "まぁ、年よりのむかし話など\n"
 		.string "きょうみがなくて\n"
 		.string "とうぜんじゃろうな…$"
+	.endif
 
-Text208: @ 0x0837EE4A
+Text_CielChats_HeyWhippersnapperWellISuppose: @ 0x0837EE4A
+	@ EN: Hey, whippersnapper. / Well I suppose I'm / still pretty young, / too. / A big perk of being / a Reploid is having / replaceable parts.
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Hey, whippersnapper.▼"
+		.string "Well I suppose I'm\n"
+		.string "still pretty young,\n"
+		.string "too.▼"
+		.string "A big perk of being\n"
+		.string "a Reploid is having\n"
+		.string "replaceable parts.$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "そういや、わかいの…▼"
 		.string "とは言っても、\n"
 		.string "ワシも今はわかいのじゃが▼"
 		.string "自由に見た目をかえられるのが\n"
 		.string "レプリロイドのいいところじゃな$"
+	.endif
 
-Text209: @ 0x0837EE91
+Text_CielChats_SoWhippersnapperTheResistanceBase_2: @ 0x0837EE91
+	@ EN: So, whippersnapper, / The Resistance Base / has really been / active lately... / Are we going to be / relocating again? / Leave the heavy- / lifting to me! / I'll prove it's not / just my looks that / are rejuvenated!
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "So, whippersnapper,▼"
+		.string "The Resistance Base\n"
+		.string "has really been\n"
+		.string "active lately...▼"
+		.string "Are we going to be\n"
+		.string "relocating again?▼"
+		.string "Leave the heavy-\n"
+		.string "lifting to me!▼"
+		.string "I'll prove it's not\n"
+		.string "just my looks that\n"
+		.string "are rejuvenated!$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "なぁ、わかいの…▼"
 		.string "なんだか、さいきん\n"
@@ -2330,8 +4990,21 @@ Text209: @ 0x0837EE91
 		.string "わかがえったのは\n"
 		.string "見た目だけじゃないところを\n"
 		.string "見せてやるわい！$"
+	.endif
 
-Text210: @ 0x0837EF08
+Text_CielChats_HmmWhatThat_2: @ 0x0837EF08
+	@ EN: Hmm? What that? / We're not moving? / And here I thought / we were leaving like / we did last year... / I thought I'd get / a chance to flex / my young muscles...
+	.if ENGLISH
+	.string "{WINDOW 0x5A}"
+		.string "Hmm? What that?\n"
+		.string "We're not moving?▼"
+		.string "And here I thought\n"
+		.string "we were leaving like\n"
+		.string "we did last year...▼"
+		.string "I thought I'd get\n"
+		.string "a chance to flex\n"
+		.string "my young muscles...$"
+	.else
 	.string "{WINDOW 0x5A}"
 		.string "ん？ なに？\n"
 		.string "ひっこしするんじゃないのか？▼"
@@ -2341,15 +5014,34 @@ Text210: @ 0x0837EF08
 		.string "わかくなって\n"
 		.string "チカラしごとができると思ったのに\n"
 		.string "ザンネンじゃ…$"
+	.endif
 
-Text211: @ 0x0837EF68
+Text_CielChats_HeyWhippersnapperWhatWasOn: @ 0x0837EF68
+	@ EN: Hey, whippersnapper. / What was on that / disk I gave you?
+	.if ENGLISH
+	.string "{WINDOW 0x46}"
+		.string "Hey, whippersnapper.▼"
+		.string "What was on that\n"
+		.string "disk I gave you?$"
+	.else
 	.string "{WINDOW 0x46}"
 		.string "そういや、わかいの…▼"
 		.string "さっき わたした\n"
 		.string "ディスクの中には\n"
 		.string "何が入っておったんじゃ？$"
+	.endif
 
-Text212: @ 0x0837EF97
+Text_CielChats_ThisElfHasA: @ 0x0837EF97
+	@ EN: ...? / This elf has a / sadness to it, / like it's calling / to me from inside / Cyberspace...
+	.if ENGLISH
+	.string "{WINDOW 0x04}"
+		.string "...?▼"
+		.string "This elf has a\n"
+		.string "sadness to it,\n"
+		.string "like it's calling▼"
+		.string "to me from inside\n"
+		.string "Cyberspace...$"
+	.else
 	.string "{WINDOW 0x04}"
 		.string "……？▼"
 		.string "気のせいか\n"
@@ -2357,13 +5049,25 @@ Text212: @ 0x0837EF97
 		.string "呼びかけているような…▼"
 		.string "そんな ものがなしい\n"
 		.string "かがやきをしたエルフだ…$"
+	.endif
 
-Text213: @ 0x0837EFD4
+Text_CielChats_ItHasAWarmLight: @ 0x0837EFD4
+	@ EN: ...? / It has a warm light / but there's a / sadness to it... / Almost as if it / remembers this base.
+	.if ENGLISH
+	.string "{WINDOW 0x04}"
+		.string "...?▼"
+		.string "It has a warm light\n"
+		.string "but there's a\n"
+		.string "sadness to it...▼"
+		.string "Almost as if it\n"
+		.string "remembers this base.$"
+	.else
 	.string "{WINDOW 0x04}"
 		.string "……？▼"
 		.string "あたたかいヒカリだが\n"
 		.string "どこか さびしくもある…▼"
 		.string "このレジスタンスベースが\n"
 		.string "こいしいみたいだな$"
+	.endif
 
 .balign 4, 0

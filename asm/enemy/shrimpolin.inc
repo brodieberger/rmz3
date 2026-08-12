@@ -1024,6 +1024,7 @@ _0806A430:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #0x10]
 	ldr r0, [r5, #0x58]
@@ -1034,6 +1035,7 @@ _0806A430:
 	add r1, sp, #0x10
 	adds r3, r4, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r4, #1
 	adds r0, r0, r4

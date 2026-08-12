@@ -13,7 +13,7 @@
 	str r0, [sp, #0xc]
 	adds r0, r0, r1
 	ldr r7, [r0]
-	ldr r2, _08018AF4 @ =0x0202FDA1
+	ldr r2, _08018AF4 @ =gSpawnManager.area
 	ldrb r0, [r2]
 	cmp r0, #0xff
 	beq _08018870
@@ -255,7 +255,7 @@ _08018870:
 	mov r0, sp
 	bl CpuFastSet
 	movs r0, #0xfe
-	ldr r1, _08018AF4 @ =0x0202FDA1
+	ldr r1, _08018AF4 @ =gSpawnManager.area
 	strb r0, [r1]
 _08018A6E:
 	ldr r2, _08018B18 @ =gSpawnManager
@@ -269,7 +269,7 @@ _08018A6E:
 	beq _08018A82
 	b _08018BDE
 _08018A82:
-	ldr r2, _08018AF4 @ =0x0202FDA1
+	ldr r2, _08018AF4 @ =gSpawnManager.area
 	ldrb r0, [r2]
 	ldr r5, [sp, #0xc]
 	cmp r0, #0xfe
@@ -330,7 +330,11 @@ _08018AD4:
 	b _08018B2C
 	.align 2, 0
 _08018AF0: .4byte sStagePreloadEntities
-_08018AF4: .4byte 0x0202FDA1
+.if REGION_US
+_08018AF4: .4byte gSpawnManager+0x2D1
+.else
+_08018AF4: .4byte gSpawnManager+0x211
+.endif
 _08018AF8: .4byte gStaticMotionGraphics
 _08018AFC: .4byte wStaticGraphicTilenums
 _08018B00: .4byte gStaticMotionGraphics+12
@@ -340,9 +344,25 @@ _08018B0C: .4byte gSystemSavedata
 _08018B10: .4byte gPaletteManager+(464*2)
 _08018B14: .4byte 0x01000008
 _08018B18: .4byte gSpawnManager
+.if REGION_US
+_08018B1C: .4byte 0x000002CE
+.else
+.if REGION_US
+_08018B1C: .4byte 0x000002CE
+.else
 _08018B1C: .4byte 0x0000020E
+.endif
+.endif
+.if REGION_US
+_08018B20: .4byte 0x000002EA  @ gSpawnManager.cyberOBPs
+.else
 _08018B20: .4byte 0x0000022A
+.endif
+.if REGION_US
+_08018B24: .4byte 0x000002E7  @ gSpawnManager.mettaursEnabled
+.else
 _08018B24: .4byte 0x00000227
+.endif
 _08018B28:
 	ldrb r1, [r7, #5]
 	adds r0, r6, #0
@@ -359,7 +379,11 @@ _08018B2C:
 	movs r0, #2
 	b _08018B4C
 	.align 2, 0
+.if REGION_US
+_08018B44: .4byte 0x000002E9  @ gSpawnManager.mmbn4EnemiesEnabled
+.else
 _08018B44: .4byte 0x00000229
+.endif
 _08018B48:
 	ldrb r1, [r7, #6]
 	adds r0, r6, #0
@@ -452,4 +476,8 @@ _08018BDE:
 _08018BF0: .4byte gStaticMotionGraphics
 _08018BF4: .4byte gStaticMotionGraphics+12
 _08018BF8: .4byte gSpawnManager
+.if REGION_US
+_08018BFC: .4byte 0x000002D1
+.else
 _08018BFC: .4byte 0x00000211
+.endif

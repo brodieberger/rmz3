@@ -46,7 +46,7 @@ Claveker_Init: @ 0x0808E52C
 	.align 2, 0
 _0808E578: .4byte gSystemSavedata
 _0808E57C: .4byte gCurStory
-_0808E580: .4byte 0x08369388
+_0808E580: .4byte gClavekerRoutine+0x5c
 _0808E584:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -112,7 +112,7 @@ _0808E5F8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808E60C: .4byte 0x08369388
+_0808E60C: .4byte gClavekerRoutine+0x5c
 _0808E610: .4byte FUN_0808f234
 _0808E614: .4byte gEnemyFnTable
 
@@ -183,7 +183,7 @@ _0808E67E:
 	strb r1, [r0]
 	b _0808E6FC
 	.align 2, 0
-_0808E6A0: .4byte 0x08369340
+_0808E6A0: .4byte sUpdates1
 _0808E6A4:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -209,7 +209,7 @@ _0808E6B4:
 	strb r0, [r4, #0xe]
 	b _0808E6FC
 	.align 2, 0
-_0808E6D8: .4byte 0x08369388
+_0808E6D8: .4byte gClavekerRoutine+0x5c
 _0808E6DC:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -217,7 +217,7 @@ _0808E6DC:
 	bl SetDDP
 	b _0808E6FC
 	.align 2, 0
-_0808E6E8: .4byte 0x083693A0
+_0808E6E8: .4byte gClavekerRoutine+0x74
 _0808E6EC:
 	ldr r0, _0808E704 @ =0x08369358
 	ldrb r1, [r4, #0xd]
@@ -231,7 +231,7 @@ _0808E6FC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808E704: .4byte 0x08369358
+_0808E704: .4byte sUpdates2
 
 	thumb_func_start Claveker_Die
 Claveker_Die: @ 0x0808E708
@@ -403,6 +403,7 @@ _0808E854:
 	rsbs r0, r0, #0
 _0808E868:
 	str r0, [r7, #0x5c]
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xbb
 	ldrb r0, [r0]
@@ -441,6 +442,7 @@ _0808E8A8:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _0808E8B6:
 	adds r1, r7, #0
 	adds r1, #0x54
@@ -776,7 +778,7 @@ _0808EB5C:
 	strb r0, [r4, #0xe]
 	b _0808EBAA
 	.align 2, 0
-_0808EB84: .4byte 0x08369388
+_0808EB84: .4byte gClavekerRoutine+0x5c
 _0808EB88: .4byte gStageRun+232
 _0808EB8C: .4byte 0x00003FFF
 _0808EB90:
@@ -852,7 +854,7 @@ _0808EBE8:
 	b _0808EC6C
 	.align 2, 0
 _0808EC1C: .4byte 0x00007501
-_0808EC20: .4byte 0x08369388
+_0808EC20: .4byte gClavekerRoutine+0x5c
 _0808EC24: .4byte pZero2
 _0808EC28: .4byte 0xFFFFD000
 _0808EC2C: .4byte 0x00002FFF
@@ -1559,7 +1561,7 @@ _0808F18C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808F194: .4byte 0x083693A0
+_0808F194: .4byte gClavekerRoutine+0x74
 
 	thumb_func_start FUN_0808f198
 FUN_0808f198: @ 0x0808F198
@@ -1606,7 +1608,7 @@ _0808F1D4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808F1DC: .4byte 0x083693A0
+_0808F1DC: .4byte gClavekerRoutine+0x74
 
 	thumb_func_start FUN_0808f1e0
 FUN_0808f1e0: @ 0x0808F1E0
@@ -1640,7 +1642,7 @@ FUN_0808f1e0: @ 0x0808F1E0
 	movs r0, #3
 	b _0808F226
 	.align 2, 0
-_0808F21C: .4byte 0x083693B8
+_0808F21C: .4byte sElementCoord
 _0808F220:
 	cmp r1, #0x30
 	bne _0808F22A

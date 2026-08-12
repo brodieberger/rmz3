@@ -9,6 +9,1295 @@ void PrintSaveDataRow(s32 idx, u8 rank, u32 playTime, u8 lap, u8 mode, u8 y8);
 // 0x080f0658
 NAKED void OverworldLoop_ManageSaveData(struct GameState* g) {
   asm(".syntax unified\n\
+.if REGION_US\n\
+	push	{r4, r5, r6, r7, lr}\n\
+	mov	r7, sl\n\
+	mov	r6, r9\n\
+	mov	r5, r8\n\
+	push	{r5, r6, r7}\n\
+	sub	sp, #8\n\
+	adds	r6, r0, #0\n\
+	ldrb	r0, [r6, #3]\n\
+	subs	r0, #63\n\
+	cmp	r0, #55\n\
+	bls _US_080F01CE\n\
+	bl _US_080F0C2C\n\
+_US_080F01CE:\n\
+	lsls	r0, r0, #2\n\
+	ldr	r1, _US_080F01D8\n\
+	adds	r0, r0, r1\n\
+	ldr	r0, [r0, #0]\n\
+	mov	pc, r0\n\
+	.align 2, 0\n\
+_US_080F01D8: .4byte _US_080F01DC\n\
+_US_080F01DC:\n\
+	.4byte _US_080F02BC\n\
+	.4byte _US_080F02DC\n\
+	.4byte _US_080F02FC\n\
+	.4byte _US_080F0350\n\
+	.4byte _US_080F0368\n\
+	.4byte _US_080F0408\n\
+	.4byte _US_080F041A\n\
+	.4byte _US_080F07E8\n\
+	.4byte _US_080F07F8\n\
+	.4byte _US_080F08AC\n\
+	.4byte _US_080F0358\n\
+	.4byte _US_080F0368\n\
+	.4byte _US_080F0408\n\
+	.4byte _US_080F041A\n\
+	.4byte _US_080F08D8\n\
+	.4byte _US_080F08E8\n\
+	.4byte _US_080F096C\n\
+	.4byte _US_080F09C2\n\
+	.4byte _US_080F0A08\n\
+	.4byte _US_080F0360\n\
+	.4byte _US_080F0368\n\
+	.4byte _US_080F0408\n\
+	.4byte _US_080F041A\n\
+	.4byte _US_080F0B6C\n\
+	.4byte _US_080F0B7C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0358\n\
+	.4byte _US_080F0368\n\
+	.4byte _US_080F0408\n\
+	.4byte _US_080F041A\n\
+	.4byte _US_080F08D8\n\
+	.4byte _US_080F08E8\n\
+	.4byte _US_080F096C\n\
+	.4byte _US_080F09C2\n\
+	.4byte _US_080F0A08\n\
+	.4byte _US_080F0BF6\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0C2C\n\
+	.4byte _US_080F0350\n\
+	.4byte _US_080F0368\n\
+	.4byte _US_080F0408\n\
+	.4byte _US_080F041A\n\
+	.4byte _US_080F07E8\n\
+	.4byte _US_080F07F8\n\
+	.4byte _US_080F08AC\n\
+_US_080F02BC:\n\
+	ldr	r2, _US_080F02D0\n\
+	ldrh	r0, [r2, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F02D4\n\
+	ldrh	r1, [r2, #0]\n\
+	movs	r0, #2\n\
+	orrs	r0, r1\n\
+	strh	r0, [r2, #0]\n\
+	bl _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F02D0: .4byte gTextWindow+0x8\n\
+_US_080F02D4:\n\
+	movs	r1, #128\n\
+	lsls	r1, r1, #3\n\
+	bl _US_080F0B60\n\
+_US_080F02DC:\n\
+	ldr	r0, _US_080F0330\n\
+	ldrh	r0, [r0, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F02EC\n\
+	cmp	r0, #4\n\
+	beq _US_080F02EC\n\
+	bl _US_080F0C2C\n\
+_US_080F02EC:\n\
+	movs	r0, #2\n\
+	bl PrintOptionMessage1\n\
+	movs	r0, #0\n\
+	strh	r0, [r6, #10]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F02FC:\n\
+	ldr	r0, _US_080F0330\n\
+	ldrh	r0, [r0, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F030C\n\
+	cmp	r0, #4\n\
+	beq _US_080F030C\n\
+	bl _US_080F0C2C\n\
+_US_080F030C:\n\
+	adds	r0, r6, #0\n\
+	bl save_080f32f8\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r2, r0, #16\n\
+	cmp	r0, #0\n\
+	bne _US_080F031E\n\
+	bl _US_080F0C2C\n\
+_US_080F031E:\n\
+	lsls	r0, r2, #16\n\
+	asrs	r0, r0, #16\n\
+	cmp	r0, #1\n\
+	bne _US_080F0334\n\
+	movs	r0, #66\n\
+	strb	r0, [r6, #3]\n\
+	bl _US_080F0C2C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0330: .4byte gTextWindow+0x8\n\
+_US_080F0334:\n\
+	cmp	r0, #2\n\
+	bne _US_080F0340\n\
+	movs	r0, #73\n\
+	strb	r0, [r6, #3]\n\
+	bl _US_080F0C2C\n\
+_US_080F0340:\n\
+	cmp	r0, #3\n\
+	bne _US_080F0348\n\
+	bl _US_080F0BF0\n\
+_US_080F0348:\n\
+	movs	r0, #63\n\
+	strb	r0, [r6, #3]\n\
+	bl _US_080F0C2C\n\
+_US_080F0350:\n\
+	movs	r0, #3\n\
+	bl PrintOptionMessage1\n\
+	b _US_080F094C\n\
+_US_080F0358:\n\
+	movs	r0, #5\n\
+	bl PrintOptionMessage1\n\
+	b _US_080F094C\n\
+_US_080F0360:\n\
+	movs	r0, #7\n\
+	bl PrintOptionMessage1\n\
+	b _US_080F094C\n\
+_US_080F0368:\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0520\n\
+	mov	sl, r0\n\
+	ldr	r7, _US_080F0524\n\
+	ldr	r1, _US_080F0528\n\
+	adds	r1, r1, r7\n\
+	mov	r9, r1\n\
+_US_080F0376:\n\
+	lsls	r4, r2, #16\n\
+	asrs	r0, r4, #16\n\
+	add	r0, sl\n\
+	movs	r1, #0\n\
+	strb	r1, [r0, #0]\n\
+	lsls	r0, r2, #24\n\
+	lsrs	r5, r0, #24\n\
+	adds	r0, r5, #0\n\
+	movs	r1, #148\n\
+	lsls	r1, r1, #2\n\
+	bl ValidateSector\n\
+	mov	r8, r4\n\
+	cmp	r0, #0\n\
+	beq _US_080F03F4\n\
+	adds	r0, r5, #0\n\
+	ldr	r1, _US_080F052C\n\
+	movs	r2, #148\n\
+	lsls	r2, r2, #2\n\
+	bl sram_08003378\n\
+	ldr	r4, _US_080F0530\n\
+_US_080F03A2:\n\
+	bl UpdateSram\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #1\n\
+	beq _US_080F03A2\n\
+	movs	r2, #30\n\
+	ldrsh	r0, [r4, r2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F03A2\n\
+	ldr	r1, _US_080F0530\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #1\n\
+	beq _US_080F03F4\n\
+	movs	r3, #30\n\
+	ldrsh	r0, [r1, r3]\n\
+	cmp	r0, #0\n\
+	ble _US_080F03F4\n\
+	mov	r5, r8\n\
+	asrs	r3, r5, #16\n\
+	mov	r0, sl\n\
+	adds	r1, r3, r0\n\
+	movs	r0, #1\n\
+	strb	r0, [r1, #0]\n\
+	ldr	r1, _US_080F0534\n\
+	lsls	r2, r3, #2\n\
+	adds	r1, r2, r1\n\
+	ldr	r0, [r7, #12]\n\
+	str	r0, [r1, #0]\n\
+	ldr	r0, _US_080F0538\n\
+	adds	r2, r2, r0\n\
+	ldrb	r0, [r7, #1]\n\
+	str	r0, [r2, #0]\n\
+	ldr	r0, _US_080F053C\n\
+	adds	r0, r3, r0\n\
+	mov	r2, r9\n\
+	ldrh	r1, [r2, #0]\n\
+	strb	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0540\n\
+	adds	r3, r3, r0\n\
+	ldrh	r0, [r2, #2]\n\
+	strb	r0, [r3, #0]\n\
+_US_080F03F4:\n\
+	movs	r0, #128\n\
+	lsls	r0, r0, #9\n\
+	add	r0, r8\n\
+	lsrs	r2, r0, #16\n\
+	asrs	r0, r0, #16\n\
+	cmp	r0, #4\n\
+	ble _US_080F0376\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F0408:\n\
+	movs	r0, #0\n\
+	strh	r0, [r6, #4]\n\
+	strh	r0, [r6, #6]\n\
+	strh	r0, [r6, #8]\n\
+	movs	r0, #15\n\
+	strh	r0, [r6, #10]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F041A:\n\
+	ldr	r0, _US_080F0544\n\
+	ldrh	r0, [r0, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F042A\n\
+	cmp	r0, #4\n\
+	beq _US_080F042A\n\
+	bl _US_080F0C2C\n\
+_US_080F042A:\n\
+	movs	r3, #4\n\
+	ldrsh	r0, [r6, r3]\n\
+	cmp	r0, #3\n\
+	bgt _US_080F044A\n\
+	ldr	r0, _US_080F0548\n\
+	ldrh	r1, [r0, #6]\n\
+	movs	r0, #128\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F044A\n\
+	movs	r0, #1\n\
+	bl PlaySound\n\
+	ldrh	r0, [r6, #4]\n\
+	adds	r0, #1\n\
+	strh	r0, [r6, #4]\n\
+_US_080F044A:\n\
+	movs	r5, #4\n\
+	ldrsh	r0, [r6, r5]\n\
+	cmp	r0, #0\n\
+	ble _US_080F046A\n\
+	ldr	r0, _US_080F0548\n\
+	ldrh	r1, [r0, #6]\n\
+	movs	r0, #64\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F046A\n\
+	movs	r0, #1\n\
+	bl PlaySound\n\
+	ldrh	r0, [r6, #4]\n\
+	subs	r0, #1\n\
+	strh	r0, [r6, #4]\n\
+_US_080F046A:\n\
+	ldrh	r3, [r6, #4]\n\
+	movs	r0, #4\n\
+	ldrsh	r1, [r6, r0]\n\
+	movs	r2, #6\n\
+	ldrsh	r0, [r6, r2]\n\
+	adds	r2, r3, #0\n\
+	cmp	r1, r0\n\
+	bge _US_080F047C\n\
+	strh	r2, [r6, #6]\n\
+_US_080F047C:\n\
+	movs	r5, #4\n\
+	ldrsh	r1, [r6, r5]\n\
+	movs	r2, #6\n\
+	ldrsh	r0, [r6, r2]\n\
+	adds	r0, #1\n\
+	cmp	r1, r0\n\
+	ble _US_080F048E\n\
+	subs	r0, r3, #1\n\
+	strh	r0, [r6, #6]\n\
+_US_080F048E:\n\
+	movs	r2, #0\n\
+_US_080F0490:\n\
+	lsls	r0, r2, #16\n\
+	asrs	r5, r0, #16\n\
+	movs	r3, #6\n\
+	ldrsh	r1, [r6, r3]\n\
+	subs	r1, r5, r1\n\
+	lsls	r1, r1, #25\n\
+	lsrs	r4, r1, #24\n\
+	lsls	r7, r4, #24\n\
+	lsrs	r1, r7, #24\n\
+	mov	r8, r0\n\
+	cmp	r1, #2\n\
+	bhi _US_080F0582\n\
+	ldr	r0, _US_080F0520\n\
+	adds	r0, r5, r0\n\
+	ldrb	r0, [r0, #0]\n\
+	cmp	r0, #0\n\
+	bne _US_080F0554\n\
+	ldr	r1, _US_080F054C\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #31\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0550\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r1, _US_080F0544\n\
+	ldrb	r0, [r1, #6]\n\
+	cmp	r0, #0\n\
+	bne _US_080F04D2\n\
+	ldrb	r0, [r1, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F04D4\n\
+_US_080F04D2:\n\
+	movs	r2, #1\n\
+_US_080F04D4:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #9\n\
+	subs	r1, r1, r0\n\
+	ldr	r5, _US_080F0544\n\
+	lsls	r4, r4, #24\n\
+	asrs	r2, r4, #24\n\
+	adds	r2, #2\n\
+	ldrb	r0, [r5, #5]\n\
+	adds	r2, r2, r0\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldr	r0, _US_080F054C\n\
+	ldrh	r1, [r0, #2]\n\
+	ldr	r0, _US_080F0550\n\
+	adds	r3, r1, r0\n\
+	movs	r1, #0\n\
+	ldrb	r0, [r5, #6]\n\
+	cmp	r0, #0\n\
+	bne _US_080F0504\n\
+	ldrb	r0, [r5, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F0506\n\
+_US_080F0504:\n\
+	movs	r1, #1\n\
+_US_080F0506:\n\
+	lsls	r0, r1, #3\n\
+	subs	r0, r0, r1\n\
+	movs	r1, #11\n\
+	subs	r1, r1, r0\n\
+	ldr	r0, _US_080F0544\n\
+	asrs	r2, r4, #24\n\
+	adds	r2, #2\n\
+	ldrb	r0, [r0, #5]\n\
+	adds	r2, r2, r0\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	b _US_080F0582\n\
+	.align 2, 0\n\
+_US_080F0520: .4byte gSaveSlotMetadata\n\
+_US_080F0524: .4byte SaveState_020003a8+0x1b4\n\
+_US_080F0528: .4byte 0xFFFFFE4C\n\
+_US_080F052C: .4byte SaveState_020003a8\n\
+_US_080F0530: .4byte gSramState\n\
+_US_080F0534: .4byte gSaveSlotMetadata+0x8\n\
+_US_080F0538: .4byte gSaveSlotMetadata+0x20\n\
+_US_080F053C: .4byte gSaveSlotMetadata+0x34\n\
+_US_080F0540: .4byte gSaveSlotMetadata+0x3c\n\
+_US_080F0544: .4byte gTextWindow+0x8\n\
+_US_080F0548: .4byte gJoypad\n\
+_US_080F054C: .4byte StringOfsTable\n\
+_US_080F0550: .4byte gStringData\n\
+_US_080F0554:\n\
+	lsls	r0, r2, #24\n\
+	lsrs	r0, r0, #24\n\
+	ldr	r1, _US_080F065C\n\
+	lsls	r3, r5, #2\n\
+	adds	r1, r3, r1\n\
+	ldrb	r1, [r1, #0]\n\
+	ldr	r2, _US_080F0660\n\
+	adds	r3, r3, r2\n\
+	ldr	r2, [r3, #0]\n\
+	ldr	r3, _US_080F0664\n\
+	adds	r3, r5, r3\n\
+	ldrb	r3, [r3, #0]\n\
+	ldr	r4, _US_080F0668\n\
+	adds	r4, r5, r4\n\
+	ldrb	r4, [r4, #0]\n\
+	str	r4, [sp, #0]\n\
+	movs	r5, #128\n\
+	lsls	r5, r5, #18\n\
+	adds	r4, r7, r5\n\
+	lsrs	r4, r4, #24\n\
+	str	r4, [sp, #4]\n\
+	bl PrintSaveDataRow\n\
+_US_080F0582:\n\
+	movs	r0, #128\n\
+	lsls	r0, r0, #9\n\
+	add	r0, r8\n\
+	lsrs	r2, r0, #16\n\
+	asrs	r0, r0, #16\n\
+	cmp	r0, #4\n\
+	bgt _US_080F0592\n\
+	b _US_080F0490\n\
+_US_080F0592:\n\
+	ldr	r0, _US_080F066C\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0670\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0674\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F05AC\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F05AE\n\
+_US_080F05AC:\n\
+	movs	r2, #1\n\
+_US_080F05AE:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #8\n\
+	subs	r1, r1, r0\n\
+	movs	r0, #4\n\
+	ldrsh	r2, [r6, r0]\n\
+	movs	r5, #6\n\
+	ldrsh	r0, [r6, r5]\n\
+	subs	r2, r2, r0\n\
+	lsls	r2, r2, #1\n\
+	adds	r2, #2\n\
+	ldrb	r0, [r4, #5]\n\
+	adds	r2, r2, r0\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldrh	r0, [r6, #8]\n\
+	adds	r0, #1\n\
+	strh	r0, [r6, #8]\n\
+	movs	r1, #16\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F05DE\n\
+	b _US_080F06E0\n\
+_US_080F05DE:\n\
+	movs	r2, #0\n\
+	ldrb	r0, [r4, #6]\n\
+	cmp	r0, #0\n\
+	bne _US_080F05EC\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F05EE\n\
+_US_080F05EC:\n\
+	movs	r2, #1\n\
+_US_080F05EE:\n\
+	lsls	r1, r2, #3\n\
+	subs	r1, r1, r2\n\
+	movs	r0, #8\n\
+	subs	r0, r0, r1\n\
+	cmp	r0, #3\n\
+	ble _US_080F0680\n\
+	movs	r1, #6\n\
+	ldrsh	r0, [r6, r1]\n\
+	cmp	r0, #0\n\
+	beq _US_080F062A\n\
+	ldr	r3, _US_080F0678\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0674\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F0616\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F0618\n\
+_US_080F0616:\n\
+	movs	r2, #1\n\
+_US_080F0618:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #28\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r2, #2\n\
+	adds	r0, r3, #0\n\
+	bl PrintUnicodeString\n\
+_US_080F062A:\n\
+	movs	r2, #6\n\
+	ldrsh	r0, [r6, r2]\n\
+	cmp	r0, #3\n\
+	beq _US_080F06E0\n\
+	ldr	r3, _US_080F067C\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0674\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F0646\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F0648\n\
+_US_080F0646:\n\
+	movs	r2, #1\n\
+_US_080F0648:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #28\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r2, #5\n\
+	adds	r0, r3, #0\n\
+	bl PrintUnicodeString\n\
+	b _US_080F06E0\n\
+	.align 2, 0\n\
+_US_080F065C: .4byte gSaveSlotMetadata+0x20\n\
+_US_080F0660: .4byte gSaveSlotMetadata+0x8\n\
+_US_080F0664: .4byte gSaveSlotMetadata+0x34\n\
+_US_080F0668: .4byte gSaveSlotMetadata+0x3c\n\
+_US_080F066C: .4byte StringOfsTable\n\
+_US_080F0670: .4byte gStringData\n\
+_US_080F0674: .4byte gTextWindow+0x8\n\
+_US_080F0678: .4byte Unicode_CursorUp\n\
+_US_080F067C: .4byte Unicode_CursorDown\n\
+_US_080F0680:\n\
+	movs	r3, #6\n\
+	ldrsh	r0, [r6, r3]\n\
+	cmp	r0, #0\n\
+	beq _US_080F06B0\n\
+	ldr	r3, _US_080F06F0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F06F4\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F069C\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F069E\n\
+_US_080F069C:\n\
+	movs	r2, #1\n\
+_US_080F069E:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #7\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r2, #2\n\
+	adds	r0, r3, #0\n\
+	bl PrintUnicodeString\n\
+_US_080F06B0:\n\
+	movs	r5, #6\n\
+	ldrsh	r0, [r6, r5]\n\
+	cmp	r0, #3\n\
+	beq _US_080F06E0\n\
+	ldr	r3, _US_080F06F8\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F06F4\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F06CC\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F06CE\n\
+_US_080F06CC:\n\
+	movs	r2, #1\n\
+_US_080F06CE:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #7\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r2, #5\n\
+	adds	r0, r3, #0\n\
+	bl PrintUnicodeString\n\
+_US_080F06E0:\n\
+	ldrh	r1, [r6, #10]\n\
+	movs	r2, #10\n\
+	ldrsh	r0, [r6, r2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F06FC\n\
+	subs	r0, r1, #1\n\
+	strh	r0, [r6, #10]\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F06F0: .4byte Unicode_CursorUp\n\
+_US_080F06F4: .4byte gTextWindow+0x8\n\
+_US_080F06F8: .4byte Unicode_CursorDown\n\
+_US_080F06FC:\n\
+	ldr	r0, _US_080F0728\n\
+	ldrh	r1, [r0, #4]\n\
+	movs	r4, #2\n\
+	adds	r0, r4, #0\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F073C\n\
+	movs	r0, #3\n\
+	bl PlaySound\n\
+	ldrb	r0, [r6, #3]\n\
+	cmp	r0, #99\n\
+	bne _US_080F0730\n\
+	ldr	r0, _US_080F072C\n\
+	movs	r3, #170\n\
+	lsls	r3, r3, #1\n\
+	adds	r0, r0, r3\n\
+	str	r4, [r0, #0]\n\
+	movs	r0, #105\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0728: .4byte gJoypad\n\
+_US_080F072C: .4byte gStageRun\n\
+_US_080F0730:\n\
+	cmp	r0, #115\n\
+	beq _US_080F0736\n\
+	b _US_080F0BDC\n\
+_US_080F0736:\n\
+	movs	r0, #124\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+_US_080F073C:\n\
+	movs	r0, #1\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	bne _US_080F0746\n\
+	b _US_080F0C2C\n\
+_US_080F0746:\n\
+	ldrb	r0, [r6, #3]\n\
+	cmp	r0, #69\n\
+	beq _US_080F0750\n\
+	cmp	r0, #115\n\
+	bne _US_080F07C6\n\
+_US_080F0750:\n\
+	movs	r0, #2\n\
+	bl PlaySound\n\
+	ldr	r0, _US_080F07A8\n\
+	movs	r5, #4\n\
+	ldrsh	r1, [r6, r5]\n\
+	adds	r1, r1, r0\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #0\n\
+	beq _US_080F0766\n\
+	b _US_080F094C\n\
+_US_080F0766:\n\
+	ldr	r1, _US_080F07AC\n\
+	adds	r0, r6, r1\n\
+	bl StoreStoryData\n\
+	ldr	r2, _US_080F07B0\n\
+	adds	r0, r6, r2\n\
+	ldr	r0, [r0, #0]\n\
+	ldr	r3, _US_080F07B4\n\
+	adds	r1, r6, r3\n\
+	bl StoreZeroStatus\n\
+	ldrb	r0, [r6, #4]\n\
+	ldr	r1, _US_080F07B8\n\
+	movs	r2, #148\n\
+	lsls	r2, r2, #2\n\
+	bl sram_08003330\n\
+	ldr	r4, _US_080F07BC\n\
+_US_080F078A:\n\
+	bl UpdateSram\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #2\n\
+	beq _US_080F078A\n\
+	movs	r5, #28\n\
+	ldrsh	r0, [r4, r5]\n\
+	cmp	r0, #0\n\
+	beq _US_080F078A\n\
+	ldrb	r0, [r6, #3]\n\
+	cmp	r0, #69\n\
+	bne _US_080F07C0\n\
+	movs	r0, #72\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F07A8: .4byte gSaveSlotMetadata\n\
+_US_080F07AC: .4byte 0x00006270\n\
+_US_080F07B0: .4byte 0x000064AC\n\
+_US_080F07B4: .4byte 0x00006460\n\
+_US_080F07B8: .4byte gGameState+0x625c\n\
+_US_080F07BC: .4byte gSramState\n\
+_US_080F07C0:\n\
+	movs	r0, #118\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+_US_080F07C6:\n\
+	ldr	r0, _US_080F07DC\n\
+	movs	r2, #4\n\
+	ldrsh	r1, [r6, r2]\n\
+	adds	r1, r1, r0\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #0\n\
+	bne _US_080F07E0\n\
+	movs	r0, #4\n\
+	bl PlaySound\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F07DC: .4byte gSaveSlotMetadata\n\
+_US_080F07E0:\n\
+	movs	r0, #2\n\
+	bl PlaySound\n\
+	b _US_080F094C\n\
+_US_080F07E8:\n\
+	movs	r0, #4\n\
+	bl PrintOptionMessage1\n\
+	movs	r0, #1\n\
+	strh	r0, [r6, #10]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F07F8:\n\
+	ldr	r1, _US_080F088C\n\
+	movs	r3, #4\n\
+	ldrsh	r0, [r6, r3]\n\
+	adds	r0, #31\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0890\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0894\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F081C\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F081E\n\
+_US_080F081C:\n\
+	movs	r2, #1\n\
+_US_080F081E:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #8\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldrh	r0, [r4, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F083A\n\
+	cmp	r0, #4\n\
+	beq _US_080F083A\n\
+	b _US_080F0C2C\n\
+_US_080F083A:\n\
+	adds	r0, r6, #0\n\
+	bl handleWrapTwoChoice\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r2, r0, #16\n\
+	cmp	r0, #0\n\
+	bne _US_080F084A\n\
+	b _US_080F0C2C\n\
+_US_080F084A:\n\
+	lsls	r0, r2, #16\n\
+	cmp	r0, #0\n\
+	bgt _US_080F0852\n\
+	b _US_080F0964\n\
+_US_080F0852:\n\
+	ldr	r5, _US_080F0898\n\
+	adds	r0, r6, r5\n\
+	bl StoreStoryData\n\
+	ldr	r1, _US_080F089C\n\
+	adds	r0, r6, r1\n\
+	ldr	r0, [r0, #0]\n\
+	ldr	r2, _US_080F08A0\n\
+	adds	r1, r6, r2\n\
+	bl StoreZeroStatus\n\
+	ldrb	r0, [r6, #4]\n\
+	ldr	r1, _US_080F08A4\n\
+	movs	r2, #148\n\
+	lsls	r2, r2, #2\n\
+	bl sram_08003330\n\
+	ldr	r4, _US_080F08A8\n\
+_US_080F0876:\n\
+	bl UpdateSram\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #2\n\
+	beq _US_080F0876\n\
+	movs	r3, #28\n\
+	ldrsh	r0, [r4, r3]\n\
+	cmp	r0, #0\n\
+	beq _US_080F0876\n\
+	b _US_080F094C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F088C: .4byte StringOfsTable\n\
+_US_080F0890: .4byte gStringData\n\
+_US_080F0894: .4byte gTextWindow+0x8\n\
+_US_080F0898: .4byte 0x00006270\n\
+_US_080F089C: .4byte 0x000064AC\n\
+_US_080F08A0: .4byte 0x00006460\n\
+_US_080F08A4: .4byte gGameState+0x625c\n\
+_US_080F08A8: .4byte gSramState\n\
+_US_080F08AC:\n\
+	ldr	r1, _US_080F08D4\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #2\n\
+	bne _US_080F08B6\n\
+	b _US_080F0C2C\n\
+_US_080F08B6:\n\
+	movs	r5, #28\n\
+	ldrsh	r0, [r1, r5]\n\
+	cmp	r0, #0\n\
+	bne _US_080F08C0\n\
+	b _US_080F0C2C\n\
+_US_080F08C0:\n\
+	movs	r0, #9\n\
+	bl PrintOptionMessage2\n\
+	ldrb	r0, [r6, #3]\n\
+	cmp	r0, #72\n\
+	bne _US_080F08CE\n\
+	b _US_080F0BDC\n\
+_US_080F08CE:\n\
+	movs	r0, #119\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F08D4: .4byte gSramState\n\
+_US_080F08D8:\n\
+	movs	r0, #6\n\
+	bl PrintOptionMessage1\n\
+	movs	r0, #0\n\
+	strh	r0, [r6, #10]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F08E8:\n\
+	ldr	r1, _US_080F0954\n\
+	movs	r2, #4\n\
+	ldrsh	r0, [r6, r2]\n\
+	adds	r0, #31\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0958\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F095C\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F090C\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F090E\n\
+_US_080F090C:\n\
+	movs	r2, #1\n\
+_US_080F090E:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #8\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldrh	r0, [r4, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F092A\n\
+	cmp	r0, #4\n\
+	beq _US_080F092A\n\
+	b _US_080F0C2C\n\
+_US_080F092A:\n\
+	adds	r0, r6, #0\n\
+	bl handleWrapTwoChoice\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r2, r0, #16\n\
+	cmp	r0, #0\n\
+	bne _US_080F093A\n\
+	b _US_080F0C2C\n\
+_US_080F093A:\n\
+	lsls	r0, r2, #16\n\
+	cmp	r0, #0\n\
+	ble _US_080F0964\n\
+	ldrb	r0, [r6, #4]\n\
+	ldr	r1, _US_080F0960\n\
+	movs	r2, #148\n\
+	lsls	r2, r2, #2\n\
+	bl sram_08003378\n\
+_US_080F094C:\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F0954: .4byte StringOfsTable\n\
+_US_080F0958: .4byte gStringData\n\
+_US_080F095C: .4byte gTextWindow+0x8\n\
+_US_080F0960: .4byte gGameState+0x625c\n\
+_US_080F0964:\n\
+	ldrb	r0, [r6, #3]\n\
+	subs	r0, #5\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+_US_080F096C:\n\
+	ldr	r1, _US_080F0A8C\n\
+	movs	r3, #4\n\
+	ldrsh	r0, [r6, r3]\n\
+	adds	r0, #31\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0A90\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0A94\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F0990\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F0992\n\
+_US_080F0990:\n\
+	movs	r2, #1\n\
+_US_080F0992:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #8\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldr	r1, _US_080F0A98\n\
+	ldrb	r0, [r1, #0]\n\
+	cmp	r0, #1\n\
+	bne _US_080F09AC\n\
+	b _US_080F0C2C\n\
+_US_080F09AC:\n\
+	movs	r5, #30\n\
+	ldrsh	r0, [r1, r5]\n\
+	cmp	r0, #0\n\
+	bne _US_080F09B6\n\
+	b _US_080F0C2C\n\
+_US_080F09B6:\n\
+	movs	r0, #10\n\
+	bl PrintOptionMessage2\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F09C2:\n\
+	ldr	r0, _US_080F0A94\n\
+	ldrh	r0, [r0, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F09D0\n\
+	cmp	r0, #4\n\
+	beq _US_080F09D0\n\
+	b _US_080F0C2C\n\
+_US_080F09D0:\n\
+	ldr	r0, _US_080F0A9C\n\
+	adds	r4, r6, r0\n\
+	ldrb	r0, [r4, #0]\n\
+	ldr	r2, _US_080F0AA0\n\
+	adds	r1, r6, r2\n\
+	bl ResetMissionScore\n\
+	ldr	r3, _US_080F0AA4\n\
+	adds	r0, r6, r3\n\
+	ldr	r0, [r0, #0]\n\
+	ldr	r5, _US_080F0AA8\n\
+	adds	r1, r6, r5\n\
+	bl LoadZeroStatus\n\
+	ldrb	r0, [r4, #0]\n\
+	ldr	r2, _US_080F0AAC\n\
+	adds	r1, r6, r2\n\
+	bl LoadStoryData\n\
+	ldr	r0, _US_080F0AB0\n\
+	movs	r3, #170\n\
+	lsls	r3, r3, #1\n\
+	adds	r0, r0, r3\n\
+	movs	r1, #2\n\
+	str	r1, [r0, #0]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F0A08:\n\
+	ldr	r7, _US_080F0AB0\n\
+	movs	r0, #180\n\
+	lsls	r0, r0, #1\n\
+	adds	r5, r7, r0\n\
+	ldr	r0, [r5, #0]\n\
+	movs	r4, #1\n\
+	negs	r4, r4\n\
+	cmp	r0, r4\n\
+	beq _US_080F0A24\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r0, r0, #16\n\
+	bl FadeOutBGM\n\
+	str	r4, [r5, #0]\n\
+_US_080F0A24:\n\
+	ldr	r2, _US_080F0A94\n\
+	ldrh	r1, [r2, #0]\n\
+	movs	r0, #2\n\
+	orrs	r0, r1\n\
+	strh	r0, [r2, #0]\n\
+	movs	r1, #170\n\
+	lsls	r1, r1, #1\n\
+	adds	r0, r7, r1\n\
+	ldr	r0, [r0, #0]\n\
+	cmp	r0, #0\n\
+	beq _US_080F0A3C\n\
+	b _US_080F0C2C\n\
+_US_080F0A3C:\n\
+	ldr	r0, _US_080F0AB4\n\
+	ldr	r0, [r0, #0]\n\
+	ldrb	r0, [r0, #16]\n\
+	cmp	r0, #0\n\
+	bne _US_080F0AC0\n\
+	ldr	r4, _US_080F0AB8\n\
+	ldrb	r2, [r4, #4]\n\
+	movs	r1, #247\n\
+	adds	r0, r1, #0\n\
+	ands	r0, r2\n\
+	strb	r0, [r4, #4]\n\
+	ldr	r2, _US_080F0AAC\n\
+	adds	r3, r6, r2\n\
+	ldrb	r2, [r3, #0]\n\
+	ands	r1, r2\n\
+	strb	r1, [r3, #0]\n\
+	movs	r2, #1\n\
+	ands	r0, r2\n\
+	cmp	r0, #0\n\
+	beq _US_080F0A6A\n\
+	ldr	r3, _US_080F0ABC\n\
+	adds	r0, r6, r3\n\
+	strh	r2, [r0, #2]\n\
+_US_080F0A6A:\n\
+	ldrb	r1, [r4, #4]\n\
+	movs	r3, #2\n\
+	adds	r0, r3, #0\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F0A7C\n\
+	ldr	r5, _US_080F0ABC\n\
+	adds	r0, r6, r5\n\
+	strh	r3, [r0, #2]\n\
+_US_080F0A7C:\n\
+	ldr	r1, _US_080F0A9C\n\
+	adds	r0, r6, r1\n\
+	strh	r2, [r0, #0]\n\
+	movs	r0, #1\n\
+	bl InitStageRun\n\
+	b _US_080F0B5C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0A8C: .4byte StringOfsTable\n\
+_US_080F0A90: .4byte gStringData\n\
+_US_080F0A94: .4byte gTextWindow+0x8\n\
+_US_080F0A98: .4byte gSramState\n\
+_US_080F0A9C: .4byte 0x00006260\n\
+_US_080F0AA0: .4byte 0x00006410\n\
+_US_080F0AA4: .4byte 0x000064AC\n\
+_US_080F0AA8: .4byte 0x00006460\n\
+_US_080F0AAC: .4byte 0x00006270\n\
+_US_080F0AB0: .4byte gStageRun\n\
+_US_080F0AB4: .4byte gScore\n\
+_US_080F0AB8: .4byte gCurStory\n\
+_US_080F0ABC: .4byte 0x0000625C\n\
+_US_080F0AC0:\n\
+	ldr	r3, _US_080F0AEC\n\
+	ldrb	r2, [r3, #4]\n\
+	movs	r0, #8\n\
+	ands	r0, r2\n\
+	cmp	r0, #0\n\
+	beq _US_080F0AF8\n\
+	movs	r1, #247\n\
+	adds	r0, r1, #0\n\
+	ands	r0, r2\n\
+	strb	r0, [r3, #4]\n\
+	ldr	r3, _US_080F0AF0\n\
+	adds	r2, r6, r3\n\
+	ldrb	r0, [r2, #0]\n\
+	ands	r1, r0\n\
+	strb	r1, [r2, #0]\n\
+	ldr	r5, _US_080F0AF4\n\
+	adds	r0, r6, r5\n\
+	ldrb	r0, [r0, #0]\n\
+	bl InitStageRun\n\
+	b _US_080F0B5C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0AEC: .4byte gCurStory\n\
+_US_080F0AF0: .4byte 0x00006270\n\
+_US_080F0AF4: .4byte 0x00006260\n\
+_US_080F0AF8:\n\
+	ldrb	r1, [r3, #5]\n\
+	movs	r0, #24\n\
+	ands	r0, r1\n\
+	cmp	r0, #8\n\
+	bne _US_080F0B14\n\
+	ldr	r1, _US_080F0B10\n\
+	adds	r0, r6, r1\n\
+	movs	r1, #17\n\
+	strh	r1, [r0, #0]\n\
+	movs	r0, #17\n\
+	movs	r1, #10\n\
+	b _US_080F0B58\n\
+	.align 2, 0\n\
+_US_080F0B10: .4byte 0x00006260\n\
+_US_080F0B14:\n\
+	movs	r0, #48\n\
+	ands	r0, r1\n\
+	cmp	r0, #16\n\
+	bne _US_080F0B30\n\
+	ldr	r2, _US_080F0B2C\n\
+	adds	r0, r6, r2\n\
+	movs	r1, #17\n\
+	strh	r1, [r0, #0]\n\
+	movs	r0, #17\n\
+	movs	r1, #14\n\
+	b _US_080F0B58\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0B2C: .4byte 0x00006260\n\
+_US_080F0B30:\n\
+	ldrb	r1, [r3, #6]\n\
+	movs	r0, #20\n\
+	ands	r0, r1\n\
+	cmp	r0, #4\n\
+	bne _US_080F0B4C\n\
+	ldr	r3, _US_080F0B48\n\
+	adds	r0, r6, r3\n\
+	movs	r1, #17\n\
+	strh	r1, [r0, #0]\n\
+	movs	r0, #17\n\
+	b _US_080F0B58\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0B48: .4byte 0x00006260\n\
+_US_080F0B4C:\n\
+	ldr	r5, _US_080F0B68\n\
+	adds	r0, r6, r5\n\
+	movs	r1, #17\n\
+	strh	r1, [r0, #0]\n\
+	movs	r0, #17\n\
+	movs	r1, #2\n\
+_US_080F0B58:\n\
+	bl LoadStageRun\n\
+_US_080F0B5C:\n\
+	movs	r1, #192\n\
+	lsls	r1, r1, #2\n\
+_US_080F0B60:\n\
+	adds	r0, r6, #0\n\
+	bl SetGameMode\n\
+	b _US_080F0C2C\n\
+	.align 2, 0\n\
+_US_080F0B68: .4byte 0x00006260\n\
+_US_080F0B6C:\n\
+	movs	r0, #8\n\
+	bl PrintOptionMessage1\n\
+	movs	r0, #1\n\
+	strh	r0, [r6, #10]\n\
+	ldrb	r0, [r6, #3]\n\
+	adds	r0, #1\n\
+	strb	r0, [r6, #3]\n\
+_US_080F0B7C:\n\
+	ldr	r1, _US_080F0BE4\n\
+	movs	r2, #4\n\
+	ldrsh	r0, [r6, r2]\n\
+	adds	r0, #31\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r1, [r0, #0]\n\
+	ldr	r0, _US_080F0BE8\n\
+	adds	r3, r1, r0\n\
+	movs	r2, #0\n\
+	ldr	r0, _US_080F0BEC\n\
+	ldrb	r1, [r0, #6]\n\
+	adds	r4, r0, #0\n\
+	cmp	r1, #0\n\
+	bne _US_080F0BA0\n\
+	ldrb	r0, [r4, #4]\n\
+	cmp	r0, #1\n\
+	bne _US_080F0BA2\n\
+_US_080F0BA0:\n\
+	movs	r2, #1\n\
+_US_080F0BA2:\n\
+	lsls	r0, r2, #3\n\
+	subs	r0, r0, r2\n\
+	movs	r1, #8\n\
+	subs	r1, r1, r0\n\
+	ldrb	r2, [r4, #5]\n\
+	adds	r0, r3, #0\n\
+	bl PrintString\n\
+	ldrh	r0, [r4, #2]\n\
+	cmp	r0, #0\n\
+	beq _US_080F0BBC\n\
+	cmp	r0, #4\n\
+	bne _US_080F0C2C\n\
+_US_080F0BBC:\n\
+	adds	r0, r6, #0\n\
+	bl handleWrapTwoChoice\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r2, r0, #16\n\
+	cmp	r0, #0\n\
+	beq _US_080F0C2C\n\
+	lsls	r0, r2, #16\n\
+	cmp	r0, #0\n\
+	ble _US_080F0BF0\n\
+	ldrb	r0, [r6, #4]\n\
+	bl DeleteSector\n\
+	movs	r0, #11\n\
+	bl PrintOptionMessage2\n\
+_US_080F0BDC:\n\
+	movs	r0, #64\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F0BE4: .4byte StringOfsTable\n\
+_US_080F0BE8: .4byte gStringData\n\
+_US_080F0BEC: .4byte gTextWindow+0x8\n\
+_US_080F0BF0:\n\
+	movs	r0, #82\n\
+	strb	r0, [r6, #3]\n\
+	b _US_080F0C2C\n\
+_US_080F0BF6:\n\
+	ldr	r6, _US_080F0C3C\n\
+	movs	r3, #180\n\
+	lsls	r3, r3, #1\n\
+	adds	r5, r6, r3\n\
+	ldr	r0, [r5, #0]\n\
+	movs	r4, #1\n\
+	negs	r4, r4\n\
+	cmp	r0, r4\n\
+	beq _US_080F0C12\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r0, r0, #16\n\
+	bl FadeOutBGM\n\
+	str	r4, [r5, #0]\n\
+_US_080F0C12:\n\
+	ldr	r2, _US_080F0C40\n\
+	ldrh	r1, [r2, #0]\n\
+	movs	r0, #2\n\
+	orrs	r0, r1\n\
+	strh	r0, [r2, #0]\n\
+	movs	r5, #170\n\
+	lsls	r5, r5, #1\n\
+	adds	r0, r6, r5\n\
+	ldr	r0, [r0, #0]\n\
+	cmp	r0, #0\n\
+	bne _US_080F0C2C\n\
+	bl ExitProcess\n\
+_US_080F0C2C:\n\
+	add	sp, #8\n\
+	pop	{r3, r4, r5}\n\
+	mov	r8, r3\n\
+	mov	r9, r4\n\
+	mov	sl, r5\n\
+	pop	{r4, r5, r6, r7}\n\
+	pop	{r0}\n\
+	bx	r0\n\
+	.align 2, 0\n\
+_US_080F0C3C: .4byte gStageRun\n\
+_US_080F0C40: .4byte gTextWindow+0x8\n\
+.else\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
 	mov r6, sb\n\
@@ -1266,5 +2555,6 @@ _RETURN:\n\
 	.align 2, 0\n\
 _080F10B0: .4byte gStageRun\n\
 _080F10B4: .4byte gTextWindow+8\n\
+.endif\n\
  .syntax divided\n");
 }

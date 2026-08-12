@@ -5,12 +5,22 @@
 
 .global gFont
 gFont:  @ 0x080ff17c
+.if ENGLISH
+  @ US (BZ3E) font sheet: lowercase a-z at 0x25-0x3E, '#' at 0xCC
+  .incbin "graphics/font/font-en.4bpp"
+.else
   .incbin "graphics/font/font.4bpp"
+.endif
 
 .balign 4, 0
 .global gFontBold
 gFontBold:  @ 0x0810597c, リザルト画面などで使うフォント
+.if ENGLISH
+  @ US (BZ3E) bold font sheet
+  .incbin "graphics/font/font_bold-en.4bpp"
+.else
   .incbin "graphics/font/font_bold.4bpp"
+.endif
 
 .balign 4, 0
 .global gFontPalette

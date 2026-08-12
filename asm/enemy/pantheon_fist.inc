@@ -318,8 +318,8 @@ _0809517A:
 	movs r0, #1
 	b _080951AC
 	.align 2, 0
-_08095180: .4byte 0x08369F80
-_08095184: .4byte 0x08369FA4
+_08095180: .4byte sUpdates1
+_08095184: .4byte sUpdates2
 _08095188:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -385,7 +385,7 @@ _080951F4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080951FC: .4byte 0x0836A064
+_080951FC: .4byte sElementCoord
 
 	thumb_func_start PantheonFist_Init
 PantheonFist_Init: @ 0x08095200
@@ -452,7 +452,7 @@ _08095216:
 	b _0809529E
 	.align 2, 0
 _0809527C: .4byte gEnemyFnTable
-_08095280: .4byte 0x0836A06C
+_08095280: .4byte sInitModes
 _08095284: .4byte sCollisions
 _08095288: .4byte nop_080950cc
 _0809528C:
@@ -542,8 +542,8 @@ _08095330:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08095338: .4byte 0x08369F80
-_0809533C: .4byte 0x08369FA4
+_08095338: .4byte sUpdates1
+_0809533C: .4byte sUpdates2
 
 	thumb_func_start PantheonFist_Die
 PantheonFist_Die: @ 0x08095340
@@ -600,7 +600,7 @@ _080953A4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080953A8: .4byte 0x08369FC8
+_080953A8: .4byte sDeads
 
 	thumb_func_start FUN_080953ac
 FUN_080953ac:
@@ -1711,8 +1711,12 @@ FUN_08095c20: @ 0x08095C20
 	cmp r5, #0
 	beq _08095C34
 	cmp r5, #1
+.if REGION_US && !HIT_BLOOD
+	beq _08095D34
+.else
 	bne _08095C32
 	b _08095D34
+.endif
 _08095C32:
 	b _08095D72
 _08095C34:
@@ -1740,6 +1744,7 @@ _08095C46:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r4, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r4, #0x58]
@@ -1750,6 +1755,7 @@ _08095C46:
 	add r1, sp, #8
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r6, #1
 	adds r0, r0, r6

@@ -37,8 +37,8 @@ _080CF242:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CF248: .4byte 0x083705D4
-_080CF24C: .4byte 0x08370604
+_080CF248: .4byte gSubArcadiaPlatformRoutine+0x44
+_080CF24C: .4byte sSolid17Motions
 
 	thumb_func_start FUN_080cf250
 FUN_080cf250: @ 0x080CF250
@@ -180,11 +180,11 @@ _080CF35C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CF364: .4byte 0x0837060C
-_080CF368: .4byte 0x08370628
+_080CF364: .4byte sSolid17Motions+0x8
+_080CF368: .4byte Rect_ARRAY_08370628
 _080CF36C: .4byte 0x0000FFFF
-_080CF370: .4byte 0x08370614
-_080CF374: .4byte 0x08370638
+_080CF370: .4byte sSolid17Motions+0x10
+_080CF374: .4byte Rect_ARRAY_08370628+0x10
 
 	thumb_func_start FUN_080cf378
 FUN_080cf378: @ 0x080CF378
@@ -274,5 +274,5 @@ _080CF414:
 	bx r0
 	.align 2, 0
 _080CF41C: .4byte 0x0000FFFF
-_080CF420: .4byte 0x0837060C
-_080CF424: .4byte 0x08370614
+_080CF420: .4byte sSolid17Motions+0x8
+_080CF424: .4byte sSolid17Motions+0x10

@@ -3,6 +3,531 @@
 
 NAKED s16 SpaceCraft_MissionUpdate(struct StageRun* p) {
   asm(".syntax unified\n\
+.if REGION_US\n\
+	push	{r4, r5, r6, r7, lr}\n\
+	mov	r7, r8\n\
+	push	{r7}\n\
+	sub	sp, #4\n\
+	adds	r7, r0, #0\n\
+	ldr	r5, [r7, #32]\n\
+	movs	r1, #190\n\
+	lsls	r1, r1, #1\n\
+	adds	r0, r7, r1\n\
+	ldrb	r0, [r0, #0]\n\
+	subs	r0, #6\n\
+	lsls	r0, r0, #24\n\
+	lsrs	r0, r0, #24\n\
+	cmp	r0, #2\n\
+	bhi _US_0801AF26\n\
+	ldr	r2, _US_0801AF68\n\
+	ldr	r1, [r2, #0]\n\
+	ldr	r0, _US_0801AF6C\n\
+	muls	r0, r1\n\
+	ldr	r1, _US_0801AF70\n\
+	adds	r0, r0, r1\n\
+	lsls	r0, r0, #1\n\
+	lsrs	r1, r0, #1\n\
+	str	r1, [r2, #0]\n\
+	lsrs	r0, r0, #17\n\
+	movs	r1, #127\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	bne _US_0801AF26\n\
+	ldr	r4, _US_0801AF74\n\
+	adds	r0, r4, #0\n\
+	bl isSoundPlaying\n\
+	cmp	r0, #0\n\
+	bne _US_0801AF1C\n\
+	adds	r0, r4, #0\n\
+	bl PlaySound\n\
+_US_0801AF1C:\n\
+	adds	r1, r5, #0\n\
+	adds	r1, #84\n\
+	movs	r0, #4\n\
+	bl AppendQuake\n\
+_US_0801AF26:\n\
+	movs	r0, #190\n\
+	lsls	r0, r0, #1\n\
+	adds	r6, r7, r0\n\
+	ldrb	r0, [r6, #0]\n\
+	cmp	r0, #0\n\
+	beq _US_0801AF34\n\
+	b _US_0801B088\n\
+_US_0801AF34:\n\
+	ldr	r5, _US_0801AF78\n\
+	ldrh	r0, [r5, #8]\n\
+	movs	r1, #1\n\
+	mov	r8, r1\n\
+	mov	r1, r8\n\
+	orrs	r0, r1\n\
+	strh	r0, [r5, #8]\n\
+	ldr	r2, _US_0801AF7C\n\
+	ldrb	r1, [r2, #4]\n\
+	movs	r0, #4\n\
+	orrs	r0, r1\n\
+	strb	r0, [r2, #4]\n\
+	movs	r1, #64\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_0801AF84\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801AF80\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #0]\n\
+	bl SetScript\n\
+	movs	r0, #20\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801AF68: .4byte RNG_0202f388\n\
+_US_0801AF6C: .4byte 0x000343FD\n\
+_US_0801AF70: .4byte 0x00269EC3\n\
+_US_0801AF74: .4byte 0x0000013F\n\
+_US_0801AF78: .4byte gStageRun\n\
+_US_0801AF7C: .4byte gCurStory\n\
+_US_0801AF80: .4byte gStageScriptList\n\
+_US_0801AF84:\n\
+	ldrb	r4, [r5, #2]\n\
+	cmp	r4, #0\n\
+	bne _US_0801AFA8\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801AFA4\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #0]\n\
+	bl SetScript\n\
+	movs	r0, #1\n\
+	bl setStageCheckpoint\n\
+	mov	r0, r8\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801AFA4: .4byte gStageScriptList\n\
+_US_0801AFA8:\n\
+	cmp	r4, #1\n\
+	bne _US_0801AFB2\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	b _US_0801B08E\n\
+_US_0801AFB2:\n\
+	cmp	r4, #2\n\
+	bne _US_0801AFBC\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	b _US_0801B0B2\n\
+_US_0801AFBC:\n\
+	cmp	r4, #3\n\
+	bne _US_0801AFD8\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801AFD4\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #12]\n\
+	bl SetScript\n\
+	strb	r4, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801AFD4: .4byte gStageScriptList\n\
+_US_0801AFD8:\n\
+	cmp	r4, #4\n\
+	bne _US_0801AFF4\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801AFF0\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #20]\n\
+	bl SetScript\n\
+	movs	r0, #5\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801AFF0: .4byte gStageScriptList\n\
+_US_0801AFF4:\n\
+	cmp	r4, #5\n\
+	bne _US_0801B010\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801B00C\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #24]\n\
+	bl SetScript\n\
+	movs	r0, #6\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B00C: .4byte gStageScriptList\n\
+_US_0801B010:\n\
+	cmp	r4, #6\n\
+	bne _US_0801B02C\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801B028\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #40]\n\
+	bl SetScript\n\
+	movs	r0, #8\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B028: .4byte gStageScriptList\n\
+_US_0801B02C:\n\
+	cmp	r4, #7\n\
+	bne _US_0801B054\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801B050\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #28]\n\
+	str	r2, [sp, #0]\n\
+	bl SetScript\n\
+	ldr	r2, [sp, #0]\n\
+	ldrb	r1, [r2, #4]\n\
+	movs	r0, #251\n\
+	ands	r0, r1\n\
+	strb	r0, [r2, #4]\n\
+	movs	r0, #9\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B050: .4byte gStageScriptList\n\
+_US_0801B054:\n\
+	cmp	r4, #8\n\
+	beq _US_0801B05A\n\
+	b _US_0801B2F4\n\
+_US_0801B05A:\n\
+	adds	r0, r5, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801B080\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #48]\n\
+	bl SetScript\n\
+	ldrh	r1, [r5, #8]\n\
+	movs	r0, #4\n\
+	orrs	r0, r1\n\
+	ldr	r1, _US_0801B084\n\
+	ands	r0, r1\n\
+	strh	r0, [r5, #8]\n\
+	movs	r0, #190\n\
+	lsls	r0, r0, #1\n\
+	adds	r1, r7, r0\n\
+	movs	r0, #11\n\
+	strb	r0, [r1, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B080: .4byte gStageScriptList\n\
+_US_0801B084: .4byte 0x0000FFFE\n\
+_US_0801B088:\n\
+	cmp	r0, #1\n\
+	bne _US_0801B0AC\n\
+	ldr	r0, _US_0801B0A4\n\
+_US_0801B08E:\n\
+	ldr	r1, _US_0801B0A8\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #4]\n\
+	bl SetScript\n\
+	movs	r0, #2\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #2\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B0A4: .4byte gStageRun+0x10\n\
+_US_0801B0A8: .4byte gStageScriptList\n\
+_US_0801B0AC:\n\
+	cmp	r0, #2\n\
+	bne _US_0801B0D0\n\
+	ldr	r0, _US_0801B0C8\n\
+_US_0801B0B2:\n\
+	ldr	r1, _US_0801B0CC\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #8]\n\
+	bl SetScript\n\
+	movs	r0, #3\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #3\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B0C8: .4byte gStageRun+0x10\n\
+_US_0801B0CC: .4byte gStageScriptList\n\
+_US_0801B0D0:\n\
+	cmp	r0, #3\n\
+	bne _US_0801B0FC\n\
+	ldr	r1, [r5, #84]\n\
+	ldr	r0, _US_0801B0F4\n\
+	cmp	r1, r0\n\
+	ble _US_0801B0FC\n\
+	ldr	r1, _US_0801B0F8\n\
+	ldrb	r2, [r1, #1]\n\
+	movs	r0, #2\n\
+	orrs	r0, r2\n\
+	strb	r0, [r1, #1]\n\
+	ldrb	r2, [r1, #0]\n\
+	movs	r0, #128\n\
+	orrs	r0, r2\n\
+	strb	r0, [r1, #0]\n\
+	movs	r0, #4\n\
+	strb	r0, [r6, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B0F4: .4byte 0x000C6FFF\n\
+_US_0801B0F8: .4byte gCollisionManager\n\
+_US_0801B0FC:\n\
+	movs	r1, #190\n\
+	lsls	r1, r1, #1\n\
+	adds	r4, r7, r1\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #4\n\
+	bne _US_0801B134\n\
+	ldr	r1, _US_0801B128\n\
+	movs	r0, #0\n\
+	strb	r0, [r1, #1]\n\
+	ldr	r0, _US_0801B12C\n\
+	ldr	r1, _US_0801B130\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #16]\n\
+	bl SetScript\n\
+	movs	r0, #4\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #5\n\
+	strb	r0, [r4, #0]\n\
+	b _US_0801B2F4\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801B128: .4byte gCollisionManager\n\
+_US_0801B12C: .4byte gStageRun+0x10\n\
+_US_0801B130: .4byte gStageScriptList\n\
+_US_0801B134:\n\
+	cmp	r0, #5\n\
+	bne _US_0801B154\n\
+	ldr	r2, _US_0801B150\n\
+	ldrb	r1, [r2, #0]\n\
+	movs	r0, #127\n\
+	ands	r0, r1\n\
+	strb	r0, [r2, #0]\n\
+	movs	r0, #5\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #6\n\
+	strb	r0, [r4, #0]\n\
+	b _US_0801B2F4\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801B150: .4byte gCollisionManager\n\
+_US_0801B154:\n\
+	cmp	r0, #6\n\
+	bne _US_0801B1E4\n\
+	ldr	r1, [r5, #88]\n\
+	ldr	r0, _US_0801B1D0\n\
+	cmp	r1, r0\n\
+	bgt _US_0801B1E4\n\
+	ldr	r1, [r5, #84]\n\
+	ldr	r0, _US_0801B1D4\n\
+	cmp	r1, r0\n\
+	ble _US_0801B184\n\
+	ldr	r0, _US_0801B1D8\n\
+	movs	r1, #180\n\
+	lsls	r1, r1, #1\n\
+	adds	r6, r0, r1\n\
+	ldr	r0, [r6, #0]\n\
+	movs	r4, #1\n\
+	negs	r4, r4\n\
+	cmp	r0, r4\n\
+	beq _US_0801B184\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r0, r0, #16\n\
+	bl FadeOutBGM\n\
+	str	r4, [r6, #0]\n\
+_US_0801B184:\n\
+	ldr	r1, [r5, #84]\n\
+	ldr	r0, _US_0801B1DC\n\
+	cmp	r1, r0\n\
+	bgt _US_0801B18E\n\
+	b _US_0801B2F4\n\
+_US_0801B18E:\n\
+	ldr	r2, _US_0801B1E0\n\
+	ldrb	r1, [r2, #1]\n\
+	movs	r0, #2\n\
+	orrs	r0, r1\n\
+	strb	r0, [r2, #1]\n\
+	ldr	r0, _US_0801B1D8\n\
+	movs	r1, #180\n\
+	lsls	r1, r1, #1\n\
+	adds	r4, r0, r1\n\
+	ldr	r0, [r4, #0]\n\
+	cmp	r0, #161\n\
+	beq _US_0801B1C2\n\
+	movs	r5, #1\n\
+	negs	r5, r5\n\
+	cmp	r0, r5\n\
+	beq _US_0801B1B8\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r0, r0, #16\n\
+	bl FadeOutBGM\n\
+	str	r5, [r4, #0]\n\
+_US_0801B1B8:\n\
+	movs	r0, #161\n\
+	bl PlayBGM\n\
+	movs	r0, #161\n\
+	str	r0, [r4, #0]\n\
+_US_0801B1C2:\n\
+	movs	r0, #190\n\
+	lsls	r0, r0, #1\n\
+	adds	r1, r7, r0\n\
+	movs	r0, #7\n\
+	strb	r0, [r1, #0]\n\
+	b _US_0801B2F4\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801B1D0: .4byte 0x00013FFF\n\
+_US_0801B1D4: .4byte 0x000DFFFF\n\
+_US_0801B1D8: .4byte gStageRun\n\
+_US_0801B1DC: .4byte 0x000E1FFF\n\
+_US_0801B1E0: .4byte gCollisionManager\n\
+_US_0801B1E4:\n\
+	movs	r1, #190\n\
+	lsls	r1, r1, #1\n\
+	adds	r4, r7, r1\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #7\n\
+	bne _US_0801B218\n\
+	ldr	r1, [r5, #84]\n\
+	ldr	r0, _US_0801B208\n\
+	cmp	r1, r0\n\
+	ble _US_0801B218\n\
+	ldr	r1, _US_0801B20C\n\
+	movs	r0, #0\n\
+	strb	r0, [r1, #1]\n\
+	ldr	r0, _US_0801B210\n\
+	ldr	r1, _US_0801B214\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #32]\n\
+	b _US_0801B244\n\
+	.align 2, 0\n\
+_US_0801B208: .4byte 0x000EDFFF\n\
+_US_0801B20C: .4byte gCollisionManager\n\
+_US_0801B210: .4byte gStageRun+0x10\n\
+_US_0801B214: .4byte gStageScriptList\n\
+_US_0801B218:\n\
+	movs	r0, #190\n\
+	lsls	r0, r0, #1\n\
+	adds	r4, r7, r0\n\
+	ldrb	r0, [r4, #0]\n\
+	cmp	r0, #8\n\
+	bne _US_0801B230\n\
+	movs	r0, #7\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #10\n\
+	strb	r0, [r4, #0]\n\
+	b _US_0801B2F4\n\
+_US_0801B230:\n\
+	cmp	r0, #9\n\
+	bne _US_0801B260\n\
+	ldr	r1, [r5, #84]\n\
+	ldr	r0, _US_0801B254\n\
+	cmp	r1, r0\n\
+	ble _US_0801B260\n\
+	ldr	r0, _US_0801B258\n\
+	ldr	r1, _US_0801B25C\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #36]\n\
+_US_0801B244:\n\
+	bl SetScript\n\
+	movs	r0, #6\n\
+	bl setStageCheckpoint\n\
+	movs	r0, #8\n\
+	strb	r0, [r4, #0]\n\
+	b _US_0801B2F4\n\
+	.align 2, 0\n\
+_US_0801B254: .4byte 0x000EFFFF\n\
+_US_0801B258: .4byte gStageRun+0x10\n\
+_US_0801B25C: .4byte gStageScriptList\n\
+_US_0801B260:\n\
+	movs	r1, #190\n\
+	lsls	r1, r1, #1\n\
+	adds	r5, r7, r1\n\
+	ldrb	r0, [r5, #0]\n\
+	cmp	r0, #10\n\
+	bne _US_0801B2C8\n\
+	ldr	r4, _US_0801B2B8\n\
+	ldrh	r1, [r4, #8]\n\
+	movs	r0, #16\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_0801B2C8\n\
+	ldr	r1, _US_0801B2BC\n\
+	ldrb	r2, [r1, #0]\n\
+	movs	r0, #128\n\
+	orrs	r0, r2\n\
+	strb	r0, [r1, #0]\n\
+	ldrb	r2, [r1, #1]\n\
+	movs	r0, #2\n\
+	orrs	r0, r2\n\
+	strb	r0, [r1, #1]\n\
+	adds	r0, r4, #0\n\
+	adds	r0, #16\n\
+	ldr	r1, _US_0801B2C0\n\
+	ldr	r1, [r1, #4]\n\
+	ldr	r1, [r1, #44]\n\
+	bl SetScript\n\
+	ldrh	r0, [r4, #8]\n\
+	ldr	r1, _US_0801B2C4\n\
+	ands	r1, r0\n\
+	ldrb	r2, [r4, #18]\n\
+	movs	r0, #253\n\
+	ands	r0, r2\n\
+	strb	r0, [r4, #18]\n\
+	movs	r0, #4\n\
+	orrs	r1, r0\n\
+	strh	r1, [r4, #8]\n\
+	movs	r0, #8\n\
+	bl setStageCheckpoint2\n\
+	movs	r0, #11\n\
+	b _US_0801B2F2\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801B2B8: .4byte gStageRun\n\
+_US_0801B2BC: .4byte gCollisionManager\n\
+_US_0801B2C0: .4byte gStageScriptList\n\
+_US_0801B2C4: .4byte 0x0000FFEF\n\
+_US_0801B2C8:\n\
+	movs	r0, #190\n\
+	lsls	r0, r0, #1\n\
+	adds	r5, r7, r0\n\
+	ldrb	r0, [r5, #0]\n\
+	cmp	r0, #20\n\
+	bne _US_0801B2F4\n\
+	ldr	r4, _US_0801B304\n\
+	ldr	r0, _US_0801B308\n\
+	ldr	r0, [r0, #4]\n\
+	ldr	r1, [r0, #4]\n\
+	adds	r0, r4, #0\n\
+	bl SetScript\n\
+	subs	r4, #16\n\
+	ldrh	r1, [r4, #8]\n\
+	movs	r0, #4\n\
+	orrs	r0, r1\n\
+	ldr	r1, _US_0801B30C\n\
+	ands	r0, r1\n\
+	strh	r0, [r4, #8]\n\
+	movs	r0, #21\n\
+_US_0801B2F2:\n\
+	strb	r0, [r5, #0]\n\
+_US_0801B2F4:\n\
+	movs	r0, #0\n\
+	add	sp, #4\n\
+	pop	{r3}\n\
+	mov	r8, r3\n\
+	pop	{r4, r5, r6, r7}\n\
+	pop	{r1}\n\
+	bx	r1\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_0801B304: .4byte gStageRun+0x10\n\
+_US_0801B308: .4byte gStageScriptList\n\
+_US_0801B30C: .4byte 0x0000FFFE\n\
+.else\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\
 	push {r7}\n\
@@ -523,6 +1048,7 @@ _0801B16C:\n\
 _0801B17C: .4byte gStageRun+16\n\
 _0801B180: .4byte gStageScriptList\n\
 _0801B184: .4byte 0x0000FFFE\n\
+.endif\n\
  .syntax divided\n");
 }
 

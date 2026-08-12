@@ -473,7 +473,7 @@ _080AE7CE:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080AE7D4: .4byte 0x0836CA08\n\
+_080AE7D4: .4byte gOmegaZeroProjectileRoutine+0x94\n\
 _080AE7D8: .4byte gSineTable\n\
 _080AE7DC: .4byte 0x00008001\n\
 _080AE7E0: .4byte gStageRun+232\n\
@@ -618,7 +618,7 @@ _080AE8EA:\n\
 	pop {r0}\n\
 	bx r0\n\
 	.align 2, 0\n\
-_080AE8F0: .4byte 0x0836C9C0\n\
+_080AE8F0: .4byte gOmegaZeroProjectileCollisions_0836c9c0\n\
 _080AE8F4: .4byte gSineTable\n\
 _080AE8F8: .4byte 0x00008009\n\
 _080AE8FC: .4byte gStageRun+232\n\
@@ -697,10 +697,10 @@ _080AE940:\n\
 	adds r0, #4\n\
 	b _080AE9A0\n\
 	.align 2, 0\n\
-_080AE98C: .4byte 0x0836CA80\n\
+_080AE98C: .4byte gOmegaZeroProjectileRoutine+0x10c\n\
 _080AE990: .4byte 0x00008002\n\
 _080AE994: .4byte gSineTable\n\
-_080AE998: .4byte 0x0836CA20\n\
+_080AE998: .4byte gOmegaZeroProjectileRoutine+0xac\n\
 _080AE99C:\n\
 	ldrb r0, [r4, #0x12]\n\
 	subs r0, #4\n\
@@ -851,7 +851,7 @@ _080AEB58:\n\
 	orrs r0, r1\n\
 	b _080AEB7A\n\
 	.align 2, 0\n\
-_080AEB70: .4byte 0x0836CA50\n\
+_080AEB70: .4byte gOmegaZeroProjectileRoutine+0xdc\n\
 _080AEB74:\n\
 	ldrb r1, [r4, #0xa]\n\
 	movs r0, #0xef\n\

@@ -281,8 +281,8 @@ _0800EC8C: .4byte 0x0002D034
 _0800EC90: .4byte 0x000343FD
 _0800EC94: .4byte 0x00269EC3
 _0800EC98: .4byte 0x0002D024
-_0800EC9C: .4byte 0x085223EC
-_0800ECA0: .4byte 0x085223F4
+_0800EC9C: .4byte gBgMapOffsets+0x14c
+_0800ECA0: .4byte gBgMapOffsets+0x154
 _0800ECA4: .4byte 0x06000800
 _0800ECA8:
 	adds r2, r5, #0
@@ -376,8 +376,8 @@ _0800ED46:
 	b _0800EDF6
 	.align 2, 0
 _0800ED58: .4byte gVideoRegBuffer+12
-_0800ED5C: .4byte 0x085223F0
-_0800ED60: .4byte 0x085223F8
+_0800ED5C: .4byte gBgMapOffsets+0x150
+_0800ED60: .4byte gBgMapOffsets+0x158
 _0800ED64: .4byte 0x06000800
 _0800ED68:
 	ldrh r0, [r7, #0x10]
@@ -465,8 +465,8 @@ _0800EE08: .4byte 0x0002D034
 _0800EE0C: .4byte 0x000343FD
 _0800EE10: .4byte 0x00269EC3
 _0800EE14: .4byte 0x0002D024
-_0800EE18: .4byte 0x085223FC
-_0800EE1C: .4byte 0x08522404
+_0800EE18: .4byte gBgMapOffsets+0x15c
+_0800EE1C: .4byte gBgMapOffsets+0x164
 _0800EE20: .4byte 0x06000800
 _0800EE24:
 	adds r4, r5, #0
@@ -519,8 +519,8 @@ _0800EE74:
 	b _0800EEF4
 	.align 2, 0
 _0800EE80: .4byte gVideoRegBuffer+12
-_0800EE84: .4byte 0x085223F8
-_0800EE88: .4byte 0x08522400
+_0800EE84: .4byte gBgMapOffsets+0x158
+_0800EE88: .4byte gBgMapOffsets+0x160
 _0800EE8C: .4byte 0x06000800
 _0800EE90:
 	ldrh r0, [r7, #0x10]
@@ -606,8 +606,8 @@ _0800EF0E:
 	b _0800F296
 	.align 2, 0
 _0800EF2C: .4byte gVideoRegBuffer+12
-_0800EF30: .4byte 0x08522400
-_0800EF34: .4byte 0x08522408
+_0800EF30: .4byte gBgMapOffsets+0x160
+_0800EF34: .4byte gBgMapOffsets+0x168
 _0800EF38: .4byte 0x06000800
 _0800EF3C: .4byte gOverworld
 _0800EF40: .4byte 0x0002D024
@@ -801,7 +801,7 @@ _0800F094:
 	str r1, [r7, #0x74]
 	b _0800F13C
 	.align 2, 0
-_0800F0C4: .4byte 0x0833EDDC
+_0800F0C4: .4byte sMetatileShifts1
 _0800F0C8: .4byte gVideoRegBuffer+4
 _0800F0CC: .4byte 0x0000FFFC
 _0800F0D0: .4byte gOverworld
@@ -916,10 +916,10 @@ _0800F16A:
 	bne _0800F160
 	b _0800F296
 	.align 2, 0
-_0800F1B0: .4byte 0x0833ED1C
+_0800F1B0: .4byte Struct_0833ed1c_ARRAY_0833ed1c
 _0800F1B4: .4byte 0xFFFF8000
 _0800F1B8: .4byte 0x00002001
-_0800F1BC: .4byte 0x0833ECEC
+_0800F1BC: .4byte Rect_ARRAY_0833ecec
 _0800F1C0:
 	ldr r0, _0800F1D0 @ =0x0000158F
 	cmp r3, r0
@@ -972,10 +972,10 @@ _0800F1DE:
 	bne _0800F1D4
 	b _0800F296
 	.align 2, 0
-_0800F224: .4byte 0x0833ED4C
+_0800F224: .4byte Struct_0833ed1c_ARRAY_0833ed1c+0x30
 _0800F228: .4byte 0xFFFF8000
 _0800F22C: .4byte 0x00002001
-_0800F230: .4byte 0x0833ECEC
+_0800F230: .4byte Rect_ARRAY_0833ecec
 _0800F234:
 	ldr r0, _0800F244 @ =0x0000185F
 	cmp r3, r0
@@ -1039,10 +1039,10 @@ _0800F296:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800F2B0: .4byte 0x0833ED8C
+_0800F2B0: .4byte Struct_0833ed1c_ARRAY_0833ed1c+0x70
 _0800F2B4: .4byte 0xFFFF8000
 _0800F2B8: .4byte 0x00002001
-_0800F2BC: .4byte 0x0833ECEC
+_0800F2BC: .4byte Rect_ARRAY_0833ecec
 _0800F2C0: .4byte gStageRun+288
 
 	thumb_func_start FUN_0800f2c4
@@ -1173,8 +1173,8 @@ _0800F3BA:
 	movs r0, #6
 	b _0800F530
 	.align 2, 0
-_0800F3CC: .4byte 0x0833EDFC
-_0800F3D0: .4byte 0x0833EE1C
+_0800F3CC: .4byte sMetatileShifts2
+_0800F3D0: .4byte sMetatileShifts3
 _0800F3D4: .4byte gOverworld
 _0800F3D8: .4byte 0x0002D025
 _0800F3DC:
@@ -1267,7 +1267,7 @@ _0800F42C:
 	.align 2, 0
 _0800F498: .4byte gOverworld
 _0800F49C: .4byte 0x0002D025
-_0800F4A0: .4byte 0x0833EDE4
+_0800F4A0: .4byte Struct_0833ed1c_ARRAY_0833ed1c+0xc8
 _0800F4A4: .4byte 0x0002D024
 _0800F4A8:
 	ldrh r0, [r6, #0x10]
@@ -1344,7 +1344,7 @@ _0800F532:
 	.align 2, 0
 _0800F53C: .4byte gOverworld
 _0800F540: .4byte 0x0002D025
-_0800F544: .4byte 0x0833EDFC
+_0800F544: .4byte sMetatileShifts2
 _0800F548: .4byte 0x0002D024
 
 	thumb_func_start FUN_0800f54c
@@ -1430,10 +1430,10 @@ _0800F5D8:
 	.align 2, 0
 _0800F5E8: .4byte gVideoRegBuffer+4
 _0800F5EC: .4byte 0x00004044
-_0800F5F0: .4byte 0x085223E4
-_0800F5F4: .4byte 0x085223EC
-_0800F5F8: .4byte 0x085223E8
-_0800F5FC: .4byte 0x085223F0
+_0800F5F0: .4byte gBgMapOffsets+0x144
+_0800F5F4: .4byte gBgMapOffsets+0x14c
+_0800F5F8: .4byte gBgMapOffsets+0x148
+_0800F5FC: .4byte gBgMapOffsets+0x150
 _0800F600: .4byte 0x06000800
 
 	thumb_func_start FUN_0800f604

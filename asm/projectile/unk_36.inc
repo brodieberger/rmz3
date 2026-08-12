@@ -108,7 +108,7 @@ Projectile36_Init: @ 0x080AD648
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD65C: .4byte 0x0836C8C0
+_080AD65C: .4byte sInitializers
 
 	thumb_func_start Projectile36_Update
 Projectile36_Update: @ 0x080AD660
@@ -122,7 +122,7 @@ Projectile36_Update: @ 0x080AD660
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD674: .4byte 0x0836C8D0
+_080AD674: .4byte sUpdates
 
 	thumb_func_start Projectile36_Die
 Projectile36_Die:
@@ -235,7 +235,7 @@ _080AD70C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AD76C: .4byte 0x0836C8E0
+_080AD76C: .4byte sCollisions
 _080AD770: .4byte gSineTable
 _080AD774: .4byte gProjectileFnTable
 

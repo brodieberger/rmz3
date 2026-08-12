@@ -192,7 +192,7 @@ _080A37D8:
 	movs r3, #0x20
 	b _080A383A
 	.align 2, 0
-_080A3804: .4byte 0x0836B50C
+_080A3804: .4byte gTretistaProjectileRoutine+0x4c
 _080A3808:
 	cmp r5, #2
 	bne _080A3818
@@ -256,7 +256,7 @@ _080A3842:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A3884: .4byte 0x0836B9A4
+_080A3884: .4byte gTretistaProjectileRoutine+0x4e4
 _080A3888: .4byte gProjectileFnTable
 
 	thumb_func_start TretistaProjectile_Update
@@ -275,7 +275,7 @@ TretistaProjectile_Update: @ 0x080A388C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A38A8: .4byte 0x0836B4E4
+_080A38A8: .4byte PTR_ARRAY_0836b4e4
 
 	thumb_func_start TretistaProjectile_Die
 TretistaProjectile_Die: @ 0x080A38AC
@@ -1049,7 +1049,7 @@ _080A3E8E:
 	b _080A3EFA
 	.align 2, 0
 _080A3ED8: .4byte 0x0000AD07
-_080A3EDC: .4byte 0x0836B524
+_080A3EDC: .4byte gTretistaProjectileRoutine+0x64
 _080A3EE0: .4byte 0xFFFFC000
 _080A3EE4: .4byte 0xFFFFFCD0
 _080A3EE8: .4byte 0xFFFFAA00
@@ -1105,7 +1105,7 @@ _080A3F02:
 	adds r0, r0, r1
 	b _080A3F74
 	.align 2, 0
-_080A3F50: .4byte 0x0836B524
+_080A3F50: .4byte gTretistaProjectileRoutine+0x64
 _080A3F54: .4byte pZero2
 _080A3F58:
 	ldr r0, _080A3F6C @ =pZero2
@@ -1217,7 +1217,7 @@ _080A3FE4:
 	b _080A4042
 	.align 2, 0
 _080A4028: .4byte 0xFFFFFC00
-_080A402C: .4byte 0x0836B524
+_080A402C: .4byte gTretistaProjectileRoutine+0x64
 _080A4030: .4byte 0xFFFFF800
 _080A4034:
 	ldr r0, [r7, #0x54]
@@ -1465,8 +1465,8 @@ _080A41B0:
 	b _080A43E0
 	.align 2, 0
 _080A4218: .4byte 0x0000AD08
-_080A421C: .4byte 0x0836B554
-_080A4220: .4byte 0x0836B824
+_080A421C: .4byte gTretistaProjectileRoutine+0x94
+_080A4220: .4byte gTretistaProjectileRoutine+0x364
 _080A4224: .4byte 0xFFFFFE00
 _080A4228:
 	ldr r0, [r7, #0x5c]
@@ -1556,7 +1556,7 @@ _080A4292:
 	bl PushoutToRight1
 	b _080A42EE
 	.align 2, 0
-_080A42D8: .4byte 0x0836B824
+_080A42D8: .4byte gTretistaProjectileRoutine+0x364
 _080A42DC: .4byte 0xFFFFF800
 _080A42E0:
 	ldr r0, [r7, #0x54]
@@ -2316,7 +2316,7 @@ _080A489E:
 	b _080A4CB4
 	.align 2, 0
 _080A48BC: .4byte 0x00000113
-_080A48C0: .4byte 0x0836B9EC
+_080A48C0: .4byte sCoords
 _080A48C4: .4byte RNG_0202f388
 _080A48C8: .4byte 0x000343FD
 _080A48CC: .4byte 0x00269EC3
@@ -2578,7 +2578,7 @@ _080A4AC0:
 	.align 2, 0
 _080A4ADC: .4byte 0xFFFFF800
 _080A4AE0: .4byte 0x00000113
-_080A4AE4: .4byte 0x0836B9EC
+_080A4AE4: .4byte sCoords
 _080A4AE8: .4byte RNG_0202f388
 _080A4AEC: .4byte 0x000343FD
 _080A4AF0: .4byte 0x00269EC3
@@ -2826,7 +2826,7 @@ _080A4CCA:
 	bx r0
 	.align 2, 0
 _080A4CDC: .4byte 0x00000113
-_080A4CE0: .4byte 0x0836B9EC
+_080A4CE0: .4byte sCoords
 _080A4CE4: .4byte RNG_0202f388
 _080A4CE8: .4byte 0x000343FD
 _080A4CEC: .4byte 0x00269EC3
@@ -2895,7 +2895,7 @@ _080A4D50:
 	orrs r0, r1
 	b _080A4D8E
 	.align 2, 0
-_080A4D80: .4byte 0x0836B9BC
+_080A4D80: .4byte gTretistaProjectileRoutine+0x4fc
 _080A4D84: .4byte 0x0000AE01
 _080A4D88:
 	ldrb r1, [r4, #0xa]
@@ -2974,7 +2974,7 @@ _080A4DEA:
 	b _080A4E26
 	.align 2, 0
 _080A4E18: .4byte 0x0000AE02
-_080A4E1C: .4byte 0x0836B9D4
+_080A4E1C: .4byte gTretistaProjectileRoutine+0x514
 _080A4E20:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -3060,7 +3060,7 @@ _080A4EA2:
 	orrs r0, r1
 	b _080A4ECA
 	.align 2, 0
-_080A4EC0: .4byte 0x0836B9A4
+_080A4EC0: .4byte gTretistaProjectileRoutine+0x4e4
 _080A4EC4:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xfe

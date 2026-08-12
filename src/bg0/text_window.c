@@ -1,3 +1,4 @@
+#include "config.h"
 #include "gfx.h"
 #include "global.h"
 #include "input.h"
@@ -990,7 +991,11 @@ static void _UpdateTextWindow_1_MugshotMessage(TextWindowText* t) {
     case 2: {
       t->len = getStringLength(t->current);
       t->done = 1;
+#if IS_US
+      t->frame = 3;
+#else
       t->frame = 4;
+#endif
       (t->state).u8[2] = 0;
       (t->state).u8[1]++;
       FALLTHROUGH;
@@ -1007,7 +1012,11 @@ static void _UpdateTextWindow_1_MugshotMessage(TextWindowText* t) {
         t->done++;
         if ((t->state).u8[2] != 0) t->done += 3;
         if (t->done < t->len) {
+#if IS_US
+          t->frame = 2;
+#else
           t->frame = 3;
+#endif
         } else {
           t->frame = 0;
           t->mode = TWM_WAITING;
@@ -1154,7 +1163,11 @@ static void _UpdateTextWindow_2_InlineMessage(TextWindowText* t) {
       t->mode = TWM_TYPING;
       t->len = getStringLength(t->current);
       t->done = 1;
+#if IS_US
+      t->frame = 3;
+#else
       t->frame = 4;
+#endif
       (t->state).u8[2] = 0;
       (t->state).u8[1]++;
       FALLTHROUGH;
@@ -1171,7 +1184,11 @@ static void _UpdateTextWindow_2_InlineMessage(TextWindowText* t) {
         t->done++;
         if ((t->state).u8[2] != 0) t->done += 3;
         if (t->done < t->len) {
+#if IS_US
+          t->frame = 2;
+#else
           t->frame = 3;
+#endif
         } else {
           t->frame = 0;
           t->mode = TWM_WAITING;
@@ -1257,7 +1274,11 @@ static void _UpdateTextWindow_3_Unk3(TextWindowText* t) {
       t->mode = TWM_TYPING;
       t->len = getStringLength(t->current);
       t->done = 1;
+#if IS_US
+      t->frame = 3;
+#else
       t->frame = 4;
+#endif
       (t->state).u8[2] = 0;
       (t->state).u8[1]++;
       FALLTHROUGH;
@@ -1273,7 +1294,11 @@ static void _UpdateTextWindow_3_Unk3(TextWindowText* t) {
         t->done++;
         if ((t->state).u8[2] != 0) t->done += 3;
         if (t->done < t->len) {
+#if IS_US
+          t->frame = 2;
+#else
           t->frame = 3;
+#endif
         } else {
           t->frame = 0;
           t->mode = TWM_WAITING;

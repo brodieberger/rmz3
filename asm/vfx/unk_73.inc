@@ -55,7 +55,7 @@ _080C6EBC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C6ED0: .4byte 0x0836DA24
+_080C6ED0: .4byte gVFXFnTable+0x124
 _080C6ED4: .4byte gVFXHeaderPtr
 
 	thumb_func_start Ghost73_Init
@@ -70,7 +70,7 @@ Ghost73_Init: @ 0x080C6ED8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C6EEC: .4byte 0x0836F874
+_080C6EEC: .4byte sInitializers
 
 	thumb_func_start Ghost73_Update
 Ghost73_Update: @ 0x080C6EF0
@@ -113,7 +113,7 @@ _080C6F38:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C6F3C: .4byte 0x0836F87C
+_080C6F3C: .4byte sUpdates
 
 	thumb_func_start Ghost73_Die
 Ghost73_Die: @ 0x080C6F40
@@ -507,7 +507,7 @@ _080C71D0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080C7230: .4byte 0x0836F884
+_080C7230: .4byte motion_t_ARRAY_0836f884
 _080C7234: .4byte RNG_0202f388
 _080C7238: .4byte 0x000343FD
 _080C723C: .4byte 0x00269EC3

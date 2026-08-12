@@ -142,7 +142,9 @@ _08043638:
 	thumb_func_start volteelDeath1
 volteelDeath1: @ 0x08043640
 	push {r4, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
 	cmp r0, #0x19
@@ -253,13 +255,16 @@ _08043744: .4byte gStageRun
 _08043748:
 	movs r0, #0
 	str r0, [r4, #0x60]
+.if HIT_BLOOD
 	ldr r2, [r4, #0x54]
 	str r2, [sp]
 	ldr r3, [r4, #0x58]
 	str r3, [sp, #4]
+.endif
 	ldrb r1, [r4, #0xa]
 	movs r0, #0x10
 	ands r0, r1
+.if HIT_BLOOD
 	cmp r0, #0
 	beq _08043760
 	str r2, [sp]
@@ -304,6 +309,7 @@ _080437A4:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _080437B2:
 	movs r0, #0x2f
 	bl PlaySound
@@ -373,7 +379,7 @@ _0804382C:
 	ldr r1, _0804383C @ =0x08362578
 	b _08043842
 	.align 2, 0
-_0804383C: .4byte 0x08362578
+_0804383C: .4byte Coord_ARRAY_08362570+0x8
 _08043840:
 	ldr r1, _08043868 @ =0x08362580
 _08043842:
@@ -398,7 +404,7 @@ _08043860:
 	strb r0, [r4, #0xe]
 	b _08043898
 	.align 2, 0
-_08043868: .4byte 0x08362580
+_08043868: .4byte Coord_ARRAY_08362570+0x10
 _0804386C:
 	movs r0, #0x3c
 	strb r0, [r4, #0x12]
@@ -425,7 +431,9 @@ _08043890:
 	ands r0, r1
 	strb r0, [r4, #0xa]
 _08043898:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4}
 	pop {r0}
 	bx r0
@@ -4395,28 +4403,28 @@ volteel_080457c4: @ 0x080457C4
 	ldr r2, _080457F0 @ =0x08362590
 	b _0804581A
 	.align 2, 0
-_080457F0: .4byte 0x08362590
+_080457F0: .4byte Coord_ARRAY_08362570+0x20
 _080457F4:
 	cmp r0, #1
 	bne _08045800
 	ldr r2, _080457FC @ =0x08362598
 	b _0804581A
 	.align 2, 0
-_080457FC: .4byte 0x08362598
+_080457FC: .4byte Coord_ARRAY_08362570+0x28
 _08045800:
 	cmp r0, #2
 	bne _0804580C
 	ldr r2, _08045808 @ =0x08362588
 	b _0804581A
 	.align 2, 0
-_08045808: .4byte 0x08362588
+_08045808: .4byte Coord_ARRAY_08362570+0x18
 _0804580C:
 	cmp r0, #3
 	bne _08045824
 	ldr r2, _08045814 @ =0x083625A0
 	b _0804581A
 	.align 2, 0
-_08045814: .4byte 0x083625A0
+_08045814: .4byte Coord_ARRAY_08362570+0x30
 _08045818:
 	ldr r2, _0804585C @ =0x08362570
 _0804581A:
@@ -4454,7 +4462,7 @@ _08045824:
 	strb r2, [r4, #0xe]
 	b _08045864
 	.align 2, 0
-_0804585C: .4byte 0x08362570
+_0804585C: .4byte Coord_ARRAY_08362570
 _08045860:
 	movs r0, #0
 	str r0, [r2]
@@ -4577,7 +4585,7 @@ _08045928:
 	ble _08045928
 	b _080459CC
 	.align 2, 0
-_08045938: .4byte 0x080FEE90
+_08045938: .4byte unk_080fee80+0x10
 _0804593C:
 	movs r2, #0
 	ldr r5, _08045954 @ =0x080FEE86
@@ -4592,7 +4600,7 @@ _08045942:
 	ble _08045942
 	b _080459CC
 	.align 2, 0
-_08045954: .4byte 0x080FEE86
+_08045954: .4byte unk_080fee80+0x6
 _08045958:
 	bl FUN_080459d4
 	adds r1, r0, #0
@@ -4611,7 +4619,7 @@ _08045968:
 	ble _08045968
 	b _080459CC
 	.align 2, 0
-_08045978: .4byte 0x080FEE90
+_08045978: .4byte unk_080fee80+0x10
 _0804597C:
 	adds r0, r2, #1
 	movs r1, #3
@@ -4650,7 +4658,7 @@ _080459B6:
 	ldrh r0, [r0]
 	b _080459CC
 	.align 2, 0
-_080459C0: .4byte 0x080FEE86
+_080459C0: .4byte unk_080fee80+0x6
 _080459C4:
 	adds r3, #2
 	adds r2, #1

@@ -205,7 +205,7 @@ _0809E916:
 	b _0809E988
 	.align 2, 0
 _0809E948: .4byte 0xFFFFFC00
-_0809E94C: .4byte 0x0836AD78
+_0809E94C: .4byte gBlazinProjectileRoutine+0x68
 _0809E950: .4byte 0xFFFFFD00
 _0809E954:
 	ldr r0, [r4, #0x54]
@@ -404,7 +404,7 @@ _0809EACA:
 	bx r0
 	.align 2, 0
 _0809EAD0: .4byte 0x0000A301
-_0809EAD4: .4byte 0x0836AE38
+_0809EAD4: .4byte gBlazinProjectileRoutine+0x128
 _0809EAD8: .4byte gProjectileFnTable
 
 	thumb_func_start FUN_0809eadc
@@ -561,7 +561,7 @@ _0809EC04:
 	bx r0
 	.align 2, 0
 _0809EC0C: .4byte 0x0000A303
-_0809EC10: .4byte 0x0836ADD8
+_0809EC10: .4byte gBlazinProjectileRoutine+0xc8
 _0809EC14: .4byte gProjectileFnTable
 
 	thumb_func_start FUN_0809ec18

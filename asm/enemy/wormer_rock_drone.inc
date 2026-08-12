@@ -160,8 +160,8 @@ WormerRockDrone_Init: @ 0x08076F20
 	bx r0
 	.align 2, 0
 _08076F80: .4byte gEnemyFnTable
-_08076F84: .4byte 0x08367250
-_08076F88: .4byte 0x08367220
+_08076F84: .4byte sInitModes
+_08076F88: .4byte sCollisions
 _08076F8C: .4byte nop_08076ee0
 
 	thumb_func_start WormerRockDrone_Update
@@ -191,8 +191,8 @@ _08076FBE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08076FC4: .4byte 0x08367214
-_08076FC8: .4byte 0x08367218
+_08076FC4: .4byte sUpdates1
+_08076FC8: .4byte sUpdates2
 
 	thumb_func_start WormerRockDrone_Die
 WormerRockDrone_Die: @ 0x08076FCC
@@ -206,7 +206,7 @@ WormerRockDrone_Die: @ 0x08076FCC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08076FE0: .4byte 0x0836721C
+_08076FE0: .4byte sDeads
 
 	thumb_func_start FUN_08076fe4
 FUN_08076fe4: @ 0x08076FE4
@@ -355,5 +355,5 @@ FUN_080770ac: @ 0x080770AC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08077108: .4byte 0x08367252
+_08077108: .4byte sMotions
 _0807710C: .4byte gEnemyFnTable

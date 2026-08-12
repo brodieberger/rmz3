@@ -178,9 +178,9 @@ _0806179C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080618CC: .4byte 0x083656C8
+_080618CC: .4byte sSize
 _080618D0: .4byte gBossFnTable
-_080618D4: .4byte 0x083656D0
+_080618D4: .4byte sInitModes
 _080618D8: .4byte 0x00000ADC
 _080618DC: .4byte gStaticMotionGraphics
 _080618E0: .4byte wStaticGraphicTilenums
@@ -334,8 +334,8 @@ _08061A14:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08061A24: .4byte 0x0836569C
-_08061A28: .4byte 0x083656A4
+_08061A24: .4byte sUpdates1
+_08061A28: .4byte sUpdates2
 
 	thumb_func_start ReactorCore_Die
 ReactorCore_Die: @ 0x08061A2C
@@ -356,7 +356,7 @@ ReactorCore_Die: @ 0x08061A2C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08061A54: .4byte 0x083656AC
+_08061A54: .4byte sDeads
 
 	thumb_func_start ReactorCore_Disappear
 ReactorCore_Disappear: @ 0x08061A58

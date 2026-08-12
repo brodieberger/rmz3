@@ -141,10 +141,10 @@ _08011248:
 	.align 2, 0
 _08011250: .4byte gVideoRegBuffer+4
 _08011254: .4byte 0x00008044
-_08011258: .4byte 0x0852239C
-_0801125C: .4byte 0x085223A4
-_08011260: .4byte 0x085223A0
-_08011264: .4byte 0x085223A8
+_08011258: .4byte gBgMapOffsets+0xfc
+_0801125C: .4byte gBgMapOffsets+0x104
+_08011260: .4byte gBgMapOffsets+0x100
+_08011264: .4byte gBgMapOffsets+0x108
 _08011268: .4byte 0x06000800
 
 	thumb_func_start FUN_0801126c
@@ -462,7 +462,7 @@ FUN_08011464: @ 0x08011464
 	bx r0
 	.align 2, 0
 _080114C8: .4byte gStageTilesetOffsets+(18*4)
-_080114CC: .4byte 0x08704A20
+_080114CC: .4byte gSnowTilesetGraphics+0x524
 
 	thumb_func_start icebase_080114d0
 icebase_080114d0: @ 0x080114D0
@@ -516,5 +516,5 @@ _08011528:
 	.align 2, 0
 _08011530: .4byte gVideoRegBuffer+4
 _08011534: .4byte 0x0000DBFF
-_08011538: .4byte 0x085223A4
-_0801153C: .4byte 0x085223AC
+_08011538: .4byte gBgMapOffsets+0x104
+_0801153C: .4byte gBgMapOffsets+0x10c

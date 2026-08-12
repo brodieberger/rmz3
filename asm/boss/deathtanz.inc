@@ -3861,12 +3861,14 @@ _0804AF04:
 	ldr r1, _0804AF70 @ =0xFFFFE000
 	adds r0, r0, r1
 	str r0, [sp, #4]
+.if HIT_BLOOD
 	movs r2, #0x80
 	lsls r2, r2, #2
 	movs r0, #0
 	mov r1, sp
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x32
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]

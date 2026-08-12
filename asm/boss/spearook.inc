@@ -91,7 +91,7 @@ FUN_08061bf8: @ 0x08061BF8
 	b _08061C14
 	.align 2, 0
 _08061C04: .4byte RNG_0202f388
-_08061C08: .4byte 0x0836591C
+_08061C08: .4byte u8_ARRAY_0836591c
 _08061C0C:
 	mov r1, ip
 	ldrb r0, [r1]
@@ -515,7 +515,7 @@ _08061F2E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08061F34: .4byte 0x0836592C
+_08061F34: .4byte sElementCoord
 
 	thumb_func_start Spearook_Init
 Spearook_Init: @ 0x08061F38
@@ -559,7 +559,7 @@ Spearook_Init: @ 0x08061F38
 	b _08061FA2
 	.align 2, 0
 _08061F88: .4byte gBossFnTable
-_08061F8C: .4byte 0x08365934
+_08061F8C: .4byte sInitModes
 _08061F90:
 	cmp r0, #3
 	bne _08061F9C
@@ -778,8 +778,8 @@ _0806211E:
 	strh r0, [r2]
 	b _08062170
 	.align 2, 0
-_08062158: .4byte 0x083656E8
-_0806215C: .4byte 0x0836572C
+_08062158: .4byte sUpdates1
+_0806215C: .4byte sUpdates2
 _08062160: .4byte 0xFFFFC000
 _08062164:
 	movs r0, #0x80
@@ -923,7 +923,7 @@ Spearook_Die: @ 0x0806224C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08062260: .4byte 0x08365770
+_08062260: .4byte sDeads
 
 	thumb_func_start FUN_08062264
 FUN_08062264:
@@ -1069,7 +1069,7 @@ _0806236C:
 	bl FUN_08061bf8
 	b _0806239A
 	.align 2, 0
-_08062390: .4byte 0x0836579C
+_08062390: .4byte gSpearookRoutine+0xc8
 _08062394:
 	movs r0, #4
 	strb r0, [r4, #0xd]
@@ -1290,7 +1290,7 @@ _08062504:
 	b _08062562
 	.align 2, 0
 _0806253C: .4byte 0x0000D601
-_08062540: .4byte 0x083657CC
+_08062540: .4byte gSpearookRoutine+0xf8
 _08062544: .4byte 0xFFFFCF00
 _08062548: .4byte 0xFFFFEE00
 _0806254C: .4byte pZero2
@@ -2241,12 +2241,12 @@ _08062C12:
 	b _08062C6A
 	.align 2, 0
 _08062C4C: .4byte 0x00000103
-_08062C50: .4byte 0x08365938
+_08062C50: .4byte u8_ARRAY_08365938
 _08062C54: .4byte RNG_0202f388
 _08062C58: .4byte 0x000343FD
 _08062C5C: .4byte 0x00269EC3
 _08062C60: .4byte 0x0000D603
-_08062C64: .4byte 0x0836585C
+_08062C64: .4byte gSpearookRoutine+0x188
 _08062C68:
 	movs r0, #0xb
 _08062C6A:
@@ -2771,7 +2771,7 @@ _08063062:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08063068: .4byte 0x083657CC
+_08063068: .4byte gSpearookRoutine+0xf8
 _0806306C: .4byte 0x0000D604
 _08063070: .4byte 0xFFFFCF00
 

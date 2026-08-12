@@ -605,12 +605,12 @@ void ClipSpawnRange(s32 top, s32 bottom) {
 static void ReleaseAllStageEntities(void) {
   s32 i;
   gSpawnManager.free = NULL;
-  for (i = 0; i < 32; i++) {
+  for (i = 0; i < SPAWNED_ENTITY_MAX; i++) {
     gSpawnManager.buffer[i].next = gSpawnManager.free;
     gSpawnManager.free = &gSpawnManager.buffer[i];
   }
   gSpawnManager.list = NULL;
-  gSpawnManager.remaining = 32;
+  gSpawnManager.remaining = SPAWNED_ENTITY_MAX;
 }
 
 // SpawnManager.buffer から SpawnedEntity を1つ割り当てる。 (この関数では 対応する Entity は生成されない点に注意)

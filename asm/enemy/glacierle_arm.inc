@@ -1033,8 +1033,8 @@ _08082932:
 	bx r0
 	.align 2, 0
 _08082940: .4byte gEnemyFnTable
-_08082944: .4byte 0x08368170
-_08082948: .4byte 0x08368140
+_08082944: .4byte sInitModes
+_08082948: .4byte sCollisions
 _0808294C: .4byte nop_080828dc
 
 	thumb_func_start GlacierleAtkArm_Update
@@ -1059,8 +1059,8 @@ GlacierleAtkArm_Update: @ 0x08082950
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808297C: .4byte 0x08368128
-_08082980: .4byte 0x08368134
+_0808297C: .4byte sUpdates1
+_08082980: .4byte sUpdates2
 
 	thumb_func_start GlacierleAtkArm_Die
 GlacierleAtkArm_Die: @ 0x08082984
@@ -1212,7 +1212,7 @@ _08082A92:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08082A98: .4byte 0x08368158
+_08082A98: .4byte gGlacierleAtkArmRoutine+0x44
 _08082A9C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08082aa0

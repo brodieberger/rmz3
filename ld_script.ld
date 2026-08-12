@@ -8,6 +8,9 @@ MEMORY {
 
 gMaxLines = 0;
 gNumMusicPlayers = 15;
+gPadTerrainTail = 120;
+gPadSpriteStaticTail = 40;
+gPadSpriteDynamic = 106244;
 
 SECTIONS {
 	. = 0x2000000;

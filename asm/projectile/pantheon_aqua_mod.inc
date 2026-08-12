@@ -106,8 +106,8 @@ PantheonAquaModProjectile_Init: @ 0x080A5C14
 	bx r0
 	.align 2, 0
 _080A5C74: .4byte gProjectileFnTable
-_080A5C78: .4byte 0x0836BB48
-_080A5C7C: .4byte 0x0836BB18
+_080A5C78: .4byte sInitModes
+_080A5C7C: .4byte sCollisions
 _080A5C80: .4byte nop_080a5c10
 
 	thumb_func_start PantheonAquaModProjectile_Update
@@ -132,8 +132,8 @@ PantheonAquaModProjectile_Update: @ 0x080A5C84
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A5CB0: .4byte 0x0836BB00
-_080A5CB4: .4byte 0x0836BB0C
+_080A5CB0: .4byte PTR_ARRAY_0836bb00
+_080A5CB4: .4byte PTR_ARRAY_0836bb0c
 
 	thumb_func_start PantheonAquaModProjectile_Die
 PantheonAquaModProjectile_Die: @ 0x080A5CB8
@@ -249,8 +249,8 @@ _080A5D84:
 	orrs r0, r1
 	b _080A5DA6
 	.align 2, 0
-_080A5D94: .4byte 0x0836BB18
-_080A5D98: .4byte 0x0836BB4A
+_080A5D94: .4byte sCollisions
+_080A5D98: .4byte sMotions
 _080A5D9C: .4byte gSineTable
 _080A5DA0:
 	ldrb r1, [r4, #0xa]
@@ -349,8 +349,8 @@ _080A5E54:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A5E5C: .4byte 0x0836BB30
-_080A5E60: .4byte 0x0836BB54
+_080A5E5C: .4byte gPantheonAquaModProjectileRoutine+0x44
+_080A5E60: .4byte gPantheonAquaModProjectileRoutine+0x68
 
 	thumb_func_start FUN_080a5e64
 FUN_080a5e64: @ 0x080A5E64

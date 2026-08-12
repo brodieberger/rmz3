@@ -101,8 +101,8 @@ LocomoIFPlatform_Init: @ 0x080CE590
 	bx r0
 	.align 2, 0
 _080CE5F0: .4byte gSolidFnTable
-_080CE5F4: .4byte 0x08370310
-_080CE5F8: .4byte 0x083702F8
+_080CE5F4: .4byte u8_ARRAY_08370310
+_080CE5F8: .4byte sLocomoIFPlatformCollision
 _080CE5FC: .4byte nop_080ce58c
 
 	thumb_func_start LocomoIFPlatform_Update
@@ -184,8 +184,8 @@ LocomoIFPlatform_Update: @ 0x080CE600
 	str r0, [r5, #0x14]
 	b _080CE6E8
 	.align 2, 0
-_080CE6A0: .4byte 0x083702D8
-_080CE6A4: .4byte 0x083702E8
+_080CE6A0: .4byte sLocomoIFPlatformUpdates1
+_080CE6A4: .4byte sLocomoIFPlatformUpdates2
 _080CE6A8: .4byte gStageRun+232
 _080CE6AC: .4byte gSolidFnTable
 _080CE6B0:
@@ -209,7 +209,7 @@ _080CE6B0:
 	b _080CE6E8
 	.align 2, 0
 _080CE6D4: .4byte pZero2
-_080CE6D8: .4byte 0x08370314
+_080CE6D8: .4byte Rect_08370314
 _080CE6DC: .4byte 0x0000A001
 _080CE6E0:
 	ldrb r1, [r5, #0xb]

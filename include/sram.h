@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_SRAM_H
 #define GUARD_RMZ3_SRAM_H
 
+#include "config.h"
 #include "gba/gba.h"
 #include "types.h"
 
@@ -12,6 +13,16 @@
 #define GAME_SECTOR_NUM 5                  // ゲームのセーブスロット
 #define SECTOR_NUM (GAME_SECTOR_NUM + 1)   // ゲームのセーブスロット5つ + システムデータ用のセーブスロット1つ
 #define TOTAL_SECTOR_NUM (SECTOR_NUM * 2)  // メインのセーブデータとバックアップのセーブデータを合わせた数
+
+// SectorHeader.unk_c に入る値。 US はセーブデータのバージョンが1つ上がっている
+#if IS_US
+#define SECTOR_VERSION 12
+#else
+#define SECTOR_VERSION 11
+#endif
+
+// チェックサム検証用の作業バッファのサイズ。これより大きいデータ部分は検証しない
+#define SECTOR_DATA_MAX 640
 
 enum SectorID {
   SECTOR_GAME_0,  // ゲームのセーブスロット1
@@ -58,6 +69,11 @@ extern const saveFunc gSramRoutine[3];
 
 void UpdateSram(void);
 bool32 ValidateSector(u8 sector, s32 length);
+#if IS_US
+// US のみ: ヘッダに加えてデータ部分のチェックサムも確かめる
+bool32 ValidateSectorWithChecksum(u8 sector, s32 length);
+extern u8 gSectorDataBuffer[SECTOR_DATA_MAX];
+#endif
 s32 DeleteSector(u8 sector);
 s32 sram_08003330(u8 sector, void* data, u32 bytesize);
 s32 sram_08003378(u8 sector, void* data, u32 bytesize);

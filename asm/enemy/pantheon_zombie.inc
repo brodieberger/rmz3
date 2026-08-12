@@ -152,7 +152,7 @@ _0807FE26:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807FE2C: .4byte 0x08367F90
+_0807FE2C: .4byte sElementCoord
 
 	thumb_func_start PantheonZombie_Init
 PantheonZombie_Init: @ 0x0807FE30
@@ -208,8 +208,8 @@ PantheonZombie_Init: @ 0x0807FE30
 	bx r0
 	.align 2, 0
 _0807FE9C: .4byte gEnemyFnTable
-_0807FEA0: .4byte 0x08367F98
-_0807FEA4: .4byte 0x08367ED0
+_0807FEA0: .4byte sInitModes
+_0807FEA4: .4byte sCollisions
 _0807FEA8: .4byte FUN_0807fd84
 
 	thumb_func_start PantheonZombie_Update
@@ -267,8 +267,8 @@ _0807FF16:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807FF1C: .4byte 0x08367E84
-_0807FF20: .4byte 0x08367EA4
+_0807FF1C: .4byte sUpdates1
+_0807FF20: .4byte sUpdates2
 
 	thumb_func_start PantheonZombie_Die
 PantheonZombie_Die: @ 0x0807FF24
@@ -282,7 +282,7 @@ PantheonZombie_Die: @ 0x0807FF24
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807FF38: .4byte 0x08367EC4
+_0807FF38: .4byte sDeads
 
 	thumb_func_start nop_0807ff3c
 nop_0807ff3c: @ 0x0807FF3C
@@ -416,7 +416,7 @@ _08080002:
 	b _08080044
 	.align 2, 0
 _08080014: .4byte 0x00004C02
-_08080018: .4byte 0x08367F00
+_08080018: .4byte gPantheonZombieRoutine+0x90
 _0808001C:
 	ldr r0, [r4, #0x60]
 	adds r0, #0x40
@@ -465,7 +465,7 @@ FUN_08080054: @ 0x08080054
 	bl SetDDP
 	b _0808007E
 	.align 2, 0
-_08080070: .4byte 0x08367EE8
+_08080070: .4byte gPantheonZombieRoutine+0x78
 _08080074:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -504,7 +504,7 @@ _080800AA:
 	beq _080800CC
 	b _080801EE
 	.align 2, 0
-_080800BC: .4byte 0x08367F18
+_080800BC: .4byte gPantheonZombieRoutine+0xa8
 _080800C0: .4byte 0x0000FFF0
 _080800C4:
 	cmp r5, #2
@@ -884,7 +884,7 @@ _08080394:
 	bl UpdateEntityAnim
 	b _080803D0
 	.align 2, 0
-_0808039C: .4byte 0x08367EE8
+_0808039C: .4byte gPantheonZombieRoutine+0x78
 _080803A0: .4byte 0x00004C02
 _080803A4:
 	ldr r1, _080803D8 @ =0x00004C04
@@ -959,7 +959,7 @@ _080803EC:
 	lsls r0, r0, #4
 	b _08080458
 	.align 2, 0
-_0808042C: .4byte 0x08367F48
+_0808042C: .4byte gPantheonZombieRoutine+0xd8
 _08080430: .4byte pZero2
 _08080434:
 	movs r2, #1
@@ -1064,7 +1064,7 @@ _080804CA:
 	strb r0, [r4, #0xe]
 	b _08080608
 	.align 2, 0
-_080804F4: .4byte 0x08367EE8
+_080804F4: .4byte gPantheonZombieRoutine+0x78
 _080804F8:
 	ldr r0, _080805A8 @ =0xFFFFFE80
 	str r0, [r4, #0x60]
@@ -1257,7 +1257,7 @@ _08080666:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808066C: .4byte 0x08367EE8
+_0808066C: .4byte gPantheonZombieRoutine+0x78
 _08080670: .4byte 0x00004C02
 
 	thumb_func_start FUN_08080674
@@ -1449,7 +1449,7 @@ _080807EE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080807F4: .4byte 0x08367F78
+_080807F4: .4byte gPantheonZombieRoutine+0x108
 _080807F8: .4byte 0x00004C02
 _080807FC: .4byte pZero2
 _08080800: .4byte 0xFFFFE800

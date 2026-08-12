@@ -504,7 +504,7 @@ _08085218:
 	strb r5, [r6, #0x12]
 	b _080852A4
 	.align 2, 0
-_08085250: .4byte 0x083683B4
+_08085250: .4byte sCollisions
 _08085254:
 	ldrb r0, [r6, #0x12]
 	adds r1, r0, #1
@@ -525,7 +525,7 @@ _08085254:
 	b _080852A4
 	.align 2, 0
 _0808527C: .4byte 0x0000620A
-_08085280: .4byte 0x083683E4
+_08085280: .4byte gEnemy42Routine+0x68
 _08085284:
 	ldrb r0, [r6, #0x12]
 	adds r1, r0, #1
@@ -548,7 +548,7 @@ _080852A4:
 	b _080852E0
 	.align 2, 0
 _080852AC: .4byte 0x0000620B
-_080852B0: .4byte 0x08368414
+_080852B0: .4byte gEnemy42Routine+0x98
 _080852B4:
 	ldrb r0, [r6, #0x12]
 	subs r0, #1

@@ -65,4 +65,4 @@ _080104C0: .4byte 0x000007D4
 _080104C4: .4byte 0x0002D035
 _080104C8: .4byte u8_ARRAY_ARRAY_08340128
 _080104CC: .4byte gStageTilesetOffsets+(18*4)
-_080104D0: .4byte 0x08705150
+_080104D0: .4byte gSnowTilesetGraphics+0xc54

@@ -2278,6 +2278,19 @@ FUN_08076be4: @ 0x08076BE4
 	beq _08076CDC
 	b _08076D22
 _08076BF6:
+.if REGION_US && !HIT_BLOOD
+	movs r2, #0
+	ldr r0, _08076C18 @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r5, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _08076C08
+	movs r2, #1
+_08076C08:
+	adds r6, r2, #0
+.else
 	movs r3, #0
 	ldr r0, _08076C18 @ =pZero2
 	ldr r0, [r0]
@@ -2290,6 +2303,7 @@ _08076BF6:
 _08076C08:
 	adds r6, r3, #0
 	adds r2, r6, #0
+.endif
 	cmp r6, #0
 	beq _08076C1C
 	ldrb r1, [r5, #0xa]
@@ -2336,6 +2350,7 @@ _08076C22:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -2346,6 +2361,7 @@ _08076C22:
 	add r1, sp, #8
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r6, #1
 	adds r0, r0, r6

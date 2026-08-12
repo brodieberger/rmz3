@@ -99,9 +99,9 @@ FUN_080b16f4: @ 0x080B16F4
 	bx r0
 	.align 2, 0
 _080B1754: .4byte gProjectileFnTable
-_080B1758: .4byte 0x0836D7B4
-_080B175C: .4byte 0x0836D79C
-_080B1760: .4byte 0x080B16F1
+_080B1758: .4byte u8_ARRAY_0836d7b4
+_080B175C: .4byte Collision_0836d79c
+_080B1760: .4byte FUN_080b1698+0x59
 
 	thumb_func_start FUN_080b1764
 FUN_080b1764: @ 0x080B1764
@@ -125,8 +125,8 @@ FUN_080b1764: @ 0x080B1764
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080B1790: .4byte 0x0836D794
-_080B1794: .4byte 0x0836D798
+_080B1790: .4byte PTR_ARRAY_0836d794
+_080B1794: .4byte gProjectile44Routine+0x18
 
 	thumb_func_start FUN_080b1798
 FUN_080b1798: @ 0x080B1798

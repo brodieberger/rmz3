@@ -142,7 +142,7 @@ _08094D6A:
 	b _08094D96
 	.align 2, 0
 _08094D84: .4byte pZero2
-_08094D88: .4byte 0x08369EFC
+_08094D88: .4byte sCollisions
 _08094D8C:
 	adds r0, r4, #0
 	adds r0, #0x74
@@ -204,5 +204,5 @@ _08094DFC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08094E04: .4byte 0x08369F14
+_08094E04: .4byte gEnemy63Routine+0x4c
 _08094E08: .4byte gEnemyFnTable

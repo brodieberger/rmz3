@@ -122,7 +122,7 @@ _080ECE08:
 	lsrs r2, r0, #0x18
 	cmp r2, #0
 	bne _080ECE2C
-	ldr r0, _080ECE24 @ =0x020014C0
+	ldr r0, _080ECE24 @ =Unk_02000db0+0x6f0
 	movs r1, #0
 	strh r2, [r0, #0x10]
 	ldr r2, _080ECE28 @ =0x00000253
@@ -130,7 +130,7 @@ _080ECE08:
 	strb r1, [r0]
 	b _080ECFA8
 	.align 2, 0
-_080ECE24: .4byte 0x020014C0
+_080ECE24: .4byte Unk_02000db0+0x6f0
 _080ECE28: .4byte 0x00000253
 _080ECE2C:
 	ldr r3, _080ECE40 @ =0x00000251
@@ -230,7 +230,7 @@ _080ECEDE:
 	lsrs r2, r0, #0x18
 	cmp r2, #0
 	bne _080ECF80
-	ldr r0, _080ECF0C @ =0x020014C0
+	ldr r0, _080ECF0C @ =Unk_02000db0+0x6f0
 	ldrh r2, [r0, #0x10]
 	subs r0, r2, #1
 	lsls r0, r0, #0x10
@@ -247,7 +247,7 @@ _080ECEDE:
 	movs r0, #4
 	b _080ECF3C
 	.align 2, 0
-_080ECF0C: .4byte 0x020014C0
+_080ECF0C: .4byte Unk_02000db0+0x6f0
 _080ECF10:
 	movs r0, #0x81
 	lsls r0, r0, #1

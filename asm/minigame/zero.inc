@@ -237,7 +237,7 @@ zeroMinigame: @ 0x080F93C0
 	bx r1
 	.align 2, 0
 _080F93DC: .4byte 0x00000DCC
-_080F93E0: .4byte 0x08386AEC
+_080F93E0: .4byte ZeroMinigameLoops
 
 	thumb_func_start zeroMinigamePhase0
 zeroMinigamePhase0: @ 0x080F93E4
@@ -337,8 +337,8 @@ _080F947A:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080F94A8: .4byte 0x0810E248
-_080F94AC: .4byte 0x0810E250
+_080F94A8: .4byte Unicode_SCORE_0810e248
+_080F94AC: .4byte Unicode_HI_SCORE_0810e250
 
 	thumb_func_start zeroMinigamePhase1
 zeroMinigamePhase1: @ 0x080F94B0
@@ -662,8 +662,8 @@ _080F973E:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080F9748: .4byte 0x0810E248
-_080F974C: .4byte 0x0810E250
+_080F9748: .4byte Unicode_SCORE_0810e248
+_080F974C: .4byte Unicode_HI_SCORE_0810e250
 
 	thumb_func_start zeroMinigamePhase2
 zeroMinigamePhase2: @ 0x080F9750
@@ -782,6 +782,6 @@ _080F9838:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080F9840: .4byte 0x0810E248
-_080F9844: .4byte 0x0810E250
+_080F9840: .4byte Unicode_SCORE_0810e248
+_080F9844: .4byte Unicode_HI_SCORE_0810e250
 

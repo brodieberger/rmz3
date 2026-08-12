@@ -94,7 +94,7 @@ SharksealX_Init: @ 0x08070084
 	.align 2, 0
 _080700D0: .4byte gSystemSavedata
 _080700D4: .4byte gCurStory
-_080700D8: .4byte 0x08366A44
+_080700D8: .4byte sCollisions
 _080700DC:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -150,7 +150,7 @@ _080700F4:
 	str r0, [r6, #0x14]
 	b _080701C8
 	.align 2, 0
-_08070148: .4byte 0x08366A44
+_08070148: .4byte sCollisions
 _0807014C: .4byte FUN_080711d8
 _08070150: .4byte gOverworld
 _08070154: .4byte 0x0002C00C
@@ -266,7 +266,7 @@ _08070204:
 	strb r1, [r0]
 	b _080702C0
 	.align 2, 0
-_08070240: .4byte 0x08366A04
+_08070240: .4byte PTR_ARRAY_08366a04
 _08070244:
 	ldr r0, _08070294 @ =gOverworld
 	ldr r1, _08070298 @ =0x0002C00C
@@ -334,7 +334,7 @@ _080702C0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080702C8: .4byte 0x08366A24
+_080702C8: .4byte PTR_ARRAY_08366a24
 
 	thumb_func_start SharksealX_Die
 SharksealX_Die: @ 0x080702CC
@@ -477,6 +477,7 @@ _080703D0:
 	ldrb r1, [r0]
 	mov r0, sp
 	bl FUN_080b7b38
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xbf
 	ldrb r0, [r0]
@@ -517,6 +518,7 @@ _0807043C:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _0807044A:
 	ldr r0, [sp]
 	ldr r1, [sp, #4]
@@ -594,6 +596,9 @@ _080704DE:
 	strb r0, [r7, #0xe]
 	b _0807079E
 	.align 2, 0
+.if !HIT_BLOOD
+_08070418: .4byte 0x00001803
+.endif
 _080704E8: .4byte RNG_0202f388
 _080704EC: .4byte 0x000343FD
 _080704F0: .4byte 0x00269EC3
@@ -1056,7 +1061,7 @@ _08070872:
 	ldr r0, [r0, #0x54]
 	b _080708BC
 	.align 2, 0
-_080708A8: .4byte 0x08366A44
+_080708A8: .4byte sCollisions
 _080708AC: .4byte gSineTable
 _080708B0: .4byte pZero2
 _080708B4:
@@ -1118,7 +1123,7 @@ _080708F0:
 	orrs r0, r1
 	b _08070926
 	.align 2, 0
-_0807091C: .4byte 0x08366A44
+_0807091C: .4byte sCollisions
 _08070920:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1229,7 +1234,7 @@ _080709C8:
 	orrs r0, r1
 	b _080709FE
 	.align 2, 0
-_080709F4: .4byte 0x08366A44
+_080709F4: .4byte sCollisions
 _080709F8:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xef
@@ -1494,7 +1499,7 @@ _08070BDA:
 	b _08070C5A
 	.align 2, 0
 _08070BF4: .4byte 0x00001801
-_08070BF8: .4byte 0x08366A74
+_08070BF8: .4byte PTR_ARRAY_08366a24+0x50
 _08070BFC: .4byte pZero2
 _08070C00: .4byte 0xFFFFEC00
 _08070C04:
@@ -1546,7 +1551,7 @@ _08070C5A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08070C60: .4byte 0x08366A44
+_08070C60: .4byte sCollisions
 _08070C64: .4byte 0x00001806
 
 	thumb_func_start FUN_08070c68
@@ -1611,7 +1616,7 @@ _08070CB4:
 	strb r0, [r4, #0xf]
 	b _08070D0C
 	.align 2, 0
-_08070CF0: .4byte 0x08366A44
+_08070CF0: .4byte sCollisions
 _08070CF4:
 	str r2, [r4, #0x5c]
 	movs r0, #0x20
@@ -1751,7 +1756,7 @@ _08070DEE:
 	b _08070F2C
 	.align 2, 0
 _08070DF4: .4byte 0x00001801
-_08070DF8: .4byte 0x08366A74
+_08070DF8: .4byte PTR_ARRAY_08366a24+0x50
 _08070DFC:
 	adds r0, r4, #0
 	adds r0, #0xbc
@@ -1798,7 +1803,7 @@ _08070E4C:
 	bl UpdateEntityAnim
 	b _08070F2C
 	.align 2, 0
-_08070E54: .4byte 0x08366A44
+_08070E54: .4byte sCollisions
 _08070E58: .4byte 0x00001806
 _08070E5C:
 	ldr r1, [r4, #0x5c]
@@ -1964,8 +1969,8 @@ _08070F7C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08070F84: .4byte 0x08366AA4
-_08070F88: .4byte 0x08366A44
+_08070F84: .4byte PTR_ARRAY_08366a24+0x80
+_08070F88: .4byte sCollisions
 
 	thumb_func_start FUN_08070f8c
 FUN_08070f8c: @ 0x08070F8C
@@ -2030,7 +2035,7 @@ _08070FCA:
 	ldr r1, _08070FF8 @ =0xFFFFF000
 	b _08071000
 	.align 2, 0
-_08070FF4: .4byte 0x08366AA4
+_08070FF4: .4byte PTR_ARRAY_08366a24+0x80
 _08070FF8: .4byte 0xFFFFF000
 _08070FFC:
 	ldr r0, [r4, #0x58]
@@ -2059,7 +2064,7 @@ _08071026:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807102C: .4byte 0x08366A44
+_0807102C: .4byte sCollisions
 
 	thumb_func_start sharksealx_08071030
 sharksealx_08071030: @ 0x08071030
@@ -2254,7 +2259,7 @@ _08071194:
 	movs r0, #5
 	b _080711BE
 	.align 2, 0
-_080711B4: .4byte 0x08366ABC
+_080711B4: .4byte sElementCoord
 _080711B8:
 	cmp r2, #0x30
 	bne _080711C2

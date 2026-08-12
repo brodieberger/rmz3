@@ -45,11 +45,20 @@ _08018C2E:
 	b _08018C74
 	.align 2, 0
 _08018C58: .4byte sStagePreloadEntities
-_08018C5C: .4byte gSpawnManager+0x22A
+_08018C5C:
+.if REGION_US
+	.4byte gSpawnManager+0x2EA
+.else
+	.4byte gSpawnManager+0x22A
+.endif
 _08018C60: .4byte wStaticGraphicTilenums
 _08018C64: .4byte wStaticMotionPalIDs
 _08018C68: .4byte gSpawnManager
+.if REGION_US
+_08018C6C: .4byte 0x000002E9  @ gSpawnManager.mmbn4EnemiesEnabled
+.else
 _08018C6C: .4byte 0x00000229
+.endif
 _08018C70:
 	ldrb r1, [r6, #6]
 	adds r0, r3, #0

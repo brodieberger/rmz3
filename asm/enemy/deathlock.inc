@@ -2484,6 +2484,7 @@ _0808E3BE:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -2494,11 +2495,22 @@ _0808E3BE:
 	add r1, sp, #8
 	adds r3, r4, #0
 	bl FUN_080b2b40
+.endif
+.if REGION_US && !HIT_BLOOD
+	ldr r0, [r5, #0x54]
+	str r0, [sp, #8]
+	ldr r1, [r5, #0x58]
+	str r1, [sp, #0xc]
+	movs r2, #0x80
+	lsls r2, r2, #3
+	adds r1, r1, r2
+.else
 	ldr r0, [r5, #0x54]
 	ldr r1, [r5, #0x58]
 	movs r2, #0x80
 	lsls r2, r2, #3
 	adds r1, r1, r2
+.endif
 	bl PushoutToUp1
 	mvns r0, r0
 	lsrs r0, r0, #0x1f

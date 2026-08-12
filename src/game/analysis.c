@@ -271,6 +271,360 @@ static void printThreeDigitNumber(u16 n, u8 x, u8 y);
 
 NAKED static void DiskLoop_Run(struct GameState* g) {
   asm(".syntax unified\n\
+.if REGION_US\n\
+	push	{r4, r5, r6, r7, lr}\n\
+	mov	r7, r8\n\
+	push	{r7}\n\
+	mov	r8, r0\n\
+	ldr	r5, _US_080F7C84\n\
+	add	r5, r8\n\
+	movs	r0, #0\n\
+	strb	r0, [r5, #12]\n\
+	ldr	r1, _US_080F7C88\n\
+	mov	r2, r8\n\
+	ldrb	r0, [r2, #2]\n\
+	lsls	r0, r0, #2\n\
+	adds	r0, r0, r1\n\
+	ldr	r1, [r0, #0]\n\
+	mov	r0, r8\n\
+	bl _call_via_r1\n\
+	ldr	r0, _US_080F7C8C\n\
+	ldrh	r1, [r0, #4]\n\
+	movs	r0, #8\n\
+	ands	r0, r1\n\
+	cmp	r0, #0\n\
+	beq _US_080F7C24\n\
+	movs	r0, #3\n\
+	mov	r3, r8\n\
+	strb	r0, [r3, #1]\n\
+_US_080F7C24:\n\
+	ldr	r6, _US_080F7C90\n\
+	movs	r1, #239\n\
+	lsls	r1, r1, #2\n\
+	adds	r0, r6, r1\n\
+	ldrh	r0, [r0, #0]\n\
+	ldr	r7, _US_080F7C94\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #1\n\
+	bl PrintString\n\
+	ldrb	r0, [r5, #10]\n\
+	adds	r0, #1\n\
+	movs	r1, #22\n\
+	movs	r2, #1\n\
+	bl printThreeDigitNumber\n\
+	ldr	r0, _US_080F7C98\n\
+	ldr	r1, [r0, #0]\n\
+	ldrb	r2, [r5, #10]\n\
+	lsls	r0, r2, #24\n\
+	lsrs	r3, r0, #24\n\
+	lsrs	r0, r0, #26\n\
+	adds	r4, r1, r0\n\
+	ldrb	r1, [r4, #0]\n\
+	movs	r0, #15\n\
+	ands	r0, r1\n\
+	movs	r1, #3\n\
+	ands	r1, r2\n\
+	asrs	r0, r1\n\
+	movs	r2, #1\n\
+	ands	r0, r2\n\
+	cmp	r0, #0\n\
+	bne _US_080F7C6A\n\
+	b _US_080F7E14\n\
+_US_080F7C6A:\n\
+	ldrb	r0, [r4, #0]\n\
+	adds	r1, #4\n\
+	asrs	r0, r1\n\
+	ands	r0, r2\n\
+	cmp	r0, #0\n\
+	bne _US_080F7C78\n\
+	b _US_080F7DEC\n\
+_US_080F7C78:\n\
+	cmp	r3, #5\n\
+	bhi _US_080F7C9C\n\
+	movs	r2, #175\n\
+	lsls	r2, r2, #2\n\
+	adds	r0, r2, #0\n\
+	b _US_080F7CA6\n\
+	.align 2, 0\n\
+_US_080F7C84: .4byte 0x00000DCC\n\
+_US_080F7C88: .4byte PTR_ARRAY_083864ac\n\
+_US_080F7C8C: .4byte gJoypad\n\
+_US_080F7C90: .4byte StringOfsTable\n\
+_US_080F7C94: .4byte gStringData\n\
+_US_080F7C98: .4byte gStageDiskManager\n\
+_US_080F7C9C:\n\
+	cmp	r3, #19\n\
+	bhi _US_080F7CBC\n\
+	movs	r3, #175\n\
+	lsls	r3, r3, #2\n\
+	adds	r0, r3, #0\n\
+_US_080F7CA6:\n\
+	ldrb	r5, [r5, #10]\n\
+	adds	r0, r0, r5\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r6\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #4\n\
+	bl PrintString\n\
+	b _US_080F7DD0\n\
+_US_080F7CBC:\n\
+	cmp	r3, #93\n\
+	bhi _US_080F7D1C\n\
+	ldrb	r0, [r5, #10]\n\
+	adds	r4, r0, #0\n\
+	adds	r4, #80\n\
+	movs	r1, #180\n\
+	lsls	r1, r1, #3\n\
+	adds	r0, r6, r1\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #4\n\
+	bl PrintString\n\
+	lsls	r4, r4, #1\n\
+	adds	r4, r4, r6\n\
+	ldrh	r0, [r4, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #6\n\
+	bl PrintString\n\
+	ldr	r2, _US_080F7D14\n\
+	adds	r0, r6, r2\n\
+	ldrh	r5, [r0, #0]\n\
+	adds	r5, r5, r7\n\
+	ldrh	r0, [r4, #0]\n\
+	adds	r0, r0, r7\n\
+	bl getStringLength\n\
+	adds	r1, r0, #0\n\
+	lsls	r1, r1, #16\n\
+	asrs	r1, r1, #16\n\
+	adds	r1, #17\n\
+	adds	r0, r5, #0\n\
+	movs	r2, #6\n\
+	bl PrintString\n\
+	ldr	r3, _US_080F7D18\n\
+	adds	r0, r6, r3\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	b _US_080F7D96\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F7D14: .4byte 0x000005A2\n\
+_US_080F7D18: .4byte 0x000005A4\n\
+_US_080F7D1C:\n\
+	cmp	r3, #109\n\
+	bhi _US_080F7DB8\n\
+	ldr	r1, _US_080F7DA0\n\
+	adds	r0, r6, r1\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #4\n\
+	bl PrintString\n\
+	movs	r4, #0\n\
+	ldr	r1, _US_080F7DA4\n\
+	ldrb	r0, [r5, #10]\n\
+	subs	r0, #94\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r2, [r0, #0]\n\
+	cmp	r2, #0\n\
+	beq _US_080F7D58\n\
+_US_080F7D42:\n\
+	adds	r0, r2, #0\n\
+	movs	r1, #10\n\
+	bl __udivsi3\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r2, r0, #16\n\
+	adds	r0, r4, #1\n\
+	lsls	r0, r0, #16\n\
+	lsrs	r4, r0, #16\n\
+	cmp	r2, #0\n\
+	bne _US_080F7D42\n\
+_US_080F7D58:\n\
+	ldr	r1, _US_080F7DA4\n\
+	ldr	r0, _US_080F7DA8\n\
+	add	r0, r8\n\
+	ldrb	r0, [r0, #10]\n\
+	subs	r0, #94\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r1\n\
+	ldrh	r2, [r0, #0]\n\
+	adds	r1, r4, #0\n\
+	adds	r1, #16\n\
+	lsls	r1, r1, #24\n\
+	lsrs	r1, r1, #24\n\
+	adds	r0, r2, #0\n\
+	movs	r2, #4\n\
+	bl PrintNumber\n\
+	ldr	r4, _US_080F7DAC\n\
+	movs	r2, #181\n\
+	lsls	r2, r2, #3\n\
+	adds	r0, r4, r2\n\
+	ldrh	r0, [r0, #0]\n\
+	ldr	r5, _US_080F7DB0\n\
+	adds	r0, r0, r5\n\
+	movs	r1, #17\n\
+	movs	r2, #6\n\
+	bl PrintString\n\
+	ldr	r3, _US_080F7DB4\n\
+	adds	r4, r4, r3\n\
+	ldrh	r0, [r4, #0]\n\
+	adds	r0, r0, r5\n\
+_US_080F7D96:\n\
+	movs	r1, #17\n\
+	movs	r2, #8\n\
+	bl PrintString\n\
+	b _US_080F7DD0\n\
+	.align 2, 0\n\
+_US_080F7DA0: .4byte 0x000005A6\n\
+_US_080F7DA4: .4byte DiskECrystalAmounts\n\
+_US_080F7DA8: .4byte 0x00000DCC\n\
+_US_080F7DAC: .4byte StringOfsTable\n\
+_US_080F7DB0: .4byte gStringData\n\
+_US_080F7DB4: .4byte 0x000005AA\n\
+_US_080F7DB8:\n\
+	ldrb	r0, [r5, #10]\n\
+	movs	r1, #154\n\
+	lsls	r1, r1, #2\n\
+	adds	r0, r0, r1\n\
+	lsls	r0, r0, #1\n\
+	adds	r0, r0, r6\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #4\n\
+	bl PrintString\n\
+_US_080F7DD0:\n\
+	ldr	r0, _US_080F7DE0\n\
+	ldr	r2, _US_080F7DE4\n\
+	adds	r0, r0, r2\n\
+	ldrh	r0, [r0, #0]\n\
+	ldr	r1, _US_080F7DE8\n\
+	adds	r0, r0, r1\n\
+	b _US_080F7E06\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F7DE0: .4byte StringOfsTable\n\
+_US_080F7DE4: .4byte 0x000003BA\n\
+_US_080F7DE8: .4byte gStringData\n\
+_US_080F7DEC:\n\
+	ldr	r3, _US_080F7E10\n\
+	adds	r0, r6, r3\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #17\n\
+	movs	r2, #4\n\
+	bl PrintString\n\
+	movs	r1, #238\n\
+	lsls	r1, r1, #2\n\
+	adds	r0, r6, r1\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+_US_080F7E06:\n\
+	movs	r1, #1\n\
+	movs	r2, #18\n\
+	bl PrintString\n\
+	b _US_080F7E24\n\
+	.align 2, 0\n\
+_US_080F7E10: .4byte 0x000003BE\n\
+_US_080F7E14:\n\
+	ldr	r2, _US_080F7E84\n\
+	adds	r0, r6, r2\n\
+	ldrh	r0, [r0, #0]\n\
+	adds	r0, r0, r7\n\
+	movs	r1, #1\n\
+	movs	r2, #18\n\
+	bl PrintString\n\
+_US_080F7E24:\n\
+	ldr	r5, _US_080F7E88\n\
+	add	r5, r8\n\
+	ldrb	r0, [r5, #14]\n\
+	cmp	r0, #0\n\
+	beq _US_080F7E94\n\
+	ldr	r2, _US_080F7E8C\n\
+	ldrb	r1, [r5, #18]\n\
+	lsls	r1, r1, #10\n\
+	ldrb	r0, [r5, #17]\n\
+	lsls	r0, r0, #5\n\
+	orrs	r1, r0\n\
+	ldrb	r0, [r5, #16]\n\
+	orrs	r0, r1\n\
+	strh	r0, [r2, #0]\n\
+	ldr	r2, _US_080F7E90\n\
+	ldrh	r1, [r2, #0]\n\
+	movs	r3, #128\n\
+	lsls	r3, r3, #6\n\
+	adds	r0, r3, #0\n\
+	orrs	r0, r1\n\
+	strh	r0, [r2, #0]\n\
+	movs	r0, #16\n\
+	strb	r0, [r2, #12]\n\
+	ldrb	r1, [r2, #14]\n\
+	movs	r0, #3\n\
+	orrs	r0, r1\n\
+	strb	r0, [r2, #14]\n\
+	ldrb	r3, [r5, #14]\n\
+	adds	r1, r3, #0\n\
+	adds	r1, #64\n\
+	movs	r4, #255\n\
+	ands	r1, r4\n\
+	movs	r0, #64\n\
+	subs	r0, r0, r3\n\
+	lsls	r0, r0, #8\n\
+	orrs	r1, r0\n\
+	strh	r1, [r2, #4]\n\
+	ldrb	r3, [r5, #15]\n\
+	adds	r1, r3, #0\n\
+	adds	r1, #80\n\
+	ands	r1, r4\n\
+	movs	r0, #80\n\
+	subs	r0, r0, r3\n\
+	lsls	r0, r0, #8\n\
+	orrs	r1, r0\n\
+	strh	r1, [r2, #8]\n\
+	b _US_080F7EA6\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F7E84: .4byte 0x000003BA\n\
+_US_080F7E88: .4byte 0x00000DCC\n\
+_US_080F7E8C: .4byte gPaletteManager\n\
+_US_080F7E90: .4byte gWindowRegBuffer\n\
+_US_080F7E94:\n\
+	ldr	r2, _US_080F7EC8\n\
+	ldrh	r1, [r2, #0]\n\
+	ldr	r0, _US_080F7ECC\n\
+	ands	r0, r1\n\
+	movs	r1, #0\n\
+	strh	r0, [r2, #0]\n\
+	strb	r1, [r5, #16]\n\
+	strb	r1, [r5, #17]\n\
+	strb	r1, [r5, #18]\n\
+_US_080F7EA6:\n\
+	movs	r0, #64\n\
+	bl StepPaletteAnimation\n\
+	ldr	r0, _US_080F7ED0\n\
+	add	r0, r8\n\
+	ldrb	r0, [r0, #12]\n\
+	cmp	r0, #0\n\
+	beq _US_080F7EBC\n\
+	mov	r0, r8\n\
+	bl setSecretDiskPalette\n\
+_US_080F7EBC:\n\
+	pop	{r3}\n\
+	mov	r8, r3\n\
+	pop	{r4, r5, r6, r7}\n\
+	pop	{r0}\n\
+	bx	r0\n\
+	movs	r0, r0\n\
+	.align 2, 0\n\
+_US_080F7EC8: .4byte gWindowRegBuffer\n\
+_US_080F7ECC: .4byte 0x0000DFFF\n\
+_US_080F7ED0: .4byte 0x00000DCC\n\
+.else\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sb\n\
 	mov r6, r8\n\
@@ -623,6 +977,7 @@ _080F82E4:\n\
 _080F82F0: .4byte gWindowRegBuffer\n\
 _080F82F4: .4byte 0x0000DFFF\n\
 _080F82F8: .4byte 0x00000DCC\n\
+.endif\n\
  .syntax divided\n");
 }
 

@@ -3257,7 +3257,9 @@ _08059890: .4byte gStageRun
 	thumb_func_start glacierleDeath1
 glacierleDeath1: @ 0x08059894
 	push {r4, r5, r6, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r5, r0, #0
 	ldrb r0, [r5, #0xe]
 	cmp r0, #4
@@ -3367,6 +3369,7 @@ _0805996E:
 	lsls r1, r6, #9
 	subs r0, r0, r1
 	str r0, [r5, #0x5c]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	movs r1, #0x80
 	lsls r1, r1, #4
@@ -3384,6 +3387,7 @@ _0805996E:
 	mov r1, sp
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x32
 	strb r0, [r5, #0x12]
 	ldrb r0, [r5, #0xe]
@@ -3411,7 +3415,9 @@ _080599C8: .4byte gBossFnTable
 _080599CC: .4byte 0x0000B203
 _080599D0: .4byte gStageRun
 _080599D4: .4byte 0x0000FFFE
+.if HIT_BLOOD
 _080599D8: .4byte 0xFFFFD800
+.endif
 _080599DC:
 	cmp r3, #0
 	beq _080599E4
@@ -3466,7 +3472,9 @@ _08059A22:
 	adds r0, #1
 	strb r0, [r5, #0xe]
 _08059A3A:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0

@@ -44,7 +44,7 @@ Projectile37_Init: @ 0x080ADB24
 	strb r7, [r6, #0xf]
 	b _080ADBC4
 	.align 2, 0
-_080ADB74: .4byte 0x0836C944
+_080ADB74: .4byte gProjectile37Routine+0x34
 _080ADB78: .4byte gProjectileFnTable
 _080ADB7C:
 	cmp r7, #1
@@ -90,7 +90,7 @@ _080ADBC4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ADBD4: .4byte 0x0836C92C
+_080ADBD4: .4byte sCollisions
 _080ADBD8: .4byte gProjectileFnTable
 
 	thumb_func_start Projectile37_Update
@@ -146,7 +146,7 @@ _080ADC40:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ADC44: .4byte 0x0836C924
+_080ADC44: .4byte sUpdates
 
 	thumb_func_start Projectile37_Die
 Projectile37_Die: @ 0x080ADC48

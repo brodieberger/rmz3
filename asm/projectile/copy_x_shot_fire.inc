@@ -61,7 +61,7 @@ Projectile26_Init: @ 0x080A8954
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A8968: .4byte 0x0836C01C
+_080A8968: .4byte PTR_ARRAY_0836c01c
 
 	thumb_func_start Projectile26_Update
 Projectile26_Update: @ 0x080A896C
@@ -80,7 +80,7 @@ Projectile26_Update: @ 0x080A896C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A898C: .4byte 0x0836C034
+_080A898C: .4byte PTR_ARRAY_0836c034
 
 	thumb_func_start Projectile26_Die
 Projectile26_Die: @ 0x080A8990
@@ -301,7 +301,7 @@ _080A8B3C: .4byte 0xFFFFF000
 _080A8B40: .4byte 0xFFFFFC80
 _080A8B44: .4byte 0xFFFFE800
 _080A8B48: .4byte 0x0000FFF0
-_080A8B4C: .4byte 0x0836C04C
+_080A8B4C: .4byte sCollisions
 
 	thumb_func_start FUN_080a8b50
 FUN_080a8b50: @ 0x080A8B50
@@ -441,7 +441,7 @@ _080A8C60: .4byte 0xFFFFF000
 _080A8C64: .4byte 0xFFFFFC80
 _080A8C68: .4byte 0xFFFFEE00
 _080A8C6C: .4byte 0x0000FFE8
-_080A8C70: .4byte 0x0836C04C
+_080A8C70: .4byte sCollisions
 
 	thumb_func_start FUN_080a8c74
 FUN_080a8c74: @ 0x080A8C74
@@ -566,7 +566,7 @@ _080A8D34:
 	bx r0
 	.align 2, 0
 _080A8D68: .4byte 0x0000FFE8
-_080A8D6C: .4byte 0x0836C04C
+_080A8D6C: .4byte sCollisions
 
 	thumb_func_start FUN_080a8d70
 FUN_080a8d70: @ 0x080A8D70
@@ -682,9 +682,9 @@ _080A8E0A:
 	bx r0
 	.align 2, 0
 _080A8E54: .4byte 0xFFFFD800
-_080A8E58: .4byte 0x0836C0AC
+_080A8E58: .4byte s16_ARRAY_0836c0ac
 _080A8E5C: .4byte 0xFFFFFA00
-_080A8E60: .4byte 0x0836C04C
+_080A8E60: .4byte sCollisions
 
 	thumb_func_start FUN_080a8e64
 FUN_080a8e64: @ 0x080A8E64
@@ -770,7 +770,7 @@ _080A8EBA:
 	bx r0
 	.align 2, 0
 _080A8F0C: .4byte 0x0000FFFF
-_080A8F10: .4byte 0x0836C07C
+_080A8F10: .4byte gProjectile26Routine+0x74
 
 	thumb_func_start FUN_080a8f14
 FUN_080a8f14: @ 0x080A8F14

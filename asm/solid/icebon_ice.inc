@@ -200,9 +200,9 @@ _080CA868:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CA870: .4byte 0x0836FD58
+_080CA870: .4byte Rect_0836fd58
 _080CA874: .4byte 0x00000801
-_080CA878: .4byte 0x0836FCF8
+_080CA878: .4byte gIcebonIceRoutine+0x5c
 _080CA87C: .4byte 0xFFFFF100
 
 	thumb_func_start FUN_080ca880
@@ -299,9 +299,9 @@ _080CA916:
 	lsls r0, r0, #4
 	b _080CA952
 	.align 2, 0
-_080CA938: .4byte 0x0836FD58
+_080CA938: .4byte Rect_0836fd58
 _080CA93C: .4byte 0x00000801
-_080CA940: .4byte 0x0836FCF8
+_080CA940: .4byte gIcebonIceRoutine+0x5c
 _080CA944: .4byte gOverworld
 _080CA948: .4byte 0x0002C00C
 _080CA94C: .4byte pZero2
@@ -572,7 +572,7 @@ _080CAB48:
 	bx r0
 	.align 2, 0
 _080CAB50: .4byte 0x00001104
-_080CAB54: .4byte 0x0836FD28
+_080CAB54: .4byte gIcebonIceRoutine+0x8c
 
 	thumb_func_start FUN_080cab58
 FUN_080cab58: @ 0x080CAB58
@@ -642,7 +642,7 @@ _080CABD0:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CABD8: .4byte 0x0836FD28
+_080CABD8: .4byte gIcebonIceRoutine+0x8c
 _080CABDC: .4byte 0x00001105
 _080CABE0: .4byte gOverworld
 _080CABE4: .4byte 0x0002C00C

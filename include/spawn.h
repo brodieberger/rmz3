@@ -2,6 +2,7 @@
 #define GUARD_RMZ3_SPAWN_H
 
 #include "common.h"
+#include "config.h"
 #include "constants/constants.h"
 #include "gba/gba.h"
 #include "types.h"
@@ -94,9 +95,16 @@ static_assert(sizeof(struct SpawnedEntity) == 12);
   0x0202fb90
   ステージ上のEntityのスポーンを管理する構造体
 */
+// US は同時にスポーンできる Entity の数が多い (48体, JPは32体)
+#if IS_US
+#define SPAWNED_ENTITY_MAX 48
+#else
+#define SPAWNED_ENTITY_MAX 32
+#endif
+
 struct SpawnManager {
-  u32 spawnable[32 + 1];            // 1024個のbitfield (bitが1なら、対応するEntityをスポーンできる。 すでに生成している雑魚敵 や 一度きりのアイテム の再生成を防止するために存在)
-  struct SpawnedEntity buffer[32];  // 32個の SpawnedEntity のバッファ (つまり SpawnManager によってスポーンできる Entity は最大32体)
+  u32 spawnable[32 + 1];                             // 1024個のbitfield (bitが1なら、対応するEntityをスポーンできる。 すでに生成している雑魚敵 や 一度きりのアイテム の再生成を防止するために存在)
+  struct SpawnedEntity buffer[SPAWNED_ENTITY_MAX];   // SpawnManager によってスポーンできる Entity の最大数ぶんのバッファ
   struct SpawnedEntity* list;       // リンクリストの先頭
   struct SpawnedEntity* free;
   bool16 isMissionDone;  // 0x20C, 今いるステージのミッションがすでに終わっている(= フリーラン)
@@ -119,8 +127,8 @@ struct SpawnManager {
   bool8 inCyberSpace;         // 0x228: サイバー空間からの出入りを検知するためのフラグ, 雑魚敵をMMBN4のウィルスにする or 元に戻す処理のトリガーとして使われる
   bool8 mmbn4EnemiesEnabled;  // 0x229: 敵がMMBN4の雑魚敵に置き換えられているかを表すフラグ
   u16 cyberOBPs;              // 0x22A, (スプライトの)パレットID のビットフィールドで、サイバー空間のパレットエフェクトの対象を示す?
-};  // 556 bytes
-static_assert(sizeof(struct SpawnManager) == 556);
+};  // 556 bytes (JP) / 748 bytes (US)
+static_assert(sizeof(struct SpawnManager) == 172 + SPAWNED_ENTITY_MAX * sizeof(struct SpawnedEntity));
 
 // --------------------------------------------
 

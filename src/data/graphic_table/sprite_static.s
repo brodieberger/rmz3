@@ -142,7 +142,7 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 15
 	.4byte gStaticMotionGraphics_15-. @ src
-	.4byte 1444 | (634 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_15_Palettes - gStaticMotionGraphics_15) | (634 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 824, (LZ77 | BPP4) 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_15_Palettes-. @ src offset
@@ -745,7 +745,7 @@ ExSkillIcon: @ Graphic 69
 
 	@ Graphic 82
 	.4byte gStaticMotionGraphics_82-. @ src
-	.4byte 1004 | (879 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_82_Palettes - gStaticMotionGraphics_82) | (879 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 656, (LZ77 | BPP4) 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_82_Palettes-. @ src offset
@@ -1348,8 +1348,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 149
 	.4byte gStaticMotionGraphics_149-. @ src
-	.4byte 2232 | (0 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_149_Palettes - gStaticMotionGraphics_149) | (0 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 1288, (LZ77 | BPP4) 	@ rowsize(unused), props — 161 tiles
+.else
 	.2byte 896, (LZ77 | BPP4) 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_149_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1357,7 +1361,7 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 150
 	.4byte gStaticMotionGraphics_150-. @ src
-	.4byte 2628 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_150_Palettes - gStaticMotionGraphics_150) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1064, (LZ77 | BPP4) 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_150_Palettes-. @ src offset
@@ -1465,8 +1469,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 162
 	.4byte gStaticMotionGraphics_162-. @ src
-	.4byte 384 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_162_Palettes - gStaticMotionGraphics_162) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 96, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 96, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_162_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1474,8 +1482,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 163
 	.4byte gStaticMotionGraphics_163-. @ src
-	.4byte 960 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_163_Palettes - gStaticMotionGraphics_163) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 240, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 240, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_163_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1483,8 +1495,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 164
 	.4byte gStaticMotionGraphics_164-. @ src
-	.4byte 608 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_164_Palettes - gStaticMotionGraphics_164) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 152, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 152, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_164_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1492,8 +1508,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 165
 	.4byte gStaticMotionGraphics_165-. @ src
-	.4byte 576 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_165_Palettes - gStaticMotionGraphics_165) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 144, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 144, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_165_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1501,8 +1521,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 166
 	.4byte gStaticMotionGraphics_166-. @ src
-	.4byte 576 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_166_Palettes - gStaticMotionGraphics_166) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 144, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 144, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_166_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1951,8 +1975,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 216
 	.4byte gStaticMotionGraphics_216-. @ src
-	.4byte 896 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_216_Palettes - gStaticMotionGraphics_216) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 224, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 224, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_216_Palettes-. @ src offset
 		.2byte 96 @ bytesize
@@ -1960,8 +1988,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 217
 	.4byte gStaticMotionGraphics_217-. @ src
-	.4byte 544 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_217_Palettes - gStaticMotionGraphics_217) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 136, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 136, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_217_Palettes-. @ src offset
 		.2byte 96 @ bytesize
@@ -2086,8 +2118,12 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 231
 	.4byte gStaticMotionGraphics_231-. @ src
-	.4byte 448 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.4byte (gStaticMotionGraphics_231_Palettes - gStaticMotionGraphics_231) | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+.if ENGLISH
+	.2byte 112, (LZ77 | BPP4) 	@ rowsize(unused), props
+.else
 	.2byte 112, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_231_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -2367,7 +2403,11 @@ gStaticMotionGraphics_14_Palettes:
 	.incbin "sprites/static/menu/chip_icon/chip_icon.gbapal"
 
 gStaticMotionGraphics_15:
+.if ENGLISH
+	.incbin "sprites/static/menu/main_menu/sheet-en.4bpp.lz"
+.else
 	.incbin "sprites/static/menu/main_menu/sheet.4bpp.lz"
+.endif
 gStaticMotionGraphics_15_Palettes:
 	.incbin "sprites/static/menu/main_menu/sheet.gbapal"
 
@@ -2697,7 +2737,11 @@ gStaticMotionGraphics_81_Palettes:
 	.incbin "sprites/static/mother_elf/81/81.gbapal"
 
 gStaticMotionGraphics_82:
+.if ENGLISH
+	.incbin "sprites/static/menu/elf_menu/sheet-en.4bpp.lz"
+.else
 	.incbin "sprites/static/menu/elf_menu/sheet.4bpp.lz"
+.endif
 	gStaticMotionGraphics_82_Palettes:
 	.incbin "sprites/static/menu/elf_menu/elf_menu.gbapal"
 
@@ -3029,14 +3073,30 @@ gStaticMotionGraphics_148:
 	.incbin "sprites/static/resistance_base/ciel_comp/4/sheet.gbapal"
 
 gStaticMotionGraphics_149:
+.if ENGLISH
+	.incbin "sprites/static/logo/megaman/sheet-en.4bpp.lz"
+.else
 	.incbin "sprites/static/logo/megaman/sheet.4bpp.lz"
+.endif
 	gStaticMotionGraphics_149_Palettes:
+.if ENGLISH
+	.incbin "sprites/static/logo/megaman/sheet-en.gbapal"
+.else
 	.incbin "sprites/static/logo/megaman/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_150:
+.if ENGLISH
+	.incbin "sprites/static/logo/z/sheet-en.4bpp.lz"
+.else
 	.incbin "sprites/static/logo/z/sheet.4bpp.lz"
+.endif
 	gStaticMotionGraphics_150_Palettes:
+.if ENGLISH
+	.incbin "sprites/static/logo/z/sheet-en.gbapal"
+.else
 	.incbin "sprites/static/logo/z/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_151:
 	.incbin "sprites/static/missile_platform/sheet.4bpp"
@@ -3094,27 +3154,47 @@ gStaticMotionGraphics_161:
 	.incbin "sprites/static/minigame/harpuia/sheet.gbapal"
 
 gStaticMotionGraphics_162:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/painting/mmbn/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/painting/mmbn/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_162_Palettes:
 	.incbin "sprites/static/resistance_base/painting/mmbn/sheet.gbapal"
 
 gStaticMotionGraphics_163:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/graffiti/zero1/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/graffiti/zero1/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_163_Palettes:
 	.incbin "sprites/static/resistance_base/graffiti/zero1/sheet.gbapal"
 
 gStaticMotionGraphics_164:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/graffiti/ciel/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/graffiti/ciel/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_164_Palettes:
 	.incbin "sprites/static/resistance_base/graffiti/ciel/sheet.gbapal"
 
 gStaticMotionGraphics_165:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/graffiti/zero2/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/graffiti/zero2/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_165_Palettes:
 	.incbin "sprites/static/resistance_base/graffiti/zero2/sheet.gbapal"
 
 gStaticMotionGraphics_166:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/painting/ciel/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/painting/ciel/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_166_Palettes:
 	.incbin "sprites/static/resistance_base/painting/ciel/sheet.gbapal"
 
@@ -3361,12 +3441,20 @@ gStaticMotionGraphics_215:
 	.incbin "sprites/static/215/sheet.gbapal"
 
 gStaticMotionGraphics_216:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/cat/216/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/cat/216/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_216_Palettes:
 	.incbin "sprites/static/resistance_base/cat/216/216.gbapal"
 
 gStaticMotionGraphics_217:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/cat/217/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/cat/217/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_217_Palettes:
 	.incbin "sprites/static/resistance_base/cat/217/217.gbapal"
 
@@ -3436,7 +3524,11 @@ gStaticMotionGraphics_230:
 	.incbin "sprites/static/resistance_base/flying_fish/sheet.gbapal"
 
 gStaticMotionGraphics_231:
+.if ENGLISH
+	.incbin "sprites/static/resistance_base/plant/sheet.4bpp.lz"
+.else
 	.incbin "sprites/static/resistance_base/plant/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_231_Palettes:
 	.incbin "sprites/static/resistance_base/plant/sheet.gbapal"
 

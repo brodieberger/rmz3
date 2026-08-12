@@ -64,13 +64,21 @@ _08007632:
 	beq _08007640
 	asrs r2, r2, #1
 _08007640:
+.if REGION_US
+	movs r0, #0x80
+.else
 	movs r0, #0x10
+.endif
 	ands r0, r5
 	cmp r0, #0
 	beq _0800764A
 	lsls r2, r2, #1
 _0800764A:
+.if REGION_US
+	movs r0, #0x20
+.else
 	movs r0, #4
+.endif
 	ands r5, r0
 	cmp r5, #0
 	beq _0800765C

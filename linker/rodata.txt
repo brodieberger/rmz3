@@ -579,25 +579,31 @@
         src/game/minigame/leviathan.o (.rodata);
         src/game/minigame/phantom.o (.rodata);
 		FILL(0xFF)
-		. += 106244;
+		. += gPadSpriteDynamic;
+        src/data/us_gap.o (.rodata);
 
     src/data/animation/sprite_dynamic.o (.rodata);
     src/data/graphic_table/sprite_dynamic.o (.rodata);
 
 		src/data/bg/tilemap.o (.rodata);
+		src/data/us_tilemap_tail.o (.rodata);
 		src/data/bg/graphics.o (.rodata);
+		src/data/us_graphics_tail.o (.rodata);
 
 		src/data/graphic_table/dialog.o (.rodata);
 		src/data/animation/palette.o (.rodata);
 
     src/data/animation/sprite_static.o (.rodata);
+    src/data/us_static_tail2.o (.rodata);
     src/data/graphic_table/sprite_static.o (.rodata);
 		FILL(0xFF)
-		. += 40;
+		. += gPadSpriteStaticTail;
+    src/data/us_sprite_static_tail.o (.rodata);
 
 		src/data/graphic_table/cyberelf.o (.rodata);
 		src/stage/terrain.o (.rodata);
 		FILL(0xFF)
-		. += 120;
+		. += gPadTerrainTail;
+    src/data/us_terrain_tail.o (.rodata);
 
     src/data/tilesets.o (.rodata);

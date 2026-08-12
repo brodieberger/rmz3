@@ -940,7 +940,7 @@ _0801BA1E:\n\
 	lsls r0, r0, #0xa\n\
 	cmp r1, r0\n\
 	bhi _0801BA58\n\
-	ldr r1, _0801BA50 @ =0x0202FF94\n\
+	ldr r1, _0801BA50 @ =gStageRun+0x134\n\
 	ldr r0, [r1]\n\
 	cmp r0, #0\n\
 	bne _0801BAB0\n\
@@ -954,7 +954,7 @@ _0801BA1E:\n\
 _0801BA44: .4byte gStageRun\n\
 _0801BA48: .4byte 0x0000FFFE\n\
 _0801BA4C: .4byte 0xFFE77000\n\
-_0801BA50: .4byte 0x0202FF94\n\
+_0801BA50: .4byte gStageRun+0x134\n\
 _0801BA54: .4byte 0x001A4FFF\n\
 _0801BA58:\n\
 	ldr r0, _0801BA78 @ =0xFFDA5000\n\
@@ -963,7 +963,7 @@ _0801BA58:\n\
 	lsls r0, r0, #0xb\n\
 	cmp r1, r0\n\
 	bhi _0801BA9C\n\
-	ldr r1, _0801BA7C @ =0x0202FF94\n\
+	ldr r1, _0801BA7C @ =gStageRun+0x134\n\
 	ldr r0, [r1]\n\
 	cmp r0, #0\n\
 	bne _0801BAB0\n\
@@ -975,7 +975,7 @@ _0801BA58:\n\
 	b _0801BA86\n\
 	.align 2, 0\n\
 _0801BA78: .4byte 0xFFDA5000\n\
-_0801BA7C: .4byte 0x0202FF94\n\
+_0801BA7C: .4byte gStageRun+0x134\n\
 _0801BA80: .4byte 0x00276FFF\n\
 _0801BA84:\n\
 	ldr r0, _0801BA94 @ =0xFFFFC000\n\
@@ -991,7 +991,7 @@ _0801BA86:\n\
 _0801BA94: .4byte 0xFFFFC000\n\
 _0801BA98: .4byte gStageRun+232\n\
 _0801BA9C:\n\
-	ldr r1, _0801BAC4 @ =0x0202FF94\n\
+	ldr r1, _0801BAC4 @ =gStageRun+0x134\n\
 	ldr r0, [r1]\n\
 	cmp r0, #0\n\
 	beq _0801BAB0\n\
@@ -1012,7 +1012,7 @@ _0801BAB0:\n\
 	pop {r1}\n\
 	bx r1\n\
 	.align 2, 0\n\
-_0801BAC4: .4byte 0x0202FF94\n\
+_0801BAC4: .4byte gStageRun+0x134\n\
  .syntax divided\n");
 }
 

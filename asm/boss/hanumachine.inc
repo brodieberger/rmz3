@@ -240,14 +240,18 @@ _0805BB34:
 	bx r0
 	.align 2, 0
 _0805BB3C: .4byte 0x00020001
-_0805BB40: .4byte 0x08365048
-_0805BB44: .4byte 0x08364DC0
-_0805BB48: .4byte 0x08364D48
+_0805BB40: .4byte sElementCoord
+_0805BB44: .4byte sUpdates2
+_0805BB48: .4byte sUpdates1
 
 	thumb_func_start Hanumachine_Die
 Hanumachine_Die: @ 0x0805BB4C
 	push {r4, r5, lr}
+.if HIT_BLOOD
 	sub sp, #0x10
+.else
+	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
 	cmp r0, #0
@@ -261,6 +265,7 @@ Hanumachine_Die: @ 0x0805BB4C
 	adds r5, r0, #0
 	cmp r1, #0
 	beq _0805BBCA
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -275,6 +280,7 @@ Hanumachine_Die: @ 0x0805BB4C
 	movs r0, #0
 	mov r1, sp
 	bl FUN_080b2b40
+.endif
 	ldr r1, _0805BBA8 @ =0x0000B503
 	adds r0, r4, #0
 	bl SetMotion
@@ -288,7 +294,9 @@ Hanumachine_Die: @ 0x0805BB4C
 	subs r0, #0x41
 	b _0805BBB4
 	.align 2, 0
+.if HIT_BLOOD
 _0805BBA4: .4byte 0xFFFFF000
+.endif
 _0805BBA8: .4byte 0x0000B503
 _0805BBAC:
 	movs r0, #0x40
@@ -398,12 +406,20 @@ _0805BC7A:
 	movs r0, #0xa8
 	lsls r0, r0, #5
 _0805BC7E:
+.if HIT_BLOOD
 	str r0, [sp, #8]
 	ldr r1, _0805BC98 @ =0xFFFFEE00
 	add r0, sp, #8
 	str r1, [r0, #4]
 	adds r1, r0, #0
 	adds r0, r4, #0
+.else
+	str r0, [sp]
+	ldr r0, _0805BC98 @ =0xFFFFEE00
+	str r0, [sp, #4]
+	adds r0, r4, #0
+	mov r1, sp
+.endif
 	bl CreateBossExplosion
 	str r0, [r4, #0x2c]
 _0805BC90:
@@ -445,7 +461,11 @@ _0805BCCE:
 	adds r0, #1
 	strb r0, [r4, #0xf]
 _0805BCD4:
+.if HIT_BLOOD
 	add sp, #0x10
+.else
+	add sp, #8
+.endif
 	pop {r4, r5}
 	pop {r0}
 	bx r0
@@ -838,7 +858,7 @@ _0805BF9E:
 	b _0805BFD2
 	.align 2, 0
 _0805BFC0: .4byte 0x0000B501
-_0805BFC4: .4byte 0x08364E68
+_0805BFC4: .4byte gHanumachineRoutine+0x134
 _0805BFC8: .4byte pZero2
 _0805BFCC:
 	ldrb r1, [r4, #0xa]
@@ -1019,7 +1039,7 @@ hanu_0805c0d0: @ 0x0805C0D0
 	b _0805C142
 	.align 2, 0
 _0805C120: .4byte 0x0000B501
-_0805C124: .4byte 0x08364E98
+_0805C124: .4byte gHanumachineRoutine+0x164
 _0805C128: .4byte 0xFFFFFC80
 _0805C12C: .4byte 0xFFFFF000
 _0805C130:
@@ -1127,7 +1147,7 @@ hanu_0805c198: @ 0x0805C198
 	b _0805C20E
 	.align 2, 0
 _0805C200: .4byte 0x0000B506
-_0805C204: .4byte 0x08364EC8
+_0805C204: .4byte gHanumachineRoutine+0x194
 _0805C208:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -1260,7 +1280,7 @@ _0805C2FE:
 	bx r0
 	.align 2, 0
 _0805C304: .4byte 0x0000B507
-_0805C308: .4byte 0x08364EF8
+_0805C308: .4byte gHanumachineRoutine+0x1c4
 
 	thumb_func_start hanu_0805c30c
 hanu_0805c30c: @ 0x0805C30C
@@ -1524,7 +1544,7 @@ _0805C4DE:
 	.align 2, 0
 _0805C4FC: .4byte 0x0000B509
 _0805C500: .4byte 0xFFFFF000
-_0805C504: .4byte 0x08364F28
+_0805C504: .4byte gHanumachineRoutine+0x1f4
 _0805C508:
 	cmp r0, #0x10
 	bne _0805C514
@@ -1708,7 +1728,7 @@ _0805C666:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805C66C: .4byte 0x08364EC8
+_0805C66C: .4byte gHanumachineRoutine+0x194
 
 	thumb_func_start hanu_0805c670
 hanu_0805c670: @ 0x0805C670
@@ -1912,7 +1932,7 @@ hanu_0805c7c4: @ 0x0805C7C4
 	b _0805C806
 	.align 2, 0
 _0805C7F8: .4byte 0x0000B50D
-_0805C7FC: .4byte 0x08364F58
+_0805C7FC: .4byte gHanumachineRoutine+0x224
 _0805C800:
 	ldr r0, _0805C864 @ =0xFFFFFC00
 	str r0, [r4, #0x5c]
@@ -2019,7 +2039,7 @@ FUN_0805c87c: @ 0x0805C87C
 	b _0805C8DE
 	.align 2, 0
 _0805C8D0: .4byte 0x0000B50E
-_0805C8D4: .4byte 0x08364EC8
+_0805C8D4: .4byte gHanumachineRoutine+0x194
 _0805C8D8:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xef
@@ -2369,7 +2389,7 @@ _0805CB5C:
 	b _0805CB9E
 	.align 2, 0
 _0805CB8C: .4byte 0x0000B50E
-_0805CB90: .4byte 0x08364EC8
+_0805CB90: .4byte gHanumachineRoutine+0x194
 _0805CB94: .4byte 0xFFFFFB80
 _0805CB98:
 	ldr r0, _0805CBF4 @ =0xFFFFFE00
@@ -2555,7 +2575,7 @@ hanu_0805ccc0: @ 0x0805CCC0
 	b _0805CD18
 	.align 2, 0
 _0805CCFC: .4byte 0x0000B512
-_0805CD00: .4byte 0x08364F88
+_0805CD00: .4byte gHanumachineRoutine+0x254
 _0805CD04: .4byte 0xFFFFF000
 _0805CD08:
 	ldr r0, [r4, #0x54]
@@ -2670,7 +2690,7 @@ FUN_0805cdbc: @ 0x0805CDBC
 	b _0805CDF2
 	.align 2, 0
 _0805CDE8: .4byte 0x0000B513
-_0805CDEC: .4byte 0x08364EC8
+_0805CDEC: .4byte gHanumachineRoutine+0x194
 _0805CDF0:
 	ldr r0, _0805CE4C @ =0xFFFFFE00
 _0805CDF2:
@@ -3246,7 +3266,7 @@ FUN_0805d210: @ 0x0805D210
 	b _0805D25A
 	.align 2, 0
 _0805D250: .4byte 0x0000B50D
-_0805D254: .4byte 0x08364F58
+_0805D254: .4byte gHanumachineRoutine+0x224
 _0805D258:
 	ldr r0, _0805D2BC @ =0xFFFFFC00
 _0805D25A:

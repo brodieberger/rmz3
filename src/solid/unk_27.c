@@ -64,6 +64,10 @@ NAKED static void Solid27_Init(struct Solid* p) {
 	strb r1, [r5, #0xa]\n\
 	ldrb r0, [r5, #0x10]\n\
 	cmp r0, #0\n\
+.if REGION_US\n\
+	@ US gives work[0]==0 no body at all instead of the sCollisions[0] one.\n\
+	beq _080D904A\n\
+.else\n\
 	bne _080D9024\n\
 	movs r0, #4\n\
 	orrs r1, r0\n\
@@ -74,6 +78,7 @@ NAKED static void Solid27_Init(struct Solid* p) {
 	b _080D903A\n\
 	.align 2, 0\n\
 _080D9020: .4byte sCollisions\n\
+.endif\n\
 _080D9024:\n\
 	movs r0, #4\n\
 	orrs r1, r0\n\
@@ -94,6 +99,7 @@ _080D903A:\n\
 	bl InitBody\n\
 	str r5, [r4, #0x2c]\n\
 	str r6, [r4, #0x24]\n\
+_080D904A:\n\
 	ldr r1, _080D906C @ =gSolidFnTable\n\
 	ldrb r0, [r5, #9]\n\
 	lsls r0, r0, #2\n\

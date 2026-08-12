@@ -11,10 +11,10 @@ SioLink_ClearAllBuffers: @ 0x08000798
 	ldr r0, _0800087C @ =gUnk02000d50
 	movs r1, #0x58
 	bl clearMemory16
-	ldr r0, _08000880 @ =0x020010B0
+	ldr r0, _08000880 @ =Unk_02000db0+0x2e0
 	movs r1, #0x10
 	bl clearMemory16
-	ldr r0, _08000884 @ =0x02000CD0
+	ldr r0, _08000884 @ =gLinkRecvCmds
 	movs r1, #0x40
 	bl clearMemory16
 	pop {pc}
@@ -27,8 +27,8 @@ SioLink_PollAndDispatch: @ 0x080007B4
 	movs r6, #0
 	ldr r7, _0800087C @ =gUnk02000d50
 	adds r0, r7, #6
-	ldr r1, _08000880 @ =0x020010B0
-	ldr r2, _08000884 @ =0x02000CD0
+	ldr r1, _08000880 @ =Unk_02000db0+0x2e0
+	ldr r2, _08000884 @ =gLinkRecvCmds
 	bl LinkMain1
 	str r0, [r7, #0x48]
 	sub sp, #0x10
@@ -130,8 +130,8 @@ _08000876:
 	pop {r4, r5, r6, r7, pc}
 	.align 2, 0
 _0800087C: .4byte gUnk02000d50
-_08000880: .4byte 0x020010B0
-_08000884: .4byte 0x02000CD0
+_08000880: .4byte Unk_02000db0+0x2e0
+_08000884: .4byte gLinkRecvCmds
 
 	thumb_func_start FUN_08000888
 FUN_08000888: @ 0x08000888
@@ -172,7 +172,7 @@ Call_Jt_080008f0: @ 0x080008CC
 	mov r0, r8
 	mov r3, sb
 	push {r0, r3}
-	ldr r5, _08000900 @ =0x020010B0
+	ldr r5, _08000900 @ =Unk_02000db0+0x2e0
 	ldr r7, _08000904 @ =gUnk02000d50
 	ldr r1, _080008EC @ =0x080008F0
 	ldrb r0, [r7]
@@ -190,7 +190,7 @@ _080008F0:
 	.4byte FUN_08000920
 	.4byte FUN_08000934
 	.4byte FUN_08000944
-_08000900: .4byte 0x020010B0
+_08000900: .4byte Unk_02000db0+0x2e0
 _08000904: .4byte gUnk02000d50
 
 	thumb_func_start FUN_08000908
@@ -257,7 +257,7 @@ _08000958:
 	thumb_func_start Call_Jt_0800980
 Call_Jt_0800980: @ 0x08000964
 	push {r4, r5, r6, r7, lr}
-	ldr r5, _0800098C @ =0x02000CD0
+	ldr r5, _0800098C @ =gLinkRecvCmds
 	ldr r6, _08000990 @ =gUnk02000d50
 	movs r0, #1
 	strb r0, [r6, #5]
@@ -273,7 +273,7 @@ _08000980:
 	.4byte FUN_08000994
 	.4byte FUN_08000c64
 	.4byte FUN_08000de0
-_0800098C: .4byte 0x02000CD0
+_0800098C: .4byte gLinkRecvCmds
 _08000990: .4byte gUnk02000d50
 
 	thumb_func_start FUN_08000994
@@ -302,7 +302,7 @@ nop_080009b8: @ 0x080009B8
 	thumb_func_start Call_Jt_080009d4
 Call_Jt_080009d4: @ 0x080009BC
 	push {r4, r5, r6, r7, lr}
-	ldr r4, _080009CC @ =0x020014C0
+	ldr r4, _080009CC @ =Unk_02000db0+0x6f0
 	ldrb r0, [r4, #1]
 	ldr r1, _080009D0 @ =0x080009D4
 	ldr r0, [r1, r0]
@@ -310,7 +310,7 @@ Call_Jt_080009d4: @ 0x080009BC
 	bx r0
 _080009CA:
 	.byte 0xF0, 0xBD
-_080009CC: .4byte 0x020014C0
+_080009CC: .4byte Unk_02000db0+0x6f0
 _080009D0: .4byte _080009D4
 _080009D4:
 	.4byte FUN_080009dc
@@ -500,7 +500,7 @@ _08000B28: .4byte 0x00001000
 	thumb_func_start FUN_08000b2c
 FUN_08000b2c: @ 0x08000B2C
 	push {r4, r5, r6, r7, lr}
-	ldr r4, _08000B3C @ =0x020014C0
+	ldr r4, _08000B3C @ =Unk_02000db0+0x6f0
 	ldrb r0, [r4, #1]
 	ldr r1, _08000B40 @ =0x08000B44
 	ldr r0, [r1, r0]
@@ -508,7 +508,7 @@ FUN_08000b2c: @ 0x08000B2C
 	bx r0
 _08000B3A:
 	.byte 0xF0, 0xBD
-_08000B3C: .4byte 0x020014C0
+_08000B3C: .4byte Unk_02000db0+0x6f0
 _08000B40: .4byte _08000B44
 _08000B44: .4byte SioLink_ReceiveAndValidatePacket
 
@@ -732,7 +732,7 @@ _08000CC2:
 	thumb_func_start FUN_08000ce0
 FUN_08000ce0: @ 0x08000CE0
 	push {r4, r5, r6, r7, lr}
-	ldr r4, _08000D4C @ =0x020014C0
+	ldr r4, _08000D4C @ =Unk_02000db0+0x6f0
 	ldrb r0, [r4]
 	tst r0, r0
 	bne _08000D46
@@ -788,7 +788,7 @@ _08000D46:
 	movs r0, #0
 	pop {r4, r5, r6, r7, pc}
 	.align 2, 0
-_08000D4C: .4byte 0x020014C0
+_08000D4C: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08000d50
 FUN_08000d50: @ 0x08000D50
@@ -816,7 +816,7 @@ FUN_08000d70: @ 0x08000D70
 	adds r0, r5, #0
 	bl SioLink_FindPlayerDataOffset
 	adds r5, r0, #0
-	ldr r7, _08000DD8 @ =0x020014C0
+	ldr r7, _08000DD8 @ =Unk_02000db0+0x6f0
 	ldrb r0, [r7, #2]
 	tst r0, r0
 	bne _08000D96
@@ -846,7 +846,7 @@ _08000DA2:
 	movs r0, #4
 	muls r3, r0, r3
 	adds r5, r5, r3
-	ldr r4, _08000DD8 @ =0x020014C0
+	ldr r4, _08000DD8 @ =Unk_02000db0+0x6f0
 _08000DB4:
 	bl FUN_08000d50
 	adds r5, r5, r3
@@ -868,7 +868,7 @@ _08000DCC:
 _08000DD6:
 	pop {r4, r5, r6, r7, pc}
 	.align 2, 0
-_08000DD8: .4byte 0x020014C0
+_08000DD8: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08000ddc
 FUN_08000ddc: @ 0x08000DDC
@@ -1135,7 +1135,7 @@ _08000fa4:
 FUN_08000fac: @ 0x08000FAC
 	movs r0, r0
 	strh r3, [r0, r4]
-	ldr r7, _080010D8 @ =0x020014C0
+	ldr r7, _080010D8 @ =Unk_02000db0+0x6f0
 	ldr r7, _08001034 @ =0x1E71FBA7
 	mov r6, r8
 	movs r0, r0
@@ -1236,7 +1236,7 @@ _08001048:
 	thumb_func_start FUN_0800104c
 FUN_0800104c: @ 0x0800104C
 	push {lr}
-	ldr r0, _08001088 @ =0x020014C0
+	ldr r0, _08001088 @ =Unk_02000db0+0x6f0
 	movs r1, #0x20
 	bl clearMemory16
 	bl SioLink_ClearAllBuffers
@@ -1256,9 +1256,13 @@ FUN_0800104c: @ 0x0800104C
 	strh r1, [r0]
 	pop {pc}
 	.align 2, 0
+.if REGION_US
+_08001080: .4byte 0x42345745
+.else
 _08001080: .4byte 0x4234574A
+.endif
 _08001084: .4byte 0x00000200
-_08001088: .4byte 0x020014C0
+_08001088: .4byte Unk_02000db0+0x6f0
 _0800108C: .4byte 0x10000000
 _08001090: .4byte gLinkHandshake
 _08001094: .4byte 0x0000A3D0
@@ -1266,7 +1270,7 @@ _08001094: .4byte 0x0000A3D0
 	thumb_func_start FUN_08001098
 FUN_08001098: @ 0x08001098
 	push {lr}
-	ldr r0, _080010D8 @ =0x020014C0
+	ldr r0, _080010D8 @ =Unk_02000db0+0x6f0
 	movs r1, #0x20
 	bl clearMemory16
 	bl SioLink_ClearAllBuffers
@@ -1288,9 +1292,13 @@ FUN_08001098: @ 0x08001098
 	strh r1, [r0]
 	pop {pc}
 	.align 2, 0
+.if REGION_US
+_080010D0: .4byte 0x42345745
+.else
 _080010D0: .4byte 0x4234574A
+.endif
 _080010D4: .4byte 0x00000200
-_080010D8: .4byte 0x020014C0
+_080010D8: .4byte Unk_02000db0+0x6f0
 _080010DC:
 	.byte 0x00, 0x00, 0x00, 0x10
 _080010E0: .4byte gLinkHandshake
@@ -1299,7 +1307,7 @@ _080010E4: .4byte 0x0000A3D0
 	thumb_func_start FUN_080010e8
 FUN_080010e8: @ 0x080010E8
 	push {r4, r5, r6, r7, lr}
-	ldr r7, _0800112C @ =0x02000FB0
+	ldr r7, _0800112C @ =Unk_02000db0+0x1e0
 	push {r0}
 	adds r0, r7, #0
 	movs r1, #0x10
@@ -1332,7 +1340,7 @@ _08001114:
 	str r0, [r6, #0x24]
 	pop {r4, r5, r6, r7, pc}
 	.align 2, 0
-_0800112C: .4byte 0x02000FB0
+_0800112C: .4byte Unk_02000db0+0x1e0
 _08001130: .4byte gUnk02000d50
 
 	thumb_func_start FUN_08001134
@@ -1343,14 +1351,14 @@ FUN_08001134: @ 0x08001134
 	cmp r7, #2
 	bne _0800114C
 	bl SioLink_GetLocalPlayerId
-	ldr r5, _08001150 @ =0x020014C0
+	ldr r5, _08001150 @ =Unk_02000db0+0x6f0
 	strb r0, [r5]
 	bl FUN_080012ec
 _0800114C:
 	adds r0, r7, #0
 	pop {r5, r7, pc}
 	.align 2, 0
-_08001150: .4byte 0x020014C0
+_08001150: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08001154
 FUN_08001154: @ 0x08001154
@@ -1371,10 +1379,35 @@ _0800116E:
 	bl mmbn4_080016c8
 	cmp r0, #0xff
 	beq _0800119E
+.if REGION_US
+	push {r0}
+	bl SioLink_GetLocalPlayerId
+	pop {r0}
+	beq _mmbn4_us_A1
+	adds r1, r0, #0
+	adds r1, #16
+	b _mmbn4_us_A2
+_mmbn4_us_A1:
+	adds r1, r0, #0
+	subs r1, #16
+_mmbn4_us_A2:
+	ldr r2, [r1]
+	ldr r1, _mmbn4_us_ew4b @ =0x42345745
+	cmp r2, r1
+	bne _0800119E
+.endif
 	ldrh r1, [r0, #6]
 	cmp r1, #1
 	bne _08001190
-	ldr r4, _080011B8 @ =0x020014C0
+.if REGION_US
+	ldrh r1, [r0, #0xa]
+	cmp r1, #0xf0
+	bne _mmbn4_us_B
+	movs r6, #2
+	b _08001168
+_mmbn4_us_B:
+.endif
+	ldr r4, _080011B8 @ =Unk_02000db0+0x6f0
 	ldrh r1, [r0, #8]
 	lsrs r2, r1, #9
 	strh r2, [r4, #0x16]
@@ -1396,14 +1429,21 @@ _0800119E:
 	ldr r0, [r0]
 	movs r1, #1
 	ldr r2, _080011B0 @ =0x00000200
+.if REGION_US
+	bl mmbn4_080016b8
+.else
 	bl FUN_08001670
+.endif
 _080011AA:
 	adds r0, r6, #0
 	pop {r4, r6, r7, pc}
 	.align 2, 0
 _080011B0: .4byte 0x00000200
 _080011B4: .4byte gUnkMmbn4
-_080011B8: .4byte 0x020014C0
+_080011B8: .4byte Unk_02000db0+0x6f0
+.if REGION_US
+_mmbn4_us_ew4b: .4byte 0x42345745
+.endif
 
 	thumb_func_start FUN_080011bc
 FUN_080011bc: @ 0x080011BC
@@ -1438,7 +1478,7 @@ _080011F4:
 	movs r1, #2
 	ldr r2, _08001208 @ =0x00000200
 	bl FUN_08001670
-	ldr r0, _0800120C @ =0x020014C0
+	ldr r0, _0800120C @ =Unk_02000db0+0x6f0
 	movs r1, #0x3c
 	strh r1, [r0, #0x18]
 _08001204:
@@ -1446,7 +1486,7 @@ _08001204:
 	pop {r4, r6, r7, pc}
 	.align 2, 0
 _08001208: .4byte 0x00000200
-_0800120C: .4byte 0x020014C0
+_0800120C: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08001210
 FUN_08001210: @ 0x08001210
@@ -1475,7 +1515,7 @@ _0800122A:
 	pop {r0}
 	beq _0800124C
 	ldrh r1, [r0, #0xa]
-	ldr r4, _08001260 @ =0x020014C0
+	ldr r4, _08001260 @ =Unk_02000db0+0x6f0
 	strh r1, [r4, #0x18]
 _0800124C:
 	movs r6, #1
@@ -1489,7 +1529,7 @@ _08001258:
 	pop {r4, r6, r7, pc}
 	.align 2, 0
 _0800125C: .4byte 0x00000200
-_08001260: .4byte 0x020014C0
+_08001260: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08001264
 FUN_08001264: @ 0x08001264
@@ -1505,7 +1545,7 @@ FUN_08001264: @ 0x08001264
 	bl DisableSerial
 	b _0800128E
 _0800127E:
-	ldr r4, _08001294 @ =0x020014C0
+	ldr r4, _08001294 @ =Unk_02000db0+0x6f0
 	ldrh r1, [r4, #0x18]
 	subs r1, #1
 	strh r1, [r4, #0x18]
@@ -1517,7 +1557,7 @@ _0800128E:
 	adds r0, r6, #0
 	pop {r4, r6, r7, pc}
 	.align 2, 0
-_08001294: .4byte 0x020014C0
+_08001294: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_08001298
 FUN_08001298: @ 0x08001298
@@ -1533,7 +1573,7 @@ FUN_08001298: @ 0x08001298
 	bl DisableSerial
 	b _080012C2
 _080012B2:
-	ldr r4, _080012C8 @ =0x020014C0
+	ldr r4, _080012C8 @ =Unk_02000db0+0x6f0
 	ldrh r1, [r4, #0x18]
 	subs r1, #1
 	strh r1, [r4, #0x18]
@@ -1544,15 +1584,15 @@ _080012C2:
 	adds r0, r6, #0
 	pop {r4, r6, r7, pc}
 	.align 2, 0
-_080012C8: .4byte 0x020014C0
+_080012C8: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_080012cc
 FUN_080012cc: @ 0x080012CC
 	push {r4, r6, r7, lr}
-	ldr r4, _080012E8 @ =0x020014C0
+	ldr r4, _080012E8 @ =Unk_02000db0+0x6f0
 	ldrh r0, [r4, #0x14]
 	ldrh r1, [r4, #0x16]
-	ldr r4, _080012E8 @ =0x020014C0
+	ldr r4, _080012E8 @ =Unk_02000db0+0x6f0
 	ldrh r0, [r4, #0x14]
 	movs r1, #0
 	movs r2, #9
@@ -1563,7 +1603,7 @@ FUN_080012cc: @ 0x080012CC
 	movs r3, #4
 	pop {r4, r6, r7, pc}
 	.align 2, 0
-_080012E8: .4byte 0x020014C0
+_080012E8: .4byte Unk_02000db0+0x6f0
 
 	thumb_func_start FUN_080012ec
 FUN_080012ec: @ 0x080012EC
@@ -1617,7 +1657,7 @@ _08001338: .4byte gUnk02000d50
 	thumb_func_start EReader_SioInitHandshake
 EReader_SioInitHandshake: @ 0x0800133C
 	push {lr}
-	ldr r0, _08001378 @ =0x020014C0
+	ldr r0, _08001378 @ =Unk_02000db0+0x6f0
 	movs r1, #0x20
 	bl clearMemory16
 	bl SioLink_ClearAllBuffers
@@ -1637,9 +1677,13 @@ EReader_SioInitHandshake: @ 0x0800133C
 	strh r1, [r0]
 	pop {pc}
 	.align 2, 0
+.if REGION_US
+_08001370: .4byte 0x425A3345
+.else
 _08001370: .4byte 0x425A334A
+.endif
 _08001374: .4byte 0x00002000
-_08001378: .4byte 0x020014C0
+_08001378: .4byte Unk_02000db0+0x6f0
 _0800137C: .4byte gLinkHandshake
 _08001380: .4byte 0x0000A380
 
@@ -1648,7 +1692,7 @@ _08001380: .4byte 0x0000A380
 	thumb_func_start EReader_BuildHandshakePacket
 EReader_BuildHandshakePacket: @ 0x08001384
 	push {r4, r6, r7, lr}
-	ldr r4, _080013A4 @ =0x020010C0
+	ldr r4, _080013A4 @ =Unk_02000db0+0x2f0
 	movs r7, #0
 	movs r1, #0
 	movs r3, #0
@@ -1664,7 +1708,7 @@ _08001394:
 	blt _08001394
 	pop {r4, r6, r7, pc}
 	.align 2, 0
-_080013A4: .4byte 0x020010C0
+_080013A4: .4byte Unk_02000db0+0x2f0
 
 @ 接続確立を待つポーリング処理、成功/失敗を返す
 	thumb_func_start EReader_SioWaitForConnect
@@ -1750,7 +1794,7 @@ _08001436:
 	thumb_func_start SioLink_CheckModeAndCachePlayerId
 SioLink_CheckModeAndCachePlayerId: @ 0x08001438
 	push {r5, r7, lr}
-	ldr r5, _08001468 @ =0x020014C0
+	ldr r5, _08001468 @ =Unk_02000db0+0x6f0
 	movs r7, #1
 	bl SioLink_PollAndDispatch
 	push {r0}
@@ -1773,7 +1817,7 @@ _08001462:
 	tst r0, r0
 	pop {r5, r7, pc}
 	.align 2, 0
-_08001468: .4byte 0x020014C0
+_08001468: .4byte Unk_02000db0+0x6f0
 
 @ SIOリセット後の再初期化
 @ FUN_08000798（バッファクリア）→ ResetSerial（SIOハードウェアリセット）→ SioLink_SetTransmitParams（送信パラメータ再設定）→ mmbn4_08000738（SIOレジスタ再設定）の順で通信系を完全リセットします。エラー検出後の復帰処理として各所から呼ばれています。
@@ -1794,6 +1838,10 @@ SioLink_ResetAndReinit: @ 0x0800146C
 	bl mmbn4_08000738
 	pop {pc}
 	.align 2, 0
+.if REGION_US
+_08001490: .4byte 0x425A3345
+.else
 _08001490: .4byte 0x425A334A
+.endif
 _08001494: .4byte 0x00002000
 

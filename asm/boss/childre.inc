@@ -179,7 +179,7 @@ _080408D8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080408E4: .4byte 0x08362064
+_080408E4: .4byte Coord_08362064
 
 	thumb_func_start childreMode0
 childreMode0: @ 0x080408E8
@@ -679,7 +679,7 @@ _08040CC4: .4byte 0xFFFFEC00
 _08040CC8: .4byte RNG_0202f388
 _08040CCC: .4byte 0x000343FD
 _08040CD0: .4byte 0x00269EC3
-_08040CD4: .4byte 0x0836206C
+_08040CD4: .4byte s16_0836206c
 _08040CD8: .4byte 0xFFFFF800
 _08040CDC:
 	movs r1, #0xa4
@@ -1245,7 +1245,7 @@ _08041122:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08041128: .4byte 0x08361EF4
+_08041128: .4byte gChildreRoutine+0xfc
 _0804112C: .4byte 0xFFFFF800
 _08041130: .4byte 0xFFFFA000
 _08041134: .4byte 0x0000A41A
@@ -2086,7 +2086,7 @@ _08041762:
 	movs r0, #0xa
 	b _080417F0
 	.align 2, 0
-_080417D0: .4byte 0x08361F24
+_080417D0: .4byte gChildreRoutine+0x12c
 _080417D4: .4byte pZero2
 _080417D8: .4byte 0x0000A40B
 _080417DC: .4byte 0xFFFFFB00
@@ -2150,7 +2150,7 @@ _0804184C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08041854: .4byte 0x08361F54
+_08041854: .4byte gChildreRoutine+0x15c
 _08041858: .4byte 0x0000A40C
 
 	thumb_func_start childreScrewIce
@@ -2197,7 +2197,7 @@ _08041898:
 	strb r0, [r4, #0xe]
 	b _08041964
 	.align 2, 0
-_080418B0: .4byte 0x08361F54
+_080418B0: .4byte gChildreRoutine+0x15c
 _080418B4: .4byte 0x0000A40D
 _080418B8:
 	adds r0, r4, #0
@@ -2290,7 +2290,7 @@ _08041964:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0804196C: .4byte 0x08361EF4
+_0804196C: .4byte gChildreRoutine+0xfc
 _08041970: .4byte 0xFFFFFD80
 _08041974: .4byte 0xFFFFFD00
 _08041978: .4byte 0xFFFFE000
@@ -2503,7 +2503,7 @@ _08041AFA:
 	strb r1, [r4, #0xe]
 	b _08041B38
 	.align 2, 0
-_08041B18: .4byte 0x0836206E
+_08041B18: .4byte sChildreMotions
 _08041B1C: .4byte 0xFFFFE600
 _08041B20:
 	strb r2, [r4, #0xe]
@@ -2752,7 +2752,7 @@ _08041CDA:
 	b _08041D16
 	.align 2, 0
 _08041CF8: .4byte gScore
-_08041CFC: .4byte 0x08361FCC
+_08041CFC: .4byte gChildreRoutine+0x1d4
 _08041D00: .4byte 0x0000A417
 _08041D04:
 	adds r0, r4, #0
@@ -2779,7 +2779,7 @@ _08041D1C:
 	strb r0, [r4, #0xe]
 	b _08041DE4
 	.align 2, 0
-_08041D34: .4byte 0x08361F84
+_08041D34: .4byte gChildreRoutine+0x18c
 _08041D38: .4byte 0x0000A414
 _08041D3C:
 	movs r0, #0x6b
@@ -3414,13 +3414,15 @@ _08042214:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0804221C: .4byte 0x0836207C
+_0804221C: .4byte Coord_0836207c
 _08042220: .4byte gStageRun
 
 	thumb_func_start childre_08042224
 childre_08042224: @ 0x08042224
 	push {r4, r5, r6, lr}
+.if HIT_BLOOD
 	sub sp, #8
+.endif
 	adds r4, r0, #0
 	ldrb r0, [r4, #0xe]
 	cmp r0, #4
@@ -3534,6 +3536,7 @@ _0804230A:
 	lsls r1, r6, #9
 	subs r0, r0, r1
 	str r0, [r4, #0x5c]
+.if HIT_BLOOD
 	ldr r0, [r4, #0x54]
 	str r0, [sp]
 	ldr r0, [r4, #0x58]
@@ -3546,6 +3549,7 @@ _0804230A:
 	mov r1, sp
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x32
 	strb r0, [r4, #0x12]
 	ldrb r0, [r4, #0xe]
@@ -3573,7 +3577,9 @@ _0804235C: .4byte gBossFnTable
 _08042360: .4byte 0x0000A40A
 _08042364: .4byte gStageRun
 _08042368: .4byte 0x0000FFFE
+.if HIT_BLOOD
 _0804236C: .4byte 0xFFFFF000
+.endif
 _08042370:
 	cmp r3, #0
 	beq _08042378
@@ -3628,10 +3634,12 @@ _080423B6:
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _080423CE:
+.if HIT_BLOOD
 	add sp, #8
+.endif
 	pop {r4, r5, r6}
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080423D8: .4byte 0x08362084
+_080423D8: .4byte Coord_08362084
 _080423DC: .4byte gStageRun

@@ -1,5 +1,7 @@
+#include "config.h"
 #include "entity.h"
 #include "global.h"
+#include "overworld_terrain.h"
 #include "random.h"
 #include "story.h"
 #include "vfx.h"
@@ -98,11 +100,28 @@ static void SlashedEnemy_Die(struct Ghost16* p) {
   }
   if (data->unk_02[1] & (1 << 2)) {
     CreateSmoke(1, &(p->s).coord);
+#if IS_US
+    // US plays a muffled variant when the kill happens below the water line.
+    if ((p->s).coord.y > gOverworld.sea) {
+      PlaySound(SE_UNK_31);
+    } else {
+      PlaySound(SE_ZAKO_EXPLODE);
+    }
+#else
     PlaySound(SE_ZAKO_EXPLODE);
+#endif
   }
   if (data->unk_02[1] & (1 << 3)) {
     CreateSmoke(1, &(p->s).coord);
+#if IS_US
+    if ((p->s).coord.y > gOverworld.sea) {
+      PlaySound(SE_UNK_31);
+    } else {
+      PlaySound(SE_UNK_35);
+    }
+#else
     PlaySound(SE_UNK_35);
+#endif
   }
   SET_VFX_ROUTINE(p, ENTITY_EXIT);
 }

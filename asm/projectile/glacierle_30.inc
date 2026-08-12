@@ -52,8 +52,8 @@ Projectile30_Init: @ 0x080AA63C
 	bx r0
 	.align 2, 0
 _080AA69C: .4byte gProjectileFnTable
-_080AA6A0: .4byte 0x0836C304
-_080AA6A4: .4byte 0x0836C2EC
+_080AA6A0: .4byte u8_ARRAY_0836c304
+_080AA6A4: .4byte sCollisions
 _080AA6A8: .4byte nop_080aa638
 
 	thumb_func_start Projectile30_Update
@@ -78,8 +78,8 @@ Projectile30_Update: @ 0x080AA6AC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AA6D8: .4byte 0x0836C2E4
-_080AA6DC: .4byte 0x0836C2E8
+_080AA6D8: .4byte sUpdates1
+_080AA6DC: .4byte sUpdates2
 
 	thumb_func_start Projectile30_Die
 Projectile30_Die:
@@ -165,5 +165,5 @@ _080AA798:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AA7A0: .4byte 0x0836C306
+_080AA7A0: .4byte sMotions
 _080AA7A4: .4byte gProjectileFnTable

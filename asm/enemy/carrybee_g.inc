@@ -62,7 +62,7 @@ CarrybeeG_Init: @ 0x0808A908
 _0808A974: .4byte nop_0808b534
 _0808A978: .4byte gSystemSavedata
 _0808A97C: .4byte gCurStory
-_0808A980: .4byte 0x08368C6C
+_0808A980: .4byte gCarrybeeGRoutine+0x54
 _0808A984:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -120,7 +120,7 @@ _0808A99C:
 	bl UpdateEntityAnim
 	b _0808AA5C
 	.align 2, 0
-_0808A9F8: .4byte 0x08368C6C
+_0808A9F8: .4byte gCarrybeeGRoutine+0x54
 _0808A9FC: .4byte gEnemyFnTable
 _0808AA00:
 	adds r0, r6, #0
@@ -188,7 +188,7 @@ _0808AA72:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808AA88: .4byte 0x08368C54
+_0808AA88: .4byte sCollisions
 _0808AA8C: .4byte gEnemyFnTable
 _0808AA90: .4byte 0x00006E06
 _0808AA94: .4byte gOverworld
@@ -196,6 +196,185 @@ _0808AA98: .4byte 0x0002D02C
 
 	thumb_func_start CarrybeeG_Update
 CarrybeeG_Update: @ 0x0808AA9C
+.if REGION_US
+	push	{r4, lr}
+	adds	r4, r0, #0
+	adds	r0, #140
+	ldr	r0, [r0, #0]
+	movs	r1, #128
+	lsls	r1, r1, #2
+	ands	r0, r1
+	cmp	r0, #0
+	beq _US_0808A6E4
+	ldrb	r0, [r4, #16]
+	cmp	r0, #0
+	bne _US_0808A6E4
+	ldr	r1, _US_0808A6E0
+	ldrb	r0, [r4, #9]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	movs	r1, #2
+	str	r1, [r4, #12]
+	ldr	r0, [r0, #0]
+	ldr	r0, [r0, #8]
+	str	r0, [r4, #20]
+	adds	r0, r4, #0
+	bl CarrybeeG_Die
+	b _US_0808A7F4
+	movs	r0, r0
+	.align 2, 0
+_US_0808A6E0: .4byte gEnemyFnTable
+_US_0808A6E4:
+	ldr	r1, _US_0808A740
+	ldrb	r0, [r4, #13]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	ldr	r1, [r0, #0]
+	adds	r0, r4, #0
+	bl _call_via_r1
+	ldrb	r0, [r4, #16]
+	cmp	r0, #0
+	beq _US_0808A74E
+	adds	r0, r4, #0
+	bl IsFrozen
+	cmp	r0, #0
+	beq _US_0808A748
+	ldr	r0, [r4, #40]
+	ldrb	r0, [r0, #12]
+	cmp	r0, #2
+	bls _US_0808A748
+	adds	r0, r4, #0
+	adds	r0, #140
+	movs	r1, #0
+	str	r1, [r0, #0]
+	adds	r0, #4
+	str	r1, [r0, #0]
+	adds	r0, #4
+	strb	r1, [r0, #0]
+	ldrb	r1, [r4, #10]
+	movs	r0, #251
+	ands	r0, r1
+	movs	r1, #254
+	ands	r0, r1
+	strb	r0, [r4, #10]
+	ldr	r1, _US_0808A744
+	ldrb	r0, [r4, #9]
+	lsls	r0, r0, #2
+	adds	r0, r0, r1
+	movs	r1, #2
+	str	r1, [r4, #12]
+	ldr	r0, [r0, #0]
+	ldr	r0, [r0, #8]
+	str	r0, [r4, #20]
+	movs	r0, #1
+	strb	r0, [r4, #17]
+	b _US_0808A7F4
+	.align 2, 0
+_US_0808A740: .4byte sUpdates1
+_US_0808A744: .4byte gEnemyFnTable
+_US_0808A748:
+	ldrb	r0, [r4, #16]
+	cmp	r0, #0
+	bne _US_0808A7E4
+_US_0808A74E:
+	adds	r0, r4, #0
+	bl IsFrozen
+	cmp	r0, #0
+	bne _US_0808A7F4
+	ldrb	r1, [r4, #16]
+	cmp	r1, #0
+	bne _US_0808A7E4
+	adds	r2, r4, #0
+	adds	r2, #188
+	ldr	r0, [r2, #0]
+	cmp	r0, #0
+	beq _US_0808A78C
+	ldrb	r0, [r0, #12]
+	cmp	r0, #1
+	bls _US_0808A770
+	str	r1, [r2, #0]
+_US_0808A770:
+	adds	r1, r4, #0
+	adds	r1, #192
+	ldrb	r0, [r1, #0]
+	cmp	r0, #0
+	beq _US_0808A784
+	subs	r0, #1
+	strb	r0, [r1, #0]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	bne _US_0808A78C
+_US_0808A784:
+	ldr	r0, [r2, #0]
+	adds	r0, #37
+	movs	r1, #24
+	strb	r1, [r0, #0]
+_US_0808A78C:
+	ldr	r0, [r4, #44]
+	cmp	r0, #0
+	beq _US_0808A7B8
+	ldrb	r0, [r0, #12]
+	cmp	r0, #1
+	bls _US_0808A79C
+	movs	r0, #0
+	str	r0, [r4, #44]
+_US_0808A79C:
+	adds	r1, r4, #0
+	adds	r1, #193
+	ldrb	r0, [r1, #0]
+	cmp	r0, #0
+	beq _US_0808A7B0
+	subs	r0, #1
+	strb	r0, [r1, #0]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	bne _US_0808A7B8
+_US_0808A7B0:
+	ldr	r0, [r4, #44]
+	adds	r0, #37
+	movs	r1, #24
+	strb	r1, [r0, #0]
+_US_0808A7B8:
+	ldr	r0, [r4, #40]
+	cmp	r0, #0
+	beq _US_0808A7E4
+	ldrb	r0, [r0, #12]
+	cmp	r0, #1
+	bls _US_0808A7C8
+	movs	r0, #0
+	str	r0, [r4, #40]
+_US_0808A7C8:
+	adds	r1, r4, #0
+	adds	r1, #194
+	ldrb	r0, [r1, #0]
+	cmp	r0, #0
+	beq _US_0808A7DC
+	subs	r0, #1
+	strb	r0, [r1, #0]
+	lsls	r0, r0, #24
+	cmp	r0, #0
+	bne _US_0808A7E4
+_US_0808A7DC:
+	ldr	r0, [r4, #40]
+	adds	r0, #37
+	movs	r1, #24
+	strb	r1, [r0, #0]
+_US_0808A7E4:
+	ldr	r0, _US_0808A7FC
+	ldrb	r1, [r4, #13]
+	lsls	r1, r1, #2
+	adds	r1, r1, r0
+	ldr	r1, [r1, #0]
+	adds	r0, r4, #0
+	bl _call_via_r1
+_US_0808A7F4:
+	pop	{r4}
+	pop	{r0}
+	bx	r0
+	movs	r0, r0
+	.align 2, 0
+_US_0808A7FC: .4byte sUpdates2
+.else
 	push {r4, lr}
 	adds r4, r0, #0
 	adds r0, #0x8c
@@ -268,7 +447,7 @@ _0808AAD4:
 	strb r0, [r4, #0x11]
 	b _0808AC28
 	.align 2, 0
-_0808AB30: .4byte 0x08368C2C
+_0808AB30: .4byte sUpdates1
 _0808AB34: .4byte gEnemyFnTable
 _0808AB38:
 	cmp r0, #1
@@ -405,7 +584,8 @@ _0808AC28:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808AC30: .4byte 0x08368C40
+_0808AC30: .4byte sUpdates2
+.endif
 
 	thumb_func_start CarrybeeG_Die
 CarrybeeG_Die: @ 0x0808AC34
@@ -876,7 +1056,7 @@ _0808AFF8:
 	bx r0
 	.align 2, 0
 _0808B000: .4byte pZero2
-_0808B004: .4byte 0x08368C6C
+_0808B004: .4byte gCarrybeeGRoutine+0x54
 
 	thumb_func_start FUN_0808b008
 FUN_0808b008: @ 0x0808B008
@@ -1503,6 +1683,28 @@ _0808B4AA:
 	adds r0, #1
 	strb r0, [r4, #0xe]
 _0808B4D0:
+.if REGION_US
+	ldr r0, [r4, #0x28]
+	ldrb r0, [r0, #0xc]
+	cmp r0, #1
+	bls _0808B4D0_us
+	ldrb r0, [r4, #0xe]
+	adds r0, #1
+	strb r0, [r4, #0xe]
+_0808B4D0_us:
+	adds r0, r4, #0
+	bl IsFrozen
+	cmp r0, #0
+	bne _0808B52E
+	ldr r0, [r4, #0x28]
+	ldr r1, [r0, #0x58]
+	ldr r0, [r0, #0x54]
+	str r0, [r4, #0x54]
+	str r1, [r4, #0x58]
+	adds r0, r4, #0
+	bl UpdateEntityAnim
+	b _0808B52E
+.else
 	ldr r0, [r4, #0x28]
 	ldr r1, [r0, #0x58]
 	ldr r0, [r0, #0x54]
@@ -1518,9 +1720,10 @@ _0808B4D0:
 	adds r0, #1
 	strb r0, [r4, #0xe]
 	b _0808B52E
+.endif
 	.align 2, 0
 _0808B4F0: .4byte 0x00006E06
-_0808B4F4: .4byte 0x08368C54
+_0808B4F4: .4byte sCollisions
 _0808B4F8:
 	ldr r0, [r2, #0x54]
 	ldr r1, [r2, #0x58]

@@ -193,7 +193,7 @@ _08068478:
 	strb r1, [r0]
 	b _08068508
 	.align 2, 0
-_080684AC: .4byte 0x08366054
+_080684AC: .4byte sUpdates1
 _080684B0:
 	adds r5, r4, #0
 	adds r5, #0xbc
@@ -241,7 +241,7 @@ _08068508:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08068510: .4byte 0x08366078
+_08068510: .4byte sUpdates2
 
 	thumb_func_start PillerCannon_Die
 PillerCannon_Die: @ 0x08068514
@@ -758,7 +758,7 @@ _080688B4:
 	b _08068A50
 	.align 2, 0
 _080688F0: .4byte sMotions
-_080688F4: .4byte 0x08366204
+_080688F4: .4byte s32_ARRAY_08366204
 _080688F8: .4byte sCollisions
 _080688FC:
 	ldrb r0, [r4, #0x12]
@@ -832,7 +832,7 @@ _08068976:
 	b _08068A3C
 	.align 2, 0
 _08068984: .4byte sMotions
-_08068988: .4byte 0x08366204
+_08068988: .4byte s32_ARRAY_08366204
 _0806898C: .4byte sCollisions
 _08068990: .4byte pZero2
 _08068994:
@@ -916,7 +916,7 @@ _08068A16:
 	b _08068A50
 	.align 2, 0
 _08068A2C: .4byte sMotions
-_08068A30: .4byte 0x08366204
+_08068A30: .4byte s32_ARRAY_08366204
 _08068A34: .4byte sCollisions
 _08068A38: .4byte pZero2
 _08068A3C:
@@ -1374,7 +1374,7 @@ _08068DCC:
 	b _08068E50
 	.align 2, 0
 _08068DD4: .4byte sMotions
-_08068DD8: .4byte 0x08366204
+_08068DD8: .4byte s32_ARRAY_08366204
 _08068DDC: .4byte sCollisions
 _08068DE0:
 	movs r1, #0x80
@@ -1585,7 +1585,7 @@ _08068F5C:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08068F64: .4byte 0x083661EC
+_08068F64: .4byte Coord_083661ec
 
 	thumb_func_start FUN_08068f68
 FUN_08068f68: @ 0x08068F68

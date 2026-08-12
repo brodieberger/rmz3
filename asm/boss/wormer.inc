@@ -64,7 +64,7 @@ Wormer_Init: @ 0x0804243C
 	b _080424FA
 	.align 2, 0
 _080424B0: .4byte gBossFnTable
-_080424B4: .4byte 0x08362260
+_080424B4: .4byte sInitModes
 _080424B8: .4byte gStaticMotionGraphics
 _080424BC: .4byte wStaticGraphicTilenums
 _080424C0: .4byte gStaticMotionGraphics+12
@@ -183,9 +183,9 @@ _080425A6:
 	bl ResetBossBody
 	b _080425DE
 	.align 2, 0
-_080425B4: .4byte 0x085D7DF8
+_080425B4: .4byte gStaticMotionGraphics+0x500
 _080425B8: .4byte wStaticGraphicTilenums
-_080425BC: .4byte 0x085D7E04
+_080425BC: .4byte gStaticMotionGraphics+0x50c
 _080425C0: .4byte wStaticMotionPalIDs
 _080425C4: .4byte gStaticMotionGraphics
 _080425C8: .4byte gStaticMotionGraphics+12
@@ -342,14 +342,14 @@ _080426FE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08042704: .4byte 0x08362264
+_08042704: .4byte Coord_08362264
 _08042708: .4byte gStageRun+232
 _0804270C: .4byte RNG_0202f388
 _08042710: .4byte 0x000343FD
 _08042714: .4byte 0x00269EC3
 _08042718: .4byte 0xFFFFF800
-_0804271C: .4byte 0x083620A0
-_08042720: .4byte 0x083620CC
+_0804271C: .4byte sUpdates1
+_08042720: .4byte sUpdates2
 
 	thumb_func_start Wormer_Die
 Wormer_Die: @ 0x08042724
@@ -900,7 +900,7 @@ _08042B36:
 	bx r0
 	.align 2, 0
 _08042B3C: .4byte 0x00002B01
-_08042B40: .4byte 0x0836226C
+_08042B40: .4byte u8_ARRAY_0836226c
 _08042B44: .4byte sCollisions
 
 	thumb_func_start FUN_08042b48
@@ -1283,7 +1283,7 @@ _08042E30: .4byte sCollisions+(5*24)
 _08042E34: .4byte 0x00002B06
 _08042E38: .4byte 0xFFFFDA00
 _08042E3C: .4byte 0xFFFFC000
-_08042E40: .4byte 0x08362278
+_08042E40: .4byte Coord_ARRAY_08362278
 _08042E44:
 	movs r0, #1
 	strb r0, [r5, #0xe]
@@ -1354,7 +1354,7 @@ _08042E80:
 	b _08042F82
 	.align 2, 0
 _08042EC4: .4byte 0x00002B02
-_08042EC8: .4byte 0x08362290
+_08042EC8: .4byte u8_ARRAY_08362290
 _08042ECC: .4byte sCollisions
 _08042ED0:
 	ldrb r0, [r4, #0x10]
@@ -1832,7 +1832,7 @@ _08043288:
 	b _080432C4
 	.align 2, 0
 _08043298: .4byte 0xFFFFBA00
-_0804329C: .4byte 0x0836229A
+_0804329C: .4byte Coord_ARRAY_0836229a
 _080432A0:
 	movs r0, #0x20
 	strb r0, [r5, #0x12]

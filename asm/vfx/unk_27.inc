@@ -114,7 +114,7 @@ FUN_080b9cf8: @ 0x080B9CF8
 	orrs r3, r1
 	b _080B9D28
 	.align 2, 0
-_080B9D20: .4byte 0x08366758
+_080B9D20: .4byte gGyroCannonRoutine+0x100
 _080B9D24:
 	lsls r0, r1, #0x18
 	lsrs r3, r0, #0x18
@@ -142,7 +142,7 @@ _080B9D28:
 	orrs r3, r1
 	b _080B9D60
 	.align 2, 0
-_080B9D58: .4byte 0x08366774
+_080B9D58: .4byte gGyroCannonRoutine+0x11c
 _080B9D5C:
 	lsls r0, r1, #0x18
 	lsrs r3, r0, #0x18
@@ -207,7 +207,7 @@ FUN_080b9db0: @ 0x080B9DB0
 	orrs r3, r1
 	b _080B9DE0
 	.align 2, 0
-_080B9DD8: .4byte 0x08366758
+_080B9DD8: .4byte gGyroCannonRoutine+0x100
 _080B9DDC:
 	lsls r0, r1, #0x18
 	lsrs r3, r0, #0x18
@@ -235,7 +235,7 @@ _080B9DE0:
 	orrs r3, r1
 	b _080B9E18
 	.align 2, 0
-_080B9E10: .4byte 0x08366774
+_080B9E10: .4byte gGyroCannonRoutine+0x11c
 _080B9E14:
 	lsls r0, r1, #0x18
 	lsrs r3, r0, #0x18

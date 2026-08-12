@@ -271,7 +271,7 @@ Projectile15_Init: @ 0x080A15F0
 	movs r3, #4
 	b _080A16C6
 	.align 2, 0
-_080A161C: .4byte 0x0836B264
+_080A161C: .4byte sCollisions
 _080A1620:
 	cmp r5, #1
 	bne _080A1660
@@ -302,7 +302,7 @@ _080A1620:
 	ldr r1, _080A165C @ =0x0836B2DC
 	b _080A16BE
 	.align 2, 0
-_080A165C: .4byte 0x0836B2DC
+_080A165C: .4byte gHellbatProjectileRoutine+0xc8
 _080A1660:
 	cmp r5, #2
 	bne _080A1680
@@ -318,7 +318,7 @@ _080A1660:
 	ldr r1, _080A167C @ =0x0836B294
 	b _080A16BE
 	.align 2, 0
-_080A167C: .4byte 0x0836B294
+_080A167C: .4byte gHellbatProjectileRoutine+0x80
 _080A1680:
 	cmp r5, #3
 	bne _080A16A4
@@ -388,7 +388,7 @@ _080A16CE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A1708: .4byte 0x0836B2AC
+_080A1708: .4byte gHellbatProjectileRoutine+0x98
 _080A170C: .4byte gProjectileFnTable
 
 	thumb_func_start Projectile15_Update
@@ -407,7 +407,7 @@ Projectile15_Update: @ 0x080A1710
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A172C: .4byte 0x0836B250
+_080A172C: .4byte sUpdates
 
 	thumb_func_start Projectile15_Die
 Projectile15_Die:
@@ -981,7 +981,7 @@ _080A1B9E:
 	.align 2, 0
 _080A1BAC: .4byte gSineTable
 _080A1BB0: .4byte 0x0000A906
-_080A1BB4: .4byte 0x0836B2DC
+_080A1BB4: .4byte gHellbatProjectileRoutine+0xc8
 _080A1BB8:
 	cmp r5, #4
 	bne _080A1C1C
@@ -1028,7 +1028,7 @@ _080A1BB8:
 	.align 2, 0
 _080A1C10: .4byte gSineTable
 _080A1C14: .4byte 0x0000A90A
-_080A1C18: .4byte 0x0836B2F4
+_080A1C18: .4byte gHellbatProjectileRoutine+0xe0
 _080A1C1C:
 	cmp r5, #5
 	bne _080A1C6A
@@ -1120,7 +1120,7 @@ _080A1CA2:
 	.align 2, 0
 _080A1CCC: .4byte gSineTable
 _080A1CD0: .4byte 0x0000A90A
-_080A1CD4: .4byte 0x0836B2F4
+_080A1CD4: .4byte gHellbatProjectileRoutine+0xe0
 _080A1CD8: .4byte gStageRun+232
 _080A1CDC: .4byte 0xFFFFB000
 _080A1CE0:
@@ -1751,7 +1751,7 @@ _080A2162:
 	b _080A21AA
 	.align 2, 0
 _080A21A0: .4byte 0x0000A905
-_080A21A4: .4byte 0x0836B2C4
+_080A21A4: .4byte gHellbatProjectileRoutine+0xb0
 _080A21A8:
 	ldr r0, _080A2224 @ =0xFFFFFD00
 _080A21AA:
@@ -2001,7 +2001,7 @@ _080A234A:
 	b _080A239E
 	.align 2, 0
 _080A238C: .4byte 0x0000A905
-_080A2390: .4byte 0x0836B2C4
+_080A2390: .4byte gHellbatProjectileRoutine+0xb0
 _080A2394: .4byte 0xFFFFEC00
 _080A2398:
 	ldr r0, [r4, #0x54]

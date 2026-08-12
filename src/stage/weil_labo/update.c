@@ -322,7 +322,11 @@ _080208C8:\n\
 	bl _0802153A\n\
 	.align 2, 0\n\
 _08020908: .4byte gSpawnManager\n\
+.if REGION_US\n\
+_0802090C: .4byte 0x000002CE\n\
+.else\n\
 _0802090C: .4byte 0x0000020E\n\
+.endif\n\
 _08020910: .4byte gStageScriptList\n\
 _08020914:\n\
 	cmp r0, #0xe\n\
@@ -818,7 +822,7 @@ _08020D2C:\n\
 	strb r0, [r2, #4]\n\
 	movs r0, #5\n\
 	bl setStageCheckpoint\n\
-	ldr r1, _08020D60 @ =0x0202FFAC\n\
+	ldr r1, _08020D60 @ =gStageRun+0x14c\n\
 	str r4, [r1]\n\
 	movs r0, #0xa0\n\
 	lsls r0, r0, #0xe\n\
@@ -827,7 +831,7 @@ _08020D2C:\n\
 	b _080210DE\n\
 	.align 2, 0\n\
 _08020D5C: .4byte gCurStory\n\
-_08020D60: .4byte 0x0202FFAC\n\
+_08020D60: .4byte gStageRun+0x14c\n\
 _08020D64:\n\
 	movs r4, #0xbe\n\
 	lsls r4, r4, #1\n\
@@ -1243,7 +1247,7 @@ _080210B4:\n\
 	strb r0, [r2, #4]\n\
 	movs r0, #8\n\
 	bl setStageCheckpoint\n\
-	ldr r1, _080210EC @ =0x0202FFAC\n\
+	ldr r1, _080210EC @ =gStageRun+0x14c\n\
 	str r4, [r1]\n\
 	movs r0, #0xa0\n\
 	lsls r0, r0, #0xe\n\
@@ -1256,7 +1260,7 @@ _080210DE:\n\
 	.align 2, 0\n\
 _080210E4: .4byte 0x00177000\n\
 _080210E8: .4byte gCurStory\n\
-_080210EC: .4byte 0x0202FFAC\n\
+_080210EC: .4byte gStageRun+0x14c\n\
 _080210F0:\n\
 	movs r0, #0xbe\n\
 	lsls r0, r0, #1\n\
@@ -1711,7 +1715,11 @@ _0802147C:\n\
 	b _08021538\n\
 	.align 2, 0\n\
 _080214B0: .4byte gSpawnManager\n\
+.if REGION_US\n\
+_080214B4: .4byte 0x000002CE\n\
+.else\n\
 _080214B4: .4byte 0x0000020E\n\
+.endif\n\
 _080214B8: .4byte gStageRun+16\n\
 _080214BC: .4byte gStageScriptList\n\
 _080214C0:\n\

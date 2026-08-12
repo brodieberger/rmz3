@@ -1,7 +1,7 @@
 	push {r4, r5, r6, r7, lr}
 	sub sp, #8
 	adds r3, r0, #0
-	ldr r5, _08008B64 @ =0x020023C8
+	ldr r5, _08008B64 @ =gOverworld+0x1c8
 	ldr r0, [r1]
 	str r0, [r5]
 	ldr r0, [r1, #4]
@@ -133,7 +133,7 @@ _08008B48:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08008B64: .4byte 0x020023C8
+_08008B64: .4byte gOverworld+0x1c8
 _08008B68: .4byte gStageLandscape
 _08008B6C: .4byte gVideoRegBuffer
 _08008B70: .4byte 0x0000C1FF

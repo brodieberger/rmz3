@@ -71,7 +71,7 @@ _080360C2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080360C8: .4byte 0x0835EC18
+_080360C8: .4byte sCollisions
 _080360CC: .4byte 0x0000BD04
 _080360D0: .4byte gSineTable
 
@@ -141,7 +141,7 @@ _08036130:
 	strb r0, [r4, #0xa]
 	b _0803618E
 	.align 2, 0
-_08036150: .4byte 0x0835EC18
+_08036150: .4byte sCollisions
 _08036154: .4byte 0x0000BD02
 _08036158: .4byte 0xFFFFFD00
 _0803615C:
@@ -335,7 +335,7 @@ _0803629C:
 	strb r1, [r4, #0xe]
 	b _08036350
 	.align 2, 0
-_080362CC: .4byte 0x0835EC30
+_080362CC: .4byte gLeviathanRoutine+0x44
 _080362D0: .4byte 0x0000BD19
 _080362D4:
 	cmp r2, #0

@@ -45,8 +45,8 @@ _0808475C:
 	movs r0, #1
 	b _080847B2
 	.align 2, 0
-_08084798: .4byte 0x083682DC
-_0808479C: .4byte 0x083682F4
+_08084798: .4byte sUpdates1
+_0808479C: .4byte sUpdates2
 _080847A0:
 	adds r0, r4, #0
 	bl IsFrozen
@@ -92,7 +92,7 @@ _080847E6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080847EC: .4byte 0x08368368
+_080847EC: .4byte sElementCoord
 
 	thumb_func_start EyeCannon_Init
 EyeCannon_Init: @ 0x080847F0
@@ -157,7 +157,7 @@ EyeCannon_Init: @ 0x080847F0
 	.align 2, 0
 _08084864: .4byte gEnemyFnTable
 _08084868: .4byte gCurStory
-_0808486C: .4byte 0x08368358
+_0808486C: .4byte u32_ARRAY_08368358
 _08084870:
 	ldrb r1, [r6, #0xa]
 	movs r0, #2
@@ -197,8 +197,8 @@ _080848BA:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080848C0: .4byte 0x08368310
-_080848C4: .4byte 0x08084705
+_080848C0: .4byte sCollisions
+_080848C4: .4byte FUN_08084700+0x5
 
 	thumb_func_start EyeCannon_Update
 EyeCannon_Update: @ 0x080848C8
@@ -234,8 +234,8 @@ _08084908:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08084910: .4byte 0x083682DC
-_08084914: .4byte 0x083682F4
+_08084910: .4byte sUpdates1
+_08084914: .4byte sUpdates2
 
 	thumb_func_start EyeCannon_Die
 EyeCannon_Die: @ 0x08084918
@@ -249,7 +249,7 @@ EyeCannon_Die: @ 0x08084918
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808492C: .4byte 0x0836830C
+_0808492C: .4byte sDeads
 
 	thumb_func_start FUN_08084930
 FUN_08084930:
@@ -288,7 +288,7 @@ _0808496A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08084970: .4byte 0x08368328
+_08084970: .4byte gEyeCannonRoutine+0x60
 
 	thumb_func_start FUN_08084974
 FUN_08084974: @ 0x08084974
@@ -320,7 +320,7 @@ _080849A4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080849AC: .4byte 0x08368340
+_080849AC: .4byte gEyeCannonRoutine+0x78
 
 	thumb_func_start FUN_080849b0
 FUN_080849b0: @ 0x080849B0
@@ -375,7 +375,7 @@ _080849DC:
 	strb r3, [r4, #0xe]
 	b _08084A50
 	.align 2, 0
-_08084A14: .4byte 0x08368328
+_08084A14: .4byte gEyeCannonRoutine+0x60
 _08084A18: .4byte 0x00006601
 _08084A1C: .4byte pZero2
 _08084A20: .4byte 0x000067FF
@@ -648,7 +648,7 @@ _08084C18:
 	bx r0
 	.align 2, 0
 _08084C20: .4byte 0xFFFFFC00
-_08084C24: .4byte 0x08368370
+_08084C24: .4byte u8_ARRAY_08368370
 _08084C28: .4byte 0xFFFFFF00
 _08084C2C: .4byte 0x00006604
 
@@ -853,9 +853,9 @@ _08084DA6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08084DB0: .4byte 0x08368374
+_08084DB0: .4byte sMotions
 _08084DB4: .4byte gScore
 _08084DB8: .4byte 0x0000270E
 _08084DBC: .4byte gEnemyFnTable
 _08084DC0: .4byte gCurStory
-_08084DC4: .4byte 0x08368358
+_08084DC4: .4byte u32_ARRAY_08368358

@@ -85,7 +85,7 @@ _080CF7C4:
 	.align 2, 0
 _080CF7E8: .4byte pZero2
 _080CF7EC: .4byte 0xFFFFFF00
-_080CF7F0: .4byte 0x083706C8
+_080CF7F0: .4byte sSolid18Size
 _080CF7F4: .4byte 0x00008801
 _080CF7F8:
 	ldrb r1, [r5, #0xb]
@@ -150,8 +150,8 @@ _080CF874:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CF87C: .4byte 0x0837066C
-_080CF880: .4byte 0x08370680
+_080CF87C: .4byte sSolid18Updates1
+_080CF880: .4byte sSolid18Updates2
 
 	thumb_func_start Solid18_Die
 Solid18_Die: @ 0x080CF884
@@ -218,7 +218,7 @@ Solid18_Die: @ 0x080CF884
 	.align 2, 0
 _080CF904: .4byte 0xFFFFF000
 _080CF908: .4byte 0xFFFFF800
-_080CF90C: .4byte 0x083706D0
+_080CF90C: .4byte sSolid18Motions
 _080CF910: .4byte gSolidFnTable
 
 	thumb_func_start nop_080cf914
@@ -293,7 +293,7 @@ _080CF986:
 	b _080CF9A6
 	.align 2, 0
 _080CF98C: .4byte 0x00006D0D
-_080CF990: .4byte 0x08370694
+_080CF990: .4byte sSolid18Collisions
 _080CF994: .4byte 0xFFFFFD00
 _080CF998:
 	movs r0, #0x80
@@ -515,7 +515,7 @@ _080CFB26:
 	bx r0
 	.align 2, 0
 _080CFB2C: .4byte 0x00006D0D
-_080CFB30: .4byte 0x083706AC
+_080CFB30: .4byte sSolid18Collisions+0x18
 _080CFB34: .4byte pZero2
 
 	thumb_func_start FUN_080cfb38
@@ -596,7 +596,7 @@ _080CFBC4:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080CFBCC: .4byte 0x08370694
+_080CFBCC: .4byte sSolid18Collisions
 _080CFBD0: .4byte 0x00006D0D
 _080CFBD4: .4byte pZero2
 _080CFBD8: .4byte 0xFFFFFC80

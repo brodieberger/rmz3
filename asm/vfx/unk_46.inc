@@ -190,7 +190,7 @@ VFX46_Update: @ 0x080BEF0C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080BEF20: .4byte 0x0836F01C
+_080BEF20: .4byte sUpdates
 
 	thumb_func_start VFX46_Die
 VFX46_Die: @ 0x080BEF24
@@ -348,7 +348,7 @@ _080BF032:
 	orrs r0, r1
 	b _080BF06A
 	.align 2, 0
-_080BF050: .4byte 0x0836F0CC
+_080BF050: .4byte PTR_ARRAY_0836f0cc
 _080BF054: .4byte RNG_0202f388
 _080BF058: .4byte 0x000343FD
 _080BF05C: .4byte 0x00269EC3
@@ -651,7 +651,7 @@ _080BF286:
 	orrs r0, r1
 	b _080BF2BA
 	.align 2, 0
-_080BF2A4: .4byte 0x0836F0CC
+_080BF2A4: .4byte PTR_ARRAY_0836f0cc
 _080BF2A8: .4byte RNG_0202f388
 _080BF2AC: .4byte 0x000343FD
 _080BF2B0: .4byte 0x00269EC3

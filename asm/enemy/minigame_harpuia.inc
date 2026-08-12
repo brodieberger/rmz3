@@ -389,7 +389,7 @@ _0809B1D4:
 	strb r7, [r0]
 	b _0809B248
 	.align 2, 0
-_0809B220: .4byte 0x0836A7D0
+_0809B220: .4byte sCollisions
 _0809B224:
 	movs r0, #4
 	orrs r1, r0
@@ -427,7 +427,7 @@ _0809B248:
 	strb r0, [r6, #0xf]
 	b _0809B2C6
 	.align 2, 0
-_0809B26C: .4byte 0x0836A7D0
+_0809B26C: .4byte sCollisions
 _0809B270: .4byte FUN_0809bd2c
 _0809B274: .4byte gEnemyFnTable
 _0809B278:
@@ -476,7 +476,7 @@ _0809B2C6:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809B2D4: .4byte 0x0836A818
+_0809B2D4: .4byte gHarpuiaMinigameEnemyRoutine+0x8c
 _0809B2D8: .4byte gEnemyFnTable
 
 	thumb_func_start HarpuiaMinigameEnemy_Update
@@ -501,8 +501,8 @@ HarpuiaMinigameEnemy_Update: @ 0x0809B2DC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809B308: .4byte 0x0836A7A0
-_0809B30C: .4byte 0x0836A7B8
+_0809B308: .4byte sUpdates1
+_0809B30C: .4byte sUpdates2
 
 	thumb_func_start HarpuiaMinigameEnemy_Die
 HarpuiaMinigameEnemy_Die: @ 0x0809B310
@@ -1316,7 +1316,7 @@ _0809B936:
 	bx r0
 	.align 2, 0
 _0809B940: .4byte 0x00004703
-_0809B944: .4byte 0x0836A800
+_0809B944: .4byte gHarpuiaMinigameEnemyRoutine+0x74
 _0809B948: .4byte 0x00000137
 _0809B94C: .4byte gEnemyFnTable
 

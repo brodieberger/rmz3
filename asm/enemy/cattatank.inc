@@ -655,6 +655,7 @@ _08098D70:
 	rsbs r0, r0, #0
 _08098D84:
 	str r0, [r6, #0x5c]
+.if HIT_BLOOD
 	adds r0, r6, #0
 	adds r0, #0xba
 	ldrb r0, [r0]
@@ -693,6 +694,7 @@ _08098DC4:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _08098DD2:
 	movs r0, #1
 	mov r1, sb

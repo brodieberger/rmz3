@@ -273,10 +273,25 @@ Script_0834d590:
 @ 3: Zero
 .equ CIEL, 4
 
+@ The English prologue captions are held and spaced differently.
+.if REGION_US
+  .equ PROLOGUE_LEAD_IN, SECOND
+  .equ PROLOGUE_HOLD, 0x3C
+  .equ PROLOGUE_GAP, 220
+.else
+  .equ PROLOGUE_LEAD_IN, SECOND*2
+  .equ PROLOGUE_HOLD, 0x50
+  .equ PROLOGUE_GAP, SECOND*6
+.endif
+
 Script_0834d608: @ 0x0834d608
   cutscene_start CS_PROLOGUE
   play_bgm BGM_PROLOGUE
+.if REGION_US
+  print_string 7, 8, 11
+.else
   print_string 11, 8, 11 @ あれから2ヶ月後
+.endif
   normal_screen
   wait_transition_end
   wait SECOND*3
@@ -299,10 +314,10 @@ Script_0834d608: @ 0x0834d608
   spawn 5, EntityTemplate_0834d390
   wait SECOND*8+20
   scroll_speed_x 80
-  wait SECOND*2
-  print_message 0x50, 0x0300
+  wait PROLOGUE_LEAD_IN
+  print_message PROLOGUE_HOLD, 0x0300
   wait_msgbox_end
-  wait SECOND*6
+  wait PROLOGUE_GAP
   entityflag 4, 0, TRUE
   scroll_speed_x 0x60
   wait FRAME
@@ -325,16 +340,16 @@ Script_0834d608: @ 0x0834d608
   wait SECOND
   emotion_bubble 3, 12, -40, 1
   wait SECOND*2
-  print_message 0x50, 0x0301
+  print_message PROLOGUE_HOLD, 0x0301
   wait_msgbox_end
   gimmick 1, 0, 1
   wait SECOND*3
-  print_message 0x50, 0x0302 @ 0x0837f1de
+  print_message PROLOGUE_HOLD, 0x0302 @ 0x0837f1de
   wait_msgbox_end
   wait SECOND*2
   emotion_bubble 6, 8, -40, 0
   wait SECOND
-  print_message 0x50, 0x0303 @ 0x0837f1eb
+  print_message PROLOGUE_HOLD, 0x0303 @ 0x0837f1eb
   wait_msgbox_end
   wait SECOND/4
   entityflag 4, 1, TRUE

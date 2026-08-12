@@ -390,7 +390,7 @@ NAKED static bool8 DoHandshake(void) {
 	mov sl, r0\n\
 	ldr r1, _08002B00 @ =0x0000FFFF\n\
 	mov ip, r1\n\
-	ldr r0, _08002B04 @ =0x02001500\n\
+	ldr r0, _08002B04 @ =u8_02001500\n\
 	ldrb r0, [r0]\n\
 	cmp r0, #0\n\
 	beq _08002AEC\n\
@@ -409,7 +409,7 @@ _08002AEC:\n\
 	b _08002B2C\n\
 	.align 2, 0\n\
 _08002B00: .4byte 0x0000FFFF\n\
-_08002B04: .4byte 0x02001500\n\
+_08002B04: .4byte u8_02001500\n\
 _08002B08: .4byte gLink\n\
 _08002B0C: .4byte 0x0400012A\n\
 _08002B10: .4byte 0x00008FFF\n\

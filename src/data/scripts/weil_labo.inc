@@ -1685,8 +1685,14 @@ Script_38_0835b97c: @ 0x0835b97c
   reset_camera Camera_08358f54
   start_transition 5
   wait_transition_end
+.if REGION_US
+  @ US shows a line of dialogue where JP plays a voice clip.
+  message 1, 0, 0x122D
+  wait_msgbox_end
+.else
   play_se 316
   wait 210
+.endif
   wait 60
   play_bgm 196
   wait 60
@@ -1710,8 +1716,11 @@ Script_38_0835b97c: @ 0x0835b97c
   spawn 5, Entity_08359334
   spawn 6, Entity_08359344
   spawn 7, Entity_08359354
+.if !REGION_US
+  @ US cuts this cue from the ending.
   play_se 316
   wait 120
+.endif
   start_transition 5
   wait_transition_end
   wait 60

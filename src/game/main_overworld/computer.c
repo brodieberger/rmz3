@@ -387,7 +387,7 @@ _080F24FE:\n\
 	ldr r0, [r0, #0x40]\n\
 	cmp r0, #0\n\
 	bne _080F2514\n\
-	ldr r0, _080F251C @ =0x020014C0\n\
+	ldr r0, _080F251C @ =Unk_02000db0+0x6f0\n\
 	ldr r0, [r0, #0x14]\n\
 	cmp r0, #0\n\
 	bne _080F2514\n\
@@ -397,7 +397,7 @@ _080F2514:\n\
 	b _080F2614\n\
 	.align 2, 0\n\
 _080F2518: .4byte gSystemSavedata\n\
-_080F251C: .4byte 0x020014C0\n\
+_080F251C: .4byte Unk_02000db0+0x6f0\n\
 _080F2520:\n\
 	cmp r4, #2\n\
 	bne _080F2528\n\
@@ -456,7 +456,7 @@ _080F2564:\n\
 	lsrs r2, r0, #0x1f\n\
 _080F2586:\n\
 	strh r2, [r5, #4]\n\
-	ldr r0, _080F25A4 @ =0x020014C0\n\
+	ldr r0, _080F25A4 @ =Unk_02000db0+0x6f0\n\
 	ldrh r1, [r0, #0x14]\n\
 	ldrh r0, [r0, #0x16]\n\
 	lsls r0, r0, #9\n\
@@ -468,7 +468,7 @@ _080F2586:\n\
 	.align 2, 0\n\
 _080F259C: .4byte gSystemSavedata\n\
 _080F25A0: .4byte 0x000032DA\n\
-_080F25A4: .4byte 0x020014C0\n\
+_080F25A4: .4byte Unk_02000db0+0x6f0\n\
 _080F25A8:\n\
 	movs r0, #0xa\n\
 	b _080F2614\n\

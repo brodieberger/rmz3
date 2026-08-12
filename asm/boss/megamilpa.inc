@@ -604,9 +604,9 @@ _0803DB12:
 	bl AppendQuake
 	b _0803DB88
 	.align 2, 0
-_0803DB20: .4byte 0x08361AC6
-_0803DB24: .4byte 0x08361AD0
-_0803DB28: .4byte 0x083619C8
+_0803DB20: .4byte gMegamilpaMotions
+_0803DB24: .4byte u8_ARRAY_08361ad0
+_0803DB28: .4byte Collision_ARRAY_ARRAY_083619c8
 _0803DB2C:
 	ldrb r1, [r6, #0xa]
 	movs r0, #0xfe
@@ -861,7 +861,7 @@ _0803DCDE:
 	orrs r0, r1
 	b _0803DD3A
 	.align 2, 0
-_0803DD30: .4byte 0x083619C8
+_0803DD30: .4byte Collision_ARRAY_ARRAY_083619c8
 _0803DD34:
 	ldrb r1, [r5, #0xa]
 	movs r0, #0xef

@@ -79,10 +79,10 @@ _0800D18E:
 	.align 2, 0
 _0800D1A0: .4byte gVideoRegBuffer+4
 _0800D1A4: .4byte 0x00008044
-_0800D1A8: .4byte 0x08522354
-_0800D1AC: .4byte 0x0852235C
-_0800D1B0: .4byte 0x08522358
-_0800D1B4: .4byte 0x08522360
+_0800D1A8: .4byte gBgMapOffsets+0xb4
+_0800D1AC: .4byte gBgMapOffsets+0xbc
+_0800D1B0: .4byte gBgMapOffsets+0xb8
+_0800D1B4: .4byte gBgMapOffsets+0xc0
 _0800D1B8: .4byte 0x06000800
 _0800D1BC: .4byte gBlendRegBuffer
 _0800D1C0: .4byte 0x00003B44
@@ -247,10 +247,10 @@ _0800D2F8:
 	.align 2, 0
 _0800D300: .4byte gVideoRegBuffer+4
 _0800D304: .4byte 0x00008044
-_0800D308: .4byte 0x0852234C
-_0800D30C: .4byte 0x08522354
-_0800D310: .4byte 0x08522350
-_0800D314: .4byte 0x08522358
+_0800D308: .4byte gBgMapOffsets+0xac
+_0800D30C: .4byte gBgMapOffsets+0xb4
+_0800D310: .4byte gBgMapOffsets+0xb0
+_0800D314: .4byte gBgMapOffsets+0xb8
 _0800D318: .4byte 0x06000800
 
 	thumb_func_start ctrlOceanBG3Scroll
@@ -497,10 +497,10 @@ _0800D4F4:
 	.align 2, 0
 _0800D4FC: .4byte gVideoRegBuffer+4
 _0800D500: .4byte 0x00008044
-_0800D504: .4byte 0x08522384
-_0800D508: .4byte 0x0852238C
-_0800D50C: .4byte 0x08522380
-_0800D510: .4byte 0x08522388
+_0800D504: .4byte gBgMapOffsets+0xe4
+_0800D508: .4byte gBgMapOffsets+0xec
+_0800D50C: .4byte gBgMapOffsets+0xe0
+_0800D510: .4byte gBgMapOffsets+0xe8
 _0800D514: .4byte 0x06000800
 
 	thumb_func_start setOceanBGScroll
@@ -592,7 +592,7 @@ FUN_0800d5a8: @ 0x0800D5A8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0800D5B8: .4byte 0x0833CDA8
+_0800D5B8: .4byte MetatilePatch_0833cda8
 
 	thumb_func_start FUN_0800d5bc
 FUN_0800d5bc: @ 0x0800D5BC

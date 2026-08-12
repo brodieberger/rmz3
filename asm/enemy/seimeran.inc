@@ -49,7 +49,7 @@ Seimeran_Init: @ 0x0808F470
 	b _0808F4E6
 	.align 2, 0
 _0808F4C4: .4byte gEnemyFnTable
-_0808F4C8: .4byte 0x0836959C
+_0808F4C8: .4byte sInitModes
 _0808F4CC: .4byte sCollisions
 _0808F4D0:
 	ldrb r0, [r5, #0xa]
@@ -292,8 +292,8 @@ _0808F6A8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808F6B0: .4byte 0x083693D4
-_0808F6B4: .4byte 0x083693F4
+_0808F6B0: .4byte sUpdates1
+_0808F6B4: .4byte sUpdates2
 _0808F6B8: .4byte gStageRun+232
 _0808F6BC: .4byte gEnemyFnTable
 
@@ -350,7 +350,7 @@ _0808F720:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808F724: .4byte 0x08369414
+_0808F724: .4byte PTR_ARRAY_08369414
 
 	thumb_func_start FUN_0808f728
 FUN_0808f728: @ 0x0808F728
@@ -1198,6 +1198,19 @@ FUN_0808fd88: @ 0x0808FD88
 	beq _0808FE4C
 	b _0808FE64
 _0808FD9A:
+.if REGION_US && !HIT_BLOOD
+	movs r2, #0
+	ldr r0, _0808FDBC @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r5, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _0808FDAC
+	movs r2, #1
+_0808FDAC:
+	adds r6, r2, #0
+.else
 	movs r3, #0
 	ldr r0, _0808FDBC @ =pZero2
 	ldr r0, [r0]
@@ -1210,6 +1223,7 @@ _0808FD9A:
 _0808FDAC:
 	adds r6, r3, #0
 	adds r2, r6, #0
+.endif
 	cmp r6, #0
 	beq _0808FDC0
 	ldrb r1, [r5, #0xa]
@@ -1256,6 +1270,7 @@ _0808FDC6:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
@@ -1266,6 +1281,7 @@ _0808FDC6:
 	add r1, sp, #8
 	adds r3, r6, #0
 	bl FUN_080b2b40
+.endif
 	movs r1, #0x60
 	lsls r0, r6, #1
 	adds r0, r0, r6

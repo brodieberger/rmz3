@@ -468,6 +468,27 @@ _08072092:
 _0807209A:
 	movs r0, #0
 	str r0, [r7, #0x60]
+.if REGION_US && !HIT_BLOOD
+	ldr r0, [r7, #0x54]
+	str r0, [sp]
+	ldr r2, [r7, #0x58]
+	str r2, [sp, #4]
+	ldrb r1, [r7, #0xa]
+	movs r0, #0x10
+	ands r0, r1
+	cmp r0, #0
+	bne _080720A8_us
+	movs r1, #0x80
+	lsls r1, r1, #4
+	adds r0, r2, r1
+	b _080720AE_us
+_080720A8_us:
+	movs r3, #0x80
+	lsls r3, r3, #4
+	adds r0, r2, r3
+_080720AE_us:
+	str r0, [sp, #4]
+.else
 	ldr r2, [r7, #0x54]
 	str r2, [sp]
 	ldr r3, [r7, #0x58]
@@ -479,6 +500,8 @@ _0807209A:
 	lsls r1, r1, #4
 	adds r0, r3, r1
 	str r0, [sp, #4]
+.endif
+.if HIT_BLOOD
 	adds r0, r7, #0
 	adds r0, #0xbb
 	ldrb r0, [r0]
@@ -516,6 +539,7 @@ _080720F0:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _080720FE:
 	adds r1, r7, #0
 	adds r1, #0x54
@@ -528,9 +552,15 @@ _0807210C:
 	ldr r1, [r7, #0x58]
 	str r0, [sp]
 	str r1, [sp, #4]
+.if REGION_US && !HIT_BLOOD
+	ldr r0, _080721FC @ =RNG_0202f388
+	mov r8, r0
+	ldr r0, [r0]
+.else
 	ldr r3, _080721FC @ =RNG_0202f388
 	mov r8, r3
 	ldr r0, [r3]
+.endif
 	ldr r6, _08072200 @ =0x000343FD
 	adds r1, r0, #0
 	muls r1, r6, r1
@@ -545,8 +575,13 @@ _0807210C:
 	subs r0, r0, r1
 	str r0, [sp, #4]
 	ldr r2, [sp]
+.if REGION_US && !HIT_BLOOD
+	ldr r1, _0807220C @ =0xFFFFFC00
+	adds r2, r2, r1
+.else
 	ldr r0, _0807220C @ =0xFFFFFC00
 	adds r2, r2, r0
+.endif
 	adds r0, r5, #0
 	muls r0, r6, r0
 	adds r0, r0, r3

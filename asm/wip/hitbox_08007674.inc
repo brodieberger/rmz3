@@ -26,6 +26,13 @@ _0800769E:
 	adds r6, r0, #0
 	cmp r1, #3
 	bne _080076C0
+.if REGION_US
+	ldrb r1, [r3, #9]
+	movs r0, #4
+	ands r0, r1
+	cmp r0, #0
+	beq _080076C0
+.endif
 	ldr r0, [r5, #0x18]
 	movs r1, #0x80
 	lsls r1, r1, #0x16
@@ -42,6 +49,13 @@ _080076C0:
 	ldrb r0, [r6, #2]
 	cmp r0, #4
 	bne _080076DC
+.if REGION_US
+	ldrb r1, [r3, #9]
+	movs r0, #16
+	ands r0, r1
+	cmp r0, #0
+	beq _080076DC
+.endif
 	ldr r0, [r5, #0x18]
 	movs r1, #0x80
 	lsls r1, r1, #0x17
@@ -57,6 +71,13 @@ _080076DC:
 	ldrb r0, [r6, #2]
 	cmp r0, #5
 	bne _080076FA
+.if REGION_US
+	ldrb r1, [r3, #9]
+	movs r0, #8
+	ands r0, r1
+	cmp r0, #0
+	beq _080076FA
+.endif
 	ldr r0, [r5, #0x18]
 	movs r1, #0x80
 	lsls r1, r1, #0x18

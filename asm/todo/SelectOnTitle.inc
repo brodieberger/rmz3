@@ -1022,7 +1022,11 @@ _080ECB9A:
 	ldrh r0, [r0]
 	ldr r5, _080ECBE4 @ =gStringData
 	adds r0, r0, r5
+.if REGION_US
+	movs r1, #7
+.else
 	movs r1, #0xa
+.endif
 	movs r2, #0xc
 	bl PrintString
 	ldrb r0, [r4]
@@ -1035,7 +1039,11 @@ _080ECBB6:
 	adds r0, r1, r6
 	ldrh r0, [r0]
 	adds r0, r0, r5
+.if REGION_US
+	movs r1, #6
+.else
 	movs r1, #0xa
+.endif
 	movs r2, #0xe
 	bl PrintString
 	ldrb r0, [r4]
@@ -1047,7 +1055,11 @@ _080ECBCE:
 	adds r0, r1, r6
 	ldrh r0, [r0]
 	adds r0, r0, r5
+.if REGION_US
+	movs r1, #5
+.else
 	movs r1, #0xa
+.endif
 	movs r2, #0x10
 	bl PrintString
 	b _080ECC2A
@@ -1071,7 +1083,11 @@ _080ECC00:
 	ldrh r0, [r0]
 	ldr r5, _080ECC40 @ =gStringData
 	adds r0, r0, r5
+.if REGION_US
+	movs r1, #7
+.else
 	movs r1, #0xa
+.endif
 	movs r2, #0xd
 	bl PrintString
 	ldrb r0, [r4]
@@ -1084,7 +1100,11 @@ _080ECC1C:
 	adds r0, r1, r6
 	ldrh r0, [r0]
 	adds r0, r0, r5
+.if REGION_US
+	movs r1, #6
+.else
 	movs r1, #0xa
+.endif
 	movs r2, #0xf
 	bl PrintString
 _080ECC2A:

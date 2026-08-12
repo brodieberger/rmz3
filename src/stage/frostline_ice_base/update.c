@@ -186,7 +186,11 @@ _0801DD6C: .4byte gCurStory\n\
 _0801DD70: .4byte gStageRun\n\
 _0801DD74:\n\
 	ldr r0, _0801DDF0 @ =gSpawnManager\n\
+.if REGION_US\n\
+	movs r1, #0xb7\n\
+.else\n\
 	movs r1, #0x87\n\
+.endif\n\
 	lsls r1, r1, #2\n\
 	adds r0, r0, r1\n\
 	ldr r0, [r0]\n\
@@ -208,7 +212,11 @@ _0801DD94:\n\
 	b _0801DF22\n\
 _0801DD9E:\n\
 	ldr r0, _0801DDF0 @ =gSpawnManager\n\
+.if REGION_US\n\
+	movs r1, #0xb7\n\
+.else\n\
 	movs r1, #0x87\n\
+.endif\n\
 	lsls r1, r1, #2\n\
 	adds r0, r0, r1\n\
 	ldr r0, [r0]\n\

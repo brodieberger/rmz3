@@ -68,8 +68,38 @@ endif
 
 MODERN ?= 0
 
+# Region: jp (default, byte-matches the J ROM) or us (targets the USA ROM).
+REGION ?= jp
+ifeq ($(REGION),us)
+  RGNSUF := -us
+  REGIONNUM := 1
+  ISUS := 1
+  ENGLISHDEF := 1
+  CHARMAP := charmap-us.txt
+else ifeq ($(REGION),jp)
+  RGNSUF :=
+  REGIONNUM := 0
+  ISUS := 0
+  ENGLISHDEF := 0
+  CHARMAP := charmap.txt
+else
+  $(error REGION must be 'jp' or 'us', got '$(REGION)')
+endif
+
+# Hit-blood VFX: present in JP, removed from the retail US ROM. Kept in source
+# and gated by HIT_BLOOD. On for JP always (byte-match); off for the US
+# byte-match (BLOOD=0, default); BLOOD=1 restores it for a US romhack build
+# (which no longer byte-matches, by design).
+BLOOD ?= 0
+ifeq ($(REGION),us)
+  HITBLOOD := $(BLOOD)
+else
+  HITBLOOD := 1
+endif
+
 # Build target
-RONNAME = $(NAME)$(MODIFIERS)
+RONNAME = $(NAME)$(MODIFIERS)$(RGNSUF)
+SHA1FILE := $(NAME)$(RGNSUF).sha1
 BUILD_DIR := build/$(RONNAME)
 ROM = $(RONNAME).gba
 ELF = $(RONNAME).elf
@@ -109,6 +139,8 @@ include make_tools.mk
 # Flags
 ARCH := -mcpu=arm7tdmi -march=armv4t -mthumb 
 ASFLAGS := $(ARCH) -mthumb-interwork -g
+ASM_DEFSYMS := --defsym REGION_US=$(ISUS) --defsym HIT_BLOOD=$(HITBLOOD) --defsym ENGLISH=$(ENGLISHDEF)
+ASFLAGS += $(ASM_DEFSYMS)
 
 CFLAGS := -mthumb-interwork  -Wimplicit -Wparentheses -Werror -O2 -fshort-enums
 ifeq ($(MODERN),0)
@@ -123,6 +155,7 @@ else
 	CFLAGS += $(ARCH) $(CPPFLAGS) -Wno-pointer-to-int-cast -fno-toplevel-reorder -fno-aggressive-loop-optimizations -Wno-address-of-packed-member
 	LIBPATH := -L $(shell dirname $(shell $(AGBCC) --print-file-name=libgcc.a)) -L $(shell dirname $(shell $(AGBCC) --print-file-name=libc.a))
 endif
+CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD)
 LDFLAGS := $(LIBPATH) -lgcc -lc
 
 include assets.mk
@@ -161,6 +194,9 @@ $(BUILD_DIR)/src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
 endif
 
 LDSCRIPT = ld_script$(MODIFIERS).ld
+ifeq ($(REGION),us)
+LDSCRIPT = ld_script-us.ld
+endif
 LD_INC := $(wildcard linker/*.txt)
 LD_BUILD := $(addprefix $(BUILD_DIR)/, $(LD_INC))
 
@@ -202,7 +238,7 @@ endif
 modern: $(ROM)
 
 compare: $(ROM)
-	@sha1sum -c $(NAME).sha1
+	@sha1sum -c $(SHA1FILE)
 
 clean: clean-code clean-assets
 
@@ -247,8 +283,9 @@ endif
 $(BUILD_DIR)/%.o: %.s
 	$(AS) $(ASFLAGS) $< -o $@
 
+# gcc rejects a bare --defsym; route it through -Wa.
 $(BUILD_DIR)/%.o: %.sx
-	$(TOOL)/arm-none-eabi-gcc -c $(CPPFLAGS) $(ASFLAGS) $< -o $@
+	$(TOOL)/arm-none-eabi-gcc -c $(CPPFLAGS) $(filter-out --defsym REGION_US=% HIT_BLOOD=% ENGLISH=%,$(ASFLAGS)) -Wa,--defsym,REGION_US=$(ISUS),--defsym,HIT_BLOOD=$(HITBLOOD),--defsym,ENGLISH=$(ENGLISHDEF) $< -o $@
 
 $(ASM_s_OBJS:.o=.d): $(BUILD_DIR)/%.d: %.s
 	$(SCANINC) -M $@ -I include $<
@@ -263,4 +300,4 @@ endif
 # PREPROC
 PREPROC := tools/preproc/preproc$(EXE)
 $(ASM_USE_PREPROC_OBJS): $(BUILD_DIR)/%.o: %.s
-	$(PREPROC) $< charmap.txt | $(AS) $(ASFLAGS) -o $@ -
+	$(PREPROC) $< $(CHARMAP) | $(AS) $(ASFLAGS) -o $@ -

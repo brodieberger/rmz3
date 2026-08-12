@@ -226,8 +226,8 @@ WormerSnowBall_Init: @ 0x0807B21C
 	b _0807B292
 	.align 2, 0
 _0807B270: .4byte gEnemyFnTable
-_0807B274: .4byte 0x083679AC
-_0807B278: .4byte 0x08367814
+_0807B274: .4byte sInitModes
+_0807B278: .4byte sCollisions
 _0807B27C:
 	ldrb r0, [r5, #0xa]
 	movs r1, #4
@@ -252,7 +252,7 @@ _0807B292:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B2AC: .4byte 0x08367814
+_0807B2AC: .4byte sCollisions
 _0807B2B0: .4byte nop_0807b1dc
 
 	thumb_func_start WormerSnowBall_Update
@@ -282,8 +282,8 @@ _0807B2E2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B2E8: .4byte 0x083677E8
-_0807B2EC: .4byte 0x083677F8
+_0807B2E8: .4byte sUpdates1
+_0807B2EC: .4byte sUpdates2
 
 	thumb_func_start WormerSnowBall_Die
 WormerSnowBall_Die: @ 0x0807B2F0
@@ -297,7 +297,7 @@ WormerSnowBall_Die: @ 0x0807B2F0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807B304: .4byte 0x08367808
+_0807B304: .4byte sDeads
 
 	thumb_func_start FUN_0807b308
 FUN_0807b308: @ 0x0807B308
@@ -416,7 +416,7 @@ _0807B386:
 	str r0, [r4, #0x14]
 	b _0807B402
 	.align 2, 0
-_0807B3E0: .4byte 0x0836782C
+_0807B3E0: .4byte gWormerSnowBallRoutine+0x58
 _0807B3E4: .4byte 0xFFFFFB00
 _0807B3E8: .4byte RNG_0202f388
 _0807B3EC: .4byte 0x000343FD
@@ -492,7 +492,7 @@ _0807B44C:
 	strb r0, [r4, #0xd]
 	b _0807B48E
 	.align 2, 0
-_0807B47C: .4byte 0x0836782C
+_0807B47C: .4byte gWormerSnowBallRoutine+0x58
 _0807B480: .4byte gSineTable
 _0807B484: .4byte gEnemyFnTable
 _0807B488:
@@ -719,7 +719,7 @@ _0807B634:
 	bl UpdateEntityAnim
 	b _0807B7AC
 	.align 2, 0
-_0807B63C: .4byte 0x0836785C
+_0807B63C: .4byte gWormerSnowBallRoutine+0x88
 _0807B640: .4byte 0x00004004
 _0807B644:
 	adds r0, r5, #0
@@ -829,7 +829,7 @@ _0807B714:
 	b _0807B746
 	.align 2, 0
 _0807B71C: .4byte 0x00004005
-_0807B720: .4byte 0x0836785C
+_0807B720: .4byte gWormerSnowBallRoutine+0x88
 _0807B724:
 	ldr r0, [r5, #0x54]
 	adds r0, #0x30

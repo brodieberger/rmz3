@@ -226,8 +226,8 @@ CarryArm_Init: @ 0x080715A8
 	b _08071640
 	.align 2, 0
 _08071614: .4byte gEnemyFnTable
-_08071618: .4byte 0x08366BB0
-_0807161C: .4byte 0x08366B98
+_08071618: .4byte u8_ARRAY_08366bb0
+_0807161C: .4byte PTR_ARRAY_08366b78+0x20
 _08071620:
 	ldrb r0, [r5, #0xa]
 	movs r1, #4
@@ -251,7 +251,7 @@ _08071640:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807164C: .4byte 0x08366B80
+_0807164C: .4byte sCollisions
 _08071650: .4byte nop_08071568
 
 	thumb_func_start CarryArm_Update
@@ -281,8 +281,8 @@ _08071682:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08071688: .4byte 0x08366B48
-_0807168C: .4byte 0x08366B60
+_08071688: .4byte PTR_ARRAY_08366b48
+_0807168C: .4byte PTR_ARRAY_08366b60
 
 	thumb_func_start CarryArm_Die
 CarryArm_Die: @ 0x08071690
@@ -296,7 +296,7 @@ CarryArm_Die: @ 0x08071690
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080716A4: .4byte 0x08366B78
+_080716A4: .4byte PTR_ARRAY_08366b78
 
 	thumb_func_start FUN_080716a8
 FUN_080716a8: @ 0x080716A8
@@ -1075,7 +1075,7 @@ _08071C48:
 	bx r0
 	.align 2, 0
 _08071C64: .4byte 0xFFFFF000
-_08071C68: .4byte 0x08366BB2
+_08071C68: .4byte sMotions
 _08071C6C: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_08071c70

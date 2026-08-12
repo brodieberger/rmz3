@@ -456,7 +456,7 @@ Projectile32_Init: @ 0x080AAE84
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AAE98: .4byte 0x0836C3C0
+_080AAE98: .4byte sInitializers
 
 	thumb_func_start Projectile32_Update
 Projectile32_Update: @ 0x080AAE9C
@@ -470,7 +470,7 @@ Projectile32_Update: @ 0x080AAE9C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AAEB0: .4byte 0x0836C3E4
+_080AAEB0: .4byte sUpdates
 
 	thumb_func_start Projectile32_Die
 Projectile32_Die: @ 0x080AAEB4
@@ -484,7 +484,7 @@ Projectile32_Die: @ 0x080AAEB4
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080AAEC8: .4byte 0x0836C408
+_080AAEC8: .4byte PTR_ARRAY_0836c408
 
 	thumb_func_start nop_080aaecc
 nop_080aaecc: @ 0x080AAECC
@@ -561,7 +561,7 @@ FUN_080aaed8: @ 0x080AAED8
 	.align 2, 0
 _080AAF4C: .4byte gProjectileFnTable
 _080AAF50: .4byte 0x00006208
-_080AAF54: .4byte 0x0836C42C
+_080AAF54: .4byte sCollisions
 _080AAF58:
 	ldrb r1, [r7, #0xa]
 	movs r0, #0xef
@@ -911,7 +911,7 @@ FUN_080ab190: @ 0x080AB190
 	.align 2, 0
 _080AB210: .4byte gProjectileFnTable
 _080AB214: .4byte 0x00006201
-_080AB218: .4byte 0x0836C45C
+_080AB218: .4byte gProjectile32Routine+0xb0
 
 	thumb_func_start FUN_080ab21c
 FUN_080ab21c: @ 0x080AB21C
@@ -996,7 +996,7 @@ _080AB298:
 	strh r1, [r0]
 	b _080AB39A
 	.align 2, 0
-_080AB2C0: .4byte 0x0836C48C
+_080AB2C0: .4byte gProjectile32Routine+0xe0
 _080AB2C4:
 	adds r0, r5, #0
 	adds r0, #0xbc
@@ -1843,7 +1843,7 @@ _080AB97A:
 	bx r0
 	.align 2, 0
 _080AB984: .4byte 0xFFFFF000
-_080AB988: .4byte 0x0836C57C
+_080AB988: .4byte s32_ARRAY_0836c57c
 _080AB98C: .4byte gProjectileFnTable
 
 	thumb_func_start FUN_080ab990
@@ -1941,7 +1941,7 @@ FUN_080ab9f0: @ 0x080AB9F0
 	bx r0
 	.align 2, 0
 _080ABA54: .4byte 0x00006202
-_080ABA58: .4byte 0x0836C4EC
+_080ABA58: .4byte gProjectile32Routine+0x140
 _080ABA5C: .4byte gProjectileFnTable
 
 	thumb_func_start FUN_080aba60
@@ -2120,7 +2120,7 @@ FUN_080abb44: @ 0x080ABB44
 	.align 2, 0
 _080ABBAC: .4byte gProjectileFnTable
 _080ABBB0: .4byte 0x00006207
-_080ABBB4: .4byte 0x0836C51C
+_080ABBB4: .4byte gProjectile32Routine+0x170
 
 	thumb_func_start FUN_080abbb8
 FUN_080abbb8: @ 0x080ABBB8
@@ -2468,7 +2468,7 @@ FUN_080abdf8: @ 0x080ABDF8
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080ABE48: .4byte 0x0836C4BC
+_080ABE48: .4byte gProjectile32Routine+0x110
 _080ABE4C: .4byte FUN_080ac1a4
 _080ABE50: .4byte gProjectileFnTable
 

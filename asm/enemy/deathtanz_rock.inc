@@ -109,7 +109,7 @@ _0807A59A:
 	.align 2, 0
 _0807A5B0: .4byte gEnemyHeaderPtr
 _0807A5B4: .4byte gEnemyFnTable
-_0807A5B8: .4byte 0x0836773C
+_0807A5B8: .4byte s16_ARRAY_0836773c
 
 	thumb_func_start nop_0807a5bc
 nop_0807a5bc: @ 0x0807A5BC
@@ -202,8 +202,8 @@ DeathtanzRock_Init: @ 0x0807A5FC
 	b _0807A68A
 	.align 2, 0
 _0807A660: .4byte gEnemyFnTable
-_0807A664: .4byte 0x08367742
-_0807A668: .4byte 0x08367664
+_0807A664: .4byte sInitModes
+_0807A668: .4byte sCollisions
 _0807A66C:
 	ldrb r0, [r5, #0xa]
 	movs r1, #4
@@ -228,7 +228,7 @@ _0807A68A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A69C: .4byte 0x08367664
+_0807A69C: .4byte sCollisions
 _0807A6A0: .4byte nop_0807a5bc
 
 	thumb_func_start DeathtanzRock_Update
@@ -261,8 +261,8 @@ _0807A6D2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A6D8: .4byte 0x08367648
-_0807A6DC: .4byte 0x08367654
+_0807A6D8: .4byte sUpdates1
+_0807A6DC: .4byte sUpdates2
 
 	thumb_func_start DeathtanzRock_Die
 DeathtanzRock_Die: @ 0x0807A6E0
@@ -276,7 +276,7 @@ DeathtanzRock_Die: @ 0x0807A6E0
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A6F4: .4byte 0x08367660
+_0807A6F4: .4byte sDeads
 
 	thumb_func_start nop_0807a6f8
 nop_0807a6f8: @ 0x0807A6F8
@@ -323,7 +323,7 @@ _0807A720:
 	orrs r0, r1
 	b _0807A74A
 	.align 2, 0
-_0807A740: .4byte 0x0836767C
+_0807A740: .4byte gDeathtanzRockRoutine+0x48
 _0807A744:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -430,8 +430,8 @@ _0807A7EE:
 	b _0807A894
 	.align 2, 0
 _0807A810: .4byte 0x00003603
-_0807A814: .4byte 0x08367744
-_0807A818: .4byte 0x08367664
+_0807A814: .4byte u8_ARRAY_08367744
+_0807A818: .4byte sCollisions
 _0807A81C: .4byte gEnemyFnTable
 _0807A820:
 	adds r0, r4, #0
@@ -594,7 +594,7 @@ _0807A938:
 	movs r0, #0x17
 	b _0807A952
 	.align 2, 0
-_0807A948: .4byte 0x08367748
+_0807A948: .4byte sMotions1
 _0807A94C:
 	adds r1, r4, #0
 	adds r1, #0x25
@@ -620,7 +620,7 @@ _0807A972:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807A978: .4byte 0x0836774E
+_0807A978: .4byte s16_ARRAY_0836774e
 
 	thumb_func_start FUN_0807a97c
 FUN_0807a97c: @ 0x0807A97C
@@ -711,9 +711,9 @@ _0807AA1E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807AA24: .4byte 0x0836770C
+_0807AA24: .4byte gDeathtanzRockRoutine+0xd8
 _0807AA28: .4byte gSineTable
-_0807AA2C: .4byte 0x08367754
+_0807AA2C: .4byte u16_ARRAY_08367754
 _0807AA30: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0807aa34
@@ -759,5 +759,5 @@ _0807AA6A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0807AA84: .4byte 0x0836775A
+_0807AA84: .4byte sMotions2
 _0807AA88: .4byte gEnemyFnTable

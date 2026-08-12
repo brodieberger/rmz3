@@ -126,10 +126,10 @@ _080139F0:
 	.align 2, 0
 _08013A20: .4byte gVideoRegBuffer+4
 _08013A24: .4byte 0x00008045
-_08013A28: .4byte 0x085223B4
-_08013A2C: .4byte 0x085223BC
-_08013A30: .4byte 0x085223B8
-_08013A34: .4byte 0x085223C0
+_08013A28: .4byte gBgMapOffsets+0x114
+_08013A2C: .4byte gBgMapOffsets+0x11c
+_08013A30: .4byte gBgMapOffsets+0x118
+_08013A34: .4byte gBgMapOffsets+0x120
 _08013A38: .4byte 0x06000800
 _08013A3C: .4byte gWindowRegBuffer
 _08013A40: .4byte gOverworld
@@ -222,7 +222,7 @@ _08013AFC: .4byte gOverworld
 _08013B00: .4byte 0x0002C00C
 _08013B04: .4byte gVideoRegBuffer+12
 _08013B08: .4byte gStageTilesetOffsets+(18*4)
-_08013B0C: .4byte 0x08704B10
+_08013B0C: .4byte gSnowTilesetGraphics+0x614
 
 	thumb_func_start FUN_08013b10
 FUN_08013b10: @ 0x08013B10
@@ -324,8 +324,8 @@ _08013BBA:
 	bx r0
 	.align 2, 0
 _08013BCC: .4byte gVideoRegBuffer+4
-_08013BD0: .4byte 0x085223BC
-_08013BD4: .4byte 0x085223C4
+_08013BD0: .4byte gBgMapOffsets+0x11c
+_08013BD4: .4byte gBgMapOffsets+0x124
 _08013BD8: .4byte gWindowRegBuffer
 
 	thumb_func_start FUN_08013bdc
@@ -534,8 +534,8 @@ FUN_08013d38: @ 0x08013D38
 _08013D6C: .4byte gOverworld
 _08013D70: .4byte 0x0002D024
 _08013D74: .4byte gStageTilesetOffsets+(18*4)
-_08013D78: .4byte 0x08704B74
-_08013D7C: .4byte 0x08704B80
+_08013D78: .4byte gSnowTilesetGraphics+0x678
+_08013D7C: .4byte gSnowTilesetGraphics+0x684
 _08013D80:
 	ldr r6, _08013DCC @ =gStageTilesetOffsets+(18*4)
 	ldrh r0, [r7, #0x10]
@@ -575,7 +575,7 @@ _08013DBA:
 	bx r0
 	.align 2, 0
 _08013DCC: .4byte gStageTilesetOffsets+(18*4)
-_08013DD0: .4byte 0x08704B88
+_08013DD0: .4byte gSnowTilesetGraphics+0x68c
 
 	thumb_func_start FUN_08013dd4
 FUN_08013dd4: @ 0x08013DD4

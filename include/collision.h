@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_COLLISION_H
 #define GUARD_RMZ3_COLLISION_H
 
+#include "config.h"
 #include "entity/body.h"
 #include "gba/types.h"
 
@@ -23,9 +24,24 @@
 // Collision.hardness
 #define METAL (1 << 0)  // 攻撃が当たった時に金属音がなり、バスターが貫通しなくなる(ダメージは通る)
 #define NO_DAMAGE (1 << 1)
-#define LITTLE_HARD (1 << 2)  // Take 2/3 damage
+// US はこの3つを3ビットずつ上にずらして、 2..4 を空けている
+#if IS_US
+#define LITTLE_HARD (1 << 5)    // Take 2/3 damage
+#define HARDNESS_B3 (1 << 6)
+#define HARDNESS_WEAK (1 << 7)  // Take 2x damage
+#else
+#define LITTLE_HARD (1 << 2)    // Take 2/3 damage
 #define HARDNESS_B3 (1 << 3)
 #define HARDNESS_WEAK (1 << 4)  // Take 2x damage
+#endif
+
+// US はビット 2..4 を空けた先に新しい硬さの種別を置いていて、ゼロ自身の
+// コリジョンはその3つすべてに反応する
+#if IS_US
+#define ZERO_HARDNESS_EXTRA ((1 << 2) | (1 << 3) | (1 << 4))
+#else
+#define ZERO_HARDNESS_EXTRA 0
+#endif
 
 #define priorityLayer layer
 

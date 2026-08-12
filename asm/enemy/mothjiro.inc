@@ -46,7 +46,7 @@ Mothjiro_Init: @ 0x08087BFC
 	.align 2, 0
 _08087C48: .4byte gSystemSavedata
 _08087C4C: .4byte gCurStory
-_08087C50: .4byte 0x083687C8
+_08087C50: .4byte gMothjiroRoutine+0x64
 _08087C54:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -119,7 +119,7 @@ _08087CD8:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08087CE8: .4byte 0x083687C8
+_08087CE8: .4byte gMothjiroRoutine+0x64
 _08087CEC: .4byte FUN_08088b0c
 _08087CF0: .4byte 0xFFFFC000
 _08087CF4: .4byte 0xFFFFB000
@@ -184,8 +184,8 @@ _08087D5C:
 	str r6, [r5]
 	b _08087D8C
 	.align 2, 0
-_08087D74: .4byte 0x08368778
-_08087D78: .4byte 0x083687C8
+_08087D74: .4byte sUpdates1
+_08087D78: .4byte gMothjiroRoutine+0x64
 _08087D7C:
 	ldr r0, _08087D94 @ =0x08368794
 	ldrb r1, [r4, #0xd]
@@ -199,7 +199,7 @@ _08087D8C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08087D94: .4byte 0x08368794
+_08087D94: .4byte sUpdates2
 
 	thumb_func_start Mothjiro_Die
 Mothjiro_Die: @ 0x08087D98
@@ -374,6 +374,7 @@ _08087EEC:
 	rsbs r0, r0, #0
 _08087F00:
 	str r0, [r7, #0x5c]
+.if HIT_BLOOD
 	ldrb r0, [r7, #0x11]
 	cmp r0, #0xff
 	beq _08087F28
@@ -410,6 +411,7 @@ _08087F3C:
 	mov r1, sp
 	movs r3, #0
 	bl FUN_080b2b40
+.endif
 _08087F4A:
 	adds r1, r7, #0
 	adds r1, #0x54
@@ -764,7 +766,7 @@ _080881EC:
 	strb r0, [r2]
 	b _08088272
 	.align 2, 0
-_08088240: .4byte 0x083687C8
+_08088240: .4byte gMothjiroRoutine+0x64
 _08088244: .4byte RNG_0202f388
 _08088248: .4byte 0x000343FD
 _0808824C: .4byte 0x00269EC3
@@ -1359,7 +1361,7 @@ _08088688:
 	orrs r0, r3
 	b _08088780
 	.align 2, 0
-_080886C8: .4byte 0x083687C8
+_080886C8: .4byte gMothjiroRoutine+0x64
 _080886CC: .4byte 0xFFFFF000
 _080886D0: .4byte RNG_0202f388
 _080886D4: .4byte 0x000343FD
@@ -1812,7 +1814,7 @@ _08088A3A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08088A40: .4byte 0x083687E0
+_08088A40: .4byte gMothjiroRoutine+0x7c
 
 	thumb_func_start nop_08088a44
 nop_08088a44: @ 0x08088A44
@@ -1848,7 +1850,7 @@ _08088A6A:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_08088A70: .4byte 0x083687E0
+_08088A70: .4byte gMothjiroRoutine+0x7c
 
 	thumb_func_start mothjiro_08088a74
 mothjiro_08088a74: @ 0x08088A74
@@ -1886,8 +1888,8 @@ mothjiro_08088a74: @ 0x08088A74
 	bl SetDDP
 	b _08088AD2
 	.align 2, 0
-_08088ABC: .4byte 0x083687F8
-_08088AC0: .4byte 0x083687E0
+_08088ABC: .4byte sElementCoord
+_08088AC0: .4byte gMothjiroRoutine+0x7c
 _08088AC4:
 	cmp r1, #0x30
 	bne _08088AD2
@@ -1901,7 +1903,7 @@ _08088AD2:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_08088ADC: .4byte 0x083687E0
+_08088ADC: .4byte gMothjiroRoutine+0x7c
 
 	thumb_func_start FUN_08088ae0
 FUN_08088ae0: @ 0x08088AE0

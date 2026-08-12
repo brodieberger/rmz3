@@ -296,8 +296,8 @@ _0805B21C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805B224: .4byte 0x08364C2C
-_0805B228: .4byte 0x08364C4C
+_0805B224: .4byte sUpdates1
+_0805B228: .4byte sUpdates2
 
 	thumb_func_start OmegaGold_Die
 OmegaGold_Die: @ 0x0805B22C
@@ -311,7 +311,7 @@ OmegaGold_Die: @ 0x0805B22C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805B240: .4byte 0x08364C6C
+_0805B240: .4byte sDeads
 
 	thumb_func_start OmegaGold_Disappear
 OmegaGold_Disappear: @ 0x0805B244
@@ -735,7 +735,7 @@ changeGoldOmega1Mode: @ 0x0805B4D8
 _0805B548: .4byte RNG_0202f388
 _0805B54C: .4byte 0x000343FD
 _0805B550: .4byte 0x00269EC3
-_0805B554: .4byte 0x080FEFBE
+_0805B554: .4byte unk_080fefb8+0x6
 _0805B558:
 	ldr r2, _0805B594 @ =RNG_0202f388
 	ldr r1, [r2]
@@ -771,7 +771,7 @@ _0805B586:
 _0805B594: .4byte RNG_0202f388
 _0805B598: .4byte 0x000343FD
 _0805B59C: .4byte 0x00269EC3
-_0805B5A0: .4byte 0x080FEFBE
+_0805B5A0: .4byte unk_080fefb8+0x6
 
 	thumb_func_start goldOmega1Neutral
 goldOmega1Neutral: @ 0x0805B5A4
@@ -803,7 +803,7 @@ _0805B5D2:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0805B5D8: .4byte 0x08364C8C
+_0805B5D8: .4byte gOmegaGoldRoutine+0x74
 
 	thumb_func_start nop_0805b5dc
 nop_0805b5dc: @ 0x0805B5DC
@@ -918,7 +918,7 @@ _0805B6AE:
 	strb r0, [r4, #0xe]
 	b _0805B738
 	.align 2, 0
-_0805B6BC: .4byte 0x080FEFBB
+_0805B6BC: .4byte unk_080fefb8+0x3
 _0805B6C0:
 	adds r0, r4, #0
 	bl floatGoldOmega1

@@ -285,7 +285,7 @@ harpuiaMinigame: @ 0x080FAAEC
 	bx r1
 	.align 2, 0
 _080FAB08: .4byte 0x00000DCC
-_080FAB0C: .4byte 0x08386B8C
+_080FAB0C: .4byte HarpuiaMinigameLoops
 
 	thumb_func_start harpuia_minigame_080fab10
 harpuia_minigame_080fab10: @ 0x080FAB10
@@ -391,8 +391,8 @@ _080FABB2:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080FABE0: .4byte 0x0810E270
-_080FABE4: .4byte 0x0810E278
+_080FABE0: .4byte Unicode_SCORE_0810e270
+_080FABE4: .4byte Unicode_HI_SCORE_0810e278
 
 	thumb_func_start harpuia_minigame_080fabe8
 harpuia_minigame_080fabe8: @ 0x080FABE8
@@ -740,8 +740,8 @@ _080FAEA4: .4byte gGameState
 _080FAEA8: .4byte 0x0000626C
 _080FAEAC: .4byte 0x41C64E6D
 _080FAEB0: .4byte 0x00003039
-_080FAEB4: .4byte 0x0810E270
-_080FAEB8: .4byte 0x0810E278
+_080FAEB4: .4byte Unicode_SCORE_0810e270
+_080FAEB8: .4byte Unicode_HI_SCORE_0810e278
 
 	thumb_func_start harpuia_minigame_080faebc
 harpuia_minigame_080faebc: @ 0x080FAEBC
@@ -866,6 +866,6 @@ _080FAFB0:
 	pop {r1}
 	bx r1
 	.align 2, 0
-_080FAFB8: .4byte 0x0810E270
-_080FAFBC: .4byte 0x0810E278
+_080FAFB8: .4byte Unicode_SCORE_0810e270
+_080FAFBC: .4byte Unicode_HI_SCORE_0810e278
 

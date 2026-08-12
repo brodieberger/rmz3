@@ -141,8 +141,8 @@ _0808A1AE:
 	movs r0, #1
 	b _0808A20A
 	.align 2, 0
-_0808A1E8: .4byte 0x0836896C
-_0808A1EC: .4byte 0x08368974
+_0808A1E8: .4byte sUpdates1
+_0808A1EC: .4byte sUpdates2
 _0808A1F0:
 	ldr r0, [r1, #0x54]
 	str r0, [r4, #0x54]
@@ -192,7 +192,7 @@ _0808A23E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A244: .4byte 0x08368BDC
+_0808A244: .4byte sElementCoord
 
 	thumb_func_start PantheonBase_Init
 PantheonBase_Init: @ 0x0808A248
@@ -249,10 +249,10 @@ PantheonBase_Init: @ 0x0808A248
 	b _0808A2DC
 	.align 2, 0
 _0808A2B0: .4byte gEnemyFnTable
-_0808A2B4: .4byte 0x08368BE4
+_0808A2B4: .4byte sInitModes
 _0808A2B8: .4byte gSystemSavedata
 _0808A2BC: .4byte gCurStory
-_0808A2C0: .4byte 0x08368984
+_0808A2C0: .4byte sCollisions
 _0808A2C4:
 	ldrb r1, [r6, #0xa]
 	movs r0, #4
@@ -282,7 +282,7 @@ _0808A2DC:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A2FC: .4byte 0x08368984
+_0808A2FC: .4byte sCollisions
 _0808A300: .4byte nop_0808a140
 
 	thumb_func_start PantheonBase_Update
@@ -389,8 +389,8 @@ _0808A3CE:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A3D4: .4byte 0x0836896C
-_0808A3D8: .4byte 0x08368974
+_0808A3D4: .4byte sUpdates1
+_0808A3D8: .4byte sUpdates2
 
 	thumb_func_start PantheonBase_Die
 PantheonBase_Die: @ 0x0808A3DC
@@ -404,7 +404,7 @@ PantheonBase_Die: @ 0x0808A3DC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A3F0: .4byte 0x0836897C
+_0808A3F0: .4byte sDeads
 
 	thumb_func_start nop_0808a3f4
 nop_0808a3f4: @ 0x0808A3F4
@@ -443,7 +443,7 @@ _0808A42E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A434: .4byte 0x08368984
+_0808A434: .4byte sCollisions
 
 	thumb_func_start pBase_0808a438
 pBase_0808a438: @ 0x0808A438
@@ -480,7 +480,7 @@ _0808A472:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808A478: .4byte 0x083689CC
+_0808A478: .4byte gPantheonBaseRoutine+0x74
 
 	thumb_func_start pBase_0808a47c
 pBase_0808a47c: @ 0x0808A47C
@@ -529,8 +529,8 @@ _0808A49E:
 	orrs r0, r1
 	b _0808A4E2
 	.align 2, 0
-_0808A4D4: .4byte 0x08368BE5
-_0808A4D8: .4byte 0x08368984
+_0808A4D4: .4byte sCollisionIdxs
+_0808A4D8: .4byte sCollisions
 _0808A4DC:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -639,7 +639,7 @@ _0808A590:
 	bx r0
 	.align 2, 0
 _0808A5B4: .4byte 0xFFFFF000
-_0808A5B8: .4byte 0x08368BEE
+_0808A5B8: .4byte sMotions
 _0808A5BC: .4byte gScore
 _0808A5C0: .4byte 0x0000270E
 _0808A5C4: .4byte gEnemyFnTable
@@ -657,6 +657,19 @@ FUN_0808a5c8: @ 0x0808A5C8
 	beq _0808A65A
 	b _0808A6A4
 _0808A5DC:
+.if REGION_US && !HIT_BLOOD
+	movs r2, #0
+	ldr r0, _0808A6AC @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r5, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _0808A5EE
+	movs r2, #1
+_0808A5EE:
+	lsls r0, r2, #8
+.else
 	movs r4, #0
 	ldr r0, _0808A6AC @ =pZero2
 	ldr r0, [r0]
@@ -668,6 +681,7 @@ _0808A5DC:
 	movs r4, #1
 _0808A5EE:
 	lsls r0, r4, #8
+.endif
 	subs r0, r1, r0
 	str r0, [r5, #0x54]
 	ldr r1, _0808A6B0 @ =0x00006D01
@@ -688,12 +702,14 @@ _0808A5EE:
 	str r0, [sp, #8]
 	ldr r0, [r5, #0x58]
 	str r0, [sp, #0xc]
+.if HIT_BLOOD
 	movs r2, #0x80
 	lsls r2, r2, #2
 	movs r0, #0
 	add r1, sp, #8
 	adds r3, r4, #0
 	bl FUN_080b2b40
+.endif
 	ldr r0, [r7, #0x5c]
 	lsrs r1, r0, #0x1f
 	adds r0, r0, r1
@@ -763,5 +779,5 @@ _0808A6A4:
 	.align 2, 0
 _0808A6AC: .4byte pZero2
 _0808A6B0: .4byte 0x00006D01
-_0808A6B4: .4byte 0x08368C00
+_0808A6B4: .4byte gPantheonBaseRoutine+0x2a8
 _0808A6B8: .4byte 0xFFFFF000

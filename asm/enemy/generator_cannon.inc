@@ -180,7 +180,7 @@ _0808C52C:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C534: .4byte 0x08369108
+_0808C534: .4byte sElementCoord
 
 	thumb_func_start GeneratorCannon_Init
 GeneratorCannon_Init: @ 0x0808C538
@@ -255,8 +255,8 @@ GeneratorCannon_Init: @ 0x0808C538
 	b _0808C620
 	.align 2, 0
 _0808C5C8: .4byte gEnemyFnTable
-_0808C5CC: .4byte 0x08369110
-_0808C5D0: .4byte 0x08369114
+_0808C5CC: .4byte sInitModes
+_0808C5D0: .4byte sSize
 _0808C5D4: .4byte 0x00000801
 _0808C5D8: .4byte gSystemSavedata
 _0808C5DC: .4byte gCurStory
@@ -452,7 +452,7 @@ _0808C758:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0808C75C: .4byte 0x08368F48
+_0808C75C: .4byte sDeads
 
 	thumb_func_start FUN_0808c760
 FUN_0808c760:
@@ -726,7 +726,7 @@ _0808C95E:
 	bx r0
 	.align 2, 0
 _0808C964: .4byte 0xFFFFF000
-_0808C968: .4byte 0x0836911C
+_0808C968: .4byte sCollisionIdxs1
 _0808C96C: .4byte sCollisions
 
 	thumb_func_start generatorcannon_0808c970
@@ -785,7 +785,7 @@ _0808C9B2:
 	b _0808CA1A
 	.align 2, 0
 _0808C9D8: .4byte 0x00007101
-_0808C9DC: .4byte 0x08369120
+_0808C9DC: .4byte sCollisionIdxs2
 _0808C9E0: .4byte sCollisions
 _0808C9E4:
 	adds r0, r4, #0
@@ -1511,7 +1511,11 @@ _0808CF90: .4byte gEnemyFnTable
 
 	thumb_func_start FUN_0808cf94
 FUN_0808cf94: @ 0x0808CF94
+.if REGION_US && !HIT_BLOOD
+	push {r4, r5, r6, lr}
+.else
 	push {r4, r5, r6, r7, lr}
+.endif
 	sub sp, #0x14
 	adds r5, r0, #0
 	ldrb r6, [r5, #0xe]
@@ -1521,6 +1525,19 @@ FUN_0808cf94: @ 0x0808CF94
 	beq _0808D05E
 	b _0808D0A4
 _0808CFA6:
+.if REGION_US && !HIT_BLOOD
+	movs r4, #0
+	ldr r0, _0808D020 @ =pZero2
+	ldr r0, [r0]
+	ldr r0, [r0, #0x54]
+	ldr r1, [r5, #0x54]
+	subs r0, r0, r1
+	cmp r0, #0
+	ble _0808CFB8
+	movs r4, #1
+_0808CFB8:
+	lsls r4, r4, #8
+.else
 	movs r7, #0
 	ldr r0, _0808D020 @ =pZero2
 	ldr r0, [r0]
@@ -1532,6 +1549,7 @@ _0808CFA6:
 	movs r7, #1
 _0808CFB8:
 	lsls r4, r7, #8
+.endif
 	subs r0, r1, r4
 	str r0, [r5, #0x54]
 	ldr r1, _0808D024 @ =0x00007202
@@ -1548,6 +1566,7 @@ _0808CFB8:
 	movs r0, #0xfb
 	ands r0, r1
 	strb r0, [r5, #0xa]
+.if HIT_BLOOD
 	ldr r0, [r5, #0x54]
 	str r0, [sp, #0xc]
 	ldr r0, [r5, #0x58]
@@ -1558,6 +1577,7 @@ _0808CFB8:
 	add r1, sp, #0xc
 	adds r3, r7, #0
 	bl FUN_080b2b40
+.endif
 	movs r0, #0x80
 	subs r0, r0, r4
 	str r0, [sp, #0xc]
@@ -1646,7 +1666,11 @@ _0808D09E:
 	bl FUN_0808cefc
 _0808D0A4:
 	add sp, #0x14
+.if REGION_US && !HIT_BLOOD
+	pop {r4, r5, r6}
+.else
 	pop {r4, r5, r6, r7}
+.endif
 	pop {r0}
 	bx r0
 	.align 2, 0

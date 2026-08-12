@@ -192,8 +192,8 @@ Projectile18_Init: @ 0x080A2FA8
 	bx r0
 	.align 2, 0
 _080A3008: .4byte gProjectileFnTable
-_080A300C: .4byte 0x0836B4BC
-_080A3010: .4byte 0x0836B45C
+_080A300C: .4byte sInitModes
+_080A3010: .4byte sCollisions
 _080A3014: .4byte FUN_080a2fa4
 
 	thumb_func_start Projectile18_Update
@@ -218,8 +218,8 @@ Projectile18_Update: @ 0x080A3018
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A3044: .4byte 0x0836B434
-_080A3048: .4byte 0x0836B448
+_080A3044: .4byte PTR_ARRAY_0836b434
+_080A3048: .4byte PTR_ARRAY_0836b448
 
 	thumb_func_start Projectile18_Die
 Projectile18_Die: @ 0x080A304C
@@ -286,7 +286,7 @@ _080A30A4:
 	orrs r0, r1
 	b _080A30C6
 	.align 2, 0
-_080A30BC: .4byte 0x0836B474
+_080A30BC: .4byte gProjectile18Routine+0x54
 _080A30C0:
 	ldrb r1, [r4, #0xa]
 	movs r0, #0xef
@@ -519,7 +519,7 @@ _080A3282:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_080A3288: .4byte 0x0836B48C
+_080A3288: .4byte gProjectile18Routine+0x6c
 _080A328C: .4byte 0xFFFFF800
 _080A3290: .4byte 0x00004605
 _080A3294: .4byte gProjectileFnTable
@@ -571,7 +571,7 @@ _080A32D2:
 	strb r0, [r4, #0xe]
 	b _080A33C2
 	.align 2, 0
-_080A32F0: .4byte 0x0836B4A4
+_080A32F0: .4byte gProjectile18Routine+0x84
 _080A32F4: .4byte 0x00004606
 _080A32F8:
 	adds r0, r4, #0
@@ -616,7 +616,7 @@ _080A3336:
 	orrs r0, r1
 	b _080A335A
 	.align 2, 0
-_080A334C: .4byte 0x0836B45C
+_080A334C: .4byte sCollisions
 _080A3350: .4byte 0x00004606
 _080A3354:
 	ldrb r1, [r4, #0xa]

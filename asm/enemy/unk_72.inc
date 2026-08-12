@@ -237,7 +237,7 @@ _0809C56E:
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809C57C: .4byte 0x0836A8DC
+_0809C57C: .4byte gEnemy72Routine+0x34
 _0809C580: .4byte gEnemyFnTable
 
 	thumb_func_start Enemy72_Update
@@ -252,7 +252,7 @@ Enemy72_Update: @ 0x0809C584
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809C598: .4byte 0x0836A8BC
+_0809C598: .4byte sUpdates
 
 	thumb_func_start Enemy72_Die
 Enemy72_Die: @ 0x0809C59C
@@ -566,7 +566,7 @@ _0809C7BA:
 	b _0809C82C
 	.align 2, 0
 _0809C7EC: .4byte 0xFFFFFC00
-_0809C7F0: .4byte 0x0836A8DC
+_0809C7F0: .4byte gEnemy72Routine+0x34
 _0809C7F4: .4byte 0xFFFFFD00
 _0809C7F8:
 	ldr r0, [r4, #0x54]

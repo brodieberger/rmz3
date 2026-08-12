@@ -39,11 +39,20 @@ _08018D3E:
 	b _08018D78
 	.align 2, 0
 _08018D5C: .4byte sStagePreloadEntities
-_08018D60: .4byte gSpawnManager+0x22A
+_08018D60:
+.if REGION_US
+	.4byte gSpawnManager+0x2EA
+.else
+	.4byte gSpawnManager+0x22A
+.endif
 _08018D64: .4byte wStaticGraphicTilenums
 _08018D68: .4byte wStaticMotionPalIDs
 _08018D6C: .4byte gSpawnManager
+.if REGION_US
+_08018D70: .4byte 0x000002E7  @ gSpawnManager.mettaursEnabled
+.else
 _08018D70: .4byte 0x00000227
+.endif
 _08018D74:
 	ldrb r1, [r6, #5]
 	adds r0, r3, #0

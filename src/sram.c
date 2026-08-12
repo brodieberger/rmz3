@@ -33,17 +33,55 @@ bool32 ValidateSector(u8 sector, s32 datasize) {
 
   for (retry = SRAM_RETRY_MAX; retry != 0; retry--) {
     ReadSram(SRAM_START + (SECTOR_SIZE * sector), (u8*)&h, sizeof(SectorHeader));
-    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == 11) && (h.sector == sector)) {
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == SECTOR_VERSION) && (h.sector == sector)) {
       return TRUE;
     }
     ReadSram(SRAM_START + (SECTOR_SIZE * (6 + sector)), (u8*)&h, sizeof(SectorHeader));
-    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == 11) && (h.sector == sector)) {
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == SECTOR_VERSION) && (h.sector == sector)) {
       return TRUE;
     }
   }
 
   return FALSE;
 }
+
+#if IS_US
+/**
+ * @brief ValidateSector と同じだが、データ部分のチェックサムも確かめる
+ * @note US で追加された 0x08003330
+ */
+bool32 ValidateSectorWithChecksum(u8 sector, s32 datasize) {
+  u16 retry;
+  u32 i;
+  SectorHeader h = sDummySectorHeader;
+
+  if (sector >= SECTOR_NUM) return FALSE;
+
+  for (retry = SRAM_RETRY_MAX; retry != 0; retry--) {
+    ReadSram(SRAM_START + (SECTOR_SIZE * sector), (u8*)&h, sizeof(SectorHeader));
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == SECTOR_VERSION) && (h.sector == sector)) {
+      if ((u32)datasize > SECTOR_DATA_MAX) return TRUE;
+      ReadSram(SRAM_START + sizeof(SectorHeader) + (SECTOR_SIZE * sector), gSectorDataBuffer, datasize);
+      for (i = 0; i < (u32)datasize; i++) {
+        h.checksum -= gSectorDataBuffer[i];
+      }
+      if (h.checksum == 0) return TRUE;
+    }
+
+    ReadSram(SRAM_START + (SECTOR_SIZE * (6 + sector)), (u8*)&h, sizeof(SectorHeader));
+    if ((h.INTI == *(u32*)sINTI) && (h.size == datasize) && (h.unk_c == SECTOR_VERSION) && (h.sector == sector)) {
+      if ((u32)datasize > SECTOR_DATA_MAX) return TRUE;
+      ReadSram(SRAM_START + sizeof(SectorHeader) + (SECTOR_SIZE * (6 + sector)), gSectorDataBuffer, datasize);
+      for (i = 0; i < (u32)datasize; i++) {
+        h.checksum -= gSectorDataBuffer[i];
+      }
+      if (h.checksum == 0) return TRUE;
+    }
+  }
+
+  return FALSE;
+}
+#endif
 
 /**
  * @brief ゲームのセーブデータ削除時に使う
@@ -160,7 +198,11 @@ _0800343C:\n\
 _08003450:\n\
 	str r3, [sp, #8]\n\
 	mov r1, sp\n\
+.if REGION_US\n\
+	movs r0, #0xc\n\
+.else\n\
 	movs r0, #0xb\n\
+.endif\n\
 	strb r0, [r1, #0xc]\n\
 	movs r0, #6\n\
 	strb r0, [r1, #0xd]\n\

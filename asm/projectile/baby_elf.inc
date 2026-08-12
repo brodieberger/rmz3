@@ -311,7 +311,7 @@ Projectile13_Init: @ 0x0809FAF4
 	bx r0
 	.align 2, 0
 _0809FB54: .4byte gProjectileFnTable
-_0809FB58: .4byte 0x0836B0C8
+_0809FB58: .4byte u8_0836b0c8
 _0809FB5C: .4byte sCollisions
 _0809FB60: .4byte nop_0809faf0
 
@@ -337,8 +337,8 @@ Projectile13_Update: @ 0x0809FB64
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0809FB90: .4byte 0x0836B018
-_0809FB94: .4byte 0x0836B034
+_0809FB90: .4byte sUpdates1
+_0809FB94: .4byte sUpdates2
 
 	thumb_func_start Projectile13_Die
 Projectile13_Die: @ 0x0809FB98
@@ -673,7 +673,7 @@ _0809FDE8:
 	str r0, [r4, #0x14]
 	b _0809FF6A
 	.align 2, 0
-_0809FE20: .4byte 0x0836B068
+_0809FE20: .4byte gProjectile13Routine+0x64
 _0809FE24: .4byte RNG_0202f388
 _0809FE28: .4byte 0x000343FD
 _0809FE2C: .4byte 0x00269EC3
@@ -881,7 +881,7 @@ _0809FFB0:
 	orrs r0, r1
 	b _0809FFDA
 	.align 2, 0
-_0809FFD0: .4byte 0x0836B080
+_0809FFD0: .4byte gProjectile13Routine+0x7c
 _0809FFD4:
 	ldrb r1, [r6, #0xa]
 	movs r0, #0xef
@@ -1261,7 +1261,7 @@ _080A029E:
 	strb r0, [r4, #0xe]
 	b _080A039A
 	.align 2, 0
-_080A02B8: .4byte 0x0836B098
+_080A02B8: .4byte gProjectile13Routine+0x94
 _080A02BC: .4byte 0x00003401
 _080A02C0:
 	movs r0, #1
@@ -1471,7 +1471,7 @@ _080A0442:
 	bne _080A047C
 	b _080A0484
 	.align 2, 0
-_080A0460: .4byte 0x0836B098
+_080A0460: .4byte gProjectile13Routine+0x94
 _080A0464: .4byte 0x00003403
 _080A0468: .4byte 0xFFFFFC80
 _080A046C: .4byte gStageRun+232
@@ -1588,7 +1588,7 @@ _080A053E:
 	bne _080A05F4
 	b _080A05B2
 	.align 2, 0
-_080A0550: .4byte 0x0836B098
+_080A0550: .4byte gProjectile13Routine+0x94
 _080A0554: .4byte sUnkDeltaX
 _080A0558: .4byte 0x00003401
 _080A055C:
@@ -1824,7 +1824,7 @@ _080A0710:
 	bl UpdateEntityAnim
 	b _080A0802
 	.align 2, 0
-_080A0718: .4byte 0x0836B0D6
+_080A0718: .4byte s16_ARRAY_0836b0d6
 _080A071C:
 	movs r0, #0x8c
 	lsls r0, r0, #1

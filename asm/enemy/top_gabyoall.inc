@@ -98,7 +98,7 @@ FUN_0806f5d0: @ 0x0806F5D0
 	strb r0, [r3]
 	b _0806F682
 	.align 2, 0
-_0806F654: .4byte 0x08366970
+_0806F654: .4byte sCollisions
 _0806F658: .4byte FUN_08070000
 _0806F65C: .4byte pZero2
 _0806F660:
@@ -233,7 +233,7 @@ FUN_0806f6cc: @ 0x0806F6CC
 	orrs r0, r2
 	b _0806F794
 	.align 2, 0
-_0806F76C: .4byte 0x08366970
+_0806F76C: .4byte sCollisions
 _0806F770: .4byte FUN_08070000
 _0806F774: .4byte pZero2
 _0806F778:
@@ -374,7 +374,7 @@ FUN_0806f7dc: @ 0x0806F7DC
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806F890: .4byte 0x083669A0
+_0806F890: .4byte gTopGabyoallRoutine+0x64
 _0806F894: .4byte FUN_08070000
 _0806F898: .4byte gEnemyFnTable
 
@@ -468,7 +468,7 @@ FUN_0806f89c: @ 0x0806F89C
 	pop {r0}
 	bx r0
 	.align 2, 0
-_0806F958: .4byte 0x083669A0
+_0806F958: .4byte gTopGabyoallRoutine+0x64
 _0806F95C: .4byte FUN_08070000
 _0806F960: .4byte gEnemyFnTable
 

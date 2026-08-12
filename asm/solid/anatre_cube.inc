@@ -113,8 +113,8 @@ _080DECDC:
 	b _080DEF32
 	.align 2, 0
 _080DED18: .4byte gStageRun+232
-_080DED1C: .4byte 0x083717EC
-_080DED20: .4byte 0x0837181C
+_080DED1C: .4byte sCollisions
+_080DED20: .4byte sSize
 _080DED24: .4byte 0x00002001
 _080DED28: .4byte pZero2
 _080DED2C: .4byte 0xFFFFE000
@@ -544,7 +544,7 @@ _080DF070:
 _080DF08C: .4byte gStageRun+232
 _080DF090: .4byte gOverworld
 _080DF094: .4byte 0x0002D028
-_080DF098: .4byte 0x08371804
+_080DF098: .4byte gAnatreCubeRoutine+0x3c
 _080DF09C: .4byte 0xFFFFFC00
 _080DF0A0:
 	ldr r2, _080DF0FC @ =gOverworld
