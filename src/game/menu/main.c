@@ -1604,19 +1604,8 @@ _080F47D8: .4byte 0x00000DCC\n\
 // --------------------------------------------
 
 // 01 02 01 00
-/*
-  May the player abort out of what they are doing right now?
-
-  Vanilla: only when not on a mission. AP inverts that -- leaving is how you get
-  back out to go somewhere else -- so any stage not listed in gApStageNoEscape is
-  leavable too.
-
-  Defined once because three places ask it: the gate in MainMenuFocusLoop_NoFocus
-  and the two labels in printMainMenuString. If they disagree, the menu either
-  offers an exit that then refuses, or refuses one that would have worked.
-*/
 #if AP
-#define MAY_ESCAPE_NOW (!IS_MISSION || ApMayLeaveStage(gScore.stageID))
+#define MAY_ESCAPE_NOW 1
 #else
 #define MAY_ESCAPE_NOW (!IS_MISSION)
 #endif

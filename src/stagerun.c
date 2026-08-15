@@ -241,9 +241,14 @@ void UpdateStoryFlag(void) {
     if (gMissionDones & (1 << STAGE_SPACE_CRAFT)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_SPACE_CRAFT_DONE);
     }
+#if !AP
+    /*
+      These flags are set through AP now
+    */
     if ((gMissionDones & ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) == ((1 << STAGE_OLD_RESIDENTIAL) | (1 << STAGE_REPAIR_FACTORY) | (1 << STAGE_OCEAN) | (1 << STAGE_VOLCANO))) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE);  // First 4 missions
     }
+#endif
     if (gMissionDones & (1 << STAGE_MISSILE_FACTORY)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_MISSILE_DONE);
     }
@@ -253,9 +258,11 @@ void UpdateStoryFlag(void) {
     if (gMissionDones & (1 << STAGE_AREA_X2)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_AREAX2_DONE);
     }
+#if !AP
     if ((gMissionDones & ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) == ((1 << STAGE_GIANT_ELEVATOR) | (1 << STAGE_SUNKEN_LIBRARY) | (1 << STAGE_SNOWY_PLAINS) | (1 << STAGE_E_FACILITY))) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE);  // Later 4 missions
     }
+#endif
     if (gMissionDones & (1 << STAGE_SUB_ARCADIA)) {
       SET_FLAG(gCurStory.s.gameflags, FLAG_SUBARCADIA_DONE);
     }

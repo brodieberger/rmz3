@@ -32,8 +32,14 @@ const GameLoopFunc gOverworldLoops[14] = {
 		OverworldLoop_MissionSelect,
 		OverworldLoop_Computer,
 		OverworldLoop_SunkenLibrarySearch,
+// These two scripts break the game, as the scripts that are supposed to play after fail to play.
+#if AP
+		OverworldLoop_CmdRoomTalk,
+		OverworldLoop_CmdRoomTalk,
+#else
 		OverworldLoop_080f2c24,
 		OverworldLoop_AfterMissileTalk,
+#endif
 		OverworldLoop_080f2e44,
 		OverworldLoop_080f2f44,
 		OverworldLoop_080f3044,

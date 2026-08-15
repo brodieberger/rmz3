@@ -24,6 +24,7 @@ SECTIONS {
       . = ALIGN(4);
       __ap_ewram_start = .;
       src/ap.o (ewram_data);
+      src/ap_stage_select.o (ewram_data);
       __ap_ewram_end = .;
     } >ewram = 0x00
 
@@ -81,9 +82,11 @@ SECTIONS {
 		src/ap.o (.text);
 		src/ap.o (.rodata);
 		src/ap.o (.data);
-		src/ap_free_run.o (.text);
-		src/ap_free_run.o (.rodata);
-		src/data/texts/ap_free_run.o (.rodata);
+		src/ap_cmd_room.o (.text);
+		src/ap_cmd_room.o (.rodata);
+		src/data/texts/ap_cmd_room.o (.rodata);
+		src/ap_stage_select.o (.text);
+		src/ap_stage_select.o (.rodata);
 		. = ALIGN(4);
 	} >rom = 0x00
 

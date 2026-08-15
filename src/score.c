@@ -128,18 +128,20 @@ const u8 gCodeNameSuffixs[6][8] = {
 static void calcCodename(void);
 
 // 0x08019794
-NON_MATCH void CalcMissionScore(void) {
-#if MODERN
+NON_MATCH_AP void CalcMissionScore(void) {
+#if MODERN || AP
   s32 timeover;
   s32 enemy_count;
   s32 total_damage;
   s32 retry;
   s32 elf_score;
+#if !AP
   s32 average;
   s32 rank;
+#endif
 
   struct MissionScore* m = &gScore;
-  (m->total)->clearCount++;
+  if ((m->total)->clearCount < 255) (m->total)->clearCount++;
   (m->total)->missionDones |= 1 << m->stageID;
   (m->total)->lastStage = m->stageID;
   m->eachScore[0] = m->missionPoint;
@@ -194,10 +196,17 @@ NON_MATCH void CalcMissionScore(void) {
   m->resultScore = m->eachScore[0] + m->eachScore[1] + m->eachScore[2] + m->eachScore[3] + m->eachScore[4] + m->eachScore[5];
   (m->total)->scoreSum += m->resultScore;
 
+#if AP
+  /*
+    use average of of each stage's best clear
+  */
+  (m->total)->rank = ApUpdateStageRank(m->stageID, CalcScoreRank(m->resultScore));
+#else
   average = (m->total)->scoreSum / (m->total)->clearCount;
   for (rank = 0; average >= sRankBorder[rank]; rank++) {
   }
   (m->total)->rank = rank;
+#endif
   calcCodename();
 
   if ((m->weaponCount[1] != 0) || (m->weaponCount[2] != 0) || (m->weaponCount[3] != 0)) {

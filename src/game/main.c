@@ -387,10 +387,15 @@ static void GameLoop_NewGame(struct GameState* g) {
   clearUnlockedCyberElfData((g->save).elf);
   ClearZeroStatus(&(g->save).status);
 #if AP
-  // This byte will be used to save AP related things in save RAM.
-  (g->save).unused_240[AP_TAKEN_BYTE] = 0;
-  (g->save).unused_240[AP_APPLIED_BYTE] = 0;
-  (g->save).unused_240[AP_APPLIED_BYTE + 1] = 0;
+  // unused_240 is hijacked to save AP related things
+  // locations taken flags (for subtanks and stuff), the applied items counter, the stage unlocks.
+  {
+    u8 i;
+
+    for (i = 0; i < ARRAY_COUNT((g->save).unused_240); i++) {
+      (g->save).unused_240[i] = 0;
+    }
+  }
   MemFill32(0, (g->save).savedDisk, 48);
 #endif
   if ((gSystemSavedata.hardmodeLock == (gSineTable[8] & 0xFF)) && (gJoypad[0].input & L_BUTTON)) {
@@ -407,7 +412,16 @@ static void GameLoop_NewGame(struct GameState* g) {
     unlockAllElvesForUltimate((g->save).elf);
     ClearZeroStatusUltimate(&(g->save).status);
   }
+#if AP
+  /*
+    Hub stage gets loaded first now.
+    Checkpoint 7 is almost always used for the base.
+  */
+  (g->save).stageID = STAGE_BASE;
+  LoadStageRun(STAGE_BASE, 7);
+#else
   InitStageRun((g->save).stageID);
+#endif
   if ((&(g->save))->gamemode == 0) {
     SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
   } else {
@@ -737,6 +751,24 @@ NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
     return;
   }
 
+#if AP
+  /*
+    Removes most of the scripting that comes from a level ending.
+  */
+  {
+    bool32 firstClear = IS_MISSION && !ApInMissionRerun();
+
+    /* Beating the final stage still forces the player into the main menu. Now it should take back to the hub. */
+    if (firstClear && ((g->save).stageID == AP_STAGE_FINAL)) {
+      SetGameMode(g, GAMEMODE(MAINGAME, UNLOCK_MINIGAME, 0, 0));
+      return;
+    }
+
+    (g->save).stageID = STAGE_BASE;
+    LoadStageRun(STAGE_BASE, firstClear ? 7 : 9);
+    SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
+  }
+#else
   if ((g->save).stageID == STAGE_BASE) {
     if (gStageRun.checkpoint == 12) {
       (g->save).stageID = STAGE_MISSILE_FACTORY;
@@ -752,8 +784,7 @@ NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
     }
   }
 
-  /* A rerun leaves like a free run. The story routing below is wrong for a cleared stage. */
-  if (!IS_MISSION || ApInMissionRerun()) {
+  if (!IS_MISSION) {
     (g->save).stageID = STAGE_BASE;
     LoadStageRun(STAGE_BASE, 9);
     SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
@@ -829,6 +860,7 @@ NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
   (g->save).stageID = STAGE_BASE;
   LoadStageRun(STAGE_BASE, 7);
   SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
+#endif /* AP */
 #else
   INCCODE("asm/wip/GameLoop_EndRun.inc");
 #endif

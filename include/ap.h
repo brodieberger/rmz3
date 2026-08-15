@@ -13,7 +13,7 @@ Archipelago stuff.
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 15
+#define AP_VERSION 17
 
 /*
   Highest location ID the AP World defines
@@ -53,6 +53,18 @@ Archipelago stuff.
 #define AP_ITEM_WEAPON_FIRST 224
 #define AP_ITEM_WEAPON_LAST 227
 
+/*
+  Stage access items. 181 is intro stage, 195 is the final boss level
+*/
+#define AP_ITEM_STAGE_ACCESS_FIRST 181
+#define AP_ITEM_STAGE_ACCESS_LAST 195
+
+/*
+  Story progress items.
+*/
+#define AP_ITEM_STORY_MID 229   // FLAG_FIRST4_DONE
+#define AP_ITEM_STORY_LATE 230  // FLAG_LATER4_DONE
+
 #define AP_LOC_ROD 226
 #define AP_LOC_SHIELD 227
 
@@ -87,6 +99,16 @@ Archipelago stuff.
 #define AP_TAKEN_BYTE 8
 #define AP_TAKEN_SUBTANK1 (1 << 0)
 #define AP_TAKEN_SUBTANK2 (1 << 1)
+
+// Stages Archipelago has opened.
+#define AP_UNLOCK_BYTE 12
+
+// Best rank ever earned in each stage.
+#define AP_RANK_BYTE 0
+#define AP_RANK_NONE 0
+
+// Every stage but the final one cleared.
+#define AP_MISSION_DONES_ALL 0xFFFEu
 
 //How many items had been granted as of the last save, u16 in unused_240[10..11].
 #define AP_APPLIED_BYTE 10
@@ -134,7 +156,7 @@ static_assert(sizeof(struct ApState) == 80);
 extern struct ApState gAp;
 
 struct ApSeedConfig {
-  u16 requiredDisks;   // disks needed to win after killing final boss.
+  u16 requiredDisks;   // disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
   u8 easyExSkill;      // award the EX skill location check regardless of rank
 };
@@ -158,12 +180,25 @@ void ApFixEquippedWeapons(struct ZeroStatus* status);
 void ApRequestMissionRerun(u8 stageID);
 bool32 ApTakeMissionRerun(u8 stageID);
 bool32 ApInMissionRerun(void);
+u8 ApUpdateStageRank(u8 stageID, u8 missionRank);
+u8 ApStageBestRank(u8 stageID);
 
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
 
-/* Stage names for the "RETRY MISSION" confirm, indexed gFreeRunStageIDs. */
-extern const char_t* const gApFreeRunConfirmTexts[];
+/* The portrait stage select */
+void ApStageSelect(struct GameState* g);
+
+/* ap_stage_select.c */
+bool32 ApStageUnlocked(u8 stageID);
+
+/* The stage list's disk readout, "found / total". Both are AP block callers too. */
+u8 ApDisksInStage(u8 stageID);
+u8 ApDiskTotalInStage(u8 stageID);
+
+extern const char_t* const gApStageRevisitTexts[];
+extern const char_t* const gApStageStartTexts[];
+extern const char_t gApFinalStageName[];
 
 extern void (*const gApInitFn)(void);
 extern void (*const gApUpdateFn)(void);
@@ -179,6 +214,7 @@ extern void (*const gApCmdRoomTalkFn)(struct GameState* g);
 extern void (*const gApRequestMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
+extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -194,11 +230,7 @@ extern bool32 (*const gApInMissionRerunFn)(void);
 #define ApRequestMissionRerun(stageID) gApRequestMissionRerunFn(stageID)
 #define ApTakeMissionRerun(stageID) gApTakeMissionRerunFn(stageID)
 #define ApInMissionRerun() gApInMissionRerunFn()
-
-extern const u8 gApStageNoEscape[AP_STAGE_COUNT];
-
-#define ApMayLeaveStage(stageID) \
-  (((u32)(stageID) >= AP_STAGE_COUNT) || !gApStageNoEscape[(stageID)])
+#define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.
@@ -233,7 +265,6 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApRequestMissionRerun(stageID) ((void)0)
 #define ApTakeMissionRerun(stageID) (0)
 #define ApInMissionRerun() (0)
-#define ApMayLeaveStage(stageID) (0)
 #define ApFrameHook(b) SwitchProcess(b)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)

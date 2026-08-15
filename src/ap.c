@@ -13,8 +13,10 @@
 #undef ApRequestMissionRerun
 #undef ApTakeMissionRerun
 #undef ApInMissionRerun
+#undef ApUpdateStageRank
 #undef ApFrameHook
 
+#include "ap_disk_stage.h"
 #include "constants/armor.h"
 #include "constants/entity/vfx.h"
 #include "constants/exskill.h"
@@ -44,7 +46,7 @@ EWRAM_DATA static u8 sApRerunStage = 0;
   These are the settings to be overwritten per by the seed.
 */
 const struct ApSeedConfig gApSeedConfig = {
-    80,
+    120,
     (1 << WEAPON_BUSTER) | (1 << WEAPON_SABER),
     FALSE,
 };
@@ -247,6 +249,115 @@ static void ApAddCrystals(u16 amount) {
   ApAddCrystalsTo(&gGameState.save.zeroAsset.EC, amount);
 }
 
+static u16 ApCountDisks(void);
+
+/*
+  Stage access.
+*/
+static void ApUnlockStage(u8 stageID) {
+  u8* mask = &gGameState.save.unused_240[AP_UNLOCK_BYTE];
+  u16 bit = (u16)(1 << (stageID - 1));
+
+  mask[0] |= (u8)bit;
+  mask[1] |= (u8)(bit >> 8);
+}
+
+/*
+  The final stage has no access item.
+  It opens on every other stage cleared while holding the seed's disk required amount.
+*/
+static bool32 ApFinalStageOpen(void) {
+  if ((gGameState.save.playinfo.missionDones & AP_MISSION_DONES_ALL) != AP_MISSION_DONES_ALL) {
+    return FALSE;
+  }
+  return ApCountDisks() >= gApSeedConfig.requiredDisks;
+}
+
+bool32 ApStageUnlocked(u8 stageID) {
+  const u8* mask = &gGameState.save.unused_240[AP_UNLOCK_BYTE];
+
+  if (stageID == AP_STAGE_FINAL) {
+    return ApFinalStageOpen();
+  }
+  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+    return FALSE;
+  }
+  return (mask[(stageID - 1) >> 3] & (1 << ((stageID - 1) & 7))) != 0;
+}
+
+/*
+  Per-stage best rank. A nibble each, stored as rank + 1 so an uncleared stage is not an F.
+*/
+static u8* ApRankByte(u8 stageID) {
+  return &gGameState.save.unused_240[AP_RANK_BYTE + ((stageID - 1) >> 1)];
+}
+
+u8 ApStageBestRank(u8 stageID) {
+  u8 packed;
+
+  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+    return AP_RANK_NONE;
+  }
+  packed = *ApRankByte(stageID);
+  return (u8)(((stageID - 1) & 1) ? (packed >> 4) : (packed & 0x0F));
+}
+
+/*
+  Builds rank based on total averages of all completed levels. 
+  So that the HUD displays properly and bosses use the correct attacks.
+*/
+static u8 ApAggregateRank(void) {
+  u16 total = 0;
+  u8 cleared = 0;
+  u8 stageID;
+
+  for (stageID = STAGE_SPACE_CRAFT; stageID <= AP_STAGE_FINAL; stageID++) {
+    u8 packed = ApStageBestRank(stageID);
+
+    if (packed != AP_RANK_NONE) {
+      total = (u16)(total + (packed - 1));
+      cleared++;
+    }
+  }
+  if (cleared == 0) {
+    return 0;
+  }
+  return (u8)(total / cleared);
+}
+
+/*
+  Called from CalcMissionScore with the rank the results screen is about to print.
+  Records it if it beats this stage's best, so it can be stored.
+*/
+u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
+  u8* rankByte;
+  u8 best;
+
+  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+    return ApAggregateRank();
+  }
+  /* The A-rank fusion elf writes an A into the score directly, so set that as the highest levle achieved too. */
+  if (gAp.rankElfUsed && (missionRank < RANK_A)) {
+    missionRank = RANK_A;
+  }
+
+  best = ApStageBestRank(stageID);
+  if ((u8)(missionRank + 1) > best) {
+    rankByte = ApRankByte(stageID);
+    if ((stageID - 1) & 1) {
+      *rankByte = (u8)((*rankByte & 0x0F) | ((missionRank + 1) << 4));
+    } else {
+      *rankByte = (u8)((*rankByte & 0xF0) | (missionRank + 1));
+    }
+  }
+  return ApAggregateRank();
+}
+
+static void ApSetStoryFlag(u8 flag) {
+  SET_FLAG(gCurStory.s.gameflags, flag);
+  SET_FLAG(gGameState.save.story.gameflags, flag);
+}
+
 static void ApUnlockWeapon(u8 weapon) {
   struct ZeroStatus* live = &gPlayers[0].unk_b4.status;
   struct ZeroStatus* saved = &gGameState.save.status;
@@ -277,6 +388,20 @@ static bool32 ApGrantItem(u16 apItemID) {
   */
   if (apItemID >= AP_ITEM_WEAPON_FIRST && apItemID <= AP_ITEM_WEAPON_LAST) {
     ApUnlockWeapon((u8)(apItemID - AP_ITEM_WEAPON_FIRST));
+    return FALSE;
+  }
+
+  if (apItemID >= AP_ITEM_STAGE_ACCESS_FIRST && apItemID <= AP_ITEM_STAGE_ACCESS_LAST) {
+    ApUnlockStage((u8)(apItemID - AP_ITEM_STAGE_ACCESS_FIRST + STAGE_SPACE_CRAFT));
+    return FALSE;
+  }
+
+  if (apItemID == AP_ITEM_STORY_MID) {
+    ApSetStoryFlag(FLAG_FIRST4_DONE);
+    return FALSE;
+  }
+  if (apItemID == AP_ITEM_STORY_LATE) {
+    ApSetStoryFlag(FLAG_LATER4_DONE);
     return FALSE;
   }
 
@@ -327,6 +452,33 @@ static u16 ApCountDisks(void) {
     }
   }
   return count;
+}
+
+/*
+  How many of a stage's disks have been found, over how many it holds.
+
+  Under coutns the Sunken Library by up to 4 since those disks are handled by the game and not AP.
+*/
+u8 ApDisksInStage(u8 stageID) {
+  const u8* disks = gGameState.save.disk;
+  u8 count = 0;
+  u16 disk;
+
+  for (disk = 0; disk < ARRAY_COUNT(sApDiskStage); disk++) {
+    if (sApDiskStage[disk] == stageID) {
+      if (disks[disk >> 2] & (1 << (disk & 3))) {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+
+u8 ApDiskTotalInStage(u8 stageID) {
+  if (stageID >= ARRAY_COUNT(sApDiskTotal)) {
+    return 0;
+  }
+  return sApDiskTotal[stageID];
 }
 
 static u16 ApSavedApplied(void) {
@@ -531,16 +683,7 @@ void ApUpdate(void) {
   }
 }
 
-/*
-  Stages the player can't leave. This will be fixed in a later version where you can start on any stage.
-  Skipping the intro stage means you won't be able to re enter it, so it stays for now.
-*/
 static_assert(AP_STAGE_COUNT == STAGE_COUNT);
-const u8 gApStageNoEscape[AP_STAGE_COUNT] = {
-    [STAGE_SPACE_CRAFT] = 1,
-    [STAGE_MISSILE_FACTORY] = 1,
-    [STAGE_WEILS_LABO] = 1,
-};
 
 /*
   Called wherever the game already knows a check happened
@@ -755,6 +898,7 @@ void (*const gApFixEquippedWeaponsFn)(struct ZeroStatus* status) = ApFixEquipped
 void (*const gApRequestMissionRerunFn)(u8 stageID) = ApRequestMissionRerun;
 bool32 (*const gApTakeMissionRerunFn)(u8 stageID) = ApTakeMissionRerun;
 bool32 (*const gApInMissionRerunFn)(void) = ApInMissionRerun;
+u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank) = ApUpdateStageRank;
 void (*const gApFrameHookFn)(bool32 b) = ApFrameHookImpl;
 
 #endif /* AP */
