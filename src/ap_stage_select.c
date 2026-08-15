@@ -199,6 +199,12 @@ void ApStageSelect(struct GameState* g) {
 
   switch (g->mode[3]) {
     case 6: {
+      /*
+        Advances the flag where Cerveau tells you to talk to Ciel in the intro.
+      */
+      ApSetStoryFlag(FLAG_10);
+      ApSetStoryFlag(FLAG_8);
+
       *handle = NULL;
       sApSelectBuilt = FALSE;
       ApSelectSetPage(g, 0);

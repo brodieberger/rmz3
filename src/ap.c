@@ -353,7 +353,7 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   return ApAggregateRank();
 }
 
-static void ApSetStoryFlag(u8 flag) {
+void ApSetStoryFlag(u8 flag) {
   SET_FLAG(gCurStory.s.gameflags, flag);
   SET_FLAG(gGameState.save.story.gameflags, flag);
 }

@@ -192,6 +192,9 @@ void ApStageSelect(struct GameState* g);
 /* ap_stage_select.c */
 bool32 ApStageUnlocked(u8 stageID);
 
+/* Sets a story flag in gCurStory and save.story. */
+void ApSetStoryFlag(u8 flag);
+
 /* The stage list's disk readout, "found / total". Both are AP block callers too. */
 u8 ApDisksInStage(u8 stageID);
 u8 ApDiskTotalInStage(u8 stageID);
