@@ -190,6 +190,21 @@ static void ApSelectTearDown(struct GameState* g) {
 }
 
 /*
+  Turn to the next or previous page, wrap to the start or end
+*/
+static void ApSelectTurnPage(struct GameState* g, s16 step) {
+  s16 page = (s16)((ApSelectPageOf(g) + step + AP_SELECT_PAGE_COUNT) % AP_SELECT_PAGE_COUNT);
+
+  PlaySound(SE_CURSOR);
+  ApSelectTearDown(g);
+  ApSelectSetPage(g, page);
+  if (step < 0) {
+    g->frames = g->unk_008[0];
+  }
+  g->unk_008[1] = AP_SELECT_CREATE_DELAY;
+}
+
+/*
   The portrait stage select
 */
 void ApStageSelect(struct GameState* g) {
@@ -235,7 +250,9 @@ void ApStageSelect(struct GameState* g) {
           g->unk_008[1]--;
           return;
         }
-        g->frames = g->unk_006;
+        if ((g->frames < g->unk_006) || (g->frames > g->unk_008[0])) {
+          g->frames = g->unk_006;
+        }
         if (ApSelectPageHasArt(g)) {
           *handle = ApSelectCreatePage(g, g->unk_006);
           if (*handle == NULL) {
@@ -251,13 +268,28 @@ void ApStageSelect(struct GameState* g) {
         g->unk_008[1] = AP_SELECT_OPEN_DELAY;
       }
 
-      /* Left/right walk the row, L/R tab between pages. WIP will soon allow left right to also tab. */
+      if (gJoypad[0].pressed & R_BUTTON) {
+        ApSelectTurnPage(g, 1);
+        return;
+      }
+      if (gJoypad[0].pressed & L_BUTTON) {
+        ApSelectTurnPage(g, -1);
+        return;
+      }
       if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+        if (g->frames >= g->unk_008[0]) {
+          ApSelectTurnPage(g, 1);
+          return;
+        }
         PlaySound(SE_CURSOR);
-        g->frames = (g->frames < g->unk_008[0]) ? (s16)(g->frames + 1) : g->unk_006;
+        g->frames++;
       } else if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+        if (g->frames <= g->unk_006) {
+          ApSelectTurnPage(g, -1);
+          return;
+        }
         PlaySound(SE_CURSOR);
-        g->frames = (g->frames > g->unk_006) ? (s16)(g->frames - 1) : g->unk_008[0];
+        g->frames--;
       }
 
       if (!ApSelectPageHasArt(g)) {
@@ -270,21 +302,6 @@ void ApStageSelect(struct GameState* g) {
 
       if (g->unk_008[1] != 0) {
         g->unk_008[1]--;
-        return;
-      }
-
-      if (gJoypad[0].pressed & (L_BUTTON | R_BUTTON)) {
-        s16 page = ApSelectPageOf(g);
-
-        if (gJoypad[0].pressed & R_BUTTON) {
-          page = (s16)((page + 1) % AP_SELECT_PAGE_COUNT);
-        } else {
-          page = (s16)((page + (AP_SELECT_PAGE_COUNT - 1)) % AP_SELECT_PAGE_COUNT);
-        }
-        PlaySound(SE_CURSOR);
-        ApSelectTearDown(g);
-        ApSelectSetPage(g, page);
-        g->unk_008[1] = AP_SELECT_CREATE_DELAY;
         return;
       }
 
