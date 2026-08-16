@@ -61,15 +61,35 @@ static const u8 sApMissionStage[AP_SELECT_MISSION_COUNT] = {
 #define AP_CHAR_ZERO 0x01
 #define AP_CHAR_SPACE 0x00
 #define AP_CHAR_SLASH 0xD8
+#define AP_CHAR_DASH 0xD6
 #define AP_CHAR_END 0xFF
 
-static const char_t sApSelectLocked[] = {0x16, 0x19, 0x0D, 0x15, 0x0F, 0x0E, AP_CHAR_END};         // LOCKED
-static const char_t sApSelectCleared[] = {0x0D, 0x16, 0x0F, 0x0B, 0x1C, 0x0F, 0x0E, AP_CHAR_END};  // CLEARED
+#define AP_SELECT_LABEL_X 2
+#define AP_SELECT_NAME_X 9
+#define AP_SELECT_DISKS_X 9
+#define AP_SELECT_STATUS_X 20
+#define AP_SELECT_RANK_X 16
+
+#define AP_SELECT_NAME_Y 13
+#define AP_SELECT_DISKS_Y 15
+#define AP_SELECT_RANK_Y 17
+
+/* RANK_F to RANK_S */
+#define AP_SELECT_RANK_COUNT 7
+
+extern const char_t gApSelectStageLabel[];
+extern const char_t gApSelectDisksLabel[];
+extern const char_t gApSelectRankLabel[];
+extern const char_t gApSelectLocked[];
+extern const char_t gApSelectOpen[];
+extern const char_t gApSelectCleared[];
+extern const char_t gApSelectRankLetters[];
 
 /*
   PrintString pointer
 */
 EWRAM_DATA static char_t sApSelectStatus[20] = {0};
+EWRAM_DATA static char_t sApSelectRankLine[12] = {0};
 
 /* Set once the current page's portraits (or name row) are up. Cleared by every page increment. */
 EWRAM_DATA static bool8 sApSelectBuilt = FALSE;
@@ -103,31 +123,45 @@ static char_t* ApSelectPutNumber(char_t* p, u8 n) {
   return p;
 }
 
-/* "6/10  LOCKED", one text line under the stage name.*/
-static void ApSelectPrintStatus(u8 stageID) {
+/* "Disks: 6/10" and, further along the same line, LOCKED / OPEN / CLEARED. */
+static void ApSelectPrintDisks(u8 stageID) {
   char_t* p = sApSelectStatus;
-  const char_t* word = NULL;
-  u8 i;
+  const char_t* status;
 
   p = ApSelectPutNumber(p, ApDisksInStage(stageID));
   *p++ = AP_CHAR_SLASH;
   p = ApSelectPutNumber(p, ApDiskTotalInStage(stageID));
-  *p++ = AP_CHAR_SPACE;
-  *p++ = AP_CHAR_SPACE;
-
-  if (!ApStageUnlocked(stageID)) {
-    word = sApSelectLocked;
-  } else if (gMissionDones & (1 << stageID)) {
-    word = sApSelectCleared;
-  }
-  if (word != NULL) {
-    for (i = 0; word[i] != AP_CHAR_END; i++) {
-      *p++ = word[i];
-    }
-  }
   *p = AP_CHAR_END;
 
-  PrintString(sApSelectStatus, 2, 15);
+  /* Every stage says which of the three it is. Locked, Open, and Cleared. */
+  if (!ApStageUnlocked(stageID)) {
+    status = gApSelectLocked;
+  } else if (gMissionDones & (1 << stageID)) {
+    status = gApSelectCleared;
+  } else {
+    status = gApSelectOpen;
+  }
+
+  PrintString(gApSelectDisksLabel, AP_SELECT_LABEL_X, AP_SELECT_DISKS_Y);
+  PrintString(sApSelectStatus, AP_SELECT_DISKS_X, AP_SELECT_DISKS_Y);
+  PrintString(status, AP_SELECT_STATUS_X, AP_SELECT_DISKS_Y);
+}
+
+/*
+  Third line: the best rank ever earned here, or a dash for a stage that hasn't been cleared.
+*/
+static void ApSelectPrintRank(u8 stageID) {
+  u8 packedRank = ApStageBestRank(stageID);
+
+  if ((packedRank == AP_RANK_NONE) || (packedRank > AP_SELECT_RANK_COUNT)) {
+    sApSelectRankLine[0] = AP_CHAR_DASH;
+  } else {
+    sApSelectRankLine[0] = gApSelectRankLetters[packedRank - 1];
+  }
+  sApSelectRankLine[1] = AP_CHAR_END;
+
+  PrintString(gApSelectRankLabel, AP_SELECT_LABEL_X, AP_SELECT_RANK_Y);
+  PrintString(sApSelectRankLine, AP_SELECT_RANK_X, AP_SELECT_RANK_Y);
 }
 
 /*
@@ -297,8 +331,10 @@ void ApStageSelect(struct GameState* g) {
       }
 
       stageID = ApSelectStageOf(g->frames);
-      ApSelectPrintName(stageID, 2, 13);
-      ApSelectPrintStatus(stageID);
+      PrintString(gApSelectStageLabel, AP_SELECT_LABEL_X, AP_SELECT_NAME_Y);
+      ApSelectPrintName(stageID, AP_SELECT_NAME_X, AP_SELECT_NAME_Y);
+      ApSelectPrintDisks(stageID);
+      ApSelectPrintRank(stageID);
 
       if (g->unk_008[1] != 0) {
         g->unk_008[1]--;

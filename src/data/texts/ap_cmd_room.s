@@ -45,6 +45,37 @@ gApStageStartTexts:
 gApFinalStageName:
 	.string "RESEARCH LABORATORY$"
 
+@ The stage select's lines that it displays in the box when hovering over a level
+
+.global gApSelectStageLabel
+gApSelectStageLabel:
+	.string "Stage:$"
+
+.global gApSelectDisksLabel
+gApSelectDisksLabel:
+	.string "Disks:$"
+
+.global gApSelectRankLabel
+gApSelectRankLabel:
+	.string "Highest Rank:$"
+
+.global gApSelectLocked
+gApSelectLocked:
+	.string "LOCKED$"
+
+.global gApSelectOpen
+gApSelectOpen:
+	.string "OPEN$"
+
+.global gApSelectCleared
+gApSelectCleared:
+	.string "CLEARED$"
+
+@ Indexed by RANK_F..RANK_S, so the letter for a rank is just gApSelectRankLetters[rank].
+.global gApSelectRankLetters
+gApSelectRankLetters:
+	.string "FEDCBAS$"
+
 .balign 4
 ApText_Revisit_DerelictSpacecraft:
 	.string "{WINDOW 0x62}"
