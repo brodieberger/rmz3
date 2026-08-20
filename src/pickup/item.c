@@ -187,6 +187,12 @@ NON_MATCH_AP static void MapItem_Init(Pickup* p) {
     (p->d).y = -PIXEL(4);
   }
   p->work[2] = 240;
+#if AP
+  /* Marks the pickup as an unchecked Archipelago location (orbiting logo). */
+  if (p->work[0] == ITEM_EXLIFE) {
+    ApSpawnExLifeOrbit(p);
+  }
+#endif
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
   MapItem_Update(p);
 #else

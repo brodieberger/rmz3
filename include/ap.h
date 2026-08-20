@@ -10,16 +10,17 @@ Archipelago stuff.
 
     game -> client    checkedLocations   locations the player checked
     client -> game    itemInbox          items Archipelago sent
+    client -> game    serverChecked      locations the SERVER says are checked
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 17
+#define AP_VERSION 18
 
 /*
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 227
+#define AP_MAX_LOCATION_ID 248
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 #define AP_ITEM_INBOX_LEN 16
@@ -67,6 +68,7 @@ Archipelago stuff.
 
 #define AP_LOC_ROD 226
 #define AP_LOC_SHIELD 227
+#define AP_LOC_EXLIFE_FIRST 231
 
 // E-Reader Modifications
 #define AP_ITEM_EREADER_BIT_FIRST 111
@@ -140,6 +142,11 @@ struct ApState {
 
   u8 checkedLocations[AP_CHECKED_LOCATION_BYTES];
 
+  /*
+    Record of what this game has checked
+  */
+  u8 serverChecked[AP_CHECKED_LOCATION_BYTES];
+
   u8 rankElfUsed;  // set by the A-rank fusion elf, cleared each mission
 
   // Goal reporting
@@ -151,7 +158,7 @@ struct ApState {
   u8 canAcceptItems;
 };
 
-static_assert(sizeof(struct ApState) == 80);
+static_assert(sizeof(struct ApState) == 116);
 
 extern struct ApState gAp;
 
@@ -192,6 +199,13 @@ void ApStageSelect(struct GameState* g);
 /* ap_stage_select.c */
 bool32 ApStageUnlocked(u8 stageID);
 
+bool32 ApServerChecked(u16 locationID);
+
+bool32 ApInDemo(void);
+
+struct Pickup;
+void ApSpawnExLifeOrbit(struct Pickup* p);
+
 /* Sets a story flag in gCurStory and save.story. */
 void ApSetStoryFlag(u8 flag);
 
@@ -218,6 +232,7 @@ extern void (*const gApRequestMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
 extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
+extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -234,6 +249,7 @@ extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 #define ApTakeMissionRerun(stageID) gApTakeMissionRerunFn(stageID)
 #define ApInMissionRerun() gApInMissionRerunFn()
 #define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
+#define ApSpawnExLifeOrbit(p) gApSpawnExLifeOrbitFn(p)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.

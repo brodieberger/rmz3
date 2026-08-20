@@ -51,7 +51,7 @@ const struct ApSeedConfig gApSeedConfig = {
     FALSE,
 };
 
-static bool32 ApInDemo(void) {
+bool32 ApInDemo(void) {
   return FLAG(gCurStory.s.gameflags, DEMO_PLAY) != 0;
 }
 
@@ -188,6 +188,13 @@ static const struct ApEReaderCosmetic sApEReaderCosmetic[] = {
 };
 static_assert(ARRAY_COUNT(sApEReaderCosmetic) ==
               (AP_ITEM_EREADER_BYTE_LAST - AP_ITEM_EREADER_BYTE_FIRST) + 1);
+
+bool32 ApServerChecked(u16 locationID) {
+  if (locationID > AP_MAX_LOCATION_ID) {
+    return FALSE;
+  }
+  return (gAp.serverChecked[locationID >> 3] & (1 << (locationID & 7))) != 0;
+}
 
 /* Returns TRUE when SystemSavedata changed and has to be saved. */
 static bool32 ApGrantEReader(u16 apItemID) {
@@ -506,6 +513,7 @@ void ApInit(void) {
 
   for (i = 0; i < AP_CHECKED_LOCATION_BYTES; i++) {
     gAp.checkedLocations[i] = 0;
+    gAp.serverChecked[i] = 0;
   }
 
   gAp.version = AP_VERSION;

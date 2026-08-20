@@ -87,6 +87,9 @@ SECTIONS {
 		src/data/texts/ap_cmd_room.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);
+		src/ap_exlife_orbit.o (.text);
+		src/ap_exlife_orbit.o (.rodata);
+		src/ap_orbit_data.o (.rodata);
 		. = ALIGN(4);
 	} >rom = 0x00
 
