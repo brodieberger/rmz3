@@ -420,6 +420,12 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
       if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gECrystalGainAmount += 0x10;
       gECrystalGainAmount += 0x10;
     } else if (p->work[0] == ITEM_EXLIFE) {
+#if AP
+      // One location per stage. Dropped 1-UPs carry work[1] = 0 and are not locations.
+      if (p->work[1] >= 2) {
+        ApMarkLocationChecked((u16)(AP_LOC_EXLIFE_FIRST + gStageRun.id));
+      }
+#endif
       if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) {
         if ((gScore.total)->extraLife <= 8) (gScore.total)->extraLife++;
       }
