@@ -14,10 +14,10 @@ Archipelago stuff.
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 18
+#define AP_VERSION 19
 
 /*
-  Highest location ID the AP World defines
+    Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
 #define AP_MAX_LOCATION_ID 248
@@ -69,6 +69,7 @@ Archipelago stuff.
 #define AP_LOC_ROD 226
 #define AP_LOC_SHIELD 227
 #define AP_LOC_EXLIFE_FIRST 231
+#define AP_EXLIFE_COUNT 11
 
 // E-Reader Modifications
 #define AP_ITEM_EREADER_BIT_FIRST 111
@@ -203,6 +204,10 @@ bool32 ApServerChecked(u16 locationID);
 
 bool32 ApInDemo(void);
 
+/* Which 1-UP location a pickup is */
+u16 ApExLifeLocation(u8 stageID, s32 coordX);
+void ApMarkExLifeCollected(u8 stageID, s32 coordX);
+
 struct Pickup;
 void ApSpawnExLifeOrbit(struct Pickup* p);
 
@@ -220,6 +225,7 @@ extern const char_t gApFinalStageName[];
 extern void (*const gApInitFn)(void);
 extern void (*const gApUpdateFn)(void);
 extern void (*const gApMarkLocationCheckedFn)(u16 locationID);
+extern void (*const gApMarkExLifeCollectedFn)(u8 stageID, s32 coordX);
 extern void (*const gApMarkNpcDialogueCheckedFn)(TextID textID);
 extern void (*const gApMarkStageClearedFn)(void);
 extern void (*const gApSetRankElfFn)(void);
@@ -237,6 +243,7 @@ extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
 #define ApMarkLocationChecked(locationID) gApMarkLocationCheckedFn(locationID)
+#define ApMarkExLifeCollected(stageID, coordX) gApMarkExLifeCollectedFn(stageID, coordX)
 #define ApMarkNpcDialogueChecked(textID) gApMarkNpcDialogueCheckedFn(textID)
 #define ApMarkStageCleared() gApMarkStageClearedFn()
 #define ApSetRankElf() gApSetRankElfFn()

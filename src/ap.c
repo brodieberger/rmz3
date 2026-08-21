@@ -3,6 +3,7 @@
 #undef ApInit
 #undef ApUpdate
 #undef ApMarkLocationChecked
+#undef ApMarkExLifeCollected
 #undef ApMarkNpcDialogueChecked
 #undef ApMarkStageCleared
 #undef ApSetRankElf
@@ -694,6 +695,65 @@ void ApUpdate(void) {
 static_assert(AP_STAGE_COUNT == STAGE_COUNT);
 
 /*
+  Every static 1-UP, in location order
+
+  x is the spawn point's tile x, 
+  basically its coordinates so the game can send the correct check based on where the life pickup is.
+*/
+struct ApExLifePlace {
+  u8 stageID;
+  u16 x;
+};
+
+static const struct ApExLifePlace sApExLifePlaces[AP_EXLIFE_COUNT] = {
+    {STAGE_OCEAN, 22},            /* 231 */
+    {STAGE_OCEAN, 272},           /* 232 */
+    {STAGE_OLD_RESIDENTIAL, 141}, /* 233 */
+    {STAGE_OLD_RESIDENTIAL, 183}, /* 234 */
+    {STAGE_MISSILE_FACTORY, 379}, /* 235 */
+    {STAGE_ANATRE_FOREST, 35},    /* 236 */
+    {STAGE_E_FACILITY, 625},      /* 237 */
+    {STAGE_SNOWY_PLAINS, 573},    /* 238 */
+    {STAGE_GIANT_ELEVATOR, 72},   /* 239 */
+    {STAGE_SUB_ARCADIA, 67},      /* 240 */
+    {STAGE_BASE, 26},             /* 241 */
+};
+
+/* 0 when the stage places no 1-UP. */
+u16 ApExLifeLocation(u8 stageID, s32 coordX) {
+  u16 px = (u16)(coordX >> 12);
+  u8 nearestPlace = AP_EXLIFE_COUNT;  // AP_EXLIFE_COUNT means the stage places no 1-UP
+  u16 nearestDist = 0xFFFF;
+  u8 i;
+
+  for (i = 0; i < AP_EXLIFE_COUNT; i++) {
+    u16 dist;
+
+    if (sApExLifePlaces[i].stageID != stageID) {
+      continue;
+    }
+    dist = (u16)(px > sApExLifePlaces[i].x ? px - sApExLifePlaces[i].x : sApExLifePlaces[i].x - px);
+    if (dist < nearestDist) {
+      nearestDist = dist;
+      nearestPlace = i;
+    }
+  }
+
+  if (nearestPlace == AP_EXLIFE_COUNT) {
+    return 0;
+  }
+  return (u16)(AP_LOC_EXLIFE_FIRST + nearestPlace);
+}
+
+void ApMarkExLifeCollected(u8 stageID, s32 coordX) {
+  u16 loc = ApExLifeLocation(stageID, coordX);
+
+  if (loc != 0) {
+    ApMarkLocationChecked(loc);
+  }
+}
+
+/*
   Called wherever the game already knows a check happened
   getDiskInStageRun(), the subtank pickup, mission complete, an NPC reward.
 */
@@ -896,6 +956,7 @@ static void ApFrameHookImpl(bool32 b) {
 void (*const gApInitFn)(void) = ApInit;
 void (*const gApUpdateFn)(void) = ApUpdate;
 void (*const gApMarkLocationCheckedFn)(u16 locationID) = ApMarkLocationChecked;
+void (*const gApMarkExLifeCollectedFn)(u8 stageID, s32 coordX) = ApMarkExLifeCollected;
 void (*const gApMarkNpcDialogueCheckedFn)(TextID textID) = ApMarkNpcDialogueChecked;
 void (*const gApMarkStageClearedFn)(void) = ApMarkStageCleared;
 void (*const gApSetRankElfFn)(void) = ApSetRankElf;

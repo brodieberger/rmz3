@@ -24,14 +24,14 @@ static bool32 ApOrbitParentAlive(const Pickup* p) {
 }
 
 // The client may only tell us the location is checked after the pickup has already spawned.
-static bool32 ApOrbitStillUnchecked(void) {
-  return !ApServerChecked((u16)(AP_LOC_EXLIFE_FIRST + gStageRun.id));
+static bool32 ApOrbitStillUnchecked(const Pickup* p) {
+  return !ApServerChecked(ApExLifeLocation(gStageRun.id, (p->coord).x));
 }
 
 static void ApExLifeOrbitUpdate(struct Entity* e) {
   const Pickup* p = (const Pickup*)e->unk_28;
 
-  if (!ApOrbitParentAlive(p) || !ApOrbitStillUnchecked()) {
+  if (!ApOrbitParentAlive(p) || !ApOrbitStillUnchecked(p)) {
     DeleteEntity(e);
     return;
   }
@@ -66,7 +66,7 @@ void ApSpawnExLifeOrbit(Pickup* p) {
   if (gSpawnManager.mettaursEnabled) {
     return;
   }
-  if (!ApOrbitStillUnchecked()) {
+  if (!ApOrbitStillUnchecked(p)) {
     return;
   }
 

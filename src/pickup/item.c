@@ -421,9 +421,9 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
       gECrystalGainAmount += 0x10;
     } else if (p->work[0] == ITEM_EXLIFE) {
 #if AP
-      // One location per stage. Dropped 1-UPs carry work[1] = 0 and are not locations.
+      // One location per 1-UP. Dropped 1-UPs set work[1] = 0 and are not locations.
       if (p->work[1] >= 2) {
-        ApMarkLocationChecked((u16)(AP_LOC_EXLIFE_FIRST + gStageRun.id));
+        ApMarkExLifeCollected(gStageRun.id, (p->coord).x);
       }
 #endif
       if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) {
