@@ -69,7 +69,7 @@ Archipelago stuff.
 #define AP_LOC_ROD 226
 #define AP_LOC_SHIELD 227
 #define AP_LOC_EXLIFE_FIRST 231
-#define AP_EXLIFE_COUNT 11
+#define AP_EXLIFE_COUNT 10
 
 // E-Reader Modifications
 #define AP_ITEM_EREADER_BIT_FIRST 111

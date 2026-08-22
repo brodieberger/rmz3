@@ -706,17 +706,16 @@ struct ApExLifePlace {
 };
 
 static const struct ApExLifePlace sApExLifePlaces[AP_EXLIFE_COUNT] = {
-    {STAGE_OCEAN, 22},            /* 231 */
-    {STAGE_OCEAN, 272},           /* 232 */
-    {STAGE_OLD_RESIDENTIAL, 141}, /* 233 */
-    {STAGE_OLD_RESIDENTIAL, 183}, /* 234 */
-    {STAGE_MISSILE_FACTORY, 379}, /* 235 */
-    {STAGE_ANATRE_FOREST, 35},    /* 236 */
-    {STAGE_E_FACILITY, 625},      /* 237 */
-    {STAGE_SNOWY_PLAINS, 573},    /* 238 */
-    {STAGE_GIANT_ELEVATOR, 72},   /* 239 */
-    {STAGE_SUB_ARCADIA, 67},      /* 240 */
-    {STAGE_BASE, 26},             /* 241 */
+    {STAGE_OCEAN, 272},           /* 231 */
+    {STAGE_OLD_RESIDENTIAL, 141}, /* 232 */
+    {STAGE_OLD_RESIDENTIAL, 183}, /* 233 */
+    {STAGE_MISSILE_FACTORY, 379}, /* 234 */
+    {STAGE_ANATRE_FOREST, 35},    /* 235 */
+    {STAGE_E_FACILITY, 625},      /* 236 */
+    {STAGE_SNOWY_PLAINS, 573},    /* 237 */
+    {STAGE_GIANT_ELEVATOR, 72},   /* 238 */
+    {STAGE_SUB_ARCADIA, 67},      /* 239 */
+    {STAGE_BASE, 26},             /* 240 */
 };
 
 /* 0 when the stage places no 1-UP. */
