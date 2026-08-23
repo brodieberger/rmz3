@@ -524,6 +524,7 @@ void ApInit(void) {
 
 static void ApRebuildCheckedLocations(void);
 static void ApCheckSubBossKilled(void);
+static void ApCheckVolcanoMidBossRoom(void);
 
 /*
   A little icon that floats over Zero's head when Archipelago hands him something.
@@ -665,6 +666,7 @@ void ApUpdate(void) {
   gAp.disksOwned = ApCountDisks();
   ApRebuildCheckedLocations();
   ApCheckSubBossKilled();
+  ApCheckVolcanoMidBossRoom();
 
   if (!canAcceptItems) {
     return;
@@ -814,6 +816,20 @@ static void ApCheckSubBossKilled(void) {
     return;
   }
   ApMarkLocationChecked(ApSubBossLocation(gStageRun.id, boss->id, boss->coord.x));
+}
+
+/*
+  Use checkpoints to send the location for clearing the midboss on this stage.
+  For some reason, this stage's boss is not treated as a midboss in the code.
+*/
+static void ApCheckVolcanoMidBossRoom(void) {
+  if (gStageRun.id != STAGE_VOLCANO) {
+    return;
+  }
+  if (gStageRun.checkpoint < AP_VOLCANO_ROOM_CLEARED_CHECKPOINT) {
+    return;
+  }
+  ApMarkLocationChecked(AP_LOC_VOLCANO_MIDBOSS_ROOM);
 }
 
 /*

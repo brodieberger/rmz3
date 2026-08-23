@@ -14,13 +14,13 @@ Archipelago stuff.
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 20
+#define AP_VERSION 21
 
 /*
     Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 251
+#define AP_MAX_LOCATION_ID 252
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 #define AP_ITEM_INBOX_LEN 16
@@ -72,6 +72,8 @@ Archipelago stuff.
 #define AP_EXLIFE_COUNT 10
 #define AP_LOC_SUBBOSS_FIRST 242
 #define AP_SUBBOSS_COUNT 10
+#define AP_LOC_VOLCANO_MIDBOSS_ROOM 252
+#define AP_VOLCANO_ROOM_CLEARED_CHECKPOINT 5
 
 // E-Reader Modifications
 #define AP_ITEM_EREADER_BIT_FIRST 111
