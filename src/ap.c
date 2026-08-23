@@ -19,6 +19,7 @@
 
 #include "ap_disk_stage.h"
 #include "constants/armor.h"
+#include "constants/entity/boss.h"
 #include "constants/entity/vfx.h"
 #include "constants/exskill.h"
 #include "constants/game.h"
@@ -522,6 +523,7 @@ void ApInit(void) {
 }
 
 static void ApRebuildCheckedLocations(void);
+static void ApCheckSubBossKilled(void);
 
 /*
   A little icon that floats over Zero's head when Archipelago hands him something.
@@ -662,6 +664,7 @@ void ApUpdate(void) {
   gAp.itemsApplied = ApSavedApplied();
   gAp.disksOwned = ApCountDisks();
   ApRebuildCheckedLocations();
+  ApCheckSubBossKilled();
 
   if (!canAcceptItems) {
     return;
@@ -750,6 +753,67 @@ void ApMarkExLifeCollected(u8 stageID, s32 coordX) {
   if (loc != 0) {
     ApMarkLocationChecked(loc);
   }
+}
+
+/*
+  Sub-bosses. To be used as location checks.
+
+  x is the spawn's x coordinate, used for the two reactor cores in the energy facility.
+*/
+struct ApSubBossPlace {
+  u8 stageID;
+  u8 bossID;
+  u16 x;
+};
+
+static const struct ApSubBossPlace sApSubBossPlaces[AP_SUBBOSS_COUNT] = {
+    {STAGE_REPAIR_FACTORY, BOSS_BEE_SERVER, 247},         /* 242 */
+    {STAGE_OCEAN, BOSS_PANTHEON_AQUA_MOD, 427},           /* 243 */
+    {STAGE_OLD_RESIDENTIAL, BOSS_MEGAMILPA, 292},         /* 244 */
+    {STAGE_TWILIGHT_DESERT, BOSS_WORMER, 283},            /* 245 */
+    {STAGE_SNOWY_PLAINS, BOSS_WORMER, 517},               /* 246 */
+    {STAGE_E_FACILITY, BOSS_LOCOMO_IF, 352},              /* 247 */
+    {STAGE_E_FACILITY, BOSS_REACTOR_CORE, 232},           /* 248 */
+    {STAGE_E_FACILITY, BOSS_REACTOR_CORE, 532},           /* 249 */
+    {STAGE_GIANT_ELEVATOR, BOSS_SPEAROOK, 244},           /* 250 */
+    {STAGE_SUB_ARCADIA, BOSS_PHANTOM, 124},               /* 251 */
+};
+
+u16 ApSubBossLocation(u8 stageID, u8 bossID, s32 coordX) {
+  u16 px = (u16)(coordX >> 12);
+  u8 nearest = AP_SUBBOSS_COUNT;
+  u16 nearestDist = 0xFFFF;
+  u8 i;
+
+  for (i = 0; i < AP_SUBBOSS_COUNT; i++) {
+    u16 dist;
+
+    if (sApSubBossPlaces[i].stageID != stageID || sApSubBossPlaces[i].bossID != bossID) {
+      continue;
+    }
+    dist = (u16)(px > sApSubBossPlaces[i].x ? px - sApSubBossPlaces[i].x : sApSubBossPlaces[i].x - px);
+    if (dist < nearestDist) {
+      nearestDist = dist;
+      nearest = i;
+    }
+  }
+
+  if (nearest == AP_SUBBOSS_COUNT) {
+    return 0;
+  }
+  return (u16)(AP_LOC_SUBBOSS_FIRST + nearest);
+}
+
+static void ApCheckSubBossKilled(void) {
+  const struct Entity* boss = gStageRun.vm.entities[1].entity;
+
+  if (boss == NULL || boss->kind != ENTITY_BOSS) {
+    return;
+  }
+  if (!isKilled((struct Entity*)boss)) {
+    return;
+  }
+  ApMarkLocationChecked(ApSubBossLocation(gStageRun.id, boss->id, boss->coord.x));
 }
 
 /*
