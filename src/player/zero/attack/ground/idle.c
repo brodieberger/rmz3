@@ -1,3 +1,5 @@
+#include "ap.h"
+#include "constants/weapon.h"
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
@@ -306,6 +308,15 @@ static void triple_slash_1st(struct Zero* z) {
   }
 
   b4 = &(z->unk_b4);
+#if AP
+  if (!ApHasWeaponAbility(AP_MOD_SABER_SLASH2)) {
+    if (IsSpriteAnimEnd(z)) {
+      (z->unk_b4).attackState8[0] = 0;
+      SetSpriteAnimation(z, GetDefaultMotion(z));
+    }
+    return;
+  }
+#endif
   if ((((b4->status).menuZeroColor != MZC_HARD) && ((z->s).motion.cmdIdx >= 4)) && (z->tripleSlashCounter > 0)) {
     (z->unk_b4).attackState8[1] = 2;
     (z->unk_b4).attackState8[2] = 0;
@@ -331,6 +342,15 @@ static void triple_slash_2nd(struct Zero* z) {
     KeepMotion(z, MOTION(DM015_ZERO_SABER_TRIPLE2, 0));
   }
 
+#if AP
+  if (!ApHasWeaponAbility(AP_MOD_SABER_SLASH3)) {
+    if (IsSpriteAnimEnd(z)) {
+      (z->unk_b4).attackState8[0] = 0;
+      SetSpriteAnimation(z, GetDefaultMotion(z));
+    }
+    return;
+  }
+#endif
   if (((z->s).motion.cmdIdx >= 4) && (z->tripleSlashCounter > 1)) {
     if (((&z->input)->val & ZERO_INPUT_DPAD_UP) && isElfUsed_2(z, ELF_LIZETUS)) {
       (z->unk_b4).attackState8[1] = 5;

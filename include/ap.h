@@ -14,7 +14,7 @@ Archipelago stuff.
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 21
+#define AP_VERSION 22
 
 /*
     Highest location ID the AP World defines
@@ -50,9 +50,32 @@ Archipelago stuff.
 #define AP_ITEM_EXSKILL_FIRST 206
 #define AP_ITEM_EXSKILL_LAST 217
 
-//224 Buster   225 Z-Saber   226 Recoil Rod   227 Shield Boomerang
-#define AP_ITEM_WEAPON_FIRST 224
-#define AP_ITEM_WEAPON_LAST 227
+/*
+  Progressive weapon upgrades.
+  code = AP_ITEM_WEAPON_LEVEL_FIRST + (weapon * AP_ITEM_CODES_PER_WEAPON) + level
+  weapon is WEAPON_BUSTER to WEAPON_SHIELD:
+
+    Buster  1: own  2: semi charge    3: full charge  4: ATK+1          5: ATK+2  6: ATK+3
+    Saber   1: own  2: 2nd slash      3: 3rd slash    4: charged slash  5: ATK+1  6: ATK+2  7: ATK+3
+    Rod     1: own  2: charged rod    3: ATK+1        4: ATK+2          5: ATK+3
+    Shield  1: own  2: charged throw  3: ATK+1        4: ATK+2          5: ATK+3
+*/
+#define AP_ITEM_WEAPON_LEVEL_FIRST 400
+
+/* 8 covers the longest chain (7). */
+#define AP_ITEM_CODES_PER_WEAPON 8
+
+#define AP_ITEM_WEAPON_LEVEL_LAST \
+  (AP_ITEM_WEAPON_LEVEL_FIRST + (3 * AP_ITEM_CODES_PER_WEAPON) + (AP_ITEM_CODES_PER_WEAPON - 1))
+
+#define AP_MOD_BUSTER_SEMI 184
+#define AP_MOD_BUSTER_FULL 185
+#define AP_MOD_SABER_SLASH2 186
+#define AP_MOD_SABER_SLASH3 187
+#define AP_MOD_SABER_CHARGE 188
+#define AP_MOD_ROD_CHARGE 189
+#define AP_MOD_SHIELD_CHARGE 190
+#define AP_MOD_NONE 0xFF
 
 /*
   Stage access items. 181 is intro stage, 195 is the final boss level
@@ -194,6 +217,8 @@ bool32 ApTakeMissionRerun(u8 stageID);
 bool32 ApInMissionRerun(void);
 u8 ApUpdateStageRank(u8 stageID, u8 missionRank);
 u8 ApStageBestRank(u8 stageID);
+bool32 ApHasWeaponAbility(u8 bit);  
+u8 ApChargeTier(u8 weapon);         
 
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
@@ -243,6 +268,8 @@ extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
 extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
+extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
+extern u8 (*const gApChargeTierFn)(u8 weapon);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -261,6 +288,8 @@ extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 #define ApInMissionRerun() gApInMissionRerunFn()
 #define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
 #define ApSpawnExLifeOrbit(p) gApSpawnExLifeOrbitFn(p)
+#define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
+#define ApChargeTier(weapon) gApChargeTierFn(weapon)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.
@@ -292,6 +321,8 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApOnZeroDied() ((void)0)
 #define ApApplyStartingWeapons(status) ((void)0)
 #define ApFixEquippedWeapons(status) ((void)0)
+#define ApHasWeaponAbility(bit) (1)
+#define ApChargeTier(weapon) (FULL_CHARGE)
 #define ApRequestMissionRerun(stageID) ((void)0)
 #define ApTakeMissionRerun(stageID) (0)
 #define ApInMissionRerun() (0)

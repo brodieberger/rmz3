@@ -15,6 +15,8 @@
 #undef ApTakeMissionRerun
 #undef ApInMissionRerun
 #undef ApUpdateStageRank
+#undef ApHasWeaponAbility
+#undef ApChargeTier
 #undef ApFrameHook
 
 #include "ap_disk_stage.h"
@@ -30,6 +32,8 @@
 #include "entity.h"
 #include "game.h"
 #include "global.h"
+#include "mod.h"
+#include "player/zero.h"
 #include "score.h"
 #include "sound.h"
 #include "stagerun.h"
@@ -377,6 +381,97 @@ static void ApUnlockWeapon(u8 weapon) {
   ApFixEquippedWeapons(saved);
 }
 
+/*
+  Longest chain each weapon has. The last three levels are e-reader attack increases
+*/
+static const u8 sApWeaponChainMax[WEAPON_KINDS] = {
+    6,  // WEAPON_BUSTER: own, semi charge, full charge, ATK+1, ATK+2, ATK+3
+    7,  // WEAPON_SABER:  own, 2nd slash, 3rd slash, charged slash, ATK+1, ATK+2, ATK+3
+    5,  // WEAPON_ROD:    own, charged rod, ATK+1, ATK+2, ATK+3
+    5,  // WEAPON_SHIELD: own, charged throw, ATK+1, ATK+2, ATK+3
+};
+
+// The ability given at progressive levels.
+static const u8 sApWeaponAbilityMod[WEAPON_KINDS][3] = {
+    {AP_MOD_BUSTER_SEMI, AP_MOD_BUSTER_FULL, AP_MOD_NONE},
+    {AP_MOD_SABER_SLASH2, AP_MOD_SABER_SLASH3, AP_MOD_SABER_CHARGE},
+    {AP_MOD_ROD_CHARGE, AP_MOD_NONE, AP_MOD_NONE},
+    {AP_MOD_SHIELD_CHARGE, AP_MOD_NONE, AP_MOD_NONE},
+};
+
+// These are in the vanilla game.
+static const u8 sApWeaponAtkMod[WEAPON_KINDS][3] = {
+    {MOD_BUSTER_ATK1, MOD_BUSTER_ATK2, MOD_BUSTER_ATK3},
+    {MOD_SABER_ATK1, MOD_SABER_ATK2, MOD_SABER_ATK3},
+    {MOD_ROD_ATK1, MOD_ROD_ATK2, MOD_ROD_ATK3},
+    {MOD_SHIELD_ATK1, MOD_SHIELD_ATK2, MOD_SHIELD_ATK3},
+};
+
+// Returns TRUE when the bit was modified.
+static bool32 ApSetModBit(u8 bit) {
+  u8* slot = &gSystemSavedata.flags[bit >> 3];
+  u8 mask = (u8)(1 << (bit & 7));
+
+  if (*slot & mask) {
+    return FALSE;
+  }
+  *slot |= mask;
+  return TRUE;
+}
+
+bool32 ApHasWeaponAbility(u8 bit) {
+  return (gSystemSavedata.flags[bit >> 3] & (1 << (bit & 7))) != 0;
+}
+
+u8 ApChargeTier(u8 weapon) {
+  if (weapon == WEAPON_BUSTER) {
+    if (ApHasWeaponAbility(AP_MOD_BUSTER_FULL)) {
+      return FULL_CHARGE;
+    }
+    if (ApHasWeaponAbility(AP_MOD_BUSTER_SEMI)) {
+      return SEMI_CHARGE;
+    }
+    return NO_CHARGE;
+  }
+  if (weapon == WEAPON_SABER) {
+    return ApHasWeaponAbility(AP_MOD_SABER_CHARGE) ? FULL_CHARGE : NO_CHARGE;
+  }
+  if (weapon == WEAPON_ROD) {
+    return ApHasWeaponAbility(AP_MOD_ROD_CHARGE) ? FULL_CHARGE : NO_CHARGE;
+  }
+  return ApHasWeaponAbility(AP_MOD_SHIELD_CHARGE) ? FULL_CHARGE : NO_CHARGE;
+}
+
+
+// Returns TRUE when SystemSavedata changed.
+static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
+  bool32 changed = FALSE;
+  u8 firstAtkLevel;
+  u8 step;
+
+  if (weapon >= WEAPON_KINDS || level == 0 || level > sApWeaponChainMax[weapon]) {
+    return FALSE;
+  }
+  ApUnlockWeapon(weapon);
+
+  /* Steps 2..firstAtkLevel-1 are abilities, the three above it are ATK+1/+2/+3. */
+  firstAtkLevel = (u8)(sApWeaponChainMax[weapon] - 2);
+
+  for (step = 2; step <= level; step++) {
+    u8 bit;
+
+    if (step < firstAtkLevel) {
+      bit = sApWeaponAbilityMod[weapon][step - 2];  /* step 2 is entry 0 */
+    } else {
+      bit = sApWeaponAtkMod[weapon][step - firstAtkLevel];  /* ATK+1 is entry 0 */
+    }
+    if (bit != AP_MOD_NONE && ApSetModBit(bit)) {
+      changed = TRUE;
+    }
+  }
+  return changed;
+}
+
 /* Returns TRUE when SystemSavedata changed and has to be saved. */
 static bool32 ApGrantItem(u16 apItemID) {
   if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
@@ -393,11 +488,13 @@ static bool32 ApGrantItem(u16 apItemID) {
   }
 
   /*
-    Weapons. The AP codes run in the same order as WEAPON_*, so the ID maps straight across
+    Progressive weapons. The client sends the level.
   */
-  if (apItemID >= AP_ITEM_WEAPON_FIRST && apItemID <= AP_ITEM_WEAPON_LAST) {
-    ApUnlockWeapon((u8)(apItemID - AP_ITEM_WEAPON_FIRST));
-    return FALSE;
+  if (apItemID >= AP_ITEM_WEAPON_LEVEL_FIRST && apItemID <= AP_ITEM_WEAPON_LEVEL_LAST) {
+    u16 offset = (u16)(apItemID - AP_ITEM_WEAPON_LEVEL_FIRST);
+
+    return ApSetWeaponLevel((u8)(offset / AP_ITEM_CODES_PER_WEAPON),
+                            (u8)(offset % AP_ITEM_CODES_PER_WEAPON));
   }
 
   if (apItemID >= AP_ITEM_STAGE_ACCESS_FIRST && apItemID <= AP_ITEM_STAGE_ACCESS_LAST) {
@@ -1047,6 +1144,8 @@ void (*const gApRequestMissionRerunFn)(u8 stageID) = ApRequestMissionRerun;
 bool32 (*const gApTakeMissionRerunFn)(u8 stageID) = ApTakeMissionRerun;
 bool32 (*const gApInMissionRerunFn)(void) = ApInMissionRerun;
 u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank) = ApUpdateStageRank;
+bool32 (*const gApHasWeaponAbilityFn)(u8 bit) = ApHasWeaponAbility;
+u8 (*const gApChargeTierFn)(u8 weapon) = ApChargeTier;
 void (*const gApFrameHookFn)(bool32 b) = ApFrameHookImpl;
 
 #endif /* AP */

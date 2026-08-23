@@ -1,3 +1,5 @@
+#include "ap.h"
+#include "constants/weapon.h"
 #include "global.h"
 #include "mod.h"
 #include "player/zero.h"
@@ -218,11 +220,14 @@ void KeepMotion(struct Zero* z, motion_t m) {
 static const u8 sFullChargeBorder[3] = {2 * SECOND, SECOND + 30, SECOND};  // idx is ChargeSpeed
 static const u8 sSemiChargeBorder[3] = {40, 30, 20};                       // idx is ChargeSpeed
 
-NON_MATCH u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
-#if MODERN
-  u8 frame, speed;
+NON_MATCH_AP u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
+#if MODERN || AP
+  u8 frame, speed, kind;
   bool32 isNotShield;
   struct Zero_b4* b4;
+#if AP
+  u8 maxKind;
+#endif
 
   if (!isSubWeapon) {
     b4 = (&z->unk_b4);
@@ -241,9 +246,21 @@ NON_MATCH u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
     if (((b4->status).body != BODY_CHIP_NONE) && (speed == 2)) speed = 1;
   }
 
-  if (frame >= sFullChargeBorder[speed]) return FULL_CHARGE;
-  if (frame >= sSemiChargeBorder[speed]) return SEMI_CHARGE;
-  return NO_CHARGE;
+  if (frame >= sFullChargeBorder[speed]) {
+    kind = FULL_CHARGE;
+  } else if (frame >= sSemiChargeBorder[speed]) {
+    kind = SEMI_CHARGE;
+  } else {
+    kind = NO_CHARGE;
+  }
+
+#if AP
+  maxKind = ApChargeTier(isSubWeapon ? (b4->status).weapons[1] : (b4->status).weapons[0]);
+  if (kind > maxKind) {
+    kind = maxKind;
+  }
+#endif
+  return kind;
 #else
   INCCODE("asm/wip/GetWeaponCharge.inc");
 #endif
