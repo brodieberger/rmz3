@@ -705,15 +705,23 @@ static motion_t ApItemPopupMotion(u16 apItemID) {
   return MOTION(SM003_EMOTION_BUBBLE, 0);
 }
 
-#define AP_POPUP_LIFE 96    /* frames on screen */
-#define AP_POPUP_FADE 48    /* the the frame it should flciker */
-#define AP_POPUP_RISE 0x60  /* sub-pixels per frame; PIXEL(1) is 0x100 */
+#define AP_POPUP_LIFE 96          /* frames on screen */
+#define AP_POPUP_FADE 48          /* the the frame it should flciker */
+#define AP_POPUP_RISE 0x60        /* sub-pixels per frame; PIXEL(1) is 0x100 */
+#define AP_POPUP_RISE_MAX PIXEL(8)/* how far above zero's head to rise */
 
 static void ApItemPopupUpdate(struct Entity* p) {
   u8 left;
 
   UpdateSpriteAnimation(p);
-  (p->coord).y -= AP_POPUP_RISE;
+
+  if (p->work[3] < (AP_POPUP_RISE_MAX / AP_POPUP_RISE)) {
+    p->work[3]++;
+  }
+  if (gGameState.z2 != NULL) {
+    (p->coord).x = (gGameState.z2->s).coord.x;
+    (p->coord).y = (gGameState.z2->s).coord.y + AP_POPUP_OFFSET_Y - (p->work[3] * AP_POPUP_RISE);
+  }
 
   left = --p->work[2];
   if (left == 0) {
@@ -740,6 +748,7 @@ static void ApShowItemPopup(u16 apItemID) {
   (p->coord).x = (gGameState.z2->s).coord.x;
   (p->coord).y = (gGameState.z2->s).coord.y + AP_POPUP_OFFSET_Y;
   p->work[0] = 0;
+  p->work[3] = 0;  /* how far it has risen above his head */
   InitNonAffineMotion(p);
   SetSpriteAnimation(p, ApItemPopupMotion(apItemID));
   p->flags |= DISPLAY;
