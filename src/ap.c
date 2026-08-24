@@ -685,7 +685,7 @@ static void ApCheckVolcanoMidBossRoom(void);
 
   Uses VFX_EMOTION_BUBBLE. Early WIP
 */
-#define AP_POPUP_OFFSET_Y PIXEL(-20)
+#define AP_POPUP_OFFSET_Y PIXEL(-40)
 
 /*
   Which icon the popup shows. WIP.
@@ -705,10 +705,10 @@ static motion_t ApItemPopupMotion(u16 apItemID) {
   return MOTION(SM003_EMOTION_BUBBLE, 0);
 }
 
-#define AP_POPUP_LIFE 96          /* frames on screen */
-#define AP_POPUP_FADE 48          /* the the frame it should flciker */
-#define AP_POPUP_RISE 0x60        /* sub-pixels per frame; PIXEL(1) is 0x100 */
-#define AP_POPUP_RISE_MAX PIXEL(8)/* how far above zero's head to rise */
+#define AP_POPUP_LIFE 96            /* frames on screen */
+#define AP_POPUP_FADE 48            /* the the frame it should flciker */
+#define AP_POPUP_RISE 0x60          /* sub-pixels per frame; PIXEL(1) is 0x100 */
+#define AP_POPUP_RISE_MAX PIXEL(16) /* how far above zero's head to rise */
 
 static void ApItemPopupUpdate(struct Entity* p) {
   u8 left;
