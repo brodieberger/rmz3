@@ -3295,6 +3295,11 @@ void printMainMenuString(struct GameState* g) {
         }
       } else {
         PrintString(STRING(STR_MAINMENU_DESC + MENU->unk_00[0]), 1, 0x12);
+#if AP
+        if (MENU->unk_00[0] <= 1) {
+          ApPrintWeaponStars((z->unk_b4).status.weapons[MENU->unk_00[0]]);
+        }
+#endif
       }
       break;
     }
@@ -3303,6 +3308,7 @@ void printMainMenuString(struct GameState* g) {
         return;
       }
       PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+      ApPrintWeaponStars(MENU->unk_00[1]);
       break;
     }
     case 2: {
@@ -3310,6 +3316,7 @@ void printMainMenuString(struct GameState* g) {
         return;
       }
       PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+      ApPrintWeaponStars(MENU->unk_00[1]);
       break;
     }
     case 3: {

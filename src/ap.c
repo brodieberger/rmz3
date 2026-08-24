@@ -17,6 +17,7 @@
 #undef ApUpdateStageRank
 #undef ApHasWeaponAbility
 #undef ApChargeTier
+#undef ApPrintWeaponStars
 #undef ApFrameHook
 
 #include "ap_disk_stage.h"
@@ -38,6 +39,7 @@
 #include "sound.h"
 #include "stagerun.h"
 #include "system.h"
+#include "text.h"
 #include "vfx.h"
 
 #if AP
@@ -47,6 +49,15 @@ EWRAM_DATA struct ApState gAp = {0};
 /* Mission rerun state. Both hold stageID + 1,  0 means none. */
 EWRAM_DATA static u8 sApRerunRequest = 0;
 EWRAM_DATA static u8 sApRerunStage = 0;
+
+/* Weapon Stars on pause screen */
+#define AP_CHAR_STAR_FULL 0xE6
+#define AP_CHAR_STAR_EMPTY 0xE7
+#define AP_CHAR_END 0xFF
+#define AP_STARS_Y 0x12
+#define AP_STARS_RIGHT_X 28
+#define AP_WEAPON_CHAIN_LONGEST 7
+EWRAM_DATA static char_t sApWeaponStars[AP_WEAPON_CHAIN_LONGEST + 1] = {0};
 
 /*
   These are the settings to be overwritten per by the seed.
@@ -406,6 +417,17 @@ static const u8 sApWeaponAtkMod[WEAPON_KINDS][3] = {
     {MOD_ROD_ATK1, MOD_ROD_ATK2, MOD_ROD_ATK3},
     {MOD_SHIELD_ATK1, MOD_SHIELD_ATK2, MOD_SHIELD_ATK3},
 };
+static u8 ApWeaponStepBit(u8 weapon, u8 step) {
+  u8 firstAtkLevel = (u8)(sApWeaponChainMax[weapon] - 2);
+
+  if (step < 2 || step > sApWeaponChainMax[weapon]) {
+    return AP_MOD_NONE;
+  }
+  if (step < firstAtkLevel) {
+    return sApWeaponAbilityMod[weapon][step - 2];
+  }
+  return sApWeaponAtkMod[weapon][step - firstAtkLevel];
+}
 
 // Returns TRUE when the bit was modified.
 static bool32 ApSetModBit(u8 bit) {
@@ -446,7 +468,6 @@ u8 ApChargeTier(u8 weapon) {
 // Returns TRUE when SystemSavedata changed.
 static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
   bool32 changed = FALSE;
-  u8 firstAtkLevel;
   u8 step;
 
   if (weapon >= WEAPON_KINDS || level == 0 || level > sApWeaponChainMax[weapon]) {
@@ -454,22 +475,58 @@ static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
   }
   ApUnlockWeapon(weapon);
 
-  /* Steps 2..firstAtkLevel-1 are abilities, the three above it are ATK+1/+2/+3. */
-  firstAtkLevel = (u8)(sApWeaponChainMax[weapon] - 2);
-
   for (step = 2; step <= level; step++) {
-    u8 bit;
+    u8 bit = ApWeaponStepBit(weapon, step);
 
-    if (step < firstAtkLevel) {
-      bit = sApWeaponAbilityMod[weapon][step - 2];  /* step 2 is entry 0 */
-    } else {
-      bit = sApWeaponAtkMod[weapon][step - firstAtkLevel];  /* ATK+1 is entry 0 */
-    }
     if (bit != AP_MOD_NONE && ApSetModBit(bit)) {
       changed = TRUE;
     }
   }
   return changed;
+}
+
+/*
+  0 when it is not owned at all, 1 for bare ownership and so on
+*/
+u8 ApWeaponLevel(u8 weapon) {
+  u8 step;
+
+  if (weapon >= WEAPON_KINDS) {
+    return 0;
+  }
+  if (!(gPlayers[0].unk_b4.status.unlockedWeapon & (1 << weapon))) {
+    return 0;
+  }
+  for (step = sApWeaponChainMax[weapon]; step >= 2; step--) {
+    u8 bit = ApWeaponStepBit(weapon, step);
+
+    if (bit != AP_MOD_NONE && ApHasWeaponAbility(bit)) {
+      return step;
+    }
+  }
+  return 1;
+}
+
+/*
+  The pause screen's weapon level row on the description line
+*/
+void ApPrintWeaponStars(u8 weapon) {
+  u8 level;
+  u8 max;
+  u8 i;
+
+  if (weapon >= WEAPON_KINDS) {
+    return;
+  }
+  level = ApWeaponLevel(weapon);
+  max = sApWeaponChainMax[weapon];
+
+  for (i = 0; i < max; i++) {
+    sApWeaponStars[i] = (char_t)((i < level) ? AP_CHAR_STAR_FULL : AP_CHAR_STAR_EMPTY);
+  }
+  sApWeaponStars[max] = AP_CHAR_END;
+
+  PrintString(sApWeaponStars, (u32)(AP_STARS_RIGHT_X - max), AP_STARS_Y);
 }
 
 /* Returns TRUE when SystemSavedata changed and has to be saved. */
@@ -1146,6 +1203,7 @@ bool32 (*const gApInMissionRerunFn)(void) = ApInMissionRerun;
 u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank) = ApUpdateStageRank;
 bool32 (*const gApHasWeaponAbilityFn)(u8 bit) = ApHasWeaponAbility;
 u8 (*const gApChargeTierFn)(u8 weapon) = ApChargeTier;
+void (*const gApPrintWeaponStarsFn)(u8 weapon) = ApPrintWeaponStars;
 void (*const gApFrameHookFn)(bool32 b) = ApFrameHookImpl;
 
 #endif /* AP */

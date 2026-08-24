@@ -90,6 +90,7 @@ SECTIONS {
 		src/ap_exlife_orbit.o (.text);
 		src/ap_exlife_orbit.o (.rodata);
 		src/ap_orbit_data.o (.rodata);
+		src/ap_mugshot_data.o (.rodata);
 		. = ALIGN(4);
 	} >rom = 0x00
 

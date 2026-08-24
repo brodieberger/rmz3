@@ -219,6 +219,8 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank);
 u8 ApStageBestRank(u8 stageID);
 bool32 ApHasWeaponAbility(u8 bit);  
 u8 ApChargeTier(u8 weapon);         
+u8 ApWeaponLevel(u8 weapon);
+void ApPrintWeaponStars(u8 weapon);
 
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
@@ -270,6 +272,7 @@ extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
+extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -290,6 +293,7 @@ extern u8 (*const gApChargeTierFn)(u8 weapon);
 #define ApSpawnExLifeOrbit(p) gApSpawnExLifeOrbitFn(p)
 #define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)
+#define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.
@@ -323,6 +327,7 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApFixEquippedWeapons(status) ((void)0)
 #define ApHasWeaponAbility(bit) (1)
 #define ApChargeTier(weapon) (FULL_CHARGE)
+#define ApPrintWeaponStars(weapon) ((void)0)
 #define ApRequestMissionRerun(stageID) ((void)0)
 #define ApTakeMissionRerun(stageID) (0)
 #define ApInMissionRerun() (0)
