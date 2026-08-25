@@ -17,7 +17,7 @@
 #define AP_ORBIT_STEP_FRAMES 2
 
 #define AP_ORBIT_TILE 954
-#define AP_ORBIT_PAL 12
+#define AP_ORBIT_PAL 2
 
 
 #define AP_ORBIT_RADIUS 13
