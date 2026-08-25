@@ -21,6 +21,7 @@
 #undef ApFrameHook
 
 #include "ap_disk_stage.h"
+#include "ap_icon.h"
 #include "constants/armor.h"
 #include "constants/entity/boss.h"
 #include "constants/entity/vfx.h"
@@ -37,6 +38,7 @@
 #include "player/zero.h"
 #include "score.h"
 #include "sound.h"
+#include "spawn.h"
 #include "stagerun.h"
 #include "system.h"
 #include "text.h"
@@ -688,20 +690,77 @@ static void ApCheckVolcanoMidBossRoom(void);
 #define AP_POPUP_OFFSET_Y PIXEL(-40)
 
 /*
+  Which icon an item gets
+  AP_ICON_NONE subtanks and crystals since they are drawn using vanilla sprites.
+*/
+#define AP_ICON_NONE 0xFF
+
+static u8 ApIconOf(u16 apItemID) {
+  if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
+    return AP_ICON_DISK;
+  }
+  if (apItemID >= AP_ITEM_WEAPON_LEVEL_FIRST && apItemID <= AP_ITEM_WEAPON_LEVEL_LAST) {
+    return (u8)(AP_ICON_BUSTER +
+                ((apItemID - AP_ITEM_WEAPON_LEVEL_FIRST) / AP_ITEM_CODES_PER_WEAPON));
+  }
+  if (apItemID >= AP_ITEM_BODY_CHIP_FIRST && apItemID <= AP_ITEM_BODY_CHIP_LAST) {
+    return (u8)(AP_ICON_BODY_ICE + (apItemID - AP_ITEM_BODY_CHIP_FIRST));
+  }
+  if (apItemID >= AP_ITEM_FOOT_CHIP_FIRST && apItemID <= AP_ITEM_FOOT_CHIP_LAST) {
+    return (u8)(AP_ICON_FOOT_SPIKE + (apItemID - AP_ITEM_FOOT_CHIP_FIRST));
+  }
+  if (apItemID >= AP_ITEM_EXSKILL_FIRST && apItemID <= AP_ITEM_EXSKILL_LAST) {
+    return (u8)(AP_ICON_EXSKILL_0 + (apItemID - AP_ITEM_EXSKILL_FIRST));
+  }
+  if (apItemID >= AP_ITEM_STAGE_ACCESS_FIRST && apItemID <= AP_ITEM_STAGE_ACCESS_LAST) {
+    return (u8)(AP_ICON_STAGE_1 + (apItemID - AP_ITEM_STAGE_ACCESS_FIRST));
+  }
+  if (apItemID == AP_ITEM_STORY_MID || apItemID == AP_ITEM_STORY_LATE) {
+    return AP_ICON_STORY;
+  }
+  return AP_ICON_NONE;
+}
+
+/*
+  Figure out where to place the sprite based on stage and area of that stage
+*/
+static u16 ApIconWindow(void) {
+  if ((u32)gStageRun.id >= AP_ICON_STAGES || (u32)gSpawnManager.area >= AP_ICON_AREAS) {
+    return 0;
+  }
+  return gApIconTile[gStageRun.id][gSpawnManager.area];
+}
+
+static void ApDrawItemIcon(struct Entity* p) {
+  u16 tile = ApIconWindow();
+  u8 icon = p->work[1];
+
+  if (tile == 0) {
+    return;  /* No free tiles, cant draw anything */
+  }
+  MemCopy32(gApIconTiles[icon], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
+            sizeof(gApIconTiles[icon]));
+  MemCopy32(gApIconPalette[icon], &gPaletteManager.buf[(16 + AP_ICON_PAL) * 16],
+            sizeof(gApIconPalette[icon]));
+
+  (p->spr).sprites = (struct MetaspriteHeader*)gApIconSprite.hdr;
+  (p->spr).spriteIdx = 0;
+  (p->spr).oam.tileNum = tile;
+  (p->spr).oam.paletteNum = AP_ICON_PAL;
+}
+
+/*
   Which icon the popup shows. WIP.
 */
 static motion_t ApItemPopupMotion(u16 apItemID) {
-  if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
-    return MOTION((SM176_RESULT_DISK + gSystemSavedata.disk), 0);
-  }
   if (apItemID == AP_ITEM_CRYSTAL_100) {
     return MOTION((SM170_ECRYSTAL + gSystemSavedata.crystal), 0);
   }
   if (apItemID == AP_ITEM_SUBTANK_1 || apItemID == AP_ITEM_SUBTANK_2) {
-    /* A subtank stores life energy, and the capsule is the closest resident icon. */
+    /*   # TODO get a sprite for subtank since it still uses a life pickup sprite. */
     return MOTION((SM167_LIFE_ENERGY + gSystemSavedata.lifeEnergy), 0);
   }
-  /* Weapons, chips and EX skills: no icon of their own is resident mid-stage yet. */
+  /* If nothing else was found. */
   return MOTION(SM003_EMOTION_BUBBLE, 0);
 }
 
@@ -713,7 +772,11 @@ static motion_t ApItemPopupMotion(u16 apItemID) {
 static void ApItemPopupUpdate(struct Entity* p) {
   u8 left;
 
-  UpdateSpriteAnimation(p);
+  if (p->work[1] == AP_ICON_NONE) {
+    UpdateSpriteAnimation(p);
+  } else {
+    ApDrawItemIcon(p);
+  }
 
   if (p->work[3] < (AP_POPUP_RISE_MAX / AP_POPUP_RISE)) {
     p->work[3]++;
@@ -748,9 +811,14 @@ static void ApShowItemPopup(u16 apItemID) {
   (p->coord).x = (gGameState.z2->s).coord.x;
   (p->coord).y = (gGameState.z2->s).coord.y + AP_POPUP_OFFSET_Y;
   p->work[0] = 0;
+  p->work[1] = ApIconWindow() ? ApIconOf(apItemID) : AP_ICON_NONE;
   p->work[3] = 0;  /* how far it has risen above his head */
   InitNonAffineMotion(p);
-  SetSpriteAnimation(p, ApItemPopupMotion(apItemID));
+  if (p->work[1] == AP_ICON_NONE) {
+    SetSpriteAnimation(p, ApItemPopupMotion(apItemID));
+  } else {
+    ApDrawItemIcon(p);
+  }
   p->flags |= DISPLAY;
   (p->spr).oam.priority = 0;
   p->work[2] = AP_POPUP_LIFE;

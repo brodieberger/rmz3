@@ -1,0 +1,73 @@
+#ifndef GUARD_RMZ3_AP_ICON_H
+#define GUARD_RMZ3_AP_ICON_H
+
+#include "gba/gba.h"
+#include "motion.h"
+
+/*
+  Item popup icons
+*/
+
+#define AP_ICON_COUNT 42
+#define AP_ICON_TILES 4
+#define AP_ICON_PAL 3
+
+#define AP_ICON_STAGES 18
+#define AP_ICON_AREAS 8  /* a preload area mask is 8 bits */
+
+enum {
+  AP_ICON_BUSTER,
+  AP_ICON_SABER,
+  AP_ICON_ROD,
+  AP_ICON_SHIELD,
+  AP_ICON_BODY_ICE,
+  AP_ICON_BODY_THUNDER,
+  AP_ICON_BODY_FLAME,
+  AP_ICON_BODY_LIGHT,
+  AP_ICON_BODY_ABSORBER,
+  AP_ICON_FOOT_SPIKE,
+  AP_ICON_FOOT_QUICK,
+  AP_ICON_FOOT_DOUBLE,
+  AP_ICON_FOOT_SHADOW,
+  AP_ICON_EXSKILL_0,
+  AP_ICON_EXSKILL_1,
+  AP_ICON_EXSKILL_2,
+  AP_ICON_EXSKILL_3,
+  AP_ICON_EXSKILL_4,
+  AP_ICON_EXSKILL_5,
+  AP_ICON_EXSKILL_6,
+  AP_ICON_EXSKILL_7,
+  AP_ICON_EXSKILL_8,
+  AP_ICON_EXSKILL_9,
+  AP_ICON_EXSKILL_10,
+  AP_ICON_EXSKILL_11,
+  AP_ICON_STAGE_1,
+  AP_ICON_STAGE_2,
+  AP_ICON_STAGE_3,
+  AP_ICON_STAGE_4,
+  AP_ICON_STAGE_5,
+  AP_ICON_STAGE_6,
+  AP_ICON_STAGE_7,
+  AP_ICON_STAGE_8,
+  AP_ICON_STAGE_9,
+  AP_ICON_STAGE_10,
+  AP_ICON_STAGE_11,
+  AP_ICON_STAGE_12,
+  AP_ICON_STAGE_13,
+  AP_ICON_STAGE_14,
+  AP_ICON_STAGE_15,
+  AP_ICON_STORY,
+  AP_ICON_DISK,
+};
+
+struct ApIconSprite {
+  struct MetaspriteHeader hdr[1];
+  struct Subsprite one[1];
+};
+
+extern const u16 gApIconPalette[AP_ICON_COUNT][16];
+extern const u32 gApIconTiles[AP_ICON_COUNT][AP_ICON_TILES][8];
+extern const u16 gApIconTile[AP_ICON_STAGES][AP_ICON_AREAS];
+extern const struct ApIconSprite gApIconSprite;
+
+#endif  // GUARD_RMZ3_AP_ICON_H
