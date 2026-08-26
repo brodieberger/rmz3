@@ -37,7 +37,6 @@ static void ApExLifeOrbitUpdate(struct Entity* e) {
   }
 
   MemCopy32(gApOrbitTiles, (void*)(VRAM + BG_VRAM_SIZE + (AP_ORBIT_TILE * 32)), sizeof(gApOrbitTiles));
-  MemCopy32(gApOrbitPalette, &gPaletteManager.buf[(16 + AP_ORBIT_PAL) * 16], sizeof(gApOrbitPalette));
 
   e->coord = p->coord;
   e->AP_ORBIT_TIMER++;

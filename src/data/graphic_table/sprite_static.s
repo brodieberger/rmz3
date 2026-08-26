@@ -3201,47 +3201,83 @@ gStaticMotionGraphics_166:
 gStaticMotionGraphics_167:
 	.incbin "sprites/static/life_energy/default/sheet.4bpp.lz"
 	gStaticMotionGraphics_167_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/life_energy/default/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_168:
 	.incbin "sprites/static/life_energy/x/sheet.4bpp.lz"
 	gStaticMotionGraphics_168_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/life_energy/x/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_169:
 	.incbin "sprites/static/life_energy/tank/sheet.4bpp.lz"
 	gStaticMotionGraphics_169_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/life_energy/tank/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_170:
 	.incbin "sprites/static/ecrystal/default/sheet.4bpp.lz"
 gStaticMotionGraphics_170_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/ecrystal/default/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_171:
 	.incbin "sprites/static/ecrystal/ball/sheet.4bpp.lz"
 gStaticMotionGraphics_171_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/ecrystal/ball/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_172:
 	.incbin "sprites/static/ecrystal/green/sheet.4bpp.lz"
 	gStaticMotionGraphics_172_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/ecrystal/green/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_173:
 	.incbin "sprites/static/exlife/default/sheet.4bpp.lz"
 	gStaticMotionGraphics_173_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/exlife/default/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_174:
 	.incbin "sprites/static/exlife/blue/sheet.4bpp.lz"
 	gStaticMotionGraphics_174_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/exlife/blue/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_175:
 	.incbin "sprites/static/exlife/green/sheet.4bpp.lz"
 	gStaticMotionGraphics_175_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/exlife/green/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_176:
 .if AP
@@ -3254,17 +3290,29 @@ gStaticMotionGraphics_176:
 	.incbin "sprites/static/result_disk/default/sheet.4bpp.lz"
 .endif
 gStaticMotionGraphics_176_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/result_disk/default/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_177:
 	.incbin "sprites/static/result_disk/blue/sheet.4bpp.lz"
 gStaticMotionGraphics_177_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/result_disk/blue/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_178:
 	.incbin "sprites/static/result_disk/red/sheet.4bpp.lz"
 gStaticMotionGraphics_178_Palettes:
+.if AP
+	.incbin "graphics/ap/pickup_palette.bin"
+.else
 	.incbin "sprites/static/result_disk/red/sheet.gbapal"
+.endif
 
 gStaticMotionGraphics_179:
 	.incbin "sprites/static/179/sheet.4bpp.lz"

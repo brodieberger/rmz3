@@ -10,7 +10,8 @@
 
 #define AP_ICON_COUNT 42
 #define AP_ICON_TILES 4
-#define AP_ICON_PAL 3
+#define AP_ICON_PAL 11
+
 
 #define AP_ICON_STAGES 18
 #define AP_ICON_AREAS 8  /* a preload area mask is 8 bits */
@@ -65,7 +66,6 @@ struct ApIconSprite {
   struct Subsprite one[1];
 };
 
-extern const u16 gApIconPalette[AP_ICON_COUNT][16];
 extern const u32 gApIconTiles[AP_ICON_COUNT][AP_ICON_TILES][8];
 extern const u16 gApIconTile[AP_ICON_STAGES][AP_ICON_AREAS];
 extern const struct ApIconSprite gApIconSprite;

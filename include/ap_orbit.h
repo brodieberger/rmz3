@@ -17,7 +17,7 @@
 #define AP_ORBIT_STEP_FRAMES 2
 
 #define AP_ORBIT_TILE 954
-#define AP_ORBIT_PAL 2
+#define AP_ORBIT_PAL 11
 
 
 #define AP_ORBIT_RADIUS 13
@@ -28,7 +28,6 @@ struct ApOrbitSprite {
   struct Subsprite dot[AP_ORBIT_FRAMES][AP_ORBIT_DOTS];
 };
 
-extern const u16 gApOrbitPalette[16];
 extern const u32 gApOrbitTiles[AP_ORBIT_TILE_COUNT][8];
 extern const struct ApOrbitSprite gApOrbitSprite;
 

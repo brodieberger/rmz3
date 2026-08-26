@@ -740,8 +740,6 @@ static void ApDrawItemIcon(struct Entity* p) {
   }
   MemCopy32(gApIconTiles[icon], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
             sizeof(gApIconTiles[icon]));
-  MemCopy32(gApIconPalette[icon], &gPaletteManager.buf[(16 + AP_ICON_PAL) * 16],
-            sizeof(gApIconPalette[icon]));
 
   (p->spr).sprites = (struct MetaspriteHeader*)gApIconSprite.hdr;
   (p->spr).spriteIdx = 0;
