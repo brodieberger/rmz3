@@ -768,7 +768,12 @@ rocinolle_080da294: @ 0x080DA294
 	ldrb r1, [r2, #6]
 	movs r4, #1
 	movs r3, #1
+.if AP
+	@ Rocinolle now uses the story flag set by AP instead of for clearing Copy X's level.
+	movs r0, #5
+.else
 	adds r0, r3, #0
+.endif
 	ands r0, r1
 	cmp r0, #0
 	beq _080DA2E4

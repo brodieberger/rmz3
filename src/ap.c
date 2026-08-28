@@ -1266,19 +1266,22 @@ struct ApNpcDialogue {
   u16 locationID;
 };
 
+/*
+  WIP This will eventually be replaced when I can make all NPCs say their dialogue in order.
+*/
 static const struct ApNpcDialogue sApNpcDialogues[] = {
-    {0x241, 107}, {0x242, 107}, {0x243, 107},                              // Andrew
+    {0x241, 107}, {0x242, 107}, {0x243, 107}, {0x2D3, 107},                // Andrew
     {0x247, 116}, {0x248, 116}, {0x249, 116}, {0x24A, 116},                // Alouette
     {0x24E, 169}, {0x24F, 169}, {0x250, 169}, {0x251, 169},                // Hibou
-    {0x253, 175}, {0x254, 175}, {0x255, 175}, {0x256, 175}, {0x257, 175},  // Menart
-    {0x25A, 167}, {0x25C, 167}, {0x25E, 167},                              // Cerveau
-    {0x25D, 44},                                                           // Cerveau, elf disk
-    {0x268, 175},                                                          // Menart, later
-    {0x271, 173},                                                          // Autruche
-    {0x284, 174},                                                          // Hirondelle
-    {0x2A6, 58},  {0x2A9, 58},  {0x2AB, 58},                               // Beetack
-    {0x2B1, 23},  {0x2B3, 23},                                             // Milvy
-    {0x2CF, 107}, {0x2D0, 107}, {0x2D1, 107}, {0x2D2, 107},                // Andrew, later
+    {0x253, 175}, {0x254, 175}, {0x255, 175}, {0x256, 175}, {0x257, 175},
+    {0x258, 175},                                                          // Menart
+    {0x259, 167}, {0x25A, 167}, {0x25B, 167}, {0x25C, 167}, {0x25E, 167},  // Rocinolle
+    {0x25D, 44},                                                           // Rocinolle, elf disk
+    {0x26E, 173}, {0x26F, 173}, {0x270, 173}, {0x271, 173}, {0x272, 173},  // Hirondelle
+    {0x281, 174}, {0x282, 174}, {0x283, 174}, {0x284, 174}, {0x285, 174},  // Doigt
+    {0x2A6, 58},  {0x2A7, 58},  {0x2A9, 58},  {0x2AB, 58},                 // Soldier in right tower
+    {0x2B1, 23},  {0x2B2, 23},  {0x2B3, 23},                               // Soldier in room 02D
+    {0x2CF, 107}, {0x2D0, 107}, {0x2D1, 107}, {0x2D2, 107},                // Andrew, young (from ereader)
 };
 
 /*

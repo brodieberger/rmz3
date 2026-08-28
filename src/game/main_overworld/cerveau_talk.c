@@ -47,6 +47,21 @@ void OverworldLoop_CerveauTalk(struct GameState* g) {
           if (!FLAG(gCurStory.s.gameflags, FLAG_10)) {
             PrintOptionMessage2(0x207);  // おや？ シエルのところへ行かなくていいのかい？ ...
           } else {
+#if AP
+// Forces Cerveau to say all of his dialogue in order
+// TODO DO this for every other NPC in the game
+            if (!(IS_DISK_UNLOCKED(gStageDiskManager.disk, 91) & 1)) {
+              if (gCurStory.s.counts[1] == 0) {
+                PrintOptionMessage2(0x208);
+                gCurStory.s.counts[1] = 1;
+              } else {
+                PrintOptionMessage2(0x209);
+                gCurStory.s.counts[1] = 2;
+              }
+            } else if (!FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE)) {
+              PrintOptionMessage2(0x20E);
+            } else {
+#else
             if (!FLAG(gCurStory.s.gameflags, FLAG_FIRST4_DONE)) {
               if (gCurStory.s.counts[1] == 0) {
                 u8* disks;
@@ -66,6 +81,7 @@ void OverworldLoop_CerveauTalk(struct GameState* g) {
                 }
               }
             } else {
+#endif
               if (!FLAG(gCurStory.s.gameflags, FLAG_AREAX2_DONE)) {
                 if (gCurStory.s.counts[1] < 3) {
                   PrintOptionMessage2(0x20A);
