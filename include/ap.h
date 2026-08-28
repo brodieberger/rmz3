@@ -147,6 +147,12 @@ extern const char_t gApCerveauAwayText[];
 // Stages Archipelago has opened.
 #define AP_UNLOCK_BYTE 12
 
+/*
+  Record of Sunken Library data disks collected, since the game erases them.
+*/
+#define AP_SUNKEN_BYTE 14
+#define AP_SUNKEN_COUNT 4
+
 // Best rank ever earned in each stage.
 #define AP_RANK_BYTE 0
 #define AP_RANK_NONE 0

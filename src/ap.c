@@ -664,6 +664,28 @@ static bool32 ApGrantItem(u16 apItemID) {
 }
 
 /*
+  The Sunken Library's four data files, by disk number. 
+  These normally get cleared by the game when you start it, since the mission's goal is to collect them.
+*/
+static const u8 sApSunkenDisks[AP_SUNKEN_COUNT] = {10, 16, 17, 18};
+
+static u8 ApSunkenMask(u16 diskNo) {
+  u8 i;
+
+  for (i = 0; i < AP_SUNKEN_COUNT; i++) {
+    if (sApSunkenDisks[i] == diskNo) {
+      return (u8)(1 << i);
+    }
+  }
+  return 0;
+}
+
+static bool8 ApSunkenDiskFound(u16 diskNo) {
+  u8 mask = ApSunkenMask(diskNo);
+  return (mask != 0) && ((gGameState.save.unused_240[AP_SUNKEN_BYTE] & mask) != 0);
+}
+
+/*
   How many AP disks the player owns. Checked through only the lower nibble of savedDisk.
 */
 static u16 ApCountDisks(void) {
@@ -685,7 +707,8 @@ static u16 ApCountDisks(void) {
 /*
   How many of a stage's disks have been found, over how many it holds.
 
-  Under coutns the Sunken Library by up to 4 since those disks are handled by the game and not AP.
+  The Sunken Library's four data files are counted out of AP's own record, since the stage wipes
+  them from save.disk every time it is entered.
 */
 u8 ApDisksInStage(u8 stageID) {
   const u8* disks = gGameState.save.disk;
@@ -694,7 +717,7 @@ u8 ApDisksInStage(u8 stageID) {
 
   for (disk = 0; disk < ARRAY_COUNT(sApDiskStage); disk++) {
     if (sApDiskStage[disk] == stageID) {
-      if (disks[disk >> 2] & (1 << (disk & 3))) {
+      if ((disks[disk >> 2] & (1 << (disk & 3))) || ApSunkenDiskFound((u16)(disk + 1))) {
         count++;
       }
     }
@@ -1177,6 +1200,7 @@ void ApMarkLocationChecked(u16 locationID) {
     return;
   }
   gAp.checkedLocations[locationID >> 3] |= (1 << (locationID & 7));
+  gGameState.save.unused_240[AP_SUNKEN_BYTE] |= ApSunkenMask(locationID);
 }
 
 /*
@@ -1236,6 +1260,12 @@ static void ApRebuildCheckedLocations(void) {
       if (sApStageClears[i].chip != 0) {
         ApMarkLocationChecked(sApStageClears[i].chip);
       }
+    }
+  }
+
+  for (i = 0; i < AP_SUNKEN_COUNT; i++) {
+    if (gGameState.save.unused_240[AP_SUNKEN_BYTE] & (1 << i)) {
+      ApMarkLocationChecked(sApSunkenDisks[i]);
     }
   }
 
