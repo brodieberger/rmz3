@@ -57,6 +57,12 @@ void ApCmdRoomTalk(struct GameState* g) {
     }
 
     case 0: {
+      /*
+        Sets Cerveau's "shouldn't you go and see Ciel?" line.
+      */
+      ApSetStoryFlag(FLAG_10);
+      ApSetStoryFlag(FLAG_8);
+
       PrintOptionMessage1(0);  // who do you want to talk to?
       g->unk_008[1] = 0;
       g->mode[3] = 1;
