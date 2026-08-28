@@ -82,9 +82,12 @@ SECTIONS {
 		src/ap.o (.text);
 		src/ap.o (.rodata);
 		src/ap.o (.data);
+		src/ap_base_npc.o (.text);
+		src/ap_base_npc.o (.rodata);
 		src/ap_cmd_room.o (.text);
 		src/ap_cmd_room.o (.rodata);
 		src/data/texts/ap_cmd_room.o (.rodata);
+		src/data/texts/ap_npc.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);
 		src/ap_exlife_orbit.o (.text);

@@ -137,6 +137,26 @@ void PrintOptionMessagePtr(const char_t* s) {
 }
 #endif
 
+#if AP
+/*
+  Allows the gmae to print a message from a pointer.
+  Used for custom messages in the AP text files.
+*/
+void PrintNormalMessagePtr(const char_t* s) {
+  TextWindowText* w = &gTextWindow.text;
+
+  w->start = (char_t*)s;
+  w->textType = TW_NORMAL;
+  resetTextWindow(w);
+  setupTextWindow(w);
+  if (w->mugshot != 0) {
+    (w->state).u32 = TWK_MUGSHOT;
+  } else {
+    (w->state).u32 = TWK_INLINE;
+  }
+}
+#endif
+
 void PrintResultInline(TextID t, bool16 ng) {
   TextWindowText* w = &gTextWindow.text;
 

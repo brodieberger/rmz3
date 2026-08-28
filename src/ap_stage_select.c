@@ -274,6 +274,13 @@ static void ApSelectSetPage(struct GameState* g, s16 page) {
   g->frames = sApSelectSlot = 0;
 }
 
+/*
+  Fix for Boss portraits stealing the palette used by the AP item pop up sprites.
+*/
+static void ApSelectRestorePickupPalette(void) {
+  LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+}
+
 static void ApSelectTearDown(struct GameState* g) {
   struct Entity** handle = ApSelectHandle(g);
 
@@ -281,6 +288,7 @@ static void ApSelectTearDown(struct GameState* g) {
     FUN_080c5f98(*handle);
     *handle = NULL;
   }
+  ApSelectRestorePickupPalette();
   sApSelectBuilt = FALSE;
 }
 

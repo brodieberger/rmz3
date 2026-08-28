@@ -121,6 +121,15 @@ NON_MATCH_AP void UpdateCerveau(struct Solid* p) {
   struct ZeroStatus* status;  // only the vanilla grant path uses this
 #endif
 
+#if AP
+  /*
+    New NPC in Cerveau's room when he isnt there (he leaves after being given two story progression items)
+  */
+  if (ApCerveauGuideUpdate(p)) {
+    return;
+  }
+#endif
+
   switch ((p->s).mode[1]) {
     case 0: {
       if ((gCurStory.s.gameflags[2] & ((1 << (FLAG_LATER4_DONE & 7)) | (1 << (FLAG_BRAIN_CONTROL & 7)))) == (1 << (FLAG_LATER4_DONE & 7))) {

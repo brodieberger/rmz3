@@ -117,6 +117,20 @@ Archipelago stuff.
 // Weil's lab is currently the goal. This probably wont be changed.
 #define AP_STAGE_FINAL STAGE_WEILS_LABO
 
+/*
+  New NPC in Cerveau's room when he isnt there (he leaves after being given two story progression items)
+*/
+#define AP_CERVEAU_GUIDE_TILE 628
+#define AP_CERVEAU_GUIDE_PAL 6
+
+extern const char_t gApCerveauAwayText[];
+
+/*
+  IDLE is normal resistance base behavior.
+*/
+#define AP_BASE_EVENT_IDLE 0xFF
+#define AP_BASE_EVENT_HARPUIA 7
+
 /* gAp.killRequest states. */
 #define AP_KILL_IDLE 0
 #define AP_KILL_REQUESTED 1
@@ -242,6 +256,9 @@ void ApMarkExLifeCollected(u8 stageID, s32 coordX);
 struct Pickup;
 void ApSpawnExLifeOrbit(struct Pickup* p);
 
+struct Solid;
+bool32 ApCerveauGuideUpdate(struct Solid* p);
+
 /* Sets a story flag in gCurStory and save.story. */
 void ApSetStoryFlag(u8 flag);
 
@@ -273,6 +290,7 @@ extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
 extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
+extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -294,6 +312,7 @@ extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
 #define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)
 #define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)
+#define ApCerveauGuideUpdate(p) gApCerveauGuideUpdateFn(p)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.

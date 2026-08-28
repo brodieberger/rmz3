@@ -37,6 +37,7 @@
 #include "mod.h"
 #include "player/zero.h"
 #include "score.h"
+#include "script.h"
 #include "sound.h"
 #include "spawn.h"
 #include "stagerun.h"
@@ -655,6 +656,22 @@ static void ApSetSavedApplied(u16 count) {
   gGameState.save.unused_240[AP_APPLIED_BYTE + 1] = (u8)(count >> 8);
 }
 
+/*
+  Fix for Boss portraits (or anything else later) stealing the palette used by the AP item pop up sprites.
+*/
+#define AP_IN_GAMEPLAY(mode) (((mode)[0] == 0) && ((mode)[1] == 4))
+
+EWRAM_DATA static bool8 sApWasInGameplay = FALSE;
+
+static void ApKeepPickupPalette(void) {
+  bool8 now = (bool8)AP_IN_GAMEPLAY(gGameState.mode);
+
+  if (now && !sApWasInGameplay) {
+    LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+  }
+  sApWasInGameplay = now;
+}
+
 void ApInit(void) {
   u8 i;
 
@@ -871,6 +888,29 @@ static void ApCycleSubWeapon(void) {
 }
 
 /*
+  Simplfies the requirements for Harpuias scene in the maintenence bay so it loads easier in
+  Archipelago's conditions.
+*/
+static void ApSetHarpuiaScene(void) {
+  if (gStageRun.id != STAGE_BASE) {
+    return;
+  }
+  if (gStageRun.stageEventPhase != AP_BASE_EVENT_IDLE) {
+    return;
+  }
+  if (gStageRun.vm.active & VM_ACTIVE) {
+    return;
+  }
+  if (!FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE)) {
+    return;
+  }
+  if (FLAG(gCurStory.s.gameflags, FLAG_BRAIN_CONTROL)) {
+    return;
+  }
+  gStageRun.stageEventPhase = AP_BASE_EVENT_HARPUIA;
+}
+
+/*
   Called once per frame from Process_Game.
 */
 void ApUpdate(void) {
@@ -882,6 +922,7 @@ void ApUpdate(void) {
   if (gAp.ready != AP_READY) {
     ApInit();
   }
+  ApKeepPickupPalette();
   canAcceptItems = ApCanAcceptItems();
   gAp.canAcceptItems = (u8)(canAcceptItems != 0);
   ApCycleSubWeapon();
@@ -896,6 +937,7 @@ void ApUpdate(void) {
   ApRebuildCheckedLocations();
   ApCheckSubBossKilled();
   ApCheckVolcanoMidBossRoom();
+  ApSetHarpuiaScene();
 
   if (!canAcceptItems) {
     return;
