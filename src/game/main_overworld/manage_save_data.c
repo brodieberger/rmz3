@@ -1046,7 +1046,7 @@ _US_080F0A24:\n\
 	b _US_080F0C2C\n\
 _US_080F0A3C:\n\
 .if AP\n\
-	@ Forces the game to load into the base, skipping all intermission cutscens.
+	@ Forces the game to load into the base, skipping all intermission cutscenes.\n\
 	b _US_080F0B4C\n\
 .endif\n\
 	ldr	r0, _US_080F0AB4\n\
