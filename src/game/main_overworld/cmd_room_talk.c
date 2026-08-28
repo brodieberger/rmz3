@@ -224,7 +224,7 @@ _080F12C6:\n\
 	ldr r4, _080F12F4 @ =gCurStory\n\
 	ldrb r2, [r4, #6]\n\
 .if AP\n\
-	@ No OP Ciel bringing you to Sub Arcadia
+	@ No OP Ciel bringing you to Sub Arcadia\n\
 	b _080F1300\n\
 .endif\n\
 	movs r0, #0x30\n\
