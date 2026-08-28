@@ -15,6 +15,7 @@
 #undef ApTakeMissionRerun
 #undef ApInMissionRerun
 #undef ApUpdateStageRank
+#undef ApEndRun
 #undef ApHasWeaponAbility
 #undef ApChargeTier
 #undef ApPrintWeaponStars
@@ -378,6 +379,67 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
     }
   }
   return ApAggregateRank();
+}
+
+/*
+  Get the base script on returning from a stage.
+*/
+static u8 ApReturnBaseEntry(u8 clearedStage, u8 fallback) {
+  u8* played = &gGameState.save.unused_240[AP_SCENE_BYTE];
+  u8 bit;
+  u8 entry;
+
+  switch (clearedStage) {
+    case STAGE_SPACE_CRAFT:
+      bit = AP_SCENE_SPACE_CRAFT;
+      entry = AP_BASE_ENTRY_SPACE_CRAFT;
+      break;
+    case STAGE_MISSILE_FACTORY:
+      bit = AP_SCENE_MISSILE_FACTORY;
+      entry = AP_BASE_ENTRY_MISSILE_FACTORY;
+      break;
+    case STAGE_AREA_X2:
+      bit = AP_SCENE_AREA_X2;
+      entry = AP_BASE_ENTRY_AREA_X2;
+      break;
+    default:
+      return fallback;
+  }
+
+  if (*played & bit) {
+    return fallback;
+  }
+  *played |= bit;
+  return entry;
+}
+
+/*
+  What to do on a level ending. Plays cutscenes or ends the game if needed.
+*/
+void ApEndRun(struct GameState* g) {
+  bool32 missionRun = IS_MISSION && !ApInMissionRerun();
+  bool32 bossDied = (gStageRun.missionStatus & MISSION_SUCCESS) != 0;
+  u8 entry = missionRun ? AP_BASE_ENTRY_MISSION : AP_BASE_ENTRY_FREERUN;
+
+  if ((gStageRun.id == STAGE_BASE) && ((gStageRun.checkpoint == AP_BASE_CHECKPOINT_LAUNCH) ||
+                                       (gStageRun.checkpoint == AP_BASE_CHECKPOINT_SUBARCADIA))) {
+    InitStageRun((u8)(g->save).stageID);
+    SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
+    return;
+  }
+
+  if (missionRun && bossDied && ((g->save).stageID == AP_STAGE_FINAL)) {
+    SetGameMode(g, GAMEMODE(MAINGAME, UNLOCK_MINIGAME, 0, 0));
+    return;
+  }
+
+  if (missionRun && bossDied) {
+    entry = ApReturnBaseEntry((u8)(g->save).stageID, entry);
+  }
+
+  (g->save).stageID = STAGE_BASE;
+  LoadStageRun(STAGE_BASE, entry);
+  SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
 }
 
 void ApSetStoryFlag(u8 flag) {
@@ -1321,6 +1383,7 @@ void (*const gApRequestMissionRerunFn)(u8 stageID) = ApRequestMissionRerun;
 bool32 (*const gApTakeMissionRerunFn)(u8 stageID) = ApTakeMissionRerun;
 bool32 (*const gApInMissionRerunFn)(void) = ApInMissionRerun;
 u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank) = ApUpdateStageRank;
+void (*const gApEndRunFn)(struct GameState* g) = ApEndRun;
 bool32 (*const gApHasWeaponAbilityFn)(u8 bit) = ApHasWeaponAbility;
 u8 (*const gApChargeTierFn)(u8 weapon) = ApChargeTier;
 void (*const gApPrintWeaponStarsFn)(u8 weapon) = ApPrintWeaponStars;

@@ -158,6 +158,33 @@ extern const char_t gApCerveauAwayText[];
 #define AP_APPLIED_BYTE 10
 
 /*
+  Saves if a scene was played or not
+*/
+#define AP_SCENE_BYTE 9
+#define AP_SCENE_SPACE_CRAFT (1 << 0)
+#define AP_SCENE_MISSILE_FACTORY (1 << 1)
+#define AP_SCENE_AREA_X2 (1 << 2)
+
+/*
+  Base entry numbers, ResistanceBase_Update scripts.
+
+  7 and 9 are the plain mission and free run arrivals. 
+  3 is Ciel's briefing after the intro stage,
+  13 runs script 12 and then Weil's broadcast cutscene (CS_RBASE_24), 
+  15 is the arrival plus her line about Area X-2.
+  19 and 12 are for missile factory  
+  19 is for subarcadia
+*/
+#define AP_BASE_ENTRY_MISSION 7
+#define AP_BASE_ENTRY_FREERUN 9
+#define AP_BASE_ENTRY_SPACE_CRAFT 3
+#define AP_BASE_ENTRY_MISSILE_FACTORY 13
+#define AP_BASE_ENTRY_AREA_X2 15
+#define AP_BASE_ENTRY_MISSILE_SCENE 10
+#define AP_BASE_CHECKPOINT_LAUNCH 12
+#define AP_BASE_CHECKPOINT_SUBARCADIA 19
+
+/*
   Mission score that counts as an A+ clear.
 
   This is compared against gScore.resultScore, the score for the mission that just finished instead of the average like in base game.
@@ -239,6 +266,9 @@ void ApPrintWeaponStars(u8 weapon);
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
 
+/* Where a run goes when it ends -- all of GameLoop_EndRun's AP routing. */
+void ApEndRun(struct GameState* g);
+
 /* The portrait stage select */
 void ApStageSelect(struct GameState* g);
 
@@ -286,6 +316,7 @@ extern void (*const gApRequestMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
 extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
+extern void (*const gApEndRunFn)(struct GameState* g);
 extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
 extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
@@ -308,6 +339,7 @@ extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
 #define ApTakeMissionRerun(stageID) gApTakeMissionRerunFn(stageID)
 #define ApInMissionRerun() gApInMissionRerunFn()
 #define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
+#define ApEndRun(g) gApEndRunFn(g)
 #define ApSpawnExLifeOrbit(p) gApSpawnExLifeOrbitFn(p)
 #define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)

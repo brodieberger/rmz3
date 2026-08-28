@@ -2,9 +2,11 @@
 
 #undef ApCmdRoomTalk
 
+#include "constants/flag.h"
 #include "constants/game.h"
 #include "constants/song.h"
 #include "constants/stage_id.h"
+#include "definition.h"
 #include "game.h"
 #include "global.h"
 #include "score.h"
@@ -21,12 +23,32 @@
 #define ApStageOfIndex(i) ((u8)((i) + STAGE_SPACE_CRAFT))
 #define ApStageCleared(i) (gMissionDones & (1 << ApStageOfIndex(i)))
 
+enum ApStageIntroKind {
+  AP_INTRO_NONE,
+  AP_INTRO_SUB_ARCADIA,
+  AP_INTRO_MISSILE_FACTORY
+};
+
+static u8 ApStageIntro(s16 index) {
+  if (ApStageCleared(index)) {
+    return AP_INTRO_NONE;
+  }
+  switch (ApStageOfIndex(index)) {
+    case STAGE_SUB_ARCADIA:
+      return AP_INTRO_SUB_ARCADIA;
+    case STAGE_MISSILE_FACTORY:
+      return AP_INTRO_MISSILE_FACTORY;
+  }
+  return AP_INTRO_NONE;
+}
+
 /*
   Cmd room conversation.
 */
 void ApCmdRoomTalk(struct GameState* g) {
   TextWindowText* w = &gTextWindow.text;
   s16 ans;
+  u8 intro;
 
   switch (g->mode[3]) {
     default: {
@@ -86,7 +108,16 @@ void ApCmdRoomTalk(struct GameState* g) {
         }
         ApRequestMissionRerun(ApStageOfIndex(g->frames));
       }
-      SetScript(&gStageRun.vm, gStageScriptList[STAGE_BASE][8]);  // Script_FreeRunTransport
+
+      intro = ApStageIntro(g->frames);
+      if (intro == AP_INTRO_NONE) {
+        SetScript(&gStageRun.vm, gStageScriptList[STAGE_BASE][8]);
+      } else if (intro == AP_INTRO_SUB_ARCADIA) {
+        (g->save).stageID = ApStageOfIndex(g->frames);
+        gStageRun.missionStatus |= MISSION_B1;
+        setStageCheckpoint(AP_BASE_CHECKPOINT_SUBARCADIA);
+        SetScript(&gStageRun.vm, gStageScriptList[STAGE_BASE][19]);  // CS_RBASE_45
+      }
       w->flag |= TEXT_FLAG_TERMINATE;
       g->mode[3]++;
       return;
@@ -96,9 +127,30 @@ void ApCmdRoomTalk(struct GameState* g) {
       if (gStageRun.vm.active & VM_ACTIVE) {  // wait for the transfer cutscene
         return;
       }
+
+      intro = ApStageIntro(g->frames);
+
+      /* Temp needed */
+      if (intro != AP_INTRO_NONE) {
+        if (gTimeElfTimer != 0) {
+          CLEAR_FLAG(gCurStory.s.gameflags, TIME_ELF_ENABLED);
+          TurnUpBGM();
+          gTimeElfTimer = 0;
+        }
+        StopSound(SE_TIME_ELF);
+        StopSound(SE_TIME_ELF_HURRY);
+      }
+
       (g->save).stageID = ApStageOfIndex(g->frames);
       StoreStoryData(&(g->save).story);
       StoreZeroStatus(g->z2, &(g->save).status);
+
+      if (intro == AP_INTRO_MISSILE_FACTORY) {
+        LoadStageRun(STAGE_BASE, AP_BASE_ENTRY_MISSILE_SCENE);
+        SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
+        return;
+      }
+
       ResetMissionScore((u8)(g->save).stageID, &(g->save).playinfo);
       InitStageRun((u8)(g->save).stageID);
       SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));

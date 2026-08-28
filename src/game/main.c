@@ -752,26 +752,7 @@ NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
   }
 
 #if AP
-  /*
-    Removes most of the scripting that comes from a level ending.
-  */
-  {
-    bool32 missionRun = IS_MISSION && !ApInMissionRerun();
-    bool32 bossDied = (gStageRun.missionStatus & MISSION_SUCCESS) != 0;
-
-    /*
-      This usually gets loaded on the final level ending for any reason. It has been gated to check if the boss has actually been killed.
-      This is to prevent the credits from rolling if the player chooses to escape the final stage.
-    */
-    if (missionRun && bossDied && ((g->save).stageID == AP_STAGE_FINAL)) {
-      SetGameMode(g, GAMEMODE(MAINGAME, UNLOCK_MINIGAME, 0, 0));
-      return;
-    }
-
-    (g->save).stageID = STAGE_BASE;
-    LoadStageRun(STAGE_BASE, missionRun ? 7 : 9);
-    SetGameMode(g, GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0));
-  }
+  ApEndRun(g);
 #else
   if ((g->save).stageID == STAGE_BASE) {
     if (gStageRun.checkpoint == 12) {
