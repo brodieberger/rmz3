@@ -1045,6 +1045,10 @@ _US_080F0A24:\n\
 	beq _US_080F0A3C\n\
 	b _US_080F0C2C\n\
 _US_080F0A3C:\n\
+.if AP\n\
+	@ Forces the game to load into the base, skipping all intermission cutscens.
+	b _US_080F0B4C\n\
+.endif\n\
 	ldr	r0, _US_080F0AB4\n\
 	ldr	r0, [r0, #0]\n\
 	ldrb	r0, [r0, #16]\n\
