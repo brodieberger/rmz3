@@ -422,6 +422,7 @@ _080EFC9E:
 	adds r1, r6, r0
 	movs r0, #1
 	bl LoadStoryData
+.if !AP
 	ldr r1, _080EFCF8 @ =0x00006410
 	adds r4, r6, r1
 	ldr r5, [r4, #0xc]
@@ -444,6 +445,9 @@ _080EFC9E:
 	ldr r0, [r5]
 	adds r1, r4, #0
 	bl LoadZeroStatus
+.else
+	@ No OP new game plus wiping save data.
+.endif
 	movs r1, #0xc0
 	lsls r1, r1, #4
 	adds r0, r6, #0
