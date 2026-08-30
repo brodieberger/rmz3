@@ -291,12 +291,50 @@ static void ApUnlockStage(u8 stageID) {
 }
 
 /*
+  What clearing a stage should give you: 
+  the completion check, (currently an AP loc but will probably be removed later) 
+  the chip that stage used to award (AP Loc),
+  the A+ rank check (AP Loc). 
+  0 means the stage has none of that one.
+*/
+struct ApStageClear {
+  u16 clear;
+  u16 chip;
+  u16 rank;
+};
+
+static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
+    [STAGE_SPACE_CRAFT] = {181, 0, 206},
+    [STAGE_VOLCANO] = {182, 199, 207},
+    [STAGE_OCEAN] = {183, 197, 208},
+    [STAGE_REPAIR_FACTORY] = {184, 198, 209},
+    [STAGE_OLD_RESIDENTIAL] = {185, 200, 210},
+    [STAGE_MISSILE_FACTORY] = {186, 0, 211},
+    [STAGE_TWILIGHT_DESERT] = {187, 0, 212},
+    [STAGE_ANATRE_FOREST] = {188, 0, 213},
+    [STAGE_ICE_BASE] = {189, 0, 214},
+    [STAGE_AREA_X2] = {190, 203, 215},
+    [STAGE_E_FACILITY] = {191, 204, 216},
+    [STAGE_SNOWY_PLAINS] = {192, 202, 217},
+    [STAGE_SUNKEN_LIBRARY] = {193, 205, 218},
+    [STAGE_GIANT_ELEVATOR] = {194, 201, 219},
+    [STAGE_SUB_ARCADIA] = {195, 0, 220},
+    [STAGE_WEILS_LABO] = {196, 0, 0},
+};
+
+/*
   The final stage has no access item.
   It opens on every other stage cleared while holding the seed's disk required amount.
 */
 static bool32 ApFinalStageOpen(void) {
-  if ((gGameState.save.playinfo.missionDones & AP_MISSION_DONES_ALL) != AP_MISSION_DONES_ALL) {
-    return FALSE;
+  u8 stage;
+  for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
+    if (gGameState.save.playinfo.missionDones & (1 << stage)) {
+      continue;
+    }
+    if (!ApServerChecked(sApStageClears[stage].clear)) {
+      return FALSE;
+    }
   }
   return ApCountDisks() >= gApSeedConfig.requiredDisks;
 }
@@ -1218,37 +1256,6 @@ void ApMarkLocationChecked(u16 locationID) {
   gGameState.save.unused_240[AP_SUNKEN_BYTE] |= ApSunkenMask(locationID);
 }
 
-/*
-  What clearing a stage should give you: 
-  the completion check, (currently an AP loc but will probably be removed later) 
-  the chip that stage used to award (AP Loc),
-  the A+ rank check (AP Loc). 
-  0 means the stage has none of that one.
-*/
-struct ApStageClear {
-  u16 clear;
-  u16 chip;
-  u16 rank;
-};
-
-static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
-    [STAGE_SPACE_CRAFT] = {181, 0, 206},
-    [STAGE_VOLCANO] = {182, 199, 207},
-    [STAGE_OCEAN] = {183, 197, 208},
-    [STAGE_REPAIR_FACTORY] = {184, 198, 209},
-    [STAGE_OLD_RESIDENTIAL] = {185, 200, 210},
-    [STAGE_MISSILE_FACTORY] = {186, 0, 211},
-    [STAGE_TWILIGHT_DESERT] = {187, 0, 212},
-    [STAGE_ANATRE_FOREST] = {188, 0, 213},
-    [STAGE_ICE_BASE] = {189, 0, 214},
-    [STAGE_AREA_X2] = {190, 203, 215},
-    [STAGE_E_FACILITY] = {191, 204, 216},
-    [STAGE_SNOWY_PLAINS] = {192, 202, 217},
-    [STAGE_SUNKEN_LIBRARY] = {193, 205, 218},
-    [STAGE_GIANT_ELEVATOR] = {194, 201, 219},
-    [STAGE_SUB_ARCADIA] = {195, 0, 220},
-    [STAGE_WEILS_LABO] = {196, 0, 0},
-};
 
 static void ApRebuildCheckedLocations(void) {
   const u8* disks = gGameState.save.disk;
