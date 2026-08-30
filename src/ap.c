@@ -672,6 +672,9 @@ static const u8 sApSunkenDisks[AP_SUNKEN_COUNT] = {10, 16, 17, 18};
 static u8 ApSunkenMask(u16 diskNo) {
   u8 i;
 
+  if (diskNo > sApSunkenDisks[AP_SUNKEN_COUNT - 1]) {
+    return 0;
+  }
   for (i = 0; i < AP_SUNKEN_COUNT; i++) {
     if (sApSunkenDisks[i] == diskNo) {
       return (u8)(1 << i);
@@ -747,6 +750,13 @@ static void ApSetSavedApplied(u16 count) {
 #define AP_IN_GAMEPLAY(mode) (((mode)[0] == 0) && ((mode)[1] == 4))
 
 EWRAM_DATA static bool8 sApWasInGameplay = FALSE;
+
+/* Frames between writing the disk count. For performance reasons. */
+#define AP_REPUBLISH_FRAMES 30
+EWRAM_DATA static u8 sApRepublishTimer = 0;
+/*Disk bytes to check each frame. For performance reasons. */
+#define AP_REBUILD_SLICE 2
+EWRAM_DATA static u8 sApRebuildByte = 0;
 
 static void ApKeepPickupPalette(void) {
   bool8 now = (bool8)AP_IN_GAMEPLAY(gGameState.mode);
@@ -1018,8 +1028,13 @@ void ApUpdate(void) {
     They only desync when theres a a savestate, a soft reset, a game over, or an older save file.
   */
   gAp.itemsApplied = ApSavedApplied();
-  gAp.disksOwned = ApCountDisks();
+  if (sApRepublishTimer == 0) {
+    sApRepublishTimer = AP_REPUBLISH_FRAMES;
+    gAp.disksOwned = ApCountDisks();
+  }
+  sApRepublishTimer--;
   ApRebuildCheckedLocations();
+
   ApCheckSubBossKilled();
   ApCheckVolcanoMidBossRoom();
   ApSetHarpuiaScene();
@@ -1237,20 +1252,33 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
 
 static void ApRebuildCheckedLocations(void) {
   const u8* disks = gGameState.save.disk;
-  u32 missionDones = gGameState.save.playinfo.missionDones;
-  u8 taken = gGameState.save.unused_240[AP_TAKEN_BYTE];
+  u32 missionDones;
+  u8 taken;
+  bool8 swept = FALSE;
   u8 i;
 
-  for (i = 0; i < AP_DISK_BYTES; i++) {
-    u8 found = (u8)(disks[i] & 0x0F);
+  for (i = 0; i < AP_REBUILD_SLICE; i++) {
+    u8 byte = sApRebuildByte;
+    u8 found = (u8)(disks[byte] & 0x0F);
     u8 n;
 
     for (n = 0; n < 4; n++) {
       if (found & (1 << n)) {
-        ApMarkLocationChecked((u16)((i * 4) + n + 1));
+        ApMarkLocationChecked((u16)((byte * 4) + n + 1));
       }
     }
+    sApRebuildByte = (u8)(byte + 1);
+    if (sApRebuildByte >= AP_DISK_BYTES) {
+      sApRebuildByte = 0;
+      swept = TRUE;
+    }
+
   }
+  if (!swept) {
+    return;
+  }
+  missionDones = gGameState.save.playinfo.missionDones;
+  taken = gGameState.save.unused_240[AP_TAKEN_BYTE];
 
   for (i = 0; i < AP_STAGE_COUNT; i++) {
     if (missionDones & (1 << i)) {
