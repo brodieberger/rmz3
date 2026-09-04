@@ -1,3 +1,4 @@
+#include "cyberelf.h"
 #include "global.h"
 #include "mod.h"
 #include "player/zero.h"
@@ -317,52 +318,21 @@ u8 GetArchimAtkBoost(void) {
 }
 
 // ElfIDで指定したエルフの効力を受けているか IsElfUsed と同じ関数に見える
-NON_MATCH bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
-#if MODERN || CBODY
-  return IsElfUsed(z, elfID);
-#else
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r3, r0, #0\n\
-	lsls r1, r1, #0x18\n\
-	lsrs r1, r1, #0x18\n\
-	ldr r0, _080345E4 @ =gElfAvailability\n\
-	ldr r0, [r0]\n\
-	adds r0, r0, r1\n\
-	ldrb r2, [r0]\n\
-	movs r0, #1\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080345EC\n\
-	adds r4, r3, #0\n\
-	adds r4, #0xb4\n\
-	ldr r5, _080345E8 @ =0x00000231\n\
-	adds r0, r3, r5\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #0\n\
-	bne _080345DE\n\
-	movs r0, #2\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	bne _080345DE\n\
-	ldrb r0, [r4]\n\
-	cmp r0, r1\n\
-	beq _080345DE\n\
-	ldrb r0, [r4, #1]\n\
-	cmp r0, r1\n\
-	bne _080345EC\n\
-_080345DE:\n\
-	movs r0, #1\n\
-	b _080345EE\n\
-	.align 2, 0\n\
-_080345E4: .4byte gElfAvailability\n\
-_080345E8: .4byte 0x00000231\n\
-_080345EC:\n\
-	movs r0, #0\n\
-_080345EE:\n\
-	pop {r4, r5}\n\
-	pop {r1}\n\
-	bx r1\n\
- .syntax divided\n");
-#endif
+bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
+  struct Zero_b4* b4;
+  cyberelf_t* satelites;
+  if (gElfAvailability[elfID] & ELF_AVABILITY_UNLOCKED) {
+    b4 = &z->unk_b4;
+    satelites = (b4->status).satelites;
+    if (z->inCyberSpace) {
+      return TRUE;
+    }
+    if (gElfAvailability[elfID] & ELF_AVABILITY_USED) {
+      return TRUE;
+    }
+    if ((satelites[0] == elfID) || (satelites[1] == elfID)) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }

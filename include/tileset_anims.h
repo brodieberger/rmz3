@@ -1,7 +1,7 @@
 #ifndef __INCLUDE_TILESET_ANIMS_H__
 #define __INCLUDE_TILESET_ANIMS_H__
 
-#if MODERN
+#if MODERN || CBODY
 #define gTilesetAnimsOffset (&gStageTilesetOffsets[18])
 #else
 #define _gStageTilesetOffsets 0x087044B0
