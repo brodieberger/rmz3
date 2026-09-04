@@ -112,7 +112,7 @@ static void SetDDP_Unused(struct Body* o, const struct Collision* hitbox, u8 r2)
 // 0x0800729c
 // 毎フレーム呼び出されて、gCollisionManager に body が持つ Collisionのリンクリストを1つずつ登録していく
 NON_MATCH void ResisterNonAffineHitbox(struct Body* body) {
-#if MODERN
+#if MODERN || CBODY
   struct Collision* aabb = (void*)body->collisions;
   Coords32* c = body->coord;
   if ((body->invincibleTime & 0x7F) != 0) {
@@ -152,7 +152,7 @@ NON_MATCH void ResisterNonAffineHitbox(struct Body* body) {
 }
 
 NON_MATCH void RegisterFlipableHitbox(struct Body* body, u8 flip) {
-#if MODERN
+#if MODERN || CBODY
   struct Collision* aabb = (struct Collision*)body->collisions;
   Coords32* c = body->coord;
   if ((body->invincibleTime & 0x7F) != 0) {
@@ -387,7 +387,7 @@ _080075BC: .4byte gCollisionManager\n\
     返り値: 実際のダメージ
 */
 NON_MATCH u16 CalcDamage(struct Body* a, struct Body* d) {
-#if MODERN
+#if MODERN || CBODY
   const struct Collision* processing = d->processing;
   const u8 hardness = processing->hardness | d->hardness;
 
@@ -413,7 +413,7 @@ NON_MATCH u16 CalcDamage(struct Body* a, struct Body* d) {
 
 // ドアフラグはここで立ててる
 NON_MATCH void hitbox_08007674(struct Body* a, struct Body* d) {
-#if MODERN
+#if MODERN || CBODY
   if (gCollisionManager.disabled & COLLMAN_DISABLED) return;
   if ((a->collisionLayer & LAYER_MASK(&d->processing)) == 0) return;
 
@@ -754,7 +754,7 @@ static void checkOverlap2(struct Hitbox* a, struct Hitbox* drp1) {
  * @note 0x08007E28
  */
 NON_MATCH static void tryOverlapCallback1(struct Hitbox* ah, struct Hitbox* dh) {
-#if MODERN
+#if MODERN || CBODY
   struct Body* a = ah->body;
   struct Body* d = dh->body;
 
@@ -831,7 +831,7 @@ NON_MATCH static void tryOverlapCallback1(struct Hitbox* ah, struct Hitbox* dh) 
  * @param dh Defender's hitbox info
  */
 NON_MATCH static void tryOverlapCallback2(struct Hitbox* ah, struct Hitbox* dh) {
-#if MODERN
+#if MODERN || CBODY
   u8 atkType;
   struct Body* a = ah->body;
   struct Body* d = dh->body;

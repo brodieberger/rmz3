@@ -31,7 +31,7 @@ static bool8 isBlocked(struct Weapon* w);
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 static void Buster_Update(struct ZeroBuster* w);
 static u8 shouldDelete(struct Weapon* w);
-static bool8 buster_08037f78(struct Weapon* w, const struct Rect* size);
+static bool8 buster_08037f78(struct Weapon* w, const s16* size);
 static const motion_t sFullBulletMotions[4];
 
 static const struct Collision sCollisions[];
@@ -160,7 +160,7 @@ static void Buster_Delete(struct ZeroBuster* p) {
 static const struct Collision sLemonBulletCollisions[2];
 
 NON_MATCH static void initLemonBullet(struct ZeroBuster* p) {
-#if MODERN
+#if MODERN || CBODY
   bool16 isVShot;
   u8 atk, element;
   struct ZeroBusterProps* s = &p->props;
@@ -697,10 +697,15 @@ static void LemonBullet_Update(Object* p) {
 
 // 0x08037810
 static void SemiBullet_Update(Object* p) {
-  static const struct Rect sSemiBulletSize = {PIXEL(0), PIXEL(4), PIXEL(10), PIXEL(8)};  // 0x0835ee7c
+  static const s16 sSemiBulletSize[] = {PIXEL(0), PIXEL(4), PIXEL(10), PIXEL(8)  // 0x0835ee7c
+#if MODERN || CBODY
+                                        ,
+                                        PIXEL(3)  // read past the end; retail finds sFullBulletSize[0] here
+#endif
+  };
 
   if ((p->s).mode[1] == 0) {
-    if (buster_08037f78((void*)p, &sSemiBulletSize)) {
+    if (buster_08037f78((void*)p, sSemiBulletSize)) {
       SetSpriteAnimation(p, MOTION(DM135_UNK, 0));
       (p->s).mode[1]++;
     }
@@ -719,10 +724,15 @@ static void SemiBullet_Update(Object* p) {
 }
 
 static void FullBullet_Update(struct ZeroBuster* p) {
-  static const struct Rect sFullBulletSize = {PIXEL(3), PIXEL(4), PIXEL(8), PIXEL(2)};
+  static const s16 sFullBulletSize[] = {PIXEL(3), PIXEL(4), PIXEL(8), PIXEL(2)
+#if MODERN || CBODY
+                                        ,
+                                        PIXEL(4)  // read past the end; this is what retail finds here
+#endif
+  };
 
   if ((p->s).mode[1] == 0) {
-    if (buster_08037f78((void*)p, &sFullBulletSize)) {
+    if (buster_08037f78((void*)p, sFullBulletSize)) {
       const motion_t* m = sFullBulletMotions;
       SetSpriteAnimation(p, m[(&p->props)->element]);
       (p->s).mode[1]++;
@@ -1535,7 +1545,10 @@ _08037F72:\n\
  .syntax divided\n");
 }
 
-NAKED static bool8 buster_08037f78(struct Weapon* w, const struct Rect* size) {
+// Walks size[cmdIdx+1 .. 1], and cmdIdx+1 reaches 4 -- one past the four entries the
+// callers declare. Retail gets away with it because of what the linker puts next; the
+// tables below spell that halfword out so any layout behaves the same. See docs/AUDIT.md.
+NAKED static bool8 buster_08037f78(struct Weapon* w, const s16* size) {
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, r8\n\

@@ -106,7 +106,7 @@ static const u8 u8_ARRAY_ARRAY_08340128[6][2];
 
 // 0x08010444
 NON_MATCH static void FUN_08010444(Coords32* _ UNUSED) {
-#if MODERN
+#if MODERN || CBODY
   if (((gOverworld.terrain.tilesets[0] >> 8) == STAGE_ANATRE_FOREST) && ((gOverworld.terrain.tilesets[0] & 0xFF) == 2)) {
     u16 i;
     for (i = 0; gOverworld.work.anatreForest.unk_00d > u8_ARRAY_ARRAY_08340128[i][0]; i++) {

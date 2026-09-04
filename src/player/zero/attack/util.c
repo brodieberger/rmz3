@@ -32,7 +32,7 @@ void FUN_08033ed4(struct Zero* z) {
 }
 
 NON_MATCH bool8 IsAttackOK(struct Zero* z, weapon_t* w) {
-#if MODERN
+#if MODERN || CBODY
   weapon_t mw, sw;
   struct Zero_b4* b4;
   u8 result = 0;
@@ -144,7 +144,7 @@ static bool8 isShieldOK(struct Zero* z) {
 
 // 0x0803413c
 NON_MATCH struct Weapon* CreateBuster(struct Zero* z, s32 x, s32 y, bool8 isDirRight) {
-#if MODERN
+#if MODERN || CBODY
   u8 kind;
   Coords32 c;
   struct Weapon* w;
@@ -219,7 +219,7 @@ static const u8 sFullChargeBorder[3] = {2 * SECOND, SECOND + 30, SECOND};  // id
 static const u8 sSemiChargeBorder[3] = {40, 30, 20};                       // idx is ChargeSpeed
 
 NON_MATCH u8 GetWeaponCharge(struct Zero* z, bool8 isSubWeapon) {
-#if MODERN
+#if MODERN || CBODY
   u8 frame, speed;
   bool32 isNotShield;
   struct Zero_b4* b4;
@@ -318,7 +318,7 @@ u8 GetArchimAtkBoost(void) {
 
 // ElfIDで指定したエルフの効力を受けているか IsElfUsed と同じ関数に見える
 NON_MATCH bool8 isElfUsed_2(struct Zero* z, cyberelf_t elfID) {
-#if MODERN
+#if MODERN || CBODY
   return IsElfUsed(z, elfID);
 #else
   asm(".syntax unified\n\

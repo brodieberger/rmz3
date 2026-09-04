@@ -28,7 +28,7 @@ static void Zero_Update(struct Zero* z);
 
 // 0x08028fd8
 NON_MATCH static void Zero_Init(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   s32 i;
   struct Zero_b4* b4;
 
@@ -122,7 +122,7 @@ NON_MATCH static void Zero_Init(struct Zero* z) {
 
 // 0x080292c0
 NON_MATCH static void Zero_Update(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   s32 x = (z->s).coord.x;
   s32 y = (z->s).coord.y;
 

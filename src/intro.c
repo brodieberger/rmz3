@@ -433,7 +433,7 @@ static void FUN_080ed6c4(struct Intro* p);
 static void intro_080ed770(struct Intro* p, u8 r1);
 
 NON_MATCH static void updateTitleAnimation(struct Intro* p) {
-#if MODERN
+#if MODERN || CBODY
   switch (p->mode[2]) {
     case 0: {
       PlayBGM(BGM_TITLE);

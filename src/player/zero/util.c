@@ -145,7 +145,7 @@ void FUN_080322c4(struct ZeroStatus* status) {
 static const u8 u8_ARRAY_0835e84c[3][2] = {{2, 1}, {4, 3}, {6, 5}};
 
 NON_MATCH void FUN_080322dc(struct Zero* z, motion_t m, u8 r2) {
-#if MODERN
+#if MODERN || CBODY
   motion_t zm;
   weapon_t w[4];
 
@@ -522,7 +522,7 @@ s16 FUN_08032c30(struct Zero* z) {
 
 // くっそ単純なコードなのにどうしてもコンパイル結果合わない なんでえ？
 NON_MATCH s16 GetSplitHeavenSpeed(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   if (z->slow != 0) {
     return 0x100 - z->slow;
   }

@@ -8,27 +8,21 @@
 extern const u8* const sSpriteSize[2];
 extern const u8* const sAffineSpriteSize[2];
 
-struct OamDataNoAffine {
-  u32 y : 8;
-  u32 affineMode : 2;  // 0x1, 0x2 = 0x3
-  u32 objMode : 2;     // 0x4, 0x8 = 0xC
-  u32 mosaic : 1;      // 0x10
-  u32 bpp : 1;         // 0x20
-  u32 shape : 2;       // 0x40, 0x80
-  u32 x : 9;
-  u32 unused : 3;
-  u32 xflip : 1;
-  u32 yflip : 1;
-  u32 size : 2;
-
-  u16 tileNum : 10;
-  u16 priority : 2;
-  u16 paletteNum : 4;
-  u16 _;
+// The asm builds attr0|attr1 as one word. Writing bitfields one at a time into a reused
+// buffer entry leaves attr1 bits 8..11 holding the previous frame's value. attr3 is not written.
+struct OamRaw {
+  u32 attr01;
+  u16 attr2;
+  u16 attr3;
 };
 
+// low byte of s->oam attr3: unused:4, xflip:1, yflip:1, size:2
+#define OAM_FLIPBYTE(src) ((u32)((src)->attr3 & 0xFF) << 24)
+// Subsprite bits 10..13 (xflip, yflip, size) land in attr1 bits 12..15
+#define SS_FLIPSIZE(ss) ((u32)((ss)->xflip | ((ss)->yflip << 1) | ((ss)->size << 2)) << 28)
+
 NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
-#if MODERN
+#if MODERN || CBODY
   Coords32* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
@@ -41,28 +35,21 @@ NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc)
       } else {
         Y = (Y + ss->y);
       }
-      if (Y < DISPLAY_HEIGHT) {
+      if ((u32)(Y + 64) < DISPLAY_HEIGHT + 64) {
         s32 X = (c->x - (tc->lefttop).x) >> 8;
         if (s->xflip) {
           X = (X - ss->x) - sSpriteSize[0][ss->size | (ss->shape << 2)];
         } else {
           X = (X + ss->x);
         }
-        if (X < DISPLAY_WIDTH + 6) {
-          struct OamDataNoAffine* oam = (struct OamDataNoAffine*)gOamManager.p;
-          oam->y = s->oam.y | Y;
-          oam->x = s->oam.x | X;
-          oam->affineMode = s->oam.affineMode;
-          oam->objMode = s->oam.objMode;
-          oam->mosaic = s->oam.mosaic;
-          oam->bpp = s->oam.bpp;
-          oam->xflip = s->oam.xflip ^ ss->xflip;
-          oam->yflip = s->oam.yflip ^ ss->yflip;
-          oam->size = s->oam.size | ss->size;
-          oam->shape = s->oam.shape | ss->shape;
-          oam->tileNum = s->oam.tileNum + ss->tileNum;
-          oam->paletteNum = s->oam.paletteNum;
-          oam->priority = s->oam.priority;
+        if ((u32)(X + 128) < DISPLAY_WIDTH + 6 + 128) {
+          struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
+          const struct OamRaw* src = (const struct OamRaw*)&s->oam;
+
+          oam->attr01 = (src->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
+                         ((u32)ss->shape << 14)) ^
+                        OAM_FLIPBYTE(src);
+          oam->attr2 = src->attr2 + ss->tileNum;
 
           gOamManager.p = &gOamManager.p[1];
         }
@@ -76,19 +63,20 @@ NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc)
 }
 
 NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc) {
-#if MODERN
+#if MODERN || CBODY
   Coords32* c = s->c;
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
   s32 len = h->subspriteCount;
   if (PTR_U32(gOamManager.p) < (PTR_U32(&gOamManager.p) - (len * sizeof(struct OamData)))) {
     u8 angle = s->angle;
+    s16 sin, cos;
     if (s->xflip != s->yflip) {
       angle = -angle;
     }
 
-    s16 sin = SIN(angle);
-    s16 cos = COS(angle);
+    sin = SIN(angle);
+    cos = COS(angle);
 
     for (; len != 0; len--) {
       s32 X, Y;
@@ -98,36 +86,36 @@ NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc
       const s32 H = sAffineSpriteSize[1][shape];
 
       s32 x = sin * (ss->x + W);
+      s32 y;
       if (s->xflip) {
         x = -x;
       }
-      s32 y = cos * (ss->y + H);
+      y = cos * (ss->y + H);
       if (s->yflip) {
         y = -y;
       }
       Y = ((x + y) >> 8) - (H * 2) + ((c->y - (tc->lefttop).y) >> 8);
 
-      if (Y < DISPLAY_HEIGHT) {
-        s32 x = cos * (ss->x + W);
+      if ((u32)(Y + 64) < DISPLAY_HEIGHT + 64) {
+        s32 x2 = cos * (ss->x + W);
+        s32 y2;
         if (s->xflip) {
-          x = -x;
+          x2 = -x2;
         }
-        s32 y = sin * (ss->y + H);
-        if (s->yflip) {
-          y = -y;
+        y2 = sin * (ss->y + H);
+        // X = cos*x - sin*y; yflip cancels the minus
+        if (!s->yflip) {
+          y2 = -y2;
         }
-        X = ((x + y) >> 8) - (W * 2) + ((c->x - (tc->lefttop).x) >> 8);
+        X = ((x2 + y2) >> 8) - (W * 2) + ((c->x - (tc->lefttop).x) >> 8);
 
-        if (x < DISPLAY_WIDTH + 6) {
-          struct OamData* oam = gOamManager.p;
-          *(u32*)oam = *(u32*)&s->oam;
-          oam->y |= Y;
-          oam->x |= X;
-          oam->size |= ss->size;
-          oam->shape |= ss->shape;
-          oam->tileNum = s->oam.tileNum + ss->tileNum;
-          oam->paletteNum = s->oam.paletteNum;
-          oam->priority = s->oam.priority;
+        if ((u32)(X + 128) < DISPLAY_WIDTH + 6 + 128) {
+          struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
+          const struct OamRaw* src = (const struct OamRaw*)&s->oam;
+
+          oam->attr01 = src->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
+                        ((u32)ss->shape << 14);
+          oam->attr2 = src->attr2 + ss->tileNum;
 
           gOamManager.p = &gOamManager.p[1];
         }
@@ -141,7 +129,7 @@ NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc
 }
 
 NON_MATCH void RotateSprite(struct Sprite* s, s32 angle) {
-#if MODERN
+#if MODERN || CBODY
   struct OamData* oam = &gOamManager.buf[s->oam.matrixNum * 4];
   s->angle = angle;
   if (s->xflip != s->yflip) {
@@ -167,7 +155,7 @@ NON_MATCH void RotateSprite(struct Sprite* s, s32 angle) {
 }
 
 NON_MATCH void ScalerotSprite(struct Sprite* s, s32 angle) {
-#if MODERN
+#if MODERN || CBODY
   u8 angle1, angle2;
   struct OamData* oam = &gOamManager.buf[s->oam.matrixNum * 4];
   s->angle = angle;

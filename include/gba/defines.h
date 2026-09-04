@@ -75,7 +75,9 @@ extern struct SoundInfo* SOUND_INFO_PTR;
 // WIP は　ロジックも合ってなさそうだったり、文字通りdecomp途中の関数に使っていて、 modernビルドでもコンパイル対象になりません (そもそもコンパイル通る保証もないです、文字通り、WIPです)
 // 中で使われている ALWAYS_FALSE は vscode が "#if 0" のときにコードをグレーアウトしてしまうのを防ぐためのもので、常に偽になるように意図的に定義していません
 #define WIP __attribute__((naked))
-#if MODERN
+/* CBODY builds the C bodies with agbcc, so that check_semantic can compare
+   the asm against its replacement without a change of compiler in between. */
+#if MODERN || CBODY
 #define NON_MATCH
 #define NORETURN __attribute__((noreturn))
 #else

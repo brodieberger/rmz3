@@ -23,7 +23,7 @@ const SolidRoutine gDoor2DBlueRoutine = {
 // clang-format on
 
 NON_MATCH static void Door2DBlue_Init(struct Solid* p) {
-#if MODERN
+#if MODERN || CBODY
   InitNonAffineMotion(&p->s);
   if ((p->s).work[1] == 0) {
     // Otherside

@@ -44,7 +44,7 @@ void DeleteSaber(struct Weapon* p) {
 }
 
 NON_MATCH struct Weapon* CreateWeaponSaber(struct Zero* z, u8 r1) {
-#if MODERN
+#if MODERN || CBODY
   struct ZeroSaber* p;
 
   KillAllWeapons(DeleteSaber);
@@ -83,7 +83,7 @@ NON_MATCH struct Weapon* CreateWeaponSaber(struct Zero* z, u8 r1) {
 }
 
 NON_MATCH static void Saber_Init(struct ZeroSaber* p) {
-#if MODERN
+#if MODERN || CBODY
   const struct Collision* collisions;
   struct Body* body;
   struct ZeroSaberProps* b4 = &p->props;
@@ -149,7 +149,7 @@ NON_MATCH static void Saber_Init(struct ZeroSaber* p) {
 }
 
 NON_MATCH static void Saber_Update(struct ZeroSaber* p) {
-#if MODERN
+#if MODERN || CBODY
   bool8 xflip;
   struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
@@ -227,7 +227,7 @@ static void saberTripleSlash(struct ZeroSaber* p) {
 }
 
 NON_MATCH static void saberAirSlash(struct ZeroSaber* p) {
-#if MODERN
+#if MODERN || CBODY
   struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
   if ((p->s).mode[1] != 0) {
@@ -280,7 +280,7 @@ NON_MATCH static void saberAirSlash(struct ZeroSaber* p) {
 }
 
 NON_MATCH static void saberChargeAtk(struct ZeroSaber* p) {
-#if MODERN
+#if MODERN || CBODY
   struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
   if ((p->s).mode[2] == 0) {
@@ -311,13 +311,14 @@ NON_MATCH static void saberChargeAtk(struct ZeroSaber* p) {
     }
   } else {
     if ((p->s).mode[2] == 1) {
+      motion_t m;
       if ((p->s).mode[3] == 0) {
         GotoMotion(&p->s, MOTION(DM098_SABER_CHARGE, 0), 4, 2);
         (p->s).mode[3]++;
       }
       UpdateSpriteAnimation(p);
       InitWeaponBody(&p->body, sSaberAirHitbox[(p->s).motion.cmdIdx], b4->atk, b4->element, b4->nature, -1);
-      motion_t m = MOTION_VALUE(z);
+      m = MOTION_VALUE(z);
       if (m == MOTION(DM025_ZERO_SABER_AIR, 0)) {
         return;
       }
@@ -430,7 +431,7 @@ static void saberGale(struct ZeroSaber* p) {
 }
 
 NON_MATCH static void saberJumpRolling(struct ZeroSaber* p) {
-#if MODERN
+#if MODERN || CBODY
   struct ZeroSaberProps* b4 = &p->props;
   struct Zero* z = b4->z;
 

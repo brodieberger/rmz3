@@ -52,7 +52,7 @@ static const struct Stage* const gStageLandscape[STAGE_COUNT] = { // 0x0833a2e8
 
 // ステージのロードに関係
 NON_MATCH void ResetLandscape(s32 stageID, Coords32* viewport) {
-#if MODERN
+#if MODERN || CBODY
   s16 i;
   const struct Stage* stage;
   Coords32* vp;
@@ -166,7 +166,7 @@ static inline void RestoreTileset(s32 slot) {
 // メニューやイベントからOverworldに戻ってきたときに呼び出されてる
 // 0x08008c88
 NON_MATCH void RestoreBackground(void) {
-#if MODERN
+#if MODERN || CBODY
   gVideoRegBuffer.dispcnt &= ~(DISPCNT_BG1_ON | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_WIN0_ON);
 
   RestoreTileset(0);
@@ -311,7 +311,7 @@ void CalcCameraDelta(Coords32* c, Coords32* d) {
  * @note 0x08008fd0
  */
 NON_MATCH static void LoadTerrainLayerAllChunks(const struct Stage* stage, const struct ChunkMap* layout) {
-#if MODERN
+#if MODERN || CBODY
   s16 x, y;
   u8* chunkIdList;
   metatile_id_t* dst;
@@ -384,7 +384,7 @@ void ShiftMetatile(s32 x16, s32 y16, const struct MetatileShift* s) {
  * @note 0x080091b0
  */
 NON_MATCH void PatchMetatileMap(s32 x16, s32 y16, const u16* patch) {
-#if MODERN
+#if MODERN || CBODY
   s16 i;
   const u8 id = gOverworld.terrain.id & 0x7F;
   const struct Stage* stage = gStageLandscape[id];
@@ -444,7 +444,7 @@ void LoadChunk(s32 chunkX, s32 chunkY, u16 chunkID) {
  * @note 0x080092e0
  */
 NON_MATCH void ResetStageLayer(s32 n, const struct Stage* p) {
-#if MODERN
+#if MODERN || CBODY
   const MetatileMapSelfRelPtr* srptr;
   PixelCoords* lefttop;
   Metatile* tiles;
@@ -550,7 +550,7 @@ static u32 FUN_080094f0(s32 x, s32 y) {
 // 引数(lefttop)は画面左上の座標
 // 0x0800956C
 NON_MATCH static const struct Stage* UpdateStageTileset(Coords32* lefttop) {
-#if MODERN
+#if MODERN || CBODY
   tileset_ofs_t tileset;
   const u16 stageID = gOverworld.terrain.id & 0x7F;
   const struct Stage* stage = gStageLandscape[stageID];
@@ -632,7 +632,7 @@ static void RenderTask_Overworld(struct Overworld* _, struct DrawPivot* dp) {
  * @note 0x08009754
  */
 NON_MATCH static void UpdateStageLayer(struct StageLayer* l, const struct Stage* s, Coords32* lefttop) {
-#if MODERN
+#if MODERN || CBODY
   u8 chunkX, chunkY;
   (l->prevViewportLeftTopPixel).x = (l->viewportLeftTopPixel).x;
   (l->prevViewportLeftTopPixel).y = (l->viewportLeftTopPixel).y;

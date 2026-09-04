@@ -64,7 +64,7 @@ struct ElementEffect* CreateIceEffect(struct Entity* e, Coords32* c, u8 r2);
 
 // Entityに属性攻撃のエフェクト(氷や電撃)をつける関数
 NON_MATCH struct Entity* ApplyElementEffect(u8 idx, Object* p, const Coords32* base) {
-#if MODERN
+#if MODERN || CBODY
   struct ElementEffect* fx = NULL;
   Coords32 c = {
       .x = base->x,

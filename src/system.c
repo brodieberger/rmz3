@@ -98,7 +98,7 @@ void Process_SoftReset(struct Process* _ UNUSED) {
 }
 
 NON_MATCH NORETURN void Process_System(struct Process* p) {
-#if MODERN
+#if MODERN || CBODY
   struct SystemBuffer* heap = &gSystemBuffer;
   u16* head = &heap->ofs;
   while (TRUE) {

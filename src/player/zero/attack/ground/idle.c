@@ -28,7 +28,7 @@ static void zeroTryAttack(struct Zero* z) {
 }
 
 NON_MATCH static void _zeroTryAttack(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   bool8 ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {
     z->forceWeapon = 0xFF;
@@ -237,7 +237,7 @@ void onSaber_GroundIdle(struct Zero* z) {
 
 // 0x0802d3d0
 NON_MATCH static void handle_saber_input(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u8 charge;
   struct Zero_b4* b4 = &(z->unk_b4);
 
@@ -839,7 +839,7 @@ static void rod_charge_horizontal(struct Zero* z) {
 static void nop_0802dd84(struct Zero* _ UNUSED) { return; }
 
 NON_MATCH static void rod_1000slash(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   motion_t m;
   weapon_t w[4];
 

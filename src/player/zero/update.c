@@ -557,7 +557,7 @@ static void zeroJumpRise(struct Zero* z) {
 }
 
 NON_MATCH static void zeroNormalJumpRise(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   bool8* dashable;
   metatile_attr_t attr;
   motion_t m = MOTION_VALUE(z);
@@ -964,7 +964,7 @@ static void zeroWallSeq0(struct Zero* z) {
 // 0x0802b608
 // 壁ずり、壁ジャンプ関連
 NON_MATCH static void zeroWallSeq1(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   metatile_attr_t attr;
   z->posture = POSTURE_WALL;
 
@@ -1321,7 +1321,7 @@ static void zeroKilled(struct Zero* z) {
 }
 
 NON_MATCH static void zeroInitKnockBack(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   struct Zero_b4* b4;
   bool8 xflip;
 

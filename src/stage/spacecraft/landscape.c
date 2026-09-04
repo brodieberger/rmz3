@@ -740,7 +740,7 @@ _0800B99C: .4byte 0x06000800\n\
 
 // オメガ(BG3)のスクロールとかを調整してオメガが正しい位置に来るようにする
 NON_MATCH static void LayerDraw_FixOmegaWhiteCoord(struct StageLayer* l, const struct Stage* _ UNUSED) {
-#if MODERN
+#if MODERN || CBODY
   const u16 n = l->bgIdx;
   if (gOverworld.state[1] != 0) {
     gVideoRegBuffer.dispcnt |= (n << 8);

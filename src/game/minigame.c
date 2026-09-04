@@ -113,7 +113,7 @@ static const MinigameFunc sEachMinigameLoops[MINIGAME_COUNT] = {
 // 0x080f8f5c
 // レジスタ割り当てがうまくいかない以外は問題なさそう
 NON_MATCH static void MinigameLoop_Main(struct GameState* g) {
-#if MODERN
+#if MODERN || CBODY
   if (g->frames < 32) {
     g->frames++;
     gPaletteManager.filter[0] = gPaletteManager.filter[1] = gPaletteManager.filter[2] = g->frames;

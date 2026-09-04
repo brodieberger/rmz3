@@ -26,7 +26,7 @@ const SolidRoutine gIceBlockRoutine = {
 // clang-format on
 
 NON_MATCH static void IceBlock_Init(struct Solid* p) {
-#if MODERN
+#if MODERN || CBODY
   (p->s).flags |= FLIPABLE;
   (p->s).flags |= DISPLAY;
   InitNonAffineMotion(&p->s);

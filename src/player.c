@@ -159,7 +159,7 @@ bool8 IsDoubleHP(struct Zero* z) {
  * @return Zero Max HP (affected by Nurse(+4) and Martina(x2))
  */
 NON_MATCH u8 GetMaxHP(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   const u8* satelites;
   s32 i;
   u8 hp = 16;
@@ -298,7 +298,7 @@ motion_t GetDefaultMotion(struct Zero* z) {
 
 // ゼロが壁にめり込んだときに横に押し出す処理(= ゼロが壁にぶつかったときにX方向にめり込まないようにする処理)
 NON_MATCH metatile_attr_t PushoutWallX(struct Zero* z, const struct Rect* p, bool8 r2) {
-#if MODERN
+#if MODERN || CBODY
   metatile_attr_t attr;
   s32 x;
   s32 y[3];
@@ -1668,7 +1668,7 @@ _080266F0: .4byte 0xFFFFF000\n\
 }
 
 NON_MATCH metatile_attr_t IsOnSoftPlatform(struct Zero* z, const struct Rect* p, bool8 r2) {
-#if MODERN
+#if MODERN || CBODY
   s32 i;
   s32 x[3];
   s32 y;
@@ -1738,7 +1738,7 @@ bool8 IsForwardPressed(struct Zero* z, const struct Rect* p UNUSED, bool8 _ UNUS
 }
 
 NON_MATCH bool8 IsZeroAgainstWall(struct Zero* z, const struct Rect* p, bool8 _) {
-#if MODERN
+#if MODERN || CBODY
   s32 x, y;
   metatile_attr_t attr;
   metatile_attr_t mask = 0x881F;
@@ -2147,7 +2147,7 @@ u8 TryLadderUp(struct Zero* z, const struct Rect* range, bool8 _) {
 
 // 現在ハシゴ状態で、さらに下に梯子を降りれるか
 NON_MATCH u8 TryContinueLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
-#if MODERN
+#if MODERN || CBODY
   metatile_attr_t attr = GetGroundMetatileAttr((z->s).coord.x, (z->s).coord.y + range->y + (range->h / 2) + 1);
   if (attr != MT_LADDER_FLOOR) {
     if (((z->s).mode[1] == ZERO_LADDER) && (((attr & 0xF) - 1) < 0xD)) {
@@ -2173,7 +2173,7 @@ NON_MATCH u8 TryContinueLadderDown(struct Zero* z, const struct Rect* range, boo
  * @return 0: fail, 2: success
  */
 NON_MATCH u8 TryLadderDown(struct Zero* z, const struct Rect* range, bool8 _) {
-#if MODERN
+#if MODERN || CBODY
   s32 x;
   s32 y = (z->s).coord.y + range->y + (range->h / 2) + 1;
   metatile_attr_t attr = AppendHazardID(z, (z->s).coord.x, y);
@@ -2219,7 +2219,7 @@ void SetDisableArea(Player* p, s32 left, s32 top, s32 right, s32 bottom) {
 
 // ゼロが border の外に行かないようにする
 NON_MATCH bool8 PushoutByBorder(struct Zero* z, const struct Rect* range, bool8 checkHazard) {
-#if MODERN
+#if MODERN || CBODY
   if ((z->border).left < (z->border).right) {
     s32 x1, x2;
     s32 tmp;
@@ -2322,7 +2322,7 @@ u8 zero_08026f90(struct Zero* z, const struct Rect* range) {
 
 // ゼロと干渉するhazardオブジェクトのインデックスと個数をチェックする
 NON_MATCH void CheckZeroHazard(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u8 i;
   s32 x = (z->s).coord.x;
   s32 y = (z->s).coord.y;
@@ -3295,7 +3295,7 @@ static metatile_attr_t AppendHazardID_2(struct Zero* z, s32 x, s32 y) {
 
 // 0x08028338
 NON_MATCH static bool16 hazard_08028338(struct Zero* p, s32 x, s32 y) {
-#if MODERN
+#if MODERN || CBODY
   u8 i;
   for (i = 0; i < p->hazardCount; i++) {
     const u8 n = p->hazard[i];
@@ -3324,7 +3324,7 @@ NON_MATCH static bool16 hazard_08028338(struct Zero* p, s32 x, s32 y) {
 // 0x080283ec
 // ゼロが Hazard の中にいる(めり込んでいる)場合は、そのMetatileAttr、そうでないなら0を返す
 NON_MATCH static metatile_attr_t IsInHazard(struct Zero* p, s32 x, s32 y) {
-#if MODERN
+#if MODERN || CBODY
   u8 i;
   for (i = 0; i < p->hazardCount; i++) {
     u8 n = p->hazard[i];
@@ -3346,7 +3346,7 @@ NON_MATCH static metatile_attr_t IsInHazard(struct Zero* p, s32 x, s32 y) {
 
 // Hazardに張り付いている判定か(地上の場合も)
 NON_MATCH static bool8 IsAgainstHazard(struct Zero* z, s32 x, s32 y) {
-#if MODERN
+#if MODERN || CBODY
   u8 i;
   for (i = 0; i < z->hazardCount; i++) {
     struct Hazard* b = HAZARD(z->hazard[i]);
@@ -4222,7 +4222,7 @@ NAKED bool8 unused_08028bcc(struct Zero* z, const struct Rect* range) { INCCODE(
 
 // 0x08028db4
 NON_MATCH bool8 TryGroundDash(Player* z, const struct Rect* range) {
-#if MODERN
+#if MODERN || CBODY
   s32 x1, x2;
   if ((z->s).flags & X_FLIP) {
     x1 = (z->s).coord.x - range->x + (range->w >> 1);

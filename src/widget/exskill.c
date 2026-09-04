@@ -33,7 +33,7 @@ struct Entity* CreateExSkillIcon(struct GameState* g, u8 kind) {
 }
 
 NON_MATCH static void ExIcon_Init(struct Widget* w) {
-#if MODERN
+#if MODERN || CBODY
   SET_WIDGET_ROUTINE(w, ENTITY_UPDATE);
   (w->s).flags |= DISPLAY;
   (w->s).flags |= FLIPABLE;

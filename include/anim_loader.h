@@ -1,7 +1,7 @@
 #ifndef GUARD_RMZ3_ANIM_LOADER_H
 #define GUARD_RMZ3_ANIM_LOADER_H
 
-#if MODERN
+#if MODERN || CBODY
 #define STATIC_GRAPHICS ((void*)(&gStaticMotionGraphics[0]))
 #define STATIC_PALETTES ((void*)(&(gStaticMotionGraphics[0].pal)))
 #else

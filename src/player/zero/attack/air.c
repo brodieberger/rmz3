@@ -32,7 +32,7 @@ static void air0(struct Zero* z) {
 
 // 0x0802f3d8
 NON_MATCH static void air1(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u8 w;
   bool8 ok = IsAttackOK(z, &z->usingWeapon);
   if (ok) {

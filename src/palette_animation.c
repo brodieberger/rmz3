@@ -88,7 +88,7 @@ void ResumeAllPaletteAnimations(void) {
  * @note gPlttAnimDataOffsets のレジスタ割り当てだけが、うまくいかない
  */
 NON_MATCH void StartPaletteAnimation(u16 id, u16 dst_byte_ofs) {
-#if MODERN
+#if MODERN || CBODY
   s32 i;
 
   for (i = 0; i < MAX_PLTT_ANIM; i++) {

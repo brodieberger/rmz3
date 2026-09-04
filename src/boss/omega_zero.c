@@ -62,7 +62,7 @@ const BossRoutine gOmegaZeroRoutine = {
 
 // 0x0805d5d0
 NON_MATCH static void calcNextOmegaZeroAction(struct BossOmegaZero* p) {
-#if MODERN
+#if MODERN || CBODY
   s32 d = abs((p->s).coord.x - (pZero2->s).coord.x);
   if (d < PIXEL(80)) {
     d = 0;  // 近距離ルーチン
@@ -147,7 +147,7 @@ static bool8 tryKillOmegaZero(struct BossOmegaZero* p) {
 }
 
 NON_MATCH static void OmegaZero_Init(struct BossOmegaZero* p) {
-#if MODERN
+#if MODERN || CBODY
   struct Body* body;
   void* fn;
 

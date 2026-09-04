@@ -28,5 +28,29 @@ In addition to [pret's toolchain](https://github.com/pret/pokeemerald/blob/6eb68
 
 ## Modern
 
-There is a `modern` option to build using the latest C compiler instead of the original C compiler (agbcc), but currently **THIS OPTION DOESN'T WORK**.
-This is because some addresses are still hardcoded, and relocation causes them to function incorrectly.
+There is a `modern` option to build using the latest C compiler instead of the original C compiler (agbcc).
+
+> [!NOTE]
+> Upstream documents this option as non-working, on the grounds that hardcoded addresses survive
+> relocation. On this fork that is no longer the case: `modern` builds, links, boots and passes the
+> headless smoke test in both regions. What was actually wrong was three build-system bugs, not the
+> code -- see `docs/RESEARCH.md` in the parent repository. The assembly is symbolic (3,586 symbolic
+> literal-pool entries against 14 raw addresses), so it relocates.
+
+```sh
+make modern              # JP
+make modern REGION=us    # US
+```
+
+`REGION=us` under `modern` uses `ld_script-us-flat.ld`, which pins nothing -- gcc emits different
+code sizes than agbcc, so the hand-ordered `ld_script-us.ld` layout cannot be reused.
+
+## CBODY
+
+`CBODY=1` keeps agbcc but compiles the C body of every `NON_MATCH` function instead of its assembly.
+It does not byte-match and is not meant to: it exists so that `check_semantic.py` can compare agbcc
+against agbcc, where every one of its metrics is exact.
+
+```sh
+make REGION=us CBODY=1
+```

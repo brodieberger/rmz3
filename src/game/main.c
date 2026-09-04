@@ -56,7 +56,7 @@ static const u16 u16_ARRAY_08386130[32] = {
  * @note なぜか ゲームモードの部分の x8 の (7+18) のコンパイル結果だけが不自然に一致しない
  */
 NON_MATCH void PrintSaveDataRowText(u8 idx, u8 rank, u32 playTime, u8 lap, u8 mode, u8 y8) {
-#if MODERN
+#if MODERN || CBODY
   PrintString(STRING(31 + idx), 7, y8);         // ${idx+1}
   PrintString(STRING(40 + rank), (7 + 2), y8);  // レベル${rank}
 
@@ -470,7 +470,7 @@ static void GameLoop_PreOverworld(struct GameState* g) {
 }
 
 NON_MATCH static void GameLoop_Overworld(struct GameState* g) {
-#if MODERN
+#if MODERN || CBODY
   bool8 isPaused;
   bool32 escape;
 
@@ -709,7 +709,7 @@ NAKED static void GameLoop_SwitchCyberSpace(struct GameState* g) { INCCODE("asm/
  * @note 0x080ef400
  */
 NON_MATCH static void GameLoop_EndRun(struct GameState* g) {
-#if MODERN
+#if MODERN || CBODY
   UpdateStoryFlag();
   if (FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
     ExitProcess();

@@ -336,7 +336,7 @@ static void LayerUpdate_Volcano_4(struct StageLayer* l, const struct Stage* stag
 struct Enemy* CreateVolcanoBomb(s32 x, s32 y);
 
 NON_MATCH static void LayerUpdate_VolcanoEruption(struct StageLayer* l, const struct Stage* stage) {
-#if MODERN
+#if MODERN || CBODY
   u16 i;
   u16 dispcnt;
   switch (l->phase) {

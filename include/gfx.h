@@ -9,18 +9,21 @@
 
 extern char gBgGraphics[];
 
-// shit
-#if MODERN
+// CBODY must take the symbolic branch: it is meant to be the same compiler as the
+// oracle with C bodies swapped in, so it has to reference the same symbols. Taking
+// the address-literal branch makes every literal pool differ and the comparison
+// meaningless.
+#if MODERN || CBODY
 #define BGMAP(n) (SELF_REL_PTR(&gBgMapOffsets[n]) + sizeof(struct BgMapHeader))
 #define BG_PALETTE(n) ((void*)&(((ColorGraphic*)&gGraphic_Capcom)[(n)].pal))
+#define BG_GRAPHIC(n) ((void*)&((ColorGraphic*)&gGraphic_Capcom)[(n)])
 #else
 #define _gBgMapOffsets 0x085222a0  // gBgMapOffsets
 #define _gBgPalettes 0x0854728C    // gBgGraphics + 12
 #define BGMAP(n) (SELF_REL_PTR((u32*)(_gBgMapOffsets + (n * 4))) + sizeof(struct BgMapHeader))
 #define BG_PALETTE(n) ((void*)(_gBgPalettes + (n) * sizeof(ColorGraphic)))
-#endif
-
 #define BG_GRAPHIC(n) ((void*)((((u32)gBgGraphics) + ((n) * sizeof(ColorGraphic)))))
+#endif
 
 // PaletteManager.filter
 #define FILTER_BLACK 0x00

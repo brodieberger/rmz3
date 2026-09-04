@@ -272,7 +272,7 @@ static bool32 Cmd_adjust_camera(struct VM* vm) {
 
 // 0x080225b4
 NON_MATCH static bool32 Cmd_cmd06(struct VM* vm) {
-#if MODERN
+#if MODERN || CBODY
   struct GameCommandCommon* c = &(vm->pc)->c;
   switch (c->val2) {
     case 0: {                                                                   // (おそらく)静止した8bppの1枚絵を表示する
@@ -502,7 +502,7 @@ static bool32 Cmd_entity(struct VM* vm) {
 
 // 0x08022ac8
 NON_MATCH static bool32 Cmd_flag(struct VM* vm) {
-#if MODERN
+#if MODERN || CBODY
   s32 mode = ((vm->pc)->flag).mode;
   if (mode & (1 << 1)) {
     // gameflag

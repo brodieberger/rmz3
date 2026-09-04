@@ -44,10 +44,11 @@ void LoadAsciiBold(void) {
 }
 
 NON_MATCH void ResetCharTiles(void) {
-#if MODERN
+#if MODERN || CBODY
   struct CharTile* tile;
+  s32 i;
   gTextPrinter.freelist = NULL;
-  for (s32 i = 79; i >= 0; i--) {
+  for (i = 79; i >= 0; i--) {
     tile = &gTextPrinter.tilelist[i];
     tile->tileID = 894 - (79 - i) * 2;
     tile->next = gTextPrinter.freelist;
