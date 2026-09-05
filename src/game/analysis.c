@@ -345,6 +345,7 @@ static void printThreeDigitNumber(u16 n, u8 x, u8 y);
 NON_MATCH static void DiskLoop_Run(struct GameState* g) {
 #if MODERN || CBODY
   struct SecretDiskState* d;
+  struct SecretDiskState* d2;
   u8 disk;
   u16 amount;
   u16 digits;
@@ -360,14 +361,16 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
   PrintString(STRING(0x1DE), 0x11, 1);
   printThreeDigitNumber(d->cursorDisk + 1, 0x16, 1);
 
-  disk = d->cursorDisk;
+  disk = g->sceneState.disk.cursorDisk;
   if ((((gStageDiskManager.disk[disk >> 2] & 0xF) >> (disk & 3)) & 1) == 0) {
     PrintString(STRING(0x1DD), 1, 0x12);
   } else if (((gStageDiskManager.disk[disk >> 2] >> ((disk & 3) + 4)) & 1) == 0) {
     PrintString(STRING(0x1DF), 0x11, 4);
     PrintString(STRING(0x1DC), 1, 0x12);
   } else {
-    if (disk <= 0x13) {
+    if (disk <= 5) {
+      PrintString(STRING(0x2BC + d->cursorDisk), 0x11, 4);
+    } else if (disk <= 0x13) {
       PrintString(STRING(0x2BC + d->cursorDisk), 0x11, 4);
     } else if (disk <= 0x5D) {
       PrintString(STRING(0x2D0), 0x11, 4);
@@ -391,24 +394,25 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
     PrintString(STRING(0x1DD), 1, 0x12);
   }
 
-  if (d->winHalfW != 0) {
-    gPaletteManager.buf[0] = (d->colorB << 10) | (d->colorG << 5) | d->colorR;
+  d2 = &g->sceneState.disk;
+  if (g->sceneState.disk.winHalfW != 0) {
+    gPaletteManager.buf[0] = (d2->colorB << 10) | (d2->colorG << 5) | d2->colorR;
     gWindowRegBuffer.dispcnt |= DISPCNT_WIN0_ON;
     gWindowRegBuffer.winin[0] = 0x10;
     gWindowRegBuffer.winin[2] |= 3;
     gWindowRegBuffer.winH.half[0] =
-        ((d->winHalfW + 0x40) & 0xFF) | ((0x40 - d->winHalfW) << 8);
+        ((d2->winHalfW + 0x40) & 0xFF) | ((0x40 - d2->winHalfW) << 8);
     gWindowRegBuffer.winV.half[0] =
-        ((d->winHalfH + 0x50) & 0xFF) | ((0x50 - d->winHalfH) << 8);
+        ((d2->winHalfH + 0x50) & 0xFF) | ((0x50 - d2->winHalfH) << 8);
   } else {
     gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
-    d->colorR = 0;
-    d->colorG = 0;
-    d->colorB = 0;
+    d2->colorR = 0;
+    d2->colorG = 0;
+    d2->colorB = 0;
   }
 
   StepPaletteAnimation(0x40);
-  if (d->redraw) {
+  if (g->sceneState.disk.redraw) {
     setSecretDiskPalette(g);
   }
 #else
@@ -1166,13 +1170,13 @@ static void sd_analysis_080f8408(struct GameState* g) {
   Renderer_Flush(&g->rendererUI);
 }
 
-NON_MATCH static void setSecretDiskPalette(struct GameState* g) {
-#if MODERN || CBODY
+static void setSecretDiskPalette(struct GameState* g) {
   struct SecretDiskState* d;
   u16* map;
   u16* p;
   u8* disk;
   u8* q;
+  u8* q2;
   s32 n;
   u8 i;
   u8 row;
@@ -1185,222 +1189,33 @@ NON_MATCH static void setSecretDiskPalette(struct GameState* g) {
     n = d->scrollRow * 5 + i;
     q = &disk[n >> 2];
     if (((*q & 0xF) >> (n & 3)) & 1) {
-      if ((*q >> ((n & 3) + 4)) & 1) {
+      q2 = q;
+      if ((*q2 >> ((n & 3) + 4)) & 1) {
         row = i / 5;
         col = i % 5;
-        p = &map[(row << 6) + (col << 1)];
-        p[99] = 0x80ED;
-        p[100] = 0x80EE;
-        p[131] = 0x810D;
-        p[132] = 0x810E;
+        (&map[(row << 6) + (col << 1)])[99] = 0x80ED;
+        (&map[(row << 6) + (col << 1)])[100] = 0x80EE;
+        (&map[(row << 6) + (col << 1)])[131] = 0x810D;
+        (&map[(row << 6) + (col << 1)])[132] = 0x810E;
       } else {
-        row = i / 5;
+        row = (col = i / 5);
         col = i % 5;
-        p = &map[(row << 6) + (col << 1)];
-        p[99] = 0x80EB;
-        p[100] = 0x80EC;
-        p[131] = 0x810B;
-        p[132] = 0x810C;
+        (&map[(row << 6) + (col << 1)])[99] = 0x80EB;
+        (&map[(row << 6) + (col << 1)])[100] = 0x80EC;
+        (&map[(row << 6) + (col << 1)])[131] = 0x810B;
+        (&map[(row << 6) + (col << 1)])[132] = 0x810C;
       }
     } else {
-      row = i / 5;
+      row = 5;
+      row = i / row;
       col = i % 5;
-      p = &map[(row << 6) + (col << 1)];
-      p[99] = 0x31A2;
-      p[100] = 0x31A2;
-      p[131] = 0x31A2;
-      p[132] = 0x31A2;
+      (&map[(((u8)(i / 5)) << 6) + (col << 1)])[99] = 0x31A2;
+      (&map[(((u8)(i / 5)) << 6) + (col << 1)])[100] = 0x31A2;
+      (&map[(((u8)(i / 5)) << 6) + (col << 1)])[131] = 0x31A2;
+      (&map[(((u8)(i / 5)) << 6) + (col << 1)])[132] = 0x31A2;
     }
   }
   RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
-#else
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sl\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6, r7}\n\
-	mov r8, r0\n\
-	ldr r6, _080F84F8 @ =0x00000ED8\n\
-	add r6, r8\n\
-	movs r5, #0\n\
-	ldr r0, _080F84FC @ =gStageDiskManager\n\
-	mov sb, r0\n\
-	ldr r1, _080F8500 @ =gVideoRegBuffer+6\n\
-	mov sl, r1\n\
-	ldr r2, _080F8504 @ =0x000031A2\n\
-	adds r7, r2, #0\n\
-_080F847A:\n\
-	mov r3, sb\n\
-	ldr r2, [r3]\n\
-	ldr r0, _080F8508 @ =0x00000DCC\n\
-	add r0, r8\n\
-	ldrb r0, [r0, #0xb]\n\
-	lsls r1, r0, #2\n\
-	adds r1, r1, r0\n\
-	adds r1, r1, r5\n\
-	asrs r0, r1, #2\n\
-	adds r3, r2, r0\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0xf\n\
-	ands r0, r2\n\
-	movs r2, #3\n\
-	ands r2, r1\n\
-	asrs r0, r2\n\
-	movs r4, #1\n\
-	ands r0, r4\n\
-	cmp r0, #0\n\
-	beq _080F856C\n\
-	ldrb r0, [r3]\n\
-	adds r1, r2, #4\n\
-	asrs r0, r1\n\
-	ands r0, r4\n\
-	cmp r0, #0\n\
-	beq _080F8514\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r2, r4, r6\n\
-	adds r1, r2, #0\n\
-	adds r1, #0xc6\n\
-	ldr r3, _080F850C @ =0x000080ED\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	adds r1, #2\n\
-	adds r3, #1\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x83\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	adds r3, #0x1f\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	ldr r2, _080F8510 @ =0x0000810E\n\
-	b _080F855C\n\
-	.align 2, 0\n\
-_080F84F8: .4byte 0x00000ED8\n\
-_080F84FC: .4byte gStageDiskManager\n\
-_080F8500: .4byte gVideoRegBuffer+6\n\
-_080F8504: .4byte 0x000031A2\n\
-_080F8508: .4byte 0x00000DCC\n\
-_080F850C: .4byte 0x000080ED\n\
-_080F8510: .4byte 0x0000810E\n\
-_080F8514:\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r2, r4, r6\n\
-	adds r1, r2, #0\n\
-	adds r1, #0xc6\n\
-	ldr r3, _080F8564 @ =0x000080EB\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	adds r1, #2\n\
-	adds r3, #1\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x83\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	adds r3, #0x1f\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	ldr r2, _080F8568 @ =0x0000810C\n\
-_080F855C:\n\
-	adds r0, r2, #0\n\
-	strh r0, [r1]\n\
-	b _080F85A8\n\
-	.align 2, 0\n\
-_080F8564: .4byte 0x000080EB\n\
-_080F8568: .4byte 0x0000810C\n\
-_080F856C:\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r1, r4, r6\n\
-	adds r0, r1, #0\n\
-	adds r0, #0xc6\n\
-	strh r7, [r0]\n\
-	adds r0, #2\n\
-	strh r7, [r0]\n\
-	movs r3, #0x83\n\
-	lsls r3, r3, #1\n\
-	adds r0, r1, r3\n\
-	strh r7, [r0]\n\
-	movs r2, #0x84\n\
-	lsls r2, r2, #1\n\
-	adds r0, r1, r2\n\
-	strh r7, [r0]\n\
-_080F85A8:\n\
-	adds r0, r5, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r5, r0, #0x18\n\
-	cmp r5, #0x1d\n\
-	bhi _080F85B4\n\
-	b _080F847A\n\
-_080F85B4:\n\
-	ldr r0, _080F85DC @ =0x00000ED8\n\
-	add r0, r8\n\
-	mov r3, sl\n\
-	ldrh r2, [r3]\n\
-	movs r1, #0xf8\n\
-	lsls r1, r1, #5\n\
-	ands r1, r2\n\
-	lsls r1, r1, #3\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #5\n\
-	bl RequestBgMapTransfer\n\
-	pop {r3, r4, r5}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	mov sl, r5\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F85DC: .4byte 0x00000ED8\n\
- .syntax divided\n");
-#endif
 }
 
 static void sd_analysis_080f85e0(struct GameState* g) {
@@ -1468,10 +1283,14 @@ static void sd_analysis_080f85e0(struct GameState* g) {
 NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
 #if MODERN || CBODY
   struct SecretDiskState* d;
+  struct SecretDiskState* d2;
+  struct SecretDiskState* d3;
+  struct SecretDiskState* d4;
   const struct SecretDiskEntry* e;
   u16* pal;
   u16* dst;
-  u32 r, gr, b;
+  u8 r;
+  u32 gr, b;
   u32 tr, tg, tb;
   u16 cur;
   u16 target;
@@ -1486,33 +1305,35 @@ NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
     } else {
       PlaySound(14);
     }
-    OpenSecretDisk(g, d->cursorDisk, FALSE);
+    d2 = &g->sceneState.disk;
+    OpenSecretDisk(g, d2->cursorDisk, FALSE);
 
     // The three bytes are a palette-animation triple, chosen by which range of
     // disk numbers the opened disk falls in.
-    if (d->cursorDisk <= 0x13) {
-      d->colorB = 0;
-      d->colorG = 0;
-      d->colorR = 0;
-    } else if (d->cursorDisk <= 0x2E) {
-      d->colorR = 0x13;
-      d->colorG = 2;
-      d->colorB = 9;
-    } else if (d->cursorDisk <= 0x3B) {
-      d->colorR = 2;
-      d->colorG = 0x11;
-      d->colorB = 7;
-    } else if (d->cursorDisk <= 0x5D) {
-      d->colorR = 8;
-      d->colorG = 0xB;
-      d->colorB = 0x16;
+    if (d2->cursorDisk <= 0x13) {
+      d2->colorB = 0;
+      d2->colorG = 0;
+      d2->colorR = 0;
+    } else if (d2->cursorDisk <= 0x2E) {
+      d2->colorR = 0x13;
+      d2->colorG = 2;
+      d2->colorB = 9;
+    } else if (d2->cursorDisk <= 0x3B) {
+      d2->colorR = 2;
+      d2->colorG = 0x11;
+      d2->colorB = 7;
+    } else if (d2->cursorDisk <= 0x5D) {
+      d2->colorR = 8;
+      d2->colorG = 0xB;
+      d2->colorB = 0x16;
     } else {
-      d->colorB = 0;
-      d->colorG = 0;
-      d->colorR = 0;
+      d2->colorB = 0;
+      d2->colorG = 0;
+      d2->colorR = 0;
     }
 
-    d->redraw = 1;
+    d3 = &g->sceneState.disk;
+    d3->redraw = 1;
     g->mode[3]++;
   }
 
@@ -1526,35 +1347,38 @@ NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
     r = cur & 0x1F;
     tr = (target & 0x1F) >> 1;
     if (r > tr) r = (u8)(r - 1);
-    gr = (cur >> 5) & 0x1F;
+    gr = cur >> 5;
+    gr = gr & 0x1F;
     tg = ((target >> 5) & 0x1F) >> 1;
     if (gr > tg) gr = (u8)(gr - 1);
     b = (cur >> 10) & 0x1F;
-    tb = ((target >> 10) & 0x1F) >> 1;
+    tb = 0x1F;
+    tb = ((target >> 10) & tb) >> 1;
     if (b > tb) b = (u8)(b - 1);
     pal[i] = (b << 10) | (gr << 5) | r;
   }
 
-  if (gSecretDiskEntries[d->cursorDisk].unk_00 != 0) {
-    t = (u8)gSecretDiskEntries[d->cursorDisk].rate0 >> 1;
-    if (d->winHalfW < t) {
-      d->winHalfW += gSecretDiskEntries[d->cursorDisk].rate0 >> 4;
-      d->winHalfH += gSecretDiskEntries[d->cursorDisk].rate1 >> 4;
-      if (d->winHalfW > (gSecretDiskEntries[d->cursorDisk].rate0 >> 1)) {
-        d->winHalfW = gSecretDiskEntries[d->cursorDisk].rate0 >> 1;
+  d4 = &g->sceneState.disk;
+  if (gSecretDiskEntries[d4->cursorDisk].unk_00 != 0) {
+    t = (u8)gSecretDiskEntries[d4->cursorDisk].rate0 >> 1;
+    if (d4->winHalfW < t) {
+      d4->winHalfW += gSecretDiskEntries[d4->cursorDisk].rate0 >> 4;
+      d4->winHalfH += gSecretDiskEntries[d4->cursorDisk].rate1 >> 4;
+      if (d4->winHalfW > (gSecretDiskEntries[d4->cursorDisk].rate0 >> 1)) {
+        d4->winHalfW = gSecretDiskEntries[d4->cursorDisk].rate0 >> 1;
       }
-      if (d->winHalfH > (gSecretDiskEntries[d->cursorDisk].rate1 >> 1)) {
-        d->winHalfH = gSecretDiskEntries[d->cursorDisk].rate1 >> 1;
+      if (d4->winHalfH > (gSecretDiskEntries[d4->cursorDisk].rate1 >> 1)) {
+        d4->winHalfH = gSecretDiskEntries[d4->cursorDisk].rate1 >> 1;
       }
     } else {
-      d->winHalfW = t;
-      d->winHalfH = gSecretDiskEntries[d->cursorDisk].rate1 >> 1;
+      d4->winHalfW = t;
+      d4->winHalfH = gSecretDiskEntries[d4->cursorDisk].rate1 >> 1;
       if (g->mode[3] == 1) {
-        e = &gSecretDiskEntries[d->cursorDisk];
-        FUN_080e83d0(g, d->cursorDisk, e->unk_04, e->unk_00,
-                     (0x40 - gSecretDiskEntries[d->cursorDisk].x) << 8,
-                     (0x50 - gSecretDiskEntries[d->cursorDisk].y) << 8,
-                     gSecretDiskEntries[d->cursorDisk].unk_07);
+        e = &gSecretDiskEntries[d4->cursorDisk];
+        FUN_080e83d0(g, d4->cursorDisk, e->unk_04, e->unk_00,
+                     (0x40 - gSecretDiskEntries[d4->cursorDisk].x) << 8,
+                     (0x50 - gSecretDiskEntries[d4->cursorDisk].y) << 8,
+                     gSecretDiskEntries[d4->cursorDisk].unk_07);
         g->mode[3]++;
       }
     }
