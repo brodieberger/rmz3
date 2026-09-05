@@ -432,6 +432,17 @@ static void intro_080ed480(struct Intro* p, u8 step);
 static void FUN_080ed6c4(struct Intro* p);
 static void intro_080ed770(struct Intro* p, u8 r1);
 
+// Title sequence timings. The US release runs the whole sequence earlier.
+#if IS_US
+#define TITLE_BG_OFF_FRAME 269
+#define TITLE_LAST_STEP_FRAME 279
+#define TITLE_LOGO_FRAME 270
+#else
+#define TITLE_BG_OFF_FRAME 284
+#define TITLE_LAST_STEP_FRAME 299
+#define TITLE_LOGO_FRAME 318
+#endif
+
 NON_MATCH static void updateTitleAnimation(struct Intro* p) {
 #if MODERN || CBODY
   switch (p->mode[2]) {
@@ -452,8 +463,8 @@ NON_MATCH static void updateTitleAnimation(struct Intro* p) {
     }
     case 1: {
       intro_080ed108(p);
-      if (p->titleFrame < 285) {
-        if (p->titleFrame == 284) {
+      if (p->titleFrame <= TITLE_BG_OFF_FRAME) {
+        if (p->titleFrame == TITLE_BG_OFF_FRAME) {
           gVideoRegBuffer.dispcnt &= 0xC7FF;
         } else if (p->titleFrame < 184) {
           if (p->titleFrame > 83) {
@@ -464,7 +475,7 @@ NON_MATCH static void updateTitleAnimation(struct Intro* p) {
         }
       }
 
-      if (p->titleFrame < 300) {
+      if (p->titleFrame <= TITLE_LAST_STEP_FRAME) {
         if (p->titleFrame >= 240) {
           intro_080ed480(p, 3);
 
@@ -484,7 +495,7 @@ NON_MATCH static void updateTitleAnimation(struct Intro* p) {
           }
         }
       }
-      if (p->titleFrame > 318) {
+      if (p->titleFrame > TITLE_LOGO_FRAME) {
         intro_080ed2a0(p);
       }
       if (p->titleFrame > 414) {

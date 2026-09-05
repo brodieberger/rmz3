@@ -209,6 +209,9 @@ $(BUILD_DIR)/src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
 endif
 
 LDSCRIPT = ld_script$(MODIFIERS).ld
+ifeq ($(CBODY),1)
+LDSCRIPT = ld_script-modern.ld
+endif
 ifeq ($(REGION),us)
 LDSCRIPT = ld_script-us.ld
 ifneq ($(MODERN)$(CBODY),00)

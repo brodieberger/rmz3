@@ -417,17 +417,29 @@ NON_MATCH void hitbox_08007674(struct Body* a, struct Body* d) {
   if (gCollisionManager.disabled & COLLMAN_DISABLED) return;
   if ((a->collisionLayer & LAYER_MASK(&d->processing)) == 0) return;
 
-  if ((a->processing)->special == CHATABLE) {
+  if ((a->processing)->special == CHATABLE
+#if IS_US
+      && ((d->processing)->hardness & HARDNESS_CHATABLE)
+#endif
+  ) {
     a->status |= BODY_STATUS_CHAT;
     d->status |= BODY_STATUS_CHAT;
     gCollisionManager.talkTo = a;
   }
-  if ((a->processing)->special == DOOR_3D) {
+  if ((a->processing)->special == DOOR_3D
+#if IS_US
+      && ((d->processing)->hardness & HARDNESS_DOOR)
+#endif
+  ) {
     a->status |= BODY_STATUS_DOOR;
     d->status |= BODY_STATUS_DOOR;
     gCollisionManager.door = a;
   }
-  if ((a->processing)->special == CS_TELEPORTAL) {
+  if ((a->processing)->special == CS_TELEPORTAL
+#if IS_US
+      && ((d->processing)->hardness & HARDNESS_TELEPORTAL)
+#endif
+  ) {
     a->status |= BODY_STATUS_TELEPORTAL;
     d->status |= BODY_STATUS_TELEPORTAL;
     gCollisionManager.teleportal = a;
