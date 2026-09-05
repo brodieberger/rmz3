@@ -367,8 +367,6 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
     PrintString(STRING(0x1DF), 0x11, 4);
     PrintString(STRING(0x1DC), 1, 0x12);
   } else {
-    // The asm branches on <= 5 and <= 0x13 separately and both arms load the same
-    // string base, so the two collapse. Written apart they generate the same code.
     if (disk <= 0x13) {
       PrintString(STRING(0x2BC + d->cursorDisk), 0x11, 4);
     } else if (disk <= 0x5D) {
@@ -1174,39 +1172,47 @@ NON_MATCH static void setSecretDiskPalette(struct GameState* g) {
   u16* map;
   u16* p;
   u8* disk;
-  u8 flags;
+  u8* q;
   s32 n;
   u8 i;
+  u8 row;
+  u8 col;
 
-  d = &g->sceneState.disk;
   map = g->menuBgMap1;
   for (i = 0; i <= 0x1D; i++) {
     disk = gStageDiskManager.disk;
+    d = &g->sceneState.disk;
     n = d->scrollRow * 5 + i;
-    flags = disk[n >> 2];
-    if (((flags & 0xF) >> (n & 3)) & 1) {
-      if ((disk[n >> 2] >> ((n & 3) + 4)) & 1) {
-        p = &map[((u8)(i / 5) << 6) + ((u8)(i % 5) << 1)];
+    q = &disk[n >> 2];
+    if (((*q & 0xF) >> (n & 3)) & 1) {
+      if ((*q >> ((n & 3) + 4)) & 1) {
+        row = i / 5;
+        col = i % 5;
+        p = &map[(row << 6) + (col << 1)];
         p[99] = 0x80ED;
         p[100] = 0x80EE;
         p[131] = 0x810D;
         p[132] = 0x810E;
       } else {
-        p = &map[((u8)(i / 5) << 6) + ((u8)(i % 5) << 1)];
+        row = i / 5;
+        col = i % 5;
+        p = &map[(row << 6) + (col << 1)];
         p[99] = 0x80EB;
         p[100] = 0x80EC;
         p[131] = 0x810B;
         p[132] = 0x810C;
       }
     } else {
-      p = &map[((u8)(i / 5) << 6) + ((u8)(i % 5) << 1)];
+      row = i / 5;
+      col = i % 5;
+      p = &map[(row << 6) + (col << 1)];
       p[99] = 0x31A2;
       p[100] = 0x31A2;
       p[131] = 0x31A2;
       p[132] = 0x31A2;
     }
   }
-  RequestBgMapTransfer(map, (void*)SCREEN_BASE(1), 0x1000);
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
 #else
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
@@ -1397,11 +1403,11 @@ _080F85DC: .4byte 0x00000ED8\n\
 #endif
 }
 
-NON_MATCH static void sd_analysis_080f85e0(struct GameState* g) {
-#if MODERN || CBODY
+static void sd_analysis_080f85e0(struct GameState* g) {
   struct SecretDiskState* d;
+  struct SecretDiskState* d2;
+  struct SecretDiskState* d3;
   u8 old;
-  u16 keys;
   u32 q;
   u8* disk;
   u32 five;
@@ -1416,39 +1422,36 @@ NON_MATCH static void sd_analysis_080f85e0(struct GameState* g) {
     return;
   }
 
-  d = &g->sceneState.disk;
-  old = d->cursorDisk;
+  d3 = &g->sceneState.disk;
+  old = d3->cursorDisk;
   if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
-    if (old != 0) d->cursorDisk = old - 1;
+    if (old != 0) d3->cursorDisk = old - 1;
   } else if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
-    if (old <= 0xB2) d->cursorDisk = old + 1;
+    if (old <= 0xB2) d3->cursorDisk = old + 1;
   } else if (gJoypad[0].field3_0x6 & DPAD_UP) {
-    if (old > 4) d->cursorDisk = old - 5;
+    if (old > 4) d3->cursorDisk = old - 5;
   } else if (gJoypad[0].field3_0x6 & DPAD_DOWN) {
-    if (old <= 0xAE) d->cursorDisk = old + 5;
+    if (old <= 0xAE) d3->cursorDisk = old + 5;
   }
 
-  d = &g->sceneState.disk;
-  if (old != d->cursorDisk) PlaySound(1);
+  d2 = &g->sceneState.disk;
+  if (old != d2->cursorDisk) PlaySound(1);
 
-  // The row width is held in a register rather than used as an immediate; that is
-  // what the original does, and the three uses below have to share it to match.
   five = 5;
-  q = d->cursorDisk / five;
-  if (d->scrollRow > (u8)q) {
-    d->scrollRow = q;
-    d->redraw = 1;
-  } else if (d->scrollRow < (s32)((u8)q - five)) {
-    d->scrollRow = q - five;
-    d->redraw = 1;
+  q = d2->cursorDisk / five;
+  if (d2->scrollRow > (u8)q) {
+    d2->scrollRow = q;
+    d2->redraw = 1;
+  } else if (d2->scrollRow < (s32)((u8)q - five)) {
+    d2->scrollRow = q - five;
+    d2->redraw = 1;
   }
 
   d = &g->sceneState.disk;
   d->cursor->px = ((u8)(d->cursorDisk % 5) << 4) + 0x18;
   d->cursor->py = (((u8)(d->cursorDisk / 5) - d->scrollRow) << 4) + 0x18;
 
-  keys = gJoypad[0].pressed;
-  if (keys & A_BUTTON) {
+  if (gJoypad[0].pressed & A_BUTTON) {
     disk = gStageDiskManager.disk;
     if ((((disk[d->cursorDisk >> 2] & 0xF) >> (d->cursorDisk & 3)) & 1) != 0) {
       d->cursor->dead = TRUE;
@@ -1457,203 +1460,9 @@ NON_MATCH static void sd_analysis_080f85e0(struct GameState* g) {
     } else {
       PlaySound(4);
     }
-  } else if (keys & B_BUTTON) {
+  } else if (gJoypad[0].pressed & B_BUTTON) {
     g->mode[1] = 3;
   }
-#else
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	ldrb r0, [r6, #3]\n\
-	cmp r0, #0\n\
-	bne _080F8638\n\
-	ldr r0, _080F8634 @ =0x00000DCC\n\
-	adds r5, r6, r0\n\
-	movs r0, #1\n\
-	strb r0, [r5, #0xc]\n\
-	adds r0, r6, #0\n\
-	movs r1, #0\n\
-	movs r2, #0\n\
-	bl CreateSquareCursor\n\
-	adds r4, r0, #0\n\
-	str r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x14\n\
-	adds r0, #0x18\n\
-	adds r4, #0x74\n\
-	strh r0, [r4]\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	ldrb r1, [r5, #0xb]\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x18\n\
-	adds r4, #0x76\n\
-	strh r0, [r4]\n\
-	ldrb r0, [r6, #3]\n\
-	adds r0, #1\n\
-	strb r0, [r6, #3]\n\
-	b _080F8754\n\
-	.align 2, 0\n\
-_080F8634: .4byte 0x00000DCC\n\
-_080F8638:\n\
-	ldr r0, _080F8654 @ =0x00000DCC\n\
-	adds r3, r6, r0\n\
-	ldrb r1, [r3, #0xa]\n\
-	ldr r0, _080F8658 @ =gJoypad\n\
-	ldrh r2, [r0, #6]\n\
-	movs r0, #0x20\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F865C\n\
-	cmp r1, #0\n\
-	beq _080F868C\n\
-	subs r0, r1, #1\n\
-	b _080F868A\n\
-	.align 2, 0\n\
-_080F8654: .4byte 0x00000DCC\n\
-_080F8658: .4byte gJoypad\n\
-_080F865C:\n\
-	movs r0, #0x10\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F866C\n\
-	cmp r1, #0xb2\n\
-	bhi _080F868C\n\
-	adds r0, r1, #1\n\
-	b _080F868A\n\
-_080F866C:\n\
-	movs r0, #0x40\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F867C\n\
-	cmp r1, #4\n\
-	bls _080F868C\n\
-	subs r0, r1, #5\n\
-	b _080F868A\n\
-_080F867C:\n\
-	movs r0, #0x80\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F868C\n\
-	cmp r1, #0xae\n\
-	bhi _080F868C\n\
-	adds r0, r1, #5\n\
-_080F868A:\n\
-	strb r0, [r3, #0xa]\n\
-_080F868C:\n\
-	ldr r0, _080F86B4 @ =0x00000DCC\n\
-	adds r4, r6, r0\n\
-	ldrb r0, [r4, #0xa]\n\
-	cmp r1, r0\n\
-	beq _080F869C\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-_080F869C:\n\
-	ldrb r0, [r4, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r2, r0, #0\n\
-	ldrb r1, [r4, #0xb]\n\
-	lsls r0, r2, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	cmp r1, r0\n\
-	bls _080F86B8\n\
-	strb r2, [r4, #0xb]\n\
-	b _080F86C4\n\
-	.align 2, 0\n\
-_080F86B4: .4byte 0x00000DCC\n\
-_080F86B8:\n\
-	ldrb r1, [r4, #0xb]\n\
-	subs r0, #5\n\
-	cmp r1, r0\n\
-	bge _080F86C8\n\
-	subs r0, r2, #5\n\
-	strb r0, [r4, #0xb]\n\
-_080F86C4:\n\
-	movs r0, #1\n\
-	strb r0, [r4, #0xc]\n\
-_080F86C8:\n\
-	ldr r0, _080F8734 @ =0x00000DCC\n\
-	adds r5, r6, r0\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x14\n\
-	adds r0, #0x18\n\
-	adds r4, #0x74\n\
-	strh r0, [r4]\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	ldrb r1, [r5, #0xb]\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x18\n\
-	adds r4, #0x76\n\
-	strh r0, [r4]\n\
-	ldr r0, _080F8738 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r4, #1\n\
-	movs r3, #1\n\
-	adds r0, r3, #0\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F8748\n\
-	ldr r0, _080F873C @ =gStageDiskManager\n\
-	ldr r0, [r0]\n\
-	ldrb r2, [r5, #0xa]\n\
-	lsrs r1, r2, #2\n\
-	adds r0, r0, r1\n\
-	ldrb r1, [r0]\n\
-	movs r0, #0xf\n\
-	ands r0, r1\n\
-	movs r1, #3\n\
-	ands r1, r2\n\
-	asrs r0, r1\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _080F8740\n\
-	ldr r0, [r5, #4]\n\
-	adds r0, #0x78\n\
-	strb r4, [r0]\n\
-	strb r4, [r6, #2]\n\
-	movs r0, #0\n\
-	strb r0, [r6, #3]\n\
-	b _080F8754\n\
-	.align 2, 0\n\
-_080F8734: .4byte 0x00000DCC\n\
-_080F8738: .4byte gJoypad\n\
-_080F873C: .4byte gStageDiskManager\n\
-_080F8740:\n\
-	movs r0, #4\n\
-	bl PlaySound\n\
-	b _080F8754\n\
-_080F8748:\n\
-	movs r0, #2\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F8754\n\
-	movs r0, #3\n\
-	strb r0, [r6, #1]\n\
-_080F8754:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
-#endif
 }
 
 NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
@@ -2052,7 +1861,6 @@ static void sd_analysis_080f8984(struct GameState* g) {
   const struct SecretDiskEntry* row;
 
   if (d->winHalfW != 0) {
-    // table and row are separate locals because folding them changes register allocation
     t = d->winHalfW;
     table = gSecretDiskEntries;
     row = &table[d->cursorDisk];
@@ -2180,8 +1988,6 @@ void unlockAllSecretDisk(u8* flagbits) {
   CpuFastFill(0, flagbits, 32);
   CpuFill32(0, flagbits + 0x20, 16);
   // Two bits per disk in each byte: found in the low nibble, analysed in the high.
-  // Reading through `disk` while storing through gStageDiskManager.disk is what puts
-  // the load ahead of the shift, and is needed to match.
   for (i = 0; i <= 0xB3; i++) {
     disk = gStageDiskManager.disk;
     gStageDiskManager.disk[i >> 2] = disk[i >> 2] | (1 << (i & 3));
