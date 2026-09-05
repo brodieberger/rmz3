@@ -6,6 +6,8 @@
 // リンクされる場所的に カプコン か インティクリエイツ で使いまわしてるライブラリの可能性がある (= ビルドフラグとか色々違う可能性がある)
 
 extern const u8* const sSpriteSize[2];
+extern const u8 sSpriteWidth[12];
+extern const u8 sSpriteHeight[12];
 extern const u8* const sAffineSpriteSize[2];
 
 // The asm builds attr0|attr1 as one word. Writing bitfields one at a time into a reused
@@ -19,7 +21,10 @@ struct OamRaw {
 // low byte of s->oam attr3: unused:4, xflip:1, yflip:1, size:2
 #define OAM_FLIPBYTE(src) ((u32)((src)->attr3 & 0xFF) << 24)
 // Subsprite bits 10..13 (xflip, yflip, size) land in attr1 bits 12..15
-#define SS_FLIPSIZE(ss) ((u32)((ss)->xflip | ((ss)->yflip << 1) | ((ss)->size << 2)) << 28)
+#define SRC(s) ((const struct OamRaw*)&(s)->oam)
+#define SS_RAW(ss) (*(const u16*)(ss))
+#define SS_FLIPSIZE(ss) ((u32)(SS_RAW(ss) >> 10) << 28)
+#define SS_SIZESHAPE(ss) (SS_RAW(ss) >> 12)
 
 NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc) {
 #if MODERN || CBODY
@@ -27,35 +32,34 @@ NON_MATCH void TaskCB_DrawNoAffineSprite(struct Sprite* s, struct DrawPivot* tc)
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
   s32 len = h->subspriteCount;
-  if (PTR_U32(gOamManager.p) < (PTR_U32(&gOamManager.p) - (len * sizeof(struct OamData)))) {
+  struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
+  if ((s32)oam < (s32)(PTR_U32(&gOamManager.p) - (len * sizeof(struct OamData)))) {
     for (; len != 0; len--) {
       s32 Y = (c->y - (tc->lefttop).y) >> 8;
       if (s->yflip) {
-        Y = (Y - ss->y) - sSpriteSize[1][ss->size | (ss->shape << 2)];
+        Y = (Y - ss->y) - sSpriteHeight[SS_SIZESHAPE(ss)];
       } else {
         Y = (Y + ss->y);
       }
       if ((u32)(Y + 64) < DISPLAY_HEIGHT + 64) {
         s32 X = (c->x - (tc->lefttop).x) >> 8;
         if (s->xflip) {
-          X = (X - ss->x) - sSpriteSize[0][ss->size | (ss->shape << 2)];
+          X = (X - ss->x) - sSpriteWidth[SS_SIZESHAPE(ss)];
         } else {
           X = (X + ss->x);
         }
         if ((u32)(X + 128) < DISPLAY_WIDTH + 6 + 128) {
-          struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
-          const struct OamRaw* src = (const struct OamRaw*)&s->oam;
+          oam->attr01 = (SRC(s)->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
+                         ((u32)(SS_RAW(ss) >> 14) << 14)) ^
+                        OAM_FLIPBYTE(SRC(s));
+          oam->attr2 = SRC(s)->attr2 + ss->tileNum;
 
-          oam->attr01 = (src->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
-                         ((u32)ss->shape << 14)) ^
-                        OAM_FLIPBYTE(src);
-          oam->attr2 = src->attr2 + ss->tileNum;
-
-          gOamManager.p = &gOamManager.p[1];
+          oam = &oam[1];
         }
       }
       ss = &ss[1];
     }
+    gOamManager.p = (struct OamData*)oam;
   }
 #else
   INCCODE("asm/wip/TaskCB_DrawNoAffineSprite.inc");
@@ -68,7 +72,8 @@ NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc
   struct MetaspriteHeader* h = &s->sprites[s->spriteIdx];
   struct Subsprite* ss = (struct Subsprite*)(PTR_U32(&(s->sprites)->ofs) + h->ofs);
   s32 len = h->subspriteCount;
-  if (PTR_U32(gOamManager.p) < (PTR_U32(&gOamManager.p) - (len * sizeof(struct OamData)))) {
+  struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
+  if ((s32)oam < (s32)(PTR_U32(&gOamManager.p) - (len * sizeof(struct OamData)))) {
     u8 angle = s->angle;
     s16 sin, cos;
     if (s->xflip != s->yflip) {
@@ -81,7 +86,7 @@ NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc
     for (; len != 0; len--) {
       s32 X, Y;
 
-      const u32 shape = ss->size | (ss->shape << 2);
+      const u32 shape = SS_SIZESHAPE(ss);
       const s32 W = sAffineSpriteSize[0][shape];
       const s32 H = sAffineSpriteSize[1][shape];
 
@@ -110,18 +115,16 @@ NON_MATCH void TaskCB_DrawRotatableSprite(struct Sprite* s, struct DrawPivot* tc
         X = ((x2 + y2) >> 8) - (W * 2) + ((c->x - (tc->lefttop).x) >> 8);
 
         if ((u32)(X + 128) < DISPLAY_WIDTH + 6 + 128) {
-          struct OamRaw* oam = (struct OamRaw*)gOamManager.p;
-          const struct OamRaw* src = (const struct OamRaw*)&s->oam;
+          oam->attr01 = SRC(s)->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
+                        ((u32)(SS_RAW(ss) >> 14) << 14);
+          oam->attr2 = SRC(s)->attr2 + ss->tileNum;
 
-          oam->attr01 = src->attr01 | (u32)(Y & 0xFF) | ((u32)(X & 0x1FF) << 16) | SS_FLIPSIZE(ss) |
-                        ((u32)ss->shape << 14);
-          oam->attr2 = src->attr2 + ss->tileNum;
-
-          gOamManager.p = &gOamManager.p[1];
+          oam = &oam[1];
         }
       }
       ss = &ss[1];
     }
+    gOamManager.p = (struct OamData*)oam;
   }
 #else
   INCCODE("asm/wip/TaskCB_DrawRotatableSprite.inc");

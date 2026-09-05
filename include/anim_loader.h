@@ -1,9 +1,11 @@
 #ifndef GUARD_RMZ3_ANIM_LOADER_H
 #define GUARD_RMZ3_ANIM_LOADER_H
 
+extern const struct Palette gStaticMotionPalettes;
+
 #if MODERN || CBODY
 #define STATIC_GRAPHICS ((void*)(&gStaticMotionGraphics[0]))
-#define STATIC_PALETTES ((void*)(&(gStaticMotionGraphics[0].pal)))
+#define STATIC_PALETTES ((void*)(&gStaticMotionPalettes))
 #else
 #define STATIC_GRAPHICS ((void*)(0x085d78f8))
 #define STATIC_PALETTES ((void*)(0x085d7904))

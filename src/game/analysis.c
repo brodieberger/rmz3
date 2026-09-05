@@ -16,6 +16,13 @@
 
 // "シークレットディスクのカイセキ"のシーン
 
+extern const struct Graphic gGraphic_MiscMenu;
+extern const struct Palette gPalette_MiscMenu;
+extern const struct Graphic Graphic_SecretDickBlue;
+extern const struct Palette Palette_SecretDickBlue;
+extern const struct Graphic Graphic_SecretDickRed;
+extern const struct Palette Palette_SecretDickRed;
+
 typedef void (*DiskLoopFunc)(struct GameState*);
 
 void ResetPivot(struct Pivot* p, Coords32* c, u32 _, void* nullVal);
@@ -49,6 +56,7 @@ NON_MATCH static void DiskLoop_Init(struct GameState* g) {
   u16* pal;
   u16* src;
   u8 i;
+  int cbs;
 
   g->frames = 0;
   d = &g->sceneState.disk;
@@ -69,21 +77,32 @@ NON_MATCH static void DiskLoop_Init(struct GameState* g) {
   RESET_BGOFS(1);
   gBlendRegBuffer.bldclt = 0x2010;
 
-  LoadGraphic(BG_GRAPHIC(22), (void*)0x4000);
-  LoadPalette(BG_PALETTE(22), 0);
+  LoadGraphic(&gGraphic_MiscMenu, (void*)0x4000);
+  cbs = 0xc;
+  LoadPalette(&gPalette_MiscMenu, 0);
   CopyBgMap(g->menuBgMap1, SELF_REL_PTR(&gBgMapOffsets[101]), 0, 0);
 
   if (gSystemSavedata.disk == 1) {
-    LoadGraphic(BG_GRAPHIC(36), CHAR_BASE(1));
-    LoadPalette(BG_PALETTE(36), 0);
+    LoadGraphic(&Graphic_SecretDickBlue, ((void*)((BGCNT16(1) & 0xc) << cbs)));
+    LoadPalette(&Palette_SecretDickBlue, 0);
   } else if (gSystemSavedata.disk == 2) {
-    LoadGraphic(BG_GRAPHIC(37), CHAR_BASE(1));
-    LoadPalette(BG_PALETTE(37), 0);
+    LoadGraphic(&Graphic_SecretDickRed, ((void*)((BGCNT16(1) & 0xc) << cbs)));
+    LoadPalette(&Palette_SecretDickRed, 0);
   }
 
   setSecretDiskPalette(g);
   LOAD_STATIC_GRAPHIC(14);
-  LOAD_STATIC_GRAPHIC(83);
+  {
+    const struct Graphic* g;
+    const struct Palette* pal;
+    u32 ofs;
+    ofs = sizeof(ColorGraphic) * 83;
+    g = gStaticGraphic(ofs);
+    LoadGraphic(g, (void*)((wStaticGraphicTilenums[83] - g->tileId) * 32 + 0x10000));
+    src = STATIC_PALETTES + ofs;
+    pal = (const struct Palette*)src;
+    LoadPalette(pal, (wStaticMotionPalIDs[83] - pal->dst) * 32 + PLTT_SIZE / 2);
+  }
 
   CreateTriangleCursor(g, 3);
   CreateTriangleCursor(g, 4);
@@ -1287,6 +1306,8 @@ NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
   struct SecretDiskState* d3;
   struct SecretDiskState* d4;
   const struct SecretDiskEntry* e;
+  const struct SecretDiskEntry* tbl;
+  u8* bits;
   u16* pal;
   u16* dst;
   u8 r;
@@ -1297,10 +1318,10 @@ NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
   u8 t;
   u16 i;
 
-  d = &g->sceneState.disk;
-
   if (g->mode[3] == 0) {
-    if (((gStageDiskManager.disk[d->cursorDisk >> 2] >> ((d->cursorDisk & 3) + 4)) & 1) != 0) {
+    bits = gStageDiskManager.disk;
+    d = &g->sceneState.disk;
+    if (((bits[d->cursorDisk >> 2] >> ((d->cursorDisk & 3) + 4)) & 1) != 0) {
       PlaySound(2);
     } else {
       PlaySound(14);
@@ -1358,27 +1379,28 @@ NON_MATCH static void sd_analysis_080f875c(struct GameState* g) {
     pal[i] = (b << 10) | (gr << 5) | r;
   }
 
+  tbl = gSecretDiskEntries;
   d4 = &g->sceneState.disk;
-  if (gSecretDiskEntries[d4->cursorDisk].unk_00 != 0) {
-    t = (u8)gSecretDiskEntries[d4->cursorDisk].rate0 >> 1;
+  if (tbl[d4->cursorDisk].unk_00 != 0) {
+    t = (u8)tbl[d4->cursorDisk].rate0 >> 1;
     if (d4->winHalfW < t) {
-      d4->winHalfW += gSecretDiskEntries[d4->cursorDisk].rate0 >> 4;
-      d4->winHalfH += gSecretDiskEntries[d4->cursorDisk].rate1 >> 4;
-      if (d4->winHalfW > (gSecretDiskEntries[d4->cursorDisk].rate0 >> 1)) {
-        d4->winHalfW = gSecretDiskEntries[d4->cursorDisk].rate0 >> 1;
+      d4->winHalfW += tbl[d4->cursorDisk].rate0 >> 4;
+      d4->winHalfH += tbl[d4->cursorDisk].rate1 >> 4;
+      if (d4->winHalfW > (tbl[d4->cursorDisk].rate0 >> 1)) {
+        d4->winHalfW = tbl[d4->cursorDisk].rate0 >> 1;
       }
-      if (d4->winHalfH > (gSecretDiskEntries[d4->cursorDisk].rate1 >> 1)) {
-        d4->winHalfH = gSecretDiskEntries[d4->cursorDisk].rate1 >> 1;
+      if (d4->winHalfH > (tbl[d4->cursorDisk].rate1 >> 1)) {
+        d4->winHalfH = tbl[d4->cursorDisk].rate1 >> 1;
       }
     } else {
       d4->winHalfW = t;
-      d4->winHalfH = gSecretDiskEntries[d4->cursorDisk].rate1 >> 1;
+      d4->winHalfH = tbl[d4->cursorDisk].rate1 >> 1;
       if (g->mode[3] == 1) {
-        e = &gSecretDiskEntries[d4->cursorDisk];
+        e = &tbl[d4->cursorDisk];
         FUN_080e83d0(g, d4->cursorDisk, e->unk_04, e->unk_00,
-                     (0x40 - gSecretDiskEntries[d4->cursorDisk].x) << 8,
-                     (0x50 - gSecretDiskEntries[d4->cursorDisk].y) << 8,
-                     gSecretDiskEntries[d4->cursorDisk].unk_07);
+                     (0x40 - tbl[d4->cursorDisk].x) << 8,
+                     (0x50 - tbl[d4->cursorDisk].y) << 8,
+                     tbl[d4->cursorDisk].unk_07);
         g->mode[3]++;
       }
     }
