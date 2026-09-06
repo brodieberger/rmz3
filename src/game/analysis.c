@@ -240,6 +240,7 @@ static void DiskLoop_Run(struct GameState* g) {
     // Not found at all: the slot stays blank.
     PrintString(STRING(0x1DD), 1, 0x12);
   }
+  ApDiskMenuUpdate(g);
 
   d2 = &g->sceneState.disk;
   if (d2->winHalfW != 0) {

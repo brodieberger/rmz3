@@ -124,6 +124,7 @@ Archipelago stuff.
 #define AP_CERVEAU_GUIDE_PAL 6
 
 extern const char_t gApCerveauAwayText[];
+extern const char_t gApDiskOpenAllText[];
 
 /*
   IDLE is normal resistance base behavior.
@@ -328,6 +329,7 @@ extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
 extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
 extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
+extern void (*const gApDiskMenuUpdateFn)(struct GameState* g);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -351,6 +353,7 @@ extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)
 #define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)
 #define ApCerveauGuideUpdate(p) gApCerveauGuideUpdateFn(p)
+#define ApDiskMenuUpdate(g) gApDiskMenuUpdateFn(g)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.
@@ -389,6 +392,7 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApTakeMissionRerun(stageID) (0)
 #define ApInMissionRerun() (0)
 #define ApFrameHook(b) SwitchProcess(b)
+#define ApDiskMenuUpdate(g) ((void)0)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)
 
