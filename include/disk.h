@@ -3,6 +3,7 @@
 
 #include "gba/gba.h"
 
+struct GameState;
 struct SquareCursorWidget;
 
 // GameState.sceneState のシークレットディスク解析シーン用のレイアウト
@@ -33,8 +34,12 @@ struct SecretDiskState {
   u8 colorB;      // 0x12
 };
 
+void MainLoop_Disk(struct GameState* g);
+u16 OpenSecretDisk(struct GameState* g, u8 disk_no, bool8 is_result);
 void clearSecretDiskData(u8* flagbits);
 void clearSecretDiskDataHard(u8* flagbits);
 void unlockAllSecretDisk(u8* flagbits);
+void getDiskInStageRun(u8 disk_id);
+bool8 allSecretDiskFound(void);
 
 #endif  // GUARD_RMZ3_DISK_H
