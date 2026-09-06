@@ -51,6 +51,7 @@ void FUN_080e9840(void);
 void PrintAllStrings(void);
 void FUN_080e98ec(void);
 void PrintString(const char_t* s, u32 x, u32 y);
+void PrintNumber(u16 n, u8 x, u8 y);
 s16 getStringLength(char_t* s);
 void text_080e9b40(const char_t* s, u32 x, u32 y, u16 count);
 void PrintRows(char_t* s, u32 x, u32 y, u16 count, u16 r4);

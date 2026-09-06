@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_GAME_H
 #define GUARD_RMZ3_GAME_H
 
+#include "disk.h"
 #include "entity.h"
 #include "gba/gba.h"
 #include "gfx.h"
@@ -55,6 +56,7 @@ union SceneGameState {
   struct MenuState menu;
   struct ResultState result;
   struct MinigameState mg;
+  struct SecretDiskState disk;
 };
 
 // 0x02030B60

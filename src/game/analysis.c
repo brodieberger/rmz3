@@ -1,18 +1,39 @@
 #include "disk.h"
-#include "game.h"
+
+#include "anim_loader.h"
 #include "ap.h"
+#include "cyberelf.h"
+#include "definition.h"
+#include "game.h"
 #include "global.h"
+#include "gpu_regs.h"
+#include "input.h"
 #include "palette_animation.h"
+#include "sprite.h"
+#include "stagerun.h"
 #include "text.h"
 #include "widget.h"
+#include "widget/cursor_square.h"
+#include "zero.h"
 
 // "シークレットディスクのカイセキ"のシーン
 
 typedef void (*DiskLoopFunc)(struct GameState*);
 
-void ResetPivot(struct Pivot* p, Coords32* c, u32 _, void* nullVal);
+extern const struct Graphic gGraphic_MiscMenu;
+extern const struct Palette gPalette_MiscMenu;
+extern const struct Graphic Graphic_SecretDiskBlue;
+extern const struct Palette Palette_SecretDiskBlue;
+extern const struct Graphic Graphic_SecretDiskRed;
+extern const struct Palette Palette_SecretDiskRed;
 
+extern const struct SecretDiskEntry gSecretDiskEntries[DISK_COUNT];
+extern const u16 DiskECrystalAmounts[16];
+
+// g->mode[1] picks the scene phase out of sDiskLoops, g->mode[2] the sub-loop
+// DiskLoop_Run runs inside it.
 static const DiskLoopFunc sDiskLoops[5];
+static const DiskLoopFunc sDiskRunLoops[3];
 
 static void DiskLoop_Init(struct GameState* g);
 static void DiskLoop_OpenScreen(struct GameState* g);
@@ -20,246 +41,112 @@ static void DiskLoop_Run(struct GameState* g);
 static void DiskLoop_BlackOut(struct GameState* g);
 static void DiskLoop_Exit(struct GameState* g);
 
-static void sd_analysis_080f8408(struct GameState* g);
+static void initDiskSceneRenderer(struct GameState* g);
+static void drawDiskSceneWidgets(struct GameState* g);
+static void setSecretDiskPalette(struct GameState* g);
+static void DiskRun_Run(struct GameState* g);
+static void DiskRun_OpenWindow(struct GameState* g);
+static void DiskRun_CloseWindow(struct GameState* g);
+static void printThreeDigitNumber(u16 n, u8 x, u8 y);
 
+// 0x080f7d70
 void MainLoop_Disk(struct GameState* g) {
-// Switch to AP inventory and Game Inventory upon entering secret disk analysis screen.
+  // The analysis screen reads everything through gStageDiskManager.disk, so one
+  // swap points the whole scene at AP's inventory (save.savedDisk) and back.
   ApUseApDiskInventory(g);
   sDiskLoops[g->mode[1]](g);
-  sd_analysis_080f8408(g);
+  drawDiskSceneWidgets(g);
   ApUseGameDiskInventory(g);
-  return;
 }
 
-static void sd_analysis_080f83ac(struct GameState* g);
-static void setSecretDiskPalette(struct GameState* g);
+// 0x080f7d94
+static void DiskLoop_Init(struct GameState* g) {
+  struct SecretDiskState* d;
+  u16* pal;
+  u16* src;
+  u8 i;
+  int charBaseShift;
+  s16 gfxOfs;
+  const struct Graphic* menuGfx;
 
-NAKED static void DiskLoop_Init(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sl\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6, r7}\n\
-	adds r7, r0, #0\n\
-	movs r4, #0\n\
-	movs r5, #0\n\
-	strh r5, [r7, #4]\n\
-	ldr r1, _080F7E2C @ =0x00000DCC\n\
-	adds r0, r7, r1\n\
-	strb r4, [r0, #0xa]\n\
-	strb r4, [r0, #0xb]\n\
-	strb r4, [r0, #0xd]\n\
-	strb r4, [r0, #0xe]\n\
-	strb r4, [r0, #0xf]\n\
-	strb r4, [r0, #0x10]\n\
-	strb r4, [r0, #0x11]\n\
-	strb r4, [r0, #0x12]\n\
-	adds r0, r7, #0\n\
-	bl sd_analysis_080f83ac\n\
-	ldr r4, _080F7E30 @ =gVideoRegBuffer\n\
-	ldrh r1, [r4]\n\
-	ldr r0, _080F7E34 @ =0x0000FFF8\n\
-	ands r0, r1\n\
-	ldr r1, _080F7E38 @ =0x0000F0FF\n\
-	ands r0, r1\n\
-	movs r2, #0x98\n\
-	lsls r2, r2, #5\n\
-	adds r1, r2, #0\n\
-	orrs r0, r1\n\
-	strh r0, [r4]\n\
-	ldr r1, _080F7E3C @ =0x00004206\n\
-	adds r0, r1, #0\n\
-	strh r0, [r4, #6]\n\
-	str r5, [r4, #0x10]\n\
-	ldr r1, _080F7E40 @ =gBlendRegBuffer\n\
-	ldr r0, _080F7E44 @ =0x00002010\n\
-	strh r0, [r1]\n\
-	ldr r0, _080F7E48 @ =gGraphic_Capcom+(22*20)\n\
-	movs r5, #0xc\n\
-	movs r1, #0x80\n\
-	lsls r1, r1, #7\n\
-	bl LoadGraphic\n\
-	ldr r0, _080F7E4C @ =gGraphic_Capcom+(22*20)+12\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-	ldr r2, _080F7E50 @ =0x00000ED8\n\
-	adds r0, r7, r2\n\
-	ldr r2, _080F7E54 @ =gBgMapOffsets+(101*4)\n\
-	ldr r1, [r2]\n\
-	adds r1, r1, r2\n\
-	movs r2, #0\n\
-	movs r3, #0\n\
-	bl CopyBgMap\n\
-	ldr r0, _080F7E58 @ =gSystemSavedata\n\
-	adds r0, #0x4b\n\
-	ldrb r0, [r0]\n\
-	cmp r0, #1\n\
-	bne _080F7E64\n\
-	ldr r0, _080F7E5C @ =gGraphic_Capcom+(36*20)\n\
-	ldrh r2, [r4, #6]\n\
-	adds r1, r5, #0\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	bl LoadGraphic\n\
-	ldr r0, _080F7E60 @ =gGraphic_Capcom+(36*20)+12\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-	b _080F7E7E\n\
-	.align 2, 0\n\
-_080F7E2C: .4byte 0x00000DCC\n\
-_080F7E30: .4byte gVideoRegBuffer\n\
-_080F7E34: .4byte 0x0000FFF8\n\
-_080F7E38: .4byte 0x0000F0FF\n\
-_080F7E3C: .4byte 0x00004206\n\
-_080F7E40: .4byte gBlendRegBuffer\n\
-_080F7E44: .4byte 0x00002010\n\
-_080F7E48: .4byte gGraphic_Capcom+(22*20)\n\
-_080F7E4C: .4byte gGraphic_Capcom+(22*20)+12\n\
-_080F7E50: .4byte 0x00000ED8\n\
-_080F7E54: .4byte gBgMapOffsets+(101*4)\n\
-_080F7E58: .4byte gSystemSavedata\n\
-_080F7E5C: .4byte gGraphic_Capcom+(36*20)\n\
-_080F7E60: .4byte gGraphic_Capcom+(36*20)+12\n\
-_080F7E64:\n\
-	cmp r0, #2\n\
-	bne _080F7E7E\n\
-	ldr r0, _080F7F78 @ =gGraphic_Capcom+(36*20)+20\n\
-	ldrh r2, [r4, #6]\n\
-	adds r1, r5, #0\n\
-	ands r1, r2\n\
-	lsls r1, r1, #0xc\n\
-	bl LoadGraphic\n\
-	ldr r0, _080F7F7C @ =gGraphic_Capcom+(36*20)+32\n\
-	movs r1, #0\n\
-	bl LoadPalette\n\
-_080F7E7E:\n\
-	adds r0, r7, #0\n\
-	bl setSecretDiskPalette\n\
-	movs r4, #0x8c\n\
-	lsls r4, r4, #1\n\
-	ldr r0, _080F7F80 @ =gStaticMotionGraphics\n\
-	mov r8, r0\n\
-	adds r0, r4, r0\n\
-	ldr r6, _080F7F84 @ =wStaticGraphicTilenums\n\
-	ldrh r1, [r6, #0x1c]\n\
-	ldrh r2, [r0, #6]\n\
-	lsrs r2, r2, #6\n\
-	subs r1, r1, r2\n\
-	lsls r1, r1, #5\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #9\n\
-	adds r1, r1, r2\n\
-	bl LoadGraphic\n\
-	ldr r0, _080F7F88 @ =gStaticMotionGraphics+12\n\
-	mov sl, r0\n\
-	add r4, sl\n\
-	ldr r5, _080F7F8C @ =wStaticMotionPalIDs\n\
-	ldrh r1, [r5, #0x1c]\n\
-	ldrb r0, [r4, #7]\n\
-	subs r1, r1, r0\n\
-	lsls r1, r1, #5\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #2\n\
-	mov sb, r2\n\
-	add r1, sb\n\
-	adds r0, r4, #0\n\
-	bl LoadPalette\n\
-	ldr r4, _080F7F90 @ =0x0000067C\n\
-	add r8, r4\n\
-	adds r6, #0xa6\n\
-	ldrh r1, [r6]\n\
-	mov r2, r8\n\
-	ldrh r0, [r2, #6]\n\
-	lsrs r0, r0, #6\n\
-	subs r1, r1, r0\n\
-	lsls r1, r1, #5\n\
-	movs r0, #0x80\n\
-	lsls r0, r0, #9\n\
-	adds r1, r1, r0\n\
-	mov r0, r8\n\
-	bl LoadGraphic\n\
-	add r4, sl\n\
-	adds r5, #0xa6\n\
-	ldrh r1, [r5]\n\
-	ldrb r0, [r4, #7]\n\
-	subs r1, r1, r0\n\
-	lsls r1, r1, #5\n\
-	add r1, sb\n\
-	adds r0, r4, #0\n\
-	bl LoadPalette\n\
-	adds r0, r7, #0\n\
-	movs r1, #3\n\
-	bl CreateTriangleCursor\n\
-	adds r0, r7, #0\n\
-	movs r1, #4\n\
-	bl CreateTriangleCursor\n\
-	adds r0, r7, #0\n\
-	movs r1, #0\n\
-	bl createSecretDiskModalBorder\n\
-	adds r0, r7, #0\n\
-	movs r1, #1\n\
-	bl createSecretDiskModalBorder\n\
-	adds r0, r7, #0\n\
-	movs r1, #2\n\
-	bl createSecretDiskModalBorder\n\
-	adds r0, r7, #0\n\
-	movs r1, #3\n\
-	bl createSecretDiskModalBorder\n\
-	movs r0, #0x40\n\
-	movs r1, #0\n\
-	bl StartPaletteAnimation\n\
-	movs r2, #0\n\
-	ldr r3, _080F7F94 @ =0x03002BE0\n\
-	adds r4, r3, #0\n\
-	subs r4, #0x20\n\
-_080F7F34:\n\
-	lsls r0, r2, #1\n\
-	adds r1, r0, r3\n\
-	adds r0, r0, r4\n\
-	ldrh r0, [r0]\n\
-	strh r0, [r1]\n\
-	adds r0, r2, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r2, r0, #0x18\n\
-	cmp r2, #0xf\n\
-	bls _080F7F34\n\
-	ldr r1, _080F7F98 @ =0x00000ED8\n\
-	adds r0, r7, r1\n\
-	ldr r1, _080F7F9C @ =gVideoRegBuffer+6\n\
-	ldrh r2, [r1]\n\
-	movs r1, #0xf8\n\
-	lsls r1, r1, #5\n\
-	ands r1, r2\n\
-	lsls r1, r1, #3\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #5\n\
-	bl RequestBgMapTransfer\n\
-	movs r0, #1\n\
-	strb r0, [r7, #1]\n\
-	adds r0, r7, #0\n\
-	bl DiskLoop_OpenScreen\n\
-	pop {r3, r4, r5}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	mov sl, r5\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F7F78: .4byte gGraphic_Capcom+(36*20)+20\n\
-_080F7F7C: .4byte gGraphic_Capcom+(36*20)+32\n\
-_080F7F80: .4byte gStaticMotionGraphics\n\
-_080F7F84: .4byte wStaticGraphicTilenums\n\
-_080F7F88: .4byte gStaticMotionGraphics+12\n\
-_080F7F8C: .4byte wStaticMotionPalIDs\n\
-_080F7F90: .4byte 0x0000067C\n\
-_080F7F94: .4byte gPaletteManager+(144*2)\n\
-_080F7F98: .4byte 0x00000ED8\n\
-_080F7F9C: .4byte gVideoRegBuffer+6\n\
- .syntax divided\n");
+  g->frames = 0;
+  d = &g->sceneState.disk;
+  d->cursorDisk = 0;
+  d->scrollRow = 0;
+  d->unk_0d = 0;
+  d->winHalfW = 0;
+  d->winHalfH = 0;
+  d->colorR = 0;
+  d->colorG = 0;
+  d->colorB = 0;
+  initDiskSceneRenderer(g);
+
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
+  gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
+  gVideoRegBuffer.dispcnt |= (DISPCNT_BG0_ON | DISPCNT_BG1_ON | DISPCNT_OBJ_ON);
+  BGCNT16(1) = 0x4206;
+  RESET_BGOFS(1);
+  gfxOfs = sizeof(ColorGraphic) * 14;
+  gBlendRegBuffer.bldclt = 0x2010;
+
+  menuGfx = &gGraphic_MiscMenu;
+  charBaseShift = 0xc;
+  LoadGraphic(menuGfx, (void*)0x4000);
+  LoadPalette(&gPalette_MiscMenu, 0);
+  CopyBgMap(g->menuBgMap1, SELF_REL_PTR(&gBgMapOffsets[101]), 0, 0);
+
+  if (gSystemSavedata.disk == 1) {
+    LoadGraphic(&Graphic_SecretDiskBlue, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
+    LoadPalette(&Palette_SecretDiskBlue, 0);
+  } else if (gSystemSavedata.disk == 2) {
+    LoadGraphic(&Graphic_SecretDiskRed, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
+    LoadPalette(&Palette_SecretDiskRed, 0);
+  }
+
+  setSecretDiskPalette(g);
+  {
+    const struct Graphic* gfx;
+    const struct Palette* p;
+    u32 ofs;
+    ofs = gfxOfs;
+    gfx = gStaticGraphic(ofs);
+    LoadGraphic(gfx, (void*)((wStaticGraphicTilenums[14] - gfx->tileId) * 32 + 0x10000));
+    p = gStaticPalette(ofs);
+    LoadPalette(p, (wStaticMotionPalIDs[14] - p->dst) * 32 + PLTT_SIZE / 2);
+  }
+  {
+    const struct Graphic* gfx;
+    const struct Palette* p;
+    u32 ofs;
+    ofs = sizeof(ColorGraphic) * 83;
+    gfx = gStaticGraphic(ofs);
+    LoadGraphic(gfx, (void*)((wStaticGraphicTilenums[83] - gfx->tileId) * 32 + 0x10000));
+    src = STATIC_PALETTES + ofs;
+    p = (const struct Palette*)src;
+    LoadPalette(p, (wStaticMotionPalIDs[83] - p->dst) * 32 + PLTT_SIZE / 2);
+  }
+
+  CreateTriangleCursor(g, 3);
+  CreateTriangleCursor(g, 4);
+  createSecretDiskModalBorder(g, 0);
+  createSecretDiskModalBorder(g, 1);
+  createSecretDiskModalBorder(g, 2);
+  createSecretDiskModalBorder(g, 3);
+  StartPaletteAnimation(0x40, 0);
+
+  i = 0;
+  pal = &gPaletteManager.buf[144];
+  src = pal - 16;
+  for (; i <= 0xF; i++) {
+    pal[i] = src[i];
+  }
+
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
+  g->mode[1] = 1;
+  DiskLoop_OpenScreen(g);
 }
 
+// 0x080f7fa0
 static void DiskLoop_OpenScreen(struct GameState* g) {
   g->frames++;
   if (g->frames >= 16) {
@@ -271,720 +158,112 @@ static void DiskLoop_OpenScreen(struct GameState* g) {
   }
 }
 
-static void printThreeDigitNumber(u16 n, u8 x, u8 y);
+// 0x080f8010
+static void DiskLoop_Run(struct GameState* g) {
+  struct SecretDiskState* d;
+  struct SecretDiskState* d2;
+  struct SecretDiskState* d3;
+  u32 diskNo;
+  u8 disk;
+  u16 amount;
+  u16 digits;
+  u32 ix;
+  u8 n;
+  u8* diskBits;
+  s16 strId;
 
-NAKED static void DiskLoop_Run(struct GameState* g) {
-  asm(".syntax unified\n\
-.if REGION_US\n\
-	push	{r4, r5, r6, r7, lr}\n\
-	mov	r7, r8\n\
-	push	{r7}\n\
-	mov	r8, r0\n\
-	ldr	r5, _US_080F7C84\n\
-	add	r5, r8\n\
-	movs	r0, #0\n\
-	strb	r0, [r5, #12]\n\
-	ldr	r1, _US_080F7C88\n\
-	mov	r2, r8\n\
-	ldrb	r0, [r2, #2]\n\
-	lsls	r0, r0, #2\n\
-	adds	r0, r0, r1\n\
-	ldr	r1, [r0, #0]\n\
-	mov	r0, r8\n\
-	bl _call_via_r1\n\
-	ldr	r0, _US_080F7C8C\n\
-	ldrh	r1, [r0, #4]\n\
-	movs	r0, #8\n\
-	ands	r0, r1\n\
-	cmp	r0, #0\n\
-	beq _US_080F7C24\n\
-	movs	r0, #3\n\
-	mov	r3, r8\n\
-	strb	r0, [r3, #1]\n\
-_US_080F7C24:\n\
-	ldr	r6, _US_080F7C90\n\
-	movs	r1, #239\n\
-	lsls	r1, r1, #2\n\
-	adds	r0, r6, r1\n\
-	ldrh	r0, [r0, #0]\n\
-	ldr	r7, _US_080F7C94\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #1\n\
-	bl PrintString\n\
-	ldrb	r0, [r5, #10]\n\
-	adds	r0, #1\n\
-	movs	r1, #22\n\
-	movs	r2, #1\n\
-	bl printThreeDigitNumber\n\
-	ldr	r0, _US_080F7C98\n\
-	ldr	r1, [r0, #0]\n\
-	ldrb	r2, [r5, #10]\n\
-	lsls	r0, r2, #24\n\
-	lsrs	r3, r0, #24\n\
-	lsrs	r0, r0, #26\n\
-	adds	r4, r1, r0\n\
-	ldrb	r1, [r4, #0]\n\
-	movs	r0, #15\n\
-	ands	r0, r1\n\
-	movs	r1, #3\n\
-	ands	r1, r2\n\
-	asrs	r0, r1\n\
-	movs	r2, #1\n\
-	ands	r0, r2\n\
-	cmp	r0, #0\n\
-	bne _US_080F7C6A\n\
-	b _US_080F7E14\n\
-_US_080F7C6A:\n\
-	ldrb	r0, [r4, #0]\n\
-	adds	r1, #4\n\
-	asrs	r0, r1\n\
-	ands	r0, r2\n\
-	cmp	r0, #0\n\
-	bne _US_080F7C78\n\
-	b _US_080F7DEC\n\
-_US_080F7C78:\n\
-	cmp	r3, #5\n\
-	bhi _US_080F7C9C\n\
-	movs	r2, #175\n\
-	lsls	r2, r2, #2\n\
-	adds	r0, r2, #0\n\
-	b _US_080F7CA6\n\
-	.align 2, 0\n\
-_US_080F7C84: .4byte 0x00000DCC\n\
-_US_080F7C88: .4byte PTR_ARRAY_083864ac\n\
-_US_080F7C8C: .4byte gJoypad\n\
-_US_080F7C90: .4byte StringOfsTable\n\
-_US_080F7C94: .4byte gStringData\n\
-_US_080F7C98: .4byte gStageDiskManager\n\
-_US_080F7C9C:\n\
-	cmp	r3, #19\n\
-	bhi _US_080F7CBC\n\
-	movs	r3, #175\n\
-	lsls	r3, r3, #2\n\
-	adds	r0, r3, #0\n\
-_US_080F7CA6:\n\
-	ldrb	r5, [r5, #10]\n\
-	adds	r0, r0, r5\n\
-	lsls	r0, r0, #1\n\
-	adds	r0, r0, r6\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #4\n\
-	bl PrintString\n\
-	b _US_080F7DD0\n\
-_US_080F7CBC:\n\
-	cmp	r3, #93\n\
-	bhi _US_080F7D1C\n\
-	ldrb	r0, [r5, #10]\n\
-	adds	r4, r0, #0\n\
-	adds	r4, #80\n\
-	movs	r1, #180\n\
-	lsls	r1, r1, #3\n\
-	adds	r0, r6, r1\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #4\n\
-	bl PrintString\n\
-	lsls	r4, r4, #1\n\
-	adds	r4, r4, r6\n\
-	ldrh	r0, [r4, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #6\n\
-	bl PrintString\n\
-	ldr	r2, _US_080F7D14\n\
-	adds	r0, r6, r2\n\
-	ldrh	r5, [r0, #0]\n\
-	adds	r5, r5, r7\n\
-	ldrh	r0, [r4, #0]\n\
-	adds	r0, r0, r7\n\
-	bl getStringLength\n\
-	adds	r1, r0, #0\n\
-	lsls	r1, r1, #16\n\
-	asrs	r1, r1, #16\n\
-	adds	r1, #17\n\
-	adds	r0, r5, #0\n\
-	movs	r2, #6\n\
-	bl PrintString\n\
-	ldr	r3, _US_080F7D18\n\
-	adds	r0, r6, r3\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	b _US_080F7D96\n\
-	movs	r0, r0\n\
-	.align 2, 0\n\
-_US_080F7D14: .4byte 0x000005A2\n\
-_US_080F7D18: .4byte 0x000005A4\n\
-_US_080F7D1C:\n\
-	cmp	r3, #109\n\
-	bhi _US_080F7DB8\n\
-	ldr	r1, _US_080F7DA0\n\
-	adds	r0, r6, r1\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #4\n\
-	bl PrintString\n\
-	movs	r4, #0\n\
-	ldr	r1, _US_080F7DA4\n\
-	ldrb	r0, [r5, #10]\n\
-	subs	r0, #94\n\
-	lsls	r0, r0, #1\n\
-	adds	r0, r0, r1\n\
-	ldrh	r2, [r0, #0]\n\
-	cmp	r2, #0\n\
-	beq _US_080F7D58\n\
-_US_080F7D42:\n\
-	adds	r0, r2, #0\n\
-	movs	r1, #10\n\
-	bl __udivsi3\n\
-	lsls	r0, r0, #16\n\
-	lsrs	r2, r0, #16\n\
-	adds	r0, r4, #1\n\
-	lsls	r0, r0, #16\n\
-	lsrs	r4, r0, #16\n\
-	cmp	r2, #0\n\
-	bne _US_080F7D42\n\
-_US_080F7D58:\n\
-	ldr	r1, _US_080F7DA4\n\
-	ldr	r0, _US_080F7DA8\n\
-	add	r0, r8\n\
-	ldrb	r0, [r0, #10]\n\
-	subs	r0, #94\n\
-	lsls	r0, r0, #1\n\
-	adds	r0, r0, r1\n\
-	ldrh	r2, [r0, #0]\n\
-	adds	r1, r4, #0\n\
-	adds	r1, #16\n\
-	lsls	r1, r1, #24\n\
-	lsrs	r1, r1, #24\n\
-	adds	r0, r2, #0\n\
-	movs	r2, #4\n\
-	bl PrintNumber\n\
-	ldr	r4, _US_080F7DAC\n\
-	movs	r2, #181\n\
-	lsls	r2, r2, #3\n\
-	adds	r0, r4, r2\n\
-	ldrh	r0, [r0, #0]\n\
-	ldr	r5, _US_080F7DB0\n\
-	adds	r0, r0, r5\n\
-	movs	r1, #17\n\
-	movs	r2, #6\n\
-	bl PrintString\n\
-	ldr	r3, _US_080F7DB4\n\
-	adds	r4, r4, r3\n\
-	ldrh	r0, [r4, #0]\n\
-	adds	r0, r0, r5\n\
-_US_080F7D96:\n\
-	movs	r1, #17\n\
-	movs	r2, #8\n\
-	bl PrintString\n\
-	b _US_080F7DD0\n\
-	.align 2, 0\n\
-_US_080F7DA0: .4byte 0x000005A6\n\
-_US_080F7DA4: .4byte DiskECrystalAmounts\n\
-_US_080F7DA8: .4byte 0x00000DCC\n\
-_US_080F7DAC: .4byte StringOfsTable\n\
-_US_080F7DB0: .4byte gStringData\n\
-_US_080F7DB4: .4byte 0x000005AA\n\
-_US_080F7DB8:\n\
-	ldrb	r0, [r5, #10]\n\
-	movs	r1, #154\n\
-	lsls	r1, r1, #2\n\
-	adds	r0, r0, r1\n\
-	lsls	r0, r0, #1\n\
-	adds	r0, r0, r6\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #4\n\
-	bl PrintString\n\
-_US_080F7DD0:\n\
-	ldr	r0, _US_080F7DE0\n\
-	ldr	r2, _US_080F7DE4\n\
-	adds	r0, r0, r2\n\
-	ldrh	r0, [r0, #0]\n\
-	ldr	r1, _US_080F7DE8\n\
-	adds	r0, r0, r1\n\
-	b _US_080F7E06\n\
-	movs	r0, r0\n\
-	.align 2, 0\n\
-_US_080F7DE0: .4byte StringOfsTable\n\
-_US_080F7DE4: .4byte 0x000003BA\n\
-_US_080F7DE8: .4byte gStringData\n\
-_US_080F7DEC:\n\
-	ldr	r3, _US_080F7E10\n\
-	adds	r0, r6, r3\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #17\n\
-	movs	r2, #4\n\
-	bl PrintString\n\
-	movs	r1, #238\n\
-	lsls	r1, r1, #2\n\
-	adds	r0, r6, r1\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-_US_080F7E06:\n\
-	movs	r1, #1\n\
-	movs	r2, #18\n\
-	bl PrintString\n\
-	b _US_080F7E24\n\
-	.align 2, 0\n\
-_US_080F7E10: .4byte 0x000003BE\n\
-_US_080F7E14:\n\
-	ldr	r2, _US_080F7E84\n\
-	adds	r0, r6, r2\n\
-	ldrh	r0, [r0, #0]\n\
-	adds	r0, r0, r7\n\
-	movs	r1, #1\n\
-	movs	r2, #18\n\
-	bl PrintString\n\
-_US_080F7E24:\n\
-	ldr	r5, _US_080F7E88\n\
-	add	r5, r8\n\
-	ldrb	r0, [r5, #14]\n\
-	cmp	r0, #0\n\
-	beq _US_080F7E94\n\
-	ldr	r2, _US_080F7E8C\n\
-	ldrb	r1, [r5, #18]\n\
-	lsls	r1, r1, #10\n\
-	ldrb	r0, [r5, #17]\n\
-	lsls	r0, r0, #5\n\
-	orrs	r1, r0\n\
-	ldrb	r0, [r5, #16]\n\
-	orrs	r0, r1\n\
-	strh	r0, [r2, #0]\n\
-	ldr	r2, _US_080F7E90\n\
-	ldrh	r1, [r2, #0]\n\
-	movs	r3, #128\n\
-	lsls	r3, r3, #6\n\
-	adds	r0, r3, #0\n\
-	orrs	r0, r1\n\
-	strh	r0, [r2, #0]\n\
-	movs	r0, #16\n\
-	strb	r0, [r2, #12]\n\
-	ldrb	r1, [r2, #14]\n\
-	movs	r0, #3\n\
-	orrs	r0, r1\n\
-	strb	r0, [r2, #14]\n\
-	ldrb	r3, [r5, #14]\n\
-	adds	r1, r3, #0\n\
-	adds	r1, #64\n\
-	movs	r4, #255\n\
-	ands	r1, r4\n\
-	movs	r0, #64\n\
-	subs	r0, r0, r3\n\
-	lsls	r0, r0, #8\n\
-	orrs	r1, r0\n\
-	strh	r1, [r2, #4]\n\
-	ldrb	r3, [r5, #15]\n\
-	adds	r1, r3, #0\n\
-	adds	r1, #80\n\
-	ands	r1, r4\n\
-	movs	r0, #80\n\
-	subs	r0, r0, r3\n\
-	lsls	r0, r0, #8\n\
-	orrs	r1, r0\n\
-	strh	r1, [r2, #8]\n\
-	b _US_080F7EA6\n\
-	movs	r0, r0\n\
-	.align 2, 0\n\
-_US_080F7E84: .4byte 0x000003BA\n\
-_US_080F7E88: .4byte 0x00000DCC\n\
-_US_080F7E8C: .4byte gPaletteManager\n\
-_US_080F7E90: .4byte gWindowRegBuffer\n\
-_US_080F7E94:\n\
-	ldr	r2, _US_080F7EC8\n\
-	ldrh	r1, [r2, #0]\n\
-	ldr	r0, _US_080F7ECC\n\
-	ands	r0, r1\n\
-	movs	r1, #0\n\
-	strh	r0, [r2, #0]\n\
-	strb	r1, [r5, #16]\n\
-	strb	r1, [r5, #17]\n\
-	strb	r1, [r5, #18]\n\
-_US_080F7EA6:\n\
-	movs	r0, #64\n\
-	bl StepPaletteAnimation\n\
-	ldr	r0, _US_080F7ED0\n\
-	add	r0, r8\n\
-	ldrb	r0, [r0, #12]\n\
-	cmp	r0, #0\n\
-	beq _US_080F7EBC\n\
-	mov	r0, r8\n\
-	bl setSecretDiskPalette\n\
-_US_080F7EBC:\n\
-	pop	{r3}\n\
-	mov	r8, r3\n\
-	pop	{r4, r5, r6, r7}\n\
-	pop	{r0}\n\
-	bx	r0\n\
-	movs	r0, r0\n\
-	.align 2, 0\n\
-_US_080F7EC8: .4byte gWindowRegBuffer\n\
-_US_080F7ECC: .4byte 0x0000DFFF\n\
-_US_080F7ED0: .4byte 0x00000DCC\n\
-.else\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sb\n\
-	mov r6, r8\n\
-	push {r6, r7}\n\
-	mov sb, r0\n\
-	ldr r4, _080F80A8 @ =0x00000DCC\n\
-	add r4, sb\n\
-	movs r0, #0\n\
-	strb r0, [r4, #0xc]\n\
-	ldr r1, _080F80AC @ =PTR_ARRAY_083864ac\n\
-	mov r2, sb\n\
-	ldrb r0, [r2, #2]\n\
-	lsls r0, r0, #2\n\
-	adds r0, r0, r1\n\
-	ldr r1, [r0]\n\
-	mov r0, sb\n\
-	bl _call_via_r1\n\
-	ldr r0, _080F80B0 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r0, #8\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F8046\n\
-	movs r0, #3\n\
-	mov r3, sb\n\
-	strb r0, [r3, #1]\n\
-_080F8046:\n\
-	ldr r7, _080F80B4 @ =StringOfsTable\n\
-	movs r1, #0xef\n\
-	lsls r1, r1, #2\n\
-	adds r0, r7, r1\n\
-	ldrh r0, [r0]\n\
-	ldr r2, _080F80B8 @ =gStringData\n\
-	mov r8, r2\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #1\n\
-	bl PrintString\n\
-	ldrb r0, [r4, #0xa]\n\
-	adds r0, #1\n\
-	movs r1, #0x16\n\
-	movs r2, #1\n\
-	bl printThreeDigitNumber\n\
-	ldr r0, _080F80BC @ =gStageDiskManager\n\
-	ldr r1, [r0]\n\
-	ldrb r2, [r4, #0xa]\n\
-	lsls r0, r2, #0x18\n\
-	lsrs r3, r0, #0x18\n\
-	lsrs r0, r0, #0x1a\n\
-	adds r5, r1, r0\n\
-	ldrb r1, [r5]\n\
-	movs r0, #0xf\n\
-	ands r0, r1\n\
-	movs r1, #3\n\
-	ands r1, r2\n\
-	asrs r0, r1\n\
-	movs r2, #1\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	bne _080F808E\n\
-	b _080F823C\n\
-_080F808E:\n\
-	ldrb r0, [r5]\n\
-	adds r1, #4\n\
-	asrs r0, r1\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	bne _080F809C\n\
-	b _080F8214\n\
-_080F809C:\n\
-	cmp r3, #5\n\
-	bhi _080F80C0\n\
-	movs r3, #0xaf\n\
-	lsls r3, r3, #2\n\
-	adds r0, r3, #0\n\
-	b _080F80CA\n\
-	.align 2, 0\n\
-_080F80A8: .4byte 0x00000DCC\n\
-_080F80AC: .4byte PTR_ARRAY_083864ac\n\
-_080F80B0: .4byte gJoypad\n\
-_080F80B4: .4byte StringOfsTable\n\
-_080F80B8: .4byte gStringData\n\
-_080F80BC: .4byte gStageDiskManager\n\
-_080F80C0:\n\
-	cmp r3, #0x13\n\
-	bhi _080F80E0\n\
-	movs r1, #0xaf\n\
-	lsls r1, r1, #2\n\
-	adds r0, r1, #0\n\
-_080F80CA:\n\
-	ldrb r4, [r4, #0xa]\n\
-	adds r0, r0, r4\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r7\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #4\n\
-	bl PrintString\n\
-	b _080F81F8\n\
-_080F80E0:\n\
-	cmp r3, #0x5d\n\
-	bhi _080F8140\n\
-	ldrb r0, [r4, #0xa]\n\
-	adds r6, r0, #0\n\
-	adds r6, #0x50\n\
-	movs r2, #0xb4\n\
-	lsls r2, r2, #3\n\
-	adds r0, r7, r2\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #4\n\
-	bl PrintString\n\
-	lsls r4, r6, #1\n\
-	adds r4, r4, r7\n\
-	ldrh r0, [r4]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #6\n\
-	bl PrintString\n\
-	ldr r3, _080F8138 @ =0x000005A2\n\
-	adds r0, r7, r3\n\
-	ldrh r5, [r0]\n\
-	add r5, r8\n\
-	ldrh r0, [r4]\n\
-	add r0, r8\n\
-	bl getStringLength\n\
-	adds r1, r0, #0\n\
-	lsls r1, r1, #0x10\n\
-	asrs r1, r1, #0x10\n\
-	adds r1, #0x11\n\
-	adds r0, r5, #0\n\
-	movs r2, #6\n\
-	bl PrintString\n\
-	ldr r1, _080F813C @ =0x000005A4\n\
-	adds r0, r7, r1\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	b _080F81BC\n\
-	.align 2, 0\n\
-_080F8138: .4byte 0x000005A2\n\
-_080F813C: .4byte 0x000005A4\n\
-_080F8140:\n\
-	cmp r3, #0x6d\n\
-	bhi _080F81E0\n\
-	ldr r2, _080F81C8 @ =0x000005A6\n\
-	adds r0, r7, r2\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #4\n\
-	bl PrintString\n\
-	movs r6, #0\n\
-	ldr r1, _080F81CC @ =DiskECrystalAmounts\n\
-	ldrb r0, [r4, #0xa]\n\
-	subs r0, #0x5e\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r1\n\
-	ldrh r2, [r0]\n\
-	cmp r2, #0\n\
-	beq _080F817C\n\
-_080F8166:\n\
-	adds r0, r2, #0\n\
-	movs r1, #0xa\n\
-	bl __udivsi3\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r2, r0, #0x10\n\
-	adds r0, r6, #1\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r6, r0, #0x10\n\
-	cmp r2, #0\n\
-	bne _080F8166\n\
-_080F817C:\n\
-	ldr r1, _080F81CC @ =DiskECrystalAmounts\n\
-	ldr r0, _080F81D0 @ =0x00000DCC\n\
-	add r0, sb\n\
-	ldrb r0, [r0, #0xa]\n\
-	subs r0, #0x5e\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r1\n\
-	ldrh r2, [r0]\n\
-	adds r1, r6, #0\n\
-	adds r1, #0x11\n\
-	lsls r1, r1, #0x18\n\
-	lsrs r1, r1, #0x18\n\
-	adds r0, r2, #0\n\
-	movs r2, #6\n\
-	bl PrintNumber\n\
-	ldr r4, _080F81D4 @ =StringOfsTable\n\
-	movs r3, #0xb5\n\
-	lsls r3, r3, #3\n\
-	adds r0, r4, r3\n\
-	ldrh r0, [r0]\n\
-	ldr r5, _080F81D8 @ =gStringData\n\
-	adds r0, r0, r5\n\
-	adds r1, r6, #0\n\
-	adds r1, #0x12\n\
-	movs r2, #6\n\
-	bl PrintString\n\
-	ldr r0, _080F81DC @ =0x000005AA\n\
-	adds r4, r4, r0\n\
-	ldrh r0, [r4]\n\
-	adds r0, r0, r5\n\
-_080F81BC:\n\
-	movs r1, #0x11\n\
-	movs r2, #8\n\
-	bl PrintString\n\
-	b _080F81F8\n\
-	.align 2, 0\n\
-_080F81C8: .4byte 0x000005A6\n\
-_080F81CC: .4byte DiskECrystalAmounts\n\
-_080F81D0: .4byte 0x00000DCC\n\
-_080F81D4: .4byte StringOfsTable\n\
-_080F81D8: .4byte gStringData\n\
-_080F81DC: .4byte 0x000005AA\n\
-_080F81E0:\n\
-	ldrb r0, [r4, #0xa]\n\
-	movs r1, #0x9a\n\
-	lsls r1, r1, #2\n\
-	adds r0, r0, r1\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r7\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #4\n\
-	bl PrintString\n\
-_080F81F8:\n\
-	ldr r0, _080F8208 @ =StringOfsTable\n\
-	ldr r2, _080F820C @ =0x000003BA\n\
-	adds r0, r0, r2\n\
-	ldrh r0, [r0]\n\
-	ldr r1, _080F8210 @ =gStringData\n\
-	adds r0, r0, r1\n\
-	b _080F822E\n\
-	.align 2, 0\n\
-_080F8208: .4byte StringOfsTable\n\
-_080F820C: .4byte 0x000003BA\n\
-_080F8210: .4byte gStringData\n\
-_080F8214:\n\
-	ldr r3, _080F8238 @ =0x000003BE\n\
-	adds r0, r7, r3\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #0x11\n\
-	movs r2, #4\n\
-	bl PrintString\n\
-	movs r1, #0xee\n\
-	lsls r1, r1, #2\n\
-	adds r0, r7, r1\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-_080F822E:\n\
-	movs r1, #1\n\
-	movs r2, #0x12\n\
-	bl PrintString\n\
-	b _080F824C\n\
-	.align 2, 0\n\
-_080F8238: .4byte 0x000003BE\n\
-_080F823C:\n\
-	ldr r2, _080F82AC @ =0x000003BA\n\
-	adds r0, r7, r2\n\
-	ldrh r0, [r0]\n\
-	add r0, r8\n\
-	movs r1, #1\n\
-	movs r2, #0x12\n\
-	bl PrintString\n\
-_080F824C:\n\
-	ldr r5, _080F82B0 @ =0x00000DCC\n\
-	add r5, sb\n\
-	ldrb r0, [r5, #0xe]\n\
-	cmp r0, #0\n\
-	beq _080F82BC\n\
-	ldr r2, _080F82B4 @ =gPaletteManager\n\
-	ldrb r1, [r5, #0x12]\n\
-	lsls r1, r1, #0xa\n\
-	ldrb r0, [r5, #0x11]\n\
-	lsls r0, r0, #5\n\
-	orrs r1, r0\n\
-	ldrb r0, [r5, #0x10]\n\
-	orrs r0, r1\n\
-	strh r0, [r2]\n\
-	ldr r2, _080F82B8 @ =gWindowRegBuffer\n\
-	ldrh r1, [r2]\n\
-	movs r3, #0x80\n\
-	lsls r3, r3, #6\n\
-	adds r0, r3, #0\n\
-	orrs r0, r1\n\
-	strh r0, [r2]\n\
-	movs r0, #0x10\n\
-	strb r0, [r2, #0xc]\n\
-	ldrb r1, [r2, #0xe]\n\
-	movs r0, #3\n\
-	orrs r0, r1\n\
-	strb r0, [r2, #0xe]\n\
-	ldrb r3, [r5, #0xe]\n\
-	adds r1, r3, #0\n\
-	adds r1, #0x40\n\
-	movs r4, #0xff\n\
-	ands r1, r4\n\
-	movs r0, #0x40\n\
-	subs r0, r0, r3\n\
-	lsls r0, r0, #8\n\
-	orrs r1, r0\n\
-	strh r1, [r2, #4]\n\
-	ldrb r3, [r5, #0xf]\n\
-	adds r1, r3, #0\n\
-	adds r1, #0x50\n\
-	ands r1, r4\n\
-	movs r0, #0x50\n\
-	subs r0, r0, r3\n\
-	lsls r0, r0, #8\n\
-	orrs r1, r0\n\
-	strh r1, [r2, #8]\n\
-	b _080F82CE\n\
-	.align 2, 0\n\
-_080F82AC: .4byte 0x000003BA\n\
-_080F82B0: .4byte 0x00000DCC\n\
-_080F82B4: .4byte gPaletteManager\n\
-_080F82B8: .4byte gWindowRegBuffer\n\
-_080F82BC:\n\
-	ldr r2, _080F82F0 @ =gWindowRegBuffer\n\
-	ldrh r1, [r2]\n\
-	ldr r0, _080F82F4 @ =0x0000DFFF\n\
-	ands r0, r1\n\
-	movs r1, #0\n\
-	strh r0, [r2]\n\
-	strb r1, [r5, #0x10]\n\
-	strb r1, [r5, #0x11]\n\
-	strb r1, [r5, #0x12]\n\
-_080F82CE:\n\
-	movs r0, #0x40\n\
-	bl StepPaletteAnimation\n\
-	ldr r0, _080F82F8 @ =0x00000DCC\n\
-	add r0, sb\n\
-	ldrb r0, [r0, #0xc]\n\
-	cmp r0, #0\n\
-	beq _080F82E4\n\
-	mov r0, sb\n\
-	bl setSecretDiskPalette\n\
-_080F82E4:\n\
-	pop {r3, r4}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F82F0: .4byte gWindowRegBuffer\n\
-_080F82F4: .4byte 0x0000DFFF\n\
-_080F82F8: .4byte 0x00000DCC\n\
-.endif\n\
- .syntax divided\n");
+  d = &g->sceneState.disk;
+  d->redraw = 0;
+  sDiskRunLoops[g->mode[2]](g);
+
+  if (gJoypad[0].pressed & START_BUTTON) {
+    g->mode[1] = 3;
+  }
+
+  PrintString(STRING(0x1DE), 0x11, 1);
+  printThreeDigitNumber(d->cursorDisk + 1, 0x16, 1);
+
+  diskBits = gStageDiskManager.disk;
+  diskNo = (u8)(*(u16*)&d->cursorDisk);
+  disk = diskNo;
+  n = disk >> 2;
+  if ((((diskBits[n] & 0xF) >> (diskNo & 3)) & 1) != 0) {
+    if (((diskBits[n] >> ((diskNo & 3) + 4)) & 1) != 0) {
+      // 0x00..0x13 name a body part, 0x14..0x5D a cyber-elf, 0x5E..0x6D an
+      // E-crystal amount; the rest carry a plain description string.
+      if (disk <= 5) {
+        strId = 0x2BC + d->cursorDisk;
+        PrintString(STRING(strId), 0x11, 4);
+      } else if (disk <= 0x13) {
+        strId = 0x2BC + d->cursorDisk;
+        PrintString(STRING(strId), 0x11, 4);
+      } else if (disk <= 0x5D) {
+        n = d->cursorDisk;
+        do { ix = n + 0x50; } while (0);
+        PrintString(STRING(0x2D0), 0x11, 4);
+        PrintString(STRING(ix), 0x11, 6);
+        PrintString(STRING(0x2D1), getStringLength((char_t*)STRING(ix)) + 0x11, 6);
+        PrintString(STRING(0x2D2), 0x11, 8);
+      } else if (disk <= 0x6D) {
+        PrintString(STRING(0x2D3), 0x11, 4);
+#if IS_US
+        digits = 0;
+        amount = DiskECrystalAmounts[d->cursorDisk - 0x5E];
+        while (amount != 0) {
+          amount = amount / 10;
+          digits++;
+        }
+        PrintNumber(amount = DiskECrystalAmounts[(&g->sceneState.disk)->cursorDisk - 0x5E], digits + 0x10, 4);
+        PrintString(STRING(0x2D4), 0x11, 6);
+#else
+        ix = 0;
+        amount = DiskECrystalAmounts[d->cursorDisk - 0x5E];
+        while (amount != 0) {
+          amount = amount / 10;
+          ix = (u16)(ix + 1);
+        }
+        PrintNumber(amount = DiskECrystalAmounts[(&g->sceneState.disk)->cursorDisk - 0x5E], ix + 0x11, 6);
+        PrintString(STRING(0x2D4), ix + 0x12, 6);
+#endif
+        PrintString(STRING(0x2D5), 0x11, 8);
+      } else {
+        n = d->cursorDisk;
+        PrintString(STRING(0x268 + n), 0x11, 4);
+      }
+      PrintString(STRING(0x1DD), 1, 0x12);
+    } else {
+      // Found but not analysed yet.
+      PrintString(STRING(0x1DF), 0x11, 4);
+      PrintString(STRING(0x1DC), 1, 0x12);
+    }
+  } else {
+    // Not found at all: the slot stays blank.
+    PrintString(STRING(0x1DD), 1, 0x12);
+  }
+
+  d2 = &g->sceneState.disk;
+  if (d2->winHalfW != 0) {
+    gPaletteManager.buf[0] = (d2->colorB << 10) | (d2->colorG << 5) | d2->colorR;
+    gWindowRegBuffer.dispcnt |= DISPCNT_WIN0_ON;
+    gWindowRegBuffer.winin[0] = 0x10;
+    gWindowRegBuffer.winin[2] |= 3;
+    gWindowRegBuffer.winH.half[0] = ((d2->winHalfW + 0x40) & 0xFF) | ((0x40 - d2->winHalfW) << 8);
+    gWindowRegBuffer.winV.half[0] = ((d2->winHalfH + 0x50) & 0xFF) | ((0x50 - d2->winHalfH) << 8);
+  } else {
+    gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
+    d2->colorR = 0;
+    d2->colorG = 0;
+    d2->colorB = 0;
+  }
+
+  StepPaletteAnimation(0x40);
+  d3 = &g->sceneState.disk;
+  if (d3->redraw) {
+    setSecretDiskPalette(g);
+  }
 }
 
+// 0x080f82fc
 static void DiskLoop_BlackOut(struct GameState* g) {
   g->frames--;
   if (g->frames == 0) {
@@ -996,19 +275,22 @@ static void DiskLoop_BlackOut(struct GameState* g) {
   }
 }
 
+// 0x080f8368
 static void DiskLoop_Exit(struct GameState* g) {
   u8* s;
   RemovePaletteAnimation(64);
   gWindowRegBuffer.dispcnt &= ~DISPCNT_WIN0_ON;
   gPaletteManager.buf[0] = 0;
-  s = (u8*)&(g->sceneState).menu;
+  // The overworld menu re-opens on its disk entry.
+  s = (u8*)&g->sceneState.menu;
   s[13] = 1;
   SetGameMode(g, GAMEMODE(MAINGAME, OVERWORLD, 3, 5));
 }
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-static void sd_analysis_080f83ac(struct GameState* g) {
+// 0x080f83ac
+static void initDiskSceneRenderer(struct GameState* g) {
   Coords32* c = &g->unk_0dc4;
   c->x = PIXEL(120), c->y = PIXEL(80);
   ResetPivot(&g->unk_0db8, c, 0, 0);
@@ -1017,7 +299,8 @@ static void sd_analysis_080f83ac(struct GameState* g) {
   InitWidgetHeader(&g->entityHeaders[ENTITY_WIDGET], gWidgets, 64);
 }
 
-static void sd_analysis_080f8408(struct GameState* g) {
+// 0x080f8408
+static void drawDiskSceneWidgets(struct GameState* g) {
   Coords32* c = &g->unk_0dc4;
   const BgOfs* bg1ofs = (const BgOfs*)gVideoRegBuffer.bgofs[1];
   c->x = PIXEL(bg1ofs->x & 0x1FF) + PIXEL(120);
@@ -1027,763 +310,285 @@ static void sd_analysis_080f8408(struct GameState* g) {
   Renderer_Flush(&g->rendererUI);
 }
 
-NAKED static void setSecretDiskPalette(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sl\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6, r7}\n\
-	mov r8, r0\n\
-	ldr r6, _080F84F8 @ =0x00000ED8\n\
-	add r6, r8\n\
-	movs r5, #0\n\
-	ldr r0, _080F84FC @ =gStageDiskManager\n\
-	mov sb, r0\n\
-	ldr r1, _080F8500 @ =gVideoRegBuffer+6\n\
-	mov sl, r1\n\
-	ldr r2, _080F8504 @ =0x000031A2\n\
-	adds r7, r2, #0\n\
-_080F847A:\n\
-	mov r3, sb\n\
-	ldr r2, [r3]\n\
-	ldr r0, _080F8508 @ =0x00000DCC\n\
-	add r0, r8\n\
-	ldrb r0, [r0, #0xb]\n\
-	lsls r1, r0, #2\n\
-	adds r1, r1, r0\n\
-	adds r1, r1, r5\n\
-	asrs r0, r1, #2\n\
-	adds r3, r2, r0\n\
-	ldrb r2, [r3]\n\
-	movs r0, #0xf\n\
-	ands r0, r2\n\
-	movs r2, #3\n\
-	ands r2, r1\n\
-	asrs r0, r2\n\
-	movs r4, #1\n\
-	ands r0, r4\n\
-	cmp r0, #0\n\
-	beq _080F856C\n\
-	ldrb r0, [r3]\n\
-	adds r1, r2, #4\n\
-	asrs r0, r1\n\
-	ands r0, r4\n\
-	cmp r0, #0\n\
-	beq _080F8514\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r2, r4, r6\n\
-	adds r1, r2, #0\n\
-	adds r1, #0xc6\n\
-	ldr r3, _080F850C @ =0x000080ED\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	adds r1, #2\n\
-	adds r3, #1\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x83\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	adds r3, #0x1f\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	ldr r2, _080F8510 @ =0x0000810E\n\
-	b _080F855C\n\
-	.align 2, 0\n\
-_080F84F8: .4byte 0x00000ED8\n\
-_080F84FC: .4byte gStageDiskManager\n\
-_080F8500: .4byte gVideoRegBuffer+6\n\
-_080F8504: .4byte 0x000031A2\n\
-_080F8508: .4byte 0x00000DCC\n\
-_080F850C: .4byte 0x000080ED\n\
-_080F8510: .4byte 0x0000810E\n\
-_080F8514:\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r2, r4, r6\n\
-	adds r1, r2, #0\n\
-	adds r1, #0xc6\n\
-	ldr r3, _080F8564 @ =0x000080EB\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	adds r1, #2\n\
-	adds r3, #1\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x83\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	adds r3, #0x1f\n\
-	adds r0, r3, #0\n\
-	strh r0, [r1]\n\
-	movs r0, #0x84\n\
-	lsls r0, r0, #1\n\
-	adds r1, r2, r0\n\
-	ldr r2, _080F8568 @ =0x0000810C\n\
-_080F855C:\n\
-	adds r0, r2, #0\n\
-	strh r0, [r1]\n\
-	b _080F85A8\n\
-	.align 2, 0\n\
-_080F8564: .4byte 0x000080EB\n\
-_080F8568: .4byte 0x0000810C\n\
-_080F856C:\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r4, r0, #0\n\
-	lsls r4, r4, #0x18\n\
-	lsrs r4, r4, #0x18\n\
-	adds r0, r5, #0\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsls r4, r4, #6\n\
-	lsrs r0, r0, #0x17\n\
-	adds r4, r4, r0\n\
-	lsls r4, r4, #1\n\
-	adds r1, r4, r6\n\
-	adds r0, r1, #0\n\
-	adds r0, #0xc6\n\
-	strh r7, [r0]\n\
-	adds r0, #2\n\
-	strh r7, [r0]\n\
-	movs r3, #0x83\n\
-	lsls r3, r3, #1\n\
-	adds r0, r1, r3\n\
-	strh r7, [r0]\n\
-	movs r2, #0x84\n\
-	lsls r2, r2, #1\n\
-	adds r0, r1, r2\n\
-	strh r7, [r0]\n\
-_080F85A8:\n\
-	adds r0, r5, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r5, r0, #0x18\n\
-	cmp r5, #0x1d\n\
-	bhi _080F85B4\n\
-	b _080F847A\n\
-_080F85B4:\n\
-	ldr r0, _080F85DC @ =0x00000ED8\n\
-	add r0, r8\n\
-	mov r3, sl\n\
-	ldrh r2, [r3]\n\
-	movs r1, #0xf8\n\
-	lsls r1, r1, #5\n\
-	ands r1, r2\n\
-	lsls r1, r1, #3\n\
-	movs r2, #0x80\n\
-	lsls r2, r2, #5\n\
-	bl RequestBgMapTransfer\n\
-	pop {r3, r4, r5}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	mov sl, r5\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F85DC: .4byte 0x00000ED8\n\
- .syntax divided\n");
+// Repaint the disk grid: 30 slots, 5 per row, each a 2x2 block of tiles that
+// says whether the disk is missing, found, or analysed.
+// 0x080f845c
+static void setSecretDiskPalette(struct GameState* g) {
+  struct SecretDiskState* d;
+  u16* map;
+  u8* disk;
+  u8* q;
+  u8* q2;
+  s32 n;
+  u8 i;
+  u8 row;
+  u8 col;
+
+  map = g->menuBgMap1;
+  for (i = 0; i <= 0x1D; i++) {
+    disk = gStageDiskManager.disk;
+    d = &g->sceneState.disk;
+    n = d->scrollRow * 5 + i;
+    q = &disk[n >> 2];
+    if (((*q & 0xF) >> (n & 3)) & 1) {
+      if ((*q >> ((n & 3) + 4)) & 1) {
+        row = i / 5;
+        col = i % 5;
+        map[(row << 6) + (col << 1) + 99] = 0x80ED;
+        map[(row << 6) + (col << 1) + 100] = 0x80EE;
+        map[(row << 6) + (col << 1) + 131] = 0x810D;
+        map[(row << 6) + (col << 1) + 132] = 0x810E;
+      } else {
+        col = i / 5;
+        row = col;
+        col = i % 5;
+        map[(row << 6) + (col << 1) + 99] = 0x80EB;
+        map[(row << 6) + (col << 1) + 100] = 0x80EC;
+        map[(row << 6) + (col << 1) + 131] = 0x810B;
+        map[(row << 6) + (col << 1) + 132] = 0x810C;
+      }
+    } else {
+      row = i / 5;
+      col = i % 5;
+      map[(((u8)(i / 5)) << 6) + (col << 1) + 99] = 0x31A2;
+      map[(((u8)(i / 5)) << 6) + (col << 1) + 100] = 0x31A2;
+      map[(((u8)(i / 5)) << 6) + (col << 1) + 131] = 0x31A2;
+      map[(((u8)(i / 5)) << 6) + (col << 1) + 132] = 0x31A2;
+    }
+  }
+  RequestBgMapTransfer(g->menuBgMap1, (void*)SCREEN_BASE(1), 0x1000);
 }
 
-NAKED static void sd_analysis_080f85e0(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	adds r6, r0, #0\n\
-	ldrb r0, [r6, #3]\n\
-	cmp r0, #0\n\
-	bne _080F8638\n\
-	ldr r0, _080F8634 @ =0x00000DCC\n\
-	adds r5, r6, r0\n\
-	movs r0, #1\n\
-	strb r0, [r5, #0xc]\n\
-	adds r0, r6, #0\n\
-	movs r1, #0\n\
-	movs r2, #0\n\
-	bl CreateSquareCursor\n\
-	adds r4, r0, #0\n\
-	str r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x14\n\
-	adds r0, #0x18\n\
-	adds r4, #0x74\n\
-	strh r0, [r4]\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	ldrb r1, [r5, #0xb]\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x18\n\
-	adds r4, #0x76\n\
-	strh r0, [r4]\n\
-	ldrb r0, [r6, #3]\n\
-	adds r0, #1\n\
-	strb r0, [r6, #3]\n\
-	b _080F8754\n\
-	.align 2, 0\n\
-_080F8634: .4byte 0x00000DCC\n\
-_080F8638:\n\
-	ldr r0, _080F8654 @ =0x00000DCC\n\
-	adds r3, r6, r0\n\
-	ldrb r1, [r3, #0xa]\n\
-	ldr r0, _080F8658 @ =gJoypad\n\
-	ldrh r2, [r0, #6]\n\
-	movs r0, #0x20\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F865C\n\
-	cmp r1, #0\n\
-	beq _080F868C\n\
-	subs r0, r1, #1\n\
-	b _080F868A\n\
-	.align 2, 0\n\
-_080F8654: .4byte 0x00000DCC\n\
-_080F8658: .4byte gJoypad\n\
-_080F865C:\n\
-	movs r0, #0x10\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F866C\n\
-	cmp r1, #0xb2\n\
-	bhi _080F868C\n\
-	adds r0, r1, #1\n\
-	b _080F868A\n\
-_080F866C:\n\
-	movs r0, #0x40\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F867C\n\
-	cmp r1, #4\n\
-	bls _080F868C\n\
-	subs r0, r1, #5\n\
-	b _080F868A\n\
-_080F867C:\n\
-	movs r0, #0x80\n\
-	ands r0, r2\n\
-	cmp r0, #0\n\
-	beq _080F868C\n\
-	cmp r1, #0xae\n\
-	bhi _080F868C\n\
-	adds r0, r1, #5\n\
-_080F868A:\n\
-	strb r0, [r3, #0xa]\n\
-_080F868C:\n\
-	ldr r0, _080F86B4 @ =0x00000DCC\n\
-	adds r4, r6, r0\n\
-	ldrb r0, [r4, #0xa]\n\
-	cmp r1, r0\n\
-	beq _080F869C\n\
-	movs r0, #1\n\
-	bl PlaySound\n\
-_080F869C:\n\
-	ldrb r0, [r4, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	adds r2, r0, #0\n\
-	ldrb r1, [r4, #0xb]\n\
-	lsls r0, r2, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	cmp r1, r0\n\
-	bls _080F86B8\n\
-	strb r2, [r4, #0xb]\n\
-	b _080F86C4\n\
-	.align 2, 0\n\
-_080F86B4: .4byte 0x00000DCC\n\
-_080F86B8:\n\
-	ldrb r1, [r4, #0xb]\n\
-	subs r0, #5\n\
-	cmp r1, r0\n\
-	bge _080F86C8\n\
-	subs r0, r2, #5\n\
-	strb r0, [r4, #0xb]\n\
-_080F86C4:\n\
-	movs r0, #1\n\
-	strb r0, [r4, #0xc]\n\
-_080F86C8:\n\
-	ldr r0, _080F8734 @ =0x00000DCC\n\
-	adds r5, r6, r0\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __umodsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x14\n\
-	adds r0, #0x18\n\
-	adds r4, #0x74\n\
-	strh r0, [r4]\n\
-	ldr r4, [r5, #4]\n\
-	ldrb r0, [r5, #0xa]\n\
-	movs r1, #5\n\
-	bl __udivsi3\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	ldrb r1, [r5, #0xb]\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #4\n\
-	adds r0, #0x18\n\
-	adds r4, #0x76\n\
-	strh r0, [r4]\n\
-	ldr r0, _080F8738 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r4, #1\n\
-	movs r3, #1\n\
-	adds r0, r3, #0\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F8748\n\
-	ldr r0, _080F873C @ =gStageDiskManager\n\
-	ldr r0, [r0]\n\
-	ldrb r2, [r5, #0xa]\n\
-	lsrs r1, r2, #2\n\
-	adds r0, r0, r1\n\
-	ldrb r1, [r0]\n\
-	movs r0, #0xf\n\
-	ands r0, r1\n\
-	movs r1, #3\n\
-	ands r1, r2\n\
-	asrs r0, r1\n\
-	ands r0, r3\n\
-	cmp r0, #0\n\
-	beq _080F8740\n\
-	ldr r0, [r5, #4]\n\
-	adds r0, #0x78\n\
-	strb r4, [r0]\n\
-	strb r4, [r6, #2]\n\
-	movs r0, #0\n\
-	strb r0, [r6, #3]\n\
-	b _080F8754\n\
-	.align 2, 0\n\
-_080F8734: .4byte 0x00000DCC\n\
-_080F8738: .4byte gJoypad\n\
-_080F873C: .4byte gStageDiskManager\n\
-_080F8740:\n\
-	movs r0, #4\n\
-	bl PlaySound\n\
-	b _080F8754\n\
-_080F8748:\n\
-	movs r0, #2\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F8754\n\
-	movs r0, #3\n\
-	strb r0, [r6, #1]\n\
-_080F8754:\n\
-	pop {r4, r5, r6}\n\
-	pop {r0}\n\
-	bx r0\n\
- .syntax divided\n");
+// Grid sub-loop: move the cursor, scroll the grid under it, open a disk on A.
+// 0x080f85e0
+static void DiskRun_Run(struct GameState* g) {
+  struct SecretDiskState* d;
+  struct SecretDiskState* d2;
+  struct SecretDiskState* d3;
+  u8 old;
+  u32 row;
+  u8* disk;
+  u32 nCols;
+
+  if (g->mode[3] == 0) {
+    d = &g->sceneState.disk;
+    d->redraw = 1;
+    d->cursor = (struct SquareCursorWidget*)CreateSquareCursor(g, FALSE, 0);
+    d->cursor->px = ((u8)(d->cursorDisk % 5) << 4) + 0x18;
+    d->cursor->py = (((u8)(d->cursorDisk / 5) - d->scrollRow) << 4) + 0x18;
+    g->mode[3]++;
+    return;
+  }
+
+  d3 = &g->sceneState.disk;
+  old = d3->cursorDisk;
+  if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+    if (old != 0) d3->cursorDisk = old - 1;
+  } else if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+    if (old <= 0xB2) d3->cursorDisk = old + 1;
+  } else if (gJoypad[0].field3_0x6 & DPAD_UP) {
+    if (old > 4) d3->cursorDisk = old - 5;
+  } else if (gJoypad[0].field3_0x6 & DPAD_DOWN) {
+    if (old <= 0xAE) d3->cursorDisk = old + 5;
+  }
+
+  d2 = &g->sceneState.disk;
+  if (old != d2->cursorDisk) PlaySound(1);
+
+  nCols = 5;
+  row = d2->cursorDisk / nCols;
+  if (d2->scrollRow > (u8)row) {
+    d2->scrollRow = row;
+    d2->redraw = 1;
+  } else if (d2->scrollRow < (s32)((u8)row - nCols)) {
+    d2->scrollRow = row - nCols;
+    d2->redraw = 1;
+  }
+
+  // The grid is 5 columns of 16px cells, with its top-left corner at (0x18, 0x18).
+  d = &g->sceneState.disk;
+  d->cursor->px = ((u8)(d->cursorDisk % 5) << 4) + 0x18;
+  d->cursor->py = (((u8)(d->cursorDisk / 5) - d->scrollRow) << 4) + 0x18;
+
+  if (gJoypad[0].pressed & A_BUTTON) {
+    disk = gStageDiskManager.disk;
+    if ((((disk[d->cursorDisk >> 2] & 0xF) >> (d->cursorDisk & 3)) & 1) != 0) {
+      d->cursor->dead = TRUE;
+      g->mode[2] = 1;
+      g->mode[3] = 0;
+    } else {
+      PlaySound(4);
+    }
+  } else if (gJoypad[0].pressed & B_BUTTON) {
+    g->mode[1] = 3;
+  }
 }
 
-NAKED static void sd_analysis_080f875c(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	mov r7, sl\n\
-	mov r6, sb\n\
-	mov r5, r8\n\
-	push {r5, r6, r7}\n\
-	sub sp, #0x10\n\
-	mov r8, r0\n\
-	ldrb r0, [r0, #3]\n\
-	cmp r0, #0\n\
-	bne _080F880C\n\
-	ldr r0, _080F8798 @ =gStageDiskManager\n\
-	ldr r1, [r0]\n\
-	ldr r0, _080F879C @ =0x00000DCC\n\
-	add r0, r8\n\
-	ldrb r2, [r0, #0xa]\n\
-	lsrs r0, r2, #2\n\
-	adds r1, r1, r0\n\
-	ldrb r1, [r1]\n\
-	movs r0, #3\n\
-	ands r0, r2\n\
-	adds r0, #4\n\
-	asrs r1, r0\n\
-	movs r0, #1\n\
-	ands r1, r0\n\
-	cmp r1, #0\n\
-	beq _080F87A0\n\
-	movs r0, #2\n\
-	bl PlaySound\n\
-	b _080F87A6\n\
-	.align 2, 0\n\
-_080F8798: .4byte gStageDiskManager\n\
-_080F879C: .4byte 0x00000DCC\n\
-_080F87A0:\n\
-	movs r0, #0xe\n\
-	bl PlaySound\n\
-_080F87A6:\n\
-	ldr r4, _080F87CC @ =0x00000DCC\n\
-	add r4, r8\n\
-	ldrb r1, [r4, #0xa]\n\
-	mov r0, r8\n\
-	movs r2, #0\n\
-	bl OpenSecretDisk\n\
-	ldrb r0, [r4, #0xa]\n\
-	cmp r0, #0x13\n\
-	bls _080F87F4\n\
-	cmp r0, #0x2e\n\
-	bhi _080F87D0\n\
-	movs r0, #0x13\n\
-	strb r0, [r4, #0x10]\n\
-	movs r0, #2\n\
-	strb r0, [r4, #0x11]\n\
-	movs r0, #9\n\
-	strb r0, [r4, #0x12]\n\
-	b _080F87FC\n\
-	.align 2, 0\n\
-_080F87CC: .4byte 0x00000DCC\n\
-_080F87D0:\n\
-	cmp r0, #0x3b\n\
-	bhi _080F87E2\n\
-	movs r0, #2\n\
-	strb r0, [r4, #0x10]\n\
-	movs r0, #0x11\n\
-	strb r0, [r4, #0x11]\n\
-	movs r0, #7\n\
-	strb r0, [r4, #0x12]\n\
-	b _080F87FC\n\
-_080F87E2:\n\
-	cmp r0, #0x5d\n\
-	bhi _080F87F4\n\
-	movs r0, #8\n\
-	strb r0, [r4, #0x10]\n\
-	movs r0, #0xb\n\
-	strb r0, [r4, #0x11]\n\
-	movs r0, #0x16\n\
-	strb r0, [r4, #0x12]\n\
-	b _080F87FC\n\
-_080F87F4:\n\
-	movs r0, #0\n\
-	strb r0, [r4, #0x12]\n\
-	strb r0, [r4, #0x11]\n\
-	strb r0, [r4, #0x10]\n\
-_080F87FC:\n\
-	ldr r1, _080F88E0 @ =0x00000DCC\n\
-	add r1, r8\n\
-	movs r0, #1\n\
-	strb r0, [r1, #0xc]\n\
-	mov r1, r8\n\
-	ldrb r0, [r1, #3]\n\
-	adds r0, #1\n\
-	strb r0, [r1, #3]\n\
-_080F880C:\n\
-	movs r7, #2\n\
-	ldr r2, _080F88E4 @ =0x03002BC0\n\
-	mov sl, r2\n\
-	movs r4, #0x1f\n\
-	mov sb, r4\n\
-	movs r5, #0x1f\n\
-	mov ip, r5\n\
-_080F881A:\n\
-	lsls r0, r7, #1\n\
-	mov r1, sl\n\
-	adds r6, r0, r1\n\
-	ldrh r1, [r6]\n\
-	adds r4, r1, #0\n\
-	ldr r2, _080F88E8 @ =0x03002BE0\n\
-	adds r0, r0, r2\n\
-	ldrh r2, [r0]\n\
-	str r2, [sp, #0xc]\n\
-	movs r0, #0x1f\n\
-	adds r3, r1, #0\n\
-	ands r3, r0\n\
-	adds r0, r2, #0\n\
-	mov r5, ip\n\
-	ands r0, r5\n\
-	lsrs r0, r0, #1\n\
-	cmp r3, r0\n\
-	bls _080F8844\n\
-	subs r0, r3, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r3, r0, #0x18\n\
-_080F8844:\n\
-	lsrs r1, r1, #5\n\
-	mov r0, ip\n\
-	ands r1, r0\n\
-	lsrs r0, r2, #5\n\
-	mov r2, sb\n\
-	ands r0, r2\n\
-	lsrs r0, r0, #1\n\
-	cmp r1, r0\n\
-	bls _080F885C\n\
-	subs r0, r1, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r1, r0, #0x18\n\
-_080F885C:\n\
-	lsrs r2, r4, #0xa\n\
-	mov r4, ip\n\
-	ands r2, r4\n\
-	ldr r5, [sp, #0xc]\n\
-	lsrs r0, r5, #0xa\n\
-	mov r4, sb\n\
-	ands r0, r4\n\
-	lsrs r0, r0, #1\n\
-	cmp r2, r0\n\
-	bls _080F8876\n\
-	subs r0, r2, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r2, r0, #0x18\n\
-_080F8876:\n\
-	lsls r0, r2, #0xa\n\
-	lsls r1, r1, #5\n\
-	orrs r0, r1\n\
-	orrs r0, r3\n\
-	strh r0, [r6]\n\
-	adds r0, r7, #1\n\
-	lsls r0, r0, #0x10\n\
-	lsrs r7, r0, #0x10\n\
-	cmp r7, #0xf\n\
-	bls _080F881A\n\
-	ldr r5, _080F88EC @ =u8_ARRAY_ARRAY_083864d8\n\
-	ldr r4, _080F88E0 @ =0x00000DCC\n\
-	add r4, r8\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	adds r1, r0, r5\n\
-	ldrh r0, [r1]\n\
-	cmp r0, #0\n\
-	beq _080F8950\n\
-	ldrb r0, [r1, #5]\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r2, r0, #0x19\n\
-	ldrb r3, [r4, #0xe]\n\
-	cmp r3, r2\n\
-	bhs _080F88F0\n\
-	lsrs r1, r0, #0x1c\n\
-	adds r1, r3, r1\n\
-	strb r1, [r4, #0xe]\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	adds r0, r0, r5\n\
-	ldrb r0, [r0, #6]\n\
-	lsrs r0, r0, #4\n\
-	ldrb r2, [r4, #0xf]\n\
-	adds r0, r0, r2\n\
-	strb r0, [r4, #0xf]\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	adds r2, r0, r5\n\
-	ldrb r0, [r2, #5]\n\
-	lsrs r0, r0, #1\n\
-	lsls r1, r1, #0x18\n\
-	lsrs r1, r1, #0x18\n\
-	cmp r1, r0\n\
-	bls _080F88D2\n\
-	strb r0, [r4, #0xe]\n\
-_080F88D2:\n\
-	ldrb r0, [r2, #6]\n\
-	lsrs r1, r0, #1\n\
-	ldrb r0, [r4, #0xf]\n\
-	cmp r0, r1\n\
-	bls _080F8950\n\
-	strb r1, [r4, #0xf]\n\
-	b _080F8950\n\
-	.align 2, 0\n\
-_080F88E0: .4byte 0x00000DCC\n\
-_080F88E4: .4byte gPaletteManager+(128*2)\n\
-_080F88E8: .4byte gPaletteManager+(144*2)\n\
-_080F88EC: .4byte u8_ARRAY_ARRAY_083864d8\n\
-_080F88F0:\n\
-	strb r2, [r4, #0xe]\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	ldr r5, _080F897C @ =u8_ARRAY_ARRAY_083864d8\n\
-	adds r0, r0, r5\n\
-	ldrb r0, [r0, #6]\n\
-	lsrs r0, r0, #1\n\
-	strb r0, [r4, #0xf]\n\
-	mov r1, r8\n\
-	ldrb r0, [r1, #3]\n\
-	ldrb r5, [r4, #0xa]\n\
-	cmp r0, #1\n\
-	bne _080F8950\n\
-	lsls r0, r5, #3\n\
-	ldr r2, _080F897C @ =u8_ARRAY_ARRAY_083864d8\n\
-	adds r0, r0, r2\n\
-	ldrb r2, [r0, #4]\n\
-	ldrh r3, [r0]\n\
-	movs r1, #2\n\
-	ldrsb r1, [r0, r1]\n\
-	movs r0, #0x40\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #8\n\
-	str r0, [sp]\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	ldr r1, _080F897C @ =u8_ARRAY_ARRAY_083864d8\n\
-	adds r0, r0, r1\n\
-	movs r1, #3\n\
-	ldrsb r1, [r0, r1]\n\
-	movs r0, #0x50\n\
-	subs r0, r0, r1\n\
-	lsls r0, r0, #8\n\
-	str r0, [sp, #4]\n\
-	ldrb r0, [r4, #0xa]\n\
-	lsls r0, r0, #3\n\
-	ldr r4, _080F897C @ =u8_ARRAY_ARRAY_083864d8\n\
-	adds r0, r0, r4\n\
-	ldrb r0, [r0, #7]\n\
-	str r0, [sp, #8]\n\
-	mov r0, r8\n\
-	adds r1, r5, #0\n\
-	bl FUN_080e83d0\n\
-	mov r5, r8\n\
-	ldrb r0, [r5, #3]\n\
-	adds r0, #1\n\
-	strb r0, [r5, #3]\n\
-_080F8950:\n\
-	ldr r0, _080F8980 @ =gJoypad\n\
-	ldrh r1, [r0, #4]\n\
-	movs r0, #3\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	beq _080F896A\n\
-	movs r0, #3\n\
-	bl PlaySound\n\
-	mov r1, r8\n\
-	ldrb r0, [r1, #2]\n\
-	adds r0, #1\n\
-	strb r0, [r1, #2]\n\
-_080F896A:\n\
-	add sp, #0x10\n\
-	pop {r3, r4, r5}\n\
-	mov r8, r3\n\
-	mov sb, r4\n\
-	mov sl, r5\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F897C: .4byte u8_ARRAY_ARRAY_083864d8\n\
-_080F8980: .4byte gJoypad\n\
- .syntax divided\n");
+// Opening sub-loop: grow the analysis window and fade the palette into it.
+// 0x080f875c
+static void DiskRun_OpenWindow(struct GameState* g) {
+  struct SecretDiskState* d;
+  struct SecretDiskState* d2;
+  struct SecretDiskState* d3;
+  struct SecretDiskState* d4;
+  const struct SecretDiskEntry* e;
+  const struct SecretDiskEntry* table;
+  u8* diskBits;
+  u16* pal;
+  u16* dst;
+  u8 r;
+  u32 gr, b;
+  u32 tr, tg, tb;
+  u16 cur;
+  u16 target;
+  u8 halfW;
+  u16 i;
+
+  if (g->mode[3] == 0) {
+    diskBits = gStageDiskManager.disk;
+    d = &g->sceneState.disk;
+    if (((diskBits[d->cursorDisk >> 2] >> ((d->cursorDisk & 3) + 4)) & 1) != 0) {
+      PlaySound(2);
+    } else {
+      PlaySound(14);
+    }
+    d2 = &g->sceneState.disk;
+    OpenSecretDisk(g, d2->cursorDisk, FALSE);
+
+    // Backdrop colour behind the analysis window, by disk category.
+    if (d2->cursorDisk <= 0x13) {
+      d2->colorB = 0;
+      d2->colorG = 0;
+      d2->colorR = 0;
+    } else if (d2->cursorDisk <= 0x2E) {
+      d2->colorR = 0x13;
+      d2->colorG = 2;
+      d2->colorB = 9;
+    } else if (d2->cursorDisk <= 0x3B) {
+      d2->colorR = 2;
+      d2->colorG = 0x11;
+      d2->colorB = 7;
+    } else if (d2->cursorDisk <= 0x5D) {
+      d2->colorR = 8;
+      d2->colorG = 0xB;
+      d2->colorB = 0x16;
+    } else {
+      d2->colorB = 0;
+      d2->colorG = 0;
+      d2->colorR = 0;
+    }
+
+    d3 = &g->sceneState.disk;
+    d3->redraw = 1;
+    g->mode[3]++;
+  }
+
+  // Fade entries 130..143 toward half the brightness of 146..159, one step per
+  // channel per frame.
+  // This is all graphics stuff so good luck reading it
+  for (i = 2; i <= 0xF; i++) {
+    pal = &gPaletteManager.buf[128];
+    dst = &gPaletteManager.buf[144];
+    cur = pal[i];
+    target = dst[i];
+    r = cur & 0x1F;
+    tr = (target & 0x1F) >> 1;
+    if (r > tr) r = (u8)(r - 1);
+    gr = cur >> 5;
+    gr = gr & 0x1F;
+    tg = ((target >> 5) & 0x1F) >> 1;
+    if (gr > tg) gr = (u8)(gr - 1);
+    tb = 0x1F;
+    b = (cur >> 10) & tb;
+    tb = ((target >> 10) & 0x1F) >> 1;
+    if (b > tb) b = (u8)(b - 1);
+    pal[i] = (b << 10) | (gr << 5) | r;
+  }
+
+  table = gSecretDiskEntries;
+  d4 = &g->sceneState.disk;
+  if (table[d4->cursorDisk].unk_00 != 0) {
+    halfW = (u8)table[d4->cursorDisk].rate0 >> 1;
+    if (d4->winHalfW < halfW) {
+      d4->winHalfW += table[d4->cursorDisk].rate0 >> 4;
+      d4->winHalfH += table[d4->cursorDisk].rate1 >> 4;
+      if (d4->winHalfW > (table[d4->cursorDisk].rate0 >> 1)) {
+        d4->winHalfW = table[d4->cursorDisk].rate0 >> 1;
+      }
+      if (d4->winHalfH > (table[d4->cursorDisk].rate1 >> 1)) {
+        d4->winHalfH = table[d4->cursorDisk].rate1 >> 1;
+      }
+    } else {
+      d4->winHalfW = halfW;
+      d4->winHalfH = table[d4->cursorDisk].rate1 >> 1;
+      if (g->mode[3] == 1) {
+        e = &table[d4->cursorDisk];
+        FUN_080e83d0(g, d4->cursorDisk, e->unk_04, e->unk_00,
+                     (0x40 - table[d4->cursorDisk].x) << 8,
+                     (0x50 - table[d4->cursorDisk].y) << 8,
+                     table[d4->cursorDisk].unk_07);
+        g->mode[3]++;
+      }
+    }
+  }
+
+  if (gJoypad[0].pressed & (A_BUTTON | B_BUTTON)) {
+    PlaySound(3);
+    g->mode[2]++;
+  }
 }
 
-NAKED static void sd_analysis_080f8984(struct GameState* g) {
-  asm(".syntax unified\n\
-	push {r4, r5, lr}\n\
-	adds r3, r0, #0\n\
-	ldr r0, _080F89B8 @ =0x00000DCC\n\
-	adds r2, r3, r0\n\
-	ldrb r0, [r2, #0xe]\n\
-	cmp r0, #0\n\
-	beq _080F89F4\n\
-	adds r4, r0, #0\n\
-	ldr r1, _080F89BC @ =u8_ARRAY_ARRAY_083864d8\n\
-	ldrb r0, [r2, #0xa]\n\
-	lsls r0, r0, #3\n\
-	adds r5, r0, r1\n\
-	ldrb r0, [r5, #5]\n\
-	lsrs r1, r0, #4\n\
-	subs r0, r4, r1\n\
-	cmp r0, #0\n\
-	ble _080F89C6\n\
-	strb r0, [r2, #0xe]\n\
-	ldrb r3, [r2, #0xf]\n\
-	ldrb r0, [r5, #6]\n\
-	lsrs r1, r0, #4\n\
-	subs r0, r3, r1\n\
-	cmp r0, #0\n\
-	ble _080F89C0\n\
-	strb r0, [r2, #0xf]\n\
-	b _080F8A18\n\
-	.align 2, 0\n\
-_080F89B8: .4byte 0x00000DCC\n\
-_080F89BC: .4byte u8_ARRAY_ARRAY_083864d8\n\
-_080F89C0:\n\
-	movs r0, #0\n\
-	strb r0, [r2, #0xf]\n\
-	b _080F8A18\n\
-_080F89C6:\n\
-	movs r0, #0\n\
-	strb r0, [r2, #0xe]\n\
-	strb r0, [r2, #0xf]\n\
-	strb r0, [r3, #2]\n\
-	strb r0, [r3, #3]\n\
-	movs r2, #2\n\
-	ldr r3, _080F89F0 @ =0x03002BC0\n\
-	adds r4, r3, #0\n\
-	adds r4, #0x20\n\
-_080F89D8:\n\
-	lsls r0, r2, #1\n\
-	adds r1, r0, r3\n\
-	adds r0, r0, r4\n\
-	ldrh r0, [r0]\n\
-	strh r0, [r1]\n\
-	adds r0, r2, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r2, r0, #0x18\n\
-	cmp r2, #0xf\n\
-	bls _080F89D8\n\
-	b _080F8A18\n\
-	.align 2, 0\n\
-_080F89F0: .4byte gPaletteManager+(128*2)\n\
-_080F89F4:\n\
-	strb r0, [r2, #0xe]\n\
-	strb r0, [r2, #0xf]\n\
-	strb r0, [r3, #2]\n\
-	strb r0, [r3, #3]\n\
-	movs r2, #2\n\
-	ldr r3, _080F8A20 @ =0x03002BC0\n\
-	adds r4, r3, #0\n\
-	adds r4, #0x20\n\
-_080F8A04:\n\
-	lsls r0, r2, #1\n\
-	adds r1, r0, r3\n\
-	adds r0, r0, r4\n\
-	ldrh r0, [r0]\n\
-	strh r0, [r1]\n\
-	adds r0, r2, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r2, r0, #0x18\n\
-	cmp r2, #0xf\n\
-	bls _080F8A04\n\
-_080F8A18:\n\
-	pop {r4, r5}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F8A20: .4byte gPaletteManager+(128*2)\n\
- .syntax divided\n");
+// Closing sub-loop: shrink the window back and restore the palette.
+// 0x080f8984
+static void DiskRun_CloseWindow(struct GameState* g) {
+  struct SecretDiskState* d = &g->sceneState.disk;
+  const struct SecretDiskEntry* e;
+  const struct SecretDiskEntry* table;
+  int halfW;
+  u16* pal;
+  u16* src;
+  u8 i;
+  const struct SecretDiskEntry* row;
+
+  if (d->winHalfW != 0) {
+    halfW = d->winHalfW;
+    table = gSecretDiskEntries;
+    row = &table[d->cursorDisk];
+    e = row;
+    if ((halfW - (e->rate0 >> 4)) > 0) {
+      d->winHalfW = halfW - (e->rate0 >> 4);
+      if ((d->winHalfH - (e->rate1 >> 4)) > 0) {
+        d->winHalfH = d->winHalfH - (e->rate1 >> 4);
+      } else {
+        d->winHalfH = 0;
+      }
+      return;
+    }
+    d->winHalfW = 0;
+    d->winHalfH = 0;
+    g->mode[2] = 0;
+    g->mode[3] = 0;
+    i = 2;
+    pal = &gPaletteManager.buf[128];
+    src = pal + 16;
+    for (; i <= 0xF; i++) {
+      pal[i] = src[i];
+    }
+  } else {
+    d->winHalfW = 0;
+    d->winHalfH = 0;
+    g->mode[2] = 0;
+    g->mode[3] = 0;
+    i = 2;
+    pal = &gPaletteManager.buf[128];
+    src = pal + 16;
+    for (; i <= 0xF; i++) {
+      pal[i] = src[i];
+    }
+  }
 }
 
+// 0x080f8a24
 static void printThreeDigitNumber(u16 n, u8 x, u8 y) {
   u8 i;
   for (i = 0; i < 3; i++) {
@@ -1799,150 +604,47 @@ static void printThreeDigitNumber(u16 n, u8 x, u8 y) {
  * @param is_result 1(リザルト画面) or 0(セルヴォの解析)
  * @note 0x080f8a84
  */
-NAKED u16 OpenSecretDisk(struct GameState* g, u8 disk_no, bool8 is_result) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, lr}\n\
-	lsls r1, r1, #0x18\n\
-	lsrs r5, r1, #0x18\n\
-	lsls r2, r2, #0x18\n\
-	ldr r1, _080F8AD8 @ =0x000064AC\n\
-	adds r0, r0, r1\n\
-	ldr r4, [r0]\n\
-	cmp r2, #0\n\
-	beq _080F8AA4\n\
-	subs r0, r5, #6\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r0, r0, #0x18\n\
-	cmp r0, #0xd\n\
-	bls _080F8B6C\n\
-	cmp r5, #0x6d\n\
-	bhi _080F8B6C\n\
-_080F8AA4:\n\
-	ldr r0, _080F8ADC @ =gStageDiskManager\n\
-	ldr r1, [r0]\n\
-	lsrs r0, r5, #2\n\
-	adds r6, r1, r0\n\
-	ldrb r2, [r6]\n\
-	movs r3, #3\n\
-	ands r3, r5\n\
-	adds r1, r3, #4\n\
-	adds r0, r2, #0\n\
-	asrs r0, r1\n\
-	movs r1, #1\n\
-	ands r0, r1\n\
-	cmp r0, #0\n\
-	bne _080F8B6C\n\
-	movs r0, #0x10\n\
-	lsls r0, r3\n\
-	orrs r2, r0\n\
-	strb r2, [r6]\n\
-	cmp r5, #5\n\
-	bhi _080F8B48\n\
-	lsls r0, r5, #2\n\
-	ldr r1, _080F8AE0 @ =_080F8AE4\n\
-	adds r0, r0, r1\n\
-	ldr r0, [r0]\n\
-	mov pc, r0\n\
-	.align 2, 0\n\
-_080F8AD8: .4byte 0x000064AC\n\
-_080F8ADC: .4byte gStageDiskManager\n\
-_080F8AE0: .4byte _080F8AE4\n\
-_080F8AE4: @ jump table\n\
-	.4byte _080F8AFC @ case 0\n\
-	.4byte _080F8B06 @ case 1\n\
-	.4byte _080F8B10 @ case 2\n\
-	.4byte _080F8B1E @ case 3\n\
-	.4byte _080F8B28 @ case 4\n\
-	.4byte _080F8B32 @ case 5\n\
-_080F8AFC:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x17]\n\
-	movs r0, #4\n\
-	b _080F8B18\n\
-_080F8B06:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x17]\n\
-	movs r0, #2\n\
-	b _080F8B18\n\
-_080F8B10:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x17]\n\
-	movs r0, #8\n\
-_080F8B18:\n\
-	orrs r0, r1\n\
-	strb r0, [r2, #0x17]\n\
-	b _080F8B3E\n\
-_080F8B1E:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x19]\n\
-	movs r0, #0x40\n\
-	b _080F8B3A\n\
-_080F8B28:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x19]\n\
-	movs r0, #2\n\
-	b _080F8B3A\n\
-_080F8B32:\n\
-	adds r2, r4, #0\n\
-	adds r2, #0xb4\n\
-	ldrb r1, [r2, #0x19]\n\
-	movs r0, #0x80\n\
-_080F8B3A:\n\
-	orrs r0, r1\n\
-	strb r0, [r2, #0x19]\n\
-_080F8B3E:\n\
-	ldr r1, _080F8B44 @ =0x0000017B\n\
-	b _080F8B84\n\
-	.align 2, 0\n\
-_080F8B44: .4byte 0x0000017B\n\
-_080F8B48:\n\
-	cmp r5, #0x13\n\
-	bls _080F8B6C\n\
-	cmp r5, #0x5d\n\
-	bhi _080F8B68\n\
-	ldr r0, _080F8B64 @ =gElfAvailability\n\
-	ldr r1, [r0]\n\
-	adds r1, r5, r1\n\
-	subs r1, #0x14\n\
-	ldrb r0, [r1]\n\
-	movs r2, #1\n\
-	orrs r0, r2\n\
-	strb r0, [r1]\n\
-	b _080F8B82\n\
-	.align 2, 0\n\
-_080F8B64: .4byte gElfAvailability\n\
-_080F8B68:\n\
-	cmp r5, #0x6d\n\
-	bls _080F8B70\n\
-_080F8B6C:\n\
-	movs r0, #0\n\
-	b _080F8B86\n\
-_080F8B70:\n\
-	ldr r1, _080F8B8C @ =DiskECrystalAmounts\n\
-	adds r0, r5, #0\n\
-	subs r0, #0x5e\n\
-	lsls r0, r0, #1\n\
-	adds r0, r0, r1\n\
-	ldrh r1, [r0]\n\
-	adds r0, r4, #0\n\
-	bl AddECrystal\n\
-_080F8B82:\n\
-	ldr r1, _080F8B90 @ =0x0000010D\n\
-_080F8B84:\n\
-	adds r0, r5, r1\n\
-_080F8B86:\n\
-	pop {r4, r5, r6}\n\
-	pop {r1}\n\
-	bx r1\n\
-	.align 2, 0\n\
-_080F8B8C: .4byte DiskECrystalAmounts\n\
-_080F8B90: .4byte 0x0000010D\n\
- .syntax divided\n");
+u16 OpenSecretDisk(struct GameState* g, u8 disk_no, bool8 is_result) {
+  struct Zero* z = g->z2;
+  u8* p;
+  u8 bit;
+  u8 flags;
+  u8* disk;
+  struct ZeroStatus* st;
+
+  if (is_result) {
+    if ((u8)(disk_no - 6) <= 0xD) return 0;
+    if (disk_no > 0x6D) return 0;
+  }
+
+  disk = gStageDiskManager.disk;
+  p = &disk[disk_no >> 2];
+  flags = *p;
+  bit = disk_no & 3;
+  if ((flags >> (bit + 4)) & 1) return 0;
+  *p = flags | (0x10 << bit);
+
+  if (disk_no <= 5) {
+    switch (disk_no) {
+      case 0: st = &z->unk_b4.status; st->unlockedHead |= 4; break;
+      case 1: st = &z->unk_b4.status; st->unlockedHead |= 2; break;
+      case 2: st = &z->unk_b4.status; st->unlockedHead |= 8; break;
+      case 3: st = &z->unk_b4.status; st->unlockedFoot |= 0x40; break;
+      case 4: st = &z->unk_b4.status; st->unlockedFoot |= 2; break;
+      case 5: st = &z->unk_b4.status; st->unlockedFoot |= 0x80; break;
+    }
+    return disk_no + 0x17B;
+  }
+  if (disk_no <= 0x13) return 0;
+  if (disk_no <= 0x5D) {
+    gElfAvailability[disk_no - 0x14] |= 1;
+    return disk_no + 0x10D;
+  }
+  if (disk_no <= 0x6D) {
+    AddECrystal(z, DiskECrystalAmounts[disk_no - 0x5E]);
+    return disk_no + 0x10D;
+  }
+  return 0;
 }
 
 /**
@@ -1969,61 +671,22 @@ void clearSecretDiskDataHard(u8* flagbits) {
  * @brief clearSecretDiskData のアルティメットモード版
  * @note 0x080f8c14
  */
-NAKED void unlockAllSecretDisk(u8* flagbits) {
-  asm(".syntax unified\n\
-	push {r4, r5, r6, r7, lr}\n\
-	sub sp, #8\n\
-	adds r4, r0, #0\n\
-	ldr r6, _080F8C74 @ =gStageDiskManager\n\
-	str r4, [r6]\n\
-	movs r5, #0\n\
-	str r5, [sp]\n\
-	ldr r2, _080F8C78 @ =0x01000008\n\
-	mov r0, sp\n\
-	adds r1, r4, #0\n\
-	bl CpuFastSet\n\
-	str r5, [sp, #4]\n\
-	add r0, sp, #4\n\
-	adds r4, #0x20\n\
-	ldr r2, _080F8C7C @ =0x05000004\n\
-	adds r1, r4, #0\n\
-	bl CpuSet\n\
-	movs r7, #3\n\
-_080F8C3C:\n\
-	ldr r2, [r6]\n\
-	lsrs r4, r5, #2\n\
-	adds r2, r2, r4\n\
-	adds r3, r5, #0\n\
-	ands r3, r7\n\
-	movs r0, #1\n\
-	lsls r0, r3\n\
-	ldrb r1, [r2]\n\
-	orrs r0, r1\n\
-	strb r0, [r2]\n\
-	ldr r2, [r6]\n\
-	adds r2, r2, r4\n\
-	movs r0, #0x10\n\
-	lsls r0, r3\n\
-	ldrb r1, [r2]\n\
-	orrs r0, r1\n\
-	strb r0, [r2]\n\
-	adds r0, r5, #1\n\
-	lsls r0, r0, #0x18\n\
-	lsrs r5, r0, #0x18\n\
-	cmp r5, #0xb3\n\
-	bls _080F8C3C\n\
-	bl clearStageDisk\n\
-	add sp, #8\n\
-	pop {r4, r5, r6, r7}\n\
-	pop {r0}\n\
-	bx r0\n\
-	.align 2, 0\n\
-_080F8C74: .4byte gStageDiskManager\n\
-_080F8C78: .4byte 0x01000008\n\
-_080F8C7C: .4byte 0x05000004\n\
- .syntax divided\n");
+void unlockAllSecretDisk(u8* flagbits) {
+  u8* disk;
+  u8 i;
+  gStageDiskManager.disk = flagbits;
+  CpuFastFill(0, flagbits, 32);
+  CpuFill32(0, flagbits + 0x20, 16);
+  // Two bits per disk in each byte: found in the low nibble, analysed in the high.
+  for (i = 0; i <= 0xB3; i++) {
+    disk = gStageDiskManager.disk;
+    gStageDiskManager.disk[i >> 2] = disk[i >> 2] | (1 << (i & 3));
+    gStageDiskManager.disk[i >> 2] |= 0x10 << (i & 3);
+  }
+  clearStageDisk();
 }
 
+// 0x080f8c80
 void clearStageDisk(void) {
   u8 i;
   for (i = 0; i < 10; i++) {
@@ -2032,6 +695,7 @@ void clearStageDisk(void) {
   gStageDiskManager.stageDiskCount = 0;
 }
 
+// 0x080f8cac
 void getDiskInStageRun(u8 disk_id) {
   u8* flagbits = gStageDiskManager.disk;
   UNLOCK_DISK(flagbits, disk_id);
@@ -2039,14 +703,14 @@ void getDiskInStageRun(u8 disk_id) {
   gStageDiskManager.stageDiskCount++;
 
   /*
-    Almost every secret disk in the game is awarded through here. In-level pickups
-    (pickup/disk.c) and Cerveau (main_overworld/cerveau_talk.c).
-
-	The mob chats (other NPCS) are done in some other wack way that I haven't looked at yet.
+    Almost every secret disk in the game is awarded through here: in-level pickups
+    (pickup/disk.c) and Cerveau (main_overworld/cerveau_talk.c). The mob NPC chats
+    report through ApMarkNpcDialogueChecked instead.
   */
   ApMarkLocationChecked((u16)disk_id + 1);
 }
 
+// 0x080f8ce0
 bool8 allSecretDiskFound(void) {
   u8 i;
   for (i = 0; i < DISK_COUNT; i++) {
@@ -2059,39 +723,115 @@ bool8 allSecretDiskFound(void) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-static void sd_analysis_080f85e0(struct GameState* g);
-static void sd_analysis_080f875c(struct GameState* g);
-static void sd_analysis_080f8984(struct GameState* g);
-
-const DiskLoopFunc PTR_ARRAY_083864ac[3] = {
-    sd_analysis_080f85e0,
-    sd_analysis_080f875c,
-    sd_analysis_080f8984,
+static const DiskLoopFunc sDiskRunLoops[3] = {
+    DiskRun_Run,
+    DiskRun_OpenWindow,
+    DiskRun_CloseWindow,
 };
 
 const u16 DiskECrystalAmounts[16] = {
     80, 100, 200, 150, 40, 100, 100, 50, 80, 100, 100, 40, 500, 100, 100, 100,
 };
 
-const u8 u8_ARRAY_ARRAY_083864d8[DISK_COUNT][8] = {
-    {0x1C, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x1E, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x1D, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x2B, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x26, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x2C, 0x0E, 0x0F, 0x0F, 0x00, 0x30, 0x30, 0x01}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00},
-    {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x0A, 0xB0, 0x00, 0xF6, 0x00, 0x48, 0x48, 0x00}, {0x00, 0x91, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x95, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x95, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xBE, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xBE, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00},
-    {0x00, 0x93, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x99, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x95, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x95, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x9B, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x9B, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0x9E, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA2, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA4, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA7, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA7, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00},
-    {0x00, 0xA8, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA8, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xA9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xAA, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xAA, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xAD, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xAE, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB0, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB1, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB1, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB1, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB1, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00},
-    {0x00, 0xB2, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB3, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB3, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB3, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB3, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB3, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB5, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB5, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB5, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB6, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB8, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB8, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB8, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00},
-    {0x00, 0xB9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x00, 0xB9, 0x00, 0x00, 0x00, 0x30, 0x30, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00},
-    {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x04, 0xAA, 0x00, 0xFA, 0x00, 0x24, 0x24, 0x00}, {0x00, 0xE1, 0x08, 0x04, 0x00, 0x78, 0x96, 0x00}, {0x06, 0xA7, 0xFD, 0xDF, 0x01, 0x58, 0x58, 0x00}, {0x1E, 0xA4, 0x05, 0xE9, 0x01, 0x50, 0x50, 0x00}, {0x00, 0xA2, 0x02, 0xEC, 0x01, 0x50, 0x50, 0x00}, {0x04, 0xA8, 0x02, 0xDB, 0x01, 0x58, 0x58, 0x00}, {0x00, 0x31, 0x00, 0x00, 0x00, 0x48, 0x48, 0x00}, {0x00, 0x31, 0x00, 0x00, 0x00, 0x48, 0x48, 0x00}, {0x01, 0xAF, 0x00, 0x00, 0x01, 0x38, 0x50, 0x00}, {0x10, 0xB5, 0x0F, 0xEE, 0x01, 0x52, 0x52, 0x00}, {0x01, 0xB4, 0x00, 0xDE, 0x01, 0x58, 0x58, 0x00}, {0x1E, 0xB3, 0x00, 0xEC, 0x01, 0x48, 0x48, 0x00}, {0x09, 0xAB, 0xFA, 0xD6, 0x01, 0x7E, 0x6C, 0x00}, {0x00, 0xB2, 0x00, 0xE3, 0x01, 0x52, 0x52, 0x00}, {0x02, 0xB0, 0x00, 0xE8, 0x01, 0x46, 0x4A, 0x00}, {0x00, 0xA5, 0x08, 0xE8, 0x01, 0x60, 0x50, 0x00}, {0x09, 0x13, 0xFE, 0xF1, 0x00, 0x40, 0x40, 0x00},
-    {0x01, 0x14, 0xFF, 0xF1, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x27, 0x00, 0xEB, 0x00, 0x40, 0x40, 0x00}, {0x02, 0xD4, 0x00, 0xF3, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x6D, 0x0E, 0xDD, 0x00, 0x62, 0x5E, 0x00}, {0x02, 0x74, 0x00, 0xF0, 0x00, 0x40, 0x40, 0x00}, {0x0F, 0x17, 0x00, 0xFC, 0x00, 0x40, 0x40, 0x00}, {0x09, 0x07, 0x00, 0xF6, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x2F, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x08, 0x08, 0xFA, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x09, 0x38, 0x00, 0xFA, 0x00, 0x48, 0x48, 0x00}, {0x06, 0x68, 0xF9, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x07, 0x71, 0x00, 0xE6, 0x00, 0x66, 0x4A, 0x00}, {0x01, 0x66, 0xF2, 0x12, 0x00, 0x4E, 0x40, 0x00}, {0x03, 0x0D, 0x00, 0x06, 0x00, 0x40, 0x40, 0x00}, {0x06, 0x2E, 0x00, 0xF6, 0x00, 0x40, 0x40, 0x00}, {0x01, 0x75, 0x00, 0x11, 0x00, 0x40, 0x2E, 0x00}, {0x1D, 0x7E, 0x00, 0xF0, 0x00, 0x40, 0x40, 0x00}, {0x12, 0x8E, 0x01, 0xF6, 0x00, 0x40, 0x40, 0x00},
-    {0x0C, 0x77, 0x01, 0xEE, 0x00, 0x40, 0x40, 0x00}, {0x0F, 0x19, 0x00, 0xF1, 0x00, 0x48, 0x48, 0x00}, {0x03, 0x1D, 0x03, 0xF8, 0x00, 0x40, 0x40, 0x00}, {0x01, 0xD5, 0x00, 0xEC, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x15, 0x00, 0xF9, 0x00, 0x40, 0x40, 0x00}, {0x0C, 0x28, 0x0B, 0xF0, 0x00, 0x40, 0x40, 0x00}, {0x03, 0x67, 0x02, 0x02, 0x00, 0x40, 0x40, 0x00}, {0x18, 0x43, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x01, 0x16, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x02, 0x2A, 0x00, 0xF7, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x6B, 0x00, 0xFA, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x06, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x03, 0x47, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x04, 0x00, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x18, 0x03, 0x00, 0x00, 0x40, 0x40, 0x00}, {0x0B, 0x35, 0x01, 0xF6, 0x00, 0x40, 0x40, 0x00}, {0x00, 0x10, 0x00, 0xF2, 0x00, 0x40, 0x40, 0x00}, {0x00, 0xDB, 0x00, 0xF8, 0x00, 0x40, 0x40, 0x00},
-    {0x03, 0xDC, 0x00, 0xF8, 0x00, 0x40, 0x40, 0x00}, {0x05, 0xC5, 0x00, 0xE0, 0x01, 0x46, 0x46, 0x00}, {0x0E, 0xC2, 0x00, 0xF2, 0x01, 0x38, 0x38, 0x00}, {0x03, 0xC2, 0x00, 0xEF, 0x00, 0x38, 0x38, 0x00}, {0x01, 0xC4, 0x00, 0xF3, 0x00, 0x38, 0x38, 0x00}, {0x01, 0xBB, 0x00, 0xF3, 0x00, 0x38, 0x38, 0x00}, {0x01, 0xC3, 0x00, 0xED, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xC0, 0x00, 0xEF, 0x00, 0x38, 0x38, 0x00}, {0x01, 0xC6, 0x00, 0xF5, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xBF, 0x00, 0xED, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xBE, 0x00, 0xEF, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xC1, 0x00, 0xEF, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xC5, 0x00, 0xF2, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xC7, 0x00, 0xF0, 0x00, 0x38, 0x38, 0x00}, {0x00, 0xBE, 0xFC, 0xD6, 0x01, 0x64, 0x64, 0x00}, {0x00, 0xA1, 0xE6, 0xD8, 0x01, 0x64, 0x64, 0x00}, {0x02, 0xBD, 0xF0, 0xF3, 0x01, 0x64, 0x64, 0x00}, {0x00, 0xBC, 0x00, 0xE0, 0x01, 0x64, 0x64, 0x00},
-};
-
 // clang-format off
-static const DiskLoopFunc sDiskLoops[5] = {
-    DiskLoop_Init, 
-    DiskLoop_OpenScreen, 
-    DiskLoop_Run, 
-    DiskLoop_BlackOut, 
-    DiskLoop_Exit,
+const struct SecretDiskEntry gSecretDiskEntries[DISK_COUNT] = {
+    /* 0x00 */ {0x0E1C, 15, 15, 0x00, 0x30, 0x30, 0x01}, {0x0E1E, 15, 15, 0x00, 0x30, 0x30, 0x01},
+    /* 0x02 */ {0x0E1D, 15, 15, 0x00, 0x30, 0x30, 0x01}, {0x0E2B, 15, 15, 0x00, 0x30, 0x30, 0x01},
+    /* 0x04 */ {0x0E26, 15, 15, 0x00, 0x30, 0x30, 0x01}, {0x0E2C, 15, 15, 0x00, 0x30, 0x30, 0x01},
+    /* 0x06 */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x08 */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x0A */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x0C */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x0E */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x10 */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x12 */ {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00}, {0xB00A, 0, -10, 0x00, 0x48, 0x48, 0x00},
+    /* 0x14 */ {0x9100, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x16 */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x18 */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9500, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x1A */ {0x9500, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xBE00, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x1C */ {0xBE00, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x1E */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x20 */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x22 */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x24 */ {0x9300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x26 */ {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x28 */ {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x2A */ {0x9900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9500, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x2C */ {0x9500, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9B00, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x2E */ {0x9B00, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0x9E00, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x30 */ {0xA000, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xA200, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x32 */ {0xA400, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xA600, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x34 */ {0xA700, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xA700, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x36 */ {0xA800, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xA800, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x38 */ {0xA900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xA900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x3A */ {0xAA00, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xAA00, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x3C */ {0xAD00, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xAE00, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x3E */ {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x40 */ {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x42 */ {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB000, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x44 */ {0xB100, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB100, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x46 */ {0xB100, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB100, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x48 */ {0xB200, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x4A */ {0xB300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x4C */ {0xB300, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB300, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x4E */ {0xB500, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB500, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x50 */ {0xB500, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB600, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x52 */ {0xB600, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB600, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x54 */ {0xB600, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB600, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x56 */ {0xB800, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB800, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x58 */ {0xB800, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x5A */ {0xB900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x5C */ {0xB900, 0, 0, 0x00, 0x30, 0x30, 0x00}, {0xB900, 0, 0, 0x00, 0x30, 0x30, 0x00},
+    /* 0x5E */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x60 */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x62 */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x64 */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x66 */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x68 */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x6A */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x6C */ {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00}, {0xAA04, 0, -6, 0x00, 0x24, 0x24, 0x00},
+    /* 0x6E */ {0xE100, 8, 4, 0x00, 0x78, 0x96, 0x00}, {0xA706, -3, -33, 0x01, 0x58, 0x58, 0x00},
+    /* 0x70 */ {0xA41E, 5, -23, 0x01, 0x50, 0x50, 0x00}, {0xA200, 2, -20, 0x01, 0x50, 0x50, 0x00},
+    /* 0x72 */ {0xA804, 2, -37, 0x01, 0x58, 0x58, 0x00}, {0x3100, 0, 0, 0x00, 0x48, 0x48, 0x00},
+    /* 0x74 */ {0x3100, 0, 0, 0x00, 0x48, 0x48, 0x00}, {0xAF01, 0, 0, 0x01, 0x38, 0x50, 0x00},
+    /* 0x76 */ {0xB510, 15, -18, 0x01, 0x52, 0x52, 0x00}, {0xB401, 0, -34, 0x01, 0x58, 0x58, 0x00},
+    /* 0x78 */ {0xB31E, 0, -20, 0x01, 0x48, 0x48, 0x00}, {0xAB09, -6, -42, 0x01, 0x7E, 0x6C, 0x00},
+    /* 0x7A */ {0xB200, 0, -29, 0x01, 0x52, 0x52, 0x00}, {0xB002, 0, -24, 0x01, 0x46, 0x4A, 0x00},
+    /* 0x7C */ {0xA500, 8, -24, 0x01, 0x60, 0x50, 0x00}, {0x1309, -2, -15, 0x00, 0x40, 0x40, 0x00},
+    /* 0x7E */ {0x1401, -1, -15, 0x00, 0x40, 0x40, 0x00}, {0x2700, 0, -21, 0x00, 0x40, 0x40, 0x00},
+    /* 0x80 */ {0xD402, 0, -13, 0x00, 0x40, 0x40, 0x00}, {0x6D00, 14, -35, 0x00, 0x62, 0x5E, 0x00},
+    /* 0x82 */ {0x7402, 0, -16, 0x00, 0x40, 0x40, 0x00}, {0x170F, 0, -4, 0x00, 0x40, 0x40, 0x00},
+    /* 0x84 */ {0x0709, 0, -10, 0x00, 0x40, 0x40, 0x00}, {0x2F00, 0, 0, 0x00, 0x40, 0x40, 0x00},
+    /* 0x86 */ {0x0808, -6, 0, 0x00, 0x40, 0x40, 0x00}, {0x3809, 0, -6, 0x00, 0x48, 0x48, 0x00},
+    /* 0x88 */ {0x6806, -7, 0, 0x00, 0x40, 0x40, 0x00}, {0x7107, 0, -26, 0x00, 0x66, 0x4A, 0x00},
+    /* 0x8A */ {0x6601, -14, 18, 0x00, 0x4E, 0x40, 0x00}, {0x0D03, 0, 6, 0x00, 0x40, 0x40, 0x00},
+    /* 0x8C */ {0x2E06, 0, -10, 0x00, 0x40, 0x40, 0x00}, {0x7501, 0, 17, 0x00, 0x40, 0x2E, 0x00},
+    /* 0x8E */ {0x7E1D, 0, -16, 0x00, 0x40, 0x40, 0x00}, {0x8E12, 1, -10, 0x00, 0x40, 0x40, 0x00},
+    /* 0x90 */ {0x770C, 1, -18, 0x00, 0x40, 0x40, 0x00}, {0x190F, 0, -15, 0x00, 0x48, 0x48, 0x00},
+    /* 0x92 */ {0x1D03, 3, -8, 0x00, 0x40, 0x40, 0x00}, {0xD501, 0, -20, 0x00, 0x40, 0x40, 0x00},
+    /* 0x94 */ {0x1500, 0, -7, 0x00, 0x40, 0x40, 0x00}, {0x280C, 11, -16, 0x00, 0x40, 0x40, 0x00},
+    /* 0x96 */ {0x6703, 2, 2, 0x00, 0x40, 0x40, 0x00}, {0x4318, 0, 0, 0x00, 0x40, 0x40, 0x00},
+    /* 0x98 */ {0x1601, 0, 0, 0x00, 0x40, 0x40, 0x00}, {0x2A02, 0, -9, 0x00, 0x40, 0x40, 0x00},
+    /* 0x9A */ {0x6B00, 0, -6, 0x00, 0x40, 0x40, 0x00}, {0x0600, 0, 0, 0x00, 0x40, 0x40, 0x00},
+    /* 0x9C */ {0x4703, 0, 0, 0x00, 0x40, 0x40, 0x00}, {0x0400, 0, 0, 0x00, 0x40, 0x40, 0x00},
+    /* 0x9E */ {0x1800, 3, 0, 0x00, 0x40, 0x40, 0x00}, {0x350B, 1, -10, 0x00, 0x40, 0x40, 0x00},
+    /* 0xA0 */ {0x1000, 0, -14, 0x00, 0x40, 0x40, 0x00}, {0xDB00, 0, -8, 0x00, 0x40, 0x40, 0x00},
+    /* 0xA2 */ {0xDC03, 0, -8, 0x00, 0x40, 0x40, 0x00}, {0xC505, 0, -32, 0x01, 0x46, 0x46, 0x00},
+    /* 0xA4 */ {0xC20E, 0, -14, 0x01, 0x38, 0x38, 0x00}, {0xC203, 0, -17, 0x00, 0x38, 0x38, 0x00},
+    /* 0xA6 */ {0xC401, 0, -13, 0x00, 0x38, 0x38, 0x00}, {0xBB01, 0, -13, 0x00, 0x38, 0x38, 0x00},
+    /* 0xA8 */ {0xC301, 0, -19, 0x00, 0x38, 0x38, 0x00}, {0xC000, 0, -17, 0x00, 0x38, 0x38, 0x00},
+    /* 0xAA */ {0xC601, 0, -11, 0x00, 0x38, 0x38, 0x00}, {0xBF00, 0, -19, 0x00, 0x38, 0x38, 0x00},
+    /* 0xAC */ {0xBE00, 0, -17, 0x00, 0x38, 0x38, 0x00}, {0xC100, 0, -17, 0x00, 0x38, 0x38, 0x00},
+    /* 0xAE */ {0xC500, 0, -14, 0x00, 0x38, 0x38, 0x00}, {0xC700, 0, -16, 0x00, 0x38, 0x38, 0x00},
+    /* 0xB0 */ {0xBE00, -4, -42, 0x01, 0x64, 0x64, 0x00}, {0xA100, -26, -40, 0x01, 0x64, 0x64, 0x00},
+    /* 0xB2 */ {0xBD02, -16, -13, 0x01, 0x64, 0x64, 0x00}, {0xBC00, 0, -32, 0x01, 0x64, 0x64, 0x00},
 };
 // clang-format on
+
+static const DiskLoopFunc sDiskLoops[5] = {
+    DiskLoop_Init,
+    DiskLoop_OpenScreen,
+    DiskLoop_Run,
+    DiskLoop_BlackOut,
+    DiskLoop_Exit,
+};

@@ -82,7 +82,7 @@ static bool32 FUN_080248f0(struct ResultState* p);
  * @note 0x0802400c
  */
 NON_MATCH_AP bool32 ResultScreen_Update(struct ResultState* p) {
-#if MODERN || AP
+#if MODERN || AP || CBODY
   switch (p->mode[0]) {
     case 0: {
       p->rank = (gScore.total)->rank;
@@ -1640,7 +1640,7 @@ _08024D10: .4byte 0x000001B1\n\
 
 // リザルトスコアをカウントアップさせる演出
 NON_MATCH static bool32 CountUpResultScore(s32 score, s16 step, u8 se_interval, u8 x8, u8 y8) {
-#if MODERN
+#if MODERN || CBODY
   s32 turbo;
   if (score >> 4) {
     turbo = (score >> 4);  // スコアが大きい時はカウントアップを速くする

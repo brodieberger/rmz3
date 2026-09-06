@@ -38,7 +38,10 @@
 // US はビット 2..4 を空けた先に新しい硬さの種別を置いていて、ゼロ自身の
 // コリジョンはその3つすべてに反応する
 #if IS_US
-#define ZERO_HARDNESS_EXTRA ((1 << 2) | (1 << 3) | (1 << 4))
+#define HARDNESS_CHATABLE (1 << 2)
+#define HARDNESS_TELEPORTAL (1 << 3)
+#define HARDNESS_DOOR (1 << 4)
+#define ZERO_HARDNESS_EXTRA (HARDNESS_CHATABLE | HARDNESS_TELEPORTAL | HARDNESS_DOOR)
 #else
 #define ZERO_HARDNESS_EXTRA 0
 #endif

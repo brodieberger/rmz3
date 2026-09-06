@@ -9,7 +9,8 @@ CommonEffect: @ Graphic 0
 	.4byte CommonEffect_Tiles-. @ src
 	.4byte 2816 | (160 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1592, (LZ77 | BPP4) 	@ rowsize(unused), props
-		@ Palette
+.global gStaticMotionPalettes
+gStaticMotionPalettes:
 		.4byte CommonEffect_Pal-. @ src offset
 		.2byte 64 @ bytesize
 		.byte 0, 14 @ lz77(bool8), dst = PaletteID

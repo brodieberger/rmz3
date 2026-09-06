@@ -35,7 +35,7 @@ EWRAM_DATA struct MusicPlayerInfo gMPlayInfo_13 = {};
 EWRAM_DATA struct MusicPlayerInfo gMPlayInfo_14 = {};
 
 NON_MATCH void InitSound(void) {
-#if MODERN
+#if MODERN || CBODY
   m4aSoundInit();
   gSongCount = SONG_COUNT;
   SoundID1 = MUS_DUMMY;
@@ -67,7 +67,7 @@ void SoundVBlank(void) { m4aSoundVSync(); }
 
 // メニュー画面を開いた時など、BGMの音量を落とす
 NON_MATCH void TurnDownBGM(void) {
-#if MODERN
+#if MODERN || CBODY
   u32 i;
   for (i = 0; i < MUSIC_PLAYER_LENGTH; i++) {
     m4aMPlayVolumeControl(gMPlayTable[i].info, 0xFFFF, 0x60);
@@ -79,7 +79,7 @@ NON_MATCH void TurnDownBGM(void) {
 
 // メニュー画面から戻った時に、BGMを通常音量に戻す
 NON_MATCH void TurnUpBGM(void) {
-#if MODERN
+#if MODERN || CBODY
   u32 i;
   for (i = 0; i < MUSIC_PLAYER_LENGTH; i++) {
     m4aMPlayVolumeControl(gMPlayTable[i].info, 0xFFFF, 0x100);
@@ -111,7 +111,7 @@ bool32 _isSoundPlaying(SoundID n) {
 }
 
 NON_MATCH s16 PlaySound(SoundID id) {
-#if MODERN
+#if MODERN || CBODY
   if (gSongTable[id].ms == gSongTable[SE_ZAKO_STUN].ms) {
     if ((SoundID2 == MUS_DUMMY) || (SoundID2 == SE_ZAKO_STUN)) {
       SoundID2 = id;

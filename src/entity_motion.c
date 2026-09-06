@@ -92,7 +92,7 @@ void ResetDynamicMotion(struct Entity* p) {
 }
 
 NON_MATCH void SetMotion(struct Entity* p, motion_t m) {
-#if MODERN
+#if MODERN || CBODY
   motion_id_t id = m >> 8;
   if (id != p->motionID) {
     if (p->flags2 & DYNAMIC) {
@@ -131,7 +131,7 @@ void GotoMotion(struct Entity* p, motion_t motion, u16 cmdIdx, u16 duration) {
 
 // 0x0801765C
 NON_MATCH void UpdateEntityAnim(struct Entity* p) {
-#if MODERN
+#if MODERN || CBODY
   u8 spriteIdx;
   struct Sprite* spr = &p->spr;
   StepAnimState(&p->motion);
@@ -172,7 +172,7 @@ NON_MATCH void UpdateEntityAnim(struct Entity* p) {
 }
 
 NON_MATCH void FUN_0801779c(struct Entity* p) {
-#if MODERN
+#if MODERN || CBODY
   StepAnimState(&p->motion);
   (p->spr).spriteIdx = (p->motion).table[(p->motion).id][(p->motion).cmdIdx].param;
   if (p->flags2 & DYNAMIC) {
@@ -239,7 +239,7 @@ void PaintEntityWhite(struct Entity* p) {
 }
 
 NON_MATCH void InitMotionLocation(void) {
-#if MODERN
+#if MODERN || CBODY
   s16 i;
   for (i = 0; i < STATIC_MOTION_COUNT; i++) {
     wStaticGraphicTilenums[i] = gStaticMotionGraphics[i].g.tileId;

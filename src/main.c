@@ -21,7 +21,7 @@ void usrHBlankCallback(void);
 void usrVBlankCallback(void);
 
 NON_MATCH void AgbMain(void) {
-#if MODERN
+#if MODERN || CBODY
   ClearMemory();
   InitIntrHandlers();
   clear0x020014e0();

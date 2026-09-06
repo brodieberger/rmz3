@@ -429,7 +429,7 @@ u16 FUN_080d0934(struct Entity* p, motion_t m, u8 r2) {
 
 // ピシュンと音を立ててキャラクターを転送させる処理？(召喚)
 NON_MATCH u16 FUN_080d0aa0(struct Entity* p, motion_t m, u8 r2) {
-#if MODERN
+#if MODERN || CBODY
   switch (p->mode[3]) {
     case 0: {
       EnableSpriteAnimation_Affine(p);

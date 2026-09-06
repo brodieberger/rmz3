@@ -42,7 +42,7 @@ void HandlePlayerInput_Ground(struct Zero* z) {
   と色々な処理への分岐を担う
 */
 NON_MATCH static void inIdle(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u32 status;
   zero_input_t key;
   struct Zero_b4* b4;
@@ -191,7 +191,7 @@ static void inDash(struct Zero* z) {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 NON_MATCH void HandlePlayerInput_Air(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u8 foot;
   u32 val;
   zero_input_t* key;

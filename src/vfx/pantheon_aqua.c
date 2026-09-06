@@ -186,7 +186,7 @@ static void FUN_080bac14(struct PAquaVFX* p) {
 }
 
 NON_MATCH static void FUN_080bac5c(struct PAquaVFX* p) {
-#if MODERN
+#if MODERN || CBODY
   EnableSpriteAnimation_Affine(p);
   p->mag_7c = 0x100;
   (p->s).spr.mag.x = 0x100;

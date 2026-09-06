@@ -359,7 +359,7 @@ static const EnemyFunc sDeads[4] = {
 };
 
 NON_MATCH static void FUN_080922e0(struct Entity* p) {
-#if MODERN
+#if MODERN || CBODY
   switch (p->mode[2]) {
     case 0: {
       InitNonAffineMotion(p);

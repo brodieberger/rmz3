@@ -71,7 +71,7 @@ void RegisterHitboxes(struct EntityHeader* h) {
  * @note 0x08016EF4
  */
 NON_MATCH void RunDamageEffect(struct EntityHeader* h) {
-#if MODERN
+#if MODERN || CBODY
   Object* p = (void*)StartEntityListIteration(h);
 
   while (p != ((void*)&h->tail)) {

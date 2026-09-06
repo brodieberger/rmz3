@@ -91,7 +91,7 @@ void ResetOAM(void) {
 
 // 0x080042F8
 NON_MATCH void FlushOAM(void) {
-#if MODERN
+#if MODERN || CBODY
   vu16 dispcnt = REG_DISPCNT;
   dispcnt &= ~(DISPCNT_OBJ_ON);
   dispcnt |= gOamManager.dispcnt;

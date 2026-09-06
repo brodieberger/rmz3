@@ -180,7 +180,7 @@ static void LayerUpdate_2(struct StageLayer* l, const struct Stage* _ UNUSED) {
 // 0x08011820
 // レジスタの割り当てがうまくいかないだけ
 NON_MATCH static void LayerDraw_AreaX2_2(struct StageLayer* l, const struct Stage* stage) {
-#if MODERN
+#if MODERN || CBODY
   u16 eva;
   struct Overworld* ow = &gOverworld;
   u32 n = (ow->work.areaX2.unk_002 & 0xFF);

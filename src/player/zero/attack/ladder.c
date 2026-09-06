@@ -401,7 +401,7 @@ static const ZeroFunc rodRoutine[] = {
 
 // 0x0803152c
 NON_MATCH static void onRod(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   struct Zero_b4* b4 = &(z->unk_b4);
 
   if ((b4->status).weapons[0] == WEAPON_ROD) {

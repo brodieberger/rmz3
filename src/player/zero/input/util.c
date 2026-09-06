@@ -1229,7 +1229,7 @@ _080336F6:\n\
 
 // コマンドダッシュ(十字キー2回押し)
 NON_MATCH static void tryCommandDash(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   u8 i, j;
   if ((z->input).commandDashTimer > 0) {
     (z->input).commandDashTimer--;
@@ -1301,7 +1301,7 @@ bool8 IsButtonMashed(struct Zero* z) {
 // attackMode ら辺のレジスタ割り当てがうまくいかないだけ
 // 0x080338cc
 NON_MATCH u8 CountRodButton(struct Zero* z, bool8 isSubWeapon) {
-#if MODERN
+#if MODERN || CBODY
   u8 i, count;
 
   KEY_INPUT input;

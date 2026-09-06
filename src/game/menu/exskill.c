@@ -54,7 +54,7 @@ static void ExMenuLoop_Init(struct GameState* g) {
 }
 
 NON_MATCH static void ExMenuLoop_Update(struct GameState* g) {
-#if MODERN
+#if MODERN || CBODY
   struct Zero* z = g->z2;
   if (!TrySlideMenu(g)) {
     u8 prev;

@@ -101,7 +101,7 @@ void Camera_LoadTemplate(struct Camera* cam, const struct CameraTemplate* t) {
 // 0x0801a6d0
 // .viewport を .target に近づける
 NON_MATCH static void focus(struct Camera* cam, u8 chaseMode) {
-#if MODERN
+#if MODERN || CBODY
   switch (chaseMode) {
     case 0: {
       (cam->viewport).x = (cam->target).x, (cam->viewport).y = (cam->target).y;
@@ -240,7 +240,7 @@ static void CameraMode2Callback(struct Camera* cam) {
 
 // レジスタンスベース、 バイル研究所 の　ボスラッシュ部屋のうち横幅が画面1枚に収まる部屋(ブレイジンフリザード、チルドレイナラビッタ、デスタンツマンティスク、キュービットフォクスター戦) で使用
 NON_MATCH static void CameraMode3Callback(struct Camera* cam) {
-#if MODERN
+#if MODERN || CBODY
   s32 zx, zy, tmp;
   Coords32 c, d, target;
   if (cam->isCallbackOnce == 0) {

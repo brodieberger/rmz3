@@ -115,7 +115,7 @@ s32 PushoutToDown1(s32 x, s32 y) {
 
 // おそらく壁にめり込んだ際の下方向への押し出し処理
 NON_MATCH s32 PushoutToDown2(s32 x, s32 y) {
-#if MODERN
+#if MODERN || CBODY
   s32 i;
   const s32 prev_y = y;
 
@@ -936,7 +936,7 @@ _0800A408: .4byte 0x7FFFFFFF\n\
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 NON_MATCH s32 FUN_0800a40c(s32 x, s32 y) {
-#if MODERN
+#if MODERN || CBODY
   const s32 mx = METACOORD(x);
   const s32 my = METACOORD(y);
   if (((u32)mx < 0x771) && ((u32)my < 0x4F6)) {
@@ -975,7 +975,7 @@ static s32 unused_0800a550(s32 x, s32 y) { return isStageBlocking(-1, x, y); }
 NAKED s32 isStageBlocking(s32 start, s32 x, s32 y) { INCCODE("asm/todo/isStageBlocking.inc"); }
 
 NON_MATCH void AppendHazard(u16 id, u16 attr, const Coords32* c, const struct Rect* size) {
-#if MODERN
+#if MODERN || CBODY
   s32 len = gOverworld.terrain.objectLen;
   if (len + 1 < 32) {
     s32 i;

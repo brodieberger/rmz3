@@ -127,7 +127,7 @@ static void SlashedEnemy_Die(struct Ghost16* p) {
 }
 
 NON_MATCH static void FUN_080b6744(struct Ghost16* p) {
-#if MODERN
+#if MODERN || CBODY
   const struct SlashedEnemy* data = p->data;
   UpdateSpriteAnimation(p);
   if (data->unk_02[1] & (1 << 4)) {

@@ -335,21 +335,21 @@ Graphic_ElfCat_Hacker: @ Gfx35 in 0x0854753C
 		.2byte 32 @ bytesize
 		.byte 0, 13 @ lz77(bool8), dst = PaletteID
 
-Graphic_SecretDickBlue: @ Gfx36 in 0x08547550
-	.4byte SecretDickBlue_Tiles-. @ data: 0x0855B1A8 = .+80984
-	.4byte (SecretDickBlue_Pal - SecretDickBlue_Tiles) | (235 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+Graphic_SecretDiskBlue:: @ Gfx36 in 0x08547550
+	.4byte SecretDiskBlue_Tiles-. @ data: 0x0855B1A8 = .+80984
+	.4byte (SecretDiskBlue_Pal - SecretDiskBlue_Tiles) | (235 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 128, (MAP2D | BPP4) 	@ rowsize, props
-		@ Palette
-		.4byte SecretDickBlue_Pal-. @ data: 0x0855B2A8 = .+81228
+  Palette_SecretDiskBlue::
+		.4byte SecretDiskBlue_Pal-. @ data: 0x0855B2A8 = .+81228
 		.2byte 32 @ bytesize
 		.byte 0, 8 @ lz77(bool8), dst = PaletteID
 
-Graphic_SecretDickRed: @ Gfx37 in 0x08547564
-	.4byte SecretDickRed_Tiles-. @ data: 0x0855B2C8 = .+81252
-	.4byte (SecretDickRed_Pal - SecretDickRed_Tiles) | (235 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+Graphic_SecretDiskRed:: @ Gfx37 in 0x08547564
+	.4byte SecretDiskRed_Tiles-. @ data: 0x0855B2C8 = .+81252
+	.4byte (SecretDiskRed_Pal - SecretDiskRed_Tiles) | (235 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 128, (MAP2D | BPP4) 	@ rowsize, props
-		@ Palette
-		.4byte SecretDickRed_Pal-. @ data: 0x0855B3C8 = .+81496
+  Palette_SecretDiskRed::
+		.4byte SecretDiskRed_Pal-. @ data: 0x0855B3C8 = .+81496
 		.2byte 32 @ bytesize
 		.byte 0, 8 @ lz77(bool8), dst = PaletteID
 
@@ -1441,15 +1441,15 @@ ElfCatHacker_Tiles:
 ElfCatHacker_Pal:
   .incbin "graphics/bg/str_hacker_elf.gbapal"
 
-SecretDickBlue_Tiles:
-  .incbin "graphics/bg/secret_dick_blue.4bpp"
-SecretDickBlue_Pal:
-  .incbin "graphics/bg/secret_dick_blue.gbapal"
+SecretDiskBlue_Tiles:
+  .incbin "graphics/bg/secret_disk_blue.4bpp"
+SecretDiskBlue_Pal:
+  .incbin "graphics/bg/secret_disk_blue.gbapal"
 
-SecretDickRed_Tiles:
-  .incbin "graphics/bg/secret_dick_red.4bpp"
-SecretDickRed_Pal:
-  .incbin "graphics/bg/secret_dick_red.gbapal"
+SecretDiskRed_Tiles:
+  .incbin "graphics/bg/secret_disk_red.4bpp"
+SecretDiskRed_Pal:
+  .incbin "graphics/bg/secret_disk_red.gbapal"
 
 ElfCatNone_Tiles:
   .incbin "graphics/bg/str_none_elf.4bpp"

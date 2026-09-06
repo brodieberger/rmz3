@@ -333,7 +333,7 @@ static void handle_saber_input(struct Zero* z) {
 
 // 0x0802f008
 NON_MATCH static void dash_saber(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   if ((z->unk_b4).attackState8[2] == 0) {
     SetSpriteAnimation(z, MOTION(DM023_ZERO_SABER_DASH, 0x00));
     z->atkCooltime = 16;
@@ -354,9 +354,11 @@ NON_MATCH static void dash_saber(struct Zero* z) {
   }
 
   if (z->atkCooltime != 0) {
+    s32 dx;
+    s32 speed;
     z->atkCooltime--;
-    s32 dx = CalcDx(z);
-    s32 speed = (GetDashSpeed(z) - dx) * z->atkCooltime;
+    dx = CalcDx(z);
+    speed = (GetDashSpeed(z) - dx) * z->atkCooltime;
     if (speed < 0) {
       speed += 15;
     }
@@ -374,7 +376,7 @@ NON_MATCH static void dash_saber(struct Zero* z) {
 // 0x0802f134
 // atkCooltime へのアクセスがおかしい (それ以外は大丈夫そう)
 NON_MATCH static void gale_attack(struct Zero* z) {
-#if MODERN
+#if MODERN || CBODY
   switch ((z->unk_b4).attackState8[2]) {
     case 0: {
       SetSpriteAnimation(z, MOTION(DM024_ZERO_GALE, 0));

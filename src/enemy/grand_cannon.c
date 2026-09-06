@@ -170,7 +170,7 @@ static void GrandCannon_Init(struct GrandCannon* p) {
 }
 
 NON_MATCH static void GrandCannon_Update(struct Enemy* p) {
-#if MODERN
+#if MODERN || CBODY
   if ((p->s).work[0] == GRAND_CANNON_BATTERY) {
     struct Entity* turret = (p->s).unk_28;
     if (!IS_METTAUR) {

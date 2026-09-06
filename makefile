@@ -68,6 +68,13 @@ endif
 
 MODERN ?= 0
 
+# CBODY=1 keeps agbcc but compiles NON_MATCH functions from their C body
+# Does not byte-match and is not meant to.
+CBODY ?= 0
+ifeq ($(CBODY),1)
+MODIFIERS := $(MODIFIERS)-cbody
+endif
+
 # Region: jp (default, byte-matches the J ROM) or us (targets the USA ROM).
 REGION ?= jp
 ifeq ($(REGION),us)
@@ -117,7 +124,8 @@ BUILD_DIR := build/$(RONNAME)
 ROM = $(RONNAME).gba
 ELF = $(RONNAME).elf
 
-ifeq ($(AP),1)
+# Neither AP nor CBODY can byte-match: AP adds code, CBODY replaces asm bodies with C.
+ifneq ($(AP)$(CBODY),00)
 all: $(ROM)
 else
 all: $(ROM) compare
@@ -157,6 +165,8 @@ include make_tools.mk
 ARCH := -mcpu=arm7tdmi -march=armv4t -mthumb 
 ASFLAGS := $(ARCH) -mthumb-interwork -g
 ASM_DEFSYMS := --defsym REGION_US=$(ISUS) --defsym HIT_BLOOD=$(HITBLOOD) --defsym ENGLISH=$(ENGLISHDEF) --defsym AP=$(AP)
+# -Wa form of the same symbols, for inline asm inside C under MODERN
+ASM_DEFSYMS_WA := -Wa,--defsym,REGION_US=$(ISUS),--defsym,HIT_BLOOD=$(HITBLOOD),--defsym,ENGLISH=$(ENGLISHDEF),--defsym,AP=$(AP)
 ASFLAGS += $(ASM_DEFSYMS)
 
 CFLAGS := -mthumb-interwork  -Wimplicit -Wparentheses -Werror -O2 -fshort-enums
@@ -169,10 +179,11 @@ ifeq ($(MODERN),0)
 else
 # Modern
 	CPPFLAGS := -I $(DEVKITARM)/arm-none-eabi/include -iquote include -DMODERN=$(MODERN)
-	CFLAGS += $(ARCH) $(CPPFLAGS) -Wno-pointer-to-int-cast -fno-toplevel-reorder -fno-aggressive-loop-optimizations -Wno-address-of-packed-member
+	CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD) -DAP=$(AP) -DCBODY=$(CBODY)
+	CFLAGS += $(ARCH) $(CPPFLAGS) $(ASM_DEFSYMS_WA) -Wno-pointer-to-int-cast -fno-toplevel-reorder -fno-aggressive-loop-optimizations -Wno-address-of-packed-member
 	LIBPATH := -L $(shell dirname $(shell $(AGBCC) --print-file-name=libgcc.a)) -L $(shell dirname $(shell $(AGBCC) --print-file-name=libc.a))
 endif
-CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD) -DAP=$(AP)
+CPPFLAGS += -DREGION=$(REGIONNUM) -DHIT_BLOOD=$(HITBLOOD) -DAP=$(AP) -DCBODY=$(CBODY)
 LDFLAGS := $(LIBPATH) -lgcc -lc
 
 include assets.mk
@@ -211,8 +222,14 @@ $(BUILD_DIR)/src/libs/m4a.o: AGBCC := tools/agbcc/bin/old_agbcc$(EXE)
 endif
 
 LDSCRIPT = ld_script$(MODIFIERS).ld
+ifeq ($(CBODY),1)
+LDSCRIPT = ld_script-modern.ld
+endif
 ifeq ($(REGION),us)
 LDSCRIPT = ld_script-us.ld
+ifneq ($(MODERN)$(CBODY),00)
+LDSCRIPT = ld_script-us-flat.ld
+endif
 endif
 ifeq ($(AP),1)
 LDSCRIPT = ld_script-us-ap.ld

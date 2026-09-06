@@ -650,7 +650,7 @@ static void ReleaseStageEntity(struct SpawnedEntity* p) {
 
 // MMBN4のウィルスを元の敵に置き換えるとき or ステージエリアが変わったとき に呼ばれる
 NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
-#if MODERN
+#if MODERN || CBODY
   struct SpawnManager* sman;
 
   const struct PreloadEntity* preload = sStagePreloadEntities[stageID];
@@ -714,7 +714,7 @@ NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
 
 // メットール化 を実行する直前に呼ばれる
 NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
-#if MODERN
+#if MODERN || CBODY
   const struct PreloadEntity* preload;
 
   for (preload = sStagePreloadEntities[stageID]; preload->id != 0xFF; preload = &preload[1]) {
@@ -746,7 +746,7 @@ NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
 
 // MMBN4のウィルス に置き換える直前に呼ばれる
 NON_MATCH static void FUN_08018d10(u8 stageID, u8 area) {
-#if MODERN
+#if MODERN || CBODY
   const struct PreloadEntity* preload;
 
   for (preload = sStagePreloadEntities[stageID]; preload->id != 0xFF; preload++) {

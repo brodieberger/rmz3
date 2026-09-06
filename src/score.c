@@ -129,7 +129,7 @@ static void calcCodename(void);
 
 // 0x08019794
 NON_MATCH_AP void CalcMissionScore(void) {
-#if MODERN || AP
+#if MODERN || AP || CBODY
   s32 timeover;
   s32 enemy_count;
   s32 total_damage;
