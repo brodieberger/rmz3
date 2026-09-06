@@ -154,7 +154,6 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
   struct SecretDiskState* d;
   struct SecretDiskState* d2;
   struct SecretDiskState* d3;
-  struct SecretDiskState* d4;
   u8* bits;
   u32 diskNo;
   u8 disk;
@@ -178,8 +177,8 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
   bits = gStageDiskManager.disk;
   diskNo = g->sceneState.disk.cursorDisk;
   disk = diskNo;
-  if ((((bits[disk >> 2] & 0xF) >> (disk & 3)) & 1) != 0) {
-    if (((bits[disk >> 2] >> ((disk & 3) + 4)) & 1) != 0) {
+  if ((((bits[disk >> 2] & 0xF) >> (diskNo & 3)) & 1) != 0) {
+    if (((bits[disk >> 2] >> ((diskNo & 3) + 4)) & 1) != 0) {
       if (disk <= 5) {
         six = 0x2BC + d->cursorDisk;
         PrintString(STRING(six), 0x11, 4);
@@ -199,12 +198,10 @@ NON_MATCH static void DiskLoop_Run(struct GameState* g) {
           digits = 0;
           amount = DiskECrystalAmounts[d->cursorDisk - 0x5E];
           while (amount != 0) {
-            amount = amount / 10;
-            digits++;
+            do { amount = amount / 10; digits++; } while (0);
           }
 #if IS_US
-          d4 = &g->sceneState.disk;
-          PrintNumber(DiskECrystalAmounts[d4->cursorDisk - 0x5E], digits + 0x10, 4);
+          PrintNumber(DiskECrystalAmounts[(&g->sceneState.disk)->cursorDisk - 0x5E], digits + 0x10, 4);
           PrintString(STRING(0x2D4), 0x11, 6);
 #else
           PrintNumber(DiskECrystalAmounts[d->cursorDisk - 0x5E], digits + 0x11, 6);
