@@ -21,10 +21,10 @@ typedef void (*DiskLoopFunc)(struct GameState*);
 
 extern const struct Graphic gGraphic_MiscMenu;
 extern const struct Palette gPalette_MiscMenu;
-extern const struct Graphic Graphic_SecretDickBlue;
-extern const struct Palette Palette_SecretDickBlue;
-extern const struct Graphic Graphic_SecretDickRed;
-extern const struct Palette Palette_SecretDickRed;
+extern const struct Graphic Graphic_SecretDiskBlue;
+extern const struct Palette Palette_SecretDiskBlue;
+extern const struct Graphic Graphic_SecretDiskRed;
+extern const struct Palette Palette_SecretDiskRed;
 
 extern const struct SecretDiskEntry gSecretDiskEntries[DISK_COUNT];
 extern const u16 DiskECrystalAmounts[16];
@@ -91,11 +91,11 @@ static void DiskLoop_Init(struct GameState* g) {
   CopyBgMap(g->menuBgMap1, SELF_REL_PTR(&gBgMapOffsets[101]), 0, 0);
 
   if (gSystemSavedata.disk == 1) {
-    LoadGraphic(&Graphic_SecretDickBlue, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
-    LoadPalette(&Palette_SecretDickBlue, 0);
+    LoadGraphic(&Graphic_SecretDiskBlue, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
+    LoadPalette(&Palette_SecretDiskBlue, 0);
   } else if (gSystemSavedata.disk == 2) {
-    LoadGraphic(&Graphic_SecretDickRed, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
-    LoadPalette(&Palette_SecretDickRed, 0);
+    LoadGraphic(&Graphic_SecretDiskRed, ((void*)((BGCNT16(1) & 0xc) << charBaseShift)));
+    LoadPalette(&Palette_SecretDiskRed, 0);
   }
 
   setSecretDiskPalette(g);
