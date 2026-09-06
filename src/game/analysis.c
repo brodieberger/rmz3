@@ -174,11 +174,16 @@ static void DiskLoop_Run(struct GameState* g) {
 
   d = &g->sceneState.disk;
   d->redraw = 0;
-  sDiskRunLoops[g->mode[2]](g);
+  if (!ApDiskShopUpdate(g)) {
+    sDiskRunLoops[g->mode[2]](g);
+  }
 
   if (gJoypad[0].pressed & START_BUTTON) {
     g->mode[1] = 3;
   }
+
+  // Draw this screen if the shop window is supposed to be open
+  if (!ApDiskShopOpen(g)) {
 
   PrintString(STRING(0x1DE), 0x11, 1);
   printThreeDigitNumber(d->cursorDisk + 1, 0x16, 1);
@@ -240,6 +245,8 @@ static void DiskLoop_Run(struct GameState* g) {
     // Not found at all: the slot stays blank.
     PrintString(STRING(0x1DD), 1, 0x12);
   }
+
+  }  // !ApDiskShopOpen
   ApDiskMenuUpdate(g);
 
   d2 = &g->sceneState.disk;

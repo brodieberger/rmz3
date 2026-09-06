@@ -14,14 +14,22 @@ Archipelago stuff.
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 22
+#define AP_VERSION 23
 
 /*
-    Highest location ID the AP World defines
+  Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 252
+#define AP_MAX_LOCATION_ID 300
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
+
+/*
+  Cerveau's shop stuff. Slot n is location AP_SHOP_LOCATION_FIRST + n, so already bought is
+  the server's save of that location.
+*/
+#define AP_SHOP_SLOTS_MAX 48
+#define AP_SHOP_LOCATION_FIRST 253
+#define AP_SHOP_LOCATION_LAST (AP_SHOP_LOCATION_FIRST + AP_SHOP_SLOTS_MAX - 1)
 
 #define AP_ITEM_INBOX_LEN 16
 #define AP_ITEM_INBOX_MASK (AP_ITEM_INBOX_LEN - 1)
@@ -125,6 +133,14 @@ Archipelago stuff.
 
 extern const char_t gApCerveauAwayText[];
 extern const char_t gApDiskOpenAllText[];
+extern const char_t gApDiskOpenAllShopText[];
+extern const char_t gApDiskShopHintText[];
+extern const char_t gApShopPromptText[];
+extern const char_t gApShopTitleText[];
+extern const char_t gApShopSlotText[];
+extern const char_t gApShopCostText[];
+extern const char_t gApShopHaveText[];
+extern const char_t gApShopSoldText[];
 
 /*
   IDLE is normal resistance base behavior.
@@ -234,7 +250,7 @@ struct ApState {
   u8 canAcceptItems;
 };
 
-static_assert(sizeof(struct ApState) == 116);
+static_assert(sizeof(struct ApState) == 128);
 
 extern struct ApState gAp;
 
@@ -242,9 +258,11 @@ struct ApSeedConfig {
   u16 requiredDisks;   // disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
   u8 easyExSkill;      // award the EX skill location check regardless of rank
+  u16 shopPriceBase;   // Cerveau's shop: slot n costs shopPriceBase * (n + 1)
+  u8 shopSlots;        // how many shop slots this seed stocks, 0 for no shop
 };
 
-static_assert(sizeof(struct ApSeedConfig) == 4);
+static_assert(sizeof(struct ApSeedConfig) == 8);
 
 extern const struct ApSeedConfig gApSeedConfig;
 
@@ -330,6 +348,7 @@ extern u8 (*const gApChargeTierFn)(u8 weapon);
 extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
 extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
 extern void (*const gApDiskMenuUpdateFn)(struct GameState* g);
+extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -354,6 +373,8 @@ extern void (*const gApDiskMenuUpdateFn)(struct GameState* g);
 #define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)
 #define ApCerveauGuideUpdate(p) gApCerveauGuideUpdateFn(p)
 #define ApDiskMenuUpdate(g) gApDiskMenuUpdateFn(g)
+#define ApDiskShopUpdate(g) gApDiskShopUpdateFn(g)
+#define ApDiskShopOpen(g) ((g)->sceneState.disk.unk_0d != 0)
 
 /*
   Point gStageDiskManager.disk at AP's inventory, or back at the game's.
@@ -393,6 +414,8 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApInMissionRerun() (0)
 #define ApFrameHook(b) SwitchProcess(b)
 #define ApDiskMenuUpdate(g) ((void)0)
+#define ApDiskShopUpdate(g) (0)
+#define ApDiskShopOpen(g) (0)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)
 
