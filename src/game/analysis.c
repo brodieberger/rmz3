@@ -40,18 +40,18 @@ static void DiskLoop_Run(struct GameState* g);
 static void DiskLoop_BlackOut(struct GameState* g);
 static void DiskLoop_Exit(struct GameState* g);
 
-static void sd_analysis_080f83ac(struct GameState* g);
-static void sd_analysis_080f8408(struct GameState* g);
+static void initDiskSceneRenderer(struct GameState* g);
+static void drawDiskSceneWidgets(struct GameState* g);
 static void setSecretDiskPalette(struct GameState* g);
-static void sd_analysis_080f85e0(struct GameState* g);
-static void sd_analysis_080f875c(struct GameState* g);
-static void sd_analysis_080f8984(struct GameState* g);
+static void DiskRun_Run(struct GameState* g);
+static void DiskRun_OpenWindow(struct GameState* g);
+static void DiskRun_CloseWindow(struct GameState* g);
 static void printThreeDigitNumber(u16 n, u8 x, u8 y);
 
 // 0x080f7d70
 void MainLoop_Disk(struct GameState* g) {
   sDiskLoops[g->mode[1]](g);
-  sd_analysis_080f8408(g);
+  drawDiskSceneWidgets(g);
 }
 
 // 0x080f7d94
@@ -74,7 +74,7 @@ static void DiskLoop_Init(struct GameState* g) {
   d->colorR = 0;
   d->colorG = 0;
   d->colorB = 0;
-  sd_analysis_080f83ac(g);
+  initDiskSceneRenderer(g);
 
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BGMODE_MASK;
   gVideoRegBuffer.dispcnt &= ~DISPCNT_BG_ALL_ON;
@@ -284,8 +284,8 @@ static void DiskLoop_Exit(struct GameState* g) {
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 
-// Set up the widget renderer this scene draws its cursors and borders with.
-static void sd_analysis_080f83ac(struct GameState* g) {
+// 0x080f83ac
+static void initDiskSceneRenderer(struct GameState* g) {
   Coords32* c = &g->unk_0dc4;
   c->x = PIXEL(120), c->y = PIXEL(80);
   ResetPivot(&g->unk_0db8, c, 0, 0);
@@ -294,8 +294,8 @@ static void sd_analysis_080f83ac(struct GameState* g) {
   InitWidgetHeader(&g->entityHeaders[ENTITY_WIDGET], gWidgets, 64);
 }
 
-// Draw the widget layer, following BG1's horizontal scroll.
-static void sd_analysis_080f8408(struct GameState* g) {
+// 0x080f8408
+static void drawDiskSceneWidgets(struct GameState* g) {
   Coords32* c = &g->unk_0dc4;
   const BgOfs* bg1ofs = (const BgOfs*)gVideoRegBuffer.bgofs[1];
   c->x = PIXEL(bg1ofs->x & 0x1FF) + PIXEL(120);
@@ -355,7 +355,8 @@ static void setSecretDiskPalette(struct GameState* g) {
 }
 
 // Grid sub-loop: move the cursor, scroll the grid under it, open a disk on A.
-static void sd_analysis_080f85e0(struct GameState* g) {
+// 0x080f85e0
+static void DiskRun_Run(struct GameState* g) {
   struct SecretDiskState* d;
   struct SecretDiskState* d2;
   struct SecretDiskState* d3;
@@ -419,7 +420,8 @@ static void sd_analysis_080f85e0(struct GameState* g) {
 }
 
 // Opening sub-loop: grow the analysis window and fade the palette into it.
-static void sd_analysis_080f875c(struct GameState* g) {
+// 0x080f875c
+static void DiskRun_OpenWindow(struct GameState* g) {
   struct SecretDiskState* d;
   struct SecretDiskState* d2;
   struct SecretDiskState* d3;
@@ -532,7 +534,8 @@ static void sd_analysis_080f875c(struct GameState* g) {
 }
 
 // Closing sub-loop: shrink the window back and restore the palette.
-static void sd_analysis_080f8984(struct GameState* g) {
+// 0x080f8984
+static void DiskRun_CloseWindow(struct GameState* g) {
   struct SecretDiskState* d = &g->sceneState.disk;
   const struct SecretDiskEntry* e;
   const struct SecretDiskEntry* table;
@@ -709,9 +712,9 @@ bool8 allSecretDiskFound(void) {
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 static const DiskLoopFunc sDiskRunLoops[3] = {
-    sd_analysis_080f85e0,
-    sd_analysis_080f875c,
-    sd_analysis_080f8984,
+    DiskRun_Run,
+    DiskRun_OpenWindow,
+    DiskRun_CloseWindow,
 };
 
 const u16 DiskECrystalAmounts[16] = {
