@@ -19,7 +19,7 @@ gApDiskShopHintText:
 
 .global gApShopPromptText
 gApShopPromptText:
-	.string "A: Buy  B: Back.$"
+	.string "A: Buy  L/R: Disks.$"
 
 @ The right hand panel, printed at x 0x11. Thirteen characters of room.
 .global gApShopTitleText
@@ -38,8 +38,12 @@ gApShopCostText:
 gApShopHaveText:
 	.string "HAVE$"
 
+.global gApShopSlashText
+gApShopSlashText:
+	.string "/$"
+
 .global gApShopSoldText
 gApShopSoldText:
-	.string "SOLD OUT$"
+	.string "SOLD$"
 
 .endif

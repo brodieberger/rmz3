@@ -29,7 +29,6 @@ Archipelago stuff.
 */
 #define AP_SHOP_SLOTS_MAX 48
 #define AP_SHOP_LOCATION_FIRST 253
-#define AP_SHOP_LOCATION_LAST (AP_SHOP_LOCATION_FIRST + AP_SHOP_SLOTS_MAX - 1)
 
 #define AP_ITEM_INBOX_LEN 16
 #define AP_ITEM_INBOX_MASK (AP_ITEM_INBOX_LEN - 1)
@@ -140,6 +139,7 @@ extern const char_t gApShopTitleText[];
 extern const char_t gApShopSlotText[];
 extern const char_t gApShopCostText[];
 extern const char_t gApShopHaveText[];
+extern const char_t gApShopSlashText[];
 extern const char_t gApShopSoldText[];
 
 /*
@@ -258,11 +258,47 @@ struct ApSeedConfig {
   u16 requiredDisks;   // disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
   u8 easyExSkill;      // award the EX skill location check regardless of rank
-  u16 shopPriceBase;   // Cerveau's shop: slot n costs shopPriceBase * (n + 1)
-  u8 shopSlots;        // how many shop slots this seed stocks, 0 for no shop
 };
 
-static_assert(sizeof(struct ApSeedConfig) == 8);
+static_assert(sizeof(struct ApSeedConfig) == 4);
+
+/*
+  What each shop slot costs, rolled for every new seed and patched into the ROM
+*/
+extern const u16 gApShopPrices[AP_SHOP_SLOTS_MAX];
+
+#define AP_SHOP_TEXT_COLS 12
+#define AP_SHOP_NAME_LINES 3
+#define AP_SHOP_PLAYER_LINES 2
+#define AP_SHOP_TEXT_END 0xFF
+
+/* kind: the low bits colour the slot's icon, the flag says whose world it is. */
+#define AP_SHOP_KIND_PLAIN 0        /* useful or filler */
+#define AP_SHOP_KIND_PROGRESSION 1
+#define AP_SHOP_KIND_TRAP 2
+#define AP_SHOP_KIND_MASK 3
+#define AP_SHOP_OWN_WORLD 4 /* Will eventually have more icons for each item */
+#define AP_SHOP_IS_DISK 8   /* an own-world secret disk, which draws as one */
+
+struct ApShopItem {
+  char_t name[AP_SHOP_NAME_LINES][AP_SHOP_TEXT_COLS + 1];
+  char_t player[AP_SHOP_PLAYER_LINES][AP_SHOP_TEXT_COLS + 1];
+  u8 kind;
+  u8 pad_[2];
+};
+
+static_assert(sizeof(struct ApShopItem) == 68);
+
+extern const struct ApShopItem gApShopItems[AP_SHOP_SLOTS_MAX];
+
+/*
+  The shop's icon palettes: plain, progression, trap, 
+  then a greyed one for a slot the player cannot afford. 
+*/
+#define AP_SHOP_PAL_COUNT 4
+#define AP_SHOP_PAL_FIRST 9
+
+extern const u16 gApShopPalettes[AP_SHOP_PAL_COUNT][16];
 
 extern const struct ApSeedConfig gApSeedConfig;
 
