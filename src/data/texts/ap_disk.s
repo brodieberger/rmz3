@@ -22,21 +22,17 @@ gApShopPromptText:
 	.string "A: Buy  L/R: Disks.$"
 
 @ The right hand panel, printed at x 0x11. Thirteen characters of room.
-.global gApShopTitleText
-gApShopTitleText:
-	.string "SHOP$"
+.global gApShopEcText
+gApShopEcText:
+	.string "EC$"
 
-.global gApShopSlotText
-gApShopSlotText:
-	.string "SLOT$"
+.global gApShopBuyText
+gApShopBuyText:
+	.string "BUY$"
 
-.global gApShopCostText
-gApShopCostText:
-	.string "COST$"
-
-.global gApShopHaveText
-gApShopHaveText:
-	.string "HAVE$"
+.global gApShopPoorText
+gApShopPoorText:
+	.string "NO EC$"
 
 .global gApShopSlashText
 gApShopSlashText:

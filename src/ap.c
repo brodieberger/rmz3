@@ -843,9 +843,7 @@ static void ApCheckVolcanoMidBossRoom(void);
   Which icon an item gets
   AP_ICON_NONE subtanks and crystals since they are drawn using vanilla sprites.
 */
-#define AP_ICON_NONE 0xFF
-
-static u8 ApIconOf(u16 apItemID) {
+u8 ApIconOf(u16 apItemID) {
   if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
     return AP_ICON_DISK;
   }
@@ -867,6 +865,20 @@ static u8 ApIconOf(u16 apItemID) {
   }
   if (apItemID == AP_ITEM_STORY_MID || apItemID == AP_ITEM_STORY_LATE) {
     return AP_ICON_STORY;
+  }
+
+  if (apItemID >= AP_ITEM_PROGRESSIVE_WEAPON_FIRST &&
+      apItemID <= AP_ITEM_PROGRESSIVE_WEAPON_LAST) {
+    return (u8)(AP_ICON_BUSTER + (apItemID - AP_ITEM_PROGRESSIVE_WEAPON_FIRST));
+  }
+  if (apItemID == AP_ITEM_STORY_PROGRESS) {
+    return AP_ICON_STORY;
+  }
+  if (apItemID == AP_ITEM_SUBTANK_1 || apItemID == AP_ITEM_SUBTANK_2) {
+    return AP_ICON_SUBTANK;
+  }
+  if (apItemID == AP_ITEM_CRYSTALS) {
+    return AP_ICON_CRYSTAL;
   }
   return AP_ICON_NONE;
 }

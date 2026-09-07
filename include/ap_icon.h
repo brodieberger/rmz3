@@ -8,7 +8,8 @@
   Item popup icons
 */
 
-#define AP_ICON_COUNT 42
+#define AP_ICON_COUNT 44
+#define AP_ICON_NONE 0xFF   /* no icon for this item: the popup draws a plain bubble */
 #define AP_ICON_TILES 4
 #define AP_ICON_PAL 11
 
@@ -59,6 +60,8 @@ enum {
   AP_ICON_STAGE_15,
   AP_ICON_STORY,
   AP_ICON_DISK,
+  AP_ICON_SUBTANK,
+  AP_ICON_CRYSTAL,
 };
 
 struct ApIconSprite {

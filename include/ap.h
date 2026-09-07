@@ -2,6 +2,7 @@
 #define GUARD_RMZ3_AP_H
 
 #include "gba/gba.h"
+#include "ap_icon.h"
 #include "types.h"
 
 /*  
@@ -93,6 +94,12 @@ Archipelago stuff.
 /*
   Story progress items.
 */
+
+#define AP_ITEM_PROGRESSIVE_WEAPON_FIRST 224
+#define AP_ITEM_PROGRESSIVE_WEAPON_LAST 227
+#define AP_ITEM_STORY_PROGRESS 228
+#define AP_ITEM_CRYSTALS 301   /* the apworld's filler crystals */
+
 #define AP_ITEM_STORY_MID 229   // FLAG_FIRST4_DONE
 #define AP_ITEM_STORY_LATE 230  // FLAG_LATER4_DONE
 
@@ -135,10 +142,9 @@ extern const char_t gApDiskOpenAllText[];
 extern const char_t gApDiskOpenAllShopText[];
 extern const char_t gApDiskShopHintText[];
 extern const char_t gApShopPromptText[];
-extern const char_t gApShopTitleText[];
-extern const char_t gApShopSlotText[];
-extern const char_t gApShopCostText[];
-extern const char_t gApShopHaveText[];
+extern const char_t gApShopEcText[];
+extern const char_t gApShopBuyText[];
+extern const char_t gApShopPoorText[];
 extern const char_t gApShopSlashText[];
 extern const char_t gApShopSoldText[];
 
@@ -277,14 +283,13 @@ extern const u16 gApShopPrices[AP_SHOP_SLOTS_MAX];
 #define AP_SHOP_KIND_PROGRESSION 1
 #define AP_SHOP_KIND_TRAP 2
 #define AP_SHOP_KIND_MASK 3
-#define AP_SHOP_OWN_WORLD 4 /* Will eventually have more icons for each item */
-#define AP_SHOP_IS_DISK 8   /* an own-world secret disk, which draws as one */
+#define AP_SHOP_OWN_WORLD 4
 
 struct ApShopItem {
   char_t name[AP_SHOP_NAME_LINES][AP_SHOP_TEXT_COLS + 1];
   char_t player[AP_SHOP_PLAYER_LINES][AP_SHOP_TEXT_COLS + 1];
   u8 kind;
-  u8 pad_[2];
+  u16 apItemCode;
 };
 
 static_assert(sizeof(struct ApShopItem) == 68);
@@ -299,6 +304,12 @@ extern const struct ApShopItem gApShopItems[AP_SHOP_SLOTS_MAX];
 #define AP_SHOP_PAL_FIRST 9
 
 extern const u16 gApShopPalettes[AP_SHOP_PAL_COUNT][16];
+#define AP_SHOP_CELLS 20
+
+extern const u32 gApShopIcons[AP_ICON_COUNT][AP_ICON_TILES][8];
+extern const u16 gApShopCellTiles[AP_SHOP_CELLS][AP_ICON_TILES];
+
+u8 ApIconOf(u16 apItemID);
 
 extern const struct ApSeedConfig gApSeedConfig;
 

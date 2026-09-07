@@ -91,6 +91,7 @@ SECTIONS {
 		src/ap_disk_menu.o (.text);
 		src/ap_disk_menu.o (.rodata);
 		src/ap_shop_palettes.o (.rodata);
+		src/ap_shop_icons.o (.rodata);
 		src/data/texts/ap_disk.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);

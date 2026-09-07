@@ -51,15 +51,22 @@
 #define GRID_H 12
 #define GRID_EMPTY_TILE 0x31A2
 
-static const u16 sIconForSale[4] = {0x80EB, 0x80EC, 0x810B, 0x810C};
 static const u16 sIconSold[4] = {0x80ED, 0x80EE, 0x810D, 0x810E};
-static const u16 sIconDim[4] = {0x816B, 0x816C, 0x816D, 0x816E};
 static const u16 sIconAbsent[4] = {GRID_EMPTY_TILE, GRID_EMPTY_TILE,
                                    GRID_EMPTY_TILE, GRID_EMPTY_TILE};
 
 #define LOGO_TILE 0x174
-#define OWN_TILE 0x178 // temp
 #define LOGO_PAL_DIM (AP_SHOP_PAL_FIRST + 3)
+
+static void blitCellIcon(u8 cell, u8 icon) {
+  u8 i;
+
+  for (i = 0; i < AP_ICON_TILES; i++) {
+    MemCopy32(gApShopIcons[icon][i],
+              (void*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32),
+              sizeof(gApShopIcons[icon][i]));
+  }
+}
 
 static void cellArt(u16* out, u16 tile, u8 bank) {
   u8 i;
@@ -82,7 +89,7 @@ static void loadShopPalettes(void) {
 
 #define SHOP_SCROLL(g) ((g)->sceneState.disk.unk_08[1])
 #define SGRID_COLS 5
-#define SGRID_ROWS 6
+#define SGRID_ROWS 4
 #define SGRID_CELLS (SGRID_COLS * SGRID_ROWS)
 
 /*
@@ -168,6 +175,7 @@ static void paintSlotGrid(struct GameState* g) {
   bool32 changed = FALSE;
   u16 logo[4];
   u8 i;
+  u8 n;
 
   for (i = 0; i < SGRID_CELLS; i++) {
     u8 slot = (u8)(SHOP_SCROLL(g) * SGRID_COLS + i);
@@ -182,14 +190,20 @@ static void paintSlotGrid(struct GameState* g) {
       u8 kind = gApShopItems[slot].kind;
       bool32 poor = shopPrice(slot) > ec;
 
-      if (kind & AP_SHOP_IS_DISK) {
-        art = poor ? sIconDim : sIconForSale;
+      u8 bank = (u8)(poor ? LOGO_PAL_DIM
+                          : (AP_SHOP_PAL_FIRST + (kind & AP_SHOP_KIND_MASK)));
+      u8 icon = ApIconOf(gApShopItems[slot].apItemCode);
+
+      if (icon == AP_ICON_NONE) {
+        // Another world's item, or one of mmzero3 with no icon of its own.
+        cellArt(logo, LOGO_TILE, bank);
       } else {
-        cellArt(logo, (kind & AP_SHOP_OWN_WORLD) ? OWN_TILE : LOGO_TILE,
-                (u8)(poor ? LOGO_PAL_DIM
-                          : (AP_SHOP_PAL_FIRST + (kind & AP_SHOP_KIND_MASK))));
-        art = logo;
+        blitCellIcon(i, icon);
+        for (n = 0; n < AP_ICON_TILES; n++) {
+          logo[n] = (u16)((bank << 12) | gApShopCellTiles[i][n]);
+        }
       }
+      art = logo;
     }
     if (paintCell(map, at, art)) {
       changed = TRUE;
@@ -238,7 +252,7 @@ static u16 shopPrice(u8 slot) {
   Empty until the archipelago Rom.py patches them in.
 */
 #define EMPTY_ITEM {{{AP_SHOP_TEXT_END}, {AP_SHOP_TEXT_END}, {AP_SHOP_TEXT_END}}, \
-                    {{AP_SHOP_TEXT_END}, {AP_SHOP_TEXT_END}}, 0, {0}}
+                    {{AP_SHOP_TEXT_END}, {AP_SHOP_TEXT_END}}, 0, 0}
 
 const struct ApShopItem gApShopItems[AP_SHOP_SLOTS_MAX] = {
     EMPTY_ITEM, EMPTY_ITEM, EMPTY_ITEM, EMPTY_ITEM, EMPTY_ITEM, EMPTY_ITEM,
@@ -385,18 +399,36 @@ bool32 ApDiskShopUpdate(struct GameState* g) {
 /*
   Right side information panel.
 */
+/* For aligning the cost indicator. */
+static u8 digitsIn(u16 n) {
+  u8 d = 1;
+
+  while (n >= 10) {
+    n /= 10;
+    d++;
+  }
+  return d;
+}
+
 static void drawShop(struct GameState* g) {
   const struct ApShopItem* item;
+  u16 ec = (g->z2->unk_b4).status.EC;
   u8 slot = SHOP_SLOT(g);
   u8 i;
 
-  // The header box labels the number below it, also says SOLD.
-  PrintString(shopSold(slot) ? gApShopSoldText : gApShopCostText, PANEL_X, 1);
+  /* The box says whether you can buy it. */
+  if (shopSold(slot)) {
+    PrintString(gApShopSoldText, PANEL_X, 1);
+  } else if (shopPrice(slot) > ec) {
+    PrintString(gApShopPoorText, PANEL_X, 1);
+  } else {
+    PrintString(gApShopBuyText, PANEL_X, 1);
+  }
 
-  // like 300/5000: what it costs against what you are holding.
-  PrintNumber(shopPrice(slot), PANEL_X + 3, 4);
-  PrintString(gApShopSlashText, PANEL_X + 4, 4);
-  PrintNumber((g->z2->unk_b4).status.EC, PANEL_X + 8, 4);
+  PrintString(gApShopEcText, PANEL_X, 4);
+  PrintNumber(shopPrice(slot), PANEL_X + 6, 4);
+  PrintString(gApShopSlashText, PANEL_X + 7, 4);
+  PrintNumber(ec, (u8)(PANEL_X + 7 + digitsIn(ec)), 4);
 
   item = &gApShopItems[slot];
   for (i = 0; i < AP_SHOP_NAME_LINES; i++) {
