@@ -1,3 +1,4 @@
+/* Auto generated marker placement rules. Where the marker puts the tiles, per stage's area. 0 means no window since no marker needed. */
 #include "ap_marker.h"
 #include "global.h"
 

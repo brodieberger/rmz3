@@ -1,3 +1,4 @@
+/* Auto generated marker sprites. The Archipelago logo drawn over an unchecked pickup, 8x8 and 16x16 sprites. */
 #include "ap_marker.h"
 #include "global.h"
 

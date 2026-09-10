@@ -1,3 +1,4 @@
+/* Pickup locations with the metatile coordinates they spawn at. */
 #include "ap.h"
 #include "constants/stage_id.h"
 
