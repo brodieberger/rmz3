@@ -45,20 +45,18 @@ static void ApPickupMarkerUpdate(struct Entity* e) {
     return;
   }
 
-  tile = ApMarkerWindow();
-  if (tile == 0) {
-    DeleteEntity(e);
-    return;
-  }
   if ((e->spr).spriteIdx == AP_MARKER_BIG) {
-    MemCopy32(gApMarkerTiles[AP_MARKER_SMALL_TILES],
-              (void*)(VRAM + BG_VRAM_SIZE + ((tile + AP_MARKER_SMALL_TILES) * 32)),
-              AP_MARKER_BIG_TILES * 32);
+    (e->spr).oam.tileNum = wStaticGraphicTilenums[AP_MARKER_BIG_MOTION];
   } else {
+    tile = ApMarkerWindow();
+    if (tile == 0) {
+      DeleteEntity(e);
+      return;
+    }
     MemCopy32(gApMarkerTiles[0], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
               AP_MARKER_SMALL_TILES * 32);
+    (e->spr).oam.tileNum = tile;
   }
-  (e->spr).oam.tileNum = tile;
 
   e->AP_MARKER_PHASE = (u8)((e->AP_MARKER_PHASE + 1) % AP_MARKER_BOB_PERIOD);
   e->coord = p->coord;
@@ -87,7 +85,7 @@ void ApSpawnPickupMarker(Pickup* p) {
   if (ApServerChecked(gApPickupPlaces[place].loc)) {
     return;
   }
-  if (ApMarkerWindow() == 0) {
+  if (p->work[0] != ITEM_EXLIFE && ApMarkerWindow() == 0) {
     return;
   }
 
@@ -108,12 +106,14 @@ void ApSpawnPickupMarker(Pickup* p) {
 
   InitNonAffineMotion(e);
   (e->spr).sprites = (struct MetaspriteHeader*)gApMarkerSprite.hdr;
-  (e->spr).oam.tileNum = ApMarkerWindow();
   (e->spr).oam.paletteNum = AP_MARKER_PAL;
   /*
     Full size logo for one ups
   */
   (e->spr).spriteIdx = p->work[0] == ITEM_EXLIFE ? AP_MARKER_BIG : AP_MARKER_SMALL;
+  (e->spr).oam.tileNum = (e->spr).spriteIdx == AP_MARKER_BIG
+                             ? wStaticGraphicTilenums[AP_MARKER_BIG_MOTION]
+                             : ApMarkerWindow();
   e->flags |= DISPLAY;
 }
 

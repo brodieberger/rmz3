@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_AP_MARKER_H
 #define GUARD_RMZ3_AP_MARKER_H
 
+#include "constants/motion/static.h"
 #include "gba/gba.h"
 #include "motion.h"
 
@@ -11,10 +12,8 @@
   Other itemsanity 8x8 sprite
 */
 
-#define AP_MARKER_TILE 1015
 #define AP_MARKER_SMALL_TILES 1
-#define AP_MARKER_BIG_TILES 4
-#define AP_MARKER_TILE_COUNT (AP_MARKER_SMALL_TILES + AP_MARKER_BIG_TILES)
+#define AP_MARKER_BIG_MOTION SM176_RESULT_DISK
 #define AP_MARKER_PAL 11
 #define AP_MARKER_SMALL 0
 #define AP_MARKER_BIG 1
@@ -28,7 +27,7 @@ struct ApMarkerSprite {
   struct Subsprite part[AP_MARKER_FRAMES];
 };
 
-extern const u32 gApMarkerTiles[AP_MARKER_TILE_COUNT][8];
+extern const u32 gApMarkerTiles[AP_MARKER_SMALL_TILES][8];
 extern const struct ApMarkerSprite gApMarkerSprite;
 extern const s8 gApMarkerBob[AP_MARKER_BOB_PERIOD];
 
