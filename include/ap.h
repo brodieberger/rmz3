@@ -21,7 +21,7 @@ Archipelago stuff.
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 300
+#define AP_MAX_LOCATION_ID 382
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -107,6 +107,29 @@ Archipelago stuff.
 #define AP_LOC_SHIELD 227
 #define AP_LOC_EXLIFE_FIRST 231
 #define AP_EXLIFE_COUNT 10
+
+/*
+  Itemsanity: static items that are location checks. 
+  Marked in game by a floating icon when uncollected.
+*/
+#define AP_LOC_ITEMSANITY_FIRST 301
+#define AP_ITEMSANITY_COUNT 82
+#define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT)
+#define AP_PICKUP_PLACE_NONE 0xFF
+#define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
+
+struct ApPickupPlace {
+  u8 stageID;
+  u8 my;   // metatile y coord
+  u16 mx;  // metatile x coord
+  u16 loc;
+};
+/*
+  For alignment
+*/
+static_assert(sizeof(struct ApPickupPlace) == 8);
+
+extern const struct ApPickupPlace gApPickupPlaces[AP_PICKUP_PLACE_COUNT];
 #define AP_LOC_SUBBOSS_FIRST 242
 #define AP_SUBBOSS_COUNT 10
 #define AP_LOC_VOLCANO_MIDBOSS_ROOM 252
@@ -256,7 +279,7 @@ struct ApState {
   u8 canAcceptItems;
 };
 
-static_assert(sizeof(struct ApState) == 128);
+static_assert(sizeof(struct ApState) == 148);
 
 extern struct ApState gAp;
 
@@ -352,11 +375,12 @@ bool32 ApServerChecked(u16 locationID);
 bool32 ApInDemo(void);
 
 /* Which 1-UP location a pickup is */
-u16 ApExLifeLocation(u8 stageID, s32 coordX);
-void ApMarkExLifeCollected(u8 stageID, s32 coordX);
+u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY);
+u16 ApPickupLocation(u8 stageID, s32 coordX, s32 coordY);
+void ApMarkPickupCollected(u8 stageID, s32 coordX, s32 coordY);
 
 struct Pickup;
-void ApSpawnExLifeOrbit(struct Pickup* p);
+void ApSpawnPickupMarker(struct Pickup* p);
 
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);
@@ -375,7 +399,7 @@ extern const char_t gApFinalStageName[];
 extern void (*const gApInitFn)(void);
 extern void (*const gApUpdateFn)(void);
 extern void (*const gApMarkLocationCheckedFn)(u16 locationID);
-extern void (*const gApMarkExLifeCollectedFn)(u8 stageID, s32 coordX);
+extern void (*const gApMarkPickupCollectedFn)(u8 stageID, s32 coordX, s32 coordY);
 extern void (*const gApMarkNpcDialogueCheckedFn)(TextID textID);
 extern void (*const gApMarkStageClearedFn)(void);
 extern void (*const gApSetRankElfFn)(void);
@@ -389,7 +413,7 @@ extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
 extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 extern void (*const gApEndRunFn)(struct GameState* g);
-extern void (*const gApSpawnExLifeOrbitFn)(struct Pickup* p);
+extern void (*const gApSpawnPickupMarkerFn)(struct Pickup* p);
 extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
 extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
@@ -400,7 +424,8 @@ extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
 #define ApMarkLocationChecked(locationID) gApMarkLocationCheckedFn(locationID)
-#define ApMarkExLifeCollected(stageID, coordX) gApMarkExLifeCollectedFn(stageID, coordX)
+#define ApMarkPickupCollected(stageID, coordX, coordY) \
+  gApMarkPickupCollectedFn(stageID, coordX, coordY)
 #define ApMarkNpcDialogueChecked(textID) gApMarkNpcDialogueCheckedFn(textID)
 #define ApMarkStageCleared() gApMarkStageClearedFn()
 #define ApSetRankElf() gApSetRankElfFn()
@@ -414,7 +439,7 @@ extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 #define ApInMissionRerun() gApInMissionRerunFn()
 #define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
 #define ApEndRun(g) gApEndRunFn(g)
-#define ApSpawnExLifeOrbit(p) gApSpawnExLifeOrbitFn(p)
+#define ApSpawnPickupMarker(p) gApSpawnPickupMarkerFn(p)
 #define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)
 #define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)

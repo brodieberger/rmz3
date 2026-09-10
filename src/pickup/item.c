@@ -188,9 +188,9 @@ NON_MATCH_AP static void MapItem_Init(Pickup* p) {
   }
   p->work[2] = 240;
 #if AP
-  /* Marks the pickup as an unchecked Archipelago location (orbiting logo). */
-  if (p->work[0] == ITEM_EXLIFE) {
-    ApSpawnExLifeOrbit(p);
+  /* Animation for the Archipelago logo over unchecked location. */
+  if (ApPickupIsLocation(p->work[0])) {
+    ApSpawnPickupMarker(p);
   }
 #endif
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
@@ -420,12 +420,6 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
       if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) gECrystalGainAmount += 0x10;
       gECrystalGainAmount += 0x10;
     } else if (p->work[0] == ITEM_EXLIFE) {
-#if AP
-      // One location per 1-UP. Dropped 1-UPs set work[1] = 0 and are not locations.
-      if (p->work[1] >= 2) {
-        ApMarkExLifeCollected(gStageRun.id, (p->coord).x);
-      }
-#endif
       if (FLAG(gCurStory.s.gameflags, BYSE_ENABLED)) {
         if ((gScore.total)->extraLife <= 8) (gScore.total)->extraLife++;
       }
@@ -449,6 +443,11 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
 #endif
     }
 
+#if AP
+    if (ApPickupIsLocation(p->work[0]) && (p->work[1] >= 2)) {
+      ApMarkPickupCollected(gStageRun.id, (p->coord).x, (p->coord).y);
+    }
+#endif
     p->flags &= ~DISPLAY;
     p->flags &= ~FLIPABLE;
     EXIT_BODY(p);

@@ -95,9 +95,11 @@ SECTIONS {
 		src/data/texts/ap_disk.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);
-		src/ap_exlife_orbit.o (.text);
-		src/ap_exlife_orbit.o (.rodata);
-		src/ap_orbit_data.o (.rodata);
+		src/ap_pickup_marker.o (.text);
+		src/ap_pickup_marker.o (.rodata);
+		src/ap_marker_data.o (.rodata);
+		src/ap_pickup_places.o (.rodata);
+		src/ap_marker_slots.o (.rodata);
 		src/ap_mugshot_data.o (.rodata);
 		src/ap_icon_data.o (.rodata);
 		src/ap_icon_slots.o (.rodata);

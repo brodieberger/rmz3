@@ -3,7 +3,7 @@
 #undef ApInit
 #undef ApUpdate
 #undef ApMarkLocationChecked
-#undef ApMarkExLifeCollected
+#undef ApMarkPickupCollected
 #undef ApMarkNpcDialogueChecked
 #undef ApMarkStageCleared
 #undef ApSetRankElf
@@ -1126,52 +1126,33 @@ static_assert(AP_STAGE_COUNT == STAGE_COUNT);
   x is the spawn point's tile x, 
   basically its coordinates so the game can send the correct check based on where the life pickup is.
 */
-struct ApExLifePlace {
-  u8 stageID;
-  u16 x;
-};
-
-static const struct ApExLifePlace sApExLifePlaces[AP_EXLIFE_COUNT] = {
-    {STAGE_OCEAN, 272},           /* 231 */
-    {STAGE_OLD_RESIDENTIAL, 141}, /* 232 */
-    {STAGE_OLD_RESIDENTIAL, 183}, /* 233 */
-    {STAGE_MISSILE_FACTORY, 379}, /* 234 */
-    {STAGE_ANATRE_FOREST, 35},    /* 235 */
-    {STAGE_E_FACILITY, 625},      /* 236 */
-    {STAGE_SNOWY_PLAINS, 573},    /* 237 */
-    {STAGE_GIANT_ELEVATOR, 72},   /* 238 */
-    {STAGE_SUB_ARCADIA, 67},      /* 239 */
-    {STAGE_BASE, 26},             /* 240 */
-};
-
-/* 0 when the stage places no 1-UP. */
-u16 ApExLifeLocation(u8 stageID, s32 coordX) {
-  u16 px = (u16)(coordX >> 12);
-  u8 nearestPlace = AP_EXLIFE_COUNT;  // AP_EXLIFE_COUNT means the stage places no 1-UP
-  u16 nearestDist = 0xFFFF;
+/*
+  Every map-placed pickup that is a location
+  ten 1-UPs, 82 life capsules and E-Crystals
+*/
+u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY) {
+  u16 mx = (u16)(coordX >> 12);
+  u8 my = (u8)(coordY >> 12);
   u8 i;
 
-  for (i = 0; i < AP_EXLIFE_COUNT; i++) {
-    u16 dist;
-
-    if (sApExLifePlaces[i].stageID != stageID) {
-      continue;
-    }
-    dist = (u16)(px > sApExLifePlaces[i].x ? px - sApExLifePlaces[i].x : sApExLifePlaces[i].x - px);
-    if (dist < nearestDist) {
-      nearestDist = dist;
-      nearestPlace = i;
+  for (i = 0; i < AP_PICKUP_PLACE_COUNT; i++) {
+    if (gApPickupPlaces[i].stageID == stageID && gApPickupPlaces[i].mx == mx &&
+        gApPickupPlaces[i].my == my) {
+      return i;
     }
   }
-
-  if (nearestPlace == AP_EXLIFE_COUNT) {
-    return 0;
-  }
-  return (u16)(AP_LOC_EXLIFE_FIRST + nearestPlace);
+  return AP_PICKUP_PLACE_NONE;
 }
 
-void ApMarkExLifeCollected(u8 stageID, s32 coordX) {
-  u16 loc = ApExLifeLocation(stageID, coordX);
+/* 0 when this spawn point is not a location. */
+u16 ApPickupLocation(u8 stageID, s32 coordX, s32 coordY) {
+  u8 i = ApPickupPlaceIndex(stageID, coordX, coordY);
+
+  return i == AP_PICKUP_PLACE_NONE ? 0 : gApPickupPlaces[i].loc;
+}
+
+void ApMarkPickupCollected(u8 stageID, s32 coordX, s32 coordY) {
+  u16 loc = ApPickupLocation(stageID, coordX, coordY);
 
   if (loc != 0) {
     ApMarkLocationChecked(loc);
@@ -1448,7 +1429,8 @@ static void ApFrameHookImpl(bool32 b) {
 void (*const gApInitFn)(void) = ApInit;
 void (*const gApUpdateFn)(void) = ApUpdate;
 void (*const gApMarkLocationCheckedFn)(u16 locationID) = ApMarkLocationChecked;
-void (*const gApMarkExLifeCollectedFn)(u8 stageID, s32 coordX) = ApMarkExLifeCollected;
+void (*const gApMarkPickupCollectedFn)(u8 stageID, s32 coordX, s32 coordY) =
+    ApMarkPickupCollected;
 void (*const gApMarkNpcDialogueCheckedFn)(TextID textID) = ApMarkNpcDialogueChecked;
 void (*const gApMarkStageClearedFn)(void) = ApMarkStageCleared;
 void (*const gApSetRankElfFn)(void) = ApSetRankElf;
