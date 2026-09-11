@@ -287,9 +287,12 @@ struct ApSeedConfig {
   u16 requiredDisks;   // disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
   u8 easyExSkill;      // award the EX skill location check regardless of rank
+  u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
+  u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
+  u8 unused[2];        
 };
 
-static_assert(sizeof(struct ApSeedConfig) == 4);
+static_assert(sizeof(struct ApSeedConfig) == 8);
 
 /*
   What each shop slot costs, rolled for every new seed and patched into the ROM

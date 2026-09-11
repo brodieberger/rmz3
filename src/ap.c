@@ -70,6 +70,9 @@ const struct ApSeedConfig gApSeedConfig = {
     120,
     (1 << WEAPON_BUSTER) | (1 << WEAPON_SABER),
     FALSE,
+    FALSE,
+    TRUE,
+    {0, 0},
 };
 
 bool32 ApInDemo(void) {
@@ -1125,10 +1128,20 @@ static_assert(AP_STAGE_COUNT == STAGE_COUNT);
 
   x is the spawn point's tile x, 
   basically its coordinates so the game can send the correct check based on where the life pickup is.
-*/
-/*
+  
   Every map-placed pickup that is a location
   ten 1-UPs, 82 life capsules and E-Crystals
+*/
+
+static bool32 ApPickupPlaceEnabled(u16 loc) {
+  if (loc >= AP_LOC_ITEMSANITY_FIRST) {
+    return gApSeedConfig.itemsanity;
+  }
+  return gApSeedConfig.exLifeSanity;
+}
+
+/*
+  NONE when the spawn point is not a location in this seed
 */
 u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY) {
   u16 mx = (u16)(coordX >> 12);
@@ -1138,7 +1151,7 @@ u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY) {
   for (i = 0; i < AP_PICKUP_PLACE_COUNT; i++) {
     if (gApPickupPlaces[i].stageID == stageID && gApPickupPlaces[i].mx == mx &&
         gApPickupPlaces[i].my == my) {
-      return i;
+      return ApPickupPlaceEnabled(gApPickupPlaces[i].loc) ? i : AP_PICKUP_PLACE_NONE;
     }
   }
   return AP_PICKUP_PLACE_NONE;
