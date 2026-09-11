@@ -14,6 +14,7 @@
 #include "input.h"
 #include "score.h"
 #include "sound.h"
+#include "stagerun.h"
 #include "story.h"
 #include "text.h"
 #include "vfx.h"
@@ -215,7 +216,7 @@ static void ApSelectLoadPageArt(s16 page) {
 static void ApSelectShakeStatic(struct Entity* p) {
   u8 xflip, yflip;
 
-  p->work[3]++;
+  p->work[3] = (u8)gStageRun.frame;
   xflip = (u8)((p->work[3] >> 2) & 1);
   yflip = (u8)((p->work[3] >> 3) & 1);
 
@@ -245,6 +246,7 @@ static void ApSelectStylePortrait(struct Entity* p, u8 slot, u8 stageID) {
     return;
   }
 
+  p->work[3] = 0;
   p->flags &= ~(X_FLIP | Y_FLIP);
   (p->spr).xflip = FALSE;
   (p->spr).yflip = FALSE;

@@ -1242,7 +1242,7 @@ void ApMarkLocationChecked(u16 locationID) {
   if (ApInDemo()) {
     return;
   }
-  if (locationID > AP_MAX_LOCATION_ID) {
+  if (locationID == 0 || locationID > AP_MAX_LOCATION_ID) {
     return;
   }
   gAp.checkedLocations[locationID >> 3] |= (1 << (locationID & 7));
