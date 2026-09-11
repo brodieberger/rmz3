@@ -332,6 +332,15 @@ extern const u16 gApShopPalettes[AP_SHOP_PAL_COUNT][16];
 extern const u32 gApShopIcons[AP_ICON_COUNT][AP_ICON_TILES][8];
 extern const u16 gApShopCellTiles[AP_SHOP_CELLS][AP_ICON_TILES];
 
+/*
+  Shop's BG art. 
+*/
+#define AP_SHOP_BANNER_W 12
+extern const u32 gApShopBanner[AP_SHOP_BANNER_W][8];
+extern const u32 gApShopLogo[AP_ICON_TILES][8];
+extern const u16 gApShopBannerTile;
+extern const u16 gApShopLogoTile;
+
 u8 ApIconOf(u16 apItemID);
 
 extern const struct ApSeedConfig gApSeedConfig;

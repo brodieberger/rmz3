@@ -1352,15 +1352,7 @@ MenuExSkill_Pal:
 MenuExSkill_End:
 
 MiscMenu_Tiles:
-  .if AP
-@ A "SHOP" banner painted into tiles 0x15F..0x16A
-MiscMenuAp_Start:
-    .incbin "graphics/bg/menu_others-en-ap.4bpp.lz"
-  .if (. - MiscMenuAp_Start) > 7092
-    .error "menu_others-en-ap.4bpp.lz is larger than the vanilla sheet it replaces"
-  .endif
-    .space 7092 - (. - MiscMenuAp_Start)
-  .elseif ENGLISH
+  .if ENGLISH
     .incbin "graphics/bg/menu_others-en.4bpp.lz"
   .else
     .incbin "graphics/bg/menu_others.4bpp.lz"

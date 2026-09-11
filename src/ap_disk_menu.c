@@ -55,8 +55,15 @@ static const u16 sIconSold[4] = {0x80ED, 0x80EE, 0x810D, 0x810E};
 static const u16 sIconAbsent[4] = {GRID_EMPTY_TILE, GRID_EMPTY_TILE,
                                    GRID_EMPTY_TILE, GRID_EMPTY_TILE};
 
-#define LOGO_TILE 0x174
 #define LOGO_PAL_DIM (AP_SHOP_PAL_FIRST + 3)
+
+static void blitTiles(const u32 (*art)[8], u16 tile, u8 count) {
+  u8 i;
+
+  for (i = 0; i < count; i++) {
+    MemCopy32(art[i], (void*)(VRAM + 0x4000 + (tile + i) * 32), sizeof(art[i]));
+  }
+}
 
 static void blitCellIcon(u8 cell, u8 icon) {
   u8 i;
@@ -109,8 +116,6 @@ static void loadShopPalettes(void) {
 */
 #define BANNER_TX 1
 #define BANNER_TY 1
-#define BANNER_W 12
-#define BANNER_SHOP_TILE 0x15F
 #define BANNER_PALETTE 0x3000
 
 /*
@@ -123,6 +128,8 @@ static void buildShopPage(struct GameState* g) {
   u16 i;
   u8 tx;
   u8 ty;
+  blitTiles(gApShopBanner, gApShopBannerTile, AP_SHOP_BANNER_W);
+  blitTiles(gApShopLogo, gApShopLogoTile, AP_ICON_TILES);
 
   for (i = 0; i < 1024; i++) {
     dst[i] = src[i];
@@ -132,8 +139,9 @@ static void buildShopPage(struct GameState* g) {
       dst[ty * 32 + tx] = GRID_EMPTY_TILE;
     }
   }
-  for (tx = 0; tx < BANNER_W; tx++) {
-    dst[BANNER_TY * 32 + BANNER_TX + tx] = (u16)(BANNER_PALETTE | (BANNER_SHOP_TILE + tx));
+  for (tx = 0; tx < AP_SHOP_BANNER_W; tx++) {
+    dst[BANNER_TY * 32 + BANNER_TX + tx] =
+        (u16)(BANNER_PALETTE | (gApShopBannerTile + tx));
   }
   (g->sceneState).disk.redraw = 1;
 }
@@ -196,7 +204,7 @@ static void paintSlotGrid(struct GameState* g) {
 
       if (icon == AP_ICON_NONE) {
         // Another world's item, or one of mmzero3 with no icon of its own.
-        cellArt(logo, LOGO_TILE, bank);
+        cellArt(logo, gApShopLogoTile, bank);
       } else {
         blitCellIcon(i, icon);
         for (n = 0; n < AP_ICON_TILES; n++) {
