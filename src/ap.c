@@ -24,6 +24,8 @@
 #include "ap_disk_stage.h"
 #include "ap_icon.h"
 #include "constants/armor.h"
+#include "element.h"
+#include "zero.h"
 #include "constants/entity/boss.h"
 #include "constants/entity/vfx.h"
 #include "constants/exskill.h"
@@ -72,7 +74,8 @@ const struct ApSeedConfig gApSeedConfig = {
     FALSE,
     FALSE,
     TRUE,
-    {0, 0},
+    AP_SELECT_CYCLE_SUB_WEAPON,
+    0,
 };
 
 bool32 ApInDemo(void) {
@@ -991,15 +994,80 @@ static void ApShowItemPopup(u16 apItemID) {
 }
 
 /*
-  SELECT cycles the sub weapon. WIP this will soon be a weapon wheel!
-
-  Skips whatever is in the main weapon slot
+  Select cycles player inventory based on what is set in the Player's options
 */
-static void ApCycleSubWeapon(void) {
-  struct ZeroStatus* status;
-  u8 unlocked;
-  u8 main;
+static void ApCycleWeapon(struct ZeroStatus* status, u8 slot) {
+  u8 other = status->weapons[slot ^ 1];
   u8 i;
+
+  for (i = 1; i < WEAPON_KINDS; i++) {
+    u8 next = (u8)((status->weapons[slot] + i) & 3);
+
+    if ((status->unlockedWeapon & (1 << next)) && (next != other)) {
+      status->weapons[slot] = next;
+      PlaySound(SE_CURSOR);
+      return;
+    }
+  }
+}
+
+static void ApCycleChip(u8* chip, u8 unlocked) {
+  u8 i;
+
+  for (i = 1; i < 8; i++) {
+    u8 next = (u8)((*chip + i) & 7);
+
+    if (next == 0 || (unlocked & (1 << next))) {
+      *chip = next;
+      PlaySound(SE_CURSOR);
+      return;
+    }
+  }
+}
+
+
+static void ApCycleBodyChip(struct ZeroStatus* status) {
+  ApCycleChip(&status->body, status->unlockedBody);
+  switch (status->body) {
+    case BODY_CHIP_THUNDER: status->element = ELFX_THUNDER; break;
+    case BODY_CHIP_FLAME: status->element = ELFX_FIRE; break;
+    case BODY_CHIP_ICE: status->element = ELFX_ICE; break;
+    default: status->element = ELFX_NONE; break;
+  }
+  RequestElementEffectGraphic(status->element);
+}
+
+/*
+  Use fullest subtank
+*/
+static void ApUseSubtank(struct ZeroStatus* status) {
+  struct Zero* z = gGameState.z2;
+  u8 need = (u8)(GetMaxHP(z) - (z->body).hp);
+  u8 best = 0xFF;
+  u8 i;
+
+  for (i = 0; i < 4; i++) {
+    u8 hp = status->subtankHP[i];
+
+    if (hp != 0xFF && hp != 0 && (best == 0xFF || hp > status->subtankHP[best])) {
+      best = i;
+    }
+  }
+  if (best == 0xFF || need == 0) {
+    PlaySound(SE_NO);
+    return;
+  }
+  if (need > status->subtankHP[best]) {
+    need = status->subtankHP[best];
+  }
+  status->subtankHP[best] -= need;
+  gLifeRecoverAmount += need * 4;
+  PlaySound(SE_YES);
+}
+
+/* SELECT in play does one thing, chosen in the yaml. */
+static void ApSelectButton(void) {
+  struct ZeroStatus* status;
 
   if (ApInDemo()) {
     return;
@@ -1021,17 +1089,13 @@ static void ApCycleSubWeapon(void) {
   }
 
   status = &(&gGameState.z2->unk_b4)->status;
-  unlocked = status->unlockedWeapon;
-  main = status->weapons[0];
-
-  for (i = 1; i < WEAPON_KINDS; i++) {
-    u8 next = (u8)((status->weapons[1] + i) & 3);
-
-    if ((unlocked & (1 << next)) && (next != main)) {
-      status->weapons[1] = next;
-      PlaySound(SE_CURSOR);
-      return;
-    }
+  switch (gApSeedConfig.selectButton) {
+    case AP_SELECT_CYCLE_MAIN_WEAPON: ApCycleWeapon(status, 0); break;
+    case AP_SELECT_CYCLE_HEAD_CHIP: ApCycleChip(&status->head, status->unlockedHead); break;
+    case AP_SELECT_CYCLE_BODY_CHIP: ApCycleBodyChip(status); break;
+    case AP_SELECT_CYCLE_FOOT_CHIP: ApCycleChip(&status->foot, status->unlockedFoot); break;
+    case AP_SELECT_USE_SUBTANK: ApUseSubtank(status); break;
+    default: ApCycleWeapon(status, 1); break;
   }
 }
 
@@ -1073,7 +1137,7 @@ void ApUpdate(void) {
   ApKeepPickupPalette();
   canAcceptItems = ApCanAcceptItems();
   gAp.canAcceptItems = (u8)(canAcceptItems != 0);
-  ApCycleSubWeapon();
+  ApSelectButton();
 
   /*
     How many items have been applied.

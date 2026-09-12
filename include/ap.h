@@ -293,8 +293,17 @@ struct ApSeedConfig {
   u8 easyExSkill;      // award the EX skill location check regardless of rank
   u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
-  u8 unused[2];        
+  u8 selectButton;     // what SELECT does
+  u8 unused;
 };
+
+/* What SELECT does. Set by player option. */
+#define AP_SELECT_CYCLE_SUB_WEAPON 0
+#define AP_SELECT_CYCLE_MAIN_WEAPON 1
+#define AP_SELECT_CYCLE_HEAD_CHIP 2
+#define AP_SELECT_CYCLE_BODY_CHIP 3
+#define AP_SELECT_CYCLE_FOOT_CHIP 4
+#define AP_SELECT_USE_SUBTANK 5
 
 static_assert(sizeof(struct ApSeedConfig) == 8);
 
