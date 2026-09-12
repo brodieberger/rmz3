@@ -1,6 +1,6 @@
 #include "ap.h"
 
-#undef ApSpawnPickupMarker
+#undef ApInitPickupLocation
 
 #include "ap_marker.h"
 #include "constants/entity/item.h"
@@ -63,23 +63,26 @@ static void ApPickupMarkerUpdate(struct Entity* e) {
   (e->coord).y += PIXEL(AP_MARKER_CENTER_Y + gApMarkerBob[e->AP_MARKER_PHASE]);
 }
 
-void ApSpawnPickupMarker(Pickup* p) {
+void ApInitPickupLocation(Pickup* p) {
   struct Entity* e;
   u8 place;
 
+  p->AP_PICKUP_PLACE = AP_PICKUP_PLACE_NONE;
   /* Dropped pickups, not locations. */
   if (p->work[1] < 2) {
     return;
   }
+  place = ApPickupPlaceIndex(gStageRun.id, (p->coord).x, (p->coord).y);
+  if (place == AP_PICKUP_PLACE_NONE) {
+    return;
+  }
+  p->AP_PICKUP_PLACE = place;
+
   if (ApInDemo()) {
     return;
   }
   /* Don't render on mettaur mode, since it causes issues with VRAM */
   if (gSpawnManager.mettaursEnabled) {
-    return;
-  }
-  place = ApPickupPlaceIndex(gStageRun.id, (p->coord).x, (p->coord).y);
-  if (place == AP_PICKUP_PLACE_NONE) {
     return;
   }
   if (ApServerChecked(gApPickupPlaces[place].loc)) {
@@ -117,6 +120,6 @@ void ApSpawnPickupMarker(Pickup* p) {
   e->flags |= DISPLAY;
 }
 
-void (*const gApSpawnPickupMarkerFn)(Pickup* p) = ApSpawnPickupMarker;
+void (*const gApInitPickupLocationFn)(Pickup* p) = ApInitPickupLocation;
 
 #endif /* AP */

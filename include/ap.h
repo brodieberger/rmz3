@@ -117,6 +117,10 @@ Archipelago stuff.
 #define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT)
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
+/*
+  Identification for a pickup. Used since some pickups can move after being placed.
+*/
+#define AP_PICKUP_PLACE work[3]
 
 struct ApPickupPlace {
   u8 stageID;
@@ -386,13 +390,11 @@ bool32 ApServerChecked(u16 locationID);
 
 bool32 ApInDemo(void);
 
-/* Which 1-UP location a pickup is */
 u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY);
-u16 ApPickupLocation(u8 stageID, s32 coordX, s32 coordY);
-void ApMarkPickupCollected(u8 stageID, s32 coordX, s32 coordY);
 
 struct Pickup;
-void ApSpawnPickupMarker(struct Pickup* p);
+void ApInitPickupLocation(struct Pickup* p);
+void ApMarkPickupCollected(struct Pickup* p);
 
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);
@@ -411,7 +413,7 @@ extern const char_t gApFinalStageName[];
 extern void (*const gApInitFn)(void);
 extern void (*const gApUpdateFn)(void);
 extern void (*const gApMarkLocationCheckedFn)(u16 locationID);
-extern void (*const gApMarkPickupCollectedFn)(u8 stageID, s32 coordX, s32 coordY);
+extern void (*const gApMarkPickupCollectedFn)(struct Pickup* p);
 extern void (*const gApMarkNpcDialogueCheckedFn)(TextID textID);
 extern void (*const gApMarkStageClearedFn)(void);
 extern void (*const gApSetRankElfFn)(void);
@@ -425,7 +427,7 @@ extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
 extern bool32 (*const gApInMissionRerunFn)(void);
 extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
 extern void (*const gApEndRunFn)(struct GameState* g);
-extern void (*const gApSpawnPickupMarkerFn)(struct Pickup* p);
+extern void (*const gApInitPickupLocationFn)(struct Pickup* p);
 extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
 extern u8 (*const gApChargeTierFn)(u8 weapon);
 extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
@@ -436,8 +438,7 @@ extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
 #define ApMarkLocationChecked(locationID) gApMarkLocationCheckedFn(locationID)
-#define ApMarkPickupCollected(stageID, coordX, coordY) \
-  gApMarkPickupCollectedFn(stageID, coordX, coordY)
+#define ApMarkPickupCollected(p) gApMarkPickupCollectedFn(p)
 #define ApMarkNpcDialogueChecked(textID) gApMarkNpcDialogueCheckedFn(textID)
 #define ApMarkStageCleared() gApMarkStageClearedFn()
 #define ApSetRankElf() gApSetRankElfFn()
@@ -451,7 +452,7 @@ extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 #define ApInMissionRerun() gApInMissionRerunFn()
 #define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
 #define ApEndRun(g) gApEndRunFn(g)
-#define ApSpawnPickupMarker(p) gApSpawnPickupMarkerFn(p)
+#define ApInitPickupLocation(p) gApInitPickupLocationFn(p)
 #define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
 #define ApChargeTier(weapon) gApChargeTierFn(weapon)
 #define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)

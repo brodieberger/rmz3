@@ -188,9 +188,9 @@ NON_MATCH_AP static void MapItem_Init(Pickup* p) {
   }
   p->work[2] = 240;
 #if AP
-  /* Animation for the Archipelago logo over unchecked location. */
+  /* Which location this is, and the Archipelago logo over it while unchecked. */
   if (ApPickupIsLocation(p->work[0])) {
-    ApSpawnPickupMarker(p);
+    ApInitPickupLocation(p);
   }
 #endif
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
@@ -444,8 +444,8 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
     }
 
 #if AP
-    if (ApPickupIsLocation(p->work[0]) && (p->work[1] >= 2)) {
-      ApMarkPickupCollected(gStageRun.id, (p->coord).x, (p->coord).y);
+    if (ApPickupIsLocation(p->work[0])) {
+      ApMarkPickupCollected(p);
     }
 #endif
     p->flags &= ~DISPLAY;

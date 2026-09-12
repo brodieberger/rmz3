@@ -1157,18 +1157,9 @@ u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY) {
   return AP_PICKUP_PLACE_NONE;
 }
 
-/* 0 when this spawn point is not a location. */
-u16 ApPickupLocation(u8 stageID, s32 coordX, s32 coordY) {
-  u8 i = ApPickupPlaceIndex(stageID, coordX, coordY);
-
-  return i == AP_PICKUP_PLACE_NONE ? 0 : gApPickupPlaces[i].loc;
-}
-
-void ApMarkPickupCollected(u8 stageID, s32 coordX, s32 coordY) {
-  u16 loc = ApPickupLocation(stageID, coordX, coordY);
-
-  if (loc != 0) {
-    ApMarkLocationChecked(loc);
+void ApMarkPickupCollected(Pickup* p) {
+  if (p->AP_PICKUP_PLACE != AP_PICKUP_PLACE_NONE) {
+    ApMarkLocationChecked(gApPickupPlaces[p->AP_PICKUP_PLACE].loc);
   }
 }
 
@@ -1442,8 +1433,7 @@ static void ApFrameHookImpl(bool32 b) {
 void (*const gApInitFn)(void) = ApInit;
 void (*const gApUpdateFn)(void) = ApUpdate;
 void (*const gApMarkLocationCheckedFn)(u16 locationID) = ApMarkLocationChecked;
-void (*const gApMarkPickupCollectedFn)(u8 stageID, s32 coordX, s32 coordY) =
-    ApMarkPickupCollected;
+void (*const gApMarkPickupCollectedFn)(Pickup* p) = ApMarkPickupCollected;
 void (*const gApMarkNpcDialogueCheckedFn)(TextID textID) = ApMarkNpcDialogueChecked;
 void (*const gApMarkStageClearedFn)(void) = ApMarkStageCleared;
 void (*const gApSetRankElfFn)(void) = ApSetRankElf;
