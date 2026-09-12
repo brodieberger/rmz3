@@ -6,7 +6,7 @@
 #include "types.h"
 
 /*  
-Archipelago stuff.
+Archipelago stuff. This file and ap.c is growing absolutely huge and could probably be split at some point.
   The build exports gAp's location and field offsets to ap_symbols.json for the AP client.
 
     game -> client    checkedLocations   locations the player checked
@@ -110,7 +110,6 @@ Archipelago stuff.
 
 /*
   Itemsanity: static items that are location checks. 
-  Marked in game by a floating icon when uncollected.
 */
 #define AP_LOC_ITEMSANITY_FIRST 301
 #define AP_ITEMSANITY_COUNT 82
@@ -294,7 +293,7 @@ struct ApSeedConfig {
   u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
   u8 selectButton;     // what SELECT does
-  u8 damageUpgrades;   // the three ATK steps of each weapon chain grant; 0 makes them duds
+  u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
 };
 
 /* What SELECT does. Set by player option. */
@@ -308,7 +307,7 @@ struct ApSeedConfig {
 static_assert(sizeof(struct ApSeedConfig) == 8);
 
 /*
-  What each shop slot costs, rolled for every new seed and patched into the ROM
+  Cost of each shop item. Inserted into ROM when AP world generates
 */
 extern const u16 gApShopPrices[AP_SHOP_SLOTS_MAX];
 
@@ -386,7 +385,7 @@ void ApPrintWeaponStars(u8 weapon);
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
 
-/* Where a run goes when it ends -- all of GameLoop_EndRun's AP routing. */
+/* Ran on level end. Includes custom logic for playing cutscenes. */
 void ApEndRun(struct GameState* g);
 
 /* The portrait stage select */
