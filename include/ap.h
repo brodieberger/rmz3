@@ -294,7 +294,7 @@ struct ApSeedConfig {
   u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
   u8 selectButton;     // what SELECT does
-  u8 unused;
+  u8 damageUpgrades;   // the three ATK steps of each weapon chain grant; 0 makes them duds
 };
 
 /* What SELECT does. Set by player option. */

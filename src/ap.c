@@ -75,7 +75,7 @@ const struct ApSeedConfig gApSeedConfig = {
     FALSE,
     TRUE,
     AP_SELECT_CYCLE_SUB_WEAPON,
-    0,
+    TRUE,
 };
 
 bool32 ApInDemo(void) {
@@ -526,6 +526,13 @@ static const u8 sApWeaponAtkMod[WEAPON_KINDS][3] = {
     {MOD_ROD_ATK1, MOD_ROD_ATK2, MOD_ROD_ATK3},
     {MOD_SHIELD_ATK1, MOD_SHIELD_ATK2, MOD_SHIELD_ATK3},
 };
+
+// Caps the max upgrade based on user's options
+static u8 ApWeaponChainTop(u8 weapon) {
+  u8 top = sApWeaponChainMax[weapon];
+
+  return gApSeedConfig.damageUpgrades ? top : (u8)(top - 3);
+}
 static u8 ApWeaponStepBit(u8 weapon, u8 step) {
   u8 firstAtkLevel = (u8)(sApWeaponChainMax[weapon] - 2);
 
@@ -583,6 +590,9 @@ static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
     return FALSE;
   }
   ApUnlockWeapon(weapon);
+  if (level > ApWeaponChainTop(weapon)) {
+    level = ApWeaponChainTop(weapon);
+  }
 
   for (step = 2; step <= level; step++) {
     u8 bit = ApWeaponStepBit(weapon, step);
@@ -628,7 +638,7 @@ void ApPrintWeaponStars(u8 weapon) {
     return;
   }
   level = ApWeaponLevel(weapon);
-  max = sApWeaponChainMax[weapon];
+  max = ApWeaponChainTop(weapon);
 
   for (i = 0; i < max; i++) {
     sApWeaponStars[i] = (char_t)((i < level) ? AP_CHAR_STAR_FULL : AP_CHAR_STAR_EMPTY);
