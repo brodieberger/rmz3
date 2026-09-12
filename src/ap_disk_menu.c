@@ -14,6 +14,8 @@
 #include "sound.h"
 #include "stagerun.h"
 #include "text.h"
+#include "motion.h"
+#include "widget.h"
 #include "widget/cursor_square.h"
 
 #if AP
@@ -96,7 +98,7 @@ static void loadShopPalettes(void) {
 
 #define SHOP_SCROLL(g) ((g)->sceneState.disk.unk_08[1])
 #define SGRID_COLS 5
-#define SGRID_ROWS 4
+#define SGRID_ROWS 6
 #define SGRID_CELLS (SGRID_COLS * SGRID_ROWS)
 
 /*
@@ -222,6 +224,56 @@ static void paintSlotGrid(struct GameState* g) {
   }
 }
 
+/*
+  scroll arrows
+*/
+#define ARROW_X 114
+#define ARROW_UP_Y 14
+#define ARROW_DOWN_Y 128
+#define ARROW_IS_UP work[0]
+
+static void shopArrowUpdate(struct Entity* e) {
+  struct GameState* g = &gGameState;
+  u8 rows = (u8)((shopSlots() + SGRID_COLS - 1) / SGRID_COLS);
+  bool32 show;
+
+  if (!SHOP_OPEN(g)) {
+    DeleteEntity(e);
+    return;
+  }
+  if (e->ARROW_IS_UP) {
+    show = SHOP_SCROLL(g) > 0;
+  } else {
+    show = SHOP_SCROLL(g) + SGRID_ROWS < rows;
+  }
+  if (show && SHOP_STATE(g) != SHOP_CLOSING) {
+    e->flags |= DISPLAY;
+  } else {
+    e->flags &= ~DISPLAY;
+  }
+  UpdateEntityAnim(e);
+}
+
+static void createShopArrow(bool32 up) {
+  struct Entity* e = AllocEntityLast(gWidgetHeaderPtr);
+
+  if (e == NULL) {
+    return;
+  }
+  e->onUpdate = (void*)shopArrowUpdate;
+  e->id = 0;
+  e->renderPrio = 16;
+  e->tileNum = 0;
+  e->palID = 0;
+  e->ARROW_IS_UP = (u8)up;
+  InitNonAffineMotion(e);
+  /* Matches vanilla. */
+  SetSpriteAnimation(e, MOTION(SM083_ELF_MENU_ICON, (up ? 10 : 12)));
+  e->coord.x = PIXEL(SHOP_PAGE_X + ARROW_X);
+  e->coord.y = PIXEL(up ? ARROW_UP_Y : ARROW_DOWN_Y);
+  e->flags |= FLIPABLE;
+}
+
 /* Highlight cursor, same as vanilla. */
 static void placeCursor(struct GameState* g) {
   struct SecretDiskState* d = &(g->sceneState).disk;
@@ -332,6 +384,7 @@ static void buy(struct GameState* g, u8 slot) {
 bool32 ApDiskShopUpdate(struct GameState* g) {
   u8 slots = shopSlots();
   u16 pressed = gJoypad[0].pressed;
+  u16 dpad;
   u8 slot;
   u8 moved;
   u8 row;
@@ -354,6 +407,8 @@ bool32 ApDiskShopUpdate(struct GameState* g) {
     if (g->mode[2] == 0 && (pressed & (L_BUTTON | R_BUTTON))) {
       buildShopPage(g);
       loadShopPalettes();
+      createShopArrow(TRUE);
+      createShopArrow(FALSE);
       SHOP_DIR(g) = (pressed & L_BUTTON) ? DIR_LEFT : DIR_RIGHT;
       SHOP_SCROLL(g) = 0;
       SHOP_STATE(g) = 1;
@@ -377,15 +432,16 @@ bool32 ApDiskShopUpdate(struct GameState* g) {
     return TRUE;
   }
 
+  dpad = gJoypad[0].field3_0x6;
   slot = SHOP_SLOT(g);
   moved = slot;
-  if ((pressed & DPAD_RIGHT) && slot + 1 < slots) {
+  if ((dpad & DPAD_RIGHT) && slot + 1 < slots) {
     moved = (u8)(slot + 1);
-  } else if ((pressed & DPAD_LEFT) && slot > 0) {
+  } else if ((dpad & DPAD_LEFT) && slot > 0) {
     moved = (u8)(slot - 1);
-  } else if ((pressed & DPAD_DOWN) && slot + SGRID_COLS < slots) {
+  } else if ((dpad & DPAD_DOWN) && slot + SGRID_COLS < slots) {
     moved = (u8)(slot + SGRID_COLS);
-  } else if ((pressed & DPAD_UP) && slot >= SGRID_COLS) {
+  } else if ((dpad & DPAD_UP) && slot >= SGRID_COLS) {
     moved = (u8)(slot - SGRID_COLS);
   } else if (pressed & A_BUTTON) {
     buy(g, slot);

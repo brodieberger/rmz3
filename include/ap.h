@@ -334,7 +334,7 @@ extern const struct ApShopItem gApShopItems[AP_SHOP_SLOTS_MAX];
 #define AP_SHOP_PAL_FIRST 9
 
 extern const u16 gApShopPalettes[AP_SHOP_PAL_COUNT][16];
-#define AP_SHOP_CELLS 20
+#define AP_SHOP_CELLS 30
 
 extern const u32 gApShopIcons[AP_ICON_COUNT][AP_ICON_TILES][8];
 extern const u16 gApShopCellTiles[AP_SHOP_CELLS][AP_ICON_TILES];
