@@ -398,6 +398,10 @@ static void GameLoop_NewGame(struct GameState* g) {
   }
   MemFill32(0, (g->save).savedDisk, 48);
 #endif
+#if !AP
+  /*
+    Not really necessary.
+  */
   if ((gSystemSavedata.hardmodeLock == (gSineTable[8] & 0xFF)) && (gJoypad[0].input & L_BUTTON)) {
     (&(g->save))->gamemode = 1;
     SET_FLAG((g->save).story.gameflags, FLAG_HARD);
@@ -412,6 +416,7 @@ static void GameLoop_NewGame(struct GameState* g) {
     unlockAllElvesForUltimate((g->save).elf);
     ClearZeroStatusUltimate(&(g->save).status);
   }
+#endif
 #if AP
   /*
     Hub stage gets loaded first now.

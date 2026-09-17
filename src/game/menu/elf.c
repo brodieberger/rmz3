@@ -2118,6 +2118,22 @@ NAKED static str_id_t getElfDescStrID(struct GameState* g, u8 r1) {
 	ands r0, r1\n\
 	cmp r0, #0\n\
 	beq _080F7996\n\
+.if AP\n\
+	push {r2}\n\
+	adds r0, r4, #0\n\
+	ldr r1, _ApElfDesc_AlwaysOnFn\n\
+	ldr r1, [r1]\n\
+	bl _call_via_r1\n\
+	pop {r2}\n\
+	cmp r0, #0\n\
+	beq _ApElfDesc_Vanilla\n\
+	ldr r0, _ApElfDesc_ActiveText\n\
+	movs r1, #0x11\n\
+	movs r2, #0xd\n\
+	bl PrintString\n\
+	b _080F7996\n\
+_ApElfDesc_Vanilla:\n\
+.endif\n\
 	adds r0, r2, #0\n\
 	adds r0, #0xb4\n\
 	ldrb r0, [r0, #0x1a]\n\
@@ -2144,6 +2160,10 @@ _080F7970: .4byte 0x000064AC\n\
 _080F7974: .4byte gElfAvailability\n\
 _080F7978: .4byte StringOfsTable\n\
 _080F797C: .4byte gStringData\n\
+.if AP\n\
+_ApElfDesc_AlwaysOnFn: .4byte gApElfAlwaysOnFn\n\
+_ApElfDesc_ActiveText: .4byte gApElfActiveText\n\
+.endif\n\
 _080F7980:\n\
 	ldr r0, _080F79C0 @ =StringOfsTable\n\
 	movs r1, #0xbb\n\

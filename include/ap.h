@@ -294,7 +294,19 @@ struct ApSeedConfig {
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
   u8 selectButton;     // what SELECT does
   u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
+  u8 cyberElves;       // AP_ELVES_*: Passive cyber-elves option
+  u8 unused[3];        
 };
+
+/* The secret disks that hold cyber elves. */
+#define AP_DISK_ELF_FIRST 0x14
+#define AP_DISK_ELF_LAST 0x5D
+#define AP_DISK_ANALYSED_BIT 0x10 // upper nibble
+
+/* Passive cyber-elves. Set by player option. */
+#define AP_ELVES_VANILLA 0
+#define AP_ELVES_NO_PENALTY 1
+#define AP_ELVES_AUTO 2 
 
 /* What SELECT does. Set by player option. */
 #define AP_SELECT_CYCLE_SUB_WEAPON 0
@@ -304,7 +316,7 @@ struct ApSeedConfig {
 #define AP_SELECT_CYCLE_FOOT_CHIP 4
 #define AP_SELECT_USE_SUBTANK 5
 
-static_assert(sizeof(struct ApSeedConfig) == 8);
+static_assert(sizeof(struct ApSeedConfig) == 12);
 
 /*
   Cost of each shop item. Inserted into ROM when AP world generates
@@ -414,6 +426,8 @@ void ApSetStoryFlag(u8 flag);
 u8 ApDisksInStage(u8 stageID);
 u8 ApDiskTotalInStage(u8 stageID);
 
+bool32 ApElfAlwaysOn(u8 elfID);
+
 extern const char_t* const gApStageRevisitTexts[];
 extern const char_t* const gApStageStartTexts[];
 extern const char_t gApFinalStageName[];
@@ -442,6 +456,11 @@ extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
 extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
 extern void (*const gApDiskMenuUpdateFn)(struct GameState* g);
 extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
+extern bool32 (*const gApElfAlwaysOnFn)(u8 elfID);
+extern const char_t gApElfActiveText[];
+#define AP_ITEM_NAME_COUNT (AP_ITEM_DISK_LAST + 1)
+extern const char_t* const gApItemNames[AP_ITEM_NAME_COUNT];
+#define AP_CAPTION_FRAMES 40  /* How long the text stays after completing. To make things faster. */
 
 #define ApInit() gApInitFn()
 #define ApUpdate() gApUpdateFn()
@@ -467,6 +486,8 @@ extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
 #define ApCerveauGuideUpdate(p) gApCerveauGuideUpdateFn(p)
 #define ApDiskMenuUpdate(g) gApDiskMenuUpdateFn(g)
 #define ApDiskShopUpdate(g) gApDiskShopUpdateFn(g)
+#define ApElfAlwaysOn(elfID) gApElfAlwaysOnFn(elfID)
+#define ApElfPenaltyFree() (gApSeedConfig.cyberElves != AP_ELVES_VANILLA)
 #define ApDiskShopOpen(g) ((g)->sceneState.disk.unk_0d != 0)
 
 /*
@@ -509,6 +530,8 @@ extern void (*const gApFrameHookFn)(bool32 b);
 #define ApDiskMenuUpdate(g) ((void)0)
 #define ApDiskShopUpdate(g) (0)
 #define ApDiskShopOpen(g) (0)
+#define ApElfAlwaysOn(elfID) (0)
+#define ApElfPenaltyFree() (0)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)
 

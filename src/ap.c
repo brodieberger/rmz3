@@ -1,6 +1,7 @@
 #include "ap.h"
 
 #undef ApInit
+#undef ApElfAlwaysOn
 #undef ApUpdate
 #undef ApMarkLocationChecked
 #undef ApMarkPickupCollected
@@ -34,6 +35,7 @@
 #include "constants/song.h"
 #include "constants/stage_id.h"
 #include "constants/weapon.h"
+#include "cyberelf.h"
 #include "entity.h"
 #include "game.h"
 #include "global.h"
@@ -46,6 +48,7 @@
 #include "stagerun.h"
 #include "system.h"
 #include "text.h"
+#include "text_window.h"
 #include "vfx.h"
 
 #if AP
@@ -335,10 +338,7 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
 static bool32 ApFinalStageOpen(void) {
   u8 stage;
   for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
-    if (gGameState.save.playinfo.missionDones & (1 << stage)) {
-      continue;
-    }
-    if (!ApServerChecked(sApStageClears[stage].clear)) {
+    if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
       return FALSE;
     }
   }
@@ -648,12 +648,15 @@ void ApPrintWeaponStars(u8 weapon) {
   PrintString(sApWeaponStars, (u32)(AP_STARS_RIGHT_X - max), AP_STARS_Y);
 }
 
+static void ApAutoFuseDisk(u8 diskID);
+
 /* Returns TRUE when SystemSavedata changed and has to be saved. */
 static bool32 ApGrantItem(u16 apItemID) {
   if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
     u8 diskID = (u8)(apItemID - AP_ITEM_DISK_FIRST);
     
     UNLOCK_DISK(gGameState.save.savedDisk, diskID);
+    ApAutoFuseDisk(diskID);
     /* 111 to 180 also have an e-Reader change. */
     return ApGrantEReader(apItemID);
   }
@@ -1000,6 +1003,9 @@ static void ApShowItemPopup(u16 apItemID) {
   p->work[2] = AP_POPUP_LIFE;
   p->onUpdate = (void*)ApItemPopupUpdate;
 
+  if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
+    PrintTextWindowPtr(gApItemNames[apItemID], AP_CAPTION_FRAMES);
+  }
   PlaySound(SE_NOTIFICATION);
 }
 
@@ -1410,6 +1416,40 @@ void ApSetRankElf(void) {
   gAp.rankElfUsed = TRUE;
 }
 
+/*
+  Passives are the ones that are auto activated.
+*/
+static bool32 ApElfIsPassive(u8 elfID) {
+  return (gElfBreedInfo[elfID].unk_0 & 0x80) != 0;
+}
+
+static void ApAutoFuseDisk(u8 diskID) {
+  u8 elfID;
+  u8 fused;
+
+  if (gApSeedConfig.cyberElves != AP_ELVES_AUTO) {
+    return;
+  }
+  if (diskID < AP_DISK_ELF_FIRST || diskID > AP_DISK_ELF_LAST) {
+    return;
+  }
+  elfID = diskID - AP_DISK_ELF_FIRST;
+  if (!ApElfIsPassive(elfID)) {
+    return;
+  }
+  gGameState.save.savedDisk[diskID >> 2] |= AP_DISK_ANALYSED_BIT << (diskID & 3);
+  fused = ELF_AVABILITY_UNLOCKED | ELF_AVABILITY_USED | ((gElfBreedInfo[elfID].unk_0 & 7) << 3);
+  gGameState.save.elf[elfID] = fused;
+  gGameState.save.savedElf[elfID] = fused;
+}
+
+/*
+  Reuse ultimate modes elf always on check.
+*/
+bool32 ApElfAlwaysOn(u8 elfID) {
+  return gApSeedConfig.cyberElves == AP_ELVES_AUTO && ApElfIsPassive(elfID);
+}
+
 // Called from ResetMissionScore
 void ApResetMissionFlags(void) {
   gAp.rankElfUsed = FALSE;
@@ -1524,5 +1564,6 @@ bool32 (*const gApHasWeaponAbilityFn)(u8 bit) = ApHasWeaponAbility;
 u8 (*const gApChargeTierFn)(u8 weapon) = ApChargeTier;
 void (*const gApPrintWeaponStarsFn)(u8 weapon) = ApPrintWeaponStars;
 void (*const gApFrameHookFn)(bool32 b) = ApFrameHookImpl;
+bool32 (*const gApElfAlwaysOnFn)(u8 elfID) = ApElfAlwaysOn;
 
 #endif /* AP */

@@ -88,6 +88,8 @@ SECTIONS {
 		src/ap_cmd_room.o (.rodata);
 		src/data/texts/ap_cmd_room.o (.rodata);
 		src/data/texts/ap_npc.o (.rodata);
+		src/data/texts/ap_elf.o (.rodata);
+		src/ap_item_names.o (.rodata);
 		src/ap_disk_menu.o (.text);
 		src/ap_disk_menu.o (.rodata);
 		src/ap_shop_palettes.o (.rodata);

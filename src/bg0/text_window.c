@@ -157,6 +157,25 @@ void PrintNormalMessagePtr(const char_t* s) {
 }
 #endif
 
+#if AP
+/*
+  PrintTextWindow for new messages.
+*/
+void PrintTextWindowPtr(const char_t* s, u16 frames) {
+  TextWindowText* w = &gTextWindow.text;
+
+  w->start = (char_t*)s;
+  w->textType = frames;
+  resetTextWindow(w);
+  setupTextWindow(w);
+  if (w->mugshot != 0) {
+    (w->state).u32 = TWK_MUGSHOT;
+  } else {
+    (w->state).u32 = TWK_INLINE;
+  }
+}
+#endif
+
 void PrintResultInline(TextID t, bool16 ng) {
   TextWindowText* w = &gTextWindow.text;
 

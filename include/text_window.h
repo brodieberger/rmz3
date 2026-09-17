@@ -69,6 +69,7 @@ void PrintOptionMessage2(TextID n);
 #if AP
 void PrintOptionMessagePtr(const char_t* s);
 void PrintNormalMessagePtr(const char_t* s);
+void PrintTextWindowPtr(const char_t* s, u16 frames);
 #endif
 void PrintResultInline(TextID t, bool16 ng);
 

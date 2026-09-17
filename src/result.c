@@ -91,7 +91,11 @@ NON_MATCH_AP bool32 ResultScreen_Update(struct ResultState* p) {
         if (IsElfBreeder(gGameState.z2)) (gScore.total)->allCyberElfBreeded = TRUE;
       }
       if (allSecretDiskFound()) (gScore.total)->allSecretDiskFound = TRUE;
-      gScore.elfPenalty += CalcElfPenalty(gGameState.z2);
+      if (ApElfPenaltyFree()) {
+        CalcElfPenalty(gGameState.z2);
+      } else {
+        gScore.elfPenalty += CalcElfPenalty(gGameState.z2);
+      }
       CalcMissionScore();
       BGCNT16(1) = BGCNT_CHARBASE(1) | BGCNT_SCREENBASE(2);  // 0x204
       RESET_BGOFS(1);
