@@ -1045,6 +1045,8 @@ static void ApCycleChip(u8* chip, u8 unlocked) {
 
 
 static void ApCycleBodyChip(struct ZeroStatus* status) {
+  struct Zero* z = gGameState.z2;
+
   ApCycleChip(&status->body, status->unlockedBody);
   switch (status->body) {
     case BODY_CHIP_THUNDER: status->element = ELFX_THUNDER; break;
@@ -1053,6 +1055,10 @@ static void ApCycleBodyChip(struct ZeroStatus* status) {
     default: status->element = ELFX_NONE; break;
   }
   RequestElementEffectGraphic(status->element);
+  LoadZeroPalette(&z->s, GetZeroColor(z));
+  if (z->posture == POSTURE_SHADOW) {
+    LoadShadowDashPalette(z, GetZeroColor(z));
+  }
 }
 
 /*
@@ -1436,7 +1442,11 @@ static void ApAutoFuseDisk(u8 diskID) {
     return;
   }
   elfID = diskID - AP_DISK_ELF_FIRST;
-  if (!ApElfIsPassive(elfID)) {
+  if (elfID == ELF_ARTAN) {
+    ApGiveSubtank(2);
+  } else if (elfID == ELF_ZICTAN) {
+    ApGiveSubtank(3);
+  } else if (!ApElfIsPassive(elfID)) {
     return;
   }
   gGameState.save.savedDisk[diskID >> 2] |= AP_DISK_ANALYSED_BIT << (diskID & 3);
