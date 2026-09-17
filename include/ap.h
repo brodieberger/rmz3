@@ -295,7 +295,8 @@ struct ApSeedConfig {
   u8 selectButton;     // what SELECT does
   u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
   u8 cyberElves;       // AP_ELVES_*: Passive cyber-elves option
-  u8 unused[3];        
+  u8 diskNamePopup;    // name a received secret disk in the inline message box
+  u8 unused[2];
 };
 
 /* The secret disks that hold cyber elves. */

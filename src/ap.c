@@ -79,6 +79,8 @@ const struct ApSeedConfig gApSeedConfig = {
     TRUE,
     AP_SELECT_CYCLE_SUB_WEAPON,
     TRUE,
+    AP_ELVES_VANILLA,
+    TRUE,
 };
 
 bool32 ApInDemo(void) {
@@ -1003,7 +1005,7 @@ static void ApShowItemPopup(u16 apItemID) {
   p->work[2] = AP_POPUP_LIFE;
   p->onUpdate = (void*)ApItemPopupUpdate;
 
-  if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
+  if (gApSeedConfig.diskNamePopup && apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
     PrintTextWindowPtr(gApItemNames[apItemID], AP_CAPTION_FRAMES);
   }
   PlaySound(SE_NOTIFICATION);
