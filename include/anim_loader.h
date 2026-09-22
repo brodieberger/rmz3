@@ -3,7 +3,7 @@
 
 extern const struct Palette gStaticMotionPalettes;
 
-#if MODERN || CBODY
+#if MODERN || CBODY || AP
 #define STATIC_GRAPHICS ((void*)(&gStaticMotionGraphics[0]))
 #define STATIC_PALETTES ((void*)(&gStaticMotionPalettes))
 #else

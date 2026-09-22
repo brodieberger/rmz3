@@ -372,7 +372,7 @@ extern const ColorGraphic gDialogGraphics[];
 
 extern const struct Graphic gGraphic_MsgBox0;
 
-#if MODERN
+#if MODERN || CBODY || AP
 #define DIALOG_GRAPHIC(base, n) ((void*)&gDialogGraphics[base + n])
 #define DIALOG_PALETTE(base, n) ((void*)(&gDialogGraphics[base + n].pal))
 #else

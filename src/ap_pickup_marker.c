@@ -1,7 +1,5 @@
 #include "ap.h"
 
-#undef ApInitPickupLocation
-
 #include "ap_marker.h"
 #include "constants/entity/item.h"
 #include "entity.h"
@@ -119,7 +117,5 @@ void ApInitPickupLocation(Pickup* p) {
                              : ApMarkerWindow();
   e->flags |= DISPLAY;
 }
-
-void (*const gApInitPickupLocationFn)(Pickup* p) = ApInitPickupLocation;
 
 #endif /* AP */

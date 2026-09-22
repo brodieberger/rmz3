@@ -1,7 +1,5 @@
 #include "ap.h"
 
-#undef ApCerveauGuideUpdate
-
 #include "anim_loader.h"
 #include "collision.h"
 #include "constants/motion/static.h"
@@ -101,7 +99,5 @@ bool32 ApCerveauGuideUpdate(struct Solid* p) {
     }
   }
 }
-
-bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p) = ApCerveauGuideUpdate;
 
 #endif /* AP */

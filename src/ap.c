@@ -1,27 +1,5 @@
 #include "ap.h"
 
-#undef ApInit
-#undef ApElfAlwaysOn
-#undef ApUpdate
-#undef ApMarkLocationChecked
-#undef ApMarkPickupCollected
-#undef ApMarkNpcDialogueChecked
-#undef ApMarkStageCleared
-#undef ApSetRankElf
-#undef ApResetMissionFlags
-#undef ApOnZeroDied
-#undef ApApplyStartingWeapons
-#undef ApFixEquippedWeapons
-#undef ApRequestMissionRerun
-#undef ApTakeMissionRerun
-#undef ApInMissionRerun
-#undef ApUpdateStageRank
-#undef ApEndRun
-#undef ApHasWeaponAbility
-#undef ApChargeTier
-#undef ApPrintWeaponStars
-#undef ApFrameHook
-
 #include "ap_disk_stage.h"
 #include "ap_icon.h"
 #include "constants/armor.h"
@@ -1546,36 +1524,10 @@ void ApMarkNpcDialogueChecked(TextID textID) {
     }
   }
 }
-static void (*const pSwitchProcess)(bool32 b) = SwitchProcess;
 
-static void ApFrameHookImpl(bool32 b) {
+void ApFrameHook(bool32 b) {
   ApUpdate();
-  pSwitchProcess(b);
+  SwitchProcess(b);
 }
-
-/*
-  Needed due to ROM expansion
-*/
-void (*const gApInitFn)(void) = ApInit;
-void (*const gApUpdateFn)(void) = ApUpdate;
-void (*const gApMarkLocationCheckedFn)(u16 locationID) = ApMarkLocationChecked;
-void (*const gApMarkPickupCollectedFn)(Pickup* p) = ApMarkPickupCollected;
-void (*const gApMarkNpcDialogueCheckedFn)(TextID textID) = ApMarkNpcDialogueChecked;
-void (*const gApMarkStageClearedFn)(void) = ApMarkStageCleared;
-void (*const gApSetRankElfFn)(void) = ApSetRankElf;
-void (*const gApResetMissionFlagsFn)(void) = ApResetMissionFlags;
-void (*const gApOnZeroDiedFn)(void) = ApOnZeroDied;
-void (*const gApApplyStartingWeaponsFn)(struct ZeroStatus* status) = ApApplyStartingWeapons;
-void (*const gApFixEquippedWeaponsFn)(struct ZeroStatus* status) = ApFixEquippedWeapons;
-void (*const gApRequestMissionRerunFn)(u8 stageID) = ApRequestMissionRerun;
-bool32 (*const gApTakeMissionRerunFn)(u8 stageID) = ApTakeMissionRerun;
-bool32 (*const gApInMissionRerunFn)(void) = ApInMissionRerun;
-u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank) = ApUpdateStageRank;
-void (*const gApEndRunFn)(struct GameState* g) = ApEndRun;
-bool32 (*const gApHasWeaponAbilityFn)(u8 bit) = ApHasWeaponAbility;
-u8 (*const gApChargeTierFn)(u8 weapon) = ApChargeTier;
-void (*const gApPrintWeaponStarsFn)(u8 weapon) = ApPrintWeaponStars;
-void (*const gApFrameHookFn)(bool32 b) = ApFrameHookImpl;
-bool32 (*const gApElfAlwaysOnFn)(u8 elfID) = ApElfAlwaysOn;
 
 #endif /* AP */

@@ -420,6 +420,10 @@ void ApMarkPickupCollected(struct Pickup* p);
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);
 
+/* ap_disk_menu.c. For the analysis screen's SELECT open-all, and Cerveau's shop page. */
+void ApDiskMenuUpdate(struct GameState* g);
+bool32 ApDiskShopUpdate(struct GameState* g);
+
 /* Sets a story flag in gCurStory and save.story. */
 void ApSetStoryFlag(u8 flag);
 
@@ -433,61 +437,11 @@ extern const char_t* const gApStageRevisitTexts[];
 extern const char_t* const gApStageStartTexts[];
 extern const char_t gApFinalStageName[];
 
-extern void (*const gApInitFn)(void);
-extern void (*const gApUpdateFn)(void);
-extern void (*const gApMarkLocationCheckedFn)(u16 locationID);
-extern void (*const gApMarkPickupCollectedFn)(struct Pickup* p);
-extern void (*const gApMarkNpcDialogueCheckedFn)(TextID textID);
-extern void (*const gApMarkStageClearedFn)(void);
-extern void (*const gApSetRankElfFn)(void);
-extern void (*const gApResetMissionFlagsFn)(void);
-extern void (*const gApOnZeroDiedFn)(void);
-extern void (*const gApApplyStartingWeaponsFn)(struct ZeroStatus* status);
-extern void (*const gApFixEquippedWeaponsFn)(struct ZeroStatus* status);
-extern void (*const gApCmdRoomTalkFn)(struct GameState* g);
-extern void (*const gApRequestMissionRerunFn)(u8 stageID);
-extern bool32 (*const gApTakeMissionRerunFn)(u8 stageID);
-extern bool32 (*const gApInMissionRerunFn)(void);
-extern u8 (*const gApUpdateStageRankFn)(u8 stageID, u8 missionRank);
-extern void (*const gApEndRunFn)(struct GameState* g);
-extern void (*const gApInitPickupLocationFn)(struct Pickup* p);
-extern bool32 (*const gApHasWeaponAbilityFn)(u8 bit);
-extern u8 (*const gApChargeTierFn)(u8 weapon);
-extern void (*const gApPrintWeaponStarsFn)(u8 weapon);
-extern bool32 (*const gApCerveauGuideUpdateFn)(struct Solid* p);
-extern void (*const gApDiskMenuUpdateFn)(struct GameState* g);
-extern bool32 (*const gApDiskShopUpdateFn)(struct GameState* g);
-extern bool32 (*const gApElfAlwaysOnFn)(u8 elfID);
 extern const char_t gApElfActiveText[];
 #define AP_ITEM_NAME_COUNT (AP_ITEM_DISK_LAST + 1)
 extern const char_t* const gApItemNames[AP_ITEM_NAME_COUNT];
 #define AP_CAPTION_FRAMES 40  /* How long the text stays after completing. To make things faster. */
 
-#define ApInit() gApInitFn()
-#define ApUpdate() gApUpdateFn()
-#define ApMarkLocationChecked(locationID) gApMarkLocationCheckedFn(locationID)
-#define ApMarkPickupCollected(p) gApMarkPickupCollectedFn(p)
-#define ApMarkNpcDialogueChecked(textID) gApMarkNpcDialogueCheckedFn(textID)
-#define ApMarkStageCleared() gApMarkStageClearedFn()
-#define ApSetRankElf() gApSetRankElfFn()
-#define ApResetMissionFlags() gApResetMissionFlagsFn()
-#define ApOnZeroDied() gApOnZeroDiedFn()
-#define ApApplyStartingWeapons(status) gApApplyStartingWeaponsFn(status)
-#define ApFixEquippedWeapons(status) gApFixEquippedWeaponsFn(status)
-#define ApCmdRoomTalk(g) gApCmdRoomTalkFn(g)
-#define ApRequestMissionRerun(stageID) gApRequestMissionRerunFn(stageID)
-#define ApTakeMissionRerun(stageID) gApTakeMissionRerunFn(stageID)
-#define ApInMissionRerun() gApInMissionRerunFn()
-#define ApUpdateStageRank(stageID, missionRank) gApUpdateStageRankFn(stageID, missionRank)
-#define ApEndRun(g) gApEndRunFn(g)
-#define ApInitPickupLocation(p) gApInitPickupLocationFn(p)
-#define ApHasWeaponAbility(bit) gApHasWeaponAbilityFn(bit)
-#define ApChargeTier(weapon) gApChargeTierFn(weapon)
-#define ApPrintWeaponStars(weapon) gApPrintWeaponStarsFn(weapon)
-#define ApCerveauGuideUpdate(p) gApCerveauGuideUpdateFn(p)
-#define ApDiskMenuUpdate(g) gApDiskMenuUpdateFn(g)
-#define ApDiskShopUpdate(g) gApDiskShopUpdateFn(g)
-#define ApElfAlwaysOn(elfID) gApElfAlwaysOnFn(elfID)
 #define ApElfPenaltyFree() (gApSeedConfig.cyberElves != AP_ELVES_VANILLA)
 #define ApDiskShopOpen(g) ((g)->sceneState.disk.unk_0d != 0)
 
@@ -500,14 +454,8 @@ extern const char_t* const gApItemNames[AP_ITEM_NAME_COUNT];
 #define ApUseApDiskInventory(g) (gStageDiskManager.disk = (g)->save.savedDisk)
 #define ApUseGameDiskInventory(g) (gStageDiskManager.disk = (g)->save.disk)
 
-/*
-  Process_Game calls this instead of SwitchProcess()
-
-  Trampoline in link.c, a direct BL can't reach ApUpdate.
-  Runs ApUpdate() and then calls SwitchProcess() back.
-*/
+/* Process_Game calls this instead of SwitchProcess(): ApUpdate(), then SwitchProcess(). */
 void ApFrameHook(bool32 b);
-extern void (*const gApFrameHookFn)(bool32 b);
 
 #else /* !AP */
 

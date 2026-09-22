@@ -51,7 +51,7 @@ SECTIONS {
 			INCLUDE "linker/text.txt"
     } >rom = 0x00
 
-	lib_text 0x080FC024 :
+	lib_text :
 	ALIGN(4)
 	{
 		src/libs/m4a_1.o (.text);
@@ -68,13 +68,14 @@ SECTIONS {
 		*libc.a:*memset*.o(.text);
 	} >rom = 0x00
 
-	.rodata 0x080FE64C :
-	ALIGN(4)
-	{
-			INCLUDE "linker/rodata.txt"
-	} >rom = 0x00
-
-	/* Archipelago code and data, in the space the 16M expansion. */
+	/*
+	  Archipelago code and data, between the game's code and its data so every AP function
+	  is inside Thumb BL range of every vanilla caller: plain calls both ways, no veneers, no
+	  function pointers. .rodata moves down by this block's size, which is fine now that the
+	  AP build reaches every data table by symbol (anim_loader.h STATIC_GRAPHICS) -- and
+	  nothing is pinned, so .text may grow too. Vanilla's own ld scripts are untouched and
+	  still byte-match.
+	*/
 	.ap_text :
 	ALIGN(4)
 	{
@@ -106,13 +107,15 @@ SECTIONS {
 		src/ap_icon_data.o (.rodata);
 		src/ap_icon_slots.o (.rodata);
 		. = ALIGN(4);
-	} >rom = 0x00
-
-	.ap_rodata :
-	ALIGN(4)
-	{
 		__ap_rom_end = .;
 	} >rom = 0x00
+
+	.rodata :
+	ALIGN(4)
+	{
+			INCLUDE "linker/rodata.txt"
+	} >rom = 0x00
+
 
 	/DISCARD/ :
     {

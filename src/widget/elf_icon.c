@@ -324,9 +324,7 @@ _080E8118:\n\
 .if AP\n\
 	push {r3}\n\
 	adds r0, r3, #0\n\
-	ldr r1, _ApElfIcon_AlwaysOnFn\n\
-	ldr r1, [r1]\n\
-	bl _call_via_r1\n\
+	bl ApElfAlwaysOn\n\
 	pop {r3}\n\
 	cmp r0, #0\n\
 	bne _080E8198\n\
@@ -352,9 +350,6 @@ _080E8180: .4byte gElfMugshotGraphics\n\
 _080E8184: .4byte 0x0000035F\n\
 _080E8188: .4byte gElfMugshotGraphics+12\n\
 _080E818C: .4byte 0x00000DFC\n\
-.if AP\n\
-_ApElfIcon_AlwaysOnFn: .4byte gApElfAlwaysOnFn\n\
-.endif\n\
 _080E8190:\n\
 	adds r0, r4, #0\n\
 	movs r1, #0xc\n\

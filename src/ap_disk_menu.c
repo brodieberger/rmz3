@@ -1,8 +1,5 @@
 #include "ap.h"
 
-#undef ApDiskMenuUpdate
-#undef ApDiskShopUpdate
-
 #include "disk.h"
 #include "entity/player.h"
 #include "game.h"
@@ -547,8 +544,5 @@ void ApDiskMenuUpdate(struct GameState* g) {
     readAll(g);
   }
 }
-
-void (*const gApDiskMenuUpdateFn)(struct GameState* g) = ApDiskMenuUpdate;
-bool32 (*const gApDiskShopUpdateFn)(struct GameState* g) = ApDiskShopUpdate;
 
 #endif /* AP */

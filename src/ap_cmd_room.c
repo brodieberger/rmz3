@@ -1,7 +1,5 @@
 #include "ap.h"
 
-#undef ApCmdRoomTalk
-
 #include "constants/flag.h"
 #include "constants/game.h"
 #include "constants/song.h"
@@ -164,7 +162,5 @@ void ApCmdRoomTalk(struct GameState* g) {
     }
   }
 }
-
-void (*const gApCmdRoomTalkFn)(struct GameState* g) = ApCmdRoomTalk;
 
 #endif /* AP */

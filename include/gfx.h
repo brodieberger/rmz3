@@ -9,11 +9,7 @@
 
 extern char gBgGraphics[];
 
-// CBODY must take the symbolic branch: it is meant to be the same compiler as the
-// oracle with C bodies swapped in, so it has to reference the same symbols. Taking
-// the address-literal branch makes every literal pool differ and the comparison
-// meaningless.
-#if MODERN || CBODY
+#if MODERN || CBODY || AP
 #define BGMAP(n) (SELF_REL_PTR(&gBgMapOffsets[n]) + sizeof(struct BgMapHeader))
 #define BG_PALETTE(n) ((void*)&(((ColorGraphic*)&gGraphic_Capcom)[(n)].pal))
 #define BG_GRAPHIC(n) ((void*)&((ColorGraphic*)&gGraphic_Capcom)[(n)])
