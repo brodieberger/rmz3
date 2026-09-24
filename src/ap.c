@@ -807,6 +807,7 @@ static void ApKeepPickupPalette(void) {
 void ApInit(void) {
   u8 i;
 
+  ApImportSelect(0);
   gAp.inboxWriteIndex = 0;
   gAp.inboxReadIndex = 0;
   gAp.itemsApplied = 0;

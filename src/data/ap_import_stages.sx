@@ -1,0 +1,13 @@
+.include "asm/macros.inc"
+.include "asm/scripts/commands.inc"
+.include "asm/scripts/constants.inc"
+#include "constants/entity.h"
+
+.if AP
+
+.balign 4
+.section .rodata
+
+#include "../ap_stage/z2_bomber2/data.inc"
+
+.endif

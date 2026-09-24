@@ -475,6 +475,15 @@ static void UpdatePlayerMovableArea(struct VM* vm) {
     if (c1.y < gOverworld.range.top) c1.y = gOverworld.range.top;
     if (c2.x > gOverworld.range.right) c2.x = gOverworld.range.right;
     if (c2.y > gOverworld.range.bottom) c2.y = gOverworld.range.bottom;
+#if AP
+    // Makes the screen edge be the room edge. Prevents Zero fgrom being able to walljump
+    if (gStageRun.id == STAGE_NONE) {
+      s32 left = cam->viewport.x - PIXEL(DISPLAY_WIDTH / 2);
+      s32 right = cam->viewport.x + PIXEL(DISPLAY_WIDTH / 2);
+      if (c1.x < left) c1.x = left;
+      if (c2.x > right) c2.x = right;
+    }
+#endif
     SetDisableArea(player, c1.x, c1.y, c2.x, c2.y);
 
     player = (struct Zero*)vm->entities[1].entity;

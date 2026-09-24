@@ -84,7 +84,9 @@ void ApCmdRoomTalk(struct GameState* g) {
     }
 
     case 15: {
-      if (ApStageCleared(g->frames)) {
+      if (g->frames < 0) {  // imported stage
+        PrintOptionMessagePtr(gApImportStartTexts[gApImportSelected]);
+      } else if (ApStageCleared(g->frames)) {
         PrintOptionMessagePtr(gApStageRevisitTexts[g->frames]);  // EXPLORE / RETRY MISSION
       } else {
         PrintOptionMessagePtr(gApStageStartTexts[g->frames]);  // START MISSION / CANCEL

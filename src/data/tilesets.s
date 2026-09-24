@@ -5,7 +5,11 @@
 
 .global gStageTilesetOffsets
 gStageTilesetOffsets:
+.if AP
+  .4byte gApSlot0Tilesets-.  @ imported stage
+.else
   .4byte gSnowTilesetGraphics-.
+.endif
   .4byte gSnowTilesetGraphics-.
   .4byte gVolcanoTilesetGraphics-.
   .4byte gWatersideTilesetGraphics-.

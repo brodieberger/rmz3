@@ -379,7 +379,11 @@ static void trySkipEventScene(void* _) {
 s16 Stage0_MissionUpdate(struct StageRun* p) {
   if (p->stageEventPhase == 0) {
     gStageRun.missionStatus |= MISSION_STAY;
+#if AP
+    SetScript(&gStageRun.vm, (const GameCommand*)ApImportScript());  // imported stage
+#else
     SetScript(&gStageRun.vm, *gStageScriptList[p->id]);
+#endif
     p->stageEventPhase = 1;
   }
   return 0;

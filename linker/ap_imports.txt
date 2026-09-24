@@ -1,0 +1,2 @@
+		src/ap_stage/z2_bomber2/landscape.o (.rodata);
+		src/ap_stage/z2_bomber2/spawn.o (.rodata);

@@ -26,8 +26,15 @@ void FUN_080c5f98(struct Entity* p);
 
 #define AP_SELECT_PAGE_SIZE 4
 #define AP_SELECT_ART_PAGES 3
-#define AP_SELECT_PAGE_COUNT (AP_SELECT_ART_PAGES + 1)
-#define AP_SELECT_MISSION_COUNT (AP_SELECT_PAGE_COUNT * AP_SELECT_PAGE_SIZE)
+#define AP_SELECT_OWN_PAGES (AP_SELECT_ART_PAGES + 1)
+#define AP_SELECT_MISSION_COUNT (AP_SELECT_OWN_PAGES * AP_SELECT_PAGE_SIZE)
+/*
+  Imported stage. Can hold many more pages, but this is a temporary solution.
+*/
+#define AP_SELECT_PAGE_COUNT (AP_SELECT_OWN_PAGES + ((ApImportCount() + AP_SELECT_PAGE_SIZE - 1) / AP_SELECT_PAGE_SIZE))
+#define ApSelectMissionAt(g, slot) (((g)->unk_006 * AP_SELECT_PAGE_SIZE) + (slot))
+#define ApSelectIsImport(mission) ((mission) >= AP_SELECT_MISSION_COUNT)
+#define ApSelectImportOf(mission) ((u8)((mission) - AP_SELECT_MISSION_COUNT))
 
 /*
   CreateStageBossMugshots work[0]
@@ -58,8 +65,8 @@ static const u8 sApMissionStage[AP_SELECT_MISSION_COUNT] = {
     2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 1, 6, 15, 16,
 };
 
-#define ApSelectStageOf(mission) (sApMissionStage[mission])
-#define ApSelectStageAt(g, slot) (sApMissionStage[((g)->unk_006 * AP_SELECT_PAGE_SIZE) + (slot)])
+#define ApSelectStageOf(mission) (ApSelectIsImport(mission) ? STAGE_NONE : sApMissionStage[mission])
+#define ApSelectStageAt(g, slot) ApSelectStageOf(ApSelectMissionAt(g, slot))
 #define ApSelectSelectedStage(g) ApSelectStageAt(g, (g)->frames)
 #define ApSelectHandle(g) ((struct Entity**)(g)->sceneState.raw)
 #define ApSelectPageOf(g) ((g)->unk_006)
@@ -108,7 +115,9 @@ EWRAM_DATA static s16 sApSelectSlot = 0;
 
 /* The final stage is the one with no entry in the game's own free-run name table. */
 static void ApSelectPrintName(u8 stageID, u32 x, u32 y) {
-  if (stageID == AP_STAGE_FINAL) {
+  if (stageID == STAGE_NONE) {
+    PrintString(ApImportName(gApImportSelected), x, y);
+  } else if (stageID == AP_STAGE_FINAL) {
     PrintString(gApFinalStageName, x, y);
   } else {
     PrintString(STRING(gFreeRunStageNameIdxs[stageID - 1]), x, y);
@@ -127,6 +136,11 @@ static char_t* ApSelectPutNumber(char_t* p, u8 n) {
 static void ApSelectPrintDisks(u8 stageID) {
   char_t* p = sApSelectStatus;
   const char_t* status;
+
+  if (stageID == STAGE_NONE) {  // temp: no disks, always open
+    PrintString(gApSelectOpen, AP_SELECT_STATUS_X, AP_SELECT_DISKS_Y);
+    return;
+  }
 
   p = ApSelectPutNumber(p, ApDisksInStage(stageID));
   *p++ = AP_CHAR_SLASH;
@@ -235,8 +249,13 @@ static void ApSelectStylePortrait(struct Entity* p, u8 slot, u8 stageID) {
   bool32 open = ApStageUnlocked(stageID);
   motion_t want = open ? MOTION(SM205_MISSION_MUGSHOT, slot) : AP_MUGSHOT_STATIC;
 
+  if (stageID == STAGE_NONE) {  // Temp: stage with no portrait
+    open = TRUE;
+    want = AP_MUGSHOT_STATIC;
+  }
+
   if (p->motionID != (motion_id_t)(want >> 8)) {
-    p->palID = (u8)(open ? slot : 0);
+    p->palID = (u8)((want == AP_MUGSHOT_STATIC) ? 0 : slot);
     SetMotion(p, want);
   }
   (p->d).x = (s32)want;
@@ -271,8 +290,14 @@ static void ApSelectStyleRow(struct GameState* g) {
 }
 
 static void ApSelectSetPage(struct GameState* g, s16 page) {
+  s16 last = AP_SELECT_PAGE_SIZE - 1;
+  s16 imports = (s16)(ApImportCount() - (page - AP_SELECT_OWN_PAGES) * AP_SELECT_PAGE_SIZE);
+
+  if ((page >= AP_SELECT_OWN_PAGES) && (imports < AP_SELECT_PAGE_SIZE)) {
+    last = (s16)(imports - 1);
+  }
   g->unk_006 = page;
-  g->unk_008[0] = AP_SELECT_PAGE_SIZE - 1;
+  g->unk_008[0] = last;
   g->frames = sApSelectSlot = 0;
 }
 
@@ -399,6 +424,9 @@ void ApStageSelect(struct GameState* g) {
       }
 
       sApSelectSlot = g->frames;
+      if (ApSelectIsImport(ApSelectMissionAt(g, g->frames))) {
+        gApImportSelected = ApSelectImportOf(ApSelectMissionAt(g, g->frames));
+      }
       stageID = ApSelectSelectedStage(g);
       PrintString(gApSelectStageLabel, AP_SELECT_LABEL_X, AP_SELECT_NAME_Y);
       ApSelectPrintName(stageID, AP_SELECT_NAME_X, AP_SELECT_NAME_Y);
@@ -420,13 +448,16 @@ void ApStageSelect(struct GameState* g) {
       if (!(gJoypad[0].pressed & A_BUTTON)) {
         return;
       }
-      if (!ApStageUnlocked(stageID)) {
+      if ((stageID != STAGE_NONE) && !ApStageUnlocked(stageID)) {
         PlaySound(SE_NOT_ALLOWED);
         return;
       }
 
       PlaySound(SE_YES);
       ApSelectTearDown(g);
+      if (stageID == STAGE_NONE) {
+        ApImportSelect(gApImportSelected);
+      }
       g->frames = (s16)(stageID - 1);
       g->mode[3] = 15;
       return;

@@ -22,9 +22,18 @@ static void ResetStageLayer(s32 n, const struct Stage* s);
 
 void ResetTerrainMapTemplate(struct TerrainMapTemplate* tmpl, metatile_attr_t* attr, Metatile* tiles, Chunk* chunks, const struct ChunkMap* map);
 
+#if AP
+extern struct Stage gApSlot0Stage;
+extern MetatileMapSelfRelPtr gApSlot0Terrain;
+#endif
+
 // clang-format off
 static const struct Stage* const gStageLandscape[STAGE_COUNT] = { // 0x0833a2e8
+#if AP
+    [STAGE_NONE] =            &gApSlot0Stage,  // imported stage
+#else
     [STAGE_NONE] =            &gStage0Landscape,
+#endif
     [STAGE_SPACE_CRAFT] =     &gSpacecraftLandscape,
     [STAGE_VOLCANO] =         &gVolcanoLandscape,
     [STAGE_OCEAN] =           &gOceanLandscape,
@@ -51,8 +60,8 @@ static const struct Stage* const gStageLandscape[STAGE_COUNT] = { // 0x0833a2e8
 */
 
 // ステージのロードに関係
-NON_MATCH void ResetLandscape(s32 stageID, Coords32* viewport) {
-#if MODERN || CBODY
+NON_MATCH_AP void ResetLandscape(s32 stageID, Coords32* viewport) {
+#if MODERN || AP || CBODY
   s16 i;
   const struct Stage* stage;
   Coords32* vp;
@@ -76,6 +85,11 @@ NON_MATCH void ResetLandscape(s32 stageID, Coords32* viewport) {
     Chunk* chunks;
 
     srptr = &gStageTerrains[stageID];
+#if AP
+    if (stageID == STAGE_NONE) {
+      srptr = &gApSlot0Terrain;  //  imported stage
+    }
+#endif
     tiles = (void*)srptr + srptr->tiles;
     chunks = (void*)srptr + srptr->chunks;
     attrs = (void*)srptr + srptr->attrs;

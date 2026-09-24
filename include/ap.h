@@ -377,6 +377,18 @@ struct ZeroStatus;
 
 void ApInit(void);
 void ApUpdate(void);
+
+#define AP_IMPORT_TILESETS_MAX 16
+#define AP_IMPORT_PRELOADS_MAX 16
+const struct SpawnTemplate* ApImportTemplates(void);
+const struct SpawnPoint* ApImportPoints(void);
+extern struct PreloadEntity gApSlot0Preloads[];
+void ApImportSelect(u8 n);
+u8 ApImportCount(void);
+const char_t* ApImportName(u8 n);
+const void* ApImportScript(void);
+extern u8 gApImportSelected;
+struct Rect;
 void ApMarkLocationChecked(u16 locationID);
 void ApMarkNpcDialogueChecked(TextID textID);
 void ApMarkStageCleared(void);
@@ -435,6 +447,7 @@ bool32 ApElfAlwaysOn(u8 elfID);
 
 extern const char_t* const gApStageRevisitTexts[];
 extern const char_t* const gApStageStartTexts[];
+extern const char_t* const gApImportStartTexts[];  // one per imported stage, src/data/texts/ap_import.s
 extern const char_t gApFinalStageName[];
 
 extern const char_t gApElfActiveText[];

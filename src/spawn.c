@@ -1,5 +1,6 @@
 #include "spawn.h"
 
+#include "ap.h"
 #include "boss.h"
 #include "cyberelf.h"
 #include "enemy.h"
@@ -142,7 +143,11 @@ extern const struct PreloadEntity gResistanceBaseStatic[41];
 
 // 0x083479E4
 static const struct PreloadEntity* const sStagePreloadEntities[STAGE_COUNT] = {
+#if AP
+  [STAGE_NONE]            = gApSlot0Preloads,  // imported stage
+#else
   [STAGE_NONE]            = sStage0StaticTemplate,
+#endif
   [STAGE_SPACE_CRAFT]     = gSpaceCraftStatic,
   [STAGE_VOLCANO]         = gVolcanoStatic,
   [STAGE_OCEAN]           = gOceanStatic,
@@ -182,6 +187,12 @@ void InitSpawnManager(u8 stageID, bool8 missionDone) {
   for (i = 0; i < 33; i++) gSpawnManager.spawnable[i] = -1;
   gSpawnManager.template = sStageEntityTemplate[stageID];
   gSpawnManager.points = sStageSpawnPointTable[stageID];
+#if AP
+  if (stageID == STAGE_NONE) {  // imported stage
+    gSpawnManager.template = ApImportTemplates();
+    gSpawnManager.points = ApImportPoints();
+  }
+#endif
 }
 
 // DEKASUGI!!!

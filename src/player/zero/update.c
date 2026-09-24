@@ -1060,6 +1060,13 @@ static void zeroLadderUpStep0(struct Zero* z) {
   zeroLadderUpStep1(z);
 }
 
+#if AP
+/*
+  For climbing through ladders behind blocks (Zero 2)
+*/
+static const struct Rect sApLadderRange = {0, -PIXEL(15), PIXEL(14), PIXEL(30)};
+#endif
+
 static void zeroLadderUpStep1(struct Zero* z) {
   motion_t m;
   metatile_attr_t attr;
@@ -1082,7 +1089,11 @@ static void zeroLadderUpStep1(struct Zero* z) {
 
     if ((z->input).val & DPAD_UP) {
       (z->s).coord.y += (z->s).d.y;
+#if AP
+      if (PushoutByCeilingOnLadder(z, &sApLadderRange, TRUE) != 0) {
+#else
       if (PushoutByCeilingOnLadder(z, &gZeroRanges[z->posture], TRUE) != 0) {
+#endif
         GotoMotion(&z->s, MOTION_VALUE(z), (z->s).motion.cmdIdx, (z->s).motion.duration + 1);
         (z->s).coord.y -= (z->s).d.y;
       } else {
