@@ -15,7 +15,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 23
+#define AP_VERSION 24
 
 /*
   Highest location ID the AP World defines
@@ -296,7 +296,8 @@ struct ApSeedConfig {
   u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
   u8 cyberElves;       // AP_ELVES_*: Passive cyber-elves option
   u8 diskNamePopup;    // name a received secret disk in the inline message box
-  u8 unused[2];
+  u8 infiniteLives;
+  u8 unused[1];
 };
 
 /* The secret disks that hold cyber elves. */

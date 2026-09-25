@@ -749,6 +749,9 @@ NON_MATCH_AP static void GameLoop_EndRun(struct GameState* g) {
       mode = GAMEMODE(MAINGAME, GAMEOVER, 0, 0);
     } else {
       if (gScore.retryCount < 99) gScore.retryCount++;
+#if AP
+      if (!gApSeedConfig.infiniteLives)
+#endif
       (gScore.total)->extraLife--;
       mode = GAMEMODE(MAINGAME, PRE_OVERWORLD, 0, 0);
     }
