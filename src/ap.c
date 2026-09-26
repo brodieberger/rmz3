@@ -317,9 +317,14 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
 */
 static bool32 ApFinalStageOpen(void) {
   u8 stage;
-  for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
-    if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
-      return FALSE;
+  if (gApSeedConfig.finalStageRank != AP_FINAL_RANK_NONE) {
+    for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
+      if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
+        return FALSE;
+      }
+      if (ApStageBestRank(stage) <= gApSeedConfig.finalStageRank) {
+        return FALSE;
+      }
     }
   }
   return ApCountDisks() >= gApSeedConfig.requiredDisks;
@@ -378,6 +383,16 @@ static u8 ApAggregateRank(void) {
 }
 
 /*
+  Records as A, unless either rank option is set to S or the player earned an S in their run.
+*/
+static u8 ApRankElfRank(u8 missionRank) {
+  if ((missionRank == RANK_S) || (gApSeedConfig.exSkillRank == RANK_S) || (gApSeedConfig.finalStageRank == RANK_S)) {
+    return RANK_S;
+  }
+  return RANK_A;
+}
+
+/*
   Called from CalcMissionScore with the rank the results screen is about to print.
   Records it if it beats this stage's best, so it can be stored.
 */
@@ -388,9 +403,8 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
     return ApAggregateRank();
   }
-  /* The A-rank fusion elf writes an A into the score directly, so set that as the highest levle achieved too. */
-  if (gAp.rankElfUsed && (missionRank < RANK_A)) {
-    missionRank = RANK_A;
+  if (gAp.rankElfUsed) {
+    missionRank = ApRankElfRank(missionRank);
   }
 
   best = ApStageBestRank(stageID);
@@ -1461,6 +1475,7 @@ void ApOnZeroDied(void) {
 
 void ApMarkStageCleared(void) {
   const struct ApStageClear* stage;
+  u8 missionRank;
 
   if (ApInDemo() || (u32)gStageRun.id >= AP_STAGE_COUNT) {
     return;
@@ -1475,9 +1490,11 @@ void ApMarkStageCleared(void) {
   if (stage->chip != 0) {
     ApMarkLocationChecked(stage->chip);
   }
-  if ((stage->rank != 0) &&
-      (gApSeedConfig.easyExSkill || gAp.rankElfUsed ||
-       (gScore.resultScore > AP_RANK_A_PLUS_SCORE))) {
+  missionRank = CalcScoreRank(gScore.resultScore);
+  if (gAp.rankElfUsed) {
+    missionRank = ApRankElfRank(missionRank);
+  }
+  if ((stage->rank != 0) && (missionRank >= gApSeedConfig.exSkillRank)) {
     ApMarkLocationChecked(stage->rank);
   }
   gAp.rankElfUsed = FALSE;

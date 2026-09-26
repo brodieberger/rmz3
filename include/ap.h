@@ -239,13 +239,6 @@ extern const char_t gApShopSoldText[];
 #define AP_BASE_CHECKPOINT_LAUNCH 12
 #define AP_BASE_CHECKPOINT_SUBARCADIA 19
 
-/*
-  Mission score that counts as an A+ clear.
-
-  This is compared against gScore.resultScore, the score for the mission that just finished instead of the average like in base game.
-*/
-#define AP_RANK_A_PLUS_SCORE 85
-
 #if AP
 
 struct ApState {
@@ -287,18 +280,20 @@ static_assert(sizeof(struct ApState) == 148);
 extern struct ApState gAp;
 
 struct ApSeedConfig {
-  u16 requiredDisks;   // disks needed to open the final stage.
+  u16 requiredDisks;   // Disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
-  u8 easyExSkill;      // award the EX skill location check regardless of rank
+  u8 exSkillRank;      // The required mission rank that sends a stage's EX skill check
   u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
-  u8 selectButton;     // what SELECT does
+  u8 selectButton;     // what the SELECT button does
   u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
-  u8 cyberElves;       // AP_ELVES_*: Passive cyber-elves option
+  u8 cyberElves;       // Passive cyber-elves option
   u8 diskNamePopup;    // name a received secret disk in the inline message box
   u8 infiniteLives;
-  u8 unused[1];
+  u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
 };
+
+#define AP_FINAL_RANK_NONE 0xFF
 
 /* The secret disks that hold cyber elves. */
 #define AP_DISK_ELF_FIRST 0x14
