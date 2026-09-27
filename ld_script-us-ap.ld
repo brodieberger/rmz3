@@ -25,6 +25,7 @@ SECTIONS {
       __ap_ewram_start = .;
       src/ap.o (ewram_data);
       src/ap_stage_select.o (ewram_data);
+      src/ap_trap.o (ewram_data);
       __ap_ewram_end = .;
     } >ewram = 0x00
 
@@ -98,6 +99,8 @@ SECTIONS {
 		src/data/texts/ap_disk.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);
+		src/ap_trap.o (.text);
+		src/data/texts/ap_trap.o (.rodata);
 		src/ap_pickup_marker.o (.text);
 		src/ap_pickup_marker.o (.rodata);
 		src/ap_marker_data.o (.rodata);

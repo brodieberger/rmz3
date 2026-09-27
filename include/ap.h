@@ -147,6 +147,9 @@ extern const struct ApPickupPlace gApPickupPlaces[AP_PICKUP_PLACE_COUNT];
 
 // Filler items.
 #define AP_ITEM_CRYSTAL_100 301
+#define AP_ITEM_TRAP_EARTHQUAKE 310
+#define AP_ITEM_TRAP_PIXELATE 311
+#define AP_ITEM_TRAP_SLIPPERY 312
 #define AP_CRYSTAL_100_AMOUNT 100
 #define AP_EC_MAX 9999
 
@@ -450,6 +453,13 @@ extern const char_t* const gApItemNames[AP_ITEM_NAME_COUNT];
 #define ApUseApDiskInventory(g) (gStageDiskManager.disk = (g)->save.savedDisk)
 #define ApUseGameDiskInventory(g) (gStageDiskManager.disk = (g)->save.disk)
 
+/* ap_trap.c */
+bool32 ApStartTrap(u16 apItemID);
+void ApTrapUpdate(void);
+void ApClearTraps(void);
+bool32 ApSlipperyFloor(void);
+#define ZERO_SLIPS(z) ((z)->slip || ApSlipperyFloor())
+
 /* Process_Game calls this instead of SwitchProcess(): ApUpdate(), then SwitchProcess(). */
 void ApFrameHook(bool32 b);
 
@@ -479,6 +489,7 @@ void ApFrameHook(bool32 b);
 #define ApElfPenaltyFree() (0)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)
+#define ZERO_SLIPS(z) ((z)->slip)
 
 #endif /* AP */
 

@@ -711,6 +711,7 @@ static bool32 ApGrantItem(u16 apItemID) {
     return FALSE;
   }
 
+  ApStartTrap(apItemID);
   return FALSE;
 }
 
@@ -831,6 +832,7 @@ void ApInit(void) {
   gAp.canAcceptItems = FALSE;
   sApRerunRequest = 0;
   sApRerunStage = 0;
+  ApClearTraps();
 
   for (i = 0; i < AP_CHECKED_LOCATION_BYTES; i++) {
     gAp.checkedLocations[i] = 0;
@@ -1171,6 +1173,7 @@ void ApUpdate(void) {
   ApCheckSubBossKilled();
   ApCheckVolcanoMidBossRoom();
   ApSetHarpuiaScene();
+  ApTrapUpdate();
 
   if (!canAcceptItems) {
     return;
