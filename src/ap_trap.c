@@ -1,4 +1,5 @@
 #include "ap.h"
+#include "constants/armor.h"
 #include "constants/game.h"
 #include "constants/song.h"
 #include "entity.h"
@@ -19,14 +20,14 @@
   Traps. Each implemented effect is just a timer that applies a visual effect each frame it is active.
 */
 
-#define AP_QUAKE_FRAMES (5 * 60)
+#define AP_QUAKE_FRAMES (10 * 60)
 #define AP_QUAKE_POWER 3  // Pantheon Aqua mod's rubble fall
 
-#define AP_MOSAIC_FRAMES (8 * 60)
+#define AP_MOSAIC_FRAMES (16 * 60)
 #define AP_MOSAIC_SIZE 5    // matches cyber elf usage blur
 #define AP_MOSAIC_RAMP 32   // frames to fade in, and to fade out
 
-#define AP_SLIP_FRAMES (10 * 60)
+#define AP_SLIP_FRAMES (20 * 60)
 
 EWRAM_DATA static u16 sApQuakeFrames = 0;
 EWRAM_DATA static u16 sApMosaicFrames = 0;
@@ -43,7 +44,9 @@ void ApClearTraps(void) {
 }
 
 bool32 ApSlipperyFloor(void) {
-  return sApSlipFrames != 0;
+  u8 foot = gPlayers[0].unk_b4.status.foot;
+
+  return sApSlipFrames != 0 && foot != FOOT_CHIP_SPIKE && foot != FOOT_CHIP_ULTIMA;
 }
 
 /* Returns TRUE if apItemID is a trap. */
