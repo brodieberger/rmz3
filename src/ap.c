@@ -1174,6 +1174,7 @@ void ApUpdate(void) {
   ApCheckVolcanoMidBossRoom();
   ApSetHarpuiaScene();
   ApTrapUpdate();
+  ApUpdateEnemyMarkers();
 
   if (!canAcceptItems) {
     return;

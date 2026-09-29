@@ -1,5 +1,8 @@
+#include "ap.h"
 #include "enemy.h"
+#include "entity.h"
 #include "global.h"
+#include "overworld_terrain.h"
 #include "pickup.h"
 #include "stagerun.h"
 #include "story.h"
@@ -56,7 +59,47 @@ u32 TryDropItem(u32 table, Coords32* c) {
   return n;
 }
 
-NAKED void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
+NON_MATCH_AP void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
+// Decompile WIP attempt 1
+#if MODERN || AP || CBODY
+  s32 stageID = gStageRun.id;
+  u8 i = sStageEnemyDiskDrops[stageID];
+  const struct DiskDrop* d;
+  u8* count;
+  s32 diskID;
+#if AP
+  u8 mark;
+#endif
+
+  if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) return;
+#if AP
+  mark = ApDropMarkOf(&p->s);
+  if (mark != AP_DROP_MARK_NONE) {
+    d = &sEnemyDiskDrops[mark - 1];
+  } else
+#endif
+  for (d = &sEnemyDiskDrops[i];; d++) {
+    if ((s16)d->stageID != stageID) return;
+    if ((gOverworld.terrain.id & 0x7F) != (s16)d->stageID2) continue;
+    if ((p->s).id != (s16)d->id) continue;
+    if ((p->s).kind != (s16)d->type) continue;
+    if ((s16)d->kind != -1 && (p->s).work[0] != (s16)d->kind) continue;
+    break;
+  }
+
+  count = &gCurStory.s.counts[(s16)d->zakoOfs];
+  if (*count < 0xFF) (*count)++;
+  if (*count != (s16)d->count) return;
+  diskID = (s16)d->diskNo - 1;
+  if (IS_DISK_UNLOCKED(gStageDiskManager.disk, diskID) & 1) return;
+  if (countSpecificEntities2(gPickupHeaderPtr, 1, d->diskNo, 0) != 0) {
+    *count = 0;
+  } else if (CreateMapDisk(d->diskNo, c, 0) == NULL) {
+    (*count)--;
+  } else {
+    *count = 0;
+  }
+#else
   asm(".syntax unified\n\
 	push {r4, r5, r6, r7, lr}\n\
 	mov r7, sl\n\
@@ -249,7 +292,14 @@ _080250A6:\n\
 	pop {r0}\n\
 	bx r0\n\
  .syntax divided\n");
+#endif
 }
+
+#if AP
+u8 ApDropRowDisk(u8 mark) {
+  return sEnemyDiskDrops[mark - 1].diskNo;
+}
+#endif
 
 // clang-format off
 static const u16 sItemDropRates[ITEM_COUNT][7] = {

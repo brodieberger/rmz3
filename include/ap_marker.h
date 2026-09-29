@@ -37,5 +37,6 @@ extern const s8 gApMarkerBob[AP_MARKER_BOB_PERIOD];
 #define AP_MARKER_STAGES 18
 #define AP_MARKER_AREAS 8
 extern const u16 gApMarkerTile[AP_MARKER_STAGES][AP_MARKER_AREAS];
+u16 ApMarkerWindow(void);
 
 #endif  // GUARD_RMZ3_AP_MARKER_H

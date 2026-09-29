@@ -416,6 +416,20 @@ struct Pickup;
 void ApInitPickupLocation(struct Pickup* p);
 void ApMarkPickupCollected(struct Pickup* p);
 
+/*
+  Disk drops by enemy spawn point (ap_enemy_marker.c)
+  Also marks enemies with an icon.
+*/
+#define AP_DROP_MARK_SHIFT 2
+#define AP_DROP_MARK_NONE 0
+#define AP_SPAWN_HAS_MARKER (1 << 8) /* SpawnedEntity.flag, above the template's u8 */
+
+struct Entity;
+u8 ApDropMarkOf(const struct Entity* e);
+void ApUpdateEnemyMarkers(void);
+/* drop.c, which owns the drop table */
+u8 ApDropRowDisk(u8 mark);
+
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);
 

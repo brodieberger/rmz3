@@ -26,7 +26,7 @@ static bool32 ApMarkerUnchecked(const struct Entity* e) {
   return !ApServerChecked(gApPickupPlaces[e->AP_MARKER_PLACE].loc);
 }
 
-static u16 ApMarkerWindow(void) {
+u16 ApMarkerWindow(void) {
   if ((u32)gStageRun.id >= AP_MARKER_STAGES ||
       (u32)gSpawnManager.area >= AP_MARKER_AREAS) {
     return 0;
