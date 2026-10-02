@@ -483,6 +483,8 @@ void ApEndRun(struct GameState* g) {
 void ApSetStoryFlag(u8 flag) {
   SET_FLAG(gCurStory.s.gameflags, flag);
   SET_FLAG(gGameState.save.story.gameflags, flag);
+  // the stage-start snapshot a game over continue restores
+  SET_FLAG(gGameState.save.savedStory.gameflags, flag);
 }
 
 static void ApUnlockWeapon(u8 weapon) {
@@ -680,6 +682,8 @@ static bool32 ApGrantItem(u16 apItemID) {
     return FALSE;
   }
   if (apItemID == AP_ITEM_STORY_LATE) {
+    // also the first step, so one that was lost comes back with the second
+    ApSetStoryFlag(FLAG_FIRST4_DONE);
     ApSetStoryFlag(FLAG_LATER4_DONE);
     return FALSE;
   }
