@@ -15,7 +15,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 24
+#define AP_VERSION 25
 
 /*
   Highest location ID the AP World defines
@@ -422,7 +422,9 @@ void ApMarkPickupCollected(struct Pickup* p);
 */
 #define AP_DROP_MARK_SHIFT 2
 #define AP_DROP_MARK_NONE 0
-#define AP_SPAWN_HAS_MARKER (1 << 8) /* SpawnedEntity.flag, above the template's u8 */
+#define AP_SPAWN_HAS_MARKER (1 << 8)
+#define AP_SPAWN_PILLAR (1 << 7)     /* template flag: a moved Pillar Cannon, which has a new pillar graphic */
+#define AP_SPAWN_HAS_PILLAR (1 << 9) 
 
 struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);

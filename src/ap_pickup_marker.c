@@ -34,6 +34,14 @@ u16 ApMarkerWindow(void) {
   return gApMarkerTile[gStageRun.id][gSpawnManager.area];
 }
 
+u16 ApPillarWindow(void) {
+  if ((u32)gStageRun.id >= AP_MARKER_STAGES ||
+      (u32)gSpawnManager.area >= AP_MARKER_AREAS) {
+    return 0;
+  }
+  return gApPillarTile[gStageRun.id][gSpawnManager.area];
+}
+
 static void ApPickupMarkerUpdate(struct Entity* e) {
   const Pickup* p = (const Pickup*)e->unk_28;
   u16 tile;

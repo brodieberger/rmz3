@@ -111,6 +111,7 @@ SECTIONS {
 		src/ap_mugshot_data.o (.rodata);
 		src/ap_icon_data.o (.rodata);
 		src/ap_icon_slots.o (.rodata);
+		src/ap_spawn.o (.rodata);
 		. = ALIGN(4);
 		__ap_rom_end = .;
 	} >rom = 0x00
