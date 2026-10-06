@@ -1532,7 +1532,8 @@ static const struct ApNpcDialogue sApNpcDialogues[] = {
     {0x25D, 44},                                                           // Rocinolle, elf disk
     {0x26E, 173}, {0x26F, 173}, {0x270, 173}, {0x271, 173}, {0x272, 173},  // Hirondelle
     {0x281, 174}, {0x282, 174}, {0x283, 174}, {0x284, 174}, {0x285, 174},  // Doigt
-    {0x2A6, 58},  {0x2A7, 58},  {0x2A9, 58},  {0x2AB, 58},                 // Soldier in right tower
+    {0x2A6, 58},  {0x2A7, 58},  {0x2A8, 58},  {0x2A9, 58},  {0x2AA, 58},
+    {0x2AB, 58},  {0x2AC, 58},                                             // Soldier in right tower
     {0x2B1, 23},  {0x2B2, 23},  {0x2B3, 23},                               // Soldier in room 02D
     {0x2CF, 107}, {0x2D0, 107}, {0x2D1, 107}, {0x2D2, 107},                // Andrew, young (from ereader)
 };
