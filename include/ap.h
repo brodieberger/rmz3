@@ -425,6 +425,8 @@ void ApMarkPickupCollected(struct Pickup* p);
 #define AP_SPAWN_HAS_MARKER (1 << 8)
 #define AP_SPAWN_PILLAR (1 << 7)     /* a moved Pillar Cannon, which has a new pillar graphic */
 #define AP_SPAWN_HAS_PILLAR (1 << 9) 
+#define AP_SPAWN_PUFF (1 << 5)       /* randomized Volcaire */
+#define AP_SPAWN_PUFFED (1 << 10)    /* timer value's puff, the timer stands still while paused */
 
 struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);

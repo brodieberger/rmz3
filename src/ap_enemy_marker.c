@@ -11,6 +11,8 @@
 #include "spawn.h"
 #include "stagerun.h"
 #include "story.h"
+#include "vfx.h"
+#include "constants/entity/enemy.h"
 
 #if AP
 
@@ -238,6 +240,34 @@ static bool32 ApCreatePillar(struct SpawnedEntity* s) {
 }
 
 /*
+  Graphic as a warning for Volcaires ready to spawn under a tile.
+*/
+#define AP_PUFF_TIMER work[2]
+#define AP_PUFF_THROWN buffer[4]
+
+static void ApVolcairePuff(struct SpawnedEntity* s) {
+  struct Enemy* e = (struct Enemy*)s->e;
+  struct Entity* puff;
+  Coords32 c;
+
+  if ((e->s).kind != ENTITY_ENEMY || (e->s).id != ENEMY_VOLCAIRE || (e->s).mode[1] != 1
+      || e->AP_PUFF_THROWN > 3 || ((e->s).AP_PUFF_TIMER != 32 && (e->s).AP_PUFF_TIMER != 16)) {
+    s->flag &= ~AP_SPAWN_PUFFED;
+    return;
+  }
+  if (s->flag & AP_SPAWN_PUFFED) {
+    return;
+  }
+  s->flag |= AP_SPAWN_PUFFED;
+  c.x = gSpawnManager.points[s->sid].x * PIXEL(16) + PIXEL(8);
+  c.y = (gSpawnManager.points[s->sid].y + 1) * PIXEL(16);
+  puff = CreateSmoke(0, &c);
+  if (puff != NULL) {
+    SetSpriteAnimation(puff, MOTION(SM000_BATTLE_EFFECT, 19));
+  }
+}
+
+/*
   Render markers above enemies heads, and the pillars under moved Pillar Cannons. Gets
   messed up in mettaur mode but who cares.
 */
@@ -254,6 +284,9 @@ void ApUpdateEnemyMarkers(void) {
   for (s = gSpawnManager.list; s != NULL; s = s->next) {
     if (s->e == NULL || (s->flag & SF_ZOMBIE) || (s->e)->mode[0] >= ENTITY_DIE) {
       continue;
+    }
+    if (s->flag & AP_SPAWN_PUFF) {
+      ApVolcairePuff(s);
     }
     if ((s->flag & (AP_SPAWN_PILLAR | AP_SPAWN_HAS_PILLAR)) == AP_SPAWN_PILLAR
         && ApCreatePillar(s)) {
