@@ -677,7 +677,11 @@ ExSkillIcon: @ Graphic 69
 	.2byte 256, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_71_Palettes-. @ src offset
+.if !AP
 		.2byte 96 @ bytesize
+.else  @ Only load first palette, unknown why it has 2 others. Might be related to the miniboss
+		.2byte 32 @ bytesize
+.endif
 		.byte 0, 5 @ lz77(bool8), dst = PaletteID
 
 	@ Graphic 72

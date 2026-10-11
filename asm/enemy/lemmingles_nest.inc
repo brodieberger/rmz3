@@ -559,7 +559,11 @@ _0806E40E:
 	lsrs r3, r3, #0x18
 	adds r0, r4, #0
 	movs r1, #2
+.if AP
+	bl ApNestSpawn
+.else
 	bl FUN_0806e590
+.endif
 	b _0806E466
 _0806E452:
 	ldrb r2, [r4, #0xa]
@@ -570,7 +574,11 @@ _0806E452:
 	lsrs r3, r3, #0x18
 	adds r0, r4, #0
 	movs r1, #0
+.if AP
+	bl ApNestSpawn
+.else
 	bl FUN_0806e590
+.endif
 _0806E466:
 	movs r1, #0
 	movs r0, #3
@@ -597,7 +605,11 @@ _0806E470:
 	lsrs r3, r3, #0x18
 	adds r0, r4, #0
 	movs r1, #3
+.if AP
+	bl ApNestSpawn
+.else
 	bl FUN_0806e590
+.endif
 	b _0806E4B6
 _0806E49C:
 	ldrb r2, [r4, #0xa]
@@ -608,7 +620,11 @@ _0806E49C:
 	lsrs r3, r3, #0x18
 	adds r0, r4, #0
 	movs r1, #1
+.if AP
+	bl ApNestSpawn
+.else
 	bl FUN_0806e590
+.endif
 	b _0806E4B6
 _0806E4B2:
 	subs r0, #1

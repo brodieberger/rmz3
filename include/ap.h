@@ -432,9 +432,11 @@ struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);
 void ApUpdateEnemyMarkers(void);
 #define AP_CHUTE_ENEMIES 2
-void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute);
+void ApChuteDrop(s32 x, s32 y, u8 kind);
+#define AP_NEST_ENEMIES 3
+void ApNestSpawn(struct Entity* nest, u8 kind1, u8 kind2, u8 kind3);
 struct SpawnedEntity* ApAllocStageEntity(void);
-u8 ApDropRowDisk(u8 mark);
+u8 ApDropDisk(const struct Entity* e, u8 mark);
 
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);

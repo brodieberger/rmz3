@@ -59,25 +59,47 @@ u32 TryDropItem(u32 table, Coords32* c) {
   return n;
 }
 
+#if AP
+/* Match kill counts to the correct enemy type or spawn. */
+static const struct DiskDrop* ApDiskDrop(const struct Entity* e, u8 mark) {
+  s32 stageID = gStageRun.id;
+  const struct DiskDrop* d;
+
+  if (mark != AP_DROP_MARK_NONE) {
+    return &sEnemyDiskDrops[mark - 1];
+  }
+  for (d = &sEnemyDiskDrops[sStageEnemyDiskDrops[stageID]];; d++) {
+    if ((s16)d->stageID != stageID) return NULL;
+    if ((gOverworld.terrain.id & 0x7F) != (s16)d->stageID2) continue;
+    if (e->id != (s16)d->id) continue;
+    if (e->kind != (s16)d->type) continue;
+    if ((s16)d->kind != -1 && e->work[0] != (s16)d->kind) continue;
+    return d;
+  }
+}
+
+u8 ApDropDisk(const struct Entity* e, u8 mark) {
+  const struct DiskDrop* d = ApDiskDrop(e, mark);
+  return d == NULL ? 0 : d->diskNo;
+}
+#endif
+
 NON_MATCH_AP void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
 // Decompile WIP attempt 1
 #if MODERN || AP || CBODY
+#if !AP
   s32 stageID = gStageRun.id;
   u8 i = sStageEnemyDiskDrops[stageID];
+#endif
   const struct DiskDrop* d;
   u8* count;
   s32 diskID;
-#if AP
-  u8 mark;
-#endif
 
   if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) return;
 #if AP
-  mark = ApDropMarkOf(&p->s);
-  if (mark != AP_DROP_MARK_NONE) {
-    d = &sEnemyDiskDrops[mark - 1];
-  } else
-#endif
+  d = ApDiskDrop(&p->s, ApDropMarkOf(&p->s));
+  if (d == NULL) return;
+#else
   for (d = &sEnemyDiskDrops[i];; d++) {
     if ((s16)d->stageID != stageID) return;
     if ((gOverworld.terrain.id & 0x7F) != (s16)d->stageID2) continue;
@@ -86,6 +108,7 @@ NON_MATCH_AP void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
     if ((s16)d->kind != -1 && (p->s).work[0] != (s16)d->kind) continue;
     break;
   }
+#endif
 
   count = &gCurStory.s.counts[(s16)d->zakoOfs];
   if (*count < 0xFF) (*count)++;
@@ -294,12 +317,6 @@ _080250A6:\n\
  .syntax divided\n");
 #endif
 }
-
-#if AP
-u8 ApDropRowDisk(u8 mark) {
-  return sEnemyDiskDrops[mark - 1].diskNo;
-}
-#endif
 
 // clang-format off
 static const u16 sItemDropRates[ITEM_COUNT][7] = {

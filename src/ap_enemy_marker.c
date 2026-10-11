@@ -21,9 +21,13 @@
   Also marks enemies with an icon.
 */
 #define AP_ENEMY_MARKER_SID unk_coord.x /* the spawn point, since an enemy slot is reused */
+#define AP_ENEMY_MARKER_NO_SID (-1)     /* follows the enemy itself */
+#define AP_ENEMY_MARKER_ID work[0]      /* the enemy's id that needs the marker */
 #define AP_ENEMY_MARKER_PHASE work[1]
 #define AP_ENEMY_MARKER_REACH work[2] /* px the enemy's sprite has reached above its origin */
+#define AP_ENEMY_MARKER_DISK work[3]
 #define AP_ENEMY_MARKER_GAP 6        /* px between the top of the sprite and the logo's center */
+#define AP_ENEMY_MARKER_SLICE 2
 
 static const u8 sApSubspriteHeight[3][4] = {{8, 16, 32, 64}, {8, 8, 16, 32}, {16, 32, 32, 64}};
 
@@ -42,15 +46,31 @@ static struct SpawnedEntity* ApSpawnOf(const struct Entity* e) {
   return NULL;
 }
 
-u8 ApDropMarkOf(const struct Entity* e) {
-  const struct SpawnedEntity* s = ApSpawnOf(e);
+static struct SpawnedEntity* ApCreditSpawnOf(const struct Entity* e) {
+  struct SpawnedEntity* s = ApSpawnOf(e);
   if (s == NULL && e->unk_28 != NULL) {
     s = ApSpawnOf(e->unk_28);
     if (s != NULL && (s->e)->id != e->id) {
       s = NULL;
     }
   }
+  return s;
+}
+
+u8 ApDropMarkOf(const struct Entity* e) {
+  const struct SpawnedEntity* s = ApCreditSpawnOf(e);
   return s == NULL ? AP_DROP_MARK_NONE : ApDropMarkOfSpawn(s);
+}
+
+static bool32 ApEnemyLive(const struct Entity* e) {
+  const struct Entity* p;
+
+  for (p = gEnemyHeaderPtr->head; p != (struct Entity*)&gEnemyHeaderPtr->tail; p = p->next) {
+    if (p == e) {
+      return TRUE;
+    }
+  }
+  return FALSE;
 }
 
 /* How far the enemy's current frame reaches above the start. */
@@ -76,30 +96,38 @@ static u8 ApSpriteReach(const struct Entity* e) {
   return reach > 0xFF ? 0xFF : reach;
 }
 
-static bool32 ApDropMarkUnchecked(u8 mark) {
-  return !ApServerChecked(ApDropRowDisk(mark));
-}
-
 static void ApEnemyMarkerUpdate(struct Entity* m) {
   const struct Entity* e = m->unk_28;
-  struct SpawnedEntity* s = ApSpawnOf(e);
+  struct SpawnedEntity* s = NULL;
   u16 tile;
   u8 reach;
 
-  if (s == NULL || s->sid != m->AP_ENEMY_MARKER_SID) {
-    DeleteEntity(m);
-    return;
+  if (m->AP_ENEMY_MARKER_SID == AP_ENEMY_MARKER_NO_SID) {
+    if (!ApEnemyLive(e) || e->id != m->AP_ENEMY_MARKER_ID) {
+      DeleteEntity(m);
+      return;
+    }
+  } else {
+    s = ApSpawnOf(e);
+    if (s == NULL || s->sid != m->AP_ENEMY_MARKER_SID) {
+      DeleteEntity(m);
+      return;
+    }
   }
-  if (e->mode[0] >= ENTITY_DIE || !ApDropMarkUnchecked(ApDropMarkOfSpawn(s))) {
+  if (e->mode[0] >= ENTITY_DIE || ApServerChecked(m->AP_ENEMY_MARKER_DISK)) {
     /* swap marker */
-    s->flag &= ~AP_SPAWN_HAS_MARKER;
+    if (s != NULL) {
+      s->flag &= ~AP_SPAWN_HAS_MARKER;
+    }
     DeleteEntity(m);
     return;
   }
 
   tile = ApMarkerWindow();
-  if (tile == 0 || FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
-    m->flags &= ~DISPLAY; /* no room, or cyberspace, where TryDropZakoDisk drops nothing */
+  if (tile == 0 || !(e->flags & DISPLAY) || FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
+    /* no room, an enemy not drawn (a Volcaire's spawn point), or cyberspace, where TryDropZakoDisk
+       function would drop nothing */
+    m->flags &= ~DISPLAY;
     return;
   }
   MemCopy32(gApMarkerTiles[0], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
@@ -117,7 +145,18 @@ static void ApEnemyMarkerUpdate(struct Entity* m) {
   (m->coord).y += PIXEL(gApMarkerBob[m->AP_ENEMY_MARKER_PHASE]);
 }
 
-static bool32 ApCreateEnemyMarker(struct SpawnedEntity* s) {
+static bool32 ApHasEnemyMarker(const struct Entity* e) {
+  const struct Entity* m;
+
+  for (m = gVFXHeaderPtr->head; m != (struct Entity*)&gVFXHeaderPtr->tail; m = m->next) {
+    if (m->onUpdate == (void*)ApEnemyMarkerUpdate && m->unk_28 == e) {
+      return TRUE;
+    }
+  }
+  return FALSE;
+}
+
+static bool32 ApCreateEnemyMarker(struct Entity* e, s32 sid, u8 disk) {
   struct Entity* m = (struct Entity*)AllocEntityLast(gVFXHeaderPtr);
 
   if (m == NULL) {
@@ -128,11 +167,13 @@ static bool32 ApCreateEnemyMarker(struct SpawnedEntity* s) {
   m->renderPrio = 1;
   m->tileNum = 0;
   m->palID = 0;
-  m->unk_28 = s->e;
-  m->coord = (s->e)->coord;
-  m->AP_ENEMY_MARKER_SID = s->sid;
+  m->unk_28 = e;
+  m->coord = e->coord;
+  m->AP_ENEMY_MARKER_SID = sid;
+  m->AP_ENEMY_MARKER_ID = e->id;
   m->AP_ENEMY_MARKER_PHASE = 0;
   m->AP_ENEMY_MARKER_REACH = 0;
+  m->AP_ENEMY_MARKER_DISK = disk;
 
   InitNonAffineMotion(m);
   (m->spr).sprites = (struct MetaspriteHeader*)gApMarkerSprite.hdr;
@@ -143,25 +184,56 @@ static bool32 ApCreateEnemyMarker(struct SpawnedEntity* s) {
 }
 
 /*
-  The chute drop for Weapon Repair Factory
+  For all enemies that are not marked through normal spawning
+  Giant elevator enemies, falling trash blocks in WR Factory, and splitting volcaires.
 */
-void FUN_0808d0b0(s32 x, s32 y, u8 kind);
-
-void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute) {
-  const struct SpawnTemplate* t = &gSpawnManager.template[gSpawnManager.points[0].idx];
-  struct SpawnedEntity* s;
+static void ApMarkCountingEnemies(void) {
+  const struct EntityHeader* h = gEnemyHeaderPtr;
+  const struct SpawnedEntity* s;
   struct Entity* e;
+  s32 i;
+  u8 mark, disk;
+
+  for (i = 0; i < AP_ENEMY_MARKER_SLICE; i++) {
+    e = (struct Entity*)((u8*)h->arr
+                         + ((gStageRun.frame * AP_ENEMY_MARKER_SLICE + i) % h->length) * h->size);
+    if (!ApEnemyLive(e) || e->mode[0] >= ENTITY_DIE
+        || (e->flags & (DISPLAY | COLLIDABLE)) != (DISPLAY | COLLIDABLE)) {
+      continue; /* also a chute, aka not an enemy */
+    }
+    s = ApCreditSpawnOf(e);
+    mark = s == NULL ? AP_DROP_MARK_NONE : ApDropMarkOfSpawn(s);
+    if (mark != AP_DROP_MARK_NONE && (s->e == e || ((s->e)->flags & DISPLAY))) {
+      continue;
+    }
+    disk = ApDropDisk(e, mark);
+    if (disk != 0 && !ApServerChecked(disk) && !ApHasEnemyMarker(e)) {
+      ApCreateEnemyMarker(e, AP_ENEMY_MARKER_NO_SID, disk);
+    }
+  }
+}
+
+/*
+  Chutes and the mousehole enemies.
+*/
+static s32 ApSpawnedFrom(s16 sid) {
+  struct SpawnedEntity* s;
   s32 out = 0;
 
   for (s = gSpawnManager.list; s != NULL; s = s->next) {
-    if (s->sid == 0) {
+    if (s->sid == sid) {
       out++;
     }
   }
-  if (gSpawnManager.points[0].idx == 0 || chute->work[3] == 1 || out >= AP_CHUTE_ENEMIES
-      || gSpawnManager.remaining == 0 || gSpawnManager.mettaursEnabled
-      || gSpawnManager.mmbn4EnemiesEnabled) {
-    FUN_0808d0b0(x, y, kind);
+  return out;
+}
+
+static void ApSpawnNamed(s16 sid, s32 x, s32 y) {
+  const struct SpawnTemplate* t = &gSpawnManager.template[gSpawnManager.points[sid].idx];
+  struct SpawnedEntity* s;
+  struct Entity* e;
+
+  if (gSpawnManager.remaining == 0) {
     return;
   }
   e = CreateStageEntity(t->kind, t->id);
@@ -174,8 +246,46 @@ void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute) {
   (e->coord).x = x;
   (e->coord).y = y;
   s->e = e;
-  s->sid = 0;
+  s->sid = sid;
   s->flag = t->flag;
+}
+
+/*
+  The chute drop for Weapon Repair Factory. Set to avoid being the junk spawn.
+*/
+void FUN_0808d0b0(s32 x, s32 y, u8 kind);
+
+void ApChuteDrop(s32 x, s32 y, u8 kind) {
+  if (gSpawnManager.points[0].idx == 0) {
+    FUN_0808d0b0(x, y, kind);
+    return;
+  }
+  if (ApSpawnedFrom(0) < AP_CHUTE_ENEMIES && gSpawnManager.remaining != 0
+      && !gSpawnManager.mettaursEnabled && !gSpawnManager.mmbn4EnemiesEnabled) {
+    ApSpawnNamed(0, x, y);
+  }
+}
+
+/*
+  A Lemmingles nest's mouse function.
+*/
+void FUN_0806e590(struct Entity* e, u8 kind1, u8 kind2, u8 kind3);
+
+void ApNestSpawn(struct Entity* nest, u8 kind1, u8 kind2, u8 kind3) {
+  s16 end = 0;
+
+  while (gSpawnManager.points[end].x != 0x7FFFFFFF) {
+    end++;
+  }
+  if (gSpawnManager.points[end].idx == 0 || nest->work[0] == 4 || gSpawnManager.mettaursEnabled
+      || gSpawnManager.mmbn4EnemiesEnabled) {
+    FUN_0806e590(nest, kind1, kind2, kind3);
+    return;
+  }
+  ((struct Enemy*)nest)->buffer[0] &= ~(1 << kind3);
+  if (ApSpawnedFrom(end) < AP_NEST_ENEMIES) {
+    ApSpawnNamed(end, (nest->coord).x, (nest->coord).y);
+  }
 }
 
 /*
@@ -296,13 +406,14 @@ void ApUpdateEnemyMarkers(void) {
       continue;
     }
     mark = ApDropMarkOfSpawn(s);
-    if (mark == AP_DROP_MARK_NONE || !ApDropMarkUnchecked(mark)) {
+    if (mark == AP_DROP_MARK_NONE || ApServerChecked(ApDropDisk(s->e, mark))) {
       continue;
     }
-    if (ApCreateEnemyMarker(s)) {
+    if (ApCreateEnemyMarker(s->e, s->sid, ApDropDisk(s->e, mark))) {
       s->flag |= AP_SPAWN_HAS_MARKER;
     }
   }
+  ApMarkCountingEnemies();
 }
 
 #endif /* AP */

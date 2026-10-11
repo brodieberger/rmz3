@@ -2230,7 +2230,6 @@ _0808E1BA:
 _0808E1E8:
 	adds r0, r3, #0
 .if AP
-	adds r3, r4, #0
 	bl ApChuteDrop
 .else
 	bl FUN_0808d0b0
@@ -2251,7 +2250,6 @@ _0808E1F4:
 _0808E206:
 	adds r0, r3, #0
 .if AP
-	adds r3, r4, #0
 	bl ApChuteDrop
 .else
 	bl FUN_0808d0b0
