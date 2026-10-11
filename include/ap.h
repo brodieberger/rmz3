@@ -423,19 +423,15 @@ void ApMarkPickupCollected(struct Pickup* p);
 #define AP_DROP_MARK_SHIFT 2
 #define AP_DROP_MARK_NONE 0
 #define AP_SPAWN_HAS_MARKER (1 << 8)
-#define AP_SPAWN_PILLAR (1 << 7)     /* template flag: a moved Pillar Cannon, which has a new pillar graphic */
+#define AP_SPAWN_PILLAR (1 << 7)     /* a moved Pillar Cannon, which has a new pillar graphic */
 #define AP_SPAWN_HAS_PILLAR (1 << 9) 
 
 struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);
 void ApUpdateEnemyMarkers(void);
-/* A Repair Factory chute (Deathlock work0 8) drops the enemy its stage's guard spawn point
-   names, as every third drop, while fewer than AP_CHUTE_ENEMIES are out. */
 #define AP_CHUTE_ENEMIES 2
 void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute);
-/* spawn.c, which owns the spawn list */
 struct SpawnedEntity* ApAllocStageEntity(void);
-/* drop.c, which owns the drop table */
 u8 ApDropRowDisk(u8 mark);
 
 struct Solid;

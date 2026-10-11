@@ -156,7 +156,7 @@ void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute) {
       out++;
     }
   }
-  if (gSpawnManager.points[0].idx == 0 || chute->work[3] != 2 || out >= AP_CHUTE_ENEMIES
+  if (gSpawnManager.points[0].idx == 0 || chute->work[3] == 1 || out >= AP_CHUTE_ENEMIES
       || gSpawnManager.remaining == 0 || gSpawnManager.mettaursEnabled
       || gSpawnManager.mmbn4EnemiesEnabled) {
     FUN_0808d0b0(x, y, kind);

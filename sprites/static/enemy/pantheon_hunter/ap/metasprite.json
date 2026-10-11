@@ -749,7 +749,19 @@
     },
     {
       "sheetIdx": 0,
-      "subsprites": []
+      "subsprites": [
+        {
+          "tileNum": 76,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            8,
+            8
+          ],
+          "x": 0,
+          "y": 0
+        }
+      ]
     }
   ]
 }
