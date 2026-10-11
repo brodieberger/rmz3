@@ -74,6 +74,12 @@ static bool32 ApCanAcceptItems(void) {
     return FALSE;
   }
   /*
+    Conversation / Menu.
+  */
+  if (gGameState.mode[2] != 0) {
+    return FALSE;
+  }
+  /*
     Wait for the player to actually have control.
   */
   {
@@ -841,6 +847,9 @@ void ApInit(void) {
   for (i = 0; i < AP_CHECKED_LOCATION_BYTES; i++) {
     gAp.checkedLocations[i] = 0;
     gAp.serverChecked[i] = 0;
+  }
+  for (i = 0; i < AP_SHOP_SLOTS_MAX / 8; i++) {
+    gAp.shopSeen[i] = 0;
   }
 
   gAp.version = AP_VERSION;

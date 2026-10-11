@@ -276,9 +276,11 @@ struct ApState {
   u8 killRequest;
 
   u8 canAcceptItems;
+
+  u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 148);
+static_assert(sizeof(struct ApState) == 152);
 
 extern struct ApState gAp;
 
