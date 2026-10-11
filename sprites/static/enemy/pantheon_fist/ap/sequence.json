@@ -1,0 +1,213 @@
+{
+  "label": "gStaticAnimationSequence_enemy_pantheon_fist",
+  "data": [
+    [
+      {
+        "frameIdx": 0,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 0,
+        "duration": 2
+      },
+      {
+        "frameIdx": 0,
+        "duration": 3
+      },
+      {
+        "frameIdx": 0,
+        "duration": 4
+      },
+      {
+        "frameIdx": 0,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 3,
+        "duration": 12
+      },
+      {
+        "frameIdx": 4,
+        "duration": 16
+      },
+      {
+        "frameIdx": 3,
+        "duration": 12
+      },
+      {
+        "frameIdx": 4,
+        "duration": 16
+      },
+      {
+        "frameIdx": 3,
+        "duration": 12
+      },
+      {
+        "frameIdx": 4,
+        "duration": 16
+      },
+      {
+        "frameIdx": 3,
+        "duration": 12
+      },
+      {
+        "frameIdx": 4,
+        "duration": 16
+      },
+      {
+        "frameIdx": 4,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 0,
+        "duration": 2
+      },
+      {
+        "frameIdx": 10,
+        "duration": 3
+      },
+      {
+        "frameIdx": 10,
+        "duration": 4
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 10,
+        "duration": 4
+      },
+      {
+        "frameIdx": 10,
+        "duration": 2
+      },
+      {
+        "frameIdx": 10,
+        "duration": 2
+      },
+      {
+        "frameIdx": 13,
+        "duration": 2
+      },
+      {
+        "frameIdx": 13,
+        "duration": 2
+      },
+      {
+        "frameIdx": 13,
+        "duration": 2
+      },
+      {
+        "frameIdx": 13,
+        "duration": 2
+      },
+      {
+        "frameIdx": 4,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 14,
+        "duration": 2
+      },
+      {
+        "frameIdx": 15,
+        "duration": 8
+      },
+      {
+        "frameIdx": 15,
+        "duration": 2
+      },
+      {
+        "frameIdx": 15,
+        "duration": 2
+      },
+      {
+        "frameIdx": 0,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 0,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 25,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 25,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 25,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 25,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 25,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ]
+  ]
+}

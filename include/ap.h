@@ -429,6 +429,12 @@ void ApMarkPickupCollected(struct Pickup* p);
 struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);
 void ApUpdateEnemyMarkers(void);
+/* A Repair Factory chute (Deathlock work0 8) drops the enemy its stage's guard spawn point
+   names, as every third drop, while fewer than AP_CHUTE_ENEMIES are out. */
+#define AP_CHUTE_ENEMIES 2
+void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute);
+/* spawn.c, which owns the spawn list */
+struct SpawnedEntity* ApAllocStageEntity(void);
 /* drop.c, which owns the drop table */
 u8 ApDropRowDisk(u8 mark);
 

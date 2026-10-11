@@ -1,4 +1,5 @@
 	.include "asm/macros.inc"
+	.include "src/data/ap_sheet_trims.inc"
   .balign 4
   .section .rodata
 
@@ -279,13 +280,25 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/enemy/icebon/icebon/metasprite.inc"
 .include "sprites/static/enemy/icebon/ice/metasprite.inc"
 .include "sprites/static/door_2d/blue/metasprite.inc"
+.if AP && AP_TRIM_19  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_hunter/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/pantheon_hunter/metasprite.inc"
+.endif
+.if AP && AP_TRIM_20  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_guardian/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/pantheon_guardian/metasprite.inc"
+.endif
 .include "sprites/static/enemy/top_gabyoall/metasprite.inc"
 .include "sprites/static/enemy/flopper/metasprite.inc"
 .include "sprites/static/enemy/gyro_cannon/metasprite.inc"
 .include "sprites/static/enemy/sharkseal_x/metasprite.inc"
+.if AP && AP_TRIM_25  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/lamplort/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/lamplort/metasprite.inc"
+.endif
 .include "sprites/static/element_effect/thunder/metasprite.inc"
 .include "sprites/static/element_effect/ice/metasprite.inc"
 .include "sprites/static/enemy/lemmingles/metasprite.inc"
@@ -320,11 +333,19 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/volcano/lava_river_platform/metasprite.inc"
 .include "sprites/static/exlife_indicator/metasprite.inc"
 .include "sprites/static/61/metasprite.inc"
+.if AP && AP_TRIM_62  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/beetank/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/beetank/metasprite.inc"
+.endif
 .include "sprites/static/enemy/swordy/metasprite.inc"
 .include "sprites/static/iceball/metasprite.inc"
 .include "sprites/static/enemy/puffy/body/metasprite.inc"
+.if AP && AP_TRIM_66  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/puffy/bubble/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/puffy/bubble/metasprite.inc"
+.endif
 .include "sprites/static/enemy/crossbyne/metasprite.inc"
 .include "sprites/static/old_residential/fall_rock/metasprite.inc"
 .include "sprites/static/menu/exskill_icon/metasprite.inc"
@@ -361,7 +382,11 @@ gStaticMotionMetaspriteTable:
 .include "sprites/static/blizzack/shoulder/metasprite.inc"
 .include "sprites/static/omega_white/sword/metasprite.inc"
 .include "sprites/static/enemy/eye_cannon/metasprite.inc"
+.if AP && AP_TRIM_103  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/gallisni/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/gallisni/metasprite.inc"
+.endif
 .include "sprites/static/enemy/capsule_cannon/metasprite.inc"
 .include "sprites/static/enemy/pantheon_bomber/metasprite.inc"
 .include "sprites/static/hanumachine_obj/metasprite.inc"
@@ -483,14 +508,22 @@ gStaticMetaSprite_exlife_green = gStaticMetaSprite_exlife_default
 .include "sprites/static/number/metasprite.inc"
 .include "sprites/static/lever_switch/yellow/metasprite.inc"
 .include "sprites/static/menu/border/metasprite.inc"
+.if AP && AP_TRIM_212  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_fist/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/pantheon_fist/metasprite.inc"
+.endif
 .include "sprites/static/enemy/cattatank/metasprite.inc"
 .include "sprites/static/enemy/spearook/metasprite.inc"
 .include "sprites/static/215/metasprite.inc"
 .include "sprites/static/resistance_base/cat/216/metasprite.inc"
 .include "sprites/static/resistance_base/cat/217/metasprite.inc"
 .include "sprites/static/resistance_base/seagull/metasprite.inc"
+.if AP && AP_TRIM_219  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/shellcrawler/ap/metasprite.inc"
+.else
 .include "sprites/static/enemy/shellcrawler/metasprite.inc"
+.endif
 .include "sprites/static/enemy/cannon_hopper/metasprite.inc"
 .include "sprites/static/enemy/mettaur/metasprite.inc"
 .include "sprites/static/structural_steel/metasprite.inc"
@@ -807,13 +840,25 @@ gStaticMotionCmdTable:
 .include "sprites/static/enemy/icebon/icebon/sequence.inc"
 .include "sprites/static/enemy/icebon/ice/sequence.inc"
 .include "sprites/static/door_2d/blue/sequence.inc"
+.if AP && AP_TRIM_19  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_hunter/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/pantheon_hunter/sequence.inc"
+.endif
+.if AP && AP_TRIM_20  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_guardian/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/pantheon_guardian/sequence.inc"
+.endif
 .include "sprites/static/enemy/top_gabyoall/sequence.inc"
 .include "sprites/static/enemy/flopper/sequence.inc"
 .include "sprites/static/enemy/gyro_cannon/sequence.inc"
 .include "sprites/static/enemy/sharkseal_x/sequence.inc"
+.if AP && AP_TRIM_25  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/lamplort/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/lamplort/sequence.inc"
+.endif
 .include "sprites/static/element_effect/thunder/sequence.inc"
 .include "sprites/static/element_effect/ice/sequence.inc"
 .include "sprites/static/enemy/lemmingles/sequence.inc"
@@ -848,11 +893,19 @@ gStaticMotionCmdTable:
 .include "sprites/static/volcano/lava_river_platform/sequence.inc"
 .include "sprites/static/exlife_indicator/sequence.inc"
 .include "sprites/static/61/sequence.inc"
+.if AP && AP_TRIM_62  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/beetank/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/beetank/sequence.inc"
+.endif
 .include "sprites/static/enemy/swordy/sequence.inc"
 .include "sprites/static/iceball/sequence.inc"
 .include "sprites/static/enemy/puffy/body/sequence.inc"
+.if AP && AP_TRIM_66  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/puffy/bubble/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/puffy/bubble/sequence.inc"
+.endif
 .include "sprites/static/enemy/crossbyne/sequence.inc"
 .include "sprites/static/old_residential/fall_rock/sequence.inc"
 .include "sprites/static/menu/exskill_icon/sequence.inc"
@@ -889,7 +942,11 @@ gStaticMotionCmdTable:
 .include "sprites/static/blizzack/shoulder/sequence.inc"
 .include "sprites/static/omega_white/sword/sequence.inc"
 .include "sprites/static/enemy/eye_cannon/sequence.inc"
+.if AP && AP_TRIM_103  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/gallisni/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/gallisni/sequence.inc"
+.endif
 .include "sprites/static/enemy/capsule_cannon/sequence.inc"
 .include "sprites/static/enemy/pantheon_bomber/sequence.inc"
 .include "sprites/static/hanumachine_obj/sequence.inc"
@@ -1001,14 +1058,22 @@ gStaticMotionCmdTable:
 .include "sprites/static/number/sequence.inc"
 .include "sprites/static/lever_switch/yellow/sequence.inc"
 .include "sprites/static/menu/border/sequence.inc"
+.if AP && AP_TRIM_212  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/pantheon_fist/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/pantheon_fist/sequence.inc"
+.endif
 .include "sprites/static/enemy/cattatank/sequence.inc"
 .include "sprites/static/enemy/spearook/sequence.inc"
 .include "sprites/static/215/sequence.inc"
 .include "sprites/static/resistance_base/cat/216/sequence.inc"
 .include "sprites/static/resistance_base/cat/217/sequence.inc"
 .include "sprites/static/resistance_base/seagull/sequence.inc"
+.if AP && AP_TRIM_219  @ trimmed: tools/art/ap_sheet_trims.py
+.include "sprites/static/enemy/shellcrawler/ap/sequence.inc"
+.else
 .include "sprites/static/enemy/shellcrawler/sequence.inc"
+.endif
 .include "sprites/static/enemy/cannon_hopper/sequence.inc"
 .include "sprites/static/enemy/mettaur/sequence.inc"
 .include "sprites/static/structural_steel/sequence.inc"

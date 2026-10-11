@@ -642,6 +642,10 @@ static struct SpawnedEntity* AllocStageEntity(void) {
   return newObj;
 }
 
+#if AP
+struct SpawnedEntity* ApAllocStageEntity(void) { return AllocStageEntity(); }
+#endif
+
 static void ReleaseStageEntity(struct SpawnedEntity* p) {
   struct SpawnedEntity* p1 = gSpawnManager.list;
   struct SpawnedEntity* p2 = gSpawnManager.list;

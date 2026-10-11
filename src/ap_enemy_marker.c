@@ -10,6 +10,7 @@
 #include "motion.h"
 #include "spawn.h"
 #include "stagerun.h"
+#include "story.h"
 
 #if AP
 
@@ -95,8 +96,8 @@ static void ApEnemyMarkerUpdate(struct Entity* m) {
   }
 
   tile = ApMarkerWindow();
-  if (tile == 0) {
-    m->flags &= ~DISPLAY;
+  if (tile == 0 || FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) {
+    m->flags &= ~DISPLAY; /* no room, or cyberspace, where TryDropZakoDisk drops nothing */
     return;
   }
   MemCopy32(gApMarkerTiles[0], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
@@ -137,6 +138,42 @@ static bool32 ApCreateEnemyMarker(struct SpawnedEntity* s) {
   (m->spr).spriteIdx = AP_MARKER_SMALL;
   (m->spr).oam.tileNum = ApMarkerWindow();
   return TRUE;
+}
+
+/*
+  The chute drop for Weapon Repair Factory
+*/
+void FUN_0808d0b0(s32 x, s32 y, u8 kind);
+
+void ApChuteDrop(s32 x, s32 y, u8 kind, struct Entity* chute) {
+  const struct SpawnTemplate* t = &gSpawnManager.template[gSpawnManager.points[0].idx];
+  struct SpawnedEntity* s;
+  struct Entity* e;
+  s32 out = 0;
+
+  for (s = gSpawnManager.list; s != NULL; s = s->next) {
+    if (s->sid == 0) {
+      out++;
+    }
+  }
+  if (gSpawnManager.points[0].idx == 0 || chute->work[3] != 2 || out >= AP_CHUTE_ENEMIES
+      || gSpawnManager.remaining == 0 || gSpawnManager.mettaursEnabled
+      || gSpawnManager.mmbn4EnemiesEnabled) {
+    FUN_0808d0b0(x, y, kind);
+    return;
+  }
+  e = CreateStageEntity(t->kind, t->id);
+  if (e == NULL) {
+    return;
+  }
+  s = ApAllocStageEntity();
+  e->work[0] = t->work0;
+  e->work[1] = t->work1;
+  (e->coord).x = x;
+  (e->coord).y = y;
+  s->e = e;
+  s->sid = 0;
+  s->flag = t->flag;
 }
 
 /*

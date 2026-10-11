@@ -1,0 +1,159 @@
+{
+  "label": "gStaticAnimationSequence_enemy_puffy_bubble",
+  "data": [
+    [
+      {
+        "frameIdx": 10,
+        "duration": 4
+      },
+      {
+        "frameIdx": 11,
+        "duration": 5
+      },
+      {
+        "frameIdx": 11,
+        "duration": 6
+      },
+      {
+        "frameIdx": 3,
+        "duration": 6
+      },
+      {
+        "frameIdx": 3,
+        "duration": 6
+      },
+      {
+        "frameIdx": 4,
+        "duration": 6
+      },
+      {
+        "frameIdx": 4,
+        "duration": 6
+      },
+      {
+        "frameIdx": 3,
+        "duration": 6
+      },
+      {
+        "frameIdx": 3,
+        "duration": 6
+      },
+      {
+        "frameIdx": 4,
+        "duration": 6
+      },
+      {
+        "frameIdx": 6,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 4,
+        "duration": 3
+      },
+      {
+        "frameIdx": 17,
+        "duration": 4
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 10,
+        "duration": 4
+      },
+      {
+        "frameIdx": 10,
+        "duration": 5
+      },
+      {
+        "frameIdx": 10,
+        "duration": 7
+      },
+      {
+        "frameIdx": 10,
+        "duration": 7
+      },
+      {
+        "frameIdx": 10,
+        "duration": 7
+      },
+      {
+        "frameIdx": 11,
+        "duration": 7
+      },
+      {
+        "frameIdx": 11,
+        "duration": 7
+      },
+      {
+        "frameIdx": 10,
+        "duration": 7
+      },
+      {
+        "frameIdx": 10,
+        "duration": 7
+      },
+      {
+        "frameIdx": 11,
+        "duration": 7
+      },
+      {
+        "frameIdx": 6,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 11,
+        "duration": 5
+      },
+      {
+        "frameIdx": 11,
+        "duration": 4
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 17,
+        "duration": 4
+      },
+      {
+        "frameIdx": 17,
+        "duration": 1
+      },
+      {
+        "frameIdx": 17,
+        "duration": 6
+      },
+      {
+        "frameIdx": 17,
+        "duration": 7
+      },
+      {
+        "frameIdx": 17,
+        "duration": 6
+      },
+      {
+        "frameIdx": 17,
+        "duration": 6
+      },
+      {
+        "frameIdx": 17,
+        "duration": 5
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ]
+  ]
+}
