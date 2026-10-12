@@ -59,6 +59,9 @@ const struct ApSeedConfig gApSeedConfig = {
     TRUE,
     AP_ELVES_VANILLA,
     TRUE,
+    FALSE,
+    0,
+    TRUE,
 };
 
 bool32 ApInDemo(void) {

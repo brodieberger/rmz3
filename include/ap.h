@@ -296,6 +296,8 @@ struct ApSeedConfig {
   u8 diskNamePopup;    // name a received secret disk in the inline message box
   u8 infiniteLives;
   u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
+  u8 enemyDiskMarkers; // enemy marker
+  u8 unused[3];
 };
 
 #define AP_FINAL_RANK_NONE 0xFF
@@ -318,7 +320,7 @@ struct ApSeedConfig {
 #define AP_SELECT_CYCLE_FOOT_CHIP 4
 #define AP_SELECT_USE_SUBTANK 5
 
-static_assert(sizeof(struct ApSeedConfig) == 12);
+static_assert(sizeof(struct ApSeedConfig) == 16);
 
 /*
   Cost of each shop item. Inserted into ROM when AP world generates

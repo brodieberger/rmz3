@@ -402,7 +402,7 @@ void ApUpdateEnemyMarkers(void) {
         && ApCreatePillar(s)) {
       s->flag |= AP_SPAWN_HAS_PILLAR;
     }
-    if (s->flag & AP_SPAWN_HAS_MARKER) {
+    if (!gApSeedConfig.enemyDiskMarkers || (s->flag & AP_SPAWN_HAS_MARKER)) {
       continue;
     }
     mark = ApDropMarkOfSpawn(s);
@@ -413,7 +413,9 @@ void ApUpdateEnemyMarkers(void) {
       s->flag |= AP_SPAWN_HAS_MARKER;
     }
   }
-  ApMarkCountingEnemies();
+  if (gApSeedConfig.enemyDiskMarkers) {
+    ApMarkCountingEnemies();
+  }
 }
 
 #endif /* AP */
