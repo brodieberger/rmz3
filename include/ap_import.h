@@ -16,6 +16,9 @@ struct ApImportedStage {
   const ColorGraphic* tilesets;
   u32 tilesetCount;
   const GameCommand* script;              // Currently just spawnpoint, BGM, READY, release
+  const GameCommand* bossScript;          // Copy X's intro
+  const GameCommand* clearScript;         // Copy X's death, results screen
+  Coords32 bossDoor;                      // the fight starts to the right and below of the boss door
   const char_t* name;
   const struct SpawnTemplate* templates;
   const struct SpawnPoint* points;

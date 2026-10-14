@@ -141,6 +141,85 @@ gApImp0_Script:
 	resume 0
 	end
 
+gApImp0_CopyX:
+	.byte ENTITY_BOSS, BOSS_COPY_X, 0, 0
+	.4byte 7184*PX, 1552*PX
+	.4byte DIR_LEFT
+
+.global gApImp0_BossScript
+gApImp0_BossScript:
+	stop_bgm
+	spawn 1, gApImp0_CopyX
+	forcekeyinput DPAD_RIGHT
+	pause
+	walkto 7040*PX
+	lock
+	play_bgm BGM_X
+	change_camera_mode 6
+	set_chase_mode 4
+	adjust_camera 11, 0, 6992*PX
+	adjust_camera 12, 0, 7296*PX
+	gimmick 1, 0, 1
+	wait 75
+	triumphant_message 0, 0x0C02
+	entityflag 1, 0, TRUE
+	stop_bgm
+	gimmick 1, 0, 2
+	wait 90
+	warning_indicator
+	wait 90
+	change_camera_mode 6
+	set_chase_mode 4
+	adjust_camera 11, 0, 6928*PX
+	wait_indicator_end
+	release
+	play_bgm BGM_BOSS_BATTLE
+	resume 1
+	end
+
+.global gApImp0_ClearScript
+gApImp0_ClearScript:
+	lockmenu
+	forcekeyinput 0xFFFF
+	stop_bgm
+	wait 1
+	lock
+	force 8, 0, 0
+	time 0
+	change_camera_mode 1
+	set_chase_mode 2
+	set_camera_target_x 7112*PX
+	walkto 7040*PX
+	wait 4
+	turn_right 0
+	lock
+	wait 15
+	waitabs 90
+	wait 60
+	entityflag 1, 7, TRUE
+	wait 30
+	entityflag 1, 1, TRUE
+	wait 30
+	entityflag 1, 2, TRUE
+	play_se 48
+	cmd08_wait_set 1
+	wait 120
+	start_transition 6
+	wait_transition_end
+	fadeout_se 120, 317
+	wait 90
+	destroy 1
+	stop_camera
+	backdrop_color 0xFFFF
+	start_transition 5
+	wait 60
+	start_result_screen
+	wait_for_result_screen_end
+	load_graphic_primitive
+	destroy 0
+	wait 2
+	end
+
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 .global gApImp0_Metatiles

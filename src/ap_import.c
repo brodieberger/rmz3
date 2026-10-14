@@ -86,7 +86,39 @@ u8 ApImportCount(void) { return gApImportCount; }
 
 const char_t* ApImportName(u8 n) { return gApImportedStages[n].name; }
 
-const void* ApImportScript(void) { return gApImportedStages[gApImportSelected].script; }
+/*
+  Temp script for stage 0.
+*/
+s16 ApImportUpdate(struct StageRun* p) {
+  const struct ApImportedStage* imp = &gApImportedStages[gApImportSelected];
+  struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
+
+  if (p->stageEventPhase == 0) {
+    gStageRun.missionStatus |= MISSION_STAY;
+    SetScript(&gStageRun.vm, imp->script);
+    p->stageEventPhase = 1;
+
+  } else if (p->stageEventPhase == 1 && (z->s).coord.x >= imp->bossDoor.x && (z->s).coord.y >= imp->bossDoor.y) {
+    SetScript(&gStageRun.vm, imp->bossScript);
+    p->stageEventPhase = 2;
+
+  } else if (p->stageEventPhase == 2 && (gStageRun.missionStatus & MISSION_SUCCESS)) {
+    gCollisionManager.disabled |= COLLMAN_DISABLED;
+    gCollisionManager.sweep |= (1 << FACTION_ENEMY);
+    SetScript(&gStageRun.vm, imp->clearScript);
+    gStageRun.vm.active &= ~VM_FLAG1;
+    gStageRun.missionStatus |= STOP_TIME_COUNT;
+    gStageRun.missionStatus |= MISSION_STAY;
+    p->stageEventPhase = 3;
+
+  } else if (p->stageEventPhase == 3) {
+    gCollisionManager.disabled &= ~COLLMAN_DISABLED;
+    gCollisionManager.sweep = 0;
+    gStageRun.missionStatus &= ~MISSION_STAY;
+    p->stageEventPhase = 4;
+  }
+  return 0;
+}
 
 const struct SpawnTemplate* ApImportTemplates(void) { return gApImportedStages[gApImportSelected].templates; }
 

@@ -15,6 +15,8 @@ extern const struct Stage gApImp0_Stage;
 extern const MetatileMapSelfRelPtr gApImp0_Terrain;
 extern const ColorGraphic gApImp0_Tilesets[];
 extern const GameCommand gApImp0_Script[];
+extern const GameCommand gApImp0_BossScript[];
+extern const GameCommand gApImp0_ClearScript[];
 extern const char_t gApImportName0[];
 extern const struct SpawnTemplate gApImp0_Templates[];
 extern const struct SpawnPoint gApImp0_Points[];
@@ -27,6 +29,9 @@ const struct ApImportedStage gApImportedStages[] = {
       tilesets : gApImp0_Tilesets,
       tilesetCount : 13,
       script : gApImp0_Script,
+      bossScript : gApImp0_BossScript,
+      clearScript : gApImp0_ClearScript,
+      bossDoor : {PIXEL(6960), PIXEL(1500)},
       name : gApImportName0,
       templates : gApImp0_Templates,
       points : gApImp0_Points,

@@ -1,6 +1,7 @@
 .include "asm/macros.inc"
 .include "asm/scripts/commands.inc"
 .include "asm/scripts/constants.inc"
+#include "constants/song.h"
 #include "constants/entity.h"
 
 .if AP
