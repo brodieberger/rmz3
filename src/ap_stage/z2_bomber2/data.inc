@@ -1,4 +1,4 @@
-@ Zero 2's BOMBER2: the desert surface, the crystal cave beneath it, the plant to the east
+@ Zero 2's BOMBER2 AKA Crystal Cave
 
 .balign 4
 

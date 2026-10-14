@@ -1,4 +1,5 @@
   .include "asm/macros.inc"
+  .include "src/data/ap_sheet_trims.inc"
 
 .section .rodata
 .balign 4, 0
@@ -179,8 +180,13 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 19
 	.4byte gStaticMotionGraphics_19-. @ src
+.if AP && AP_TRIM_19  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_19_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_19_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 3840 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 960, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_19_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -188,8 +194,13 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 20
 	.4byte gStaticMotionGraphics_20-. @ src
+.if AP && AP_TRIM_20  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_20_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_20_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 4928 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1232, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_20_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -233,8 +244,13 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 25
 	.4byte gStaticMotionGraphics_25-. @ src
+.if AP && AP_TRIM_25  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_25_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_25_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 4992 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1248, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_25_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -566,8 +582,13 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 62
 	.4byte gStaticMotionGraphics_62-. @ src
+.if AP && AP_TRIM_62  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_62_BYTES | (640 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_62_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 3200 | (640 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 800, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_62_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -602,8 +623,13 @@ ShotCounter: @ Graphic 4
 
 	@ Graphic 66
 	.4byte gStaticMotionGraphics_66-. @ src
+.if AP && AP_TRIM_66  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_66_BYTES | (768 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_66_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 3136 | (768 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 784, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_66_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -651,7 +677,11 @@ ExSkillIcon: @ Graphic 69
 	.2byte 256, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gStaticMotionGraphics_71_Palettes-. @ src offset
+.if !AP
 		.2byte 96 @ bytesize
+.else  @ Only load first palette, unknown why it has 2 others. Might be related to the miniboss
+		.2byte 32 @ bytesize
+.endif
 		.byte 0, 5 @ lz77(bool8), dst = PaletteID
 
 	@ Graphic 72
@@ -935,8 +965,13 @@ Omega1wSword: @ Graphic 101
 
 	@ Graphic 103
 	.4byte gStaticMotionGraphics_103-. @ src
+.if AP && AP_TRIM_103  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_103_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_103_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 4256 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1064, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_103_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1940,8 +1975,13 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 212
 	.4byte gStaticMotionGraphics_212-. @ src
+.if AP && AP_TRIM_212  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_212_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_212_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 4224 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1056, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_212_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -2011,8 +2051,13 @@ Deathlock: @ Graphic 116, 0x085d8208
 
 	@ Graphic 219
 	.4byte gStaticMotionGraphics_219-. @ src
+.if AP && AP_TRIM_219  @ trimmed: tools/art/ap_sheet_trims.py
+	.4byte AP_TRIM_219_BYTES | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte AP_TRIM_219_BYTES >> 2, BPP4 	@ rowsize(unused), props
+.else
 	.4byte 4064 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 1016, BPP4 	@ rowsize(unused), props
+.endif
 		@ Palette
 		.4byte gStaticMotionGraphics_219_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -2428,12 +2473,20 @@ gStaticMotionGraphics_18_Palettes:
 	.incbin "sprites/static/door_2d/blue/sheet.gbapal"
 
 gStaticMotionGraphics_19:
+.if AP && AP_TRIM_19
+	.incbin "sprites/static/enemy/pantheon_hunter/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/pantheon_hunter/sheet.4bpp"
+.endif
 gStaticMotionGraphics_19_Palettes:
 	.incbin "sprites/static/enemy/pantheon_hunter/sheet.gbapal"
 
 gStaticMotionGraphics_20:
+.if AP && AP_TRIM_20
+	.incbin "sprites/static/enemy/pantheon_guardian/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/pantheon_guardian/sheet.4bpp"
+.endif
 gStaticMotionGraphics_20_Palettes:
 	.incbin "sprites/static/enemy/pantheon_guardian/sheet.gbapal"
 
@@ -2458,7 +2511,11 @@ gStaticMotionGraphics_24_Palettes:
 	.incbin "sprites/static/enemy/sharkseal_x/sharkseal_x.gbapal"
 
 gStaticMotionGraphics_25:
+.if AP && AP_TRIM_25
+	.incbin "sprites/static/enemy/lamplort/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/lamplort/sheet.4bpp"
+.endif
 gStaticMotionGraphics_25_Palettes:
 	.incbin "sprites/static/enemy/lamplort/sheet.gbapal"
 
@@ -2638,7 +2695,11 @@ gStaticMotionGraphics_61:
 gStaticMotionGraphics_61_Palettes:
 
 gStaticMotionGraphics_62:
+.if AP && AP_TRIM_62
+	.incbin "sprites/static/enemy/beetank/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/beetank/sheet.4bpp"
+.endif
 gStaticMotionGraphics_62_Palettes:
 	.incbin "sprites/static/enemy/beetank/sheet.gbapal"
 
@@ -2658,7 +2719,11 @@ gStaticMotionGraphics_65_Palettes:
 	.incbin "sprites/static/enemy/puffy/body/sheet.gbapal"
 
 gStaticMotionGraphics_66:
+.if AP && AP_TRIM_66
+	.incbin "sprites/static/enemy/puffy/bubble/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/puffy/bubble/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_66_Palettes:
 	.incbin "sprites/static/enemy/puffy/bubble/sheet.gbapal"
 
@@ -2847,7 +2912,11 @@ gStaticMotionGraphics_102:
 	.incbin "sprites/static/enemy/eye_cannon/sheet.gbapal"
 
 gStaticMotionGraphics_103:
+.if AP && AP_TRIM_103
+	.incbin "sprites/static/enemy/gallisni/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/gallisni/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_103_Palettes:
 	.incbin "sprites/static/enemy/gallisni/sheet.gbapal"
 
@@ -3478,7 +3547,11 @@ gStaticMotionGraphics_211:
 	.incbin "sprites/static/menu/border/sheet.gbapal"
 
 gStaticMotionGraphics_212:
+.if AP && AP_TRIM_212
+	.incbin "sprites/static/enemy/pantheon_fist/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/pantheon_fist/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_212_Palettes:
 	.incbin "sprites/static/enemy/pantheon_fist/sheet.gbapal"
 
@@ -3521,7 +3594,11 @@ gStaticMotionGraphics_218:
 	.incbin "sprites/static/resistance_base/seagull/sheet.gbapal"
 
 gStaticMotionGraphics_219:
+.if AP && AP_TRIM_219
+	.incbin "sprites/static/enemy/shellcrawler/ap/sheet.4bpp"
+.else
 	.incbin "sprites/static/enemy/shellcrawler/sheet.4bpp"
+.endif
 	gStaticMotionGraphics_219_Palettes:
 	.incbin "sprites/static/enemy/shellcrawler/sheet.gbapal"
 

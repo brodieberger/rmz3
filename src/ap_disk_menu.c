@@ -477,6 +477,8 @@ static void drawShop(struct GameState* g) {
   u8 slot = SHOP_SLOT(g);
   u8 i;
 
+  gAp.shopSeen[slot >> 3] |= 1 << (slot & 7);
+
   /* The box says whether you can buy it. */
   if (shopSold(slot)) {
     PrintString(gApShopSoldText, PANEL_X, 1);

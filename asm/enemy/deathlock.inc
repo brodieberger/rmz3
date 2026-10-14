@@ -2229,7 +2229,11 @@ _0808E1BA:
 	movs r2, #5
 _0808E1E8:
 	adds r0, r3, #0
+.if AP
+	bl ApChuteDrop
+.else
 	bl FUN_0808d0b0
+.endif
 	b _0808E20C
 	.align 2, 0
 _0808E1F0: .4byte pZero2
@@ -2245,7 +2249,11 @@ _0808E1F4:
 	movs r2, #4
 _0808E206:
 	adds r0, r3, #0
+.if AP
+	bl ApChuteDrop
+.else
 	bl FUN_0808d0b0
+.endif
 _0808E20C:
 	ldrb r0, [r4, #0x13]
 	adds r0, #1

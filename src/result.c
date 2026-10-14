@@ -396,7 +396,7 @@ NON_MATCH_AP static bool32 printPlayerAllScore(struct ResultState* p) {
       /*
         This mission's rank, NOT the lifetime average (TotalScore.rank)
 
-        The rank elf and easyExSkill still give the check without earning the rank.
+        The rank elf still passes the check, whatever rank is required.
       */
       PrintResultRank(CalcScoreRank(gScore.resultScore));
 #else

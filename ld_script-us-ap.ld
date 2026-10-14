@@ -25,6 +25,7 @@ SECTIONS {
       __ap_ewram_start = .;
       src/ap.o (ewram_data);
       src/ap_stage_select.o (ewram_data);
+      src/ap_trap.o (ewram_data);
       src/ap_import.o (ewram_data);
       __ap_ewram_end = .;
     } >ewram = 0x00
@@ -70,7 +71,12 @@ SECTIONS {
 	} >rom = 0x00
 
 	/*
-	  Archipelago code and data
+	  Archipelago code and data, between the game's code and its data so every AP function
+	  is inside Thumb BL range of every vanilla caller: plain calls both ways, no veneers, no
+	  function pointers. .rodata moves down by this block's size, which is fine now that the
+	  AP build reaches every data table by symbol (anim_loader.h STATIC_GRAPHICS) -- and
+	  nothing is pinned, so .text may grow too. Vanilla's own ld scripts are untouched and
+	  still byte-match.
 	*/
 	.ap_text :
 	ALIGN(4)
@@ -94,14 +100,19 @@ SECTIONS {
 		src/data/texts/ap_disk.o (.rodata);
 		src/ap_stage_select.o (.text);
 		src/ap_stage_select.o (.rodata);
+		src/ap_trap.o (.text);
+		src/data/texts/ap_trap.o (.rodata);
 		src/ap_pickup_marker.o (.text);
 		src/ap_pickup_marker.o (.rodata);
+		src/ap_enemy_marker.o (.text);
+		src/ap_enemy_marker.o (.rodata);
 		src/ap_marker_data.o (.rodata);
 		src/ap_pickup_places.o (.rodata);
 		src/ap_marker_slots.o (.rodata);
 		src/ap_mugshot_data.o (.rodata);
 		src/ap_icon_data.o (.rodata);
 		src/ap_icon_slots.o (.rodata);
+		src/ap_spawn.o (.rodata);
 		src/ap_import.o (.text);
 		src/ap_import.o (.rodata);
 		src/ap_import_stages.o (.rodata);

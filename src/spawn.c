@@ -1,6 +1,7 @@
 #include "spawn.h"
 
 #include "ap.h"
+#include "ap_spawn.h"
 #include "boss.h"
 #include "cyberelf.h"
 #include "enemy.h"
@@ -59,6 +60,9 @@ extern const struct SpawnTemplate gResistanceBaseEntity[64];
 
 static const struct SpawnTemplate* const sStageEntityTemplate[STAGE_COUNT] = {
   [STAGE_NONE]            = (void*)gStage0SpawnEntity,
+#if AP
+  AP_STAGE_ENTITY_TEMPLATES
+#else
   [STAGE_SPACE_CRAFT]     = (void*)gSpaceCraftEntity,
   [STAGE_VOLCANO]         = (void*)gVolcanoEntity,
   [STAGE_OCEAN]           = (void*)gOceanEntity,
@@ -76,6 +80,7 @@ static const struct SpawnTemplate* const sStageEntityTemplate[STAGE_COUNT] = {
   [STAGE_SUB_ARCADIA]     = (void*)gSubArcadiaEntity,
   [STAGE_WEILS_LABO]      = (void*)gWeilLaboEntity,
   [STAGE_BASE]            = (void*)gResistanceBaseEntity,
+#endif
 };
 
 // --------------------------------------------
@@ -101,6 +106,9 @@ extern const struct SpawnPoint gResistanceBaseEntityCoord[241];
 
 static const struct SpawnPoint* const sStageSpawnPointTable[STAGE_COUNT] = {
   [STAGE_NONE]            = gStage0EntityCoord,
+#if AP
+  AP_STAGE_SPAWN_POINTS
+#else
   [STAGE_SPACE_CRAFT]     = gSpaceCraftSpawnPoints,
   [STAGE_VOLCANO]         = gVolcanoSpawnPoints,
   [STAGE_OCEAN]           = gOceanEntityCoord,
@@ -118,6 +126,7 @@ static const struct SpawnPoint* const sStageSpawnPointTable[STAGE_COUNT] = {
   [STAGE_SUB_ARCADIA]     = gSubArcadiaEntityCoord,
   [STAGE_WEILS_LABO]      = gWeilLaboEntityCoord,
   [STAGE_BASE]            = gResistanceBaseEntityCoord,
+#endif
 };
 
 // --------------------------------------------
@@ -145,9 +154,9 @@ extern const struct PreloadEntity gResistanceBaseStatic[41];
 static const struct PreloadEntity* const sStagePreloadEntities[STAGE_COUNT] = {
 #if AP
   [STAGE_NONE]            = gApSlot0Preloads,  // imported stage
+  AP_STAGE_PRELOAD_ENTITIES
 #else
   [STAGE_NONE]            = sStage0StaticTemplate,
-#endif
   [STAGE_SPACE_CRAFT]     = gSpaceCraftStatic,
   [STAGE_VOLCANO]         = gVolcanoStatic,
   [STAGE_OCEAN]           = gOceanStatic,
@@ -165,6 +174,7 @@ static const struct PreloadEntity* const sStagePreloadEntities[STAGE_COUNT] = {
   [STAGE_SUB_ARCADIA]     = gSubArcadiaStatic,
   [STAGE_WEILS_LABO]      = gWeilLaboStatic,
   [STAGE_BASE]            = gResistanceBaseStatic,
+#endif
 };
 
 // clang-format on
@@ -639,6 +649,10 @@ static struct SpawnedEntity* AllocStageEntity(void) {
   gSpawnManager.list = newObj;
   return newObj;
 }
+
+#if AP
+struct SpawnedEntity* ApAllocStageEntity(void) { return AllocStageEntity(); }
+#endif
 
 static void ReleaseStageEntity(struct SpawnedEntity* p) {
   struct SpawnedEntity* p1 = gSpawnManager.list;

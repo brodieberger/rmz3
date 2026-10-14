@@ -183,7 +183,7 @@ static void zeroIdleStep1(struct Zero* z) {
     }
   }
 
-  sliped = z->slip;
+  sliped = ZERO_SLIPS(z);
   if (sliped) {
     s32 dx = (z->s).d.x;
     if (dx >= 1) {
@@ -249,7 +249,7 @@ static void zeroStartWalk1(struct Zero* z) {
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
 
-    if (z->slip) {
+    if (ZERO_SLIPS(z)) {
       (z->s).d.x -= 0x20;
       if ((z->s).d.x >= -CalcMaxWalkSpeed(z)) {
         return;
@@ -264,7 +264,7 @@ static void zeroStartWalk1(struct Zero* z) {
     (z->s).spr.oam.xflip = TRUE;
     (z->s).flags |= X_FLIP;
 
-    if (z->slip) {
+    if (ZERO_SLIPS(z)) {
       (z->s).d.x += 0x20;
       if ((z->s).d.x <= CalcMaxWalkSpeed(z)) {
         return;
@@ -280,7 +280,7 @@ static void zeroStartWalk2(struct Zero* z) {
     (z->s).spr.xflip = FALSE;
     (z->s).spr.oam.xflip = FALSE;
     (z->s).flags &= ~X_FLIP;
-    if (z->slip) {
+    if (ZERO_SLIPS(z)) {
       (z->s).d.x -= 0x20;
       if ((z->s).d.x < -CalcDx(z)) {
         (z->s).d.x = -CalcDx(z);
@@ -292,7 +292,7 @@ static void zeroStartWalk2(struct Zero* z) {
     (z->s).spr.xflip = TRUE;
     (z->s).spr.oam.xflip = TRUE;
     (z->s).flags |= X_FLIP;
-    if (z->slip) {
+    if (ZERO_SLIPS(z)) {
       (z->s).d.x += 0x20;
       if ((z->s).d.x > CalcDx(z)) {
         (z->s).d.x = CalcDx(z);
@@ -371,7 +371,7 @@ static void zero_dash_step1(struct Zero* z) {
     }
     SET_PLAYER_XFLIP(z, xflip);
 
-    if (z->slip) {
+    if (ZERO_SLIPS(z)) {
       if (xflip) {
         (z->s).d.x += 0x20;
         if ((z->s).d.x > GetDashSpeed(z)) {

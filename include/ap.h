@@ -15,7 +15,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 23
+#define AP_VERSION 25
 
 /*
   Highest location ID the AP World defines
@@ -147,6 +147,9 @@ extern const struct ApPickupPlace gApPickupPlaces[AP_PICKUP_PLACE_COUNT];
 
 // Filler items.
 #define AP_ITEM_CRYSTAL_100 301
+#define AP_ITEM_TRAP_EARTHQUAKE 310
+#define AP_ITEM_TRAP_PIXELATE 311
+#define AP_ITEM_TRAP_SLIPPERY 312
 #define AP_CRYSTAL_100_AMOUNT 100
 #define AP_EC_MAX 9999
 
@@ -239,13 +242,6 @@ extern const char_t gApShopSoldText[];
 #define AP_BASE_CHECKPOINT_LAUNCH 12
 #define AP_BASE_CHECKPOINT_SUBARCADIA 19
 
-/*
-  Mission score that counts as an A+ clear.
-
-  This is compared against gScore.resultScore, the score for the mission that just finished instead of the average like in base game.
-*/
-#define AP_RANK_A_PLUS_SCORE 85
-
 #if AP
 
 struct ApState {
@@ -280,24 +276,31 @@ struct ApState {
   u8 killRequest;
 
   u8 canAcceptItems;
+
+  u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 148);
+static_assert(sizeof(struct ApState) == 152);
 
 extern struct ApState gAp;
 
 struct ApSeedConfig {
-  u16 requiredDisks;   // disks needed to open the final stage.
+  u16 requiredDisks;   // Disks needed to open the final stage.
   u8 startingWeapons;  // ZeroStatus.unlockedWeapon bitfield Zero starts with
-  u8 easyExSkill;      // award the EX skill location check regardless of rank
+  u8 exSkillRank;      // The required mission rank that sends a stage's EX skill check
   u8 itemsanity;       // life capsules and E-Crystals are locations (301 to 382)
   u8 exLifeSanity;     // 1-UPs are locations (231 to 240)
-  u8 selectButton;     // what SELECT does
+  u8 selectButton;     // what the SELECT button does
   u8 damageUpgrades;   // attack increasing effects included in progressive weapons. 1=on 0=off
-  u8 cyberElves;       // AP_ELVES_*: Passive cyber-elves option
+  u8 cyberElves;       // Passive cyber-elves option
   u8 diskNamePopup;    // name a received secret disk in the inline message box
-  u8 unused[2];
+  u8 infiniteLives;
+  u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
+  u8 enemyDiskMarkers; // enemy marker
+  u8 unused[3];
 };
+
+#define AP_FINAL_RANK_NONE 0xFF
 
 /* The secret disks that hold cyber elves. */
 #define AP_DISK_ELF_FIRST 0x14
@@ -317,7 +320,7 @@ struct ApSeedConfig {
 #define AP_SELECT_CYCLE_FOOT_CHIP 4
 #define AP_SELECT_USE_SUBTANK 5
 
-static_assert(sizeof(struct ApSeedConfig) == 12);
+static_assert(sizeof(struct ApSeedConfig) == 16);
 
 /*
   Cost of each shop item. Inserted into ROM when AP world generates
@@ -429,6 +432,28 @@ struct Pickup;
 void ApInitPickupLocation(struct Pickup* p);
 void ApMarkPickupCollected(struct Pickup* p);
 
+/*
+  Disk drops by enemy spawn point (ap_enemy_marker.c)
+  Also marks enemies with an icon.
+*/
+#define AP_DROP_MARK_SHIFT 2
+#define AP_DROP_MARK_NONE 0
+#define AP_SPAWN_HAS_MARKER (1 << 8)
+#define AP_SPAWN_PILLAR (1 << 7)     /* a moved Pillar Cannon, which has a new pillar graphic */
+#define AP_SPAWN_HAS_PILLAR (1 << 9) 
+#define AP_SPAWN_PUFF (1 << 5)       /* randomized Volcaire */
+#define AP_SPAWN_PUFFED (1 << 10)    /* timer value's puff, the timer stands still while paused */
+
+struct Entity;
+u8 ApDropMarkOf(const struct Entity* e);
+void ApUpdateEnemyMarkers(void);
+#define AP_CHUTE_ENEMIES 2
+void ApChuteDrop(s32 x, s32 y, u8 kind);
+#define AP_NEST_ENEMIES 3
+void ApNestSpawn(struct Entity* nest, u8 kind1, u8 kind2, u8 kind3);
+struct SpawnedEntity* ApAllocStageEntity(void);
+u8 ApDropDisk(const struct Entity* e, u8 mark);
+
 struct Solid;
 bool32 ApCerveauGuideUpdate(struct Solid* p);
 
@@ -467,6 +492,13 @@ extern const char_t* const gApItemNames[AP_ITEM_NAME_COUNT];
 #define ApUseApDiskInventory(g) (gStageDiskManager.disk = (g)->save.savedDisk)
 #define ApUseGameDiskInventory(g) (gStageDiskManager.disk = (g)->save.disk)
 
+/* ap_trap.c */
+bool32 ApStartTrap(u16 apItemID);
+void ApTrapUpdate(void);
+void ApClearTraps(void);
+bool32 ApSlipperyFloor(void);
+#define ZERO_SLIPS(z) ((z)->slip || ApSlipperyFloor())
+
 /* Process_Game calls this instead of SwitchProcess(): ApUpdate(), then SwitchProcess(). */
 void ApFrameHook(bool32 b);
 
@@ -496,6 +528,7 @@ void ApFrameHook(bool32 b);
 #define ApElfPenaltyFree() (0)
 #define ApUseApDiskInventory(g) ((void)0)
 #define ApUseGameDiskInventory(g) ((void)0)
+#define ZERO_SLIPS(z) ((z)->slip)
 
 #endif /* AP */
 

@@ -59,6 +59,9 @@ const struct ApSeedConfig gApSeedConfig = {
     TRUE,
     AP_ELVES_VANILLA,
     TRUE,
+    FALSE,
+    0,
+    TRUE,
 };
 
 bool32 ApInDemo(void) {
@@ -71,6 +74,12 @@ static bool32 ApCanAcceptItems(void) {
     return FALSE;
   }
   if (gGameState.mode[0] != MAINGAME || gGameState.mode[1] != OVERWORLD) {
+    return FALSE;
+  }
+  /*
+    Conversation / Menu.
+  */
+  if (gGameState.mode[2] != 0) {
     return FALSE;
   }
   /*
@@ -317,9 +326,14 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
 */
 static bool32 ApFinalStageOpen(void) {
   u8 stage;
-  for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
-    if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
-      return FALSE;
+  if (gApSeedConfig.finalStageRank != AP_FINAL_RANK_NONE) {
+    for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
+      if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
+        return FALSE;
+      }
+      if (ApStageBestRank(stage) <= gApSeedConfig.finalStageRank) {
+        return FALSE;
+      }
     }
   }
   return ApCountDisks() >= gApSeedConfig.requiredDisks;
@@ -378,6 +392,16 @@ static u8 ApAggregateRank(void) {
 }
 
 /*
+  Records as A, unless either rank option is set to S or the player earned an S in their run.
+*/
+static u8 ApRankElfRank(u8 missionRank) {
+  if ((missionRank == RANK_S) || (gApSeedConfig.exSkillRank == RANK_S) || (gApSeedConfig.finalStageRank == RANK_S)) {
+    return RANK_S;
+  }
+  return RANK_A;
+}
+
+/*
   Called from CalcMissionScore with the rank the results screen is about to print.
   Records it if it beats this stage's best, so it can be stored.
 */
@@ -388,9 +412,8 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
     return ApAggregateRank();
   }
-  /* The A-rank fusion elf writes an A into the score directly, so set that as the highest levle achieved too. */
-  if (gAp.rankElfUsed && (missionRank < RANK_A)) {
-    missionRank = RANK_A;
+  if (gAp.rankElfUsed) {
+    missionRank = ApRankElfRank(missionRank);
   }
 
   best = ApStageBestRank(stageID);
@@ -469,6 +492,8 @@ void ApEndRun(struct GameState* g) {
 void ApSetStoryFlag(u8 flag) {
   SET_FLAG(gCurStory.s.gameflags, flag);
   SET_FLAG(gGameState.save.story.gameflags, flag);
+  // the stage-start snapshot a game over continue restores
+  SET_FLAG(gGameState.save.savedStory.gameflags, flag);
 }
 
 static void ApUnlockWeapon(u8 weapon) {
@@ -666,6 +691,8 @@ static bool32 ApGrantItem(u16 apItemID) {
     return FALSE;
   }
   if (apItemID == AP_ITEM_STORY_LATE) {
+    // also the first step, so one that was lost comes back with the second
+    ApSetStoryFlag(FLAG_FIRST4_DONE);
     ApSetStoryFlag(FLAG_LATER4_DONE);
     return FALSE;
   }
@@ -697,6 +724,7 @@ static bool32 ApGrantItem(u16 apItemID) {
     return FALSE;
   }
 
+  ApStartTrap(apItemID);
   return FALSE;
 }
 
@@ -818,10 +846,14 @@ void ApInit(void) {
   gAp.canAcceptItems = FALSE;
   sApRerunRequest = 0;
   sApRerunStage = 0;
+  ApClearTraps();
 
   for (i = 0; i < AP_CHECKED_LOCATION_BYTES; i++) {
     gAp.checkedLocations[i] = 0;
     gAp.serverChecked[i] = 0;
+  }
+  for (i = 0; i < AP_SHOP_SLOTS_MAX / 8; i++) {
+    gAp.shopSeen[i] = 0;
   }
 
   gAp.version = AP_VERSION;
@@ -1158,6 +1190,8 @@ void ApUpdate(void) {
   ApCheckSubBossKilled();
   ApCheckVolcanoMidBossRoom();
   ApSetHarpuiaScene();
+  ApTrapUpdate();
+  ApUpdateEnemyMarkers();
 
   if (!canAcceptItems) {
     return;
@@ -1462,6 +1496,7 @@ void ApOnZeroDied(void) {
 
 void ApMarkStageCleared(void) {
   const struct ApStageClear* stage;
+  u8 missionRank;
 
   if (ApInDemo() || (u32)gStageRun.id >= AP_STAGE_COUNT) {
     return;
@@ -1476,9 +1511,11 @@ void ApMarkStageCleared(void) {
   if (stage->chip != 0) {
     ApMarkLocationChecked(stage->chip);
   }
-  if ((stage->rank != 0) &&
-      (gApSeedConfig.easyExSkill || gAp.rankElfUsed ||
-       (gScore.resultScore > AP_RANK_A_PLUS_SCORE))) {
+  missionRank = CalcScoreRank(gScore.resultScore);
+  if (gAp.rankElfUsed) {
+    missionRank = ApRankElfRank(missionRank);
+  }
+  if ((stage->rank != 0) && (missionRank >= gApSeedConfig.exSkillRank)) {
     ApMarkLocationChecked(stage->rank);
   }
   gAp.rankElfUsed = FALSE;
@@ -1508,7 +1545,8 @@ static const struct ApNpcDialogue sApNpcDialogues[] = {
     {0x25D, 44},                                                           // Rocinolle, elf disk
     {0x26E, 173}, {0x26F, 173}, {0x270, 173}, {0x271, 173}, {0x272, 173},  // Hirondelle
     {0x281, 174}, {0x282, 174}, {0x283, 174}, {0x284, 174}, {0x285, 174},  // Doigt
-    {0x2A6, 58},  {0x2A7, 58},  {0x2A9, 58},  {0x2AB, 58},                 // Soldier in right tower
+    {0x2A6, 58},  {0x2A7, 58},  {0x2A8, 58},  {0x2A9, 58},  {0x2AA, 58},
+    {0x2AB, 58},  {0x2AC, 58},                                             // Soldier in right tower
     {0x2B1, 23},  {0x2B2, 23},  {0x2B3, 23},                               // Soldier in room 02D
     {0x2CF, 107}, {0x2D0, 107}, {0x2D1, 107}, {0x2D2, 107},                // Andrew, young (from ereader)
 };
