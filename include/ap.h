@@ -392,6 +392,10 @@ const char_t* ApImportName(u8 n);
 struct StageRun;
 s16 ApImportUpdate(struct StageRun* p);
 extern u8 gApImportSelected;
+#define AP_PRELOAD_SHEET (1 << 2)
+struct PreloadEntity;
+void ApSetSheetWindow(const struct PreloadEntity* row);
+void ApLoadSheet(const struct PreloadEntity* row);
 struct Rect;
 void ApMarkLocationChecked(u16 locationID);
 void ApMarkNpcDialogueChecked(TextID textID);

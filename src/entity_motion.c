@@ -91,13 +91,18 @@ void ResetDynamicMotion(struct Entity* p) {
   p->flags2 |= DYNAMIC;
 }
 
-NON_MATCH void SetMotion(struct Entity* p, motion_t m) {
-#if MODERN || CBODY
+NON_MATCH_AP void SetMotion(struct Entity* p, motion_t m) {
+#if MODERN || AP || CBODY
   motion_id_t id = m >> 8;
   if (id != p->motionID) {
     if (p->flags2 & DYNAMIC) {
       (p->motion).table = *(const AnimCmd***)((void*)gDynamicMotionCmdTable + ((u32)id << 2));  // = gDynamicMotionCmdTable[id]
       p->texture = 0xFF;
+#if AP
+    } else if (p->texture == TEXTURE_AP_SHEET) {  // the AP sheet table (src/ap_sheets.c)
+      (p->motion).table = gApSheetCmdTable[id];
+      (p->spr).sprites = (struct MetaspriteHeader*)gApSheetMetaspriteTable[id];
+#endif
     } else {
       (p->motion).table = *(const AnimCmd***)((void*)gStaticMotionCmdTable + ((u32)id << 2));                 // = gStaticMotionCmdTable[id]
       (p->spr).sprites = *(struct MetaspriteHeader**)((void*)gStaticMotionMetaspriteTable + ((u32)id << 2));  // = gStaticMotionMetaspriteTable[id];
@@ -109,6 +114,12 @@ NON_MATCH void SetMotion(struct Entity* p, motion_t m) {
     struct Sprite* spr = &p->spr;
     u16 tileNum = p->tileNum + wStaticGraphicTilenums[id];
     u16 palID = p->palID + wStaticMotionPalIDs[id];
+#if AP
+    if (p->texture == TEXTURE_AP_SHEET) {
+      tileNum = p->tileNum + gApSheetTilenums[id];
+      palID = p->palID + gApSheetPalIDs[id];
+    }
+#endif
 
     (spr->oam).tileNum = tileNum;
     if ((p->flags2 & PALETTE_FORCED) == 0) {
@@ -206,6 +217,10 @@ void UpdateEntityPaletteID(struct Entity* p) {
   u16 pal;
   if (p->flags2 & DYNAMIC) {
     pal = p->palID + wDynamicMotionPalIDs[p->motionID];
+#if AP
+  } else if (p->texture == TEXTURE_AP_SHEET) {
+    pal = p->palID + gApSheetPalIDs[p->motionID];
+#endif
   } else {
     pal = p->palID + wStaticMotionPalIDs[p->motionID];
   }

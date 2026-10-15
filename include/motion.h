@@ -44,6 +44,15 @@ extern u16 wStaticMotionPalIDs[STATIC_MOTION_COUNT + 2];
 extern const u32 gDynamicMotionGraphicOffsets[DYNAMIC_MOTION_COUNT];
 extern u16 wDynamicGraphicTilenums[DYNAMIC_MOTION_COUNT + 56];
 
+#if AP
+// New sprite sheet table
+#define TEXTURE_AP_SHEET 0x5A
+extern const AnimCmd** gApSheetCmdTable[];
+extern const struct MetaspriteHeader* gApSheetMetaspriteTable[];
+extern u16 gApSheetTilenums[];
+extern u16 gApSheetPalIDs[];
+#endif
+
 void SetMotion(struct Entity* p, motion_t m);
 // 今後は SetMotion を呼び出すところはこっちを使う (既存の箇所も後でこっちに置き換える予定)
 #define SetSpriteAnimation(enti, id) (SetMotion(((struct Entity*)(enti)), id))

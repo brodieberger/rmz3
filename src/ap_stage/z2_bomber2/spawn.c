@@ -2,8 +2,10 @@
 
 #include "spawn.h"
 
+#include "ap.h"
 #include "binary_literal.h"
 #include "constants/entity.h"
+#include "constants/motion/ap_sheet.h"
 #include "constants/motion/static.h"
 #include "global.h"
 
@@ -125,7 +127,7 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [21] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 29, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_HOPPER, 1, 0),
             .attr = 0x01,
         },
     [22] =
@@ -428,7 +430,7 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [77] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 29, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_HOPPER, 1, 0),
             .attr = 0x01,
         },
     [78] =
@@ -501,49 +503,54 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
         },
 };
 
-const struct SpawnPoint gApImp0_Points[39] = {
+const struct SpawnPoint gApImp0_Points[44] = {
     [0] = {-0x80000000, -0x8000, 0},
     [1] = {SpawnPixelCoords(720, 1680), 1},
-    [2] = {SpawnPixelCoords(1280, 2176), 3},
-    [3] = {SpawnPixelCoords(1296, 1344), 3},
-    [4] = {SpawnPixelCoords(1312, 2176), 3},
-    [5] = {SpawnPixelCoords(1344, 2176), 3},
-    [6] = {SpawnPixelCoords(1776, 704), 18},
-    [7] = {SpawnPixelCoords(1840, 672), 18},
-    [8] = {SpawnPixelCoords(1936, 608), 18},
-    [9] = {SpawnPixelCoords(1952, 720), 3},
-    [10] = {SpawnPixelCoords(2160, 528), 18},
-    [11] = {SpawnPixelCoords(2176, 1376), 3},
-    [12] = {SpawnPixelCoords(2304, 1360), 3},
-    [13] = {SpawnPixelCoords(2336, 752), 4},
-    [14] = {SpawnPixelCoords(2416, 1312), 3},
-    [15] = {SpawnPixelCoords(2448, 1312), 18},
-    [16] = {SpawnPixelCoords(2752, 1376), 18},
-    [17] = {SpawnPixelCoords(2848, 768), 18},
-    [18] = {SpawnPixelCoords(2976, 736), 18},
-    [19] = {SpawnPixelCoords(3056, 1072), 18},
-    [20] = {SpawnPixelCoords(3376, 2128), 3},
-    [21] = {SpawnPixelCoords(3392, 2128), 18},
-    [22] = {SpawnPixelCoords(3472, 2320), 18},
-    [23] = {SpawnPixelCoords(3776, 1536), 3},
-    [24] = {SpawnPixelCoords(3792, 1424), 3},
-    [25] = {SpawnPixelCoords(3856, 1200), 2},
-    [26] = {SpawnPixelCoords(4000, 1392), 63},
-    [27] = {SpawnPixelCoords(4016, 2016), 61},
-    [28] = {SpawnPixelCoords(4512, 1328), 64},
-    [29] = {SpawnPixelCoords(5312, 1568), 61},
-    [30] = {SpawnPixelCoords(5456, 1568), 63},
-    [31] = {SpawnPixelCoords(5584, 1568), 63},
-    [32] = {SpawnPixelCoords(5792, 1200), 63},
-    [33] = {SpawnPixelCoords(5792, 2224), 90},
-    [34] = {SpawnPixelCoords(5808, 1200), 63},
-    [35] = {SpawnPixelCoords(5808, 2128), 61},
-    [36] = {SpawnPixelCoords(6960, 1552), 3},
-    [37] = {SpawnPixelCoords(6976, 1552), 3},
-    [38] = {0x7FFFFFFF, 0x7FFF, 0},
+    [2] = {SpawnPixelCoords(1040, 2512), 21},
+    [3] = {SpawnPixelCoords(1168, 2512), 21},
+    [4] = {SpawnPixelCoords(1280, 2176), 3},
+    [5] = {SpawnPixelCoords(1296, 1344), 3},
+    [6] = {SpawnPixelCoords(1312, 2176), 3},
+    [7] = {SpawnPixelCoords(1344, 2176), 3},
+    [8] = {SpawnPixelCoords(1776, 704), 18},
+    [9] = {SpawnPixelCoords(1808, 2464), 21},
+    [10] = {SpawnPixelCoords(1840, 672), 18},
+    [11] = {SpawnPixelCoords(1936, 608), 18},
+    [12] = {SpawnPixelCoords(1952, 720), 3},
+    [13] = {SpawnPixelCoords(2160, 528), 18},
+    [14] = {SpawnPixelCoords(2176, 1376), 3},
+    [15] = {SpawnPixelCoords(2304, 1360), 3},
+    [16] = {SpawnPixelCoords(2336, 752), 4},
+    [17] = {SpawnPixelCoords(2368, 2448), 21},
+    [18] = {SpawnPixelCoords(2416, 1312), 3},
+    [19] = {SpawnPixelCoords(2448, 1312), 18},
+    [20] = {SpawnPixelCoords(2592, 2432), 21},
+    [21] = {SpawnPixelCoords(2752, 1376), 18},
+    [22] = {SpawnPixelCoords(2848, 768), 18},
+    [23] = {SpawnPixelCoords(2976, 736), 18},
+    [24] = {SpawnPixelCoords(3056, 1072), 18},
+    [25] = {SpawnPixelCoords(3376, 2128), 3},
+    [26] = {SpawnPixelCoords(3392, 2128), 18},
+    [27] = {SpawnPixelCoords(3472, 2320), 18},
+    [28] = {SpawnPixelCoords(3776, 1536), 3},
+    [29] = {SpawnPixelCoords(3792, 1424), 3},
+    [30] = {SpawnPixelCoords(3856, 1200), 2},
+    [31] = {SpawnPixelCoords(4000, 1392), 63},
+    [32] = {SpawnPixelCoords(4016, 2016), 61},
+    [33] = {SpawnPixelCoords(4512, 1328), 64},
+    [34] = {SpawnPixelCoords(5312, 1568), 61},
+    [35] = {SpawnPixelCoords(5456, 1568), 63},
+    [36] = {SpawnPixelCoords(5584, 1568), 63},
+    [37] = {SpawnPixelCoords(5792, 1200), 63},
+    [38] = {SpawnPixelCoords(5792, 2224), 90},
+    [39] = {SpawnPixelCoords(5808, 1200), 63},
+    [40] = {SpawnPixelCoords(5808, 2128), 61},
+    [41] = {SpawnPixelCoords(6960, 1552), 3},
+    [42] = {SpawnPixelCoords(6976, 1552), 3},
+    [43] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApImp0_Preloads[2] = {
+const struct PreloadEntity gApImp0_Preloads[3] = {
     {
         SM019_PANTHEON_HUNTER,
         B8(11111111),
@@ -551,6 +558,15 @@ const struct PreloadEntity gApImp0_Preloads[2] = {
         4,
         1,
         1,
+        0,
+    },
+    {
+        AP_SHEET_Z2_HOPPER,
+        B8(11111111),
+        752,
+        8,
+        1,
+        AP_PRELOAD_SHEET | 1,
         0,
     },
     {0xFF},  // terminator

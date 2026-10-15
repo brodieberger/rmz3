@@ -62,6 +62,9 @@ void* AllocEntityFirst(struct EntityHeader* h) {
     *(u16*)&p->flags = 0;
     *(u32*)&p->mode = 0;
     *(u32*)&p->work = 0;
+#if AP
+    p->texture = 0xFF;
+#endif
   }
   return (void*)p;
 }
@@ -84,6 +87,9 @@ void* AllocEntityLast(struct EntityHeader* h) {
     *(u16*)&p->flags = 0;
     *(u32*)&p->mode = 0;
     *(u32*)&p->work = 0;
+#if AP
+    p->texture = 0xFF;
+#endif
   }
   return (void*)p;
 }

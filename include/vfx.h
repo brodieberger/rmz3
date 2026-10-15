@@ -20,7 +20,7 @@ struct SlashedEnemy {
 
 typedef void (*VFXFunc)(struct VFX*);
 typedef VFXFunc VFXRoutine[5];
-extern const VFXRoutine* const gVFXFnTable[85];
+extern const VFXRoutine* const gVFXFnTable[VFX_COUNT];
 
 #define INIT_VFX_ROUTINE(entity, entityID) INIT_RENDER_ENTITY(1, gVFXFnTable, entity, entityID)
 #define SET_VFX_ROUTINE(entity, modeID) SET_ENTITY_ROUTINE(gVFXFnTable, entity, modeID)

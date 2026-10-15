@@ -75,7 +75,12 @@
 #define ENEMY_CIEL_MG_2 71
 #define ENEMY_72 72
 
+#if AP
+#define ENEMY_Z2_HOPPER 73  // Zero 2 Pantheon Hopper
+#define ENEMY_COUNT (ENEMY_Z2_HOPPER + 1)
+#else
 #define ENEMY_COUNT (ENEMY_72 + 1)
+#endif
 
 // (ENEMY_GRAND_CANNON->s).work[0]
 #define GRAND_CANNON_TURRET 0   // 筒(Turret)

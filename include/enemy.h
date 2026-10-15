@@ -17,5 +17,6 @@ extern const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT];
 void DeleteEnemy(struct Entity* p);
 
 bool32 IsFrozen(void* enemy_entity);
+void TryDropZakoDisk(struct Enemy* p, Coords32* c);
 
 #endif  // GUARD_RMZ3_ENEMY_H

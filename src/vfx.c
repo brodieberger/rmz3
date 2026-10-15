@@ -118,6 +118,9 @@ extern const VFXRoutine gSmallNumberRoutine;
 extern const VFXRoutine gGhost82Routine;
 extern const VFXRoutine gGhost83Routine;
 extern const VFXRoutine gGhost84Routine;
+#if AP
+extern const VFXRoutine gApZ2HopperTopRoutine;
+#endif
 
 // clang-format off
 const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
@@ -206,5 +209,8 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_UNK_082] = &gGhost82Routine,
     [VFX_UNK_083] = &gGhost83Routine,
     [VFX_UNK_084] = &gGhost84Routine,
+#if AP
+    [VFX_Z2_HOPPER_TOP] = &gApZ2HopperTopRoutine,
+#endif
 };
 // clang-format on

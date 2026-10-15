@@ -1,0 +1,10 @@
+// AP sheet table ids, for MOTION(AP_SHEET_..., n) on an entity marked TEXTURE_AP_SHEET.
+
+#ifndef GUARD_RMZ3_CONST_MOTION_AP_SHEET_H
+#define GUARD_RMZ3_CONST_MOTION_AP_SHEET_H
+
+#define AP_SHEET_Z2_HOPPER 0
+
+#define AP_SHEET_COUNT 1
+
+#endif  // GUARD_RMZ3_CONST_MOTION_AP_SHEET_H

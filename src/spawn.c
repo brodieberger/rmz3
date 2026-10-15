@@ -674,8 +674,8 @@ static void ReleaseStageEntity(struct SpawnedEntity* p) {
 }
 
 // MMBN4のウィルスを元の敵に置き換えるとき or ステージエリアが変わったとき に呼ばれる
-NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
-#if MODERN || CBODY
+NON_MATCH_AP static void FUN_08018848(u8 stageID, u8 area) {
+#if MODERN || AP || CBODY
   struct SpawnManager* sman;
 
   const struct PreloadEntity* preload = sStagePreloadEntities[stageID];
@@ -695,8 +695,15 @@ NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
   if (!(sman->spawnDisabled & 1)) {
     if (gSpawnManager.area == 0xFE) {
       while (preload->id != 0xFF) {
-        wStaticGraphicTilenums[preload->id] = preload->tileBase;
-        wStaticMotionPalIDs[preload->id] = preload->palID;
+#if AP
+        if (preload->unk_06 & AP_PRELOAD_SHEET) {
+          ApSetSheetWindow(preload);
+        } else
+#endif
+        {
+          wStaticGraphicTilenums[preload->id] = preload->tileBase;
+          wStaticMotionPalIDs[preload->id] = preload->palID;
+        }
         preload = &preload[1];
       }
     }
@@ -722,9 +729,16 @@ NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
             } else {
               sman->cyberOBPs &= ~(1 << preload->palID);
             }
-            wStaticGraphicTilenums[preload->id] = preload->tileBase;
-            wStaticMotionPalIDs[preload->id] = preload->palID;
-            LOAD_STATIC_GRAPHIC(preload->id);
+#if AP
+            if (preload->unk_06 & AP_PRELOAD_SHEET) {
+              ApLoadSheet(preload);
+            } else
+#endif
+            {
+              wStaticGraphicTilenums[preload->id] = preload->tileBase;
+              wStaticMotionPalIDs[preload->id] = preload->palID;
+              LOAD_STATIC_GRAPHIC(preload->id);
+            }
           }
         }
       }
@@ -738,8 +752,8 @@ NON_MATCH static void FUN_08018848(u8 stageID, u8 area) {
 }
 
 // メットール化 を実行する直前に呼ばれる
-NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
-#if MODERN || CBODY
+NON_MATCH_AP static void FUN_08018c00(u8 stageID, u8 area) {
+#if MODERN || AP || CBODY
   const struct PreloadEntity* preload;
 
   for (preload = sStagePreloadEntities[stageID]; preload->id != 0xFF; preload = &preload[1]) {
@@ -758,9 +772,16 @@ NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
         } else {
           gSpawnManager.cyberOBPs &= ~(1 << preload->palID);
         }
-        wStaticGraphicTilenums[preload->id] = preload->tileBase;
-        wStaticMotionPalIDs[preload->id] = preload->palID;
-        LOAD_STATIC_GRAPHIC(preload->id);
+#if AP
+        if (preload->unk_06 & AP_PRELOAD_SHEET) {
+          ApLoadSheet(preload);
+        } else
+#endif
+        {
+          wStaticGraphicTilenums[preload->id] = preload->tileBase;
+          wStaticMotionPalIDs[preload->id] = preload->palID;
+          LOAD_STATIC_GRAPHIC(preload->id);
+        }
       }
     }
   }
@@ -770,8 +791,8 @@ NON_MATCH static void FUN_08018c00(u8 stageID, u8 area) {
 }
 
 // MMBN4のウィルス に置き換える直前に呼ばれる
-NON_MATCH static void FUN_08018d10(u8 stageID, u8 area) {
-#if MODERN || CBODY
+NON_MATCH_AP static void FUN_08018d10(u8 stageID, u8 area) {
+#if MODERN || AP || CBODY
   const struct PreloadEntity* preload;
 
   for (preload = sStagePreloadEntities[stageID]; preload->id != 0xFF; preload++) {
@@ -789,9 +810,16 @@ NON_MATCH static void FUN_08018d10(u8 stageID, u8 area) {
           } else {
             gSpawnManager.cyberOBPs &= ~(1 << preload->palID);
           }
-          wStaticGraphicTilenums[preload->id] = preload->tileBase;
-          wStaticMotionPalIDs[preload->id] = preload->palID;
-          LOAD_STATIC_GRAPHIC(preload->id);
+#if AP
+          if (preload->unk_06 & AP_PRELOAD_SHEET) {
+            ApLoadSheet(preload);
+          } else
+#endif
+          {
+            wStaticGraphicTilenums[preload->id] = preload->tileBase;
+            wStaticMotionPalIDs[preload->id] = preload->palID;
+            LOAD_STATIC_GRAPHIC(preload->id);
+          }
         }
       }
     }

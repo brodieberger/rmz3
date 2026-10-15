@@ -86,6 +86,11 @@
 #define VFX_UNK_082 82
 #define VFX_UNK_083 83
 #define VFX_UNK_084 84
+#if AP
+#define VFX_Z2_HOPPER_TOP 85  
+#define VFX_COUNT (VFX_Z2_HOPPER_TOP + 1)
+#else
 #define VFX_COUNT VFX_UNK_084 + 1
+#endif
 
 #endif  // GUARD_RMZ3_CONST_ENT_VFX_H

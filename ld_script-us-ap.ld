@@ -27,6 +27,7 @@ SECTIONS {
       src/ap_stage_select.o (ewram_data);
       src/ap_trap.o (ewram_data);
       src/ap_import.o (ewram_data);
+      src/ap_sheets.o (ewram_data);
       __ap_ewram_end = .;
     } >ewram = 0x00
 
@@ -113,6 +114,10 @@ SECTIONS {
 		src/ap_icon_data.o (.rodata);
 		src/ap_icon_slots.o (.rodata);
 		src/ap_spawn.o (.rodata);
+		src/ap_sheets.o (.text);
+		src/data/ap_sheets.o (.rodata);
+		src/ap_z2_hopper.o (.text);
+		src/ap_z2_hopper.o (.rodata);
 		src/ap_import.o (.text);
 		src/ap_import.o (.rodata);
 		src/ap_import_stages.o (.rodata);

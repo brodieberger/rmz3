@@ -141,6 +141,9 @@ extern const EnemyRoutine gHarpuiaMinigameEnemyRoutine;
 extern const EnemyRoutine gCielMinigameEnemy1Routine;
 extern const EnemyRoutine gCielMinigameEnemy2Routine;
 extern const EnemyRoutine gEnemy72Routine;
+#if AP
+extern const EnemyRoutine gApZ2HopperRoutine;
+#endif
 
 // clang-format off
 const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
@@ -217,5 +220,8 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_CIEL_MG_1] = &gCielMinigameEnemy1Routine,
   [ENEMY_CIEL_MG_2] = &gCielMinigameEnemy2Routine,
   [ENEMY_72] = &gEnemy72Routine,
+#if AP
+  [ENEMY_Z2_HOPPER] = &gApZ2HopperRoutine,
+#endif
 };
 // clang-format on
