@@ -477,7 +477,8 @@ static void UpdatePlayerMovableArea(struct VM* vm) {
     if (c2.y > gOverworld.range.bottom) c2.y = gOverworld.range.bottom;
 #if AP
     // Makes the screen edge be the room edge. Prevents Zero fgrom being able to walljump
-    if (gStageRun.id == STAGE_NONE) {
+    // Skipped during cutscenes.
+    if (gStageRun.id == STAGE_NONE && cam->mode != CM1) {
       s32 left = cam->viewport.x - PIXEL(DISPLAY_WIDTH / 2);
       s32 right = cam->viewport.x + PIXEL(DISPLAY_WIDTH / 2);
       if (c1.x < left) c1.x = left;

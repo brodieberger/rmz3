@@ -124,7 +124,7 @@ gApImp0_Camera:
 
 gApImp0_Zero:
 	.byte PLAYER, ZERO, 0, 0
-	.4byte 280*PX, 736*PX
+	.4byte 352*PX, 768*PX
 	.4byte DIR_RIGHT
 
 .global gApImp0_Script
@@ -230,7 +230,7 @@ gApImp0_BossScript:
 	wait 60
 	clear_force_coord
 	forcekeyinput DPAD_RIGHT
-	wait 90
+	wait 80
 	lock
 	message 1, 0, 0x1402
 	wait_msgbox_end
@@ -266,6 +266,9 @@ gApImp0_ClearScript:
 	wait 120
 	message 1, 0, 0x1405
 	wait_msgbox_end
+	force 4, 0, 0
+	wait 8
+	force 5, 0, 0
 	stop_bgm
 	wait 60
 	start_transition 6

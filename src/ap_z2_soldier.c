@@ -287,7 +287,7 @@ static void Soldier_Die(struct Enemy* p) {
   PlaySound(SE_ZAKO_EXPLODE);
   smokeNearby(p, 1);
   smokeNearby(p, 2);
-  TryDropItem(1, &(p->s).coord);
+  TryDropItem(7, &(p->s).coord);
   gScore.missionPoint = (gScore.missionPoint > 2) ? gScore.missionPoint - 2 : 0;
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk(p, &(p->s).coord);

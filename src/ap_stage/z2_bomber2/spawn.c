@@ -607,7 +607,7 @@ const struct PreloadEntity gApImp0_Preloads[13] = {
     },
     {
         SM019_PANTHEON_HUNTER,
-        B8(00000111),
+        B8(00001111),
         512,
         4,
         1,
@@ -662,7 +662,7 @@ const struct PreloadEntity gApImp0_Preloads[13] = {
     {
         AP_SHEET_Z2_SIGNALOID,
         B8(00101000),
-        552,
+        632,
         6,
         1,
         AP_PRELOAD_SHEET | 1,
