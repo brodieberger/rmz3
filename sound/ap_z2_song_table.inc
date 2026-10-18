@@ -15,3 +15,4 @@
     song se_z2_signaloid_fireball, 3, 3 @ SE_Z2_SIGNALOID_FIREBALL
     song se_z2_hive, 4, 4 @ SE_Z2_HIVE
     song se_z2_spiking_bounce, 4, 4 @ SE_Z2_SPIKING_BOUNCE
+    song bgm_z2_crystal_cave, 0, 0 @ BGM_Z2_CRYSTAL_CAVE

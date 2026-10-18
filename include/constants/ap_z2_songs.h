@@ -18,7 +18,8 @@
 #define SE_Z2_SIGNALOID_FIREBALL (SE_Z2_SIGNALOID_FLAME + 1)  // Zero 2 145: Signaloid fireball
 #define SE_Z2_HIVE (SE_Z2_SIGNALOID_FIREBALL + 1)  // Zero 2 208: the hive releasing a Hottalook
 #define SE_Z2_SPIKING_BOUNCE (SE_Z2_HIVE + 1)  // Zero 2 62: Spiking bouncing
+#define BGM_Z2_CRYSTAL_CAVE (SE_Z2_SPIKING_BOUNCE + 1)  // Zero 2 175: Crystal Cave stage theme
 
-#define AP_Z2_SONG_LAST SE_Z2_SPIKING_BOUNCE
+#define AP_Z2_SONG_LAST BGM_Z2_CRYSTAL_CAVE
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

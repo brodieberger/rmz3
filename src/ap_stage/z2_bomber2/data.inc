@@ -134,7 +134,7 @@ gApImp0_Script:
 	lock
 	start_transition 9
 	wait_transition_end
-	play_bgm 176
+	play_bgm BGM_Z2_CRYSTAL_CAVE
 	wait 90
 	message 1, 0, 0x1400
 	wait_msgbox_end
@@ -156,7 +156,7 @@ gApImp0_CheckpointScript:
 	lock
 	start_transition 9
 	wait_transition_end
-	play_bgm 176
+	play_bgm BGM_Z2_CRYSTAL_CAVE
 	indicator 1, 0, 0
 	wait_indicator_end
 	release
@@ -175,7 +175,7 @@ gApImp0_BossRestartScript:
 	lock
 	start_transition 9
 	wait_transition_end
-	play_bgm 176
+	play_bgm BGM_Z2_CRYSTAL_CAVE
 	indicator 1, 0, 0
 	wait_indicator_end
 	release
