@@ -120,6 +120,10 @@ extern const VFXRoutine gGhost83Routine;
 extern const VFXRoutine gGhost84Routine;
 #if AP
 extern const VFXRoutine gApZ2HopperTopRoutine;
+extern const VFXRoutine gApZ2HottalookShardRoutine;
+extern const VFXRoutine gApZ2CarryarmDebrisRoutine;
+extern const VFXRoutine gApZ2SignaloidEffectRoutine;
+extern const VFXRoutine gApZ2GolemFootRoutine;
 #endif
 
 // clang-format off
@@ -211,6 +215,10 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_UNK_084] = &gGhost84Routine,
 #if AP
     [VFX_Z2_HOPPER_TOP] = &gApZ2HopperTopRoutine,
+    [VFX_Z2_HOTTALOOK_SHARD] = &gApZ2HottalookShardRoutine,
+    [VFX_Z2_CARRYARM_DEBRIS] = &gApZ2CarryarmDebrisRoutine,
+    [VFX_Z2_SIGNALOID] = &gApZ2SignaloidEffectRoutine,
+    [VFX_Z2_GOLEM_FOOT] = &gApZ2GolemFootRoutine,
 #endif
 };
 // clang-format on

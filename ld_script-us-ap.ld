@@ -118,10 +118,27 @@ SECTIONS {
 		src/data/ap_sheets.o (.rodata);
 		src/ap_z2_hopper.o (.text);
 		src/ap_z2_hopper.o (.rodata);
+		src/ap_z2_hottalook.o (.text);
+		src/ap_z2_hottalook.o (.rodata);
+		src/ap_z2_soldier.o (.text);
+		src/ap_z2_soldier.o (.rodata);
+		src/ap_z2_carryarm.o (.text);
+		src/ap_z2_carryarm.o (.rodata);
+		src/ap_z2_signaloid.o (.text);
+		src/ap_z2_signaloid.o (.rodata);
+		src/ap_z2_golem.o (.text);
+		src/ap_z2_golem.o (.rodata);
+		src/ap_z2_harpuia.o (.text);
+		src/ap_z2_harpuia.o (.rodata);
+		src/ap_z2_recoil.o (.text);
+		src/ap_z2_recoil.o (.rodata);
+		src/ap_import_elf.o (.text);
+		src/ap_import_elf.o (.rodata);
 		src/ap_import.o (.text);
 		src/ap_import.o (.rodata);
 		src/ap_import_stages.o (.rodata);
 		src/data/texts/ap_import.o (.rodata);
+		src/data/ap_z2_songs.o (.rodata);
 		src/data/ap_import_stages.o (.rodata);
 		INCLUDE "linker/ap_imports.txt"
 		. = ALIGN(4);

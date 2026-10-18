@@ -204,6 +204,9 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_weil
   .word gMetaSprite_cyberspace_door
   .word gMetaSprite_boss_explosion
+.if AP
+  .word gMetaSprite_z2_harpuia
+.endif
 
 
 .include "sprites/dynamic/zero/idle/metasprite.inc"
@@ -573,6 +576,9 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_weil
   .word gAnimationSequence_cyberspace_door
   .word gAnimationSequence_boss_explosion
+.if AP
+  .word gAnimationSequence_z2_harpuia
+.endif
 
 
 .include "sprites/dynamic/zero/idle/sequence.inc"
@@ -739,3 +745,7 @@ gDynamicMotionCmdTable:
 .include "sprites/dynamic/cyberspace_door/sequence.inc"
 .include "sprites/dynamic/boss_explosion/sequence.inc"
   .balign 4
+.if AP
+.include "sprites/dynamic/z2_harpuia/metasprite.inc"
+.include "sprites/dynamic/z2_harpuia/sequence.inc"
+.endif

@@ -15,13 +15,13 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 /* Spells 'APZ3'. ApInit writes it once the mailbox is ready. */
 #define AP_READY 0x335A5041u
-#define AP_VERSION 25
+#define AP_VERSION 26
 
 /*
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 382
+#define AP_MAX_LOCATION_ID 390
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -90,6 +90,11 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 #define AP_ITEM_STAGE_ACCESS_FIRST 181
 #define AP_ITEM_STAGE_ACCESS_LAST 195
+/*
+  Access item for the imported stages (legacy_stages option).
+*/
+#define AP_ITEM_IMPORT_ACCESS 196
+#define AP_IMPORT_UNLOCK_BIT 15
 
 /*
   Story progress items.
@@ -114,6 +119,11 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_LOC_ITEMSANITY_FIRST 301
 #define AP_ITEMSANITY_COUNT 82
 #define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT)
+/*
+  Cyber elves in the imported stages. Each one is a location.
+*/
+#define AP_LOC_IMPORT_ELF_FIRST 383
+#define AP_IMPORT_ELF_COUNT 8
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
 /*
@@ -280,7 +290,7 @@ struct ApState {
   u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 152);
+static_assert(sizeof(struct ApState) == 156);
 
 extern struct ApState gAp;
 
@@ -297,7 +307,8 @@ struct ApSeedConfig {
   u8 infiniteLives;
   u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
   u8 enemyDiskMarkers; // enemy marker
-  u8 unused[3];
+  u8 legacyStages;     // Legacy stages are in the seed, unlocked by AP_ITEM_IMPORT_ACCESS
+  u8 unused[2];
 };
 
 #define AP_FINAL_RANK_NONE 0xFF

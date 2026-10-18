@@ -1,7 +1,17 @@
 #include "global.h"
 #include "spawn.h"
 
-static u32 getStage0Area(Coords32* _) { return 0; }
+#if AP
+#include "ap_import.h"
+#endif
+
+static u32 getStage0Area(Coords32* c) {
+#if AP
+  return ApImportArea(c);
+#else
+  return 0;
+#endif
+}
 
 // 0x080190fc
 static u32 getSpaceCraftArea(Coords32* c) {

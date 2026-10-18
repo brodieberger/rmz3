@@ -62,6 +62,7 @@ void ResetDynamicMotion(struct Entity* p);
 void InitMotionLocation(void);
 
 void InitScalerotMotion1(struct Entity* p);
+void InitScalerotMotion2(struct Entity* p);
 static inline void EnableSpriteAnimation_Affine(void* enti) { InitScalerotMotion1((struct Entity*)enti); }
 
 void ForceEntityPalette(struct Entity* p, u8 palID);

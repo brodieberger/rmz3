@@ -341,6 +341,9 @@ gSongTable: @ 0x0810f810
     song se_unk_14d, 10, 10 @ 333
     song se_flopper_explode, 2, 2 @ 334
     song se_unk_14f, 2, 2 @ 335
+.if AP
+.include "sound/ap_z2_song_table.inc"
+.endif
 
 mus_dummy: @ 0x08110290
     .byte 0, 0, 0, 0 @ dummy song header

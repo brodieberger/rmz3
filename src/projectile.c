@@ -93,6 +93,14 @@ extern const ProjectileRoutine gProjectile44Routine;
 extern const ProjectileRoutine gProjectile45Routine;
 extern const ProjectileRoutine gProjectile46Routine;
 extern const ProjectileRoutine gProjectile47Routine;
+#if AP
+extern const ProjectileRoutine gApZ2SignaloidBoltRoutine;
+extern const ProjectileRoutine gApZ2SignaloidFlakeRoutine;
+extern const ProjectileRoutine gApZ2SignaloidFireRoutine;
+extern const ProjectileRoutine gApZ2GolemLaserRoutine;
+extern const ProjectileRoutine gApZ2HarpuiaWaveRoutine;
+extern const ProjectileRoutine gApZ2HarpuiaThunderRoutine;
+#endif
 
 // clang-format off
 const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
@@ -144,5 +152,13 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [45] = &gProjectile45Routine,
     [46] = &gProjectile46Routine,
     [47] = &gProjectile47Routine,
+#if AP
+    [PROJECTILE_Z2_SIGNALOID_BOLT] = &gApZ2SignaloidBoltRoutine,
+    [PROJECTILE_Z2_SIGNALOID_FLAKE] = &gApZ2SignaloidFlakeRoutine,
+    [PROJECTILE_Z2_SIGNALOID_FIRE] = &gApZ2SignaloidFireRoutine,
+    [PROJECTILE_Z2_GOLEM_LASER] = &gApZ2GolemLaserRoutine,
+    [PROJECTILE_Z2_HARPUIA_WAVE] = &gApZ2HarpuiaWaveRoutine,
+    [PROJECTILE_Z2_HARPUIA_THUNDER] = &gApZ2HarpuiaThunderRoutine,
+#endif
 };
 // clang-format on

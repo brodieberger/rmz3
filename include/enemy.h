@@ -19,4 +19,10 @@ void DeleteEnemy(struct Entity* p);
 bool32 IsFrozen(void* enemy_entity);
 void TryDropZakoDisk(struct Enemy* p, Coords32* c);
 
+#if AP
+// Charged Recoil Rod hit on Zero 2 enemies
+bool32 ApRecoilHit(Object* p);
+bool32 ApRecoilFly(Object* p);
+#endif
+
 #endif  // GUARD_RMZ3_ENEMY_H

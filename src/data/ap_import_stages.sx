@@ -3,6 +3,7 @@
 .include "asm/scripts/constants.inc"
 #include "constants/song.h"
 #include "constants/entity.h"
+#include "constants/flag.h"
 
 .if AP
 

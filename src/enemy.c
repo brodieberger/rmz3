@@ -143,6 +143,13 @@ extern const EnemyRoutine gCielMinigameEnemy2Routine;
 extern const EnemyRoutine gEnemy72Routine;
 #if AP
 extern const EnemyRoutine gApZ2HopperRoutine;
+extern const EnemyRoutine gApZ2HiveRoutine;
+extern const EnemyRoutine gApZ2HottalookRoutine;
+extern const EnemyRoutine gApZ2SoldierRoutine;
+extern const EnemyRoutine gApZ2CarryarmRoutine;
+extern const EnemyRoutine gApZ2SignaloidRoutine;
+extern const EnemyRoutine gApZ2GolemArmRoutine;
+extern const EnemyRoutine gApZ2HarpuiaBladeRoutine;
 #endif
 
 // clang-format off
@@ -222,6 +229,13 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_72] = &gEnemy72Routine,
 #if AP
   [ENEMY_Z2_HOPPER] = &gApZ2HopperRoutine,
+  [ENEMY_Z2_HIVE] = &gApZ2HiveRoutine,
+  [ENEMY_Z2_HOTTALOOK] = &gApZ2HottalookRoutine,
+  [ENEMY_Z2_SOLDIER] = &gApZ2SoldierRoutine,
+  [ENEMY_Z2_CARRYARM] = &gApZ2CarryarmRoutine,
+  [ENEMY_Z2_SIGNALOID] = &gApZ2SignaloidRoutine,
+  [ENEMY_Z2_GOLEM_ARM] = &gApZ2GolemArmRoutine,
+  [ENEMY_Z2_HARPUIA_BLADE] = &gApZ2HarpuiaBladeRoutine,
 #endif
 };
 // clang-format on

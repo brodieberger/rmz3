@@ -5,11 +5,17 @@
 
 extern const PickupRoutine gPickupItemRoutine;
 extern const PickupRoutine gPickupDiskRoutine;
+#if AP
+extern const PickupRoutine gApImportElfRoutine;
+#endif
 
 // 0x08371a10
-const PickupRoutine* const gPickupFnTable[2] = {
+const PickupRoutine* const gPickupFnTable[PICKUP_COUNT] = {
     &gPickupItemRoutine,
     &gPickupDiskRoutine,
+#if AP
+    &gApImportElfRoutine,
+#endif
 };
 
 void InitPickupHeader(struct EntityHeader* h, Pickup* p, s16 len) {

@@ -1,0 +1,23 @@
+{
+  "label": "gStaticAnimationSequence_boss_z2_harpuia_blade",
+  "data": [
+    [
+      {
+        "frameIdx": 0,
+        "duration": 5
+      },
+      {
+        "frameIdx": 1,
+        "duration": 5
+      },
+      {
+        "frameIdx": 2,
+        "duration": 5
+      },
+      {
+        "frameIdx": 0,
+        "duration": 254
+      }
+    ]
+  ]
+}

@@ -127,6 +127,12 @@ struct Overworld {
     struct SubArcadiaState subArcadia;
     struct WeilLaboState weilLabo;
     struct ResistanceBaseState resistanceBase;
+#if AP
+    struct ApZ2Bomber2State {
+      u8 _[0x20];
+      bool8 lit[2];  // Red and blue crystal layers lit this frame
+    } apZ2Bomber2;
+#endif
   } work;  // ステージごとに用途が変わる
 };  // 184624 bytes
 static_assert(sizeof(struct Overworld) == 184624);

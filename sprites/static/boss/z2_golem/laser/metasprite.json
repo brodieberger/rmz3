@@ -1,0 +1,197 @@
+{
+  "label": "gStaticMetaSprite_boss_z2_golem_laser",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -16,
+          "y": -16
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 16,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            16
+          ],
+          "x": -8,
+          "y": -8
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": true,
+          "yflip": true,
+          "size": [
+            32,
+            32
+          ],
+          "x": -15,
+          "y": -15
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 16,
+          "xflip": true,
+          "yflip": true,
+          "size": [
+            16,
+            16
+          ],
+          "x": -7,
+          "y": -7
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": true,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -15,
+          "y": -16
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 16,
+          "xflip": true,
+          "yflip": false,
+          "size": [
+            16,
+            16
+          ],
+          "x": -7,
+          "y": -8
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": true,
+          "size": [
+            32,
+            32
+          ],
+          "x": -16,
+          "y": -15
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 16,
+          "xflip": false,
+          "yflip": true,
+          "size": [
+            16,
+            16
+          ],
+          "x": -8,
+          "y": -7
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 20,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            16
+          ],
+          "x": -8,
+          "y": -8
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 24,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            16
+          ],
+          "x": -8,
+          "y": -8
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 28,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -28,
+          "y": -16
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 44,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -28,
+          "y": -16
+        }
+      ]
+    }
+  ]
+}

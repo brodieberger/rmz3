@@ -137,8 +137,9 @@ static void ApSelectPrintDisks(u8 stageID) {
   char_t* p = sApSelectStatus;
   const char_t* status;
 
-  if (stageID == STAGE_NONE) {  // temp: no disks, always open
-    PrintString(gApSelectOpen, AP_SELECT_STATUS_X, AP_SELECT_DISKS_Y);
+  if (stageID == STAGE_NONE) {  // Imported stages have no disks
+    PrintString(ApStageUnlocked(STAGE_NONE) ? gApSelectOpen : gApSelectLocked, AP_SELECT_STATUS_X,
+                AP_SELECT_DISKS_Y);
     return;
   }
 
@@ -448,7 +449,7 @@ void ApStageSelect(struct GameState* g) {
       if (!(gJoypad[0].pressed & A_BUTTON)) {
         return;
       }
-      if ((stageID != STAGE_NONE) && !ApStageUnlocked(stageID)) {
+      if (!ApStageUnlocked(stageID)) {
         PlaySound(SE_NOT_ALLOWED);
         return;
       }

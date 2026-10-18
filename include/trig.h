@@ -9,6 +9,8 @@
 
 extern const s16 gSineTable[256];
 
+s32 CalcAngle(s32 x, s32 y);
+
 static inline s32 Sin(u8 index, s32 amplitude) {
   s32 val = amplitude * SIN(index);
   if (val < 0) val += 0xFF;

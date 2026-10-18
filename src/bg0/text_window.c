@@ -16,7 +16,13 @@ enum TextBank {
   TB_SPACECRAFT,  // 3
 };
 
-static const u16* const gTextOffsetTable[20];
+#if AP
+#define TEXT_BANKS 21  // 0x14xx imported stages' text
+#else
+#define TEXT_BANKS 20
+#endif
+
+static const u16* const gTextOffsetTable[TEXT_BANKS];
 extern const char_t Unicode_Prompt[];
 
 static void resetTextWindow(TextWindowText* t);
@@ -55,7 +61,7 @@ void PrintNormalMessage(TextID n) {
   return;
 }
 
-static const char_t* const gTextTable[20];
+static const char_t* const gTextTable[TEXT_BANKS];
 
 // gTextTable[t>>8] + gTextOffsetTable[t>>8][t&0xFF]
 static inline char_t* GetText(TextID t) {
@@ -1439,10 +1445,13 @@ extern const u16 TextOfs_GiantElevator[];
 extern const u16 TextOfs_SubArcadia[];
 extern const u16 TextOfs_WeilLabo[];
 extern const u16 TextOfs_Others[];
+#if AP
+extern const u16 TextOfs_ApImport[];
+#endif
 
 // clang-format off
 // 0x083767b8
-static const u16* const gTextOffsetTable[20] = {
+static const u16* const gTextOffsetTable[TEXT_BANKS] = {
   TextOfs_System,
   TextOffsets_OpenSecretDisk,
   TextOfs_CielChats,
@@ -1463,6 +1472,9 @@ static const u16* const gTextOffsetTable[20] = {
   TextOfs_SubArcadia,
   TextOfs_WeilLabo,
   TextOfs_Others,
+#if AP
+  TextOfs_ApImport,
+#endif
 };
 // clang-format on
 
@@ -1486,10 +1498,13 @@ extern const char_t Texts_GiantElevator[];
 extern const char_t Text_SubArcadia[];
 extern const char_t Text_WeilLabo[];
 extern const char_t Text_Others[];
+#if AP
+extern const char_t Text_ApImport[];
+#endif
 
 // clang-format off
 // 0x08376808
-static const char_t* const gTextTable[20] = {
+static const char_t* const gTextTable[TEXT_BANKS] = {
   [TB_SYSTEM] =    Text_System,
   [TB_OPEN_DISK] = Texts_OpenSecretDisk,
   [TB_BANK2]     = Text_CielChats,
@@ -1510,6 +1525,9 @@ static const char_t* const gTextTable[20] = {
     Text_SubArcadia,
     Text_WeilLabo,
     Text_Others,
+#if AP
+    Text_ApImport,
+#endif
 };
 // clang-format on
 

@@ -1,6 +1,7 @@
 #ifndef GUARD_RMZ3_MAP_ITEM_H
 #define GUARD_RMZ3_MAP_ITEM_H
 
+#include "constants/entity/item.h"
 #include "entity/entity.h"
 #include "types.h"
 
@@ -11,7 +12,7 @@ extern struct EntityHeader* gPickupHeaderPtr;
 
 typedef void (*PickupFunc)(Pickup*);
 typedef PickupFunc PickupRoutine[5];
-extern const PickupRoutine* const gPickupFnTable[2];
+extern const PickupRoutine* const gPickupFnTable[PICKUP_COUNT];
 
 // --------------------------------------------
 

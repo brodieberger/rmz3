@@ -87,8 +87,12 @@
 #define VFX_UNK_083 83
 #define VFX_UNK_084 84
 #if AP
-#define VFX_Z2_HOPPER_TOP 85  
-#define VFX_COUNT (VFX_Z2_HOPPER_TOP + 1)
+#define VFX_Z2_HOPPER_TOP 85
+#define VFX_Z2_HOTTALOOK_SHARD 86
+#define VFX_Z2_CARRYARM_DEBRIS 87
+#define VFX_Z2_SIGNALOID 88
+#define VFX_Z2_GOLEM_FOOT 89
+#define VFX_COUNT (VFX_Z2_GOLEM_FOOT + 1)
 #else
 #define VFX_COUNT VFX_UNK_084 + 1
 #endif

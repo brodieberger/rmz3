@@ -342,6 +342,11 @@
 
 #define MUS_NONE (~0)
 
+#if AP
+#include "constants/ap_z2_songs.h"
+#define SONG_COUNT AP_Z2_SONG_LAST + 1
+#else
 #define SONG_COUNT SE_UNK_14f + 1
+#endif
 
 #endif  // GUARD_RMZ3_CONST_SONG_H

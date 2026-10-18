@@ -4,6 +4,12 @@
 // Pickup.id
 #define ITEM_GENERAL 0
 #define ITEM_DISK 1
+#if AP
+#define ITEM_AP_IMPORT_ELF 2  // Cyber elf in an imported stage
+#define PICKUP_COUNT 3
+#else
+#define PICKUP_COUNT 2
+#endif
 
 // ITEM_GENERAL: (Pickup->s).work[0]
 #define ITEM_LIFE_S 0

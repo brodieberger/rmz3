@@ -76,8 +76,15 @@
 #define ENEMY_72 72
 
 #if AP
-#define ENEMY_Z2_HOPPER 73  // Zero 2 Pantheon Hopper
-#define ENEMY_COUNT (ENEMY_Z2_HOPPER + 1)
+#define ENEMY_Z2_HOPPER 73     // Zero 2 Pantheon Hopper
+#define ENEMY_Z2_HIVE 74       // Zero 2 Hottalook hive
+#define ENEMY_Z2_HOTTALOOK 75  // Zero 2 Hottalook
+#define ENEMY_Z2_SOLDIER 76    // Zero 2 mind-controlled soldier
+#define ENEMY_Z2_CARRYARM 77   // Zero 2 Carryarm and the Spiking it carries
+#define ENEMY_Z2_SIGNALOID 78  // Zero 2 Signaloid
+#define ENEMY_Z2_GOLEM_ARM 79  // Zero 2 Golem Type E's arms
+#define ENEMY_Z2_HARPUIA_BLADE 80  // Zero 2 Harpuia's blades
+#define ENEMY_COUNT (ENEMY_Z2_HARPUIA_BLADE + 1)
 #else
 #define ENEMY_COUNT (ENEMY_72 + 1)
 #endif

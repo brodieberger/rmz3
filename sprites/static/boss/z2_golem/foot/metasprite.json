@@ -1,0 +1,101 @@
+{
+  "label": "gStaticMetaSprite_boss_z2_golem_foot",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -6
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 2,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -6
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 4,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            8
+          ],
+          "x": -16,
+          "y": -5
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 8,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -6
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 10,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -6
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 12,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            8
+          ],
+          "x": -16,
+          "y": -5
+        }
+      ]
+    }
+  ]
+}

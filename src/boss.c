@@ -28,6 +28,10 @@ extern const BossRoutine gPhantomBossRoutine;
 extern const BossRoutine gOmegaZXRoutine;
 extern const BossRoutine gReactorCoreRoutine;
 extern const BossRoutine gSpearookRoutine;
+#if AP
+extern const BossRoutine gApZ2GolemRoutine;
+extern const BossRoutine gApZ2HarpuiaRoutine;
+#endif
 
 // clang-format off
 const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
@@ -56,6 +60,10 @@ const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
     [BOSS_OMEGA_ZX] =           &gOmegaZXRoutine,
     [BOSS_REACTOR_CORE] =       &gReactorCoreRoutine,
     [BOSS_SPEAROOK] =           &gSpearookRoutine,
+#if AP
+    [BOSS_Z2_GOLEM] =           &gApZ2GolemRoutine,
+    [BOSS_Z2_HARPUIA] =         &gApZ2HarpuiaRoutine,
+#endif
 };
 // clang-format on
 

@@ -204,6 +204,9 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_weil-.
   .4byte gGraphicHeader_Sprite_cyberspace_door-.
   .4byte gGraphicHeader_Sprite_boss_explosion-.
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_harpuia-.
+.endif
 
 .include "sprites/dynamic/zero/idle/sheet/header.inc"
 .include "sprites/dynamic/zero/dying/sheet/header.inc"
@@ -368,3 +371,6 @@ gDynamicMotionGraphicOffsets:
 .include "sprites/dynamic/weil/sheet/header.inc"
 .include "sprites/dynamic/cyberspace_door/sheet/header.inc"
 .include "sprites/dynamic/boss_explosion/sheet/header.inc"
+.if AP
+.include "sprites/dynamic/z2_harpuia/sheet/header.inc"
+.endif

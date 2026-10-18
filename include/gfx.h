@@ -142,6 +142,7 @@ void LoadGraphic(const struct Graphic* g, void* dst_vram_offset);
 void LoadPalette(const struct Palette* p, u32 r1);
 s32 RequestGraphicTransfer(const void* g, void* dst_vram_offset);
 s32 RequestBgMapTransfer(u16* src, void* dst_vram_offset, s32 bytesize);
+s32 RequestVRAMFill(u32 fillval, void* dst_vram_offset, s32 bytesize);
 void EnableBG0(u32* buffer, u32 dst, u32 bytesize, u16 backdrop);
 void DisableBG0(void);
 

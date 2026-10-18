@@ -1,0 +1,101 @@
+{
+  "label": "gStaticMetaSprite_boss_z2_golem_arm",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            64
+          ],
+          "x": -77,
+          "y": -87
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 64,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            64
+          ],
+          "x": 15,
+          "y": -87
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 128,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -16,
+          "y": -16
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 144,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            32
+          ],
+          "x": -16,
+          "y": -16
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 160,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": -77,
+          "y": -71
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 192,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": 15,
+          "y": -71
+        }
+      ]
+    }
+  ]
+}

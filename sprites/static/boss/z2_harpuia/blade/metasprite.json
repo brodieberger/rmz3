@@ -1,0 +1,86 @@
+{
+  "label": "gStaticMetaSprite_boss_z2_harpuia_blade",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -8
+        },
+        {
+          "tileNum": 2,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -8
+        },
+        {
+          "tileNum": 4,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": 0
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": -8
+        },
+        {
+          "tileNum": 6,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            16,
+            8
+          ],
+          "x": -8,
+          "y": 0
+        }
+      ]
+    }
+  ]
+}

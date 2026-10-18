@@ -1,0 +1,75 @@
+{
+  "label": "gStaticAnimationSequence_enemy_z2_soldier",
+  "data": [
+    [
+      {
+        "frameIdx": 0,
+        "duration": 4
+      },
+      {
+        "frameIdx": 5,
+        "duration": 4
+      },
+      {
+        "frameIdx": 0,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 1,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 2,
+        "duration": 12
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 6,
+        "duration": 1
+      },
+      {
+        "frameIdx": 3,
+        "duration": 7
+      },
+      {
+        "frameIdx": 4,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ],
+    [
+      {
+        "frameIdx": 4,
+        "duration": 1
+      },
+      {
+        "frameIdx": 3,
+        "duration": 8
+      },
+      {
+        "frameIdx": 6,
+        "duration": 1
+      },
+      {
+        "frameIdx": 0,
+        "duration": 255
+      }
+    ]
+  ]
+}

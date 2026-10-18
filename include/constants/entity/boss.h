@@ -28,6 +28,12 @@
 #define BOSS_REACTOR_CORE 23  // エネルギー再生施設の炉心(スイッチ押し込み部屋)
 #define BOSS_SPEAROOK 24
 
+#if AP
+#define BOSS_Z2_GOLEM 25  // Zero 2 Golem Type E. Hidden mid-boss in the crystal cave
+#define BOSS_Z2_HARPUIA 26  // Zero 2 Harpuia. Boss of the crystal cave
+#define BOSS_ENTITY_COUNT (BOSS_Z2_HARPUIA + 1)
+#else
 #define BOSS_ENTITY_COUNT 25
+#endif
 
 #endif  // GUARD_RMZ3_CONST_BOSS_H

@@ -342,10 +342,14 @@ static bool32 ApFinalStageOpen(void) {
 bool32 ApStageUnlocked(u8 stageID) {
   const u8* mask = &gGameState.save.unused_240[AP_UNLOCK_BYTE];
 
+  /* Legacy stages, unlocked by their access item. Confiruable by option. */
+  if (stageID == STAGE_NONE) {
+    return mask[1] & (1 << (AP_IMPORT_UNLOCK_BIT - 8));
+  }
   if (stageID == AP_STAGE_FINAL) {
     return ApFinalStageOpen();
   }
-  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+  if (stageID > AP_STAGE_FINAL) {
     return FALSE;
   }
   return (mask[(stageID - 1) >> 3] & (1 << ((stageID - 1) & 7))) != 0;
@@ -683,6 +687,10 @@ static bool32 ApGrantItem(u16 apItemID) {
 
   if (apItemID >= AP_ITEM_STAGE_ACCESS_FIRST && apItemID <= AP_ITEM_STAGE_ACCESS_LAST) {
     ApUnlockStage((u8)(apItemID - AP_ITEM_STAGE_ACCESS_FIRST + STAGE_SPACE_CRAFT));
+    return FALSE;
+  }
+  if (apItemID == AP_ITEM_IMPORT_ACCESS) {
+    gGameState.save.unused_240[AP_UNLOCK_BYTE + 1] |= 1 << (AP_IMPORT_UNLOCK_BIT - 8);
     return FALSE;
   }
 
