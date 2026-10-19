@@ -27,6 +27,7 @@ SECTIONS {
       src/ap_stage_select.o (ewram_data);
       src/ap_trap.o (ewram_data);
       src/ap_import.o (ewram_data);
+      src/ap_import_elf.o (ewram_data);
       src/ap_sheets.o (ewram_data);
       __ap_ewram_end = .;
     } >ewram = 0x00

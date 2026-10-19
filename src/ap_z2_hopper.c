@@ -1,3 +1,5 @@
+#include "ap.h"
+
 #include "collision.h"
 #include "definition.h"
 #include "element.h"
@@ -420,6 +422,7 @@ static Coords32 explode(struct Hopper* p, const struct SlashedEnemy* gibs) {
 static void finish(struct Hopper* p) {
   TryDropItem(1, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  ApImportHopperKilled();
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

@@ -302,6 +302,7 @@ struct ApStageClear {
 };
 
 static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
+    [STAGE_NONE] = {389, 0, 390},  // legacy stages
     [STAGE_SPACE_CRAFT] = {181, 0, 206},
     [STAGE_VOLCANO] = {182, 199, 207},
     [STAGE_OCEAN] = {183, 197, 208},
@@ -357,19 +358,27 @@ bool32 ApStageUnlocked(u8 stageID) {
 
 /*
   Per-stage best rank. A nibble each, stored as rank + 1 so an uncleared stage is not an F.
+  The legacy stage (STAGE_NONE).
 */
 static u8* ApRankByte(u8 stageID) {
+  if (stageID == STAGE_NONE) {
+    return &gGameState.save.unused_240[AP_IMPORT_RANK_BYTE];
+  }
   return &gGameState.save.unused_240[AP_RANK_BYTE + ((stageID - 1) >> 1)];
 }
 
-u8 ApStageBestRank(u8 stageID) {
-  u8 packed;
+static u8 ApRankShift(u8 stageID) {
+  if (stageID == STAGE_NONE) {
+    return 0;
+  }
+  return ((stageID - 1) & 1) ? 4 : 0;
+}
 
-  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+u8 ApStageBestRank(u8 stageID) {
+  if (stageID > AP_STAGE_FINAL) {
     return AP_RANK_NONE;
   }
-  packed = *ApRankByte(stageID);
-  return (u8)(((stageID - 1) & 1) ? (packed >> 4) : (packed & 0x0F));
+  return (u8)((*ApRankByte(stageID) >> ApRankShift(stageID)) & 0x0F);
 }
 
 /*
@@ -412,8 +421,9 @@ static u8 ApRankElfRank(u8 missionRank) {
 u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   u8* rankByte;
   u8 best;
+  u8 shift;
 
-  if ((stageID == STAGE_NONE) || (stageID > AP_STAGE_FINAL)) {
+  if (stageID > AP_STAGE_FINAL) {
     return ApAggregateRank();
   }
   if (gAp.rankElfUsed) {
@@ -423,11 +433,8 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   best = ApStageBestRank(stageID);
   if ((u8)(missionRank + 1) > best) {
     rankByte = ApRankByte(stageID);
-    if ((stageID - 1) & 1) {
-      *rankByte = (u8)((*rankByte & 0x0F) | ((missionRank + 1) << 4));
-    } else {
-      *rankByte = (u8)((*rankByte & 0xF0) | (missionRank + 1));
-    }
+    shift = ApRankShift(stageID);
+    *rankByte = (u8)((*rankByte & ~(0x0F << shift)) | ((missionRank + 1) << shift));
   }
   return ApAggregateRank();
 }

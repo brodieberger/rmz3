@@ -35,6 +35,7 @@ void ApImportSelect(u8 n) {
   }
   gApImportSelected = n;
   imp = &gApImportedStages[n];
+  ApImportResetKills();
 
   gApSlot0Stage = *imp->stage;
   gApSlot0Stage.fn = imp->fns;

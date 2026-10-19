@@ -5,6 +5,7 @@
 #include "global.h"
 #include "motion.h"
 #include "pickup.h"
+#include "zero.h"
 
 #include "constants/song.h"
 
@@ -33,6 +34,51 @@ const PickupRoutine gApImportElfRoutine = {
 
 static bool32 checked(u16 loc) {
   return ApServerChecked(loc) || (gAp.checkedLocations[loc >> 3] & (1 << (loc & 7)));
+}
+
+/*
+  Elves Zero 2 gives for kills in the stage. Elves themselves aren't actually implemented.
+  They are just given to Zero immediately.
+*/
+#define ELF_BIRFLOW 4
+#define ELF_BEEHITT 5
+
+EWRAM_DATA static u8 sHottalookKills = 0;
+EWRAM_DATA static u8 sHopperKills = 0;
+
+static void giveElf(u8 n) {
+  struct Entity* p;
+
+  if (checked(AP_LOC_IMPORT_ELF_FIRST + n)) return;
+  p = AllocEntityLast(gPickupHeaderPtr);
+  if (p == NULL) return;
+  INIT_ITEM_ROUTINE(p, ITEM_AP_IMPORT_ELF);
+  (p->coord).x = (pZero2->s).coord.x;
+  (p->coord).y = (pZero2->s).coord.y - PIXEL(16);
+  p->work[0] = n;
+}
+
+void ApImportResetKills(void) {
+  sHottalookKills = 0;
+  sHopperKills = 0;
+}
+
+void ApImportHottalookKilled(void) {
+  if (++sHottalookKills == 10) giveElf(ELF_BIRFLOW);
+}
+
+void ApImportHopperKilled(void) {
+  if (++sHopperKills == 3) giveElf(ELF_BEEHITT);
+}
+
+u8 ApImportElvesFound(void) {
+  u8 n = 0;
+  u8 i;
+
+  for (i = 0; i < AP_IMPORT_ELF_COUNT; i++) {
+    if (checked(AP_LOC_IMPORT_ELF_FIRST + i)) n++;
+  }
+  return n;
 }
 
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {

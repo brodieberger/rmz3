@@ -123,7 +123,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Cyber elves in the imported stages. Each one is a location.
 */
 #define AP_LOC_IMPORT_ELF_FIRST 383
-#define AP_IMPORT_ELF_COUNT 8
+#define AP_IMPORT_ELF_COUNT 6
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
 /*
@@ -218,6 +218,9 @@ extern const char_t gApShopSoldText[];
 // Best rank ever earned in each stage.
 #define AP_RANK_BYTE 0
 #define AP_RANK_NONE 0
+
+// Best rank in the legacy stage, stored the same way, in the low nibble.
+#define AP_IMPORT_RANK_BYTE 15
 
 // Every stage but the final one cleared.
 #define AP_MISSION_DONES_ALL 0xFFFEu
@@ -400,6 +403,10 @@ extern struct PreloadEntity gApSlot0Preloads[];
 void ApImportSelect(u8 n);
 u8 ApImportCount(void);
 const char_t* ApImportName(u8 n);
+u8 ApImportElvesFound(void);
+void ApImportResetKills(void);
+void ApImportHottalookKilled(void);
+void ApImportHopperKilled(void);
 struct StageRun;
 s16 ApImportUpdate(struct StageRun* p);
 extern u8 gApImportSelected;

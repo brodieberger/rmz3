@@ -22,5 +22,7 @@
 
 extern const u16 gApMugshotPalette[AP_MUGSHOT_COUNT][16];
 extern const u32 gApMugshotTiles[AP_MUGSHOT_COUNT * AP_MUGSHOT_TILES][8];
+extern const u16 gApImportMugshotPalette[16];
+extern const u32 gApImportMugshotTiles[AP_MUGSHOT_TILES][8];
 
 #endif  // GUARD_RMZ3_AP_MUGSHOT_H

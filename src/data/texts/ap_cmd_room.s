@@ -55,6 +55,10 @@ gApSelectStageLabel:
 gApSelectDisksLabel:
 	.string "Disks:$"
 
+.global gApSelectElvesLabel
+gApSelectElvesLabel:
+	.string "Elves:$"
+
 .global gApSelectRankLabel
 gApSelectRankLabel:
 	.string "Highest Rank:$"

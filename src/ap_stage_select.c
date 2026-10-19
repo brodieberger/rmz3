@@ -93,6 +93,7 @@ static const u8 sApMissionStage[AP_SELECT_MISSION_COUNT] = {
 
 extern const char_t gApSelectStageLabel[];
 extern const char_t gApSelectDisksLabel[];
+extern const char_t gApSelectElvesLabel[];
 extern const char_t gApSelectRankLabel[];
 extern const char_t gApSelectLocked[];
 extern const char_t gApSelectOpen[];
@@ -132,32 +133,45 @@ static char_t* ApSelectPutNumber(char_t* p, u8 n) {
   return p;
 }
 
-/* "Disks: 6/10" and, further along the same line, LOCKED / OPEN / CLEARED. */
+/* A legacy stage is cleared once it has a rank. */
+static bool32 ApSelectCleared(u8 stageID) {
+  if (stageID == STAGE_NONE) {
+    return ApStageBestRank(STAGE_NONE) != AP_RANK_NONE;
+  }
+  return (gMissionDones & (1 << stageID)) != 0;
+}
+
+/*
+  "Disks: 6/10" and, further along the same line, LOCKED / OPEN / CLEARED.
+  Legacy stages say elves instead.
+*/
 static void ApSelectPrintDisks(u8 stageID) {
   char_t* p = sApSelectStatus;
+  const char_t* label = gApSelectDisksLabel;
   const char_t* status;
 
-  if (stageID == STAGE_NONE) {  // Imported stages have no disks
-    PrintString(ApStageUnlocked(STAGE_NONE) ? gApSelectOpen : gApSelectLocked, AP_SELECT_STATUS_X,
-                AP_SELECT_DISKS_Y);
-    return;
+  if (stageID == STAGE_NONE) {
+    label = gApSelectElvesLabel;
+    p = ApSelectPutNumber(p, ApImportElvesFound());
+    *p++ = AP_CHAR_SLASH;
+    p = ApSelectPutNumber(p, AP_IMPORT_ELF_COUNT);
+  } else {
+    p = ApSelectPutNumber(p, ApDisksInStage(stageID));
+    *p++ = AP_CHAR_SLASH;
+    p = ApSelectPutNumber(p, ApDiskTotalInStage(stageID));
   }
-
-  p = ApSelectPutNumber(p, ApDisksInStage(stageID));
-  *p++ = AP_CHAR_SLASH;
-  p = ApSelectPutNumber(p, ApDiskTotalInStage(stageID));
   *p = AP_CHAR_END;
 
   /* Every stage says which of the three it is. Locked, Open, and Cleared. */
   if (!ApStageUnlocked(stageID)) {
     status = gApSelectLocked;
-  } else if (gMissionDones & (1 << stageID)) {
+  } else if (ApSelectCleared(stageID)) {
     status = gApSelectCleared;
   } else {
     status = gApSelectOpen;
   }
 
-  PrintString(gApSelectDisksLabel, AP_SELECT_LABEL_X, AP_SELECT_DISKS_Y);
+  PrintString(label, AP_SELECT_LABEL_X, AP_SELECT_DISKS_Y);
   PrintString(sApSelectStatus, AP_SELECT_DISKS_X, AP_SELECT_DISKS_Y);
   PrintString(status, AP_SELECT_STATUS_X, AP_SELECT_DISKS_Y);
 }
@@ -217,7 +231,21 @@ static void ApSelectLoadNamelessArt(void) {
   }
 }
 
+/*
+  The legacy page's portrait, over slot 0
+*/
+static void ApSelectLoadImportArt(void) {
+  MemCopy32(gApImportMugshotTiles, (void*)(VRAM + BG_VRAM_SIZE + (AP_MUGSHOT_TILE * 32)),
+            sizeof(gApImportMugshotTiles));
+  MemCopy32(gApImportMugshotPalette, &gPaletteManager.buf[(16 + AP_MUGSHOT_PAL) * 16],
+            sizeof(gApImportMugshotPalette));
+}
+
 static void ApSelectLoadPageArt(s16 page) {
+  if (page >= AP_SELECT_OWN_PAGES) {
+    ApSelectLoadImportArt();
+    return;
+  }
   if (page >= AP_SELECT_ART_PAGES) {
     ApSelectLoadNamelessArt();
     return;
@@ -250,11 +278,6 @@ static void ApSelectStylePortrait(struct Entity* p, u8 slot, u8 stageID) {
   bool32 open = ApStageUnlocked(stageID);
   motion_t want = open ? MOTION(SM205_MISSION_MUGSHOT, slot) : AP_MUGSHOT_STATIC;
 
-  if (stageID == STAGE_NONE) {  // Temp: stage with no portrait
-    open = TRUE;
-    want = AP_MUGSHOT_STATIC;
-  }
-
   if (p->motionID != (motion_id_t)(want >> 8)) {
     p->palID = (u8)((want == AP_MUGSHOT_STATIC) ? 0 : slot);
     SetMotion(p, want);
@@ -282,7 +305,9 @@ static void ApSelectStyleRow(struct GameState* g) {
   while (p != (struct Entity*)&h->tail) {
     if ((p->id == VFX_MISSION_INFO) && (p->work[0] == AP_MUGSHOT_CHILD) &&
         (p->work[1] < AP_SELECT_PAGE_SIZE)) {
-      if (p->mode[1] != 0) {
+      if (p->work[1] > g->unk_008[0]) {  // No stage in this slot
+        p->flags &= ~DISPLAY;
+      } else if (p->mode[1] != 0) {
         ApSelectStylePortrait(p, p->work[1], ApSelectStageAt(g, p->work[1]));
       }
     }

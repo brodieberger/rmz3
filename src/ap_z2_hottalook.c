@@ -1,3 +1,5 @@
+#include "ap.h"
+
 #include "camera.h"
 #include "collision.h"
 #include "definition.h"
@@ -565,7 +567,9 @@ static void Hottalook_Die(struct Hottalook* p) {
     angle += 32 + (RANDOM(RNG_0202f388) & 15);
   }
   CreateSmoke(2, &s->coord);
+  TryDropItem(2, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  ApImportHottalookKilled();
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
