@@ -150,6 +150,24 @@ extern const EnemyRoutine gApZ2CarryarmRoutine;
 extern const EnemyRoutine gApZ2SignaloidRoutine;
 extern const EnemyRoutine gApZ2GolemArmRoutine;
 extern const EnemyRoutine gApZ2HarpuiaBladeRoutine;
+extern const EnemyRoutine gApZ2CopterRoutine;
+extern const EnemyRoutine gApZ2EyeRoutine;
+extern const EnemyRoutine gApZ2LeaperRoutine;
+extern const EnemyRoutine gApZ2BarrierShipRoutine;
+extern const EnemyRoutine gApZ2SnowballerRoutine;
+extern const EnemyRoutine gApZ2RingCannonRoutine;
+extern const EnemyRoutine gApZ2ShieldGuardRoutine;
+extern const EnemyRoutine gApZ2BeeRoutine;
+extern const EnemyRoutine gApZ2BeeCarrierRoutine;
+extern const EnemyRoutine gApZ2MoleRoutine;
+extern const EnemyRoutine gApZ2TowerRoutine;
+extern const EnemyRoutine gApZ2SpikeballRoutine;
+extern const EnemyRoutine gApZ2ShellRoutine;
+extern const EnemyRoutine gApZ2WolfRoutine;
+extern const EnemyRoutine gApZ2FlowerRoutine;
+extern const EnemyRoutine gApZ2SpiderRoutine;
+extern const EnemyRoutine gApZ2VultureRoutine;
+extern const EnemyRoutine gApZ2CrabRoutine;
 #endif
 
 // clang-format off
@@ -236,6 +254,24 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_Z2_SIGNALOID] = &gApZ2SignaloidRoutine,
   [ENEMY_Z2_GOLEM_ARM] = &gApZ2GolemArmRoutine,
   [ENEMY_Z2_HARPUIA_BLADE] = &gApZ2HarpuiaBladeRoutine,
+  [ENEMY_Z2_COPTER] = &gApZ2CopterRoutine,
+  [ENEMY_Z2_EYE] = &gApZ2EyeRoutine,
+  [ENEMY_Z2_LEAPER] = &gApZ2LeaperRoutine,
+  [ENEMY_Z2_BARRIER_SHIP] = &gApZ2BarrierShipRoutine,
+  [ENEMY_Z2_SNOWBALLER] = &gApZ2SnowballerRoutine,
+  [ENEMY_Z2_RING_CANNON] = &gApZ2RingCannonRoutine,
+  [ENEMY_Z2_SHIELD_GUARD] = &gApZ2ShieldGuardRoutine,
+  [ENEMY_Z2_BEE] = &gApZ2BeeRoutine,
+  [ENEMY_Z2_BEE_CARRIER] = &gApZ2BeeCarrierRoutine,
+  [ENEMY_Z2_MOLE] = &gApZ2MoleRoutine,
+  [ENEMY_Z2_TOWER] = &gApZ2TowerRoutine,
+  [ENEMY_Z2_SPIKEBALL] = &gApZ2SpikeballRoutine,
+  [ENEMY_Z2_SHELL] = &gApZ2ShellRoutine,
+  [ENEMY_Z2_WOLF] = &gApZ2WolfRoutine,
+  [ENEMY_Z2_FLOWER] = &gApZ2FlowerRoutine,
+  [ENEMY_Z2_SPIDER] = &gApZ2SpiderRoutine,
+  [ENEMY_Z2_VULTURE] = &gApZ2VultureRoutine,
+  [ENEMY_Z2_CRAB] = &gApZ2CrabRoutine,
 #endif
 };
 // clang-format on

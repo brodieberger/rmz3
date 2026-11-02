@@ -19,7 +19,21 @@
 #define SE_Z2_HIVE (SE_Z2_SIGNALOID_FIREBALL + 1)  // Zero 2 208: the hive releasing a Hottalook
 #define SE_Z2_SPIKING_BOUNCE (SE_Z2_HIVE + 1)  // Zero 2 62: Spiking bouncing
 #define BGM_Z2_CRYSTAL_CAVE (SE_Z2_SPIKING_BOUNCE + 1)  // Zero 2 175: Crystal Cave stage theme
+#define SE_Z2_SHIP_BLOCK (BGM_Z2_CRYSTAL_CAVE + 1)  // Zero 2 231: barrier ship blocking a shot
+#define SE_Z2_SHIP_CHARGE (SE_Z2_SHIP_BLOCK + 1)  // Zero 2 232: barrier ship charging
+#define SE_Z2_SNOWBALL_ROLL (SE_Z2_SHIP_CHARGE + 1)  // Zero 2 60: snowball rolling
+#define SE_Z2_SNOWBALL_BURST (SE_Z2_SNOWBALL_ROLL + 1)  // Zero 2 237: snowball bursting
+#define SE_Z2_RING_CANNON_CHARGE (SE_Z2_SNOWBALL_BURST + 1)  // Zero 2 204: ring cannon charging
+#define SE_Z2_RING_CANNON_FIRE (SE_Z2_RING_CANNON_CHARGE + 1)  // Zero 2 205: ring cannon firing
+#define SE_Z2_SHIELD_GUARD_MACE_HIT (SE_Z2_RING_CANNON_FIRE + 1)  // Zero 2 203: shield guard mace hit
+#define SE_Z2_MOLE_DRILL (SE_Z2_SHIELD_GUARD_MACE_HIT + 1)  // Zero 2 73: mole drilling out of the ground
+#define SE_Z2_TOWER_SWING (SE_Z2_MOLE_DRILL + 1)  // Zero 2 67: spiked tower swinging
+#define SE_Z2_SPIKEBALL_OPEN (SE_Z2_TOWER_SWING + 1)  // Zero 2 68: spiked ball opening
+#define SE_Z2_WOLF_GROWL (SE_Z2_SPIKEBALL_OPEN + 1)  // Zero 2 59: robot wolf running or biting
+#define SE_Z2_FLOWER_CHOMP (SE_Z2_WOLF_GROWL + 1)  // Zero 2 54: flower chomping
+#define SE_Z2_SPIDER_WEB (SE_Z2_FLOWER_CHOMP + 1)  // Zero 2 61: robot spider web
+#define SE_Z2_VULTURE_DIVE (SE_Z2_SPIDER_WEB + 1)  // Zero 2 55: robot vulture diving
 
-#define AP_Z2_SONG_LAST BGM_Z2_CRYSTAL_CAVE
+#define AP_Z2_SONG_LAST SE_Z2_VULTURE_DIVE
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

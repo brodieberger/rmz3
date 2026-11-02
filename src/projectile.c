@@ -100,6 +100,17 @@ extern const ProjectileRoutine gApZ2SignaloidFireRoutine;
 extern const ProjectileRoutine gApZ2GolemLaserRoutine;
 extern const ProjectileRoutine gApZ2HarpuiaWaveRoutine;
 extern const ProjectileRoutine gApZ2HarpuiaThunderRoutine;
+extern const ProjectileRoutine gApZ2CopterGunRoutine;
+extern const ProjectileRoutine gApZ2BarrierShipShotRoutine;
+extern const ProjectileRoutine gApZ2RingCannonShotRoutine;
+extern const ProjectileRoutine gApZ2ShieldGuardMaceRoutine;
+extern const ProjectileRoutine gApZ2BeeBombRoutine;
+extern const ProjectileRoutine gApZ2BeeBlastRoutine;
+extern const ProjectileRoutine gApZ2MoleDrillRoutine;
+extern const ProjectileRoutine gApZ2TowerArmRoutine;
+extern const ProjectileRoutine gApZ2TowerSpikeRoutine;
+extern const ProjectileRoutine gApZ2SpikeballRockRoutine;
+extern const ProjectileRoutine gApZ2SpiderWebRoutine;
 #endif
 
 // clang-format off
@@ -159,6 +170,17 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [PROJECTILE_Z2_GOLEM_LASER] = &gApZ2GolemLaserRoutine,
     [PROJECTILE_Z2_HARPUIA_WAVE] = &gApZ2HarpuiaWaveRoutine,
     [PROJECTILE_Z2_HARPUIA_THUNDER] = &gApZ2HarpuiaThunderRoutine,
+    [PROJECTILE_Z2_COPTER_GUN] = &gApZ2CopterGunRoutine,
+    [PROJECTILE_Z2_BARRIER_SHIP_SHOT] = &gApZ2BarrierShipShotRoutine,
+    [PROJECTILE_Z2_RING_CANNON_SHOT] = &gApZ2RingCannonShotRoutine,
+    [PROJECTILE_Z2_SHIELD_GUARD_MACE] = &gApZ2ShieldGuardMaceRoutine,
+    [PROJECTILE_Z2_BEE_BOMB] = &gApZ2BeeBombRoutine,
+    [PROJECTILE_Z2_BEE_BLAST] = &gApZ2BeeBlastRoutine,
+    [PROJECTILE_Z2_MOLE_DRILL] = &gApZ2MoleDrillRoutine,
+    [PROJECTILE_Z2_TOWER_ARM] = &gApZ2TowerArmRoutine,
+    [PROJECTILE_Z2_TOWER_SPIKE] = &gApZ2TowerSpikeRoutine,
+    [PROJECTILE_Z2_SPIKEBALL_ROCK] = &gApZ2SpikeballRockRoutine,
+    [PROJECTILE_Z2_SPIDER_WEB] = &gApZ2SpiderWebRoutine,
 #endif
 };
 // clang-format on

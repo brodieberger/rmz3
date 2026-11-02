@@ -16,3 +16,17 @@
     song se_z2_hive, 4, 4 @ SE_Z2_HIVE
     song se_z2_spiking_bounce, 4, 4 @ SE_Z2_SPIKING_BOUNCE
     song bgm_z2_crystal_cave, 0, 0 @ BGM_Z2_CRYSTAL_CAVE
+    song se_z2_ship_block, 3, 3 @ SE_Z2_SHIP_BLOCK
+    song se_z2_ship_charge, 3, 3 @ SE_Z2_SHIP_CHARGE
+    song se_z2_snowball_roll, 6, 6 @ SE_Z2_SNOWBALL_ROLL
+    song se_z2_snowball_burst, 2, 2 @ SE_Z2_SNOWBALL_BURST
+    song se_z2_ring_cannon_charge, 4, 4 @ SE_Z2_RING_CANNON_CHARGE
+    song se_z2_ring_cannon_fire, 4, 4 @ SE_Z2_RING_CANNON_FIRE
+    song se_z2_shield_guard_mace_hit, 4, 4 @ SE_Z2_SHIELD_GUARD_MACE_HIT
+    song se_z2_mole_drill, 4, 4 @ SE_Z2_MOLE_DRILL
+    song se_z2_tower_swing, 3, 3 @ SE_Z2_TOWER_SWING
+    song se_z2_spikeball_open, 3, 3 @ SE_Z2_SPIKEBALL_OPEN
+    song se_z2_wolf_growl, 3, 3 @ SE_Z2_WOLF_GROWL
+    song se_z2_flower_chomp, 4, 4 @ SE_Z2_FLOWER_CHOMP
+    song se_z2_spider_web, 4, 4 @ SE_Z2_SPIDER_WEB
+    song se_z2_vulture_dive, 4, 4 @ SE_Z2_VULTURE_DIVE

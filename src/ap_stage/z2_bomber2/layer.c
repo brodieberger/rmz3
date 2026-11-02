@@ -67,7 +67,7 @@ const StageFunc gApImp0_StageRoutines[4] = {
   2: lower corridor
   3: purple building, outdoor strip and the rest
   4: room at the bottom of the cave
-  5, 6, 7: lower half of the building and the plant underneath.
+  5, 6, 7: inside ship (inaccessible)
 */
 u8 gApImp0_Area(Coords32* c) {
   s32 x = c->x, y = c->y;

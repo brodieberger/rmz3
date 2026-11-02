@@ -84,7 +84,25 @@
 #define ENEMY_Z2_SIGNALOID 78  // Zero 2 Signaloid
 #define ENEMY_Z2_GOLEM_ARM 79  // Zero 2 Golem Type E's arms
 #define ENEMY_Z2_HARPUIA_BLADE 80  // Zero 2 Harpuia's blades
-#define ENEMY_COUNT (ENEMY_Z2_HARPUIA_BLADE + 1)
+#define ENEMY_Z2_COPTER 81         // Zero 2 propeller drone
+#define ENEMY_Z2_EYE 82            // Zero 2 hanging eye
+#define ENEMY_Z2_LEAPER 83  // Zero 2 pit leaper and its launcher
+#define ENEMY_Z2_BARRIER_SHIP 84  // Zero 2 barrier ship
+#define ENEMY_Z2_SNOWBALLER 85  // Zero 2 snowball thrower and snowballs
+#define ENEMY_Z2_RING_CANNON 86  // Zero 2 ring cannon
+#define ENEMY_Z2_SHIELD_GUARD 87  // Zero 2 shield guard
+#define ENEMY_Z2_BEE 88
+#define ENEMY_Z2_BEE_CARRIER 89
+#define ENEMY_Z2_MOLE 90
+#define ENEMY_Z2_TOWER 91
+#define ENEMY_Z2_SPIKEBALL 92
+#define ENEMY_Z2_SHELL 93
+#define ENEMY_Z2_WOLF 94
+#define ENEMY_Z2_FLOWER 95  // the man-eating flower
+#define ENEMY_Z2_SPIDER 96  // the robot spider
+#define ENEMY_Z2_VULTURE 97  // robot vultures and their perch
+#define ENEMY_Z2_CRAB 98  // the pyramid-shelled crab
+#define ENEMY_COUNT (ENEMY_Z2_CRAB + 1)
 #else
 #define ENEMY_COUNT (ENEMY_72 + 1)
 #endif

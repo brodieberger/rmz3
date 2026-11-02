@@ -124,6 +124,18 @@ extern const VFXRoutine gApZ2HottalookShardRoutine;
 extern const VFXRoutine gApZ2CarryarmDebrisRoutine;
 extern const VFXRoutine gApZ2SignaloidEffectRoutine;
 extern const VFXRoutine gApZ2GolemFootRoutine;
+extern const VFXRoutine gApZ2EyeDebrisRoutine;
+extern const VFXRoutine gApZ2BarrierShipWreckRoutine;
+extern const VFXRoutine gApZ2RingCannonSparksRoutine;
+extern const VFXRoutine gApZ2ShieldGuardTopRoutine;
+extern const VFXRoutine gApZ2BeeHeadRoutine;
+extern const VFXRoutine gApZ2TowerPieceRoutine;
+extern const VFXRoutine gApZ2SpikeballHalfRoutine;
+extern const VFXRoutine gApZ2ShellPieceRoutine;
+extern const VFXRoutine gApZ2WolfPieceRoutine;
+extern const VFXRoutine gApZ2SpiderPieceRoutine;
+extern const VFXRoutine gApZ2VultureHalfRoutine;
+extern const VFXRoutine gApZ2CrabPartRoutine;
 #endif
 
 // clang-format off
@@ -219,6 +231,18 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_Z2_CARRYARM_DEBRIS] = &gApZ2CarryarmDebrisRoutine,
     [VFX_Z2_SIGNALOID] = &gApZ2SignaloidEffectRoutine,
     [VFX_Z2_GOLEM_FOOT] = &gApZ2GolemFootRoutine,
+    [VFX_Z2_EYE_DEBRIS] = &gApZ2EyeDebrisRoutine,
+    [VFX_Z2_BARRIER_SHIP_WRECK] = &gApZ2BarrierShipWreckRoutine,
+    [VFX_Z2_RING_CANNON_SPARKS] = &gApZ2RingCannonSparksRoutine,
+    [VFX_Z2_SHIELD_GUARD_TOP] = &gApZ2ShieldGuardTopRoutine,
+    [VFX_Z2_BEE_HEAD] = &gApZ2BeeHeadRoutine,
+    [VFX_Z2_TOWER_PIECE] = &gApZ2TowerPieceRoutine,
+    [VFX_Z2_SPIKEBALL_HALF] = &gApZ2SpikeballHalfRoutine,
+    [VFX_Z2_SHELL_PIECE] = &gApZ2ShellPieceRoutine,
+    [VFX_Z2_WOLF_PIECE] = &gApZ2WolfPieceRoutine,
+    [VFX_Z2_SPIDER_PIECE] = &gApZ2SpiderPieceRoutine,
+    [VFX_Z2_VULTURE_HALF] = &gApZ2VultureHalfRoutine,
+    [VFX_Z2_CRAB_PART] = &gApZ2CrabPartRoutine,
 #endif
 };
 // clang-format on

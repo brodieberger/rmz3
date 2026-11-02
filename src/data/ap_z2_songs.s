@@ -31,7 +31,9 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 20: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 21: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 22: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 23: unused
+	.byte 0, 60, 0, 0 @ 23
+	.4byte DirectSoundWaveData_unk_0812d018
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 24: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 25: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 26: unused
@@ -54,11 +56,15 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 37: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 38: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 39: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 40: unused
+	.byte 0, 60, 0, 0 @ 40
+	.4byte gApZ2Wave_131c14
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 41: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 42: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 43: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 44: unused
+	.byte 0, 60, 0, 0 @ 44
+	.4byte DirectSoundWaveData_unk_08143110
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 45: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 46: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 47: unused
@@ -70,14 +76,24 @@ gApZ2Voicegroup_0ffd7c:
 	.4byte gApZ2Wave_153e7c
 	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 53: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 54: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 55: unused
+	.byte 0, 60, 0, 0 @ 54
+	.4byte gApZ2Wave_15872c
+	.byte 255, 0, 255, 0
+	.byte 0, 60, 0, 0 @ 55
+	.4byte gApZ2Wave_1591a4
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 56: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 57: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 58: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 59: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 60: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 61: unused
+	.byte 0, 60, 0, 0 @ 59
+	.4byte gApZ2Wave_15e6d4
+	.byte 255, 0, 255, 0
+	.byte 0, 60, 0, 0 @ 60
+	.4byte gApZ2Wave_15f728
+	.byte 255, 0, 255, 165
+	.byte 0, 60, 0, 0 @ 61
+	.4byte gApZ2Wave_1605a4
+	.byte 255, 0, 255, 0
 	.byte 0, 60, 0, 0 @ 62
 	.4byte gApZ2Wave_161534
 	.byte 255, 0, 255, 0
@@ -85,9 +101,13 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 64: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 65: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 66: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 67: unused
+	.byte 0, 60, 0, 0 @ 67
+	.4byte gApZ2Wave_164190
+	.byte 255, 0, 255, 165
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 68: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 69: unused
+	.byte 0, 60, 0, 0 @ 69
+	.4byte gApZ2Wave_16509c
+	.byte 255, 0, 255, 165
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 70: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 71: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 72: unused
@@ -99,7 +119,9 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 78: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 79: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 80: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 81: unused
+	.byte 0, 60, 0, 0 @ 81
+	.4byte gApZ2Wave_173250
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 82: unused
 	.byte 0, 60, 0, 0 @ 83
 	.4byte gApZ2Wave_174318
@@ -108,7 +130,9 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 60, 0, 0 @ 85
 	.4byte gApZ2Wave_1768b8
 	.byte 255, 0, 255, 0
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 86: unused
+	.byte 0, 60, 0, 0 @ 86
+	.4byte gApZ2Wave_178d00
+	.byte 255, 0, 255, 0
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 87: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 88: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 89: unused
@@ -218,7 +242,9 @@ gApZ2Voicegroup_10037c:
 	.byte 255, 0, 255, 76
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 51: unused
 	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 52: unused
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 53: unused
+	.byte 0, 60, 0, 0 @ 53
+	.4byte DirectSoundWaveData_unk_08250490
+	.byte 255, 0, 255, 127
 	.byte 0, 60, 0, 0 @ 54
 	.4byte gApZ2Wave_259e3c
 	.byte 255, 0, 255, 127
@@ -1018,6 +1044,155 @@ bgm_z2_crystal_cave:
 	.4byte bgm_z2_crystal_cave_data+0x314
 	.4byte bgm_z2_crystal_cave_data+0x67d
 
+@ Zero 2 song 231: barrier ship blocking a shot
+se_z2_ship_block_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x17, 0xBE, 0x75, 0xBF, 0x40, 0xE1, 0x46, 0x7F, 0xB0, 0xB0, 0xB0
+	.byte 0xB2
+	.4byte se_z2_ship_block_data+0xf
+.balign 4
+.global se_z2_ship_block
+se_z2_ship_block:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_ship_block_data+0x0
+
+@ Zero 2 song 232: barrier ship charging
+se_z2_ship_charge_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x2C, 0xBE, 0x57, 0xBF, 0x40, 0xE7, 0x2D, 0x7F, 0x98, 0xB1
+.balign 4
+.global se_z2_ship_charge
+se_z2_ship_charge:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_ship_charge_data+0x0
+
+@ Zero 2 song 60: snowball rolling
+se_z2_snowball_roll_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x3C, 0xBE, 0x78, 0xBF, 0x40, 0xF7, 0x2C, 0x7F, 0xA8, 0xB1
+.balign 4
+.global se_z2_snowball_roll
+se_z2_snowball_roll:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_snowball_roll_data+0x0
+
+@ Zero 2 song 237: snowball bursting
+se_z2_snowball_burst_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x56, 0xBE, 0x7D, 0xBF, 0x40, 0xF7, 0x24, 0x7F, 0xA8, 0xB1
+.balign 4
+.global se_z2_snowball_burst
+se_z2_snowball_burst:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_snowball_burst_data+0x0
+
+@ Zero 2 song 204: ring cannon charging
+se_z2_ring_cannon_charge_data:
+	.byte 0xBC, 0x00, 0xBB, 0x5F, 0xBD, 0x35, 0xC4, 0x00, 0xBE, 0x4C, 0xBF, 0x40, 0xC0, 0x40, 0xD2, 0x4F
+	.byte 0x3C, 0x86, 0xC0, 0x40, 0xD2, 0x4F, 0x44, 0x86, 0xC0, 0x43, 0xD2, 0x4F, 0x48, 0x86, 0xC0, 0x48
+	.byte 0xD2, 0x4F, 0x4C, 0x86, 0xC0, 0x4B, 0xD2, 0x4F, 0x50, 0x86, 0xC0, 0x50, 0xD2, 0x4F, 0x58, 0x86
+	.byte 0xC0, 0x53, 0xD2, 0x4F, 0x5C, 0x86, 0xC0, 0x56, 0xD2, 0x4F, 0x60, 0x86, 0xC0, 0x5F, 0xD2, 0x4F
+	.byte 0x64, 0x86, 0xC0, 0x68, 0xD2, 0x86, 0xC0, 0x73, 0xD2, 0x86, 0xC0, 0x7F, 0xD2, 0x86, 0x50, 0x86
+	.byte 0x51, 0x86, 0x52, 0x86, 0x52, 0x5C, 0x83, 0xB1
+.balign 4
+.global se_z2_ring_cannon_charge
+se_z2_ring_cannon_charge:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_10037c
+	.4byte se_z2_ring_cannon_charge_data+0x0
+
+@ Zero 2 song 205: ring cannon firing
+se_z2_ring_cannon_fire_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x28, 0xBE, 0x7F, 0xBF, 0x40, 0xFF, 0x2C, 0x7F, 0xB0, 0xB1
+.balign 4
+.global se_z2_ring_cannon_fire
+se_z2_ring_cannon_fire:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_ring_cannon_fire_data+0x0
+
+@ Zero 2 song 203: shield guard mace hit
+se_z2_shield_guard_mace_hit_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x51, 0xBE, 0x64, 0xBF, 0x40, 0xE1, 0x23, 0x7F, 0x92, 0xB1
+.balign 4
+.global se_z2_shield_guard_mace_hit
+se_z2_shield_guard_mace_hit:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_shield_guard_mace_hit_data+0x0
+
+@ Zero 2 song 73: mole drilling out of the ground
+se_z2_mole_drill_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x45, 0xBE, 0x69, 0xBF, 0x40, 0xE3, 0x20, 0x7F, 0x94, 0xB1
+.balign 4
+.global se_z2_mole_drill
+se_z2_mole_drill:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_mole_drill_data+0x0
+
+@ Zero 2 song 67: spiked tower swinging
+se_z2_tower_swing_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x43, 0xBE, 0x69, 0xD4, 0x2B, 0x7F, 0x86, 0xD4, 0x86, 0xD4, 0x86
+	.byte 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86, 0xD4, 0x86
+	.byte 0xD4, 0x85, 0xB1
+.balign 4
+.global se_z2_tower_swing
+se_z2_tower_swing:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_tower_swing_data+0x0
+
+@ Zero 2 song 68: spiked ball opening
+se_z2_spikeball_open_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x43, 0xBE, 0x5A, 0xBF, 0x40, 0xE7, 0x37, 0x7F, 0x98, 0xB1
+.balign 4
+.global se_z2_spikeball_open
+se_z2_spikeball_open:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_spikeball_open_data+0x0
+
+@ Zero 2 song 59: robot wolf running or biting
+se_z2_wolf_growl_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x3B, 0xBE, 0x57, 0xBF, 0x40, 0xE7, 0x2A, 0x7F, 0x98, 0xB1
+.balign 4
+.global se_z2_wolf_growl
+se_z2_wolf_growl:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_wolf_growl_data+0x0
+
+@ Zero 2 song 54: flower chomping
+se_z2_flower_chomp_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x36, 0xBE, 0x57, 0xBF, 0x40, 0xEF, 0x3C, 0x7F, 0xA0, 0xB1
+.balign 4
+.global se_z2_flower_chomp
+se_z2_flower_chomp:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_flower_chomp_data+0x0
+
+@ Zero 2 song 61: robot spider web
+se_z2_spider_web_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x3D, 0xBE, 0x61, 0xBF, 0x40, 0xE7, 0x2D, 0x7F, 0x98, 0xB1
+.balign 4
+.global se_z2_spider_web
+se_z2_spider_web:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_spider_web_data+0x0
+
+@ Zero 2 song 55: robot vulture diving
+se_z2_vulture_dive_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x37, 0xBE, 0x64, 0xBF, 0x40, 0xEF, 0x2D, 0x7F, 0xA0, 0xB1
+.balign 4
+.global se_z2_vulture_dive
+se_z2_vulture_dive:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_vulture_dive_data+0x0
+
 .balign 4
 gApZ2Wave_11666c:
 	.incbin "sound/direct_sound_samples/ap_z2/11666c.bin"
@@ -1025,17 +1200,47 @@ gApZ2Wave_11666c:
 gApZ2Wave_127218:
 	.incbin "sound/direct_sound_samples/ap_z2/127218.bin"
 .balign 4
+gApZ2Wave_131c14:
+	.incbin "sound/direct_sound_samples/ap_z2/131c14.bin"
+.balign 4
 gApZ2Wave_153e7c:
 	.incbin "sound/direct_sound_samples/ap_z2/153e7c.bin"
 .balign 4
+gApZ2Wave_15872c:
+	.incbin "sound/direct_sound_samples/ap_z2/15872c.bin"
+.balign 4
+gApZ2Wave_1591a4:
+	.incbin "sound/direct_sound_samples/ap_z2/1591a4.bin"
+.balign 4
+gApZ2Wave_15e6d4:
+	.incbin "sound/direct_sound_samples/ap_z2/15e6d4.bin"
+.balign 4
+gApZ2Wave_15f728:
+	.incbin "sound/direct_sound_samples/ap_z2/15f728.bin"
+.balign 4
+gApZ2Wave_1605a4:
+	.incbin "sound/direct_sound_samples/ap_z2/1605a4.bin"
+.balign 4
 gApZ2Wave_161534:
 	.incbin "sound/direct_sound_samples/ap_z2/161534.bin"
+.balign 4
+gApZ2Wave_164190:
+	.incbin "sound/direct_sound_samples/ap_z2/164190.bin"
+.balign 4
+gApZ2Wave_16509c:
+	.incbin "sound/direct_sound_samples/ap_z2/16509c.bin"
+.balign 4
+gApZ2Wave_173250:
+	.incbin "sound/direct_sound_samples/ap_z2/173250.bin"
 .balign 4
 gApZ2Wave_174318:
 	.incbin "sound/direct_sound_samples/ap_z2/174318.bin"
 .balign 4
 gApZ2Wave_1768b8:
 	.incbin "sound/direct_sound_samples/ap_z2/1768b8.bin"
+.balign 4
+gApZ2Wave_178d00:
+	.incbin "sound/direct_sound_samples/ap_z2/178d00.bin"
 .balign 4
 gApZ2Wave_1826d8:
 	.incbin "sound/direct_sound_samples/ap_z2/1826d8.bin"
