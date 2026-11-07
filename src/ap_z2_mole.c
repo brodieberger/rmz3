@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -465,6 +466,7 @@ static void Mole_Die(struct Mole* p) {
   CreateSmoke(1, &c);
   PlaySound(SE_ZAKO_EXPLODE);
   TryDropItem(3, (struct Coord*)&s->coord);
+  ApImportMoleKilled();
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);

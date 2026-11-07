@@ -2,6 +2,7 @@
 .include "asm/scripts/commands.inc"
 .include "asm/scripts/constants.inc"
 #include "constants/song.h"
+#include "constants/cutscene.h"
 #include "constants/entity.h"
 #include "constants/flag.h"
 
@@ -10,6 +11,12 @@
 .balign 4
 .section .rodata
 
+#include "../ap_stage/z2_opening/data.inc"
+#include "../ap_stage/z2_jungle/data.inc"
+#include "../ap_stage/z2_naold1/data.inc"
 #include "../ap_stage/z2_bomber2/data.inc"
+#include "../ap_stage/z2_naold2/data.inc"
+#include "../ap_stage/z2_na1/data.inc"
+#include "../ap_stage/z2_na2/data.inc"
 
 .endif

@@ -96,7 +96,7 @@ static bool32 ApCanAcceptItems(void) {
 static u8 ApFirstUnlockedWeapon(u8 unlocked) {
   u8 weapon;
 
-  for (weapon = 0; weapon < WEAPON_KINDS; weapon++) {
+  for (weapon = 0; weapon < AP_WEAPON_KINDS; weapon++) {
     if (unlocked & (1 << weapon)) {
       return weapon;
     }
@@ -108,7 +108,7 @@ static u8 ApFirstUnlockedWeapon(u8 unlocked) {
 static u8 ApFirstUnlockedWeaponExcept(u8 unlocked, u8 except) {
   u8 weapon;
 
-  for (weapon = 0; weapon < WEAPON_KINDS; weapon++) {
+  for (weapon = 0; weapon < AP_WEAPON_KINDS; weapon++) {
     if ((unlocked & (1 << weapon)) && weapon != except) {
       return weapon;
     }
@@ -302,7 +302,6 @@ struct ApStageClear {
 };
 
 static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
-    [STAGE_NONE] = {389, 0, 390},  // legacy stages
     [STAGE_SPACE_CRAFT] = {181, 0, 206},
     [STAGE_VOLCANO] = {182, 199, 207},
     [STAGE_OCEAN] = {183, 197, 208},
@@ -320,6 +319,21 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
     [STAGE_SUB_ARCADIA] = {195, 0, 220},
     [STAGE_WEILS_LABO] = {196, 0, 0},
 };
+
+// Legacy stages share STAGE_NONE, go by import
+static const struct ApStageClear sApImportClears[AP_IMPORT_COUNT] = {
+    {400, 0, 401},  // Z2 Sand Wilderness
+    {464, 0, 465},  // Z2 Forest of Dysis
+    {480, 0, 481},  // Z2 Residential Area
+    {544, 0, 545},  // Z2 Crystal Cave
+    {576, 0, 577},  // Z2 Neo Arcadia Temple
+    {592, 0, 593},  // Z2 Temple of Flame
+    {608, 0, 609},  // Z2 Temple of Ice
+};
+
+u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_IMPORT_FIRST) / AP_LOC_IMPORT_STRIDE; }
+
+bool32 ApImportOpen(u8 import) { return gApSavedata.importOpen[ApImportZ2Stage(import)]; }
 
 /*
   The final stage has no access item.
@@ -343,9 +357,9 @@ static bool32 ApFinalStageOpen(void) {
 bool32 ApStageUnlocked(u8 stageID) {
   const u8* mask = &gGameState.save.unused_240[AP_UNLOCK_BYTE];
 
-  /* Legacy stages, unlocked by their access item. Confiruable by option. */
+  /* The legacy stage selected, unlocked by its own access item. */
   if (stageID == STAGE_NONE) {
-    return mask[1] & (1 << (AP_IMPORT_UNLOCK_BIT - 8));
+    return ApImportOpen(gApImportSelected);
   }
   if (stageID == AP_STAGE_FINAL) {
     return ApFinalStageOpen();
@@ -358,23 +372,16 @@ bool32 ApStageUnlocked(u8 stageID) {
 
 /*
   Per-stage best rank. A nibble each, stored as rank + 1 so an uncleared stage is not an F.
-  The legacy stage (STAGE_NONE).
+  The legacy stages (STAGE_NONE) keep theirs in gApSavedata, by import.
 */
-static u8* ApRankByte(u8 stageID) {
-  if (stageID == STAGE_NONE) {
-    return &gGameState.save.unused_240[AP_IMPORT_RANK_BYTE];
-  }
-  return &gGameState.save.unused_240[AP_RANK_BYTE + ((stageID - 1) >> 1)];
-}
+static u8* ApRankByte(u8 stageID) { return &gGameState.save.unused_240[AP_RANK_BYTE + ((stageID - 1) >> 1)]; }
 
-static u8 ApRankShift(u8 stageID) {
-  if (stageID == STAGE_NONE) {
-    return 0;
-  }
-  return ((stageID - 1) & 1) ? 4 : 0;
-}
+static u8 ApRankShift(u8 stageID) { return ((stageID - 1) & 1) ? 4 : 0; }
 
 u8 ApStageBestRank(u8 stageID) {
+  if (stageID == STAGE_NONE) {
+    return gApSavedata.importRank[gApImportSelected];
+  }
   if (stageID > AP_STAGE_FINAL) {
     return AP_RANK_NONE;
   }
@@ -431,7 +438,12 @@ u8 ApUpdateStageRank(u8 stageID, u8 missionRank) {
   }
 
   best = ApStageBestRank(stageID);
-  if ((u8)(missionRank + 1) > best) {
+  if ((u8)(missionRank + 1) <= best) {
+    return ApAggregateRank();
+  }
+  if (stageID == STAGE_NONE) {
+    gApSavedata.importRank[gApImportSelected] = (u8)(missionRank + 1);
+  } else {
     rankByte = ApRankByte(stageID);
     shift = ApRankShift(stageID);
     *rankByte = (u8)((*rankByte & ~(0x0F << shift)) | ((missionRank + 1) << shift));
@@ -520,27 +532,30 @@ static void ApUnlockWeapon(u8 weapon) {
 /*
   Longest chain each weapon has. The last three levels are e-reader attack increases
 */
-static const u8 sApWeaponChainMax[WEAPON_KINDS] = {
+static const u8 sApWeaponChainMax[AP_WEAPON_KINDS] = {
     6,  // WEAPON_BUSTER: own, semi charge, full charge, ATK+1, ATK+2, ATK+3
     7,  // WEAPON_SABER:  own, 2nd slash, 3rd slash, charged slash, ATK+1, ATK+2, ATK+3
     5,  // WEAPON_ROD:    own, charged rod, ATK+1, ATK+2, ATK+3
     5,  // WEAPON_SHIELD: own, charged throw, ATK+1, ATK+2, ATK+3
+    5,  // WEAPON_CHAIN:  own, charged rod, ATK+1, ATK+2, ATK+3
 };
 
 // The ability given at progressive levels.
-static const u8 sApWeaponAbilityMod[WEAPON_KINDS][3] = {
+static const u8 sApWeaponAbilityMod[AP_WEAPON_KINDS][3] = {
     {AP_MOD_BUSTER_SEMI, AP_MOD_BUSTER_FULL, AP_MOD_NONE},
     {AP_MOD_SABER_SLASH2, AP_MOD_SABER_SLASH3, AP_MOD_SABER_CHARGE},
     {AP_MOD_ROD_CHARGE, AP_MOD_NONE, AP_MOD_NONE},
     {AP_MOD_SHIELD_CHARGE, AP_MOD_NONE, AP_MOD_NONE},
+    {AP_MOD_NONE, AP_MOD_NONE, AP_MOD_NONE},
 };
 
 // These are in the vanilla game.
-static const u8 sApWeaponAtkMod[WEAPON_KINDS][3] = {
+static const u8 sApWeaponAtkMod[AP_WEAPON_KINDS][3] = {
     {MOD_BUSTER_ATK1, MOD_BUSTER_ATK2, MOD_BUSTER_ATK3},
     {MOD_SABER_ATK1, MOD_SABER_ATK2, MOD_SABER_ATK3},
     {MOD_ROD_ATK1, MOD_ROD_ATK2, MOD_ROD_ATK3},
     {MOD_SHIELD_ATK1, MOD_SHIELD_ATK2, MOD_SHIELD_ATK3},
+    {AP_MOD_NONE, AP_MOD_NONE, AP_MOD_NONE},
 };
 
 // Caps the max upgrade based on user's options
@@ -593,6 +608,9 @@ u8 ApChargeTier(u8 weapon) {
   if (weapon == WEAPON_ROD) {
     return ApHasWeaponAbility(AP_MOD_ROD_CHARGE) ? FULL_CHARGE : NO_CHARGE;
   }
+  if (weapon == WEAPON_CHAIN) {
+    return gApSavedata.chainLevel >= 2 ? FULL_CHARGE : NO_CHARGE;
+  }
   return ApHasWeaponAbility(AP_MOD_SHIELD_CHARGE) ? FULL_CHARGE : NO_CHARGE;
 }
 
@@ -602,12 +620,16 @@ static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
   bool32 changed = FALSE;
   u8 step;
 
-  if (weapon >= WEAPON_KINDS || level == 0 || level > sApWeaponChainMax[weapon]) {
+  if (weapon >= AP_WEAPON_KINDS || level == 0 || level > sApWeaponChainMax[weapon]) {
     return FALSE;
   }
   ApUnlockWeapon(weapon);
   if (level > ApWeaponChainTop(weapon)) {
     level = ApWeaponChainTop(weapon);
+  }
+  if (weapon == WEAPON_CHAIN) {
+    if (level > gApSavedata.chainLevel) gApSavedata.chainLevel = level;
+    return FALSE;
   }
 
   for (step = 2; step <= level; step++) {
@@ -626,12 +648,13 @@ static bool32 ApSetWeaponLevel(u8 weapon, u8 level) {
 u8 ApWeaponLevel(u8 weapon) {
   u8 step;
 
-  if (weapon >= WEAPON_KINDS) {
+  if (weapon >= AP_WEAPON_KINDS) {
     return 0;
   }
   if (!(gPlayers[0].unk_b4.status.unlockedWeapon & (1 << weapon))) {
     return 0;
   }
+  if (weapon == WEAPON_CHAIN) return gApSavedata.chainLevel;
   for (step = sApWeaponChainMax[weapon]; step >= 2; step--) {
     u8 bit = ApWeaponStepBit(weapon, step);
 
@@ -650,7 +673,7 @@ void ApPrintWeaponStars(u8 weapon) {
   u8 max;
   u8 i;
 
-  if (weapon >= WEAPON_KINDS) {
+  if (weapon >= AP_WEAPON_KINDS) {
     return;
   }
   level = ApWeaponLevel(weapon);
@@ -696,8 +719,8 @@ static bool32 ApGrantItem(u16 apItemID) {
     ApUnlockStage((u8)(apItemID - AP_ITEM_STAGE_ACCESS_FIRST + STAGE_SPACE_CRAFT));
     return FALSE;
   }
-  if (apItemID == AP_ITEM_IMPORT_ACCESS) {
-    gGameState.save.unused_240[AP_UNLOCK_BYTE + 1] |= 1 << (AP_IMPORT_UNLOCK_BIT - 8);
+  if (apItemID >= AP_ITEM_IMPORT_ACCESS_FIRST && apItemID < AP_ITEM_IMPORT_ACCESS_FIRST + AP_Z2_STAGE_COUNT) {
+    gApSavedata.importOpen[apItemID - AP_ITEM_IMPORT_ACCESS_FIRST] = TRUE;
     return FALSE;
   }
 
@@ -894,9 +917,13 @@ u8 ApIconOf(u16 apItemID) {
   if (apItemID >= AP_ITEM_DISK_FIRST && apItemID <= AP_ITEM_DISK_LAST) {
     return AP_ICON_DISK;
   }
+  if (apItemID == AP_ITEM_PROGRESSIVE_CHAIN) {
+    return AP_ICON_CHAIN;
+  }
   if (apItemID >= AP_ITEM_WEAPON_LEVEL_FIRST && apItemID <= AP_ITEM_WEAPON_LEVEL_LAST) {
-    return (u8)(AP_ICON_BUSTER +
-                ((apItemID - AP_ITEM_WEAPON_LEVEL_FIRST) / AP_ITEM_CODES_PER_WEAPON));
+    u8 weapon = (u8)((apItemID - AP_ITEM_WEAPON_LEVEL_FIRST) / AP_ITEM_CODES_PER_WEAPON);
+
+    return weapon == WEAPON_CHAIN ? AP_ICON_CHAIN : (u8)(AP_ICON_BUSTER + weapon);
   }
   if (apItemID >= AP_ITEM_BODY_CHIP_FIRST && apItemID <= AP_ITEM_BODY_CHIP_LAST) {
     return (u8)(AP_ICON_BODY_ICE + (apItemID - AP_ITEM_BODY_CHIP_FIRST));
@@ -1044,8 +1071,8 @@ static void ApCycleWeapon(struct ZeroStatus* status, u8 slot) {
   u8 other = status->weapons[slot ^ 1];
   u8 i;
 
-  for (i = 1; i < WEAPON_KINDS; i++) {
-    u8 next = (u8)((status->weapons[slot] + i) & 3);
+  for (i = 1; i < AP_WEAPON_KINDS; i++) {
+    u8 next = (u8)((status->weapons[slot] + i) % AP_WEAPON_KINDS);
 
     if ((status->unlockedWeapon & (1 << next)) && (next != other)) {
       status->weapons[slot] = next;
@@ -1410,6 +1437,12 @@ static void ApRebuildCheckedLocations(void) {
       }
     }
   }
+  // Legacy stages share missionDones' bit, best rank says cleared
+  for (i = 0; i < AP_IMPORT_COUNT; i++) {
+    if (gApSavedata.importRank[i] != AP_RANK_NONE) {
+      ApMarkLocationChecked(sApImportClears[i].clear);
+    }
+  }
 
   for (i = 0; i < AP_SUNKEN_COUNT; i++) {
     if (gGameState.save.unused_240[AP_SUNKEN_BYTE] & (1 << i)) {
@@ -1517,7 +1550,7 @@ void ApMarkStageCleared(void) {
     return;
   }
 
-  stage = &sApStageClears[gStageRun.id];
+  stage = (gStageRun.id == STAGE_NONE) ? &sApImportClears[gApImportSelected] : &sApStageClears[gStageRun.id];
   if (stage->clear == 0) {
     return;
   }

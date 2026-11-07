@@ -111,6 +111,14 @@ extern const ProjectileRoutine gApZ2TowerArmRoutine;
 extern const ProjectileRoutine gApZ2TowerSpikeRoutine;
 extern const ProjectileRoutine gApZ2SpikeballRockRoutine;
 extern const ProjectileRoutine gApZ2SpiderWebRoutine;
+extern const ProjectileRoutine gApZ2DesertLinkRoutine;
+extern const ProjectileRoutine gApZ2FefnirFireRoutine;
+extern const ProjectileRoutine gApZ2LeviathanShotRoutine;
+extern const ProjectileRoutine gApZ2BlobDropRoutine, gApZ2BlobSplatRoutine;
+extern const ProjectileRoutine gApZ2GolemFireRoutine, gApZ2GolemJetRoutine;
+extern const ProjectileRoutine gApZ2DragonTailRoutine;
+extern const ProjectileRoutine gApZ2WallRingRoutine;
+extern const ProjectileRoutine gApZ2PylonHazardRoutine;
 #endif
 
 // clang-format off
@@ -181,6 +189,16 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [PROJECTILE_Z2_TOWER_SPIKE] = &gApZ2TowerSpikeRoutine,
     [PROJECTILE_Z2_SPIKEBALL_ROCK] = &gApZ2SpikeballRockRoutine,
     [PROJECTILE_Z2_SPIDER_WEB] = &gApZ2SpiderWebRoutine,
+    [PROJECTILE_Z2_DESERT_LINK] = &gApZ2DesertLinkRoutine,
+    [PROJECTILE_Z2_FEFNIR_FIRE] = &gApZ2FefnirFireRoutine,
+    [PROJECTILE_Z2_LEVIATHAN_SHOT] = &gApZ2LeviathanShotRoutine,
+    [PROJECTILE_Z2_BLOB_DROP] =     &gApZ2BlobDropRoutine,
+    [PROJECTILE_Z2_BLOB_SPLAT] =    &gApZ2BlobSplatRoutine,
+    [PROJECTILE_Z2_GOLEM_FIRE] =    &gApZ2GolemFireRoutine,
+    [PROJECTILE_Z2_GOLEM_JET] =     &gApZ2GolemJetRoutine,
+    [PROJECTILE_Z2_DRAGON_TAIL] = &gApZ2DragonTailRoutine,
+    [PROJECTILE_Z2_WALL_RING] = &gApZ2WallRingRoutine,
+    [PROJECTILE_Z2_PYLON_HAZARD] = &gApZ2PylonHazardRoutine,
 #endif
 };
 // clang-format on

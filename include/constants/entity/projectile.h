@@ -24,8 +24,18 @@
 #define PROJECTILE_Z2_TOWER_ARM 61
 #define PROJECTILE_Z2_TOWER_SPIKE 62
 #define PROJECTILE_Z2_SPIKEBALL_ROCK 63
-#define PROJECTILE_Z2_SPIDER_WEB 64  // its web
-#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_SPIDER_WEB + 1)
+#define PROJECTILE_Z2_SPIDER_WEB 64 
+#define PROJECTILE_Z2_DESERT_LINK 65  // a link between the Desert boss's stretched tail segments
+#define PROJECTILE_Z2_FEFNIR_FIRE 66  // Fefnir's tank's fire, Zero 2 projectile 38
+#define PROJECTILE_Z2_PYLON_HAZARD 67  // Zero 2 projectile 10
+#define PROJECTILE_Z2_LEVIATHAN_SHOT 68  // Zero 2 projectile 42
+#define PROJECTILE_Z2_DRAGON_TAIL 69  // Zero 2 projectile 43
+#define PROJECTILE_Z2_BLOB_DROP 70  // Zero 2 projectile 26
+#define PROJECTILE_Z2_BLOB_SPLAT 71  // Zero 2 projectile 27
+#define PROJECTILE_Z2_GOLEM_FIRE 72  // Zero 2 projectile 51
+#define PROJECTILE_Z2_GOLEM_JET 73  // Zero 2 projectile 52
+#define PROJECTILE_Z2_WALL_RING 74  // Zero 2 projectile 44
+#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_WALL_RING + 1)
 #else
 #define PROJECTILE_ENTITY_COUNT 48
 #endif

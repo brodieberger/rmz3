@@ -36,6 +36,7 @@ enum {
   HOPPER_TURN,
   HOPPER_ELEMENT_HIT,
   HOPPER_RECOIL,
+  HOPPER_PULLED,
 };
 
 static const struct Collision sCollisions[8];
@@ -43,6 +44,7 @@ static const struct SlashedEnemy sGibs[3];
 static const struct SlashedEnemy sGibsHard[3];
 static const Coords32 sElementCoord = {0, -PIXEL(12)};
 
+static u16 Hopper_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Hopper_Init(struct Hopper* p);
 static void Hopper_Update(struct Hopper* p);
 static void Hopper_Die(struct Hopper* p);
@@ -124,6 +126,7 @@ static void Hopper_Init(struct Hopper* p) {
   p->hitbox = 0;
   (p->s).d.x = (p->s).d.y = 0;
   INIT_BODY(p, sCollisions, 6, Hopper_OnCollision);
+  (p->body).unk_28 = (u32)Hopper_Pull;
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
   Hopper_Update(p);
 }
@@ -135,7 +138,7 @@ static void Hopper_OnCollision(struct Body* body, Coords32* r1 UNUSED, Coords32*
   }
 }
 
-static const EnemyFunc sUpdates[7];
+static const EnemyFunc sUpdates[9];
 static void Hopper_Recoil(struct Hopper* p);
 
 // 0x080760f4
@@ -387,7 +390,30 @@ static void Hopper_Recoil(struct Hopper* p) {
   }
 }
 
-static const EnemyFunc sUpdates[7] = {
+// 0x080768f0
+static void Hopper_Pulled(struct Hopper* p) {
+  if ((p->s).mode[2] == 0) {
+    SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_HOPPER, 4));
+    (p->s).mode[2]++;
+  }
+  UpdateSpriteAnimation(p);
+}
+
+// 0x08077264
+static u16 Hopper_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  if (s->mode[1] != HOPPER_PULLED) {
+    s->mode[1] = HOPPER_PULLED;
+    s->mode[2] = 0;
+  }
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  s->mode[1] = HOPPER_FALL;
+  s->mode[2] = 0;
+  return 0;
+}
+
+static const EnemyFunc sUpdates[9] = {
     [HOPPER_IDLE] = (EnemyFunc)Hopper_Idle,
     [HOPPER_CRAWL] = (EnemyFunc)Hopper_Crawl,
     [HOPPER_LEAP] = (EnemyFunc)Hopper_Leap,
@@ -395,6 +421,7 @@ static const EnemyFunc sUpdates[7] = {
     [HOPPER_HIT] = (EnemyFunc)Hopper_Hit,
     [HOPPER_TURN] = (EnemyFunc)Hopper_Turn,
     [HOPPER_ELEMENT_HIT] = (EnemyFunc)Hopper_ElementHit,
+    [HOPPER_PULLED] = (EnemyFunc)Hopper_Pulled,
 };
 
 // --------------------------------------------

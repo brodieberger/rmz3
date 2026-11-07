@@ -58,7 +58,31 @@
 #define SOLID_SEA_LV_BTN 54
 #define SOLID_CHILDRE_SHIP 55
 
+#if AP
+#define SOLID_Z2_SAND_BLOCK 56  // Zero 2 solid 0, the Desert's sinking sand
+#define SOLID_Z2_INTRO_HUNTER 57  // Zero 2 solid 5 work0 3, a Pantheon Hunter in the Desert boss's intro
+#define SOLID_Z2_INTRO_JAW 58  // Zero 2 solid 5 work0 0x36, the Desert boss's jaw tearing through them
+#define SOLID_Z2_SLAB 59  // Zero 2 solid 18 work0 2, the Temple of Flame's crumbling slabs
+#define SOLID_Z2_BEATEN_FEFNIR 60  // Zero 2 solid 5 work0 37, Fefnir in the Temple of Flame's clear
+#define SOLID_Z2_GATE 61  // Zero 2 solid 28, the Temple of Flame's sinking pillars
+#define SOLID_Z2_FLOE 62  // Zero 2 solid 16, the Temple of Ice's ice floes
+#define SOLID_Z2_ICE_CELL 63  // Zero 2 solid 31, a cell of the crawler's row
+#define SOLID_Z2_FALLEN 64  // Zero 2 solid 5 work0 0x26, a fallen soldier in the Residential Area
+#define SOLID_Z2_CAST 65  // Zero 2 solid 5 work0 0x2B, Harpuia, Leviathan or Fefnir in its scene
+#define SOLID_Z2_DOOR 66  // Zero 2 solid 12
+#define SOLID_Z2_RESCUE 67  // Zero 2 solid 8 work0 5, a soldier lost in the Jungle
+#define SOLID_Z2_PAD 68  // Zero 2 solid 25, a cap on a stalk in the Jungle
+#define SOLID_Z2_LIFT 69  // Zero 2 solid 15, the Jungle's lifts
+#define SOLID_Z2_SCOUT 70  // Zero 2 solid 5 work0 27, the soldier in the Jungle's opening
+#define SOLID_Z2_RESCUE_THIEF 71  // Zero 2 solid 5 work0 30, the soldier with the Baby Elf
+#define SOLID_Z2_BABY_ELF 72  // Zero 2 solid 5 work0 31, the Baby Elf he carries
+#define SOLID_Z2_X 73  // Zero 2 solid 5 work0 32, X in the Jungle's clear
+#define SOLID_Z2_WALL_SHELF 74  // Zero 2 solid 10, the Jungle's wall machine's shelf
+#define SOLID_Z2_WALL_ARM 75  // Zero 2 solid 11, its arm and spikes
+#define SOLID_ENTITY_COUNT (SOLID_Z2_WALL_ARM + 1)
+#else
 #define SOLID_ENTITY_COUNT 56
+#endif
 
 // --------------------------------------------
 

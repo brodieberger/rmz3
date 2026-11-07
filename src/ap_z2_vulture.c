@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -64,7 +65,7 @@ enum {
   VULTURE_LANDING,
   VULTURE_PREEN,
   VULTURE_LEAVE,
-  VULTURE_PULLED,  // Zero 2's Chain Rod pull, unused here
+  VULTURE_PULLED,
   VULTURE_ELEMENT,
   VULTURE_RECOIL,
 };
@@ -87,6 +88,7 @@ static const struct SlashedEnemy sHardGibs[2];
 static const struct SlashedEnemy sHalfGibs[2];
 static const Coords32 sElementCoord = {0, -PIXEL(12)};
 
+static u16 Vulture_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Vulture_Init(struct Vulture* p);
 static void Vulture_Update(struct Vulture* p);
 static void Vulture_Die(struct Vulture* p);
@@ -185,6 +187,7 @@ static void Vulture_Init(struct Vulture* p) {
     SetMotion(s, ANIM(8));
     p->coll = 0;
     INIT_BODY(p, sVulture[0], 4, Vulture_OnCollision);
+    (p->body).unk_28 = (u32)Vulture_Pull;
     s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
     p->homeX = s->coord.x;
     p->homeY = s->coord.y;
@@ -290,6 +293,31 @@ static void startle(struct Entity* partner) {
 }
 
 // 0x0807ef30
+// 0x0807f9f0
+static void Vulture_Pulled(struct Vulture* p) {
+  struct Entity* s = &p->s;
+  if (s->mode[2] == 0) {
+    face(p, !s->work[1]);
+    SetMotion(s, ANIM(9));
+    s->mode[2]++;
+  }
+  UpdateEntityAnim(s);
+}
+
+// 0x08080230
+static u16 Vulture_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  if (s->mode[1] != VULTURE_PULLED) {
+    s->mode[1] = VULTURE_PULLED;
+    s->mode[2] = 0;
+  }
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  s->mode[1] = VULTURE_TAKE_OFF;
+  s->mode[2] = 0;
+  return 0;
+}
+
 static void Vulture_Update(struct Vulture* p) {
   struct Entity* s = &p->s;
   u32 status = (p->body).status;
@@ -370,6 +398,7 @@ static void Vulture_Update(struct Vulture* p) {
     case VULTURE_LANDING: Vulture_Landing(p); break;
     case VULTURE_PREEN: Vulture_Preen(p); break;
     case VULTURE_LEAVE: Vulture_Leave(p); break;
+    case VULTURE_PULLED: Vulture_Pulled(p); break;
     case VULTURE_ELEMENT: Vulture_Element(p); break;
   }
 }
@@ -440,10 +469,15 @@ static void Vulture_Loop(struct Vulture* p) {
       p->angle = s->work[1] * 128 - 64;
       s->work[2] = 8;
       s->mode[2] = 1;
-      UpdateEntityAnim(s);
-      if (s->motion.state == ANIM_END || s->motion.state == ANIM_NEXT_GOTO) s->mode[2]++;
-      break;
+      FALLTHROUGH;
     case 1:
+      UpdateEntityAnim(s);
+      if (s->motion.state == ANIM_END || s->motion.state == ANIM_NEXT_GOTO) {
+        s->mode[2]++;
+        s->mode[3] = 0;
+      }
+      break;
+    case 2:
       if (s->mode[3] == 0) {
         SetMotion(s, ANIM(0));
         s->mode[3]++;
@@ -454,7 +488,7 @@ static void Vulture_Loop(struct Vulture* p) {
         s->mode[3] = 0;
       }
       break;
-    case 2:
+    case 3:
       if (s->mode[3] == 0) {
         SetMotion(s, ANIM(2));
         s->mode[3]++;
@@ -476,7 +510,7 @@ static void Vulture_Loop(struct Vulture* p) {
       s->mode[2]++;
       s->mode[3] = 0;
       break;
-    case 3:
+    case 4:
       if (s->mode[3] == 0) {
         face(p, !FACING_RIGHT(p));
         SetMotion(s, ANIM(3));
@@ -692,6 +726,7 @@ static void countKill(struct Vulture* p) {
   struct Entity* s = &p->s;
   TryDropItem(1, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  ApImportVultureKilled();
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
 }
 

@@ -36,7 +36,8 @@ enum {
   CARRYARM_CARRY,
   SPIKING_CARRIED,
   SPIKING_ROLL,
-  CARRYARM_RECOIL, 
+  CARRYARM_RECOIL,
+  CARRYARM_PULLED, 
 };
 
 enum {
@@ -76,6 +77,7 @@ static const Coords32 sSpikingElementCoord = {0, -PIXEL(10)};
 static const s32 sSlopeDX[14];
 static const s32 sSlopeDY[14];
 
+static u16 Carryarm_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Carryarm_Init(struct Carryarm* p);
 static void Carryarm_Update(struct Carryarm* p);
 static void Carryarm_Die(struct Carryarm* p);
@@ -149,10 +151,12 @@ static void Carryarm_Init(struct Carryarm* p) {
     }
     s->unk_2c = q;
     INIT_BODY(p, sSpikingCollisions, 10, onCollision);
+    (p->body).unk_28 = (u32)Carryarm_Pull;
     SetMotion(s, ANIM_ROLL(0));
     s->mode[1] = SPIKING_CARRIED;
   } else {
     INIT_BODY(p, sCarryarmCollisions, 8, onCollision);
+    (p->body).unk_28 = (u32)Carryarm_Pull;
     SetMotion(s, ANIM_CARRY);
     s->mode[1] = CARRYARM_CARRY;
   }
@@ -160,7 +164,7 @@ static void Carryarm_Init(struct Carryarm* p) {
   Carryarm_Update(p);
 }
 
-static const EnemyFunc sUpdates[3];
+static const EnemyFunc sUpdates[5];
 
 static void killed(struct Carryarm* p, bool8 spiking) {
   struct Entity* s = &p->s;
@@ -276,6 +280,49 @@ static void swoop(struct Entity* s) {
   s->coord.x += s->d.x;
   s->coord.y += s->d.y;
   s->d.y -= s->LIFT;
+}
+
+// 0x0808e1fc
+static void flyOff(struct Entity* arm) {
+  if (arm->mode[2] > 1) return;
+  arm->unk_28 = NULL;
+  GotoMotion(arm, ANIM_FLY_OFF, 5, 1);
+  UpdateEntityAnim(arm);
+  startSwoop(arm);
+  arm->mode[2] = 3;
+}
+
+// 0x0808e1a0: tugged apart, drops or flies off
+static u16 Carryarm_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  bool8 hitWall;
+  if (s->mode[1] != CARRYARM_PULLED) s->mode[1] = CARRYARM_PULLED;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (!IS_SPIKING(s)) {
+    if (dx != 0 || dy != 0) {
+      struct Entity* q = s->unk_28;
+      if (q != NULL && q->mode[1] == SPIKING_CARRIED) {
+        q->unk_2c = NULL;
+        q->mode[1] = SPIKING_ROLL;
+        q->mode[2] = 0;
+      }
+      flyOff(s);
+    }
+    if (pulling) return 1;
+    s->mode[1] = CARRYARM_CARRY;
+    return 0;
+  }
+  s->d.x = dx;
+  s->d.y = dy;
+  hitWall = FUN_080098a4(s->coord.x, s->coord.y) != 0;
+  if (dx != 0 || dy != 0) {
+    if (s->unk_2c != NULL) flyOff(s->unk_2c);
+    s->unk_2c = NULL;
+  }
+  if (pulling && !hitWall) return 1;
+  s->mode[1] = SPIKING_ROLL;
+  s->mode[2] = 0;
+  return 0;
 }
 
 static void Carryarm_Carry(struct Carryarm* p) {
@@ -419,10 +466,13 @@ static void Spiking_Roll(struct Carryarm* p) {
   }
 }
 
-static const EnemyFunc sUpdates[3] = {
+static void Carryarm_Pulled(struct Carryarm* p) { UpdateEntityAnim(&p->s); }
+
+static const EnemyFunc sUpdates[5] = {
     [CARRYARM_CARRY] = (EnemyFunc)Carryarm_Carry,
     [SPIKING_CARRIED] = (EnemyFunc)Spiking_Carried,
     [SPIKING_ROLL] = (EnemyFunc)Spiking_Roll,
+    [CARRYARM_PULLED] = (EnemyFunc)Carryarm_Pulled,
 };
 
 static void explode(struct Entity* s, s32 above) {

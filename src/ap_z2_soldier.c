@@ -28,6 +28,7 @@ enum {
   SOLDIER_STAND,
   SOLDIER_HIT,
   SOLDIER_RECOIL,
+  SOLDIER_PULLED,
 };
 
 // Animations in the sheet
@@ -46,6 +47,7 @@ static const struct Collision sKneeling[2];
 static const struct Collision sHarmless[2];
 static const Coords32 sElementCoord = {0, -PIXEL(24)};
 
+static u16 Soldier_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Soldier_Init(struct Enemy* p);
 static void Soldier_Update(struct Enemy* p);
 static void Soldier_Die(struct Enemy* p);
@@ -83,6 +85,7 @@ static void Soldier_Init(struct Enemy* p) {
   (p->s).coord.y = FUN_08009f6c((p->s).coord.x, (p->s).coord.y);
   (p->s).unk_2c = NULL;
   INIT_BODY(p, sCollisions, 6, NULL);
+  (p->body).unk_28 = (u32)Soldier_Pull;
   Soldier_Update(p);
 }
 
@@ -101,7 +104,7 @@ static void Soldier_Decide(struct Enemy* p) {
   }
 }
 
-static const EnemyFunc sUpdates[6];
+static const EnemyFunc sUpdates[8];
 static void Soldier_Recoil(struct Enemy* p);
 
 // 0x0807d078
@@ -257,13 +260,36 @@ static void Soldier_Recoil(struct Enemy* p) {
   }
 }
 
-static const EnemyFunc sUpdates[6] = {
+// 0x0807d4c8
+static void Soldier_Pulled(struct Enemy* p) {
+  if ((p->s).mode[2] == 0) {
+    SetSpriteAnimation(p, ANIM_HIT);
+    (p->s).mode[2]++;
+  }
+  UpdateSpriteAnimation(p);
+}
+
+// 0x0807d890
+static u16 Soldier_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy UNUSED) {
+  if (s->mode[1] != SOLDIER_PULLED) {
+    s->mode[1] = SOLDIER_PULLED;
+    s->mode[2] = 0;
+  }
+  s->coord.x += dx;
+  if (pulling) return 1;
+  s->mode[1] = SOLDIER_HIT;
+  s->mode[2] = 0;
+  return 0;
+}
+
+static const EnemyFunc sUpdates[8] = {
     [SOLDIER_IDLE] = (EnemyFunc)Soldier_Idle,
     [SOLDIER_SHOOT] = (EnemyFunc)Soldier_Shoot,
     [SOLDIER_TURN] = (EnemyFunc)Soldier_Turn,
     [SOLDIER_KNEEL] = (EnemyFunc)Soldier_Kneel,
     [SOLDIER_STAND] = (EnemyFunc)Soldier_Stand,
     [SOLDIER_HIT] = (EnemyFunc)Soldier_Hit,
+    [SOLDIER_PULLED] = (EnemyFunc)Soldier_Pulled,
 };
 
 static void smokeNearby(struct Enemy* p, u8 kind) {

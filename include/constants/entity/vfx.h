@@ -104,7 +104,19 @@
 #define VFX_Z2_SPIDER_PIECE 99
 #define VFX_Z2_VULTURE_HALF 100
 #define VFX_Z2_CRAB_PART 101
-#define VFX_COUNT (VFX_Z2_CRAB_PART + 1)
+#define VFX_Z2_ROCK 102  // rocks thrown up by the Desert boss
+#define VFX_Z2_FEFNIR_BUBBLE 103  // the bubble Fefnir's tank appears in, Zero 2 VFX 22 work0 2
+#define VFX_Z2_FEFNIR_EXPLOSION 104  // Fefnir's tank blowing up, Zero 2 VFX 45 work0 2
+#define VFX_Z2_FEFNIR_SMOKE 105  // Fefnir's tank's smoke, flashes and debris, Zero 2 VFX 39
+#define VFX_Z2_FEFNIR_SPARK 106  // the summon's sparks, Zero 2 VFX 67 work0 0
+#define VFX_Z2_MINE_BLAST 107  // Zero 2 VFX 37
+#define VFX_Z2_DOZER_TOP 108  // Zero 2 VFX 25
+#define VFX_Z2_FISH_BIT 109  // Zero 2 VFX 49
+#define VFX_Z2_ICE_PUFF 110  // Zero 2 VFX 43, Leviathan's flashes and chips
+#define VFX_Z2_ICE_BURST 111  // Zero 2 VFX 41, her ice breaking
+#define VFX_Z2_FROST_BREATH 112  // Zero 2 VFX 39
+#define VFX_Z2_WATER_SPLASH 113  // Zero 2 VFX 44
+#define VFX_COUNT (VFX_Z2_WATER_SPLASH + 1)
 #else
 #define VFX_COUNT VFX_UNK_084 + 1
 #endif

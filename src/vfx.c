@@ -136,6 +136,18 @@ extern const VFXRoutine gApZ2WolfPieceRoutine;
 extern const VFXRoutine gApZ2SpiderPieceRoutine;
 extern const VFXRoutine gApZ2VultureHalfRoutine;
 extern const VFXRoutine gApZ2CrabPartRoutine;
+extern const VFXRoutine gApZ2RockRoutine;
+extern const VFXRoutine gApZ2FefnirBubbleRoutine;
+extern const VFXRoutine gApZ2FefnirExplosionRoutine;
+extern const VFXRoutine gApZ2FefnirSmokeRoutine;
+extern const VFXRoutine gApZ2FefnirSparkRoutine;
+extern const VFXRoutine gApZ2MineBlastRoutine;
+extern const VFXRoutine gApZ2IcePuffRoutine;
+extern const VFXRoutine gApZ2WaterSplashRoutine;
+extern const VFXRoutine gApZ2IceBurstRoutine;
+extern const VFXRoutine gApZ2DozerTopRoutine;
+extern const VFXRoutine gApZ2FishBitRoutine;
+extern const VFXRoutine gApZ2FrostBreathRoutine;
 #endif
 
 // clang-format off
@@ -243,6 +255,18 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_Z2_SPIDER_PIECE] = &gApZ2SpiderPieceRoutine,
     [VFX_Z2_VULTURE_HALF] = &gApZ2VultureHalfRoutine,
     [VFX_Z2_CRAB_PART] = &gApZ2CrabPartRoutine,
+    [VFX_Z2_ROCK] = &gApZ2RockRoutine,
+    [VFX_Z2_FEFNIR_BUBBLE] = &gApZ2FefnirBubbleRoutine,
+    [VFX_Z2_FEFNIR_EXPLOSION] = &gApZ2FefnirExplosionRoutine,
+    [VFX_Z2_FEFNIR_SMOKE] = &gApZ2FefnirSmokeRoutine,
+    [VFX_Z2_FEFNIR_SPARK] = &gApZ2FefnirSparkRoutine,
+    [VFX_Z2_MINE_BLAST] = &gApZ2MineBlastRoutine,
+    [VFX_Z2_ICE_PUFF] = &gApZ2IcePuffRoutine,
+    [VFX_Z2_WATER_SPLASH] = &gApZ2WaterSplashRoutine,
+    [VFX_Z2_ICE_BURST] = &gApZ2IceBurstRoutine,
+    [VFX_Z2_DOZER_TOP] = &gApZ2DozerTopRoutine,
+    [VFX_Z2_FISH_BIT] = &gApZ2FishBitRoutine,
+    [VFX_Z2_FROST_BREATH] = &gApZ2FrostBreathRoutine,
 #endif
 };
 // clang-format on

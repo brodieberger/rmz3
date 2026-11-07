@@ -21,6 +21,7 @@ EWRAM_DATA MetatileMapSelfRelPtr gApSlot0Terrain = {0};
 EWRAM_DATA ColorGraphic gApSlot0Tilesets[AP_IMPORT_TILESETS_MAX] = {0};
 EWRAM_DATA struct PreloadEntity gApSlot0Preloads[AP_IMPORT_PRELOADS_MAX] = {0};
 EWRAM_DATA u8 gApImportSelected = 0;
+EWRAM_DATA static bool8 sStarted = FALSE;  // opening line played
 
 static void ApImportRebase(const u32* src, u32* dst) {
   *dst = (u32)((const u8*)src + *src) - (u32)dst;
@@ -30,10 +31,11 @@ void ApImportSelect(u8 n) {
   const struct ApImportedStage* imp;
   u8 i;
 
-  if (n >= gApImportCount) {
+  if (n >= AP_IMPORT_COUNT) {
     n = 0;
   }
   gApImportSelected = n;
+  sStarted = FALSE;
   imp = &gApImportedStages[n];
   ApImportResetKills();
 
@@ -61,7 +63,7 @@ void ApImportSelect(u8 n) {
 }
 
 // 0 unless the legacy stage option is enabled.
-u8 ApImportCount(void) { return gApSeedConfig.legacyStages ? gApImportCount : 0; }
+u8 ApImportCount(void) { return gApSeedConfig.legacyStages ? AP_IMPORT_COUNT : 0; }
 
 const char_t* ApImportName(u8 n) { return gApImportedStages[n].name; }
 
@@ -72,10 +74,13 @@ const char_t* ApImportName(u8 n) { return gApImportedStages[n].name; }
   checkpoint 0: the start
              1: past checkpointDoor
              2: past bossDoor, the boss fight
+             3: boss beaten, clear scene skipped. Results
 */
 #define MID_BOSS_PHASE 6
 #define WARNED_PHASE 7
-#define MID_BOSS_BEATEN unk_0a
+#define MID_BOSSES_BEATEN unk_0a  // bit by mid-boss
+
+EWRAM_DATA static u8 sMidBoss = 0;  // the one being fought
 
 // Phases before the boss fight, when the mid-boss and the boss door can start
 static bool8 isExploring(u8 phase) { return phase == 1 || phase == 2 || phase == WARNED_PHASE; }
@@ -89,15 +94,34 @@ static bool8 isInside(struct Zero* z, const Coords32* box) {
          (z->s).coord.y < box[1].y;
 }
 
+// Mid-boss whose box Zero is in and not beaten this life, or midBossCount
+static u8 midBossAt(const struct ApImportedStage* imp, struct Zero* z) {
+  u8 i;
+  for (i = 0; i < imp->midBossCount; i++) {
+    const struct ApImportMidBoss* m = &imp->midBosses[i];
+    if (!(gStageRun.MID_BOSSES_BEATEN & (1 << i)) && gStageRun.checkpoint <= m->lastCheckpoint &&
+        isInside(z, m->box)) {
+      break;
+    }
+  }
+  return i;
+}
+
 s16 ApImportUpdate(struct StageRun* p) {
   const struct ApImportedStage* imp = &gApImportedStages[gApImportSelected];
   struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
+  u8 midBoss;
 
   if (p->stageEventPhase == 0) {
+    gStageRun.MID_BOSSES_BEATEN &= ~((1 << imp->midBossCount) - 1);
     gStageRun.missionStatus |= MISSION_STAY;
     if (gStageRun.checkpoint == 0) {
-      SetScript(&gStageRun.vm, imp->script);
+      SetScript(&gStageRun.vm, sStarted ? imp->againScript : imp->script);
+      sStarted = TRUE;
       p->stageEventPhase = 1;
+    } else if (gStageRun.checkpoint == 3) {
+      SetScript(&gStageRun.vm, imp->resultScript);
+      p->stageEventPhase = 4;
     } else if (gStageRun.checkpoint == 1) {
       SetScript(&gStageRun.vm, imp->checkpointScript);
       p->stageEventPhase = 2;
@@ -106,30 +130,31 @@ s16 ApImportUpdate(struct StageRun* p) {
       p->stageEventPhase = 2;
     }
 
-  } else if (isExploring(p->stageEventPhase) && !gStageRun.MID_BOSS_BEATEN &&
-             isInside(z, imp->midBossBox)) {
-    SetScript(&gStageRun.vm, imp->midBossScript);
+  } else if (isExploring(p->stageEventPhase) && (midBoss = midBossAt(imp, z)) < imp->midBossCount) {
+    sMidBoss = midBoss;
+    SetScript(&gStageRun.vm, imp->midBosses[midBoss].script);
     p->stageEventPhase = MID_BOSS_PHASE;
 
   } else if (p->stageEventPhase == MID_BOSS_PHASE && (gStageRun.missionStatus & MISSION_SUCCESS)) {
-    SetScript(&gStageRun.vm, imp->midBossClearScript);
+    SetScript(&gStageRun.vm, imp->midBosses[sMidBoss].clearScript);
     gStageRun.missionStatus &= ~MISSION_SUCCESS;
     gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= MISSION_STAY;
-    gStageRun.MID_BOSS_BEATEN = TRUE;
+    gStageRun.MID_BOSSES_BEATEN |= 1 << sMidBoss;
     p->stageEventPhase = 1;
 
   } else if (p->stageEventPhase == 1 && isPast(z, &imp->checkpointDoor)) {
     setStageCheckpoint(1);
     p->stageEventPhase = 2;
 
-  } else if (p->stageEventPhase == 2 && gStageRun.checkpoint == 1 && isPast(z, &imp->warningAt)) {
+  } else if (p->stageEventPhase == 2 && imp->warningScript != NULL && gStageRun.checkpoint == 1 &&
+             isPast(z, &imp->warningAt)) {
     SetScript(&gStageRun.vm, imp->warningScript);
     p->stageEventPhase = WARNED_PHASE;
 
   } else if (isExploring(p->stageEventPhase) && isPast(z, &imp->bossDoor)) {
+    SetScript(&gStageRun.vm, (gStageRun.checkpoint == 2) ? imp->bossReturnScript : imp->bossScript);
     setStageCheckpoint(2);
-    SetScript(&gStageRun.vm, imp->bossScript);
     p->stageEventPhase = 3;
 
   } else if (p->stageEventPhase == 3 && (gStageRun.missionStatus & MISSION_SUCCESS)) {
@@ -139,6 +164,7 @@ s16 ApImportUpdate(struct StageRun* p) {
     gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= STOP_TIME_COUNT;
     gStageRun.missionStatus |= MISSION_STAY;
+    setStageCheckpoint2(3);
     p->stageEventPhase = 4;
 
   } else if (p->stageEventPhase == 4) {
@@ -151,27 +177,6 @@ s16 ApImportUpdate(struct StageRun* p) {
 }
 
 u32 ApImportArea(Coords32* c) { return gApImportedStages[gApImportSelected].area(c); }
-
-void ApStartPaletteAnimation(u16 id, const PlttAnimData* data, const AnimCmd* const* script) {
-  PaletteAnimation* b;
-  s32 i;
-
-  for (i = 0; i < MAX_PLTT_ANIM; i++) {
-    if (gPaletteAnimationManager.ids[i] == id + 1) return;
-  }
-  for (i = 0; i < MAX_PLTT_ANIM; i++) {
-    if (gPaletteAnimationManager.ids[i] == 0) break;
-  }
-  if (i == MAX_PLTT_ANIM) return;
-  b = &gPaletteAnimationManager.anims[i];
-  b->pal = (PlttAnimData*)data;
-  b->cmds = (AnimCmd**)script;
-  b->paused = FALSE;
-  b->offsetByte = 0;
-  ResetAnimState(&b->m, script);
-  SetAnimSubID(&b->m, 0);
-  gPaletteAnimationManager.ids[i] = id + 1;
-}
 
 const struct SpawnTemplate* ApImportTemplates(void) { return gApImportedStages[gApImportSelected].templates; }
 

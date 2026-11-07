@@ -45,6 +45,7 @@ static_assert(sizeof(struct Guard) == sizeof(struct Enemy));
 enum {
   GUARD_FALL,
   GUARD_ELEMENT_HIT,
+  GUARD_PULLED = 3,
   GUARD_DECIDE = 4,
   GUARD_WAIT,
   GUARD_AIM,
@@ -73,8 +74,12 @@ static const struct Collision sCollisions[2];
 static const struct Collision sHarmless;
 static const struct Collision sCharge[3];
 static const struct SlashedEnemy sGibs[5];
+static const struct SlashedEnemy sShieldOff;
 static const Coords32 sElementCoord = {0, -PIXEL(16)};
 
+static void Guard_Pulled(struct Guard* p);
+static u8 gibFlip(struct Guard* p);
+static u16 Guard_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Guard_Init(struct Guard* p);
 static void Guard_Update(struct Guard* p);
 static void Guard_Die(struct Guard* p);
@@ -125,6 +130,7 @@ static void Guard_Init(struct Guard* p) {
   UpdateEntityAnim(s);
   SET_XFLIP(p, FALSE);
   INIT_BODY(p, sShielded, 16, Guard_OnCollision);
+  (p->body).unk_28 = (u32)Guard_Pull;
   s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
   p->postX = s->coord.x;
   p->postY = s->coord.y;
@@ -205,6 +211,7 @@ static void Guard_Update(struct Guard* p) {
   switch (s->mode[1]) {
     case GUARD_FALL: Guard_Fall(p); break;
     case GUARD_ELEMENT_HIT: Guard_ElementHit(p); break;
+    case GUARD_PULLED: Guard_Pulled(p); break;
     case GUARD_DECIDE: Guard_Decide(p); break;
     case GUARD_WAIT: Guard_Wait(p); break;
     case GUARD_AIM: Guard_Aim(p); break;
@@ -233,6 +240,41 @@ static void fall(struct Entity* s) {
   s->d.y += 0x40;
   if (s->d.y > 0x700) s->d.y = 0x700;
   s->coord.y += s->d.y;
+}
+
+// 0x0806b6c8
+static void Guard_Pulled(struct Guard* p) {
+  struct Entity* s = &p->s;
+  if (s->mode[2] == 0) {
+    SetMotion(s, p->shielded ? ANIM(0) : ANIM(8));
+    p->recallMace = TRUE;
+    s->mode[2]++;
+  } else if (s->mode[2] == 2) {
+    if (s->unk_2c != NULL) s->mode[1] = GUARD_ELEMENT_HIT;
+    useApSheets(CreateSlashedEnemy(&s->coord, &sShieldOff, 0, gibFlip(p)));
+    setStance(p);
+    s->mode[2] = 0;
+  }
+  UpdateEntityAnim(s);
+}
+
+// 0x0806c2c4: first tug takes shield off, then dragged
+static u16 Guard_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  struct Guard* p = (struct Guard*)s;
+  p->recallMace = TRUE;
+  s->mode[1] = GUARD_PULLED;
+  s->mode[2] = 0;
+  if (p->shielded) {
+    if (dx == 0 && dy == 0) return 1;
+    p->shielded = FALSE;
+    s->mode[2] = 2;
+    return 0;
+  }
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling && FUN_080098a4(s->coord.x, s->coord.y) == 0) return 1;
+  s->mode[1] = s->unk_2c != NULL ? GUARD_ELEMENT_HIT : GUARD_FALL;
+  return 0;
 }
 
 // 0x0806b530: where it lands becomes its post
@@ -912,6 +954,9 @@ static const struct Collision sCharge[3] = {
 static const struct Collision sMace =
     {DDP, FACTION_ENEMY, 0, 3, 0x00, 0x00, 0x00, 0x00, 0x00, 0, 0, 0, 0x00000001, {0x0, 0x0, 0x1000, 0x1000}};
 
+// 0x0833e4ec
+static const struct SlashedEnemy sShieldOff =
+    {ANIM(16), {0x40, 0x10}, {-5120, -3328}, {-512, -1536}, {0, 0}, {0, 64}, {0, 0}, {0}};
 static const struct SlashedEnemy sGibs[5] = {
     {ANIM(19), {0xff, 0x11}, {0, -3840}, {128, -1024}, {255, 511}, {0, 64}, {0x200, 0x200}, {0}},
     {ANIM(20), {0xfe, 0x11}, {0, -2048}, {512, -512}, {255, 127}, {0, 64}, {0x200, 0x200}, {0}},

@@ -279,6 +279,429 @@ gApSheetGraphics:
 		.2byte 32 @ bytesize
 		.byte 0, 4 @ lz77(bool8), dst = PaletteID
 
+	@ Sheet 30: boss/z2_boss0, Zero 2 SM4
+	.4byte gApSheet_30-. @ src
+	.4byte 6880 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1720, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_30_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 31: boss/z2_boss0/b, Zero 2 SM5
+	.4byte gApSheet_31-. @ src
+	.4byte 6848 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1712, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_31_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 32: solid/z2_sand_block, Zero 2 SM12
+	.4byte gApSheet_32-. @ src
+	.4byte 2048 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 512, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_32_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 33: vfx/z2_rocks, Zero 2 SM62
+	.4byte gApSheet_33-. @ src
+	.4byte 544 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 136, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_33_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 34: solid/z2_slab, Zero 2 SM151
+	.4byte gApSheet_34-. @ src
+	.4byte 256 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 64, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_34_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 35: solid/z2_gate, Zero 2 SM150
+	.4byte gApSheet_35-. @ src
+	.4byte 704 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 176, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_35_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 36: enemy/z2_pylon, Zero 2 SM17
+	.4byte gApSheet_36-. @ src
+	.4byte 864 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 216, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_36_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 37: enemy/z2_dozer, Zero 2 SM24
+	.4byte gApSheet_37-. @ src
+	.4byte 2208 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 552, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_37_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 38: enemy/z2_ice_block, Zero 2 SM25
+	.4byte gApSheet_38-. @ src
+	.4byte 2048 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 512, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_38_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 39: enemy/z2_fish, Zero 2 SM110
+	.4byte gApSheet_39-. @ src
+	.4byte 3552 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 888, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_39_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 40: enemy/z2_mine, Zero 2 SM73
+	.4byte gApSheet_40-. @ src
+	.4byte 2208 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 552, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_40_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 41: boss/z2_fefnir/tank, Zero 2 SM80
+	.4byte gApSheet_41-. @ src
+	.4byte 8608 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 2152, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_41_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 42: boss/z2_fefnir/wheels, Zero 2 SM81
+	.4byte gApSheet_42-. @ src
+	.4byte 1536 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 384, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_42_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 43: boss/z2_fefnir/ball, Zero 2 SM81
+	.4byte gApSheet_43-. @ src
+	.4byte 640 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 160, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_43_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 44: boss/z2_fefnir/flash, Zero 2 SM82
+	.4byte gApSheet_44-. @ src
+	.4byte 256 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 64, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_44_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 45: boss/z2_fefnir/fire, Zero 2 SM82
+	.4byte gApSheet_45-. @ src
+	.4byte 6176 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1544, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_45_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 46: boss/z2_fefnir/summon, Zero 2 SM155
+	.4byte gApSheet_46-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_46_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 47: solid/z2_floe, Zero 2 SM112
+	.4byte gApSheet_47-. @ src
+	.4byte 1536 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 384, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_47_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 48: boss/z2_leviathan/ice, Zero 2 SM92
+	.4byte gApSheet_48-. @ src
+	.4byte 7136 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1784, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_48_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 49: boss/z2_blob/drop, Zero 2 SM53
+	.4byte gApSheet_49-. @ src
+	.4byte 512 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 128, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_49_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 50: boss/z2_blob/splat, Zero 2 SM54
+	.4byte gApSheet_50-. @ src
+	.4byte 2784 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 696, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_50_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 51: boss/z2_blob/rock, Zero 2 SM83
+	.4byte gApSheet_51-. @ src
+	.4byte 288 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 72, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_51_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 52: boss/z2_flame_golem, Zero 2 SM34
+	.4byte gApSheet_52-. @ src
+	.4byte 7328 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1832, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_52_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 53: boss/z2_flame_golem/fire, Zero 2 SM35
+	.4byte gApSheet_53-. @ src
+	.4byte 8064 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 2016, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_53_Palettes-. @ src offset
+		.2byte 64 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 54: boss/z2_flame_golem/foot, Zero 2 SM36
+	.4byte gApSheet_54-. @ src
+	.4byte 512 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 128, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_54_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 55: boss/z2_frost_golem, Zero 2 SM37
+	.4byte gApSheet_55-. @ src
+	.4byte 7200 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1800, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_55_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 56: boss/z2_frost_golem/ice, Zero 2 SM38
+	.4byte gApSheet_56-. @ src
+	.4byte 7680 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1920, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_56_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 57: boss/z2_frost_golem/foot, Zero 2 SM39
+	.4byte gApSheet_57-. @ src
+	.4byte 512 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 128, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_57_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 58: solid/z2_door, Zero 2 SM103
+	.4byte gApSheet_58-. @ src
+	.4byte 1024 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 256, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_58_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 59: solid/z2_door/open, Zero 2 SM103
+	.4byte gApSheet_59-. @ src
+	.4byte 1216 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 304, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_59_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 60: solid/z2_fallen, Zero 2 SM226
+	.4byte gApSheet_60-. @ src
+	.4byte 1024 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 256, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_60_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 61: solid/z2_pad, Zero 2 SM135
+	.4byte gApSheet_61-. @ src
+	.4byte 928 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 232, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_61_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 62: solid/z2_lift, Zero 2 SM111
+	.4byte gApSheet_62-. @ src
+	.4byte 992 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 248, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_62_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 63: solid/z2_rescue, Zero 2 SM159
+	.4byte gApSheet_63-. @ src
+	.4byte 1536 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 384, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_63_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 64: solid/z2_rescue/run, Zero 2 SM158
+	.4byte gApSheet_64-. @ src
+	.4byte 1408 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 352, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_64_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 65: solid/z2_baby_elf, Zero 2 SM133
+	.4byte gApSheet_65-. @ src
+	.4byte 640 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 160, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_65_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 66: solid/z2_x, Zero 2 SM141
+	.4byte gApSheet_66-. @ src
+	.4byte 4000 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1000, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_66_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 67: boss/z2_wall/splash, Zero 2 SM96
+	.4byte gApSheet_67-. @ src
+	.4byte 5632 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1408, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_67_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 68: boss/z2_wall/part, Zero 2 SM98
+	.4byte gApSheet_68-. @ src
+	.4byte 1280 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 320, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_68_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 69: boss/z2_wall/arm, Zero 2 SM98
+	.4byte gApSheet_69-. @ src
+	.4byte 1728 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 432, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_69_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 70: boss/z2_wall, Zero 2 SM99
+	.4byte gApSheet_70-. @ src
+	.4byte 1792 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 448, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_70_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 71: boss/z2_wall/spike, Zero 2 SM100
+	.4byte gApSheet_71-. @ src
+	.4byte 3072 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 768, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_71_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 72: boss/z2_wall/shot, Zero 2 SM97
+	.4byte gApSheet_72-. @ src
+	.4byte 2208 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 552, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_72_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 73: boss/z2_wall/shelf, Zero 2 SM101
+	.4byte gApSheet_73-. @ src
+	.4byte 1088 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 272, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_73_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 74: solid/z2_cast/harpuia, Zero 2 SM220
+	.4byte gApSheet_74-. @ src
+	.4byte 2016 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 504, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_74_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 75: solid/z2_cast/fefnir, Zero 2 SM221
+	.4byte gApSheet_75-. @ src
+	.4byte 4736 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1184, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_75_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 76: solid/z2_cast/leviathan, Zero 2 SM222
+	.4byte gApSheet_76-. @ src
+	.4byte 1152 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 288, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_76_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
 .global gApSheetMetaspriteTable
 gApSheetMetaspriteTable:
   .word gStaticMetaSprite_enemy_z2_hopper
@@ -311,6 +734,53 @@ gApSheetMetaspriteTable:
   .word gStaticMetaSprite_enemy_z2_spider
   .word gStaticMetaSprite_enemy_z2_vulture
   .word gStaticMetaSprite_enemy_z2_crab
+  .word gStaticMetaSprite_boss_z2_boss0
+  .word gStaticMetaSprite_boss_z2_boss0_b
+  .word gStaticMetaSprite_solid_z2_sand_block
+  .word gStaticMetaSprite_vfx_z2_rocks
+  .word gStaticMetaSprite_solid_z2_slab
+  .word gStaticMetaSprite_solid_z2_gate
+  .word gStaticMetaSprite_enemy_z2_pylon
+  .word gStaticMetaSprite_enemy_z2_dozer
+  .word gStaticMetaSprite_enemy_z2_ice_block
+  .word gStaticMetaSprite_enemy_z2_fish
+  .word gStaticMetaSprite_enemy_z2_mine
+  .word gStaticMetaSprite_boss_z2_fefnir_tank
+  .word gStaticMetaSprite_boss_z2_fefnir_wheels
+  .word gStaticMetaSprite_boss_z2_fefnir_ball
+  .word gStaticMetaSprite_boss_z2_fefnir_flash
+  .word gStaticMetaSprite_boss_z2_fefnir_fire
+  .word gStaticMetaSprite_boss_z2_fefnir_summon
+  .word gStaticMetaSprite_solid_z2_floe
+  .word gStaticMetaSprite_boss_z2_leviathan_ice
+  .word gStaticMetaSprite_boss_z2_blob_drop
+  .word gStaticMetaSprite_boss_z2_blob_splat
+  .word gStaticMetaSprite_boss_z2_blob_rock
+  .word gStaticMetaSprite_boss_z2_flame_golem
+  .word gStaticMetaSprite_boss_z2_flame_golem_fire
+  .word gStaticMetaSprite_boss_z2_flame_golem_foot
+  .word gStaticMetaSprite_boss_z2_frost_golem
+  .word gStaticMetaSprite_boss_z2_frost_golem_ice
+  .word gStaticMetaSprite_boss_z2_frost_golem_foot
+  .word gStaticMetaSprite_solid_z2_door
+  .word gStaticMetaSprite_solid_z2_door_open
+  .word gStaticMetaSprite_solid_z2_fallen
+  .word gStaticMetaSprite_solid_z2_pad
+  .word gStaticMetaSprite_solid_z2_lift
+  .word gStaticMetaSprite_solid_z2_rescue
+  .word gStaticMetaSprite_solid_z2_rescue_run
+  .word gStaticMetaSprite_solid_z2_baby_elf
+  .word gStaticMetaSprite_solid_z2_x
+  .word gStaticMetaSprite_boss_z2_wall_splash
+  .word gStaticMetaSprite_boss_z2_wall_part
+  .word gStaticMetaSprite_boss_z2_wall_arm
+  .word gStaticMetaSprite_boss_z2_wall
+  .word gStaticMetaSprite_boss_z2_wall_spike
+  .word gStaticMetaSprite_boss_z2_wall_shot
+  .word gStaticMetaSprite_boss_z2_wall_shelf
+  .word gStaticMetaSprite_solid_z2_cast_harpuia
+  .word gStaticMetaSprite_solid_z2_cast_fefnir
+  .word gStaticMetaSprite_solid_z2_cast_leviathan
 
 .global gApSheetCmdTable
 gApSheetCmdTable:
@@ -344,6 +814,53 @@ gApSheetCmdTable:
   .word gStaticAnimationSequence_enemy_z2_spider
   .word gStaticAnimationSequence_enemy_z2_vulture
   .word gStaticAnimationSequence_enemy_z2_crab
+  .word gStaticAnimationSequence_boss_z2_boss0
+  .word gStaticAnimationSequence_boss_z2_boss0_b
+  .word gStaticAnimationSequence_solid_z2_sand_block
+  .word gStaticAnimationSequence_vfx_z2_rocks
+  .word gStaticAnimationSequence_solid_z2_slab
+  .word gStaticAnimationSequence_solid_z2_gate
+  .word gStaticAnimationSequence_enemy_z2_pylon
+  .word gStaticAnimationSequence_enemy_z2_dozer
+  .word gStaticAnimationSequence_enemy_z2_ice_block
+  .word gStaticAnimationSequence_enemy_z2_fish
+  .word gStaticAnimationSequence_enemy_z2_mine
+  .word gStaticAnimationSequence_boss_z2_fefnir_tank
+  .word gStaticAnimationSequence_boss_z2_fefnir_wheels
+  .word gStaticAnimationSequence_boss_z2_fefnir_ball
+  .word gStaticAnimationSequence_boss_z2_fefnir_flash
+  .word gStaticAnimationSequence_boss_z2_fefnir_fire
+  .word gStaticAnimationSequence_boss_z2_fefnir_summon
+  .word gStaticAnimationSequence_solid_z2_floe
+  .word gStaticAnimationSequence_boss_z2_leviathan_ice
+  .word gStaticAnimationSequence_boss_z2_blob_drop
+  .word gStaticAnimationSequence_boss_z2_blob_splat
+  .word gStaticAnimationSequence_boss_z2_blob_rock
+  .word gStaticAnimationSequence_boss_z2_flame_golem
+  .word gStaticAnimationSequence_boss_z2_flame_golem_fire
+  .word gStaticAnimationSequence_boss_z2_flame_golem_foot
+  .word gStaticAnimationSequence_boss_z2_frost_golem
+  .word gStaticAnimationSequence_boss_z2_frost_golem_ice
+  .word gStaticAnimationSequence_boss_z2_frost_golem_foot
+  .word gStaticAnimationSequence_solid_z2_door
+  .word gStaticAnimationSequence_solid_z2_door_open
+  .word gStaticAnimationSequence_solid_z2_fallen
+  .word gStaticAnimationSequence_solid_z2_pad
+  .word gStaticAnimationSequence_solid_z2_lift
+  .word gStaticAnimationSequence_solid_z2_rescue
+  .word gStaticAnimationSequence_solid_z2_rescue_run
+  .word gStaticAnimationSequence_solid_z2_baby_elf
+  .word gStaticAnimationSequence_solid_z2_x
+  .word gStaticAnimationSequence_boss_z2_wall_splash
+  .word gStaticAnimationSequence_boss_z2_wall_part
+  .word gStaticAnimationSequence_boss_z2_wall_arm
+  .word gStaticAnimationSequence_boss_z2_wall
+  .word gStaticAnimationSequence_boss_z2_wall_spike
+  .word gStaticAnimationSequence_boss_z2_wall_shot
+  .word gStaticAnimationSequence_boss_z2_wall_shelf
+  .word gStaticAnimationSequence_solid_z2_cast_harpuia
+  .word gStaticAnimationSequence_solid_z2_cast_fefnir
+  .word gStaticAnimationSequence_solid_z2_cast_leviathan
 
 .include "sprites/static/enemy/z2_hopper/metasprite.inc"
 .include "sprites/static/enemy/z2_hopper/sequence.inc"
@@ -614,5 +1131,428 @@ gApSheet_29:
 	.incbin "sprites/static/enemy/z2_crab/sheet.4bpp"
 gApSheet_29_Palettes:
 	.incbin "sprites/static/enemy/z2_crab/sheet.gbapal"
+
+.include "sprites/static/boss/z2_boss0/metasprite.inc"
+.include "sprites/static/boss/z2_boss0/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_30:
+	.incbin "sprites/static/boss/z2_boss0/sheet.4bpp"
+gApSheet_30_Palettes:
+	.incbin "sprites/static/boss/z2_boss0/sheet.gbapal"
+
+.include "sprites/static/boss/z2_boss0/b/metasprite.inc"
+.include "sprites/static/boss/z2_boss0/b/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_31:
+	.incbin "sprites/static/boss/z2_boss0/b/sheet.4bpp"
+gApSheet_31_Palettes:
+	.incbin "sprites/static/boss/z2_boss0/b/sheet.gbapal"
+
+.include "sprites/static/solid/z2_sand_block/metasprite.inc"
+.include "sprites/static/solid/z2_sand_block/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_32:
+	.incbin "sprites/static/solid/z2_sand_block/sheet.4bpp"
+gApSheet_32_Palettes:
+	.incbin "sprites/static/solid/z2_sand_block/sheet.gbapal"
+
+.include "sprites/static/vfx/z2_rocks/metasprite.inc"
+.include "sprites/static/vfx/z2_rocks/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_33:
+	.incbin "sprites/static/vfx/z2_rocks/sheet.4bpp"
+gApSheet_33_Palettes:
+	.incbin "sprites/static/vfx/z2_rocks/sheet.gbapal"
+
+.include "sprites/static/solid/z2_slab/metasprite.inc"
+.include "sprites/static/solid/z2_slab/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_34:
+	.incbin "sprites/static/solid/z2_slab/sheet.4bpp"
+gApSheet_34_Palettes:
+	.incbin "sprites/static/solid/z2_slab/sheet.gbapal"
+
+.include "sprites/static/solid/z2_gate/metasprite.inc"
+.include "sprites/static/solid/z2_gate/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_35:
+	.incbin "sprites/static/solid/z2_gate/sheet.4bpp"
+gApSheet_35_Palettes:
+	.incbin "sprites/static/solid/z2_gate/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_pylon/metasprite.inc"
+.include "sprites/static/enemy/z2_pylon/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_36:
+	.incbin "sprites/static/enemy/z2_pylon/sheet.4bpp"
+gApSheet_36_Palettes:
+	.incbin "sprites/static/enemy/z2_pylon/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_dozer/metasprite.inc"
+.include "sprites/static/enemy/z2_dozer/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_37:
+	.incbin "sprites/static/enemy/z2_dozer/sheet.4bpp"
+gApSheet_37_Palettes:
+	.incbin "sprites/static/enemy/z2_dozer/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_ice_block/metasprite.inc"
+.include "sprites/static/enemy/z2_ice_block/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_38:
+	.incbin "sprites/static/enemy/z2_ice_block/sheet.4bpp"
+gApSheet_38_Palettes:
+	.incbin "sprites/static/enemy/z2_ice_block/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_fish/metasprite.inc"
+.include "sprites/static/enemy/z2_fish/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_39:
+	.incbin "sprites/static/enemy/z2_fish/sheet.4bpp"
+gApSheet_39_Palettes:
+	.incbin "sprites/static/enemy/z2_fish/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_mine/metasprite.inc"
+.include "sprites/static/enemy/z2_mine/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_40:
+	.incbin "sprites/static/enemy/z2_mine/sheet.4bpp"
+gApSheet_40_Palettes:
+	.incbin "sprites/static/enemy/z2_mine/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/tank/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/tank/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_41:
+	.incbin "sprites/static/boss/z2_fefnir/tank/sheet.4bpp"
+gApSheet_41_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/tank/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/wheels/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/wheels/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_42:
+	.incbin "sprites/static/boss/z2_fefnir/wheels/sheet.4bpp"
+gApSheet_42_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/wheels/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/ball/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/ball/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_43:
+	.incbin "sprites/static/boss/z2_fefnir/ball/sheet.4bpp"
+gApSheet_43_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/ball/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/flash/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/flash/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_44:
+	.incbin "sprites/static/boss/z2_fefnir/flash/sheet.4bpp"
+gApSheet_44_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/flash/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/fire/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/fire/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_45:
+	.incbin "sprites/static/boss/z2_fefnir/fire/sheet.4bpp"
+gApSheet_45_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/fire/sheet.gbapal"
+
+.include "sprites/static/boss/z2_fefnir/summon/metasprite.inc"
+.include "sprites/static/boss/z2_fefnir/summon/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_46:
+	.incbin "sprites/static/boss/z2_fefnir/summon/sheet.4bpp"
+gApSheet_46_Palettes:
+	.incbin "sprites/static/boss/z2_fefnir/summon/sheet.gbapal"
+
+.include "sprites/static/solid/z2_floe/metasprite.inc"
+.include "sprites/static/solid/z2_floe/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_47:
+	.incbin "sprites/static/solid/z2_floe/sheet.4bpp"
+gApSheet_47_Palettes:
+	.incbin "sprites/static/solid/z2_floe/sheet.gbapal"
+
+.include "sprites/static/boss/z2_leviathan/ice/metasprite.inc"
+.include "sprites/static/boss/z2_leviathan/ice/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_48:
+	.incbin "sprites/static/boss/z2_leviathan/ice/sheet.4bpp"
+gApSheet_48_Palettes:
+	.incbin "sprites/static/boss/z2_leviathan/ice/sheet.gbapal"
+
+.include "sprites/static/boss/z2_blob/drop/metasprite.inc"
+.include "sprites/static/boss/z2_blob/drop/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_49:
+	.incbin "sprites/static/boss/z2_blob/drop/sheet.4bpp"
+gApSheet_49_Palettes:
+	.incbin "sprites/static/boss/z2_blob/drop/sheet.gbapal"
+
+.include "sprites/static/boss/z2_blob/splat/metasprite.inc"
+.include "sprites/static/boss/z2_blob/splat/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_50:
+	.incbin "sprites/static/boss/z2_blob/splat/sheet.4bpp"
+gApSheet_50_Palettes:
+	.incbin "sprites/static/boss/z2_blob/splat/sheet.gbapal"
+
+.include "sprites/static/boss/z2_blob/rock/metasprite.inc"
+.include "sprites/static/boss/z2_blob/rock/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_51:
+	.incbin "sprites/static/boss/z2_blob/rock/sheet.4bpp"
+gApSheet_51_Palettes:
+	.incbin "sprites/static/boss/z2_blob/rock/sheet.gbapal"
+
+.include "sprites/static/boss/z2_flame_golem/metasprite.inc"
+.include "sprites/static/boss/z2_flame_golem/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_52:
+	.incbin "sprites/static/boss/z2_flame_golem/sheet.4bpp"
+gApSheet_52_Palettes:
+	.incbin "sprites/static/boss/z2_flame_golem/sheet.gbapal"
+
+.include "sprites/static/boss/z2_flame_golem/fire/metasprite.inc"
+.include "sprites/static/boss/z2_flame_golem/fire/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_53:
+	.incbin "sprites/static/boss/z2_flame_golem/fire/sheet.4bpp"
+gApSheet_53_Palettes:
+	.incbin "sprites/static/boss/z2_flame_golem/fire/palettes.bin"
+
+.include "sprites/static/boss/z2_flame_golem/foot/metasprite.inc"
+.include "sprites/static/boss/z2_flame_golem/foot/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_54:
+	.incbin "sprites/static/boss/z2_flame_golem/foot/sheet.4bpp"
+gApSheet_54_Palettes:
+	.incbin "sprites/static/boss/z2_flame_golem/foot/sheet.gbapal"
+
+.include "sprites/static/boss/z2_frost_golem/metasprite.inc"
+.include "sprites/static/boss/z2_frost_golem/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_55:
+	.incbin "sprites/static/boss/z2_frost_golem/sheet.4bpp"
+gApSheet_55_Palettes:
+	.incbin "sprites/static/boss/z2_frost_golem/sheet.gbapal"
+
+.include "sprites/static/boss/z2_frost_golem/ice/metasprite.inc"
+.include "sprites/static/boss/z2_frost_golem/ice/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_56:
+	.incbin "sprites/static/boss/z2_frost_golem/ice/sheet.4bpp"
+gApSheet_56_Palettes:
+	.incbin "sprites/static/boss/z2_frost_golem/ice/sheet.gbapal"
+
+.include "sprites/static/boss/z2_frost_golem/foot/metasprite.inc"
+.include "sprites/static/boss/z2_frost_golem/foot/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_57:
+	.incbin "sprites/static/boss/z2_frost_golem/foot/sheet.4bpp"
+gApSheet_57_Palettes:
+	.incbin "sprites/static/boss/z2_frost_golem/foot/sheet.gbapal"
+
+.include "sprites/static/solid/z2_door/metasprite.inc"
+.include "sprites/static/solid/z2_door/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_58:
+	.incbin "sprites/static/solid/z2_door/sheet.4bpp"
+gApSheet_58_Palettes:
+	.incbin "sprites/static/solid/z2_door/sheet.gbapal"
+
+.include "sprites/static/solid/z2_door/open/metasprite.inc"
+.include "sprites/static/solid/z2_door/open/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_59:
+	.incbin "sprites/static/solid/z2_door/open/sheet.4bpp"
+gApSheet_59_Palettes:
+	.incbin "sprites/static/solid/z2_door/open/sheet.gbapal"
+
+.include "sprites/static/solid/z2_fallen/metasprite.inc"
+.include "sprites/static/solid/z2_fallen/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_60:
+	.incbin "sprites/static/solid/z2_fallen/sheet.4bpp"
+gApSheet_60_Palettes:
+	.incbin "sprites/static/solid/z2_fallen/sheet.gbapal"
+
+.include "sprites/static/solid/z2_pad/metasprite.inc"
+.include "sprites/static/solid/z2_pad/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_61:
+	.incbin "sprites/static/solid/z2_pad/sheet.4bpp"
+gApSheet_61_Palettes:
+	.incbin "sprites/static/solid/z2_pad/sheet.gbapal"
+
+.include "sprites/static/solid/z2_lift/metasprite.inc"
+.include "sprites/static/solid/z2_lift/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_62:
+	.incbin "sprites/static/solid/z2_lift/sheet.4bpp"
+gApSheet_62_Palettes:
+	.incbin "sprites/static/solid/z2_lift/sheet.gbapal"
+
+.include "sprites/static/solid/z2_rescue/metasprite.inc"
+.include "sprites/static/solid/z2_rescue/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_63:
+	.incbin "sprites/static/solid/z2_rescue/sheet.4bpp"
+gApSheet_63_Palettes:
+	.incbin "sprites/static/solid/z2_rescue/sheet.gbapal"
+
+.include "sprites/static/solid/z2_rescue/run/metasprite.inc"
+.include "sprites/static/solid/z2_rescue/run/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_64:
+	.incbin "sprites/static/solid/z2_rescue/run/sheet.4bpp"
+gApSheet_64_Palettes:
+	.incbin "sprites/static/solid/z2_rescue/run/sheet.gbapal"
+
+.include "sprites/static/solid/z2_baby_elf/metasprite.inc"
+.include "sprites/static/solid/z2_baby_elf/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_65:
+	.incbin "sprites/static/solid/z2_baby_elf/sheet.4bpp"
+gApSheet_65_Palettes:
+	.incbin "sprites/static/solid/z2_baby_elf/sheet.gbapal"
+
+.include "sprites/static/solid/z2_x/metasprite.inc"
+.include "sprites/static/solid/z2_x/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_66:
+	.incbin "sprites/static/solid/z2_x/sheet.4bpp"
+gApSheet_66_Palettes:
+	.incbin "sprites/static/solid/z2_x/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/splash/metasprite.inc"
+.include "sprites/static/boss/z2_wall/splash/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_67:
+	.incbin "sprites/static/boss/z2_wall/splash/sheet.4bpp"
+gApSheet_67_Palettes:
+	.incbin "sprites/static/boss/z2_wall/splash/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/part/metasprite.inc"
+.include "sprites/static/boss/z2_wall/part/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_68:
+	.incbin "sprites/static/boss/z2_wall/part/sheet.4bpp"
+gApSheet_68_Palettes:
+	.incbin "sprites/static/boss/z2_wall/part/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/arm/metasprite.inc"
+.include "sprites/static/boss/z2_wall/arm/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_69:
+	.incbin "sprites/static/boss/z2_wall/arm/sheet.4bpp"
+gApSheet_69_Palettes:
+	.incbin "sprites/static/boss/z2_wall/arm/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/metasprite.inc"
+.include "sprites/static/boss/z2_wall/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_70:
+	.incbin "sprites/static/boss/z2_wall/sheet.4bpp"
+gApSheet_70_Palettes:
+	.incbin "sprites/static/boss/z2_wall/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/spike/metasprite.inc"
+.include "sprites/static/boss/z2_wall/spike/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_71:
+	.incbin "sprites/static/boss/z2_wall/spike/sheet.4bpp"
+gApSheet_71_Palettes:
+	.incbin "sprites/static/boss/z2_wall/spike/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/shot/metasprite.inc"
+.include "sprites/static/boss/z2_wall/shot/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_72:
+	.incbin "sprites/static/boss/z2_wall/shot/sheet.4bpp"
+gApSheet_72_Palettes:
+	.incbin "sprites/static/boss/z2_wall/shot/sheet.gbapal"
+
+.include "sprites/static/boss/z2_wall/shelf/metasprite.inc"
+.include "sprites/static/boss/z2_wall/shelf/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_73:
+	.incbin "sprites/static/boss/z2_wall/shelf/sheet.4bpp"
+gApSheet_73_Palettes:
+	.incbin "sprites/static/boss/z2_wall/shelf/sheet.gbapal"
+
+.include "sprites/static/solid/z2_cast/harpuia/metasprite.inc"
+.include "sprites/static/solid/z2_cast/harpuia/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_74:
+	.incbin "sprites/static/solid/z2_cast/harpuia/sheet.4bpp"
+gApSheet_74_Palettes:
+	.incbin "sprites/static/solid/z2_cast/harpuia/sheet.gbapal"
+
+.include "sprites/static/solid/z2_cast/fefnir/metasprite.inc"
+.include "sprites/static/solid/z2_cast/fefnir/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_75:
+	.incbin "sprites/static/solid/z2_cast/fefnir/sheet.4bpp"
+gApSheet_75_Palettes:
+	.incbin "sprites/static/solid/z2_cast/fefnir/sheet.gbapal"
+
+.include "sprites/static/solid/z2_cast/leviathan/metasprite.inc"
+.include "sprites/static/solid/z2_cast/leviathan/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_76:
+	.incbin "sprites/static/solid/z2_cast/leviathan/sheet.4bpp"
+gApSheet_76_Palettes:
+	.incbin "sprites/static/solid/z2_cast/leviathan/sheet.gbapal"
 
 .endif

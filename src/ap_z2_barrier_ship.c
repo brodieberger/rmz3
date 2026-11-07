@@ -65,6 +65,7 @@ enum {
 static const struct Collision sCollisions[3];
 static const Coords32 sElementCoord = {0, 0};
 
+static u16 Ship_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Ship_Init(struct Ship* p);
 static void Ship_Update(struct Ship* p);
 static void Ship_Die(struct Ship* p);
@@ -120,6 +121,7 @@ static void Ship_Init(struct Ship* p) {
   UpdateEntityAnim(s);
   SET_XFLIP(p, s->coord.x < (pZero2->s).coord.x);
   INIT_BODY(p, sCollisions, 8, Ship_OnCollision);
+  (p->body).unk_28 = (u32)Ship_Pull;
   p->postX = s->coord.x;
   p->postY = s->coord.y;
   s->coord.x += FACING_RIGHT(p) ? -PIXEL(64) : PIXEL(64);
@@ -216,6 +218,17 @@ static void Ship_Recoil(struct Ship* p) {
 }
 
 // 0x08097240
+// 0x0809777c
+static u16 Ship_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  s->mode[1] = SHIP_PULLED;
+  s->mode[2] = 0;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling && FUN_080098a4(s->coord.x, s->coord.y) == 0) return 1;
+  s->mode[1] = ((struct Ship*)s)->elementEffect == NULL ? SHIP_PATROL : SHIP_RECOVER;
+  return 0;
+}
+
 static void Ship_Pulled(struct Ship* p) {
   struct Entity* s = &p->s;
   if (s->mode[2] == 0) {

@@ -3,6 +3,10 @@
 #include "global.h"
 #include "syssav.h"
 
+#if AP
+#include "ap.h"
+#endif
+
 static const SectorHeader sDummySectorHeader = {
   INTI : 0x20202020,
 };
@@ -17,6 +21,9 @@ void clear0x02001ee0(void) {
 void UpdateSram(void) {
   struct SramState* s = &gSramState;
   (gSramRoutine[s->status])(s);
+#if AP
+  if (s->unk_00 == 0) ApFinishLoad();
+#endif
   return;
 }
 
@@ -30,6 +37,9 @@ bool32 ValidateSector(u8 sector, s32 datasize) {
   SectorHeader h = sDummySectorHeader;
 
   if (sector >= SECTOR_NUM) return FALSE;
+#if AP
+  if (ApIsGameSector(sector)) datasize = ApGameSectorSize();
+#endif
 
   for (retry = SRAM_RETRY_MAX; retry != 0; retry--) {
     ReadSram(SRAM_START + (SECTOR_SIZE * sector), (u8*)&h, sizeof(SectorHeader));
@@ -56,6 +66,9 @@ bool32 ValidateSectorWithChecksum(u8 sector, s32 datasize) {
   SectorHeader h = sDummySectorHeader;
 
   if (sector >= SECTOR_NUM) return FALSE;
+#if AP
+  if (ApIsGameSector(sector)) datasize = ApGameSectorSize();
+#endif
 
   for (retry = SRAM_RETRY_MAX; retry != 0; retry--) {
     ReadSram(SRAM_START + (SECTOR_SIZE * sector), (u8*)&h, sizeof(SectorHeader));
@@ -103,6 +116,12 @@ s32 sram_08003330(u8 sector, void* data, u32 bytesize) {
   if (sector >= SECTOR_NUM) return -1;
   if (gSramState.unk_00 != 0) return -1;
   if (bytesize > (SECTOR_SIZE + 16)) return -1;
+#if AP
+  if (ApIsGameSector(sector)) {
+    data = ApStageSave(data);
+    bytesize = ApGameSectorSize();
+  }
+#endif
   gSramState.sector = sector;
   gSramState.start = data;
   gSramState.length = bytesize;
@@ -117,6 +136,12 @@ s32 sram_08003378(u8 sector, void* data, u32 bytesize) {
   if (gSramState.unk_00 != 0) return -1;
   if (!ValidateSector(sector, bytesize)) return -1;
   if (bytesize > (SECTOR_SIZE + 16)) return -1;
+#if AP
+  if (ApIsGameSector(sector)) {
+    data = ApStageLoad(data);
+    bytesize = ApGameSectorSize();
+  }
+#endif
   gSramState.sector = sector;
   gSramState.start = data;
   gSramState.length = bytesize;

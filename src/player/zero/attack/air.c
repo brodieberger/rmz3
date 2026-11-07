@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
@@ -70,6 +71,9 @@ void zeroAirAtk(struct Zero* z) {
       onSaber,
       onRod,
       onShield,
+#if AP
+      ApChainAttack,
+#endif
   };
   (weapon[z->usingWeapon])(z);
 }

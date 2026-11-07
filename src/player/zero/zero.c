@@ -12,8 +12,15 @@
 #include "vfx.h"
 #include "weapon.h"
 
+#if AP
+void ApChainSwing(struct Zero* z);
+void ApChainSwingInput(struct Zero* z);
+static const ZeroFunc sHandlePlayerInputs[13];
+static const ZeroFunc sZeroUpdates[13];
+#else
 static const ZeroFunc sHandlePlayerInputs[12];
 static const ZeroFunc sZeroUpdates[12];
+#endif
 static const ZeroFunc sZeroAttacks[4];
 
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
@@ -411,7 +418,12 @@ void HandlePlayerInput_Cyber(struct Zero* z);
 
 // clang-format off
 // 01 xx nn nn
+#if AP
+static const ZeroFunc sHandlePlayerInputs[13] = {
+    [ZERO_CHAIN_SWING] = ApChainSwingInput,
+#else
 static const ZeroFunc sHandlePlayerInputs[12] = {
+#endif
     [ZERO_GROUND] =    HandlePlayerInput_Ground,
     [ZERO_AIR] =       HandlePlayerInput_Air,
     [ZERO_WALL] =      HandlePlayerInput_Wall,
@@ -431,7 +443,12 @@ static const ZeroFunc sHandlePlayerInputs[12] = {
 
 // clang-format off
 // 01 xx nn nn
+#if AP
+static const ZeroFunc sZeroUpdates[13] = {
+    [ZERO_CHAIN_SWING] = ApChainSwing,
+#else
 static const ZeroFunc sZeroUpdates[12] = {
+#endif
     [ZERO_GROUND] =    zeroNeutral2,
     [ZERO_AIR] =       zeroAir2,
     [ZERO_WALL] =      zeroWall2,

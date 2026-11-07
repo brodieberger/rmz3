@@ -42,8 +42,16 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_zero_rod_down_air
   .word gMetaSprite_zero_rod_wall
   .word gMetaSprite_zero_rod_ladder
+.if AP
+  .word gMetaSprite_z2_zero_chain
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_air
+.else
   .word gMetaSprite_zero_idle
+.endif
   .word gMetaSprite_zero_shield_shield
   .word gMetaSprite_zero_shield_throw
   .word gMetaSprite_zero_shield_walk
@@ -69,18 +77,66 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_zero_rod_charge_ladder
   .word gMetaSprite_omega_zero
   .word gMetaSprite_weapon_charge_saber_64
+.if AP
+  .word gMetaSprite_z2_chain
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_wall
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_ladder
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_swing
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_charge
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_chain_spin
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_charge_air
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_charge_wall
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_zero_chain_charge_ladder
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_chain_spin_air
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_chain_spin_wall
+.else
   .word gMetaSprite_zero_idle
+.endif
+.if AP
+  .word gMetaSprite_z2_chain_spin_ladder
+.else
   .word gMetaSprite_zero_idle
+.endif
   .word gMetaSprite_zero_idle
   .word gMetaSprite_zero_idle
   .word gMetaSprite_zero_idle
@@ -206,6 +262,11 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_boss_explosion
 .if AP
   .word gMetaSprite_z2_harpuia
+  .word gMetaSprite_z2_fefnir
+  .word gMetaSprite_z2_leviathan
+  .word gMetaSprite_z2_leviathan_armor
+  .word gMetaSprite_z2_blob
+  .word gMetaSprite_z2_captive
 .endif
 
 
@@ -414,8 +475,16 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_zero_rod_down_air
   .word gAnimationSequence_zero_rod_wall
   .word gAnimationSequence_zero_rod_ladder
+.if AP
+  .word gAnimationSequence_z2_zero_chain
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_air
+.else
   .word gAnimationSequence_zero_idle
+.endif
   .word gAnimationSequence_zero_shield_shield
   .word gAnimationSequence_zero_shield_throw
   .word gAnimationSequence_zero_shield_walk
@@ -441,18 +510,66 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_zero_rod_charge_ladder
   .word gAnimationSequence_omega_zero
   .word gAnimationSequence_weapon_charge_saber_64
+.if AP
+  .word gAnimationSequence_z2_chain
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_wall
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_ladder
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_swing
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_charge
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_chain_spin
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_charge_air
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_charge_wall
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_zero_chain_charge_ladder
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_chain_spin_air
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_chain_spin_wall
+.else
   .word gAnimationSequence_zero_idle
+.endif
+.if AP
+  .word gAnimationSequence_z2_chain_spin_ladder
+.else
   .word gAnimationSequence_zero_idle
+.endif
   .word gAnimationSequence_zero_idle
   .word gAnimationSequence_zero_idle
   .word gAnimationSequence_zero_idle
@@ -578,6 +695,11 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_boss_explosion
 .if AP
   .word gAnimationSequence_z2_harpuia
+  .word gAnimationSequence_z2_fefnir
+  .word gAnimationSequence_z2_leviathan
+  .word gAnimationSequence_z2_leviathan_armor
+  .word gAnimationSequence_z2_blob
+  .word gAnimationSequence_z2_captive
 .endif
 
 
@@ -748,4 +870,42 @@ gDynamicMotionCmdTable:
 .if AP
 .include "sprites/dynamic/z2_harpuia/metasprite.inc"
 .include "sprites/dynamic/z2_harpuia/sequence.inc"
+.include "sprites/dynamic/z2_fefnir/metasprite.inc"
+.include "sprites/dynamic/z2_fefnir/sequence.inc"
+.include "sprites/dynamic/z2_leviathan/metasprite.inc"
+.include "sprites/dynamic/z2_leviathan/sequence.inc"
+.include "sprites/dynamic/z2_leviathan_armor/metasprite.inc"
+.include "sprites/dynamic/z2_leviathan_armor/sequence.inc"
+.include "sprites/dynamic/z2_blob/metasprite.inc"
+.include "sprites/dynamic/z2_blob/sequence.inc"
+.include "sprites/dynamic/z2_captive/metasprite.inc"
+.include "sprites/dynamic/z2_captive/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_air/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_air/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_wall/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_wall/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_ladder/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_ladder/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_swing/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_swing/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_charge/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_charge/sequence.inc"
+.include "sprites/dynamic/z2_chain_spin/metasprite.inc"
+.include "sprites/dynamic/z2_chain_spin/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_air/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_air/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_wall/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_wall/sequence.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_ladder/metasprite.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_ladder/sequence.inc"
+.include "sprites/dynamic/z2_chain_spin_air/metasprite.inc"
+.include "sprites/dynamic/z2_chain_spin_air/sequence.inc"
+.include "sprites/dynamic/z2_chain_spin_wall/metasprite.inc"
+.include "sprites/dynamic/z2_chain_spin_wall/sequence.inc"
+.include "sprites/dynamic/z2_chain_spin_ladder/metasprite.inc"
+.include "sprites/dynamic/z2_chain_spin_ladder/sequence.inc"
+.include "sprites/dynamic/z2_chain/metasprite.inc"
+.include "sprites/dynamic/z2_chain/sequence.inc"
 .endif

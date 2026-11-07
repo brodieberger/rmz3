@@ -1,0 +1,81 @@
+{
+  "label": "gStaticAnimationSequence_boss_z2_wall_splash",
+  "data": [
+    [
+      {
+        "frameIdx": 0,
+        "duration": 3
+      },
+      {
+        "frameIdx": 1,
+        "duration": 3
+      },
+      {
+        "frameIdx": 2,
+        "duration": 3
+      },
+      {
+        "frameIdx": 3,
+        "duration": 3
+      },
+      {
+        "frameIdx": 4,
+        "duration": 3
+      },
+      {
+        "frameIdx": 5,
+        "duration": 3
+      },
+      {
+        "frameIdx": 6,
+        "duration": 3
+      },
+      {
+        "frameIdx": 7,
+        "duration": 3
+      },
+      {
+        "frameIdx": 0,
+        "duration": 254
+      }
+    ],
+    [
+      {
+        "frameIdx": 8,
+        "duration": 2
+      },
+      {
+        "frameIdx": 9,
+        "duration": 2
+      },
+      {
+        "frameIdx": 10,
+        "duration": 2
+      },
+      {
+        "frameIdx": 11,
+        "duration": 2
+      },
+      {
+        "frameIdx": 12,
+        "duration": 2
+      },
+      {
+        "frameIdx": 13,
+        "duration": 2
+      },
+      {
+        "frameIdx": 14,
+        "duration": 2
+      },
+      {
+        "frameIdx": 15,
+        "duration": 2
+      },
+      {
+        "frameIdx": 0,
+        "duration": 254
+      }
+    ]
+  ]
+}

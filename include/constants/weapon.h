@@ -7,6 +7,10 @@
 #define WEAPON_SHIELD 3
 #define WEAPON_KINDS WEAPON_SHIELD + 1
 #define WEAPON_NONE 0xFF
+#if AP
+#define WEAPON_CHAIN 4  // Zero 2's Chain Rod
+#define AP_WEAPON_KINDS 5
+#endif
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 

@@ -1,0 +1,918 @@
+@ Zero 2's JUNGLE AKA Forest of Dysis
+
+.balign 4
+
+.global gApZ2Jungle_Terrain
+gApZ2Jungle_Terrain:
+	.4byte gApZ2Jungle_Metatiles-.
+	.4byte gApZ2Jungle_Attrs-(.-4)
+	.4byte gApZ2Jungle_Chunks-(.-8)
+
+.global gApZ2Jungle_Tilesets
+gApZ2Jungle_Tilesets: @ ColorGraphic[5]
+
+gApZ2Jungle_Ts0:
+	.4byte gApZ2Jungle_Ts0_Tiles-.
+	.4byte 13248 | (0 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Ts0_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+gApZ2Jungle_Ts1:
+	.4byte gApZ2Jungle_Ts1_Tiles-.
+	.4byte 16384 | (512 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Ts1_Pal-.
+		.2byte 192
+		.byte 0, 9
+
+gApZ2Jungle_Ts2:
+	.4byte gApZ2Jungle_Ts2_Tiles-.
+	.4byte 16384 | (512 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Ts2_Pal-.
+		.2byte 224
+		.byte 0, 9
+
+gApZ2Jungle_Ts3:
+	.4byte gApZ2Jungle_Ts3_Tiles-.
+	.4byte 16384 | (0 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Ts3_Pal-.
+		.2byte 160
+		.byte 0, 2
+
+gApZ2Jungle_Ts4:
+	.4byte gApZ2Jungle_Ts4_Tiles-.
+	.4byte 8512 | (512 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Ts4_Pal-.
+		.2byte 160
+		.byte 0, 9
+
+.global gApZ2Jungle_TileAnim
+gApZ2Jungle_TileAnim: @ ColorGraphic[3]
+
+gApZ2Jungle_Anim0:
+	.4byte gApZ2Jungle_Anim0_Tiles-.
+	.4byte 128 | (20 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Anim0_Pal-.
+		.2byte 0
+		.byte 0, 0
+
+gApZ2Jungle_Anim1:
+	.4byte gApZ2Jungle_Anim1_Tiles-.
+	.4byte 128 | (20 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Anim1_Pal-.
+		.2byte 0
+		.byte 0, 0
+
+gApZ2Jungle_Anim2:
+	.4byte gApZ2Jungle_Anim2_Tiles-.
+	.4byte 128 | (20 << 22)
+	.2byte 256, BPP4
+		.4byte gApZ2Jungle_Anim2_Pal-.
+		.2byte 0
+		.byte 0, 0
+
+gApZ2Jungle_Zero:
+	.byte PLAYER, ZERO, 0, 0
+	.4byte 352*PX, 928*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_Camera:
+	.byte 6, 8, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 0*PX, MAX_X, 0*PX, MAX_Y
+
+.global gApZ2Jungle_Script
+gApZ2Jungle_Script:
+	spawn 0, gApZ2Jungle_Zero
+	reset_camera gApZ2Jungle_Camera
+	lock
+	cutscene_start CS_UNK_48
+	start_transition 1
+	wait 1
+	spawn 3, gApZ2Jungle_Soldier
+	change_entity_val 0, 4, 0
+	start_transition 0
+	play_bgm BGM_Z2_JUNGLE_SCENE
+	wait 30
+	force 6, 0, 0
+	wait 60
+	emotion_bubble 3, 12, -40, 0
+	wait 60
+	turn_left 3
+	wait 15
+	message 1, 0, 0x140b
+	wait_msgbox_end
+	stop_bgm
+	wait 15
+	entityflag 3, 0, TRUE
+	wait 8
+	entityflag 3, 1, TRUE
+	wait 30
+	play_bgm BGM_Z2_JUNGLE
+	message 1, 0, 0x1403
+	wait_msgbox_end
+	cutscene_end
+	indicator 1, 1, 0
+	indicator 0, 0, 0
+	release
+	destroy 3
+	resume 0
+	end
+
+gApZ2Jungle_Soldier:
+	.byte ENTITY_SOLID, SOLID_Z2_SCOUT, 0, 0
+	.4byte 432*PX, 928*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_AgainZero:
+	.byte PLAYER, ZERO, 0, 0
+	.4byte 352*PX, 928*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_AgainCamera:
+	.byte 6, 8, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 0*PX, MAX_X, 0*PX, MAX_Y
+
+.global gApZ2Jungle_AgainScript
+gApZ2Jungle_AgainScript:
+	spawn 0, gApZ2Jungle_AgainZero
+	reset_camera gApZ2Jungle_AgainCamera
+	lock
+	start_transition 9
+	wait_transition_end
+	play_bgm BGM_Z2_JUNGLE
+	indicator 1, 0, 0
+	wait_indicator_end
+	release
+	resume 0
+	end
+
+gApZ2Jungle_CheckpointZero:
+	.byte PLAYER, ZERO, 0, 0
+	.4byte 4672*PX, 928*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_CheckpointCamera:
+	.byte 6, 8, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 0*PX, MAX_X, 0*PX, MAX_Y
+
+.global gApZ2Jungle_CheckpointScript
+gApZ2Jungle_CheckpointScript:
+	spawn 0, gApZ2Jungle_CheckpointZero
+	reset_camera gApZ2Jungle_CheckpointCamera
+	lock
+	start_transition 9
+	wait_transition_end
+	play_bgm BGM_Z2_JUNGLE
+	indicator 1, 0, 0
+	wait_indicator_end
+	release
+	resume 0
+	end
+
+gApZ2Jungle_BossRestartZero:
+	.byte PLAYER, ZERO, 0, 0
+	.4byte 6352*PX, 448*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_BossRestartCamera:
+	.byte 6, 8, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 0*PX, MAX_X, 0*PX, MAX_Y
+
+.global gApZ2Jungle_BossRestartScript
+gApZ2Jungle_BossRestartScript:
+	spawn 0, gApZ2Jungle_BossRestartZero
+	reset_camera gApZ2Jungle_BossRestartCamera
+	lock
+	start_transition 9
+	wait_transition_end
+	play_bgm BGM_GUARDER_ROOM
+	indicator 1, 0, 0
+	wait_indicator_end
+	release
+	resume 0
+	end
+
+@ Clear scene skip lands here
+.global gApZ2Jungle_ResultScript
+gApZ2Jungle_ResultScript:
+	backdrop_color 0xFFFF
+	start_result_screen
+	wait_for_result_screen_end
+	lockmenu
+	end
+
+gApZ2Jungle_Beast:
+	.byte ENTITY_BOSS, BOSS_Z2_WALL, 0, 0
+	.4byte 4320*PX, 640*PX
+	.4byte DIR_LEFT
+
+gApZ2Jungle_BeastCamera:
+	.byte 4, 4, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 4402*PX, 4560*PX, 640*PX, 800*PX
+
+@ Zero 2's scripts 2 and 3
+.global gApZ2Jungle_MidBoss0Script
+gApZ2Jungle_MidBoss0Script:
+	spawn 1, gApZ2Jungle_Beast
+	reset_camera gApZ2Jungle_BeastCamera
+	lock
+	pause
+	wait 30
+	entityflag 1, 0, TRUE
+	wait 180
+	release
+	resume 1
+	end
+
+.global gApZ2Jungle_MidBoss0ClearScript
+gApZ2Jungle_MidBoss0ClearScript:
+	adjust_camera 0, 0, 3
+	adjust_camera 1, 0, 4
+	cmd08_wait_set 1
+	destroy 1
+	end
+
+gApZ2Jungle_Snake:
+	.byte ENTITY_BOSS, BOSS_Z2_SNAKE, 0, 1
+	.4byte 6720*PX, 800*PX
+	.4byte DIR_LEFT
+
+gApZ2Jungle_Thief:
+	.byte ENTITY_SOLID, SOLID_Z2_RESCUE_THIEF, 0, 0
+	.4byte 6800*PX, 448*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_Elf:
+	.byte ENTITY_SOLID, SOLID_Z2_BABY_ELF, 0, 0
+	.4byte 6800*PX, 416*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_X:
+	.byte ENTITY_SOLID, SOLID_Z2_X, 0, 0
+	.4byte 6880*PX, 1372*PX
+	.4byte DIR_LEFT
+
+gApZ2Jungle_ClearZero:
+	.byte PLAYER, ZERO, 0, 0
+	.4byte 6800*PX, 1152*PX
+	.4byte DIR_RIGHT
+
+gApZ2Jungle_XCamera:
+	.byte 4, 4, 0, 0
+	.4byte 0*PX, 0*PX
+	.4byte 0*PX, 0*PX
+	.2byte 0x0, 0x0, 0x0, 0x0
+	.4byte 6720*PX, 6960*PX, 0*PX, 10240*PX
+
+@ Zero 2's script 6: Baby Elf's thief cornered, snake drops in
+.global gApZ2Jungle_BossScript
+gApZ2Jungle_BossScript:
+.global gApZ2Jungle_BossReturnScript
+gApZ2Jungle_BossReturnScript:
+	end
+
+.global gApZ2Jungle_FightScript
+gApZ2Jungle_FightScript:
+	spawn 4, gApZ2Jungle_Thief
+	stop_bgm
+	lock
+	cutscene_start CS_UNK_48
+	pause
+	emotion_bubble 0, 16, -40, 0
+	wait 45
+	play_bgm BGM_Z2_JUNGLE_SCENE
+	adjust_camera 0, 0, 1
+	adjust_camera 1, 0, 2
+	adjust_camera 3, 0, 0x1AB000
+	spawn 5, gApZ2Jungle_Elf
+	wait 60
+	message 1, 0, 0x140c
+	wait_msgbox_end
+	force 9, 0, 0x1A6000
+	message 1, 0, 0x140d
+	wait_msgbox_end
+	wait 10
+	emotion_bubble 4, 12, -40, 0
+	change_entity_val 4, 2, 0
+	wait 60
+	entityflag 4, 0, TRUE
+	wait 20
+	entityflag 4, 1, TRUE
+	wait 60
+	message 1, 0, 0x1404
+	wait_msgbox_end
+	destroy 4
+	destroy 5
+	wait 15
+	entityflag 3, 0, TRUE
+	cutscene_end
+	adjust_camera 0, 0, 6
+	adjust_camera 1, 0, 4
+	adjust_camera 11, 0, 0x1A3800
+	adjust_camera 12, 0, 0x1B2800
+	adjust_camera 13, 0, 0
+	adjust_camera 14, 0, 0x280000
+	wait 60
+	destroy 3
+	spawn 1, gApZ2Jungle_Snake
+	wait 150
+	entityflag 1, 0, TRUE
+	stop_bgm
+	wait 60
+	indicator 4, 0, 0
+	wait 1
+	adjust_camera 0, 0, 6
+	adjust_camera 1, 0, 4
+	adjust_camera 11, 0, 0
+	adjust_camera 12, 0, 0x3C0000
+	adjust_camera 13, 0, 0x1E000
+	indicator 0, 0, 0
+	force 1, 0, 0
+	release
+	play_bgm BGM_Z2_HARPUIA
+	resume 1
+	end
+
+@ Zero 2's script 7
+.global gApZ2Jungle_FightReturnScript
+gApZ2Jungle_FightReturnScript:
+	lock
+	pause
+	forcekeyinput 0x4010
+	adjust_camera 0, 0, 1
+	adjust_camera 1, 0, 2
+	adjust_camera 3, 0, 0x1AB000
+	wait 60
+	force 9, 0, 0x1A6000
+	wait 15
+	entityflag 3, 0, TRUE
+	adjust_camera 0, 0, 6
+	adjust_camera 1, 0, 4
+	adjust_camera 11, 0, 0x1A3800
+	adjust_camera 12, 0, 0x1B2800
+	adjust_camera 13, 0, 0
+	adjust_camera 14, 0, 0x280000
+	wait 60
+	destroy 3
+	spawn 1, gApZ2Jungle_Snake
+	wait 150
+	entityflag 1, 0, TRUE
+	stop_bgm
+	wait 60
+	indicator 4, 0, 0
+	wait 1
+	adjust_camera 0, 0, 6
+	adjust_camera 1, 0, 4
+	adjust_camera 11, 0, 0
+	adjust_camera 12, 0, 0x3C0000
+	adjust_camera 13, 0, 0x1E000
+	indicator 0, 0, 0
+	force 1, 0, 0
+	release
+	play_bgm BGM_Z2_HARPUIA
+	resume 1
+	end
+
+@ Zero 2's script 8
+.global gApZ2Jungle_ClearScript
+gApZ2Jungle_ClearScript:
+	forcekeyinput 0xFFFF
+	stop_bgm
+	wait 1
+	lock
+	cutscene_start CS_UNK_48
+	force 8, 0, 0
+	message 1, 0, 0x1405
+	wait_msgbox_end
+	entityflag 1, 7, TRUE
+	cmd08_wait_set 1
+	start_transition 6
+	wait_transition_end
+	wait 32
+	destroy 1
+	destroy 0
+	lockmenu
+	adjust_camera 16, 0, 0
+	backdrop_color 0xFFFF
+	start_transition 5
+	wait 90
+	load_graphic_primitive
+	spawn 0, gApZ2Jungle_ClearZero
+	reset_camera gApZ2Jungle_XCamera
+	start_transition 1
+	start_transition 0
+	wait 90
+	play_bgm BGM_Z2_X_SCENE
+	wait 90
+	emotion_bubble 0, 16, -40, 0
+	spawn 3, gApZ2Jungle_X
+	wait 300
+	message 1, 0, 0x140e
+	wait_msgbox_end
+	wait 30
+	entityflag 3, 0, TRUE
+	wait 15
+	message 1, 0, 0x140f
+	wait_msgbox_end
+	wait 15
+	entityflag 3, 1, TRUE
+	wait 60
+	stop_bgm
+	wait 120
+	message 1, 0, 0x1410
+	wait_msgbox_end
+	wait 90
+	force 4, 0, 0
+	wait 8
+	force 5, 0, 0
+	wait 60
+	start_transition 2
+	wait_transition_end
+	wait 30
+	destroy 3
+	adjust_camera 16, 0, 0
+	backdrop_color 0xFFFF
+	cutscene_end
+	start_result_screen
+	wait_for_result_screen_end
+	load_graphic_primitive
+	destroy 0
+	wait 2
+	end
+
+.global gApZ2Jungle_PlttAnim101
+gApZ2Jungle_PlttAnim101: @ Zero 2's palette animation 101
+	.byte 7, 226, 232, 0
+	.2byte 0x25C2, 0x2E05, 0x3647, 0x3E8A, 0x4B0F, 0x5796, 0x63FD
+	.2byte 0x5796, 0x25C2, 0x2E05, 0x3647, 0x3E8A, 0x4B0F, 0x5796
+	.2byte 0x4F53, 0x4B0F, 0x25C2, 0x3226, 0x3A69, 0x42CC, 0x4B0F
+	.2byte 0x4710, 0x4B10, 0x3E8A, 0x25C2, 0x2E05, 0x3648, 0x3E8A
+	.2byte 0x3EAC, 0x42CD, 0x46EE, 0x4B0F, 0x25C2, 0x2E05, 0x3647
+	.2byte 0x3669, 0x3EAC, 0x4710, 0x4F53, 0x5796, 0x25C2, 0x2E05
+	.2byte 0x2E05, 0x3A6A, 0x42CE, 0x4F32, 0x5796, 0x63FD, 0x25C2
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript101
+gApZ2Jungle_PlttAnimScript101:
+	.4byte gApZ2Jungle_PlttAnimScript101_0
+gApZ2Jungle_PlttAnimScript101_0:
+	.byte 0, 5
+	.byte 1, 4
+	.byte 2, 4
+	.byte 3, 5
+	.byte 4, 5
+	.byte 5, 5
+	.byte 6, 6
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim102
+gApZ2Jungle_PlttAnim102: @ Zero 2's palette animation 102
+	.byte 4, 83, 86, 0
+	.2byte 0x4DBC, 0x391A, 0x28D4, 0x1CAF
+	.2byte 0x5D3D, 0x28DC, 0x1C97, 0x1491
+	.2byte 0x6C9E, 0x147E, 0x0C5B, 0x0853
+	.2byte 0x7C1F, 0x001F, 0x001E, 0x0014
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript102
+gApZ2Jungle_PlttAnimScript102:
+	.4byte gApZ2Jungle_PlttAnimScript102_0
+gApZ2Jungle_PlttAnimScript102_0:
+	.byte 0, 64
+	.byte 1, 16
+	.byte 2, 16
+	.byte 3, 10
+	.byte 2, 16
+	.byte 1, 16
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim103
+gApZ2Jungle_PlttAnim103: @ Zero 2's palette animation 103
+	.byte 5, 189, 189, 0
+	.2byte 0x0011
+	.2byte 0x0015
+	.2byte 0x0018
+	.2byte 0x001C
+	.2byte 0x001F
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript103
+gApZ2Jungle_PlttAnimScript103:
+	.4byte gApZ2Jungle_PlttAnimScript103_0
+gApZ2Jungle_PlttAnimScript103_0:
+	.byte 0, 8
+	.byte 1, 8
+	.byte 2, 8
+	.byte 3, 8
+	.byte 4, 8
+	.byte 3, 8
+	.byte 2, 8
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim104
+gApZ2Jungle_PlttAnim104: @ Zero 2's palette animation 104
+	.byte 5, 113, 114, 0
+	.2byte 0x4645, 0x3B3F
+	.2byte 0x46C5, 0x3B7F
+	.2byte 0x4725, 0x3B9F
+	.2byte 0x4785, 0x3BDF
+	.2byte 0x5FEE, 0x4FFF
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript104
+gApZ2Jungle_PlttAnimScript104:
+	.4byte gApZ2Jungle_PlttAnimScript104_0
+gApZ2Jungle_PlttAnimScript104_0:
+	.byte 0, 16
+	.byte 1, 16
+	.byte 2, 16
+	.byte 3, 16
+	.byte 4, 16
+	.byte 3, 16
+	.byte 2, 16
+	.byte 1, 16
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim105
+gApZ2Jungle_PlttAnim105: @ Zero 2's palette animation 105
+	.byte 5, 75, 75, 0
+	.2byte 0x001F
+	.2byte 0x0C19
+	.2byte 0x1813
+	.2byte 0x240D
+	.2byte 0x3007
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript105
+gApZ2Jungle_PlttAnimScript105:
+	.4byte gApZ2Jungle_PlttAnimScript105_0
+gApZ2Jungle_PlttAnimScript105_0:
+	.byte 0, 16
+	.byte 1, 16
+	.byte 2, 16
+	.byte 3, 16
+	.byte 4, 16
+	.byte 3, 16
+	.byte 2, 16
+	.byte 1, 16
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim106
+gApZ2Jungle_PlttAnim106: @ Zero 2's palette animation 106
+	.byte 4, 249, 249, 0
+	.2byte 0x53FF
+	.2byte 0x47DC
+	.2byte 0x3B99
+	.2byte 0x2F55
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript106
+gApZ2Jungle_PlttAnimScript106:
+	.4byte gApZ2Jungle_PlttAnimScript106_0
+gApZ2Jungle_PlttAnimScript106_0:
+	.byte 0, 16
+	.byte 1, 16
+	.byte 2, 16
+	.byte 3, 16
+	.byte 2, 16
+	.byte 1, 16
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim107
+gApZ2Jungle_PlttAnim107: @ Zero 2's palette animation 107
+	.byte 4, 252, 252, 0
+	.2byte 0x09DF
+	.2byte 0x0A7F
+	.2byte 0x0B1F
+	.2byte 0x0B5F
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript107
+gApZ2Jungle_PlttAnimScript107:
+	.4byte gApZ2Jungle_PlttAnimScript107_0
+gApZ2Jungle_PlttAnimScript107_0:
+	.byte 0, 8
+	.byte 1, 10
+	.byte 2, 12
+	.byte 3, 14
+	.byte 2, 12
+	.byte 1, 10
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim108
+gApZ2Jungle_PlttAnim108: @ Zero 2's palette animation 108
+	.byte 5, 253, 253, 0
+	.2byte 0x7F40
+	.2byte 0x6EC0
+	.2byte 0x6260
+	.2byte 0x5600
+	.2byte 0x49A0
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript108
+gApZ2Jungle_PlttAnimScript108:
+	.4byte gApZ2Jungle_PlttAnimScript108_0
+gApZ2Jungle_PlttAnimScript108_0:
+	.byte 0, 6
+	.byte 1, 8
+	.byte 2, 10
+	.byte 3, 12
+	.byte 4, 16
+	.byte 3, 12
+	.byte 2, 10
+	.byte 1, 8
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim109
+gApZ2Jungle_PlttAnim109: @ Zero 2's palette animation 109
+	.byte 6, 255, 255, 0
+	.2byte 0x4CB3
+	.2byte 0x54D5
+	.2byte 0x60F8
+	.2byte 0x691A
+	.2byte 0x757D
+	.2byte 0x7DDF
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript109
+gApZ2Jungle_PlttAnimScript109:
+	.4byte gApZ2Jungle_PlttAnimScript109_0
+gApZ2Jungle_PlttAnimScript109_0:
+	.byte 0, 2
+	.byte 1, 2
+	.byte 2, 2
+	.byte 3, 2
+	.byte 4, 2
+	.byte 5, 2
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim110
+gApZ2Jungle_PlttAnim110: @ Zero 2's palette animation 110
+	.byte 5, 217, 217, 0
+	.2byte 0x023F
+	.2byte 0x05FB
+	.2byte 0x0DD6
+	.2byte 0x1572
+	.2byte 0x210E
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript110
+gApZ2Jungle_PlttAnimScript110:
+	.4byte gApZ2Jungle_PlttAnimScript110_0
+gApZ2Jungle_PlttAnimScript110_0:
+	.byte 0, 16
+	.byte 1, 6
+	.byte 2, 8
+	.byte 3, 10
+	.byte 4, 32
+	.byte 3, 6
+	.byte 2, 8
+	.byte 1, 10
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim111
+gApZ2Jungle_PlttAnim111: @ Zero 2's palette animation 111
+	.byte 4, 163, 167, 0
+	.2byte 0x07FF, 0x73F1, 0x1F7F, 0x6AEF, 0x2EBC
+	.2byte 0x079F, 0x73F1, 0x173F, 0x6AEF, 0x22BD
+	.2byte 0x031F, 0x73F1, 0x0ADF, 0x6AEF, 0x129E
+	.2byte 0x029F, 0x73F1, 0x029F, 0x6AEF, 0x029F
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript111
+gApZ2Jungle_PlttAnimScript111:
+	.4byte gApZ2Jungle_PlttAnimScript111_0
+gApZ2Jungle_PlttAnimScript111_0:
+	.byte 0, 8
+	.byte 1, 8
+	.byte 2, 8
+	.byte 3, 8
+	.byte 2, 8
+	.byte 1, 8
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim112
+gApZ2Jungle_PlttAnim112: @ Zero 2's palette animation 112
+	.byte 4, 70, 70, 0
+	.2byte 0x03FF
+	.2byte 0x039F
+	.2byte 0x031F
+	.2byte 0x02BF
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript112
+gApZ2Jungle_PlttAnimScript112:
+	.4byte gApZ2Jungle_PlttAnimScript112_0
+gApZ2Jungle_PlttAnimScript112_0:
+	.byte 0, 8
+	.byte 1, 8
+	.byte 2, 8
+	.byte 3, 8
+	.byte 2, 8
+	.byte 1, 8
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim113
+gApZ2Jungle_PlttAnim113: @ Zero 2's palette animation 113
+	.byte 3, 65, 65, 0
+	.2byte 0x7FF1
+	.2byte 0x4218
+	.2byte 0x001F
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript113
+gApZ2Jungle_PlttAnimScript113:
+	.4byte gApZ2Jungle_PlttAnimScript113_0
+gApZ2Jungle_PlttAnimScript113_0:
+	.byte 0, 2
+	.byte 1, 2
+	.byte 2, 2
+	.byte 1, 2
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim114
+gApZ2Jungle_PlttAnim114: @ Zero 2's palette animation 114
+	.byte 4, 81, 90, 0
+	.2byte 0x267F, 0x1DDD, 0x199B, 0x1939, 0x14F6, 0x1094, 0x54B0, 0x408D, 0x24AB, 0x2F5F
+	.2byte 0x26BF, 0x1DFD, 0x19BC, 0x1D7A, 0x1517, 0x10B5, 0x54B0, 0x408D, 0x24AB, 0x479F
+	.2byte 0x275F, 0x1DFD, 0x1DDC, 0x1D9B, 0x1917, 0x10B5, 0x54B0, 0x408D, 0x24AB, 0x5FDF
+	.2byte 0x27FF, 0x1DFE, 0x1DDC, 0x1DDC, 0x1938, 0x14B5, 0x54B0, 0x408D, 0x24AB, 0x73FF
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript114
+gApZ2Jungle_PlttAnimScript114:
+	.4byte gApZ2Jungle_PlttAnimScript114_0
+gApZ2Jungle_PlttAnimScript114_0:
+	.byte 0, 32
+	.byte 1, 16
+	.byte 2, 16
+	.byte 3, 16
+	.byte 2, 16
+	.byte 1, 16
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim141
+gApZ2Jungle_PlttAnim141: @ Zero 2's palette animation 141
+	.byte 1, 0, 15, 0
+	.2byte 0x0000, 0x6FFF, 0x639C, 0x5B5A, 0x5318, 0x46B5, 0x4273, 0x3DEE, 0x2D8C, 0x05EF, 0x2129, 0x7FFC, 0x7E9B, 0x7557, 0x68B0, 0x40A0
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript141
+gApZ2Jungle_PlttAnimScript141:
+	.4byte gApZ2Jungle_PlttAnimScript141_0
+gApZ2Jungle_PlttAnimScript141_0:
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim142
+gApZ2Jungle_PlttAnim142: @ Zero 2's palette animation 142
+	.byte 1, 0, 15, 0
+	.2byte 0x0000, 0x6FFF, 0x639C, 0x5B5A, 0x5318, 0x46B5, 0x4273, 0x3DEE, 0x2D8C, 0x05EF, 0x2129, 0x6FFF, 0x76BF, 0x71FF, 0x5CDA, 0x50B3
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript142
+gApZ2Jungle_PlttAnimScript142:
+	.4byte gApZ2Jungle_PlttAnimScript142_0
+gApZ2Jungle_PlttAnimScript142_0:
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Jungle_PlttAnim143
+gApZ2Jungle_PlttAnim143: @ Zero 2's palette animation 143
+	.byte 1, 0, 15, 0
+	.2byte 0x0000, 0x6FFF, 0x639C, 0x5B5A, 0x5318, 0x46B5, 0x4273, 0x3DEE, 0x2D8C, 0x05EF, 0x2129, 0x73FF, 0x7F92, 0x7A8A, 0x6940, 0x40A0
+	.balign 4, 0
+.global gApZ2Jungle_PlttAnimScript143
+gApZ2Jungle_PlttAnimScript143:
+	.4byte gApZ2Jungle_PlttAnimScript143_0
+gApZ2Jungle_PlttAnimScript143_0:
+	.byte 0, 254
+	.balign 4, 0
+
+@;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+.global gApZ2Jungle_Metatiles
+gApZ2Jungle_Metatiles:
+	.incbin "data/ap/z2_jungle/metatile.bin"
+	.balign 4, 0
+
+.global gApZ2Jungle_Attrs
+gApZ2Jungle_Attrs:
+	.incbin "data/ap/z2_jungle/metatile_attr.bin"
+	.balign 4, 0
+
+.global gApZ2Jungle_Chunks
+gApZ2Jungle_Chunks:
+	.incbin "data/ap/z2_jungle/screen.bin"
+	.balign 4, 0
+
+.global gApZ2MugshotSnake
+gApZ2MugshotSnake:
+	.incbin "data/ap/z2_jungle/mugshot_snake.4bpp.lz"
+	.balign 4, 0
+.global gApZ2MugshotSnake_Pal
+gApZ2MugshotSnake_Pal:
+	.incbin "data/ap/z2_jungle/mugshot_snake.gbapal"
+	.balign 4, 0
+
+.global gApZ2MugshotSoldier
+gApZ2MugshotSoldier:
+	.incbin "data/ap/z2_jungle/mugshot_soldier.4bpp.lz"
+	.balign 4, 0
+.global gApZ2MugshotSoldier_Pal
+gApZ2MugshotSoldier_Pal:
+	.incbin "data/ap/z2_jungle/mugshot_soldier.gbapal"
+	.balign 4, 0
+
+.global gApZ2Jungle_RescueTexts
+gApZ2Jungle_RescueTexts:
+	.2byte 0x1406
+	.2byte 0x1407
+	.2byte 0x1408
+	.2byte 0x1409
+	.2byte 0x140a
+	.balign 4, 0
+
+.global gApZ2Jungle_Water0Map
+gApZ2Jungle_Water0Map:
+	.incbin "data/ap/z2_jungle/water0_map.bin"
+
+.global gApZ2Jungle_Water1Map
+gApZ2Jungle_Water1Map:
+	.incbin "data/ap/z2_jungle/water1_map.bin"
+
+gApZ2Jungle_Ts0_Tiles:
+	.incbin "data/ap/z2_jungle/tileset0.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Ts0_Pal:
+	.incbin "data/ap/z2_jungle/tileset0.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Ts1_Tiles:
+	.incbin "data/ap/z2_jungle/tileset1.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Ts1_Pal:
+	.incbin "data/ap/z2_jungle/tileset1.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Ts2_Tiles:
+	.incbin "data/ap/z2_jungle/tileset2.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Ts2_Pal:
+	.incbin "data/ap/z2_jungle/tileset2.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Ts3_Tiles:
+	.incbin "data/ap/z2_jungle/tileset3.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Ts3_Pal:
+	.incbin "data/ap/z2_jungle/tileset3.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Ts4_Tiles:
+	.incbin "data/ap/z2_jungle/tileset4.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Ts4_Pal:
+	.incbin "data/ap/z2_jungle/tileset4.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Anim0_Tiles:
+	.incbin "data/ap/z2_jungle/tile_anim0.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Anim0_Pal:
+	.incbin "data/ap/z2_jungle/tile_anim0.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Anim1_Tiles:
+	.incbin "data/ap/z2_jungle/tile_anim1.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Anim1_Pal:
+	.incbin "data/ap/z2_jungle/tile_anim1.gbapal"
+	.balign 4, 0
+
+gApZ2Jungle_Anim2_Tiles:
+	.incbin "data/ap/z2_jungle/tile_anim2.4bpp"
+	.balign 4, 0
+gApZ2Jungle_Anim2_Pal:
+	.incbin "data/ap/z2_jungle/tile_anim2.gbapal"
+	.balign 4, 0

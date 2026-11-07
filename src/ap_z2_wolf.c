@@ -49,6 +49,7 @@ enum {
   WOLF_NONE,
   WOLF_JAWS,   // jaws part
   WOLF_RECOIL,
+  WOLF_PULLED,
 };
 
 enum {
@@ -72,6 +73,7 @@ static const struct Collision sHarmless;
 static const Coords32 sElementCoord = {0, -PIXEL(6)};
 static const u8 sStartModes[4] = {WOLF_IDLE, WOLF_IDLE, WOLF_BITE, WOLF_JAWS};
 
+static u16 Wolf_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Wolf_Init(struct Wolf* p);
 static void Wolf_Update(struct Wolf* p);
 static void Wolf_Die(struct Wolf* p);
@@ -107,6 +109,19 @@ static void face(struct Wolf* p, bool8 right) { SET_XFLIP(p, right); }
 static void turnRound(struct Wolf* p) { face(p, !FACING_RIGHT(p)); }
 static void setPriority(struct Wolf* p, u8 n) { ((p->s).spr).oam.priority = n; }
 static s32 abs32(s32 v) { return v < 0 ? -v : v; }
+// 0x0808c348
+static u16 Wolf_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  s->mode[1] = WOLF_PULLED;
+  s->mode[2] = 0;
+  s->d.x = dx;
+  s->d.y = dy;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling && FUN_080098a4(s->coord.x, s->coord.y) == 0) return 1;
+  s->mode[1] = WOLF_FALL;
+  return 0;
+}
+
 static bool8 zeroInFront(struct Wolf* p) { return FACING_RIGHT(p) == ((pZero2->s).coord.x > (p->s).coord.x); }
 static bool8 facingAwayFromHome(struct Wolf* p) { return FACING_RIGHT(p) == ((p->s).coord.x >= p->homeX); }
 
@@ -245,6 +260,7 @@ static void Wolf_Init(struct Wolf* p) {
     useApSheets(p);
     s->flags |= DISPLAY;
     INIT_BODY(p, sBody, 12, Wolf_OnCollision);
+    (p->body).unk_28 = (u32)Wolf_Pull;
     back = FUN_08009f6c(s->coord.x - PIXEL(10), s->coord.y);
     front = FUN_08009f6c(s->coord.x + PIXEL(10), s->coord.y);
     s->coord.y = front < back ? front : back;

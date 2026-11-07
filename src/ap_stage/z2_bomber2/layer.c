@@ -19,16 +19,16 @@
   135 for the purple building, and 138 for the lightning in the outdoor sky.
 */
 
-extern const PlttAnimData gApImp0_PlttAnim133, gApImp0_PlttAnim134, gApImp0_PlttAnim135,
-    gApImp0_PlttAnim138;
-extern const AnimCmd* const gApImp0_PlttAnimScript133[], *const gApImp0_PlttAnimScript134[],
-    *const gApImp0_PlttAnimScript135[], *const gApImp0_PlttAnimScript138[];
+extern const PlttAnimData gApZ2Bomber2_PlttAnim133, gApZ2Bomber2_PlttAnim134, gApZ2Bomber2_PlttAnim135,
+    gApZ2Bomber2_PlttAnim138;
+extern const AnimCmd* const gApZ2Bomber2_PlttAnimScript133[], *const gApZ2Bomber2_PlttAnimScript134[],
+    *const gApZ2Bomber2_PlttAnimScript135[], *const gApZ2Bomber2_PlttAnimScript138[];
 
 #define PLTT_ANIM_ID(n) (0x8000 | (n))
 
 static void animate(bool8 here, u16 id, const PlttAnimData* data, const AnimCmd* const* script) {
   if (here) {
-    ApStartPaletteAnimation(id, data, script);
+    ApStartPaletteAnimation(id, data, script, 0);
     StepPaletteAnimation(id);
   } else {
     RemovePaletteAnimation(id);
@@ -39,10 +39,10 @@ static void Stage_Nop(Coords32* _ UNUSED) {}
 
 // 0x0800ebe0
 static void Stage_Update(Coords32* _ UNUSED) {
-  animate(TILESET_IDX(1) == 9, PLTT_ANIM_ID(133), &gApImp0_PlttAnim133, gApImp0_PlttAnimScript133);
-  animate(TILESET_IDX(1) == 10, PLTT_ANIM_ID(134), &gApImp0_PlttAnim134, gApImp0_PlttAnimScript134);
-  animate(TILESET_IDX(1) == 4, PLTT_ANIM_ID(135), &gApImp0_PlttAnim135, gApImp0_PlttAnimScript135);
-  animate(TILESET_IDX(0) == 11, PLTT_ANIM_ID(138), &gApImp0_PlttAnim138, gApImp0_PlttAnimScript138);
+  animate(TILESET_IDX(1) == 9, PLTT_ANIM_ID(133), &gApZ2Bomber2_PlttAnim133, gApZ2Bomber2_PlttAnimScript133);
+  animate(TILESET_IDX(1) == 10, PLTT_ANIM_ID(134), &gApZ2Bomber2_PlttAnim134, gApZ2Bomber2_PlttAnimScript134);
+  animate(TILESET_IDX(1) == 4, PLTT_ANIM_ID(135), &gApZ2Bomber2_PlttAnim135, gApZ2Bomber2_PlttAnimScript135);
+  animate(TILESET_IDX(0) == 11, PLTT_ANIM_ID(138), &gApZ2Bomber2_PlttAnim138, gApZ2Bomber2_PlttAnimScript138);
 }
 
 // 0x0800ef6c
@@ -53,7 +53,7 @@ static void Stage_Exit(Coords32* _ UNUSED) {
   RemovePaletteAnimation(PLTT_ANIM_ID(138));
 }
 
-const StageFunc gApImp0_StageRoutines[4] = {
+const StageFunc gApZ2Bomber2_StageRoutines[4] = {
     Stage_Nop,
     Stage_Update,
     Stage_Nop,
@@ -69,7 +69,7 @@ const StageFunc gApImp0_StageRoutines[4] = {
   4: room at the bottom of the cave
   5, 6, 7: inside ship (inaccessible)
 */
-u8 gApImp0_Area(Coords32* c) {
+u8 gApZ2Bomber2_Area(Coords32* c) {
   s32 x = c->x, y = c->y;
   if (x > PIXEL(960) && x < PIXEL(1440) && y > PIXEL(2080) && y < PIXEL(2240)) return 4;
   if (x < PIXEL(3120)) {
@@ -219,7 +219,7 @@ static void Off_Update(struct StageLayer* l, const struct Stage* _ UNUSED) {
   7: cave background
 */
 // clang-format off
-const StageLayerRoutine gApImp0_LayerRoutines[9] = {
+const StageLayerRoutine gApZ2Bomber2_LayerRoutines[9] = {
     [0] = {NULL, NULL, NULL},
     [1] = {NULL, DrawGeneralStageLayer, NULL},
     [2] = {Crystals_Update, Crystals_Draw, Crystals_Exit},

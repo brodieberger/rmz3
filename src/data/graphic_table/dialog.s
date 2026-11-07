@@ -600,6 +600,22 @@ gGraphics_MsgBox:: @ Gfx57
 		.2byte 32 @ bytesize
 		.byte 0, 0 @ lz77(bool8), dst = PaletteID
 
+	.if AP
+	@ Zero 2's snake, then soldier, in Jungle's data
+	.4byte gApZ2MugshotSnake-.
+	.4byte 966 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotSnake_Pal-.
+		.2byte 32
+		.byte 0, 0
+	.4byte gApZ2MugshotSoldier-.
+	.4byte 877 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotSoldier_Pal-.
+		.2byte 32
+		.byte 0, 0
+	.endif
+
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 MsgBox0_Tiles:

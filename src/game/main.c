@@ -397,6 +397,7 @@ static void GameLoop_NewGame(struct GameState* g) {
     }
   }
   MemFill32(0, (g->save).savedDisk, 48);
+  ApClearSavedata();
 #endif
 #if !AP
   /*

@@ -14,11 +14,18 @@ static bool8 isSaberOK(void* _ UNUSED);
 static bool8 isRodOK(void* _ UNUSED);
 static bool8 isShieldOK(struct Zero* z);
 
+#if AP
+static const WeaponOKFunc sWeaponOKTable[5] = {
+#else
 static const WeaponOKFunc sWeaponOKTable[4] = {
+#endif
     (void*)isBusterOK,  // 4連射未満か
     (void*)isSaberOK,   // 常にOK
     (void*)isRodOK,     // 常にOK
     (void*)isShieldOK,  // シールドブーメランを構えているか
+#if AP
+    (void*)isRodOK,
+#endif
 };
 
 void FUN_08033ed4(struct Zero* z) {

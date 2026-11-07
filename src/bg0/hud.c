@@ -4,6 +4,9 @@
 #include "global.h"
 #include "gpu_regs.h"
 #include "story.h"
+#if AP
+#include "ap.h"
+#endif
 
 static void drawZeroHPWeaponIcon(void* p);
 static void FUN_080ea3c8(void* p);
@@ -33,6 +36,9 @@ void DrawStatus(void) {
       LoadPalette(&gPalette_Unk17, 0);
       LoadGraphic(&gGraphic_HUD, (void*)CHAR_BASE(0));
       LoadPalette(&gPalette_HUD, 0);
+#if AP
+      ApLoadChainHudIcon();
+#endif
     } else {
       LoadGraphic(&gGraphic_LogoDemo, (void*)CHAR_BASE(0));
       LoadPalette(&gPalette_LogoDemo, 0);
@@ -42,6 +48,9 @@ void DrawStatus(void) {
 
   if (!FLAG(gCurStory.s.gameflags, DEMO_PLAY)) {
     drawZeroHPWeaponIcon(&gHUD.bg0);
+#if AP
+    if (gHUD.z != NULL) ApDrawChainHudIcon(gHUD.bg0, gHUD.z);
+#endif
     FUN_080ea3c8(&gHUD.bg0);
   } else {
     gVideoRegBuffer.dispcnt |= DISPCNT_BG0_ON;

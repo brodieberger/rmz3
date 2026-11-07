@@ -23,6 +23,9 @@ enum {
   ZERO_TALK = 9,       // 仁王立ち(会話時)
   ZERO_TELEPORT = 10,  // 転送
   ZERO_CYBER = 11,     // サイバー空間のドア
+#if AP
+  ZERO_CHAIN_SWING = 12,
+#endif
 };
 
 // Zero.posture (gZeroCollisions's idx)

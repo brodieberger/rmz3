@@ -56,6 +56,9 @@ void zeroAttack(struct Zero* z) {
       onSaber_GroundIdle,
       recoilAttack,
       shieldAttack,
+#if AP
+      ApChainAttack,
+#endif
   };
   (gZeroWeaponRoutine[z->usingWeapon])(z);
   return;

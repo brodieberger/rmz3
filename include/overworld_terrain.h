@@ -132,6 +132,38 @@ struct Overworld {
       u8 _[0x20];
       bool8 lit[2];  // Red and blue crystal layers lit this frame
     } apZ2Bomber2;
+    struct ApZ2OpeningState {
+      struct Entity* hunters[32];  // start's wave, until each dies
+      u16 sent;
+      u16 timer;
+      u32 sinking;  // bit by sand cell giving way
+      u32 sunk;     // last frame's sinking, read by blocks
+    } apZ2Opening;
+    struct ApZ2LavaShrineState {
+      u8 frame;     // 0..44, lava tiles' animation
+      bool8 lavaScript;
+      bool8 tank;   // Fefnir's tank's hull shown, layer routine 2
+      u8 _;
+      s32 rise;     // 0..960 frames since lava started rising
+      struct Entity* fefnir;
+      s32 tankX;
+      s32 tankY;
+    } apZ2LavaShrine;
+    struct ApZ2IceShrineState {
+      s32 rise;  // frames of flood, 2112 at the top
+      u8 music;  // 0 stage's, 1 fading, 2 room's, 3 fight started
+    } apZ2IceShrine;
+    struct ApZ2CircuitShrineState {
+      u8 music;  // as Temple of Ice's
+    } apZ2CircuitShrine;
+    struct ApZ2CircuitShrineState apZ2RuinedShrine;
+    struct ApZ2JungleState {
+      u16 timer;  // 0..255, crusher's
+      u8 flash;   // 0..189, sky's
+      u8 music;   // 0 stage's, 1 fading, 2 corridor's
+      bool8 returning;  // started at corridor, short intro
+      bool8 fight;
+    } apZ2Jungle;
 #endif
   } work;  // ステージごとに用途が変わる
 };  // 184624 bytes

@@ -168,6 +168,26 @@ extern const EnemyRoutine gApZ2FlowerRoutine;
 extern const EnemyRoutine gApZ2SpiderRoutine;
 extern const EnemyRoutine gApZ2VultureRoutine;
 extern const EnemyRoutine gApZ2CrabRoutine;
+extern const EnemyRoutine gApZ2DesertPartRoutine;
+extern const EnemyRoutine gApZ2DesertJawRoutine;
+extern const EnemyRoutine gApZ2DesertTailRoutine;
+extern const EnemyRoutine gApZ2FefnirPartRoutine;
+extern const EnemyRoutine gApZ2FefnirWheelsRoutine;
+extern const EnemyRoutine gApZ2FefnirBallRoutine;
+extern const EnemyRoutine gApZ2MineSpawnerRoutine;
+extern const EnemyRoutine gApZ2MineRoutine;
+extern const EnemyRoutine gApZ2PylonRoutine;
+extern const EnemyRoutine gApZ2DozerRoutine;
+extern const EnemyRoutine gApZ2IceBlockRoutine;
+extern const EnemyRoutine gApZ2FishRoutine;
+extern const EnemyRoutine gApZ2IceDragonRoutine;
+extern const EnemyRoutine gApZ2IceCrawlerRoutine;
+extern const EnemyRoutine gApZ2SnowflakeRoutine;
+extern const EnemyRoutine gApZ2IcicleRoutine;
+extern const EnemyRoutine gApZ2IceCellEnemyRoutine;
+extern const EnemyRoutine gApZ2WallFrogRoutine, gApZ2WallEyeRoutine;
+extern const EnemyRoutine gApZ2FlameArmRoutine, gApZ2FrostArmRoutine, gApZ2FrostBallRoutine, gApZ2FrostShardRoutine;
+extern const EnemyRoutine gApZ2FishSpawnerRoutine;
 #endif
 
 // clang-format off
@@ -272,6 +292,30 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_Z2_SPIDER] = &gApZ2SpiderRoutine,
   [ENEMY_Z2_VULTURE] = &gApZ2VultureRoutine,
   [ENEMY_Z2_CRAB] = &gApZ2CrabRoutine,
+  [ENEMY_Z2_DESERT_PART] = &gApZ2DesertPartRoutine,
+  [ENEMY_Z2_DESERT_JAW] = &gApZ2DesertJawRoutine,
+  [ENEMY_Z2_DESERT_TAIL] = &gApZ2DesertTailRoutine,
+  [ENEMY_Z2_FEFNIR_PART] = &gApZ2FefnirPartRoutine,
+  [ENEMY_Z2_FEFNIR_WHEELS] = &gApZ2FefnirWheelsRoutine,
+  [ENEMY_Z2_FEFNIR_BALL] = &gApZ2FefnirBallRoutine,
+  [ENEMY_Z2_MINE_SPAWNER] = &gApZ2MineSpawnerRoutine,
+  [ENEMY_Z2_MINE] = &gApZ2MineRoutine,
+  [ENEMY_Z2_PYLON] = &gApZ2PylonRoutine,
+  [ENEMY_Z2_DOZER] = &gApZ2DozerRoutine,
+  [ENEMY_Z2_ICE_BLOCK] = &gApZ2IceBlockRoutine,
+  [ENEMY_Z2_FISH] = &gApZ2FishRoutine,
+  [ENEMY_Z2_FISH_SPAWNER] = &gApZ2FishSpawnerRoutine,
+  [ENEMY_Z2_ICE_DRAGON] = &gApZ2IceDragonRoutine,
+  [ENEMY_Z2_ICE_CRAWLER] = &gApZ2IceCrawlerRoutine,
+  [ENEMY_Z2_SNOWFLAKE] = &gApZ2SnowflakeRoutine,
+  [ENEMY_Z2_ICICLE] = &gApZ2IcicleRoutine,
+  [ENEMY_Z2_ICE_CELL] = &gApZ2IceCellEnemyRoutine,
+  [ENEMY_Z2_WALL_FROG] = &gApZ2WallFrogRoutine,
+  [ENEMY_Z2_WALL_EYE] = &gApZ2WallEyeRoutine,
+  [ENEMY_Z2_FLAME_ARM] = &gApZ2FlameArmRoutine,
+  [ENEMY_Z2_FROST_ARM] = &gApZ2FrostArmRoutine,
+  [ENEMY_Z2_FROST_BALL] = &gApZ2FrostBallRoutine,
+  [ENEMY_Z2_FROST_SHARD] = &gApZ2FrostShardRoutine,
 #endif
 };
 // clang-format on

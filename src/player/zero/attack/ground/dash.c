@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "global.h"
 #include "motion.h"
 #include "overworld.h"
@@ -130,12 +131,23 @@ static void onSaber(struct Zero* z);
 static void onRod(struct Zero* z);
 static void onShield(struct Zero* z);
 
+#if AP
+static void onChain(struct Zero* z) {
+  (z->s).mode[2] = 0;
+  (z->s).mode[3] = 0;
+  ApChainAttack(z);
+}
+#endif
+
 void FUN_0802ec7c(struct Zero* z) {
   static ZeroFunc const weapon[] = {
       onBuster,
       onSaber,
       onRod,
       onShield,
+#if AP
+      onChain,
+#endif
   };
   (weapon[z->usingWeapon])(z);
 }

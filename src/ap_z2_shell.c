@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -422,6 +423,7 @@ static void Shell_Die(struct Shell* p) {
   PlaySound(SE_ZAKO_EXPLODE);
   TryDropItem(3, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  ApImportShellKilled();
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

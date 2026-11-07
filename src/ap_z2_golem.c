@@ -1,3 +1,5 @@
+#include "ap.h"
+#include "ap_import.h"
 #include "boss.h"
 #include "collision.h"
 #include "definition.h"
@@ -8,6 +10,7 @@
 #include "projectile.h"
 #include "random.h"
 #include "script.h"
+#include "spawn.h"
 #include "stagerun.h"
 #include "trig.h"
 #include "vfx.h"
@@ -19,6 +22,9 @@
 
 /*
   Zero 2's Golem Type E, boss 9. This one specifically is the hidden boss in Crystal Caves.
+  work0:
+    0: slides in when its fight starts, as the Opening's two do
+    1: already in place, as the crystal cave's
 */
 
 struct Golem {
@@ -48,7 +54,6 @@ static void Golem_Init(struct Golem* p);
 static void Golem_Update(struct Golem* p);
 static void Golem_Die(struct Golem* p);
 static void createArm(struct Golem* golem, bool8 arm, u8 side);
-static void createFeet(struct Golem* golem);
 
 // clang-format off
 const BossRoutine gApZ2GolemRoutine = {
@@ -59,6 +64,13 @@ const BossRoutine gApZ2GolemRoutine = {
     [ENTITY_EXIT] =      (BossFunc)DeleteEntity,
 };
 // clang-format on
+
+static const struct PreloadEntity sSheets[4] = {
+    {AP_SHEET_Z2_GOLEM, 0, 512, 4},
+    {AP_SHEET_Z2_GOLEM_ARM, 0, 692, 9},
+    {AP_SHEET_Z2_GOLEM_LASER, 0, 916, 6},
+    {AP_SHEET_Z2_GOLEM_FOOT, 0, 976, 8},
+};
 
 static void useApSheets(void* p) {
   if (p != NULL) ((struct Entity*)p)->texture = TEXTURE_AP_SHEET;
@@ -74,6 +86,10 @@ static bool8 dying(struct Entity* parent) { return parent->mode[0] > ENTITY_UPDA
 // 0x0804d028
 static void Golem_Init(struct Golem* p) {
   struct Entity* s = &p->s;
+  s32 i;
+  for (i = 0; i < 4; i++) {
+    ApLoadSheet(&sSheets[i]);
+  }
   InitNonAffineMotion(s);
   useApSheets(p);
   s->flags |= DISPLAY | FLIPABLE;
@@ -83,12 +99,21 @@ static void Golem_Init(struct Golem* p) {
   s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
   p->homeX = s->coord.x;
   p->homeY = s->coord.y;
+  // work0 0 starts 65 px from home, moving away. unk_coord.x is the slowdown that brings it back.
+  if (s->work[0] == 0) {
+    s->unk_coord.x = (s->flags & X_FLIP) ? -8 : 8;
+    s->d.x = 0;
+    for (i = 0; i < 64; i++) {
+      s->d.x += s->unk_coord.x;
+      s->coord.x += s->d.x;
+    }
+  }
   p->sway = 0;
   p->oddFire = p->evenFire = FALSE;
   s->unk_2c = NULL;
   createArm(p, FALSE, 0);
   createArm(p, FALSE, 1);
-  createFeet(p);
+  ApZ2CreateGolemFeet(s, 0);
   SET_BOSS_ROUTINE(p, ENTITY_UPDATE);
   Golem_Update(p);
 }
@@ -119,9 +144,30 @@ static void Golem_Update(struct Golem* p) {
 // 0x0804d46c
 static void Golem_Wait(struct Golem* p) {
   struct Entity* s = &p->s;
-  if (s->mode[2] == 0) s->mode[2]++;
+  if (s->mode[2] == 0) {
+    s->mode[3] = 0;
+    s->mode[2]++;
+  }
   UpdateSpriteAnimation(p);
-  if (s->scriptEntity->flags & 1) setMode(s, GOLEM_FIGHT);
+  switch (s->mode[3]) {
+    case 0:
+      if (!(s->scriptEntity->flags & 1)) break;
+      if (s->work[0] == 0) {
+        PlaySound(SE_Z2_GOLEM_SLIDE);
+        s->mode[3]++;
+      } else {
+        setMode(s, GOLEM_FIGHT);
+      }
+      break;
+    case 1:
+      s->d.x -= s->unk_coord.x;
+      s->coord.x -= s->d.x;
+      if (s->d.x == 0) {
+        s->coord.x = p->homeX;
+        setMode(s, GOLEM_FIGHT);
+      }
+      break;
+  }
 }
 
 // 0x0804d4ec
@@ -197,11 +243,14 @@ static void explode(struct Golem* p, Coords32* c, u8 kind) {
   }
 }
 
-static void Golem_Die(struct Golem* p) {
-  struct Entity* s = &p->s;
+static void Golem_Die(struct Golem* p) { ApZ2GolemDie(&p->s, MOTION(AP_SHEET_Z2_GOLEM, 0)); }
+
+// Bosses 21 and 22 die the same way
+void ApZ2GolemDie(struct Entity* s, motion_t stand) {
+  struct Golem* p = (struct Golem*)s;
   u16 t;
   if (s->mode[2] == 0) {
-    SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_GOLEM, 0));
+    SetSpriteAnimation(p, stand);
     EXIT_BODY(p);
     if ((gStageRun.missionStatus & MISSION_STAY) && !(gStageRun.vm.active & VM_ACTIVE)) {
       gStageRun.missionStatus &= ~MISSION_STAY;
@@ -484,22 +533,25 @@ const VFXRoutine gApZ2GolemFootRoutine = {
 // clang-format on
 
 // 0x080b48c8
-static void createFeet(struct Golem* golem) {
+void ApZ2CreateGolemFeet(struct Entity* golem, u8 kind) {
   u8 i;
   if (gVFXHeaderPtr->remaining <= 1) return;
   for (i = 0; i < 2; i++) {
     struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
     INIT_VFX_ROUTINE(p, VFX_Z2_GOLEM_FOOT);
     p->work[0] = i;
-    p->unk_28 = &golem->s;
+    p->work[1] = kind;
+    p->unk_28 = golem;
   }
 }
+
+static const u8 sFootSheets[3] = {AP_SHEET_Z2_GOLEM_FOOT, AP_SHEET_Z2_FLAME_GOLEM_FOOT, AP_SHEET_Z2_FROST_GOLEM_FOOT};
 
 // 0x080b4960
 static void Foot_Init(struct Entity* p) {
   InitNonAffineMotion(p);
   useApSheets(p);
-  SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_GOLEM_FOOT, (p->work[0] ? 0 : 1)));
+  SetSpriteAnimation(p, MOTION(sFootSheets[p->work[1]], (p->work[0] ? 0 : 1)));
   p->flags |= DISPLAY;
   p->renderPrio = 24;
   SET_VFX_ROUTINE(p, ENTITY_UPDATE);

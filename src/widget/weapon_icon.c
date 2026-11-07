@@ -1,22 +1,37 @@
 #include "global.h"
 #include "overworld.h"
 #include "widget.h"
+#if AP
+#include "constants/weapon.h"
+#endif
 
 static void MenuWeapon_Init(struct Widget* w);
 static void MenuWeapon_Update(struct Widget* w);
 static void MenuWeapon_Die(struct Widget* w);
+#if AP
+static void ApMenuWeapon_Update(struct Widget* w);
+#endif
 
 // clang-format off
 const WidgetRoutine gMenuWeaponIconRoutine = {
     [ENTITY_INIT] =      (void*)MenuWeapon_Init,
+#if AP
+    [ENTITY_UPDATE] =    (void*)ApMenuWeapon_Update,
+#else
     [ENTITY_UPDATE] =    (void*)MenuWeapon_Update,
+#endif
     [ENTITY_DIE] =       (void*)MenuWeapon_Die,
     [ENTITY_DISAPPEAR] = (void*)DeleteWidget,
     [ENTITY_EXIT] =      (void*)DeleteEntity,
 };
 // clang-format on
 
+#if AP
+const motion_t sWeaponIconMotions[AP_WEAPON_KINDS] = {
+    [WEAPON_CHAIN] = MOTION(SM014_CHIPICON, 5),
+#else
 const motion_t sWeaponIconMotions[WEAPON_KINDS] = {
+#endif
     [WEAPON_BUSTER] = MOTION(SM014_CHIPICON, 0),
     [WEAPON_SABER] = MOTION(SM014_CHIPICON, 1),
     [WEAPON_ROD] = MOTION(SM014_CHIPICON, 2),
@@ -392,6 +407,23 @@ _080E6220: .4byte 0x00000DCC\n\
 _080E6224: .4byte gVideoRegBuffer+16\n\
  .syntax divided\n");
 }
+
+#if AP
+// Vanilla's row stops at the shield
+static void ApMenuWeapon_Update(struct Widget* w) {
+  struct GameState* g = (struct GameState*)(w->s).unk_28;
+  u8 unlocked = ((g->z2)->unk_b4).status.unlockedWeapon;
+  u8 own = (w->s).work[0];
+  u8 i;
+
+  if ((w->s).mode[1] == 1 && (unlocked & (1 << WEAPON_CHAIN))) {
+    for (i = (unlocked & 0xC) ? WEAPON_CHAIN : WEAPON_ROD; i < AP_WEAPON_KINDS; i++) {
+      if (i != own) createMenuWeaponIcon(g, i, (w->s).work[1], 1);
+    }
+  }
+  MenuWeapon_Update(w);
+}
+#endif
 
 static void MenuWeapon_Die(struct Widget* w) {
   SET_WIDGET_ROUTINE(w, ENTITY_EXIT);

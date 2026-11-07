@@ -50,6 +50,7 @@ static_assert(sizeof(struct Gun) == sizeof(struct Projectile));
 
 // Knocked down by an element, gun never fires again
 #define COPTER_FROZEN (1 << 0)
+#define COPTER_PULLED (1 << 1)
 #define COPTER_KNOCKED (1 << 2)
 
 enum {
@@ -80,6 +81,7 @@ static const struct SlashedEnemy sCutHalf;
 static const struct SlashedEnemy sCutHalfHard;
 static const Coords32 sElementCoord = {0, 0};
 
+static u16 Copter_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Copter_Init(struct Copter* p);
 static void Copter_Update(struct Copter* p);
 static void Copter_Die(struct Copter* p);
@@ -129,6 +131,7 @@ static void Copter_Init(struct Copter* p) {
     default: p->bobHeight = 0; break;
   }
   INIT_BODY(p, sCollisions, 6, Copter_OnCollision);
+  (p->body).unk_28 = (u32)Copter_Pull;
   s->flags |= DISPLAY | FLIPABLE;
   p->baseY = s->coord.y;
   p->bobPhase = 0;
@@ -184,6 +187,7 @@ static void Copter_Update(struct Copter* p) {
 
   if (s->mode[1] == COPTER_BOB) {
     UpdateSpriteAnimation(p);
+    if (p->gunStopped & COPTER_PULLED) return;
     p->bobPhase += 0x240 / (1 << s->work[0]);
     s->coord.y = (p->baseY + ((SIN(p->bobPhase >> 8) * p->bobHeight) >> 8)) & ~0xFF;
     return;
@@ -205,6 +209,19 @@ static void Copter_Update(struct Copter* p) {
   s->mode[1] = COPTER_EXPLODE;
   EXIT_BODY(p);
   Copter_Die(p);
+}
+
+// 0x0806dbb8
+static u16 Copter_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  struct Copter* p = (struct Copter*)s;
+  p->gunStopped |= COPTER_PULLED;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  p->baseY = s->coord.y;
+  p->bobPhase = 0;
+  p->gunStopped &= ~COPTER_PULLED;
+  return 0;
 }
 
 // Same as Pantheon Hunter, 0x08064cac

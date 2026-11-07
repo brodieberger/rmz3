@@ -21,7 +21,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 390
+#define AP_MAX_LOCATION_ID 655
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -61,12 +61,13 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 /*
   Progressive weapon upgrades.
   code = AP_ITEM_WEAPON_LEVEL_FIRST + (weapon * AP_ITEM_CODES_PER_WEAPON) + level
-  weapon is WEAPON_BUSTER to WEAPON_SHIELD:
+  weapon is WEAPON_BUSTER to WEAPON_CHAIN:
 
     Buster  1: own  2: semi charge    3: full charge  4: ATK+1          5: ATK+2  6: ATK+3
     Saber   1: own  2: 2nd slash      3: 3rd slash    4: charged slash  5: ATK+1  6: ATK+2  7: ATK+3
     Rod     1: own  2: charged rod    3: ATK+1        4: ATK+2          5: ATK+3
     Shield  1: own  2: charged throw  3: ATK+1        4: ATK+2          5: ATK+3
+    Chain   1: own  2: charged rod    3: ATK+1        4: ATK+2          5: ATK+3
 */
 #define AP_ITEM_WEAPON_LEVEL_FIRST 400
 
@@ -74,7 +75,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_ITEM_CODES_PER_WEAPON 8
 
 #define AP_ITEM_WEAPON_LEVEL_LAST \
-  (AP_ITEM_WEAPON_LEVEL_FIRST + (3 * AP_ITEM_CODES_PER_WEAPON) + (AP_ITEM_CODES_PER_WEAPON - 1))
+  (AP_ITEM_WEAPON_LEVEL_FIRST + (WEAPON_CHAIN * AP_ITEM_CODES_PER_WEAPON) + (AP_ITEM_CODES_PER_WEAPON - 1))
 
 #define AP_MOD_BUSTER_SEMI 184
 #define AP_MOD_BUSTER_FULL 185
@@ -90,11 +91,9 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 #define AP_ITEM_STAGE_ACCESS_FIRST 181
 #define AP_ITEM_STAGE_ACCESS_LAST 195
-/*
-  Access item for the imported stages (legacy_stages option).
-*/
-#define AP_ITEM_IMPORT_ACCESS 196
-#define AP_IMPORT_UNLOCK_BIT 15
+/* Legacy stage access, 320 + Zero 2 stage in game order, ported or not */
+#define AP_ITEM_IMPORT_ACCESS_FIRST 320
+#define AP_Z2_STAGE_COUNT 16
 
 /*
   Story progress items.
@@ -103,6 +102,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_ITEM_PROGRESSIVE_WEAPON_FIRST 224
 #define AP_ITEM_PROGRESSIVE_WEAPON_LAST 227
 #define AP_ITEM_STORY_PROGRESS 228
+#define AP_ITEM_PROGRESSIVE_CHAIN 231
 #define AP_ITEM_CRYSTALS 301   /* the apworld's filler crystals */
 
 #define AP_ITEM_STORY_MID 229   // FLAG_FIRST4_DONE
@@ -120,10 +120,14 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_ITEMSANITY_COUNT 82
 #define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT)
 /*
-  Cyber elves in the imported stages. Each one is a location.
+  Legacy stage locations, 16 ids a stage, in Zero 2's game order, ported or not.
+  0: clear
+  1: A+ rank
+  2..: cyber elves
 */
-#define AP_LOC_IMPORT_ELF_FIRST 383
-#define AP_IMPORT_ELF_COUNT 6
+#define AP_LOC_IMPORT_FIRST 400
+#define AP_LOC_IMPORT_STRIDE 16
+#define AP_IMPORT_ELF_COUNT 28
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
 /*
@@ -219,8 +223,6 @@ extern const char_t gApShopSoldText[];
 #define AP_RANK_BYTE 0
 #define AP_RANK_NONE 0
 
-// Best rank in the legacy stage, stored the same way, in the low nibble.
-#define AP_IMPORT_RANK_BYTE 15
 
 // Every stage but the final one cleared.
 #define AP_MISSION_DONES_ALL 0xFFFEu
@@ -293,7 +295,7 @@ struct ApState {
   u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 156);
+static_assert(sizeof(struct ApState) == 220);
 
 extern struct ApState gAp;
 
@@ -310,7 +312,7 @@ struct ApSeedConfig {
   u8 infiniteLives;
   u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
   u8 enemyDiskMarkers; // enemy marker
-  u8 legacyStages;     // Legacy stages are in the seed, unlocked by AP_ITEM_IMPORT_ACCESS
+  u8 legacyStages;     // Legacy stages are in the seed, each unlocked by its own access item
   u8 unused[2];
 };
 
@@ -395,8 +397,24 @@ struct ZeroStatus;
 void ApInit(void);
 void ApUpdate(void);
 
+/* Rows of gApImportedStages */
+#define AP_IMPORT_COUNT 7
 #define AP_IMPORT_TILESETS_MAX 16
 #define AP_IMPORT_PRELOADS_MAX 16
+
+// AP save information. TODO individual level data
+struct ApSavedata {
+  u8 importOpen[AP_Z2_STAGE_COUNT];  // access item received, by game order
+  u8 importRank[AP_IMPORT_COUNT];  // best rank + 1, like AP_RANK_BYTE
+  u8 chainLevel;                   // Progressive Chain Rod copies
+};
+extern struct ApSavedata gApSavedata;
+void ApClearSavedata(void);
+bool32 ApIsGameSector(u8 sector);
+u32 ApGameSectorSize(void);
+void* ApStageSave(const void* game);
+void* ApStageLoad(void* game);
+void ApFinishLoad(void);
 const struct SpawnTemplate* ApImportTemplates(void);
 const struct SpawnPoint* ApImportPoints(void);
 extern struct PreloadEntity gApSlot0Preloads[];
@@ -404,9 +422,25 @@ void ApImportSelect(u8 n);
 u8 ApImportCount(void);
 const char_t* ApImportName(u8 n);
 u8 ApImportElvesFound(void);
+u8 ApImportZ2Stage(u8 import);
+bool32 ApImportOpen(u8 import);
 void ApImportResetKills(void);
 void ApImportHottalookKilled(void);
 void ApImportHopperKilled(void);
+void ApImportTowerKilled(void);
+void ApImportSpikeballKilled(void);
+void ApImportVultureKilled(void);
+void ApImportShellKilled(void);
+struct Zero;
+typedef u16 (*ApChainHook)(struct Entity* p, u16 pulling, s32 dx, s32 dy);
+void ApChainAttack(struct Zero* z);
+void ApChainSwing(struct Zero* z);
+void ApChainSwingInput(struct Zero* z);
+void ApImportRingCannonKilled(void);
+void ApImportBeeKilled(void);
+void ApImportCarrierKilled(void);
+void ApImportMoleKilled(void);
+void ApImportSpiderKilled(void);
 struct StageRun;
 s16 ApImportUpdate(struct StageRun* p);
 extern u8 gApImportSelected;
@@ -432,6 +466,11 @@ bool32 ApHasWeaponAbility(u8 bit);
 u8 ApChargeTier(u8 weapon);         
 u8 ApWeaponLevel(u8 weapon);
 void ApPrintWeaponStars(u8 weapon);
+const char_t* ApWeaponName(u8 weapon);
+u8 ApChainBonus(struct Zero* z);
+void ApLoadChainMenuIcon(u32 tile);
+void ApLoadChainHudIcon(void);
+void ApDrawChainHudIcon(u16* bg0, struct Zero* z);
 
 struct GameState;
 void ApCmdRoomTalk(struct GameState* g);
@@ -540,6 +579,7 @@ void ApFrameHook(bool32 b);
 #define ApHasWeaponAbility(bit) (1)
 #define ApChargeTier(weapon) (FULL_CHARGE)
 #define ApPrintWeaponStars(weapon) ((void)0)
+#define ApLoadChainMenuIcon(tile) ((void)0)
 #define ApRequestMissionRerun(stageID) ((void)0)
 #define ApTakeMissionRerun(stageID) (0)
 #define ApInMissionRerun() (0)

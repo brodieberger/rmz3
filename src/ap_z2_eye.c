@@ -44,6 +44,7 @@ enum {
   EYE_BOUNCE,
   EYE_RISE,
   EYE_RECOIL,
+  EYE_PULLED,
 };
 
 #define ANIM(n) MOTION(AP_SHEET_Z2_EYE, n)
@@ -60,6 +61,7 @@ static const struct Collision sHarmless[2];
 static const u8 sFirstMode[3] = {EYE_WAIT, EYE_HANG, EYE_RISE};
 static const Coords32 sElementCoord = {0, 0};
 
+static u16 Eye_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Eye_Init(struct Eye* p);
 static void Eye_Update(struct Eye* p);
 static void Eye_Die(struct Eye* p);
@@ -99,6 +101,7 @@ static void Eye_Init(struct Eye* p) {
   useApSheets(p);
   s->flags |= DISPLAY;
   INIT_BODY(p, sCollisions, 4, Eye_OnCollision);
+  (p->body).unk_28 = (u32)Eye_Pull;
   SetMotion(s, ANIM_HANG);
   s->mode[1] = sFirstMode[s->work[0]];
   SET_XFLIP(p, (pZero2->s).coord.x - s->coord.x > 0);
@@ -125,6 +128,20 @@ static void Eye_Bounce(struct Eye* p);
 static void Eye_Rise(struct Eye* p);
 
 // 0x08092d88
+// 0x08093168
+static u16 Eye_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  if (s->mode[1] != EYE_PULLED) {
+    s->mode[1] = EYE_PULLED;
+    s->mode[2] = 0;
+  }
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  s->mode[1] = s->work[0] == 0 ? EYE_SWEEP : EYE_HOME;
+  s->mode[2] = 1;
+  return 0;
+}
+
 static void Eye_Update(struct Eye* p) {
   struct Entity* s = &p->s;
 

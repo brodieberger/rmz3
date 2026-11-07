@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "element.h"
 #include "enemy.h"
@@ -681,7 +682,7 @@ static void wallCheck(struct Spider* p) {
       if (s->work[2] > 16) {
         right = RANDOM(RNG_0202f388) & 1;
         s->mode[1] = WALL_WALK;
-        s->d.y = right ? 0x180 : -0x180;
+        s->d.y = right == (s->work[0] == ON_LEFT_WALL) ? 0x180 : -0x180;
         face(p, right);
         p->walked = 0;
         SetMotion(s, ANIM(1));
@@ -1118,6 +1119,7 @@ static void Spider_Die(struct Spider* p) {
       s->work[2] = 4;
       if (p->homeY != 0) {
         TryDropItem(4, (struct Coord*)&s->coord);
+        ApImportSpiderKilled();
         if (gScore.enemyCount < 9999) gScore.enemyCount++;
         TryDropZakoDisk((struct Enemy*)p, &s->coord);
       }

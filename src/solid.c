@@ -79,6 +79,19 @@ extern const SolidRoutine gToggleSwitchYellowRoutine;
 extern const SolidRoutine gOceanRodWallRoutine;
 extern const SolidRoutine gSeaLevelButtonRoutine;
 extern const SolidRoutine gChildreShipRoutine;
+#if AP
+extern const SolidRoutine gApZ2SandBlockRoutine;
+extern const SolidRoutine gApZ2IntroHunterRoutine;
+extern const SolidRoutine gApZ2IntroJawRoutine;
+extern const SolidRoutine gApZ2SlabRoutine;
+extern const SolidRoutine gApZ2BeatenFefnirRoutine;
+extern const SolidRoutine gApZ2GateRoutine;
+extern const SolidRoutine gApZ2FloeRoutine;
+extern const SolidRoutine gApZ2FallenRoutine, gApZ2CastRoutine, gApZ2DoorRoutine;
+extern const SolidRoutine gApZ2RescueRoutine, gApZ2PadRoutine, gApZ2LiftRoutine, gApZ2ScoutRoutine, gApZ2ThiefRoutine,
+    gApZ2BabyElfRoutine, gApZ2XRoutine, gApZ2WallShelfRoutine, gApZ2WallArmRoutine;
+extern const SolidRoutine gApZ2IceCellRoutine;
+#endif
 
 // clang-format off
 const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
@@ -138,5 +151,27 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_OCEAN_ROD_WALL] =            &gOceanRodWallRoutine,
     [SOLID_SEA_LV_BTN] =                &gSeaLevelButtonRoutine,
     [SOLID_CHILDRE_SHIP] =              &gChildreShipRoutine,
+#if AP
+    [SOLID_Z2_SAND_BLOCK] =             &gApZ2SandBlockRoutine,
+    [SOLID_Z2_INTRO_HUNTER] =           &gApZ2IntroHunterRoutine,
+    [SOLID_Z2_INTRO_JAW] =              &gApZ2IntroJawRoutine,
+    [SOLID_Z2_SLAB] =                   &gApZ2SlabRoutine,
+    [SOLID_Z2_BEATEN_FEFNIR] =          &gApZ2BeatenFefnirRoutine,
+    [SOLID_Z2_GATE] =                   &gApZ2GateRoutine,
+    [SOLID_Z2_FLOE] =                   &gApZ2FloeRoutine,
+    [SOLID_Z2_FALLEN] =                 &gApZ2FallenRoutine,
+    [SOLID_Z2_CAST] =                   &gApZ2CastRoutine,
+    [SOLID_Z2_DOOR] =                   &gApZ2DoorRoutine,
+    [SOLID_Z2_RESCUE] =                 &gApZ2RescueRoutine,
+    [SOLID_Z2_PAD] =                    &gApZ2PadRoutine,
+    [SOLID_Z2_LIFT] =                   &gApZ2LiftRoutine,
+    [SOLID_Z2_SCOUT] =                  &gApZ2ScoutRoutine,
+    [SOLID_Z2_RESCUE_THIEF] =           &gApZ2ThiefRoutine,
+    [SOLID_Z2_BABY_ELF] =               &gApZ2BabyElfRoutine,
+    [SOLID_Z2_X] =                      &gApZ2XRoutine,
+    [SOLID_Z2_WALL_SHELF] =             &gApZ2WallShelfRoutine,
+    [SOLID_Z2_WALL_ARM] =               &gApZ2WallArmRoutine,
+    [SOLID_Z2_ICE_CELL] =               &gApZ2IceCellRoutine,
+#endif
 };
 // clang-format on

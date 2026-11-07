@@ -20,7 +20,13 @@
 #define WEAPON_MOVE_SHIELD_SWEEP_ELEC 15
 #define WEAPON_MOVE_MINIGAME_ROD 16
 
+#if AP
+#define WEAPON_MOVE_Z2_CHAIN 17
+#define WEAPON_MOVE_Z2_CHAIN_SPIN 18
+#define WEAPON_MOVE_COUNT WEAPON_MOVE_Z2_CHAIN_SPIN + 1
+#else
 #define WEAPON_MOVE_COUNT WEAPON_MOVE_MINIGAME_ROD + 1
+#endif
 
 // ------------------------------------------------------------------------------------------------------------------------------------
 

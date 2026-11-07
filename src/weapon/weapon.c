@@ -89,6 +89,10 @@ extern const WeaponRoutine gBusterRoutine;
 extern const WeaponRoutine gSaberRoutine;
 extern const WeaponRoutine gShieldGuardRoutine;
 extern const WeaponRoutine gRodRoutine;
+#if AP
+extern const WeaponRoutine gApZ2ChainRoutine;
+extern const WeaponRoutine gApZ2ChainSpinRoutine;
+#endif
 extern const WeaponRoutine gShieldFlyRoutine;
 extern const WeaponRoutine gSaberWaveRoutine;
 extern const WeaponRoutine gWeapon6Routine;
@@ -122,5 +126,9 @@ const WeaponRoutine* const gWeaponFnTable[WEAPON_MOVE_COUNT] = {
     [WEAPON_MOVE_RAKUSAIGA] =         &gSmashElecRoutine,
     [WEAPON_MOVE_SHIELD_SWEEP_ELEC] = &gElecShieldSweepRoutine,
     [WEAPON_MOVE_MINIGAME_ROD] =      &gMinigameRodRoutine,
+#if AP
+    [WEAPON_MOVE_Z2_CHAIN] =          &gApZ2ChainRoutine,
+    [WEAPON_MOVE_Z2_CHAIN_SPIN] =     &gApZ2ChainSpinRoutine,
+#endif
 };
 // clang-format on

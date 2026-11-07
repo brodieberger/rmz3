@@ -98,11 +98,35 @@
 #define ENEMY_Z2_SPIKEBALL 92
 #define ENEMY_Z2_SHELL 93
 #define ENEMY_Z2_WOLF 94
-#define ENEMY_Z2_FLOWER 95  // the man-eating flower
-#define ENEMY_Z2_SPIDER 96  // the robot spider
-#define ENEMY_Z2_VULTURE 97  // robot vultures and their perch
-#define ENEMY_Z2_CRAB 98  // the pyramid-shelled crab
-#define ENEMY_COUNT (ENEMY_Z2_CRAB + 1)
+#define ENEMY_Z2_FLOWER 95  // man-eating flower
+#define ENEMY_Z2_SPIDER 96  // robot spider
+#define ENEMY_Z2_VULTURE 97  // robot vultures and perch
+#define ENEMY_Z2_CRAB 98  // pyramid-shelled crab
+#define ENEMY_Z2_DESERT_PART 99  // Desert boss's legs and fixed pieces
+#define ENEMY_Z2_DESERT_JAW 100  // Desert boss's jaw
+#define ENEMY_Z2_DESERT_TAIL 101  // Desert boss's tail
+#define ENEMY_Z2_FEFNIR_PART 102  // Fefnir's tank's turrets, Zero 2 enemy 39
+#define ENEMY_Z2_FEFNIR_WHEELS 103  // Zero 2 enemy 42
+#define ENEMY_Z2_FEFNIR_BALL 104  // top turrets' lob, Zero 2 enemy 40
+#define ENEMY_Z2_MINE_SPAWNER 105  // Zero 2 enemy 36
+#define ENEMY_Z2_MINE 106  // Zero 2 enemy 77
+#define ENEMY_Z2_PYLON 107  // Zero 2 enemy 13
+#define ENEMY_Z2_DOZER 108  // Zero 2 enemy 17
+#define ENEMY_Z2_ICE_BLOCK 109  // Zero 2 enemy 18
+#define ENEMY_Z2_FISH 110  // Zero 2 enemy 53
+#define ENEMY_Z2_FISH_SPAWNER 111  // Zero 2 enemy 61
+#define ENEMY_Z2_ICE_DRAGON 112  // Zero 2 enemy 44, Leviathan's dragons
+#define ENEMY_Z2_ICE_CRAWLER 113  // Zero 2 enemy 45
+#define ENEMY_Z2_SNOWFLAKE 114  // Zero 2 enemy 46
+#define ENEMY_Z2_ICICLE 115  // Zero 2 enemy 47
+#define ENEMY_Z2_ICE_CELL 116  // Zero 2 enemy 85, cell of crawler's row
+#define ENEMY_Z2_FLAME_ARM 117  // Zero 2 enemy 68
+#define ENEMY_Z2_FROST_ARM 118  // Zero 2 enemy 62
+#define ENEMY_Z2_FROST_BALL 119  // Zero 2 enemy 63
+#define ENEMY_Z2_FROST_SHARD 120  // Zero 2 enemy 64
+#define ENEMY_Z2_WALL_FROG 121  // Zero 2 enemy 52
+#define ENEMY_Z2_WALL_EYE 122  // Zero 2 enemy 54
+#define ENEMY_COUNT (ENEMY_Z2_WALL_EYE + 1)
 #else
 #define ENEMY_COUNT (ENEMY_72 + 1)
 #endif

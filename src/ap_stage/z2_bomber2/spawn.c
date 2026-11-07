@@ -11,7 +11,7 @@
 
 #if AP
 
-const struct SpawnTemplate gApImp0_Templates[91] = {
+const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [0] = {0},
     [1] =
         {
@@ -36,17 +36,17 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [5] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 0, 0),
         },
     [6] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 1, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 1, 0),
         },
     [7] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 2, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 2, 0),
         },
     [8] =
         {
@@ -156,22 +156,22 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [26] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 1, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 147, 0),
         },
     [27] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 3, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 149, 0),
         },
     [28] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 2, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 148, 0),
         },
     [29] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 0, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 146, 0),
         },
     [30] =
         {
@@ -361,17 +361,17 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [65] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 0, 0),
         },
     [66] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 1, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 1, 0),
         },
     [67] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 2, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_DOOR, 2, 0),
         },
     [68] =
         {
@@ -418,13 +418,13 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [75] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 9, 0, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_SHIELD_GUARD, 0, 0),
             .attr = 0x01,
         },
     [76] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 9, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_SHIELD_GUARD, 1, 0),
             .attr = 0x01,
         },
     [77] =
@@ -436,13 +436,13 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
     [78] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 16, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_RING_CANNON, 1, 0),
             .attr = 0x01,
         },
     [79] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 16, 1, 1),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_RING_CANNON, 1, 1),
             .attr = 0x01,
         },
     [80] =
@@ -503,7 +503,7 @@ const struct SpawnTemplate gApImp0_Templates[91] = {
         },
 };
 
-const struct SpawnPoint gApImp0_Points[85] = {
+const struct SpawnPoint gApZ2Bomber2_Points[85] = {
     [0] = {-0x80000000, -0x8000, 0},
     [1] = {SpawnPixelCoords(720, 1680), 1},
     [2] = {SpawnPixelCoords(800, 576), 8},
@@ -591,7 +591,7 @@ const struct SpawnPoint gApImp0_Points[85] = {
     [84] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApImp0_Preloads[13] = {
+const struct PreloadEntity gApZ2Bomber2_Preloads[10] = {
     {
         SM021_TOP_GABYOALL,
         B8(00000111),
@@ -665,37 +665,10 @@ const struct PreloadEntity gApImp0_Preloads[13] = {
         0,
     },
     {
-        AP_SHEET_Z2_GOLEM,
-        B8(00010000),
-        512,
-        4,
-        1,
-        AP_PRELOAD_SHEET | 1,
-        0,
-    },
-    {
-        AP_SHEET_Z2_GOLEM_ARM,
-        B8(00010000),
-        692,
-        9,
-        1,
-        AP_PRELOAD_SHEET | 1,
-        0,
-    },
-    {
-        AP_SHEET_Z2_GOLEM_LASER,
-        B8(00010000),
-        916,
-        6,
-        1,
-        AP_PRELOAD_SHEET | 1,
-        0,
-    },
-    {
-        AP_SHEET_Z2_GOLEM_FOOT,
-        B8(00010000),
-        976,
-        8,
+        AP_SHEET_Z2_PYLON,
+        B8(00100000),
+        544,
+        5,
         1,
         AP_PRELOAD_SHEET | 1,
         0,

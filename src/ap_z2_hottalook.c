@@ -37,7 +37,8 @@ struct Hive {
   s8 side;       // 0xB8, -1: leading left, 1: leading right
   bool8 shocked; // 0xB9, frozen by a elemental attack
   u16 swapTimer; // 0xBA
-  u8 _[8];
+  bool8 pulled;  // 0xBC
+  u8 _[7];
 };
 static_assert(sizeof(struct Hive) == sizeof(struct Enemy));
 
@@ -68,6 +69,7 @@ enum {
   HOTTALOOK_FLY,
   HOTTALOOK_FALL,
   HOTTALOOK_RECOIL,
+  HOTTALOOK_PULLED,
 };
 
 static const struct Collision sHiveCollisions[2];
@@ -77,6 +79,8 @@ static const struct Collision sHottalookCollisions[2];
 static const struct Collision sHottalookHarmless[2];
 static const Coords32 sElementCoord = {0, 0};
 
+static u16 Hive_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
+static u16 Hottalook_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Hive_Init(struct Hive* p);
 static void Hive_Update(struct Hive* p);
 static void Hive_Die(struct Hive* p);
@@ -149,6 +153,7 @@ static void Hive_Init(struct Hive* p) {
   (p->s).flags |= DISPLAY | FLIPABLE;
   p->side = (p->s).work[0] * 2 - 1;
   p->shocked = FALSE;
+  p->pulled = FALSE;
   (p->s).d.x = (p->s).d.y = 0;
   p->swapTimer = 128;
   p->baseY = (p->s).coord.y;
@@ -156,13 +161,23 @@ static void Hive_Init(struct Hive* p) {
   (p->s).unk_2c = NULL;
   (p->s).unk_coord.x = (p->s).coord.x;
   INIT_BODY(p, sHiveHidden, 64, onCollision);
+  (p->body).unk_28 = (u32)Hive_Pull;
   Hive_Update(p);
+}
+
+// 0x08080a30
+static u16 Hive_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  struct Hive* p = (struct Hive*)s;
+  p->pulled = pulling != 0;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  return pulling != 0;
 }
 
 // 0x0808090c: stays 80 px ahead of Zero
 static void Hive_Follow(struct Hive* p) {
   s32 x, home = (p->s).unk_coord.x;
-  if ((p->s).unk_2c != NULL) return;
+  if ((p->s).unk_2c != NULL || p->pulled) return;
   x = (pZero2->s).coord.x + p->side * PIXEL(80);
   if ((p->s).work[0] == 0) {
     if (x > home) {
@@ -388,6 +403,7 @@ static void Hottalook_Init(struct Hottalook* p) {
   (p->s).flags |= DISPLAY | FLIPABLE;
   (p->s).unk_2c = NULL;
   INIT_BODY(p, sHottalookCollisions, 4, onCollision);
+  (p->body).unk_28 = (u32)Hottalook_Pull;
   Hottalook_Update(p);
 }
 
@@ -506,11 +522,32 @@ static void Hottalook_Recoil(struct Hottalook* p) {
   }
 }
 
-static const EnemyFunc sHottalookUpdates[4] = {
+// 0x08081000
+static void Hottalook_Pulled(struct Hottalook* p) {
+  struct Entity* s = &p->s;
+  if (s->mode[2] == 0) {
+    SetMotion(s, MOTION(AP_SHEET_Z2_HOTTALOOK, s->COLOR ? 0 : 2));
+    s->mode[2]++;
+  }
+  UpdateSpriteAnimation(p);
+}
+
+// 0x08081584
+static u16 Hottalook_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  if (s->mode[1] != HOTTALOOK_PULLED) setMode(s, HOTTALOOK_PULLED);
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  setMode(s, s->unk_2c != NULL ? HOTTALOOK_FALL : HOTTALOOK_FLY);
+  return 0;
+}
+
+static const EnemyFunc sHottalookUpdates[6] = {
     [HOTTALOOK_HATCH] = (EnemyFunc)Hottalook_Hatch,
     [HOTTALOOK_CIRCLE] = (EnemyFunc)Hottalook_Circle,
     [HOTTALOOK_FLY] = (EnemyFunc)Hottalook_Fly,
     [HOTTALOOK_FALL] = (EnemyFunc)Hottalook_Fall,
+    [HOTTALOOK_PULLED] = (EnemyFunc)Hottalook_Pulled,
 };
 
 // 0x08080b8c

@@ -31,7 +31,15 @@
 #if AP
 #define BOSS_Z2_GOLEM 25  // Zero 2 Golem Type E. Hidden mid-boss in the crystal cave
 #define BOSS_Z2_HARPUIA 26  // Zero 2 Harpuia. Boss of the crystal cave
-#define BOSS_ENTITY_COUNT (BOSS_Z2_HARPUIA + 1)
+#define BOSS_Z2_DESERT 27  // Zero 2 boss 0, the Desert's mechaniloid
+#define BOSS_Z2_FEFNIR 28  // Zero 2 Fefnir, boss 15, and his tank. Boss of the Temple of Flame
+#define BOSS_Z2_LEVIATHAN 29  // Zero 2 Leviathan, boss 17. Boss of the Temple of Ice
+#define BOSS_Z2_BLOB 30  // Zero 2 boss 11. Boss of the Neo Arcadia Temple
+#define BOSS_Z2_FLAME_GOLEM 31  // Zero 2 boss 22. Second fight of the Residential Area
+#define BOSS_Z2_FROST_GOLEM 32  // Zero 2 boss 21. Last fight of the Residential Area
+#define BOSS_Z2_WALL 33  // Zero 2 boss 18. The Jungle's mid-boss, a machine in the wall
+#define BOSS_Z2_SNAKE 34  // Zero 2 boss 1. The Jungle's boss
+#define BOSS_ENTITY_COUNT (BOSS_Z2_SNAKE + 1)
 #else
 #define BOSS_ENTITY_COUNT 25
 #endif

@@ -148,3 +148,27 @@ void RemovePaletteAnimation(u16 id) {
   }
   if (i != MAX_PLTT_ANIM) gPaletteAnimationManager.ids[i] = 0;
 }
+
+#if AP
+void ApStartPaletteAnimation(u16 id, const PlttAnimData* data, const AnimCmd* const* script, u16 ofs) {
+  PaletteAnimation* b;
+  s32 i;
+
+  for (i = 0; i < MAX_PLTT_ANIM; i++) {
+    if (gPaletteAnimationManager.ids[i] == id + 1) return;
+  }
+  for (i = 0; i < MAX_PLTT_ANIM; i++) {
+    if (gPaletteAnimationManager.ids[i] == 0) break;
+  }
+  if (i == MAX_PLTT_ANIM) return;
+  b = &gPaletteAnimationManager.anims[i];
+  b->pal = (PlttAnimData*)data;
+  b->cmds = (AnimCmd**)script;
+  b->paused = FALSE;
+  b->offsetByte = ofs;
+  ResetAnimState(&b->m, script);
+  SetAnimSubID(&b->m, 0);
+  TransferPalettes(b);
+  gPaletteAnimationManager.ids[i] = id + 1;
+}
+#endif

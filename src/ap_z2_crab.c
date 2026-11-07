@@ -69,7 +69,7 @@ enum {
   BARE_SHOOT,
   BARE_TURN,
   BARE_FALL,
-  CRAB_PULLED,  // Zero 2's Chain Rod pull, unused here
+  CRAB_PULLED,
   CRAB_ELEMENT,
   CRAB_RECOIL,
 };
@@ -99,6 +99,7 @@ static const struct SlashedEnemy sHalfGibs[3];
 static const struct SlashedEnemy sHalfWallGibs[3];
 static const Coords32 sElementCoord = {0, -PIXEL(8)};
 
+static u16 Crab_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Crab_Init(struct Crab* p);
 static void Crab_Update(struct Crab* p);
 static void Crab_Die(struct Crab* p);
@@ -134,8 +135,8 @@ static bool8 zeroNear(struct Entity* s) {
 
 static bool8 solid(s32 x, s32 y) { return FUN_080098a4(x, y) != 0; }
 
-// 0x080862f8. Zero 2 also counts anything below the stage's water line.
-static bool8 inWater(s32 x, s32 y) { return GetMetatileAttr(x, y) == 0x8000; }
+// 0x080862f8
+static bool8 inWater(s32 x, s32 y) { return GetMetatileAttr(x, y) == 0x8000 || y > gOverworld.sea; }
 
 // 0x08086228: min..max - 1 bubbles within spread of c
 static void bubbles(s32 x, s32 y, s32 spread, u8 min, u8 max) {
@@ -189,6 +190,7 @@ static void Crab_Init(struct Crab* p) {
   p->airborne = 0;
   p->flash = 0;
   INIT_BODY(p, sShelled, 10, Crab_OnCollision);
+  (p->body).unk_28 = (u32)Crab_Pull;
   SetMotion(s, ANIM(0));
   if (s->work[0] == 0) {
     setMode(s, CRAB_SHUT);
@@ -207,6 +209,16 @@ static void Crab_ShellOff(struct Crab* p);
 static void Crab_State(struct Crab* p);
 
 // 0x080844d4
+// 0x08086368
+static u16 Crab_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  if (s->mode[1] != CRAB_PULLED) setMode(s, CRAB_PULLED);
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  setMode(s, s->unk_2c != NULL ? CRAB_ELEMENT : BARE_FALL);
+  return 0;
+}
+
 static void Crab_Update(struct Crab* p) {
   struct Entity* s = &p->s;
   u32 status = (p->body).status;
@@ -349,7 +361,7 @@ static void Crab_Drop(struct Crab* p) {
   UpdateEntityAnim(s);
   fall(s);
   if (solid(s->coord.x, s->coord.y)) {
-    if (s->mode[1] == CRAB_BOUNCE) PlaySound(201);
+    if (s->mode[1] == CRAB_BOUNCE) PlaySound(SE_Z2_CRAB_LAND);
     s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
     setMode(s, s->mode[1] == CRAB_DROP ? CRAB_BOUNCE : CRAB_OPEN);
   }
@@ -426,7 +438,7 @@ static void Crab_HopLand(struct Crab* p) {
   struct Entity* s = &p->s;
   bool8 bare = s->mode[1] == BARE_HOP_LAND;
   if (s->mode[2] == 0) {
-    PlaySound(201);
+    PlaySound(SE_Z2_CRAB_LAND);
     if (RANDOM(RNG_0202f388) & 1) bubbles(s->coord.x, s->coord.y, 0x1000, 1, bare ? 3 : 2);
     SetMotion(s, ANIM(bare ? 17 : 6));
     p->airborne = 0;
@@ -687,7 +699,7 @@ static void Bare_Fall(struct Crab* p) {
   UpdateEntityAnim(s);
   fall(s);
   if (solid(s->coord.x, s->coord.y)) {
-    PlaySound(201);
+    PlaySound(SE_Z2_CRAB_LAND);
     SET_YFLIP(p, FALSE);
     s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
     setMode(s, BARE_WAIT);
@@ -743,6 +755,14 @@ static void Crab_State(struct Crab* p) {
     case BARE_SETTLE: Bare_Settle(p); break;
     case BARE_SHOOT: Bare_Shoot(p); break;
     case BARE_FALL: Bare_Fall(p); break;
+    case CRAB_PULLED:
+      if ((p->s).mode[2] == 0) {
+        SetMotion(&p->s, ANIM(13));
+        p->airborne = TRUE;
+        (p->s).mode[2]++;
+      }
+      UpdateEntityAnim(&p->s);
+      break;
     case CRAB_ELEMENT: Crab_Element(p); break;
   }
 }

@@ -42,8 +42,16 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_zero_rod_down_air-.
   .4byte gGraphicHeader_Sprite_zero_rod_wall-.
   .4byte gGraphicHeader_Sprite_zero_rod_ladder-.
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_air-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
   .4byte gGraphicHeader_Sprite_zero_shield_shield-.
   .4byte gGraphicHeader_Sprite_zero_shield_throw-.
   .4byte gGraphicHeader_Sprite_zero_shield_walk-.
@@ -69,18 +77,66 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_zero_rod_charge_ladder-.
   .4byte gGraphicHeader_Sprite_omega_zero-.
   .4byte gGraphicHeader_Sprite_weapon_charge_saber_64-.
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_chain-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_wall-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_ladder-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_swing-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_charge-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_chain_spin-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_charge_air-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_charge_wall-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_zero_chain_charge_ladder-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_chain_spin_air-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_chain_spin_wall-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
+.if AP
+  .4byte gGraphicHeader_Sprite_z2_chain_spin_ladder-.
+.else
   .4byte gGraphicHeader_Sprite_zero_idle-.
+.endif
   .4byte gGraphicHeader_Sprite_zero_idle-.
   .4byte gGraphicHeader_Sprite_zero_idle-.
   .4byte gGraphicHeader_Sprite_zero_idle-.
@@ -206,6 +262,11 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_boss_explosion-.
 .if AP
   .4byte gGraphicHeader_Sprite_z2_harpuia-.
+  .4byte gGraphicHeader_Sprite_z2_fefnir-.
+  .4byte gGraphicHeader_Sprite_z2_leviathan-.
+  .4byte gGraphicHeader_Sprite_z2_leviathan_armor-.
+  .4byte gGraphicHeader_Sprite_z2_blob-.
+  .4byte gGraphicHeader_Sprite_z2_captive-.
 .endif
 
 .include "sprites/dynamic/zero/idle/sheet/header.inc"
@@ -373,4 +434,23 @@ gDynamicMotionGraphicOffsets:
 .include "sprites/dynamic/boss_explosion/sheet/header.inc"
 .if AP
 .include "sprites/dynamic/z2_harpuia/sheet/header.inc"
+.include "sprites/dynamic/z2_fefnir/sheet/header.inc"
+.include "sprites/dynamic/z2_leviathan/sheet/header.inc"
+.include "sprites/dynamic/z2_leviathan_armor/sheet/header.inc"
+.include "sprites/dynamic/z2_blob/sheet/header.inc"
+.include "sprites/dynamic/z2_captive/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_air/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_wall/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_ladder/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_swing/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_charge/sheet/header.inc"
+.include "sprites/dynamic/z2_chain_spin/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_air/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_wall/sheet/header.inc"
+.include "sprites/dynamic/z2_zero_chain_charge_ladder/sheet/header.inc"
+.include "sprites/dynamic/z2_chain_spin_air/sheet/header.inc"
+.include "sprites/dynamic/z2_chain_spin_wall/sheet/header.inc"
+.include "sprites/dynamic/z2_chain_spin_ladder/sheet/header.inc"
+.include "sprites/dynamic/z2_chain/sheet/header.inc"
 .endif

@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "enemy.h"
 #include "global.h"
@@ -316,6 +317,7 @@ static void Tower_Die(struct Tower* p) {
       PlaySound(SE_ZAKO_EXPLODE);
       TryDropItem(4, (struct Coord*)&s->coord);
       if (gScore.enemyCount < 9999) gScore.enemyCount++;
+      ApImportTowerKilled();
       TryDropZakoDisk((struct Enemy*)p, &s->coord);
       SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
       break;

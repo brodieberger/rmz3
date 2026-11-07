@@ -1,0 +1,51 @@
+{
+  "label": "gStaticAnimationSequence_solid_z2_pad",
+  "data": [
+    [
+      {
+        "frameIdx": 0,
+        "duration": 30
+      },
+      {
+        "frameIdx": 7,
+        "duration": 6
+      },
+      {
+        "frameIdx": 1,
+        "duration": 6
+      },
+      {
+        "frameIdx": 8,
+        "duration": 6
+      },
+      {
+        "frameIdx": 2,
+        "duration": 6
+      },
+      {
+        "frameIdx": 3,
+        "duration": 6
+      },
+      {
+        "frameIdx": 9,
+        "duration": 6
+      },
+      {
+        "frameIdx": 4,
+        "duration": 6
+      },
+      {
+        "frameIdx": 5,
+        "duration": 6
+      },
+      {
+        "frameIdx": 6,
+        "duration": 6
+      },
+      {
+        "frameIdx": 0,
+        "duration": 254
+      }
+    ]
+  ]
+}

@@ -269,6 +269,7 @@ NON_MATCH_AP static void MainMenuLoop_Init(struct GameState* g) {
   }
 
   LOAD_STATIC_GRAPHIC(SM014_CHIPICON);
+  ApLoadChainMenuIcon(wStaticGraphicTilenums[SM014_CHIPICON]);
   LOAD_STATIC_GRAPHIC(SM015_MENUITEM);
   LOAD_STATIC_GRAPHIC(SM129_SUBTANK);
 
@@ -1886,6 +1887,18 @@ static void MainMenuFocusLoop_MainWeapon(struct GameState* g) {
         break;
       }
 
+#if AP
+      if (((&z->unk_b4)->status).unlockedWeapon & (1 << WEAPON_CHAIN)) {
+        if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 1) % AP_WEAPON_KINDS;
+          PlaySound(SE_CURSOR);
+        }
+        if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + AP_WEAPON_KINDS - 1) % AP_WEAPON_KINDS;
+          PlaySound(SE_CURSOR);
+        }
+      } else
+#endif
       if (((&z->unk_b4)->status).unlockedWeapon & 0xC) {
         if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
           MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 3;
@@ -1953,6 +1966,18 @@ static void MainMenuFocusLoop_SubWeapon(struct GameState* g) {
         break;
       }
 
+#if AP
+      if (((&z->unk_b4)->status).unlockedWeapon & (1 << WEAPON_CHAIN)) {
+        if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + 1) % AP_WEAPON_KINDS;
+          PlaySound(SE_CURSOR);
+        }
+        if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
+          MENU->unk_00[1] = (MENU->unk_00[1] + AP_WEAPON_KINDS - 1) % AP_WEAPON_KINDS;
+          PlaySound(SE_CURSOR);
+        }
+      } else
+#endif
       if (((&z->unk_b4)->status).unlockedWeapon & 0xC) {
         if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
           MENU->unk_00[1] = (MENU->unk_00[1] + 1) & 3;
@@ -3307,7 +3332,11 @@ void printMainMenuString(struct GameState* g) {
       if (MENU->unk_4b == 0) {
         return;
       }
+#if AP
+      PrintString(ApWeaponName(MENU->unk_00[1]), 1, 0x12);
+#else
       PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+#endif
       ApPrintWeaponStars(MENU->unk_00[1]);
       break;
     }
@@ -3315,7 +3344,11 @@ void printMainMenuString(struct GameState* g) {
       if (MENU->unk_4b == 0) {
         return;
       }
+#if AP
+      PrintString(ApWeaponName(MENU->unk_00[1]), 1, 0x12);
+#else
       PrintString(STRING(STR_MAINMENU_WEAPON + MENU->unk_00[1]), 1, 0x12);
+#endif
       ApPrintWeaponStars(MENU->unk_00[1]);
       break;
     }

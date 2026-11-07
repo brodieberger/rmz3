@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "element.h"
 #include "enemy.h"
@@ -28,7 +29,8 @@ struct Ball {
   u8 repeats;       // 0xB5
   u8 scriptStep;    // 0xB6
   s8 halfHeight;    // 0xB7, middle to floor
-  u8 _b8[4];
+  bool8 pulled;     // 0xB8
+  u8 _b9[3];
   u16 turned;       // 0xBC, roll's progress through one turn, 0x4000
   u16 peak;         // 0xBE, how far it had turned at full speed
   u16 speed;        // 0xC0
@@ -79,6 +81,7 @@ static const struct SlashedEnemy sOpenGibs[5];
 static const struct SlashedEnemy sHalfGibs[2];
 static const Coords32 sElementCoord = {0, 0};
 
+static u16 Ball_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy);
 static void Ball_Init(struct Ball* p);
 static void Ball_Update(struct Ball* p);
 static void Ball_Die(struct Ball* p);
@@ -174,6 +177,8 @@ static void Ball_Init(struct Ball* p) {
   SetMotion(s, ANIM(1));
   UpdateEntityAnim(s);
   INIT_BODY(p, sCollisions, 6, Ball_OnCollision);
+  (p->body).unk_28 = (u32)Ball_Pull;
+  p->pulled = FALSE;
   SET_XFLIP(p, FALSE);
   s->d.x = s->d.y = 0;
   p->halfHeight = 8;
@@ -207,6 +212,23 @@ static void decide(struct Ball* p) {
 }
 
 // 0x08067808. Open, a hit bursts it. Shut, a cut splits it.
+// 0x0806894c
+static u16 Ball_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  struct Ball* p = (struct Ball*)s;
+  p->pulled = TRUE;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  if (pulling) return 1;
+  if (FUN_080098a4(s->coord.x, s->coord.y + (p->halfHeight << 8) + PIXEL(8)) == 0) {
+    s->mode[1] = BALL_FALL;
+    s->mode[2] = 0;
+  } else {
+    s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y) - (p->halfHeight << 8);
+  }
+  p->pulled = FALSE;
+  return 0;
+}
+
 static void Ball_Update(struct Ball* p) {
   struct Entity* s = &p->s;
   u32 status = (p->body).status;
@@ -258,6 +280,10 @@ static void Ball_Update(struct Ball* p) {
     s->unk_2c = NULL;
   }
 
+  if (p->pulled) {
+    UpdateEntityAnim(s);
+    return;
+  }
   if (s->mode[1] == BALL_DECIDE) decide(p);
   switch (s->mode[1]) {
     case BALL_FALL: Ball_Fall(p); break;
@@ -432,6 +458,7 @@ static void burstInThree(struct Entity* s, const struct SlashedEnemy* gibs, bool
 static void countKill(struct Entity* s, bool8 drop) {
   if (drop) TryDropItem(3, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  ApImportSpikeballKilled();
   TryDropZakoDisk((struct Enemy*)s, &s->coord);
   SET_ENEMY_ROUTINE(s, ENTITY_EXIT);
 }

@@ -31,6 +31,13 @@ extern const BossRoutine gSpearookRoutine;
 #if AP
 extern const BossRoutine gApZ2GolemRoutine;
 extern const BossRoutine gApZ2HarpuiaRoutine;
+extern const BossRoutine gApZ2DesertRoutine;
+extern const BossRoutine gApZ2FefnirRoutine;
+extern const BossRoutine gApZ2LeviathanRoutine;
+extern const BossRoutine gApZ2BlobRoutine;
+extern const BossRoutine gApZ2FlameGolemRoutine;
+extern const BossRoutine gApZ2FrostGolemRoutine;
+extern const BossRoutine gApZ2WallRoutine;
 #endif
 
 // clang-format off
@@ -63,6 +70,14 @@ const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
 #if AP
     [BOSS_Z2_GOLEM] =           &gApZ2GolemRoutine,
     [BOSS_Z2_HARPUIA] =         &gApZ2HarpuiaRoutine,
+    [BOSS_Z2_DESERT] =          &gApZ2DesertRoutine,
+    [BOSS_Z2_FEFNIR] =          &gApZ2FefnirRoutine,
+    [BOSS_Z2_LEVIATHAN] =       &gApZ2LeviathanRoutine,
+    [BOSS_Z2_BLOB] =            &gApZ2BlobRoutine,
+    [BOSS_Z2_FLAME_GOLEM] =     &gApZ2FlameGolemRoutine,
+    [BOSS_Z2_FROST_GOLEM] =     &gApZ2FrostGolemRoutine,
+    [BOSS_Z2_WALL] =            &gApZ2WallRoutine,
+    [BOSS_Z2_SNAKE] =           &gApZ2GolemRoutine,
 #endif
 };
 // clang-format on

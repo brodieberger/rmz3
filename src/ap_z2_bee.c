@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -421,6 +422,7 @@ static void explode(struct Bee* p) {
   c.y = s->coord.y + jitter();
   CreateSmoke(2, &c);
   PlaySound(SE_ZAKO_EXPLODE);
+  ApImportBeeKilled();
   countKill(s, 3);
 }
 
@@ -451,6 +453,7 @@ static void fallHeadless(struct Bee* p, bool8 hard) {
   CreateSmoke(1, &s->coord);
   useApSheets(CreateSlashedEnemy(&s->coord, &sGibs[0], 0, FACING_RIGHT(p) * 0x11));
   useApSheets(CreateSlashedEnemy(&s->coord, &sGibs[1], 0, FACING_RIGHT(p) * 0x11));
+  ApImportBeeKilled();
   countKill(s, 3);
 }
 
@@ -684,6 +687,7 @@ static void Carrier_Die(struct Carrier* p) {
   c.y = s->coord.y + carrierJitter();
   CreateSmoke(2, &c);
   PlaySound(SE_ZAKO_EXPLODE);
+  ApImportCarrierKilled();
   countKill(s, 0);
 }
 

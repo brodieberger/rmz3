@@ -274,8 +274,7 @@ static void ApSelectShakeStatic(struct Entity* p) {
   (p->spr).c = &p->unk_coord;
 }
 
-static void ApSelectStylePortrait(struct Entity* p, u8 slot, u8 stageID) {
-  bool32 open = ApStageUnlocked(stageID);
+static void ApSelectStylePortrait(struct Entity* p, u8 slot, bool32 open) {
   motion_t want = open ? MOTION(SM205_MISSION_MUGSHOT, slot) : AP_MUGSHOT_STATIC;
 
   if (p->motionID != (motion_id_t)(want >> 8)) {
@@ -301,6 +300,8 @@ static void ApSelectStylePortrait(struct Entity* p, u8 slot, u8 stageID) {
 static void ApSelectStyleRow(struct GameState* g) {
   struct EntityHeader* h = gVFXHeaderPtr;
   struct Entity* p = h->head;
+  s16 mission;
+  bool32 open;
 
   while (p != (struct Entity*)&h->tail) {
     if ((p->id == VFX_MISSION_INFO) && (p->work[0] == AP_MUGSHOT_CHILD) &&
@@ -308,7 +309,10 @@ static void ApSelectStyleRow(struct GameState* g) {
       if (p->work[1] > g->unk_008[0]) {  // No stage in this slot
         p->flags &= ~DISPLAY;
       } else if (p->mode[1] != 0) {
-        ApSelectStylePortrait(p, p->work[1], ApSelectStageAt(g, p->work[1]));
+        mission = ApSelectMissionAt(g, p->work[1]);
+        open = ApSelectIsImport(mission) ? ApImportOpen(ApSelectImportOf(mission))
+                                         : ApStageUnlocked(sApMissionStage[mission]);
+        ApSelectStylePortrait(p, p->work[1], open);
       }
     }
     p = p->next;
