@@ -331,7 +331,7 @@ static const struct ApStageClear sApImportClears[AP_IMPORT_COUNT] = {
     {608, 0, 609},  // Z2 Temple of Ice
 };
 
-u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_IMPORT_FIRST) / AP_LOC_IMPORT_STRIDE; }
+u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_IMPORT_FIRST) / 16; }
 
 bool32 ApImportOpen(u8 import) { return gApSavedata.importOpen[ApImportZ2Stage(import)]; }
 

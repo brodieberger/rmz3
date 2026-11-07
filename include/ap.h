@@ -126,7 +126,6 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   2..: cyber elves
 */
 #define AP_LOC_IMPORT_FIRST 400
-#define AP_LOC_IMPORT_STRIDE 16
 #define AP_IMPORT_ELF_COUNT 28
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)

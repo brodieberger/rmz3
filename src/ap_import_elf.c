@@ -68,7 +68,7 @@ EWRAM_DATA static u8 sSpiderKills = 0;
 static void giveElf(u8 n) {
   struct Entity* p;
 
-  if (n / AP_LOC_IMPORT_STRIDE != ApImportZ2Stage(gApImportSelected)) return;
+  if (n / 16 != ApImportZ2Stage(gApImportSelected)) return;
   if (checked(AP_LOC_IMPORT_FIRST + n)) return;
   p = AllocEntityLast(gPickupHeaderPtr);
   if (p == NULL) return;
@@ -142,7 +142,7 @@ u8 ApImportElvesFound(void) {
   u16 i;
 
   for (i = AP_LOC_IMPORT_FIRST; i <= AP_MAX_LOCATION_ID; i++) {
-    if ((i - AP_LOC_IMPORT_FIRST) % AP_LOC_IMPORT_STRIDE >= 2 && checked(i)) n++;
+    if ((i - AP_LOC_IMPORT_FIRST) % 16 >= 2 && checked(i)) n++;
   }
   return n;
 }
