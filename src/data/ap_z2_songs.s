@@ -126,7 +126,9 @@ gApZ2Voicegroup_0ffd7c:
 	.byte 0, 60, 0, 0 @ 65
 	.4byte gApZ2Wave_162aac
 	.byte 255, 0, 255, 0
-	.byte 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 @ 66: unused
+	.byte 0, 60, 0, 0 @ 66
+	.4byte gApZ2Wave_163790
+	.byte 255, 0, 255, 0
 	.byte 0, 60, 0, 0 @ 67
 	.4byte gApZ2Wave_164190
 	.byte 255, 0, 255, 165
@@ -5697,6 +5699,26 @@ se_z2_wall_open:
 	.4byte gApZ2Voicegroup_0ffd7c
 	.4byte se_z2_wall_open_data+0x0
 
+@ Zero 2 song 66: box dragged by Chain Rod
+se_z2_box_drag_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x42, 0xBE, 0x6E, 0xBF, 0x40, 0xE7, 0x24, 0x7F, 0x98, 0xB1
+.balign 4
+.global se_z2_box_drag
+se_z2_box_drag:
+	.byte 1, 0, 80, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_box_drag_data+0x0
+
+@ Zero 2 song 65: box landing
+se_z2_box_land_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x41, 0xBE, 0x6B, 0xBF, 0x40, 0xEF, 0x25, 0x7F, 0xA0, 0xB1
+.balign 4
+.global se_z2_box_land
+se_z2_box_land:
+	.byte 1, 0, 10, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_box_land_data+0x0
+
 .balign 4
 gApZ2Wave_115988:
 	.incbin "sound/direct_sound_samples/ap_z2/115988.bin"
@@ -5736,6 +5758,9 @@ gApZ2Wave_161534:
 .balign 4
 gApZ2Wave_162aac:
 	.incbin "sound/direct_sound_samples/ap_z2/162aac.bin"
+.balign 4
+gApZ2Wave_163790:
+	.incbin "sound/direct_sound_samples/ap_z2/163790.bin"
 .balign 4
 gApZ2Wave_164190:
 	.incbin "sound/direct_sound_samples/ap_z2/164190.bin"

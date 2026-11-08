@@ -193,6 +193,8 @@ SECTIONS {
 		src/ap_z2_bulldozer.o (.rodata);
 		src/ap_z2_fish.o (.text);
 		src/ap_z2_fish.o (.rodata);
+		src/ap_z2_box.o (.text);
+		src/ap_z2_box.o (.rodata);
 		src/ap_z2_recoil.o (.text);
 		src/ap_z2_recoil.o (.rodata);
 		src/ap_import_elf.o (.text);

@@ -98,7 +98,9 @@
 #define SE_Z2_FROG_LAND (SE_Z2_CHAIN_SPIN + 1)  // Zero 2 148: wall machine's frog landing
 #define SE_Z2_RING_BOUNCE (SE_Z2_FROG_LAND + 1)  // Zero 2 227: wall machine's rings bouncing
 #define SE_Z2_WALL_OPEN (SE_Z2_RING_BOUNCE + 1)  // Zero 2 228: wall machine's arm dropping
+#define SE_Z2_BOX_DRAG (SE_Z2_WALL_OPEN + 1)  // Zero 2 66: box dragged by Chain Rod
+#define SE_Z2_BOX_LAND (SE_Z2_BOX_DRAG + 1)  // Zero 2 65: box landing
 
-#define AP_Z2_SONG_LAST SE_Z2_WALL_OPEN
+#define AP_Z2_SONG_LAST SE_Z2_BOX_LAND
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

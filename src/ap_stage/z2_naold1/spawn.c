@@ -47,7 +47,7 @@ const struct SpawnTemplate gApZ2Naold1_Templates[17] = {
     [7] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_CONTAINER, 0, 255),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_BOX, 0, 0),
         },
     [8] =
         {
@@ -181,12 +181,12 @@ const struct PreloadEntity gApZ2Naold1_Preloads[6] = {
         0,
     },
     {
-        SM226_CRASH_CONTAINER,
+        AP_SHEET_Z2_BOX,
         B8(00000001),
         832,
         5,
         1,
-        1,
+        AP_PRELOAD_SHEET | 1,
         0,
     },
     {

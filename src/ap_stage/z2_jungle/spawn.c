@@ -118,7 +118,7 @@ const struct SpawnTemplate gApZ2Jungle_Templates[30] = {
     [19] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_CONTAINER, 0, 255),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_BOX, 0, 0),
         },
     [20] =
         {
@@ -365,12 +365,12 @@ const struct PreloadEntity gApZ2Jungle_Preloads[14] = {
         0,
     },
     {
-        SM226_CRASH_CONTAINER,
+        AP_SHEET_Z2_BOX,
         B8(00001000),
         720,
         9,
         1,
-        1,
+        AP_PRELOAD_SHEET | 1,
         0,
     },
     {

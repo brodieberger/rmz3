@@ -91,6 +91,7 @@ extern const SolidRoutine gApZ2FallenRoutine, gApZ2CastRoutine, gApZ2DoorRoutine
 extern const SolidRoutine gApZ2RescueRoutine, gApZ2PadRoutine, gApZ2LiftRoutine, gApZ2ScoutRoutine, gApZ2ThiefRoutine,
     gApZ2BabyElfRoutine, gApZ2XRoutine, gApZ2WallShelfRoutine, gApZ2WallArmRoutine;
 extern const SolidRoutine gApZ2IceCellRoutine;
+extern const SolidRoutine gApZ2BoxRoutine;
 #endif
 
 // clang-format off
@@ -172,6 +173,7 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_Z2_WALL_SHELF] =             &gApZ2WallShelfRoutine,
     [SOLID_Z2_WALL_ARM] =               &gApZ2WallArmRoutine,
     [SOLID_Z2_ICE_CELL] =               &gApZ2IceCellRoutine,
+    [SOLID_Z2_BOX] =                    &gApZ2BoxRoutine,
 #endif
 };
 // clang-format on

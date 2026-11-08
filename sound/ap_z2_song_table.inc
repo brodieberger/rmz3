@@ -95,3 +95,5 @@
     song se_z2_frog_land, 4, 4 @ SE_Z2_FROG_LAND
     song se_z2_ring_bounce, 3, 3 @ SE_Z2_RING_BOUNCE
     song se_z2_wall_open, 3, 3 @ SE_Z2_WALL_OPEN
+    song se_z2_box_drag, 6, 6 @ SE_Z2_BOX_DRAG
+    song se_z2_box_land, 2, 2 @ SE_Z2_BOX_LAND

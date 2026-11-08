@@ -6,6 +6,7 @@
 #include "global.h"
 #include "metatile.h"
 #include "motion.h"
+#include "overworld.h"
 #include "player/zero.h"
 #include "string_ids.h"
 #include "text.h"
@@ -29,7 +30,7 @@
 */
 
 enum { CHAIN_START, CHAIN_WIND, CHAIN_FIRE, CHAIN_HOLD, CHAIN_REEL, CHAIN_END, CHAIN_LATCH, CHAIN_PULL, CHAIN_SPIN_WIND, CHAIN_SPIN, CHAIN_SPIN_END };
-enum { AIM_NONE, AIM_FORWARD, AIM_UP_FORWARD, AIM_DOWN_FORWARD, AIM_UP };
+enum { AIM_NONE, AIM_FORWARD, AIM_UP_FORWARD, AIM_DOWN_FORWARD, AIM_UP, AIM_DOWN };
 
 #define FACING_RIGHT(p) (((p)->s.flags & X_FLIP) != 0)
 #define LINKS 8
@@ -58,6 +59,9 @@ static EWRAM_DATA struct {
   u16 length;
   s8 dir;
   u8 row;
+  s8 intoX;  // side tip hit
+  s8 intoY;
+  s32 block;  // id of solid entity tip hit, -1 terrain
 } sChain = {0};
 
 // 0x08334566
@@ -77,16 +81,17 @@ static const u8 sSpinMotion[4] = {
     [ZERO_LADDER] = DM076_Z2_CHAIN_SPIN_LADDER,
 };
 // 0x08335d44, 0x08335d58, 0x08335d70, 0x08335d78
-static const struct Coord sHand[4][5] = {
+static const struct Coord sHand[4][6] = {
     [ZERO_GROUND] = {{-2048, -4608}, {-8704, -4608}, {-6656, -9216}, {-7168, -256}, {0, -13056}},
-    [ZERO_AIR] = {{-512, -5888}, {-7424, -5888}, {-5376, -10496}, {-5888, -1536}, {256, -13568}},
+    [ZERO_AIR] = {{-512, -5888}, {-7424, -5888}, {-5376, -10496}, {-5888, -1536}, {256, -13568}, {0, 256}},
     [ZERO_WALL] = {{1280, -4096}, {6656, -4096}},
     [ZERO_LADDER] = {{-512, -4352}, {-6912, -4352}},
 };
 // 0x08335c94, 0x08335c9a, 0x08335ca1, 0x08335ca7, through Zero's motion table
-static const motion_t sPose[4][5] = {
+static const motion_t sPose[4][6] = {
     [ZERO_GROUND] = {0, MOTION(DM038_Z2_ZERO_CHAIN, 2), MOTION(DM038_Z2_ZERO_CHAIN, 1), MOTION(DM038_Z2_ZERO_CHAIN, 3), MOTION(DM038_Z2_ZERO_CHAIN, 0)},
-    [ZERO_AIR] = {0, MOTION(DM039_Z2_ZERO_CHAIN_AIR, 2), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 1), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 3), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 0)},
+    [ZERO_AIR] = {0, MOTION(DM039_Z2_ZERO_CHAIN_AIR, 2), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 1), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 3), MOTION(DM039_Z2_ZERO_CHAIN_AIR, 0),
+                  MOTION(DM039_Z2_ZERO_CHAIN_AIR, 4)},
     [ZERO_WALL] = {0, MOTION(DM066_Z2_ZERO_CHAIN_WALL, 0)},
     [ZERO_LADDER] = {0, MOTION(DM067_Z2_ZERO_CHAIN_LADDER, 0)},
 };
@@ -179,8 +184,8 @@ static void pull(struct Zero* z) {
   s32 x, y;
   u16 held;
   if (left < 0 || len == 0) left = 0;
-  x = len != 0 ? sChain.hand.x + (dx / 256 * left) / (len / 256 + 1) : sChain.hand.x;
-  y = len != 0 ? sChain.hand.y + (dy / 256 * left) / (len / 256 + 1) : sChain.hand.y;
+  x = len != 0 ? sChain.hand.x + left * dx / len : sChain.hand.x;
+  y = len != 0 ? sChain.hand.y + left * dy / len : sChain.hand.y;
   held = callHook(left > 0, x - sChain.tip.x, y - sChain.tip.y);
   sChain.tip.x = x;
   sChain.tip.y = y;
@@ -204,34 +209,84 @@ static void createSpin(struct Zero* z) {
   p->unk_28 = (struct Entity*)z;
 }
 
-// 0x08036844, as a point
-static bool8 tipInTerrain(void) { return (GetGroundMetatileAttr(sChain.tip.x, sChain.tip.y) & 15) != 0; }
+// Solid entity under point
+static s32 blockAt(s32 x, s32 y) {
+  u8 i;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    struct Hazard* h = HAZARD(i);
+    if ((u32)(x - h->center.x) + h->hw < (u32)h->hw * 2 && (u32)(y - h->center.y) + h->hh < (u32)h->hh * 2) return i;
+  }
+  return -1;
+}
 
-// 0x0802e30a, 0x08032f24
-static bool8 canHang(struct Zero* z) {
-  metatile_attr_t attr = GetGroundMetatileAttr(sChain.tip.x, sChain.tip.y);
-  u8 angle = CalcAngle(sChain.tip.x - sChain.hand.x, sChain.tip.y - sChain.hand.y);
+// 0x0801f3d0
+static s32 slotOf(s32 id) {
+  u8 i;
+  for (i = 0; i < gOverworld.terrain.objectLen; i++) {
+    if (HAZARD(i)->id == id) return i;
+  }
+  return -1;
+}
+
+static bool8 solidAt(s32 x, s32 y) { return (GetGroundMetatileAttr(x, y) & 15) || blockAt(x, y) >= 0; }
+
+// 0x08036878, 0x080369cc
+static bool8 hookable(void) {
+  s32 slot = slotOf(sChain.block);
+  metatile_attr_t attr = slot >= 0 ? HAZARD(slot)->attr : GetGroundMetatileAttr(sChain.tip.x + sChain.intoX * 0x100, sChain.tip.y + sChain.intoY * 0x100);
+  return (attr & 15) && !(attr & 0x400) && (attr & ~0x80) != 15 && (attr & ~0x80) != 14;
+}
+
+// 0x08032f24, tip level or above
+static bool8 hangs(u8 angle) {
   u8 side = angle + 128;
-  if (sChain.stance != ZERO_AIR || !isHeld(z)) return FALSE;
-  if ((attr & 0x400) || (attr & ~0x80) == 15 || (attr & ~0x80) == 14) return FALSE;
   if ((u8)(angle + 64) <= 127) side = 128 - side;
   return side <= 96;
 }
 
-// 0x080361a8: back to tile's edge, on axis that went in
-static void snapTip(void) {
-  s32 y = sChain.tip.y;
-  u8 i;
-  for (i = 0; i < 16 && tipInTerrain(); i++) sChain.tip.y += 0x100;
-  if (tipInTerrain()) {
-    sChain.tip.y = y;
-    return;
+static s32 stepTo(s32 at, s32 to) { return to > at + 0x100 ? at + 0x100 : (to < at - 0x100 ? at - 0x100 : to); }
+
+// 0x080361a8: back to surface, x then y, to tile edge or solid entity's
+static void snapTip(Coords32 from) {
+  s32 n, slot;
+  sChain.intoX = 0;
+  sChain.intoY = 0;
+  sChain.block = -1;
+  while (from.x != sChain.tip.x) {
+    n = stepTo(from.x, sChain.tip.x);
+    slot = blockAt(n, from.y);
+    if (slot >= 0) {
+      sChain.intoX = n > from.x ? 1 : -1;
+      sChain.block = HAZARD(slot)->id;
+      sChain.tip.x = HAZARD(slot)->center.x + (n > from.x ? -HAZARD(slot)->hw - 1 : HAZARD(slot)->hw);
+      return;
+    }
+    if (GetGroundMetatileAttr(n, from.y) & 15) {
+      sChain.intoX = n > from.x ? 1 : -1;
+      sChain.tip.x = n > from.x ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
+      return;
+    }
+    from.x = n;
   }
-  sChain.tip.y &= ~0xFFF;
+  while (from.y != sChain.tip.y) {
+    n = stepTo(from.y, sChain.tip.y);
+    slot = blockAt(sChain.tip.x, n);
+    if (slot >= 0) {
+      sChain.intoY = n > from.y ? 1 : -1;
+      sChain.block = HAZARD(slot)->id;
+      sChain.tip.y = HAZARD(slot)->center.y + (n > from.y ? -HAZARD(slot)->hh - 1 : HAZARD(slot)->hh);
+      return;
+    }
+    if (GetGroundMetatileAttr(sChain.tip.x, n) & 15) {
+      sChain.intoY = n > from.y ? 1 : -1;
+      sChain.tip.y = n > from.y ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
+      return;
+    }
+    from.y = n;
+  }
 }
 
 static void startSwing(struct Zero* z) {
-  snapTip();
   (z->s).mode[1] = ZERO_CHAIN_SWING;
   (z->s).mode[2] = 0;
   (z->s).mode[3] = 0;
@@ -257,6 +312,7 @@ static void finish(struct Zero* z) {
 void ApChainAttack(struct Zero* z) {
   u8* state = &(z->unk_b4).attackState8[1];
   zero_input_t input = (z->input).val;
+  Coords32 from;
 
   (z->restriction).move = (z->s).mode[1] != ZERO_AIR;
   if ((z->unk_b4).status.weapons[0] == WEAPON_CHAIN) {
@@ -329,11 +385,14 @@ void ApChainAttack(struct Zero* z) {
         break;
       }
       sChain.timer--;
+      from = sChain.tip;
       updateHand(z);
       placeTip(z, FIRE_FRAMES - sChain.timer);
-      if (tipInTerrain()) {
+      if (solidAt(sChain.tip.x, sChain.tip.y)) {
+        snapTip(from);
         sChain.hit = TRUE;
-        if (canHang(z)) startSwing(z);
+        // 0x0802e30a
+        if (sChain.stance == ZERO_AIR && isHeld(z) && hookable()) startSwing(z);
       }
       break;
     case CHAIN_HOLD:
@@ -388,10 +447,12 @@ void ApChainAttack(struct Zero* z) {
 
 // --------------------------------------------
 // Zero 2's mode 4, hanging from tip
+enum { ROPE_START, ROPE_FALL, ROPE_SWING };
 enum { SWING_INIT, SWING_IN, SWING_OUT, SWING_TURN, SWING_IDLE };
 
 // 0x08335d18
 #define SWING_REST_Y -5888
+#define SWING_AIM 8  // air aim pose past 45 degrees
 // 0x08335d1c..0x08335d30, rows 0..7 of Zero's swing motion
 static const struct Coord sSwingHand[8] = {
     {-1536, -11264}, {-1024, -11776}, {0, -12032}, {1280, -12032},
@@ -414,11 +475,12 @@ static void pump(struct Zero* z, zero_input_t key) {
 }
 
 // 0x080331e8
-static void brake(struct Zero* z, zero_input_t key) {
+static s16 brake(struct Zero* z, zero_input_t key) {
   s16 floor = sChain.angle < 0 ? -sChain.angle : sChain.angle;
-  if (!((z->input).val & key)) return;
+  if (!((z->input).val & key)) return sChain.reach;
   sChain.reach -= ((z->input).val & (key == DPAD_LEFT ? ZERO_INPUT_PRESS_DPAD_LEFT : ZERO_INPUT_PRESS_DPAD_RIGHT)) ? 0x800 : 0x100;
   if (sChain.reach < floor) sChain.reach = floor;
+  return sChain.reach;
 }
 
 static void swingRow(struct Zero* z, u8 row) {
@@ -432,6 +494,11 @@ static void swingRow(struct Zero* z, u8 row) {
 }
 
 static void handOffset(struct Zero* z, s32* x, s32* y) {
+  if (sChain.row == SWING_AIM) {
+    *x = FACING_RIGHT(z) ? -sHand[ZERO_AIR][sChain.aim].x : sHand[ZERO_AIR][sChain.aim].x;
+    *y = sHand[ZERO_AIR][sChain.aim].y;
+    return;
+  }
   *x = sSwingHand[sChain.row].x;
   *y = sSwingHand[sChain.row].y;
   if ((z->s).motion.cmdIdx == 1) {
@@ -475,6 +542,18 @@ static void swingInit(struct Zero* z) {
   (z->s).mode[3] = sChain.reach <= 0x667 ? SWING_IDLE : SWING_IN;
 }
 
+// 0x08027316: wall where swing heads
+static bool8 wallAhead(struct Zero* z, const struct Rect* range) {
+  Coords32 at = (z->s).coord;
+  bool8 hit;
+  (z->s).coord.x -= sChain.dir * 0x100;
+  PushoutWallX(z, range, 0);
+  PushoutWallX(z, range, 1);
+  hit = (z->s).coord.x != at.x - sChain.dir * 0x100;
+  (z->s).coord = at;
+  return hit;
+}
+
 static s32 clampStep(s32 from, s32 to) {
   if (to > from + PIXEL(15)) return from + PIXEL(15);
   if (to < from - PIXEL(15)) return from - PIXEL(15);
@@ -492,14 +571,94 @@ static void swingPoint(s32 r, Coords32* out) {
   out->y = y + ((((SIN(a + 1) * r) >> 8) - y) * frac >> 8);
 }
 
-// 0x080271b4, 0x08027e68..0x08027fbc
+static u8 restAngle(struct Zero* z) { return CalcAngle(sChain.tip.x - (z->s).coord.x, sChain.tip.y - ((z->s).coord.y + SWING_REST_Y)); }
+
+// 0x08335c84
+static const u8 sFallAim[5] = {AIM_UP, AIM_UP_FORWARD, AIM_FORWARD, AIM_DOWN_FORWARD, AIM_DOWN};
+
+// 0x08036ad0
+static u8 fallAim(struct Zero* z, u8 angle) {
+  u8 a = angle + 64;
+  if (!FACING_RIGHT(z)) a = -a;
+  a += 16;
+  return a <= 159 ? sFallAim[a >> 5] : AIM_NONE;
+}
+
+// 0x08026e38, 0x08026ea8: tip below, falls on rope until it hangs
+static void ropeFall(struct Zero* z) {
+  const struct Rect* range = &gZeroRanges[z->posture];
+  zero_input_t input = (z->input).val;
+  bool8 right = FACING_RIGHT(z);
+  s32 x = (z->s).coord.x, y, dx, dy, r;
+  u8 angle, aim;
+  bool8 landed;
+
+  if ((z->s).mode[3] == 0) {
+    (z->s).mode[3] = 1;
+    if ((z->s).d.y < 0) (z->s).d.y = 0;
+  }
+  if (input & DPAD_LEFT) {
+    x -= CalcDx(z);
+  } else if (input & DPAD_RIGHT) {
+    x += CalcDx(z);
+  }
+  y = (z->s).coord.y + (z->s).d.y;
+  (z->s).d.y += getFallAcceleration(z);
+  if ((z->s).d.y > calcMaxFallSpeed(z)) (z->s).d.y = calcMaxFallSpeed(z);
+
+  dx = x - sChain.tip.x;
+  dy = y + SWING_REST_Y - sChain.tip.y;
+  r = (REACH + 0x1800) * (REACH + 0x1800) - dy * dy;
+  if (dx * dx > r) {
+    r = Sqrt(r);
+    x = sChain.tip.x + (dx < 0 ? -r : r);
+  }
+  (z->s).d.x = x > (z->s).coord.x ? x - (z->s).coord.x : (z->s).coord.x - x;
+  if ((z->s).d.x != 0) {
+    (z->s).coord.x = x;
+    PushoutWallX(z, range, 0);
+    PushoutWallX(z, range, 1);
+  }
+  (z->s).coord.y = y;
+  PushoutByCeiling(z, range, 0);
+  landed = PushoutByFloor1(z, range, 1) != 0;
+
+  if (sChain.tip.x != (z->s).coord.x) SET_PLAYER_XFLIP(z, sChain.tip.x > (z->s).coord.x);
+  angle = restAngle(z);
+  aim = fallAim(z, angle);
+  if (aim == AIM_NONE || aim == AIM_UP || aim == AIM_DOWN) SET_PLAYER_XFLIP(z, right);
+  if (aim != AIM_NONE) {
+    sChain.aim = aim;
+    if (sChain.pose != sPose[ZERO_AIR][aim]) setPose(z, sPose[ZERO_AIR][aim]);
+  }
+  updateHand(z);
+
+  if (hangs(angle)) {
+    (z->s).mode[2] = ROPE_SWING;
+    (z->s).mode[3] = SWING_INIT;
+  } else if (landed) {
+    (z->s).mode[1] = ZERO_GROUND;
+    (z->s).mode[2] = 0;
+    (z->s).mode[3] = 0;
+    PlaySound(SE_WALK);
+  }
+}
+
+// 0x08026dc0, 0x080271b4, 0x08027e68..0x08027fbc
 void ApChainSwing(struct Zero* z) {
   const struct Rect* range = &gZeroRanges[z->posture];
   zero_input_t input = (z->input).val;
   Coords32 at, oldAt = (z->s).coord;
-  s32 handX, handY, pd, blendX, blendY;
+  s32 handX, handY, pd, blendX, blendY, x, pushedX;
+  metatile_attr_t floor, pushedY;
+  u16 oldLength;
   u8 state, was, turned, side;
 
+  if ((z->s).mode[2] == ROPE_START) (z->s).mode[2] = hangs(restAngle(z)) ? ROPE_SWING : ROPE_FALL;
+  if ((z->s).mode[2] == ROPE_FALL) {
+    ropeFall(z);
+    return;
+  }
   if ((z->s).mode[3] == SWING_INIT) swingInit(z);
   was = (z->s).mode[3];
   pd = sChain.angle * sChain.dir;
@@ -510,9 +669,11 @@ void ApChainSwing(struct Zero* z) {
     pump(z, sChain.dir < 0 ? DPAD_RIGHT : DPAD_LEFT);
   } else if (state == SWING_OUT) {
     brake(z, sChain.dir < 0 ? DPAD_LEFT : DPAD_RIGHT);
-  } else if (input & (DPAD_LEFT | DPAD_RIGHT)) {
-    sChain.dir = (input & DPAD_LEFT) ? 1 : -1;
-    pump(z, (input & DPAD_LEFT) ? DPAD_LEFT : DPAD_RIGHT);
+  } else if (FACING_RIGHT(z) == (sChain.dir < 0)) {
+    // 0x08027f68: idle, pumps toward facing, brakes away from it
+    pump(z, FACING_RIGHT(z) ? DPAD_RIGHT : DPAD_LEFT);
+  } else if (brake(z, FACING_RIGHT(z) ? DPAD_LEFT : DPAD_RIGHT) <= 0) {
+    sChain.dir = FACING_RIGHT(z) ? -1 : 1;
   }
   if (was == SWING_TURN) {
     if (sChain.row == 6) {
@@ -527,6 +688,7 @@ void ApChainSwing(struct Zero* z) {
     }
   }
 
+  oldLength = sChain.length;
   if (input & DPAD_UP) {
     s32 length = (s32)sChain.length - 0x180;
     sChain.length = length < 0x400 ? 0x400 : length;
@@ -543,7 +705,7 @@ void ApChainSwing(struct Zero* z) {
     }
   }
 
-  if (sChain.reach != 0 || sChain.angle != 0) {
+  if ((sChain.reach != 0 || sChain.angle != 0) && (sChain.length != oldLength || pd >= 0 || !wallAhead(z, range))) {
     s32 speed;
     if (pd < 0) {
       s32 cap = sqrtOr1(sChain.reach << 5);
@@ -561,14 +723,16 @@ void ApChainSwing(struct Zero* z) {
   // end of swing
   pd = sChain.angle * sChain.dir;
   turned = FALSE;
-  if (pd > 0 && pd >= sChain.reach && (z->s).mode[3] != SWING_IDLE) {
-    (z->s).mode[3] = SWING_TURN;
-    was = SWING_OUT;
+  if (pd > 0 && pd >= sChain.reach) {
+    if ((z->s).mode[3] != SWING_IDLE) {
+      (z->s).mode[3] = SWING_TURN;
+      was = SWING_OUT;
+      turned = TRUE;
+    }
     sChain.angle = sChain.reach * sChain.dir;
     sChain.dir = -sChain.dir;
     sChain.from = sChain.angle;
     sChain.speed = 0;
-    turned = TRUE;
   }
 
   // Zero's pose
@@ -586,9 +750,13 @@ void ApChainSwing(struct Zero* z) {
     if (row < 0) row = 0;
     swingRow(z, row > 4 ? 4 : row);
   } else {
-    (z->s).mode[3] = SWING_TURN;
-    SET_PLAYER_XFLIP(z, sChain.dir > 0);
-    swingRow(z, 6);
+    // 0x080275e4
+    u8 aim = fallAim(z, side + 128);
+    if (aim != AIM_NONE && (sChain.row != SWING_AIM || sChain.aim != aim)) {
+      sChain.aim = aim;
+      sChain.row = SWING_AIM;
+      SetSpriteAnimation(z, sPose[ZERO_AIR][aim]);
+    }
   }
 
   // 0x08027600: from tip, out by length, past hand as it lengthens
@@ -596,35 +764,58 @@ void ApChainSwing(struct Zero* z) {
   handOffset(z, &handX, &handY);
   blendX = ((0 - handX) * (s32)sChain.length >> 14) + handX;
   blendY = ((SWING_REST_Y - handY) * (s32)sChain.length >> 14) + handY;
-  (z->s).coord.x = clampStep(oldAt.x, sChain.tip.x + at.x - blendX);
+  x = clampStep(oldAt.x, sChain.tip.x + at.x - blendX);
+  (z->s).d.x = x > oldAt.x ? x - oldAt.x : oldAt.x - x;
   (z->s).coord.y = clampStep(oldAt.y, sChain.tip.y + at.y - blendY);
-  (z->s).d.x = (z->s).coord.x - oldAt.x;
-  if ((z->s).d.x < 0) (z->s).d.x = -(z->s).d.x;
   (z->s).d.y = (z->s).coord.y - oldAt.y;
 
-  // 0x08027924: pushed by terrain, swing carries on from where Zero ends up
-  at = (z->s).coord;
-  PushoutWallX(z, range, 0);
-  PushoutWallX(z, range, 1);
-  PushoutByCeiling(z, range, 0);
-  if ((z->s).coord.y > sChain.tip.y + 0x400 && PushoutByFloor1(z, range, 1) != 0) {
+  // 0x080276ee: y then x pushed by terrain, lands only with hand up by tip
+  floor = PushoutByFloor1(z, range, 1);
+  pushedY = (z->s).d.y < 0 ? PushoutByCeiling(z, range, 0) : floor;
+  if (!floor || (z->s).coord.y + sSwingHand[5].y > sChain.tip.y + 0x400) {
+    (z->s).coord.x = x;
+    PushoutWallX(z, range, 0);
+    PushoutWallX(z, range, 1);
+    floor = PushoutByFloor1(z, range, 1);
+  }
+  if (floor && (z->s).coord.y + sSwingHand[5].y <= sChain.tip.y + 0x400) {
     (z->s).mode[1] = ZERO_GROUND;
     (z->s).mode[2] = 0;
     (z->s).mode[3] = 0;
     PlaySound(SE_WALK);
     return;
   }
-  if ((z->s).coord.x != at.x || (z->s).coord.y != at.y) {
-    s32 dx = (z->s).coord.x - sChain.tip.x;
-    s32 dy = (z->s).coord.y + SWING_REST_Y - sChain.tip.y;
-    s32 length = Sqrt(dx * dx + dy * dy) - 0x1800;
-    sChain.length = length < 0x400 ? 0x400 : (length > REACH ? REACH : length);
-    sChain.angle = (s16)((((u8)CalcAngle(dx, dy)) << 8) - 0x4000);
-    if (sChain.angle * sChain.dir <= 0) {
-      sChain.from = sChain.angle;
-      sChain.speed = 0;
+
+  // 0x08027940: swing carries on from where Zero ends up
+  pushedX = ((z->s).coord.x - x) * sChain.dir;
+  if (pushedY || pushedX != 0) {
+    s32 restY = (z->s).coord.y + SWING_REST_Y;
+    s32 length, qx, qy;
+    u8 a;
+    bool8 apart;
+    handOffset(z, &handX, &handY);
+    handX += (z->s).coord.x;
+    handY += (z->s).coord.y;
+    a = CalcAngle(sChain.tip.x - (z->s).coord.x, sChain.tip.y - restY);
+    apart = (u8)((s8)(CalcAngle(sChain.tip.x - handX, sChain.tip.y - handY) - a) + 8) > 16;
+    length = sqrtOr1((sChain.tip.x - (z->s).coord.x) * (sChain.tip.x - (z->s).coord.x) + (sChain.tip.y - restY) * (sChain.tip.y - restY)) - 0x1800;
+    if (!apart) length = (length + Sqrt((sChain.tip.x - handX) * (sChain.tip.x - handX) + (sChain.tip.y - handY) * (sChain.tip.y - handY))) / 2;
+    sChain.length = length > REACH ? REACH : (length < 0x400 ? 0x400 : length);
+    // Pushed from behind on way down changes nothing
+    if (pushedX > 0 || (pushedX < 0 && sChain.angle * sChain.dir >= 0)) {
+      qx = apart ? (z->s).coord.x : handX + ((z->s).coord.x - handX) * (s32)sChain.length / 0x4000;
+      qy = apart ? restY : handY + (restY - handY) * (s32)sChain.length / 0x4000;
+      sChain.angle = (s16)((CalcAngle(qx - sChain.tip.x, qy - sChain.tip.y) << 8) - 0x4000);
+      if (sChain.reach == 0) {
+        sChain.dir = sChain.angle < 0 ? 1 : -1;
+        SET_PLAYER_XFLIP(z, sChain.dir < 0);
+      }
+      if (sChain.reach == 0 || sChain.angle * sChain.dir <= 0) {
+        sChain.from = sChain.angle;
+        sChain.speed = 0;
+      }
+      sChain.reach = reachOf(sChain.angle);
     }
-    sChain.reach = reachOf(sChain.angle);
   }
 
   handOffset(z, &handX, &handY);
@@ -634,7 +825,13 @@ void ApChainSwing(struct Zero* z) {
 
 // 0x08024ac8
 void ApChainSwingInput(struct Zero* z) {
-  if (isHeld(z) && sChain.out && (GetGroundMetatileAttr(sChain.tip.x, sChain.tip.y - 0x100) & 15)) return;
+  s32 slot = slotOf(sChain.block);
+  // 0x08036878: tip rides solid entity
+  if (slot >= 0) {
+    sChain.tip.x += HAZARD(slot)->center.x - HAZARD(slot)->unk_10.x;
+    sChain.tip.y += HAZARD(slot)->center.y - HAZARD(slot)->unk_10.y;
+  }
+  if (isHeld(z) && sChain.out && hookable()) return;
   (z->s).mode[1] = ZERO_AIR;
   (z->s).mode[2] = 2;
   (z->s).mode[3] = 0;

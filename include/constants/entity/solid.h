@@ -79,7 +79,8 @@
 #define SOLID_Z2_X 73  // Zero 2 solid 5 work0 32, X in the Jungle's clear
 #define SOLID_Z2_WALL_SHELF 74  // Zero 2 solid 10, the Jungle's wall machine's shelf
 #define SOLID_Z2_WALL_ARM 75  // Zero 2 solid 11, its arm and spikes
-#define SOLID_ENTITY_COUNT (SOLID_Z2_WALL_ARM + 1)
+#define SOLID_Z2_BOX 76  // Zero 2 solid 14 work0 0, box the Chain Rod drags
+#define SOLID_ENTITY_COUNT (SOLID_Z2_BOX + 1)
 #else
 #define SOLID_ENTITY_COUNT 56
 #endif
