@@ -1,0 +1,21 @@
+{
+  "label": "gStaticMetaSprite_solid_z2_crumble",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            32,
+            16
+          ],
+          "x": -16,
+          "y": 0
+        }
+      ]
+    }
+  ]
+}

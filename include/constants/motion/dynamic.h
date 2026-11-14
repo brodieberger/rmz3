@@ -174,7 +174,14 @@
 #define DM202_Z2_LEVIATHAN 202
 #define DM203_Z2_LEVIATHAN_ARMOR 203
 #define DM204_Z2_BLOB 204
-#define DM205_Z2_CAPTIVE 205
+#define DM205_Z2_ELPIZO 205
+#define DM206_Z2_SNAKE 206
+#define DM207_Z2_BEAR 207
+#define DM208_Z2_PANTER 208
+#define DM209_Z2_MAGNION 209
+#define DM210_Z2_DOOR_3D 210
+#define DM211_Z2_FEFNIR_EX 211
+#define DM212_Z2_FROG 212
 #define DM038_Z2_ZERO_CHAIN 38  // Zero with the Chain Rod, on the ground
 #define DM039_Z2_ZERO_CHAIN_AIR 39
 #define DM065_Z2_CHAIN 65  // the Chain Rod

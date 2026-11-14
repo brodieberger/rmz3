@@ -152,9 +152,9 @@ static void ApSelectPrintDisks(u8 stageID) {
 
   if (stageID == STAGE_NONE) {
     label = gApSelectElvesLabel;
-    p = ApSelectPutNumber(p, ApImportElvesFound());
+    p = ApSelectPutNumber(p, ApImportElvesFound(gApImportSelected));
     *p++ = AP_CHAR_SLASH;
-    p = ApSelectPutNumber(p, AP_IMPORT_ELF_COUNT);
+    p = ApSelectPutNumber(p, ApImportElfTotal(gApImportSelected));
   } else {
     p = ApSelectPutNumber(p, ApDisksInStage(stageID));
     *p++ = AP_CHAR_SLASH;

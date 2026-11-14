@@ -389,6 +389,7 @@ static void Mine_Die(struct Mine* p) {
     if (p->hit) {
       if (gScore.enemyCount < 9999) gScore.enemyCount++;
       TryDropZakoDisk((struct Enemy*)p, &s->coord);
+      ApImportMineKilled();
     }
     EXIT_BODY(p);
     SET_ENEMY_ROUTINE(p, ENTITY_EXIT);

@@ -225,7 +225,7 @@ static void Leviathan_Summon(struct Leviathan* p) {
   switch (s->mode[3]) {
     case 0:
       if (!IsSpriteAnimEnd(p)) break;
-      s->unk_28 = ApZ2CreateBubble(&s->coord, TRUE);
+      s->unk_28 = ApZ2CreateBubble(&s->coord, 3);
       ApLoadSheet(&sSummonSheet);
       s->work[3] = 0;
       s->work[2] = 0;
@@ -556,14 +556,13 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
 // --------------------------------------------
 
 static void useIceSheet(struct Entity* s) { s->texture = TEXTURE_AP_SHEET; }
-static void createBurst(struct Entity* parent, u8 kind, u8 n);
 
 #define ICE(n) MOTION(AP_SHEET_Z2_LEVIATHAN_ICE, (n))
 
 #define MOVE(s, angle, speed)                                                  do {                                                                           (s)->coord.x += (COS((u8)((angle) + 0x80)) * (speed)) / 256;                 (s)->coord.y += (SIN((u8)((angle) + 0x80)) * (speed)) / 256;               } while (0)
 
 /*
-  Zero 2's VFX 41, ice kinds.
+  Zero 2's VFX 41. Odd kinds ice, even ones water.
   1: sparkle left behind something
   3: burst, breaks into 5s
      work1: only two
@@ -592,7 +591,7 @@ const VFXRoutine gApZ2IceBurstRoutine = {
 // clang-format on
 
 // 0x080b7330
-static void createBurst(struct Entity* parent, u8 kind, u8 n) {
+void ApZ2CreateIceBurst(struct Entity* parent, u8 kind, u8 n) {
   struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
     INIT_VFX_ROUTINE(p, VFX_Z2_ICE_BURST);
@@ -609,21 +608,25 @@ static void Burst_Init(struct VFX* p) {
   InitNonAffineMotion(s);
   useIceSheet(s);
   s->flags |= DISPLAY | FLIPABLE;
-  SetSpriteAnimation(p, ICE(s->work[0] == BURST_SPARKLE ? 10 : 12));
+  if (s->work[0] & 1) {
+    SetSpriteAnimation(p, ICE(s->work[0] == BURST_SPARKLE ? 10 : 12));
+  } else {
+    SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_LEVIATHAN_WATER, 2 + s->work[0] / 2));
+  }
   UpdateSpriteAnimation(p);
   s->coord = s->unk_28->coord;
   s->work[2] = 0;
-  switch (s->work[0]) {
+  switch (s->work[0] | 1) {
     case BURST_SPARKLE:
       s->coord.x += PIXEL((RANDOM(RNG_0202f388) & 7) - 4);
       s->d = s->unk_coord = s->coord;
       break;
     case BURST:
       if (s->work[1] != 0) {
-        createBurst(s, BURST_SHARD, 1);
-        createBurst(s, BURST_SHARD, 3);
+        ApZ2CreateIceBurst(s, (s->work[0] & 1) + 4, 1);
+        ApZ2CreateIceBurst(s, (s->work[0] & 1) + 4, 3);
       } else {
-        for (i = 0; i < 4; i++) createBurst(s, BURST_SHARD, i);
+        for (i = 0; i < 4; i++) ApZ2CreateIceBurst(s, (s->work[0] & 1) + 4, i);
       }
       s->work[2] = 4;
       PlaySound(SE_Z2_ICE_BREAK);
@@ -649,7 +652,7 @@ static void Burst_Update(struct VFX* p) {
   struct Burst* b = (struct Burst*)p;
   u8 i;
   UpdateSpriteAnimation(p);
-  switch (s->work[0]) {
+  switch (s->work[0] | 1) {
     case BURST_SPARKLE:
       if (s->work[2] < 7) {
         s->flags = (s->work[2] & 3) > 1 ? (s->flags | DISPLAY) : (s->flags & ~DISPLAY);
@@ -885,7 +888,7 @@ static void Dragon_Update(struct Enemy* p) {
 
 // 0x0807dc54
 static void Dragon_Die(struct Enemy* p) {
-  createBurst(&p->s, BURST, 0);
+  ApZ2CreateIceBurst(&p->s, BURST, 0);
   UpdateSpriteAnimation(p);
   (p->s).flags &= ~COLLIDABLE;
   (p->body).status = (p->body).prevStatus = 0;
@@ -996,7 +999,7 @@ static void Tail_Die(struct Projectile* p) {
   UpdateSpriteAnimation(p);
   s->flags = (s->work[3] & 1) ? (s->flags & ~DISPLAY) : (s->flags | DISPLAY);
   if (--s->work[3] == 0xFF) {
-    createBurst(s, BURST, 0);
+    ApZ2CreateIceBurst(s, BURST, 0);
     SET_PROJECTILE_ROUTINE(p, ENTITY_DISAPPEAR);
   }
 }
@@ -1226,7 +1229,7 @@ static void Snow_Update(struct Enemy* p) {
       s->coord.y += PIXEL(1);
       s->coord.x = f->homeX + SIN(s->work[2]) * 4;
       s->work[2] += 4;
-      if ((s->work[3]++ & 15) == 0) createBurst(s, BURST_SPARKLE, 0);
+      if ((s->work[3]++ & 15) == 0) ApZ2CreateIceBurst(s, BURST_SPARKLE, 0);
       if (FUN_080098a4(s->coord.x, s->coord.y) != 0) {
         s->mode[1] = 1;
         s->mode[2] = 0;
@@ -1275,7 +1278,7 @@ static void Snow_Die(struct Enemy* p) {
   Coords32 at = s->coord;
   u8 i;
   if (f->death == 1) {
-    createBurst(s, BURST, 0);
+    ApZ2CreateIceBurst(s, BURST, 0);
   } else if (f->death == 2) {
     for (i = 0; i < 4; i++) {
       at.y -= PIXEL(8);
@@ -1568,7 +1571,7 @@ static void Crawler_Update(struct Enemy* p) {
 
 // 0x0807e010
 static void Crawler_Die(struct Enemy* p) {
-  createBurst(&p->s, BURST, 0);
+  ApZ2CreateIceBurst(&p->s, BURST, 0);
   UpdateSpriteAnimation(p);
   (p->s).flags &= ~COLLIDABLE;
   (p->s).flags2 &= ~ENTI_PHYSICS;
@@ -1671,7 +1674,7 @@ static void Cell_Update(Object* p) {
 static void Cell_Die(Object* p) {
   struct Entity* s = &p->s;
   PatchMetatileMap(s->coord.x >> 12, s->coord.y >> 12, sCellEmpty);
-  createBurst(s, BURST, 1);
+  ApZ2CreateIceBurst(s, BURST, 1);
   (p->body).status = (p->body).prevStatus = 0;
   s->flags &= ~COLLIDABLE;
   cellRoutine(p, ENTITY_DISAPPEAR);

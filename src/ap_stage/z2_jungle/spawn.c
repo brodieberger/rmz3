@@ -264,7 +264,7 @@ const struct SpawnPoint gApZ2Jungle_Points[84] = {
     [83] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApZ2Jungle_Preloads[14] = {
+const struct PreloadEntity gApZ2Jungle_Preloads[15] = {
     {
         AP_SHEET_Z2_BABY_ELF,
         B8(01000000),
@@ -272,6 +272,15 @@ const struct PreloadEntity gApZ2Jungle_Preloads[14] = {
         7,
         1,
         AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
+        32,
+        B8(10000001),
+        840,
+        10,
+        1,
+        1,
         0,
     },
     {

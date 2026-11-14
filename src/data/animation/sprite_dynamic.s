@@ -266,7 +266,14 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_z2_leviathan
   .word gMetaSprite_z2_leviathan_armor
   .word gMetaSprite_z2_blob
-  .word gMetaSprite_z2_captive
+  .word gMetaSprite_z2_elpizo
+  .word gMetaSprite_z2_snake
+  .word gMetaSprite_z2_bear
+  .word gMetaSprite_z2_panter
+  .word gMetaSprite_z2_magnion
+  .word gMetaSprite_z2_door_3d
+  .word gMetaSprite_z2_fefnir_ex
+  .word gMetaSprite_z2_frog
 .endif
 
 
@@ -699,7 +706,14 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_z2_leviathan
   .word gAnimationSequence_z2_leviathan_armor
   .word gAnimationSequence_z2_blob
-  .word gAnimationSequence_z2_captive
+  .word gAnimationSequence_z2_elpizo
+  .word gAnimationSequence_z2_snake
+  .word gAnimationSequence_z2_bear
+  .word gAnimationSequence_z2_panter
+  .word gAnimationSequence_z2_magnion
+  .word gAnimationSequence_z2_door_3d
+  .word gAnimationSequence_z2_fefnir_ex
+  .word gAnimationSequence_z2_frog
 .endif
 
 
@@ -878,8 +892,22 @@ gDynamicMotionCmdTable:
 .include "sprites/dynamic/z2_leviathan_armor/sequence.inc"
 .include "sprites/dynamic/z2_blob/metasprite.inc"
 .include "sprites/dynamic/z2_blob/sequence.inc"
-.include "sprites/dynamic/z2_captive/metasprite.inc"
-.include "sprites/dynamic/z2_captive/sequence.inc"
+.include "sprites/dynamic/z2_elpizo/metasprite.inc"
+.include "sprites/dynamic/z2_elpizo/sequence.inc"
+.include "sprites/dynamic/z2_snake/metasprite.inc"
+.include "sprites/dynamic/z2_snake/sequence.inc"
+.include "sprites/dynamic/z2_bear/metasprite.inc"
+.include "sprites/dynamic/z2_bear/sequence.inc"
+.include "sprites/dynamic/z2_panter/metasprite.inc"
+.include "sprites/dynamic/z2_panter/sequence.inc"
+.include "sprites/dynamic/z2_magnion/metasprite.inc"
+.include "sprites/dynamic/z2_magnion/sequence.inc"
+.include "sprites/dynamic/z2_door_3d/metasprite.inc"
+.include "sprites/dynamic/z2_door_3d/sequence.inc"
+.include "sprites/dynamic/z2_fefnir_ex/metasprite.inc"
+.include "sprites/dynamic/z2_fefnir_ex/sequence.inc"
+.include "sprites/dynamic/z2_frog/metasprite.inc"
+.include "sprites/dynamic/z2_frog/sequence.inc"
 .include "sprites/dynamic/z2_zero_chain/metasprite.inc"
 .include "sprites/dynamic/z2_zero_chain/sequence.inc"
 .include "sprites/dynamic/z2_zero_chain_air/metasprite.inc"

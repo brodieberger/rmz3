@@ -98,7 +98,11 @@ u8 gApZ2Na1_Area(Coords32* c) {
 
 // --------------------------------------------
 /*
-  Zero 2's solid 18 work0 2, slab over lava shaft
+  Zero 2's solid 18, slab that falls once Zero is on it.
+  work0:
+    0: Power Room's floor cell, unseen until then
+    1: Shuttle Factory's
+    2: slab over lava shaft
 */
 
 static void Slab_Init(struct Solid* p);
@@ -123,20 +127,28 @@ static const struct Rect sSlabSize = {0, PIXEL(8), PIXEL(32), PIXEL(16)};
 static const s32 sShakeX[8] = {-1, 0, 1, 0, -1, 0, 1, 0};
 static const s32 sShakeY[8] = {-1, 1, 0, -1, 1, -1, 0, 1};
 
+static void beSolid(struct Entity* s) {
+  s->flags2 |= ENTI_PHYSICS;
+  s->size = &sSlabSize;
+  s->physicsAttr = MTATTR_CONVEYOR1 | SHAPE_BLOCK;
+}
+
 // 0x080cda8c
 static void Slab_Init(struct Solid* p) {
   struct Entity* s = &p->s;
   s->d.x = s->d.y = 0;
   s->coord.x += PIXEL(8);
-  InitNonAffineMotion(s);
   s->texture = TEXTURE_AP_SHEET;
-  s->flags |= DISPLAY | FLIPABLE;
-  SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_SLAB, 0));
-  UpdateSpriteAnimation(p);
-  s->coord.y = (s->coord.y & ~(PIXEL(16) - 1)) - 1;
-  s->flags2 |= ENTI_PHYSICS;
-  s->size = &sSlabSize;
-  s->physicsAttr = MTATTR_CONVEYOR1 | SHAPE_BLOCK;
+  if (s->work[0] == 2) {
+    InitNonAffineMotion(s);
+    s->flags |= DISPLAY | FLIPABLE;
+    SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_SLAB, 0));
+    UpdateSpriteAnimation(p);
+    s->coord.y = (s->coord.y & ~(PIXEL(16) - 1)) - 1;
+    beSolid(s);
+  } else {
+    s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+  }
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   Slab_Update(p);
 }
@@ -150,7 +162,13 @@ static bool32 zeroTouches(struct Entity* s) {
 
 // 0x080cdb44
 static void Slab_Update(struct Solid* p) {
-  if (!zeroTouches(&p->s)) return;
+  struct Entity* s = &p->s;
+  if (!zeroTouches(s)) return;
+  if (s->work[0] != 2) {
+    s->flags |= DISPLAY | FLIPABLE;
+    InitNonAffineMotion(s);
+    SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_CRUMBLE, 0));
+  }
   SET_SOLID_ROUTINE(p, ENTITY_DIE);
   Slab_Fall(p);
 }
@@ -161,6 +179,9 @@ static void Slab_Fall(struct Solid* p) {
   Coords32 at;
   switch (s->mode[1]) {
     case 0:
+      if (s->work[0] == 0) ApZ2PlantCellGone(&s->coord);
+      if (s->work[0] == 1) ApZ2Plant2CellGone(&s->coord);
+      beSolid(s);
       (s->spr).c = (struct Coord*)&s->unk_coord;
       PlaySound(SE_Z2_DESERT_TAIL_SLAM);
       s->work[2] = 0;
@@ -205,7 +226,10 @@ static void Slab_Disappear(struct Solid* p) {
 
 // --------------------------------------------
 /*
-  Zero 2's solid 28, pillar under column
+  Zero 2's solid 28, pillar under column.
+  work0:
+    0: sinks for Zero from left
+    1: sinks for Zero from right
 */
 
 static void Gate_Closed(struct Solid* p);
@@ -231,8 +255,10 @@ static bool32 zeroAtGate(struct Entity* s) {
   s32 dx = zero->x - PIXEL(1) - s->coord.x;
   s32 dy = zero->y - PIXEL(14) - (s->coord.y - PIXEL(32));
   return dx > -PIXEL(26) && dx < PIXEL(26) && dy > -PIXEL(48) && dy < PIXEL(48) &&
-         s->coord.y >= zero->y && s->coord.y - zero->y <= PIXEL(24) && zero->x < s->coord.x;
+         s->coord.y >= zero->y && s->coord.y - zero->y <= PIXEL(24) &&
+         (s->work[0] ? zero->x >= s->coord.x : zero->x < s->coord.x);
 }
+
 
 // 0x080d1804, 0x080d1910
 static void Gate_Closed(struct Solid* p) {
@@ -253,7 +279,7 @@ static void Gate_Closed(struct Solid* p) {
   s->mode[1] = 0;
 }
 
-// 0x080d19a4
+// 0x080d19a4, 0x080d1a7c
 static void Gate_Open(struct Solid* p) {
   struct Entity* s = &p->s;
   UpdateSpriteAnimation(p);
@@ -271,7 +297,7 @@ static void Gate_Open(struct Solid* p) {
       break;
     case 2:
       s->flags &= ~DISPLAY;
-      if (s->coord.x + PIXEL(32) > (pZero2->s).coord.x) break;
+      if (s->work[0] ? s->coord.x - PIXEL(32) < (pZero2->s).coord.x : s->coord.x + PIXEL(32) > (pZero2->s).coord.x) break;
       SetSpriteAnimation(p, GATE(2));
       s->flags |= DISPLAY;
       s->flags2 |= ENTI_PHYSICS;

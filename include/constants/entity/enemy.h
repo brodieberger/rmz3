@@ -126,7 +126,25 @@
 #define ENEMY_Z2_FROST_SHARD 120  // Zero 2 enemy 64
 #define ENEMY_Z2_WALL_FROG 121  // Zero 2 enemy 52
 #define ENEMY_Z2_WALL_EYE 122  // Zero 2 enemy 54
-#define ENEMY_COUNT (ENEMY_Z2_WALL_EYE + 1)
+#define ENEMY_Z2_SNAKE_ARM 123  // Zero 2 enemy 24, the Jungle snake's arms and cut-off top
+#define ENEMY_Z2_SNAKE_SPRING 124  // Zero 2 enemy 25, the spring it calls
+#define ENEMY_Z2_RAPTOR_DRONE 125  // Zero 2 enemy 27, the raptor's hatch and drones
+#define ENEMY_Z2_VORTEX 126  // Zero 2 enemy 28, the raptor's vortex and its orbs
+#define ENEMY_Z2_CRAWLER 127  // Zero 2 enemy 22, the Computer Zone's pipe crawler
+#define ENEMY_Z2_BEAR_PART 128  // Zero 2 enemy 21, a piece of the bear drawn over it
+#define ENEMY_Z2_ICE_PILLAR 129  // Zero 2 enemy 20, the bear's ice pillar
+#define ENEMY_Z2_ICE_CAP 130  // Zero 2 enemy 19, the top of the bear's ice block
+#define ENEMY_Z2_CRATE_CARRIER 131  // Zero 2 enemy 73, carries the Train's crates off
+#define ENEMY_Z2_PANTER_HALF 132  // Zero 2 enemy 74, Panter's top half once cut
+#define ENEMY_Z2_FORTRESS_ARM 133  // Zero 2 enemy 60, the fortress's arms
+#define ENEMY_Z2_GENERATOR 134  // Zero 2 enemy 71, the Power Room's machine room
+#define ENEMY_Z2_DRONE 135  // Zero 2 enemy 72, its drones
+#define ENEMY_Z2_FEFNIR_BOMB 136  // Zero 2 enemy 38, Fefnir's fire bomb in the Shuttle Factory
+#define ENEMY_Z2_WHIRL_PIECE 137  // Zero 2 enemy 58, Leviathan's whirlpool around her EX
+#define ENEMY_Z2_LANCE_TIP 138  // Zero 2 enemy 59, her lance's splash and its shards
+#define ENEMY_Z2_TREE_FROG 139  // Zero 2 enemy 34, the Forest of Notus's tree frogs
+#define ENEMY_Z2_FROG_TONGUE 140  // Zero 2 enemy 32, the frog's arms, tongues and cut half
+#define ENEMY_COUNT (ENEMY_Z2_FROG_TONGUE + 1)
 #else
 #define ENEMY_COUNT (ENEMY_72 + 1)
 #endif

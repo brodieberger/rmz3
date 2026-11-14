@@ -144,6 +144,11 @@ extern const VFXRoutine gApZ2FefnirSparkRoutine;
 extern const VFXRoutine gApZ2MineBlastRoutine;
 extern const VFXRoutine gApZ2IcePuffRoutine;
 extern const VFXRoutine gApZ2WaterSplashRoutine;
+extern const VFXRoutine gApZ2StreakRoutine, gApZ2RaptorTrailRoutine;
+extern const VFXRoutine gApZ2FrostCloudRoutine, gApZ2CrawlerBitRoutine, gApZ2BearIceRoutine;
+extern const VFXRoutine gApZ2ElfSparkleRoutine, gApZ2PanterHeldRoutine, gApZ2FortressJetRoutine;
+extern const VFXRoutine gApZ2MagnionFxRoutine, gApZ2MachineBitRoutine, gApZ2FefnirAuraRoutine, gApZ2FefnirExRoutine,
+    gApZ2LeafRoutine, gApZ2FrogDustRoutine;
 extern const VFXRoutine gApZ2IceBurstRoutine;
 extern const VFXRoutine gApZ2DozerTopRoutine;
 extern const VFXRoutine gApZ2FishBitRoutine;
@@ -263,6 +268,20 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_Z2_MINE_BLAST] = &gApZ2MineBlastRoutine,
     [VFX_Z2_ICE_PUFF] = &gApZ2IcePuffRoutine,
     [VFX_Z2_WATER_SPLASH] = &gApZ2WaterSplashRoutine,
+    [VFX_Z2_STREAK] = &gApZ2StreakRoutine,
+    [VFX_Z2_RAPTOR_TRAIL] = &gApZ2RaptorTrailRoutine,
+    [VFX_Z2_FROST_CLOUD] = &gApZ2FrostCloudRoutine,
+    [VFX_Z2_CRAWLER_BIT] = &gApZ2CrawlerBitRoutine,
+    [VFX_Z2_BEAR_ICE] = &gApZ2BearIceRoutine,
+    [VFX_Z2_ELF_SPARKLE] = &gApZ2ElfSparkleRoutine,
+    [VFX_Z2_PANTER_HELD] = &gApZ2PanterHeldRoutine,
+    [VFX_Z2_FORTRESS_JET] = &gApZ2FortressJetRoutine,
+    [VFX_Z2_MAGNION_FX] = &gApZ2MagnionFxRoutine,
+    [VFX_Z2_MACHINE_BIT] = &gApZ2MachineBitRoutine,
+    [VFX_Z2_FEFNIR_AURA] = &gApZ2FefnirAuraRoutine,
+    [VFX_Z2_FEFNIR_EX] = &gApZ2FefnirExRoutine,
+    [VFX_Z2_LEAF] = &gApZ2LeafRoutine,
+    [VFX_Z2_FROG_DUST] = &gApZ2FrogDustRoutine,
     [VFX_Z2_ICE_BURST] = &gApZ2IceBurstRoutine,
     [VFX_Z2_DOZER_TOP] = &gApZ2DozerTopRoutine,
     [VFX_Z2_FISH_BIT] = &gApZ2FishBitRoutine,

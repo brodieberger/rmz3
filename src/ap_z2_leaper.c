@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "element.h"
 #include "enemy.h"
@@ -178,6 +179,7 @@ static void Leaper_Die(struct Leaper* p) {
   TryDropItem(0, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
+  ApImportLeaperKilled();
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

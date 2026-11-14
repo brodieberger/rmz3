@@ -24,7 +24,8 @@
 #if AP
 
 /*
-  Zero 2's boss 18, Jungle's mid-boss.
+  Zero 2's boss 18, Jungle's and Forest of Notus's mid-boss.
+  work1: 1 mirrored, on room's right. Passed to every part
   Parts: solids 10 and 11, enemy 54
   Frogs: enemy 52
   Rings: projectile 44
@@ -119,8 +120,12 @@ static void createPart(u8 id, struct Entity* wall, u8 kind) {
     INIT_SOLID_ROUTINE(p, id);
     p->unk_28 = wall;
     p->work[0] = kind;
+    p->work[1] = wall->work[1];
   }
 }
+
+// Mirrored with the wall
+static s32 along(struct Entity* s, s32 dx) { return s->work[1] ? -dx : dx; }
 
 static void createEye(struct Entity* wall) {
   struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
@@ -129,16 +134,18 @@ static void createEye(struct Entity* wall) {
     p->flags2 |= WHITE_PAINTABLE;
     p->invincibleID = p->uniqueID;
     p->unk_28 = wall;
+    p->work[1] = wall->work[1];
   }
 }
 
-static void createFrog(const Coords32* at) {
+static void createFrog(const Coords32* at, u8 dir) {
   struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     INIT_ENEMY_ROUTINE(p, ENEMY_Z2_WALL_FROG);
     p->flags2 |= WHITE_PAINTABLE;
     p->invincibleID = p->uniqueID;
     p->coord = *at;
+    p->work[1] = dir;
   }
 }
 
@@ -158,7 +165,7 @@ static void Wall_Init(struct Wall* p) {
   u8 i;
   for (i = 0; i < 6; i++) ApLoadSheet(&sSheets[i]);
   setUp(s, BODY(2));
-  SET_XFLIP(p, FALSE);
+  SET_XFLIP(p, s->work[1]);
   ResetBossBody((struct Boss*)p, sCollisions, 32);
   p->home = s->coord;
   p->open = FALSE;
@@ -168,7 +175,7 @@ static void Wall_Init(struct Wall* p) {
   createPart(SOLID_Z2_WALL_SHELF, s, 1);
   createPart(SOLID_Z2_WALL_ARM, s, 0);
   createEye(s);
-  s->coord.x = p->home.x + 0x3700;
+  s->coord.x = p->home.x + along(s, 0x3700);
   s->coord.y = p->home.y + 0x3500;
   SET_BOSS_ROUTINE(p, ENTITY_UPDATE);
   Wall_Update(p);
@@ -255,9 +262,9 @@ static void Wall_Frog(struct Wall* p) {
   if (s->mode[2] == 0) {
     Coords32 at;
     SetMotion(s, BODY(0));
-    at.x = p->home.x + 0x3000;
+    at.x = p->home.x + along(s, 0x3000);
     at.y = p->home.y + 0x7600;
-    createFrog(&at);
+    createFrog(&at, s->work[1]);
     s->work[2] = 96;
     s->mode[2]++;
   }
@@ -282,7 +289,7 @@ static void Wall_Ring(struct Wall* p) {
   struct Entity* s = &p->s;
   if (s->mode[2] == 0) {
     SetMotion(s, BODY(0));
-    createRing(s, 0, RANDOM(RNG_0202f388) & 1);
+    createRing(s, 0, (RANDOM(RNG_0202f388) & 1) << 4 | s->work[1]);
     s->work[2] = 32;
     s->mode[2]++;
   }
@@ -380,8 +387,8 @@ static u16 Shelf_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy UNUSED) {
   s->coord.x += dx;
   s->mode[1] = 1;
   s->work[2] = 64;
-  if (s->coord.x > f->homeX + 0x3800) {
-    s->coord.x = f->homeX + 0x3800;
+  if (s->work[1] ? s->coord.x < f->homeX - 0x3800 : s->coord.x > f->homeX + 0x3800) {
+    s->coord.x = f->homeX + along(s, 0x3800);
     stopped = TRUE;
   }
   if (pulling == 0 || stopped) {
@@ -397,18 +404,20 @@ static void Shelf_Init(struct Solid* p) {
   struct Wall* wall = WALL_PARENT(s);
   if (s->work[0] == 0) {
     setUp(s, SHELF(0));
+    SET_XFLIP(p, s->work[1]);
     s->flags |= COLLIDABLE;
     INIT_BODY(p, &sShelfCollision, 255, NULL);
     (p->body).unk_28 = (u32)Shelf_Pull;
     s->flags2 |= ENTI_PHYSICS;
     s->size = &sShelfSize;
     s->physicsAttr = 0x2401;
-    s->coord.x = wall->home.x + 0x2000;
+    s->coord.x = wall->home.x + along(s, 0x2000);
     s->coord.y = wall->home.y + 0x4F00;
     ((struct ShelfSolid*)p)->homeX = s->coord.x;
   } else {
     setUp(s, PART(3));
-    s->coord.x = wall->home.x + 0x1000;
+    SET_XFLIP(p, s->work[1]);
+    s->coord.x = wall->home.x + (s->work[1] ? -0x1100 : 0x1000);
     s->coord.y = wall->home.y + 0x5C00;
   }
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
@@ -427,8 +436,8 @@ static void Shelf_Update(struct Solid* p) {
   if (s->work[0] != 0 || s->mode[1] != 0) return;
   if (s->work[2] != 0) {
     s->work[2]--;
-  } else if (s->coord.x > ((struct ShelfSolid*)p)->homeX) {
-    s->coord.x -= 64;
+  } else if (s->work[1] ? s->coord.x < ((struct ShelfSolid*)p)->homeX : s->coord.x > ((struct ShelfSolid*)p)->homeX) {
+    s->coord.x -= along(s, 64);
   }
 }
 
@@ -489,16 +498,18 @@ static void Arm_Init(struct Solid* p) {
   struct Wall* wall = WALL_PARENT(s);
   if (s->work[0] == 0) {
     setUp(s, MOTION(AP_SHEET_Z2_WALL_ARM, 2));
-    s->coord.x = wall->home.x + 0x3F00;
+    SET_XFLIP(p, s->work[1]);
+    s->coord.x = wall->home.x + along(s, 0x3F00);
     s->coord.y = wall->home.y + 0x8B00;
     s->work[2] = 16;
   } else {
     setUp(s, SPIKE(0));
+    SET_XFLIP(p, s->work[1]);
     s->renderPrio = 31;
     s->flags2 |= ENTI_PHYSICS;
     s->size = &sSpikeSize;
     s->physicsAttr = 15;
-    s->coord.x = wall->home.x - 0x1800;
+    s->coord.x = wall->home.x + along(s, -0x1800);
     s->coord.y = wall->home.y + 0xA000;
   }
   a->home = s->coord;
@@ -536,9 +547,9 @@ static void armPart(struct Solid* p) {
       s->mode[1]++;
       break;
     case 4:
-      s->coord.x += 0x300;
-      if (s->coord.x <= a->home.x + 0x9000) break;
-      s->coord.x = a->home.x + 0x9000;
+      s->coord.x += along(s, 0x300);
+      if (s->work[1] ? s->coord.x >= a->home.x - 0x9000 : s->coord.x <= a->home.x + 0x9000) break;
+      s->coord.x = a->home.x + along(s, 0x9000);
       s->mode[1]++;
       break;
   }
@@ -551,9 +562,9 @@ static void armSpike(struct Solid* p) {
   switch (s->mode[1]) {
     case 0:
       UpdateEntityAnim(s);
-      s->coord.x += 0x300;
-      if (s->coord.x <= a->home.x + 0x7800) break;
-      s->coord.x = a->home.x + 0x7800;
+      s->coord.x += along(s, 0x300);
+      if (s->work[1] ? s->coord.x >= a->home.x - 0x7800 : s->coord.x <= a->home.x + 0x7800) break;
+      s->coord.x = a->home.x + along(s, 0x7800);
       s->mode[1]++;
       break;
     case 1:
@@ -612,7 +623,8 @@ static void Eye_Init(struct Enemy* p) {
   struct Entity* s = &p->s;
   struct Wall* wall = WALL_PARENT(s);
   setUp(s, PART(1));
-  s->coord.x = wall->home.x + 0xF00;
+  SET_XFLIP(p, s->work[1]);
+  s->coord.x = wall->home.x + along(s, 0xF00);
   s->coord.y = wall->home.y + 0x3200;
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   Eye_Update(p);
@@ -660,10 +672,10 @@ const EnemyRoutine gApZ2WallFrogRoutine = {
 static void Frog_Init(struct Enemy* p) {
   struct Entity* s = &p->s;
   setUp(s, SHOT(6));
-  SET_XFLIP(p, FALSE);
+  SET_XFLIP(p, s->work[1]);
   s->flags |= COLLIDABLE;
   INIT_BODY(p, sFrogCollisions, 4, NULL);
-  s->d.x = 0x200;
+  s->d.x = along(s, 0x200);
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   Frog_Update(p);
 }
@@ -679,7 +691,7 @@ static void Frog_Hop(struct Enemy* p) {
   }
   UpdateEntityAnim(s);
   s->coord.x += s->d.x;
-  if (FUN_080098a4(s->coord.x + 0x800, s->coord.y) != 0) {
+  if (FUN_080098a4(s->coord.x + along(s, 0x800), s->coord.y) != 0) {
     SET_ENEMY_ROUTINE(p, ENTITY_DIE);
     Frog_Die(p);
     return;
@@ -784,8 +796,8 @@ static void Ring_Init(struct Projectile* p) {
   r->last.x = r->last.y = 0;
   r->earlier.x = r->earlier.y = 0;
   if (s->work[0] == 0) {
-    s->d.x = 0x180;
-    s->d.y = s->work[1] != 0 ? -0x180 : 0x180;
+    s->d.x = (s->work[1] & 1) ? -0x180 : 0x180;
+    s->d.y = (s->work[1] >> 4) ? -0x180 : 0x180;
   }
   s->work[2] = 0;
   SET_PROJECTILE_ROUTINE(p, ENTITY_UPDATE);
@@ -847,7 +859,7 @@ static void Ring_Tail(struct Projectile* p) {
     if ((parent->s).mode[0] < ENTITY_DIE) return;
     s->d.x = s->coord.x - r->last.x;
     s->d.y = s->coord.y - r->last.y;
-    if ((parent->s).mode[3] != 0) {
+    if ((parent->s).mode[3] != 0 || (s->d.x == 0 && s->d.y == 0)) {
       SET_PROJECTILE_ROUTINE(p, ENTITY_DIE);
       Ring_Die(p);
       return;

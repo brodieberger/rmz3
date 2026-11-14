@@ -92,6 +92,12 @@ extern const SolidRoutine gApZ2RescueRoutine, gApZ2PadRoutine, gApZ2LiftRoutine,
     gApZ2BabyElfRoutine, gApZ2XRoutine, gApZ2WallShelfRoutine, gApZ2WallArmRoutine;
 extern const SolidRoutine gApZ2IceCellRoutine;
 extern const SolidRoutine gApZ2BoxRoutine;
+extern const SolidRoutine gApZ2SnakeBlockRoutine, gApZ2SnakeRiderRoutine, gApZ2SnakePieceRoutine;
+extern const SolidRoutine gApZ2CoolerRoutine, gApZ2VentRoutine, gApZ2BearBlockRoutine;
+extern const SolidRoutine gApZ2WindHarpuiaRoutine, gApZ2ElpizoRoutine, gApZ2DarkBoltRoutine, gApZ2BabyElvesRoutine,
+    gApZ2DarkElfRoutine, gApZ2SuppliesRoutine, gApZ2GantryRoutine, gApZ2CarFrontRoutine;
+extern const SolidRoutine gApZ2MagmaRoutine, gApZ2MagmaDropperRoutine, gApZ2Door3DRoutine, gApZ2CraftRoutine;
+extern const SolidRoutine gApZ2ForestElpizoRoutine, gApZ2ScriptDoorRoutine, gApZ2SealElpizoRoutine, gApZ2XGlowRoutine;
 #endif
 
 // clang-format off
@@ -174,6 +180,28 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_Z2_WALL_ARM] =               &gApZ2WallArmRoutine,
     [SOLID_Z2_ICE_CELL] =               &gApZ2IceCellRoutine,
     [SOLID_Z2_BOX] =                    &gApZ2BoxRoutine,
+    [SOLID_Z2_SNAKE_BLOCK] =            &gApZ2SnakeBlockRoutine,
+    [SOLID_Z2_SNAKE_RIDER] =            &gApZ2SnakeRiderRoutine,
+    [SOLID_Z2_SNAKE_PIECE] =            &gApZ2SnakePieceRoutine,
+    [SOLID_Z2_COOLER] =                 &gApZ2CoolerRoutine,
+    [SOLID_Z2_VENT] =                   &gApZ2VentRoutine,
+    [SOLID_Z2_BEAR_BLOCK] =             &gApZ2BearBlockRoutine,
+    [SOLID_Z2_WIND_HARPUIA] =           &gApZ2WindHarpuiaRoutine,
+    [SOLID_Z2_ELPIZO] =                 &gApZ2ElpizoRoutine,
+    [SOLID_Z2_DARK_BOLT] =              &gApZ2DarkBoltRoutine,
+    [SOLID_Z2_BABY_ELVES] =             &gApZ2BabyElvesRoutine,
+    [SOLID_Z2_DARK_ELF] =               &gApZ2DarkElfRoutine,
+    [SOLID_Z2_SUPPLIES] =               &gApZ2SuppliesRoutine,
+    [SOLID_Z2_GANTRY] =                 &gApZ2GantryRoutine,
+    [SOLID_Z2_CAR_FRONT] =              &gApZ2CarFrontRoutine,
+    [SOLID_Z2_MAGMA] =                  &gApZ2MagmaRoutine,
+    [SOLID_Z2_MAGMA_DROPPER] =          &gApZ2MagmaDropperRoutine,
+    [SOLID_Z2_DOOR_3D] =                &gApZ2Door3DRoutine,
+    [SOLID_Z2_CRAFT] =                  &gApZ2CraftRoutine,
+    [SOLID_Z2_FOREST_ELPIZO] =          &gApZ2ForestElpizoRoutine,
+    [SOLID_Z2_SCRIPT_DOOR] =            &gApZ2ScriptDoorRoutine,
+    [SOLID_Z2_SEAL_ELPIZO] =            &gApZ2SealElpizoRoutine,
+    [SOLID_Z2_X_GLOW] =                 &gApZ2XGlowRoutine,
 #endif
 };
 // clang-format on

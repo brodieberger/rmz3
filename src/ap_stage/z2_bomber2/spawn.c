@@ -281,62 +281,62 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [49] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 0, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 0, 0),
         },
     [50] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 1, 0),
         },
     [51] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 2, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 2, 0),
         },
     [52] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 3, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 3, 0),
         },
     [53] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 4, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 4, 0),
         },
     [54] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 5, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 5, 0),
         },
     [55] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 13, 6, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_PYLON, 6, 0),
         },
     [56] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(4, 10, 0, 0),
+            .kind = SpawnEntity(ENTITY_PROJECTILE, PROJECTILE_Z2_PYLON_HAZARD, 0, 0),
         },
     [57] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(4, 10, 1, 0),
+            .kind = SpawnEntity(ENTITY_PROJECTILE, PROJECTILE_Z2_PYLON_HAZARD, 1, 0),
         },
     [58] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(4, 10, 2, 0),
+            .kind = SpawnEntity(ENTITY_PROJECTILE, PROJECTILE_Z2_PYLON_HAZARD, 2, 0),
         },
     [59] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(4, 10, 3, 0),
+            .kind = SpawnEntity(ENTITY_PROJECTILE, PROJECTILE_Z2_PYLON_HAZARD, 3, 0),
         },
     [60] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(4, 10, 4, 0),
+            .kind = SpawnEntity(ENTITY_PROJECTILE, PROJECTILE_Z2_PYLON_HAZARD, 4, 0),
         },
     [61] =
         {
@@ -400,19 +400,19 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [72] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 14, 0, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_COPTER, 0, 0),
             .attr = 0x01,
         },
     [73] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 14, 1, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_COPTER, 1, 0),
             .attr = 0x01,
         },
     [74] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(3, 14, 2, 0),
+            .kind = SpawnEntity(ENTITY_ENEMY, ENEMY_Z2_COPTER, 2, 0),
             .attr = 0x01,
         },
     [75] =
@@ -454,12 +454,12 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [81] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_CRAFT, 0, 0),
         },
     [82] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 7, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_CRAFT, 7, 0),
         },
     [83] =
         {
@@ -484,7 +484,7 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [87] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_BLUE, 0, 1),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_CRAFT, 0, 1),
         },
     [88] =
         {

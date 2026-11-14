@@ -1236,7 +1236,7 @@ static void Web_Update(struct Projectile* p) {
     } else if (s->d.y <= 0x6FF) {
       s->d.y += 0x40;
     }
-    s->coord.y += s->d.y;
+    if (FUN_080098a4(s->coord.x, s->coord.y + s->d.y) == 0) s->coord.y += s->d.y;
     zero->coord = s->coord;
   }
 }

@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "definition.h"
@@ -8,11 +9,13 @@
 #include "physics.h"
 #include "random.h"
 #include "score.h"
+#include "sound.h"
 #include "stagerun.h"
 #include "vfx.h"
 #include "zero.h"
 
 #include "constants/motion/ap_sheet.h"
+#include "constants/ap_z2_songs.h"
 #include "constants/song.h"
 
 #if AP
@@ -171,6 +174,7 @@ static void killed(struct Carryarm* p, bool8 spiking) {
   s->d.y = 0;
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
+  ApImportSpikingKilled();
   SET_ENEMY_ROUTINE(p, ENTITY_DIE);
   s->mode[1] = spiking ? DEATH_SPIKING : DEATH_CARRYARM;
   Carryarm_Die(p);
@@ -547,6 +551,143 @@ static void Carryarm_Die(struct Carryarm* p) {
       }
       break;
   }
+}
+
+// --------------------------------------------
+/*
+  Zero 2's enemy 73, carries one of the Train's crates off
+  work0:
+    0: carrier
+    1: its overlay
+  work1: 0 and 1 drop from above, 2 comes from left, 3 from right
+*/
+
+#define CRATE_X unk_coord.x
+#define HOOK_Y unk_coord.y
+
+enum {
+  CARRIER_FLY_IN,
+  CARRIER_HOVER,
+  CARRIER_DROP,
+  CARRIER_LATCH,
+  CARRIER_HOLD,
+};
+
+static void CrateCarrier_Init(struct Carryarm* p);
+static void CrateCarrier_Update(struct Carryarm* p);
+
+// clang-format off
+const EnemyRoutine gApZ2CrateCarrierRoutine = {
+    [ENTITY_INIT] =      (EnemyFunc)CrateCarrier_Init,
+    [ENTITY_UPDATE] =    (EnemyFunc)CrateCarrier_Update,
+    [ENTITY_DIE] =       (EnemyFunc)Carryarm_Die,
+    [ENTITY_DISAPPEAR] = (EnemyFunc)DeleteEnemy,
+    [ENTITY_EXIT] =      (EnemyFunc)DeleteEntity,
+};
+// clang-format on
+
+// 0x0808ff1c
+struct Entity* ApZ2CreateCrateCarrier(struct Entity* crate, u8 kind, u8 from) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p == NULL) return NULL;
+  INIT_ENEMY_ROUTINE(p, ENEMY_Z2_CRATE_CARRIER);
+  p->renderPrio = 24;
+  p->unk_28 = crate;
+  p->work[0] = kind;
+  p->work[1] = from;
+  return p;
+}
+
+// 0x0808ffd0, 0x080900f8
+static void CrateCarrier_Init(struct Carryarm* p) {
+  struct Entity* s = &p->s;
+  struct Entity* crate = s->unk_28;
+  SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
+  InitNonAffineMotion(s);
+  useApSheets(p);
+  s->flags |= DISPLAY | FLIPABLE;
+  if (s->work[0] == 1) {
+    SetMotion(s, ANIM(16));
+    UpdateEntityAnim(s);
+    s->renderPrio = 31;
+    CrateCarrier_Update(p);
+    return;
+  }
+  SetMotion(s, ANIM_CARRY);
+  UpdateEntityAnim(s);
+  SET_XFLIP(p, (s->work[1] + 1) & 1);
+  INIT_BODY(p, sCarryarmCollisions, 8, onCollision);
+  p->cut = 0;
+  p->element = NULL;
+  s->CRATE_X = s->coord.x = crate->coord.x;
+  s->HOOK_Y = crate->coord.y - PIXEL(36);
+  ApZ2CreateCrateCarrier(s, 1, 0);
+  if (s->work[1] <= 1) {
+    s->coord.y = s->HOOK_Y - PIXEL(256);
+    s->mode[1] = CARRIER_DROP;
+  } else {
+    s->coord.x = s->CRATE_X + (s->work[1] == 2 ? -PIXEL(256) : PIXEL(256));
+    s->coord.y = s->HOOK_Y - PIXEL(64);
+    s->mode[1] = CARRIER_FLY_IN;
+  }
+  CrateCarrier_Update(p);
+}
+
+// 0x08090148, 0x0809037c
+static void CrateCarrier_Update(struct Carryarm* p) {
+  struct Entity* s = &p->s;
+  struct Entity* q = s->unk_28;
+  if (s->work[0] == 1) {
+    if (q->mode[0] > ENTITY_UPDATE || q->mode[1] > CARRIER_HOLD) {
+      SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
+      return;
+    }
+    UpdateEntityAnim(s);
+    s->coord = q->coord;
+    SET_XFLIP(p, (q->flags & X_FLIP) != 0);
+    return;
+  }
+  if ((p->body).status & BODY_STATUS_DEAD) {
+    s->d.y = 0;
+    if (gScore.enemyCount < 9999) gScore.enemyCount++;
+    TryDropZakoDisk((struct Enemy*)p, &s->coord);
+    SET_ENEMY_ROUTINE(p, ENTITY_DIE);
+    s->mode[1] = DEATH_CARRYARM;
+    Carryarm_Die(p);
+    return;
+  }
+  switch (s->mode[1]) {
+    case CARRIER_FLY_IN:
+      if (s->work[1] == 2) {
+        s->coord.x += 0x300;
+        if (s->coord.x < s->CRATE_X) break;
+      } else {
+        s->coord.x -= 0x300;
+        if (s->coord.x > s->CRATE_X) break;
+      }
+      s->coord.x = s->CRATE_X;
+      s->work[2] = 16;
+      s->mode[1]++;
+      break;
+    case CARRIER_HOVER:
+    case CARRIER_LATCH:
+      if (--s->work[2] == 0xFF) s->mode[1]++;
+      break;
+    case CARRIER_DROP:
+      s->coord.y += 0x300;
+      if (s->coord.y < s->HOOK_Y) break;
+      PlaySound(SE_Z2_CARRIER_GRAB);
+      s->coord.y = s->HOOK_Y;
+      s->work[2] = 16;
+      s->mode[1]++;
+      break;
+    case CARRIER_HOLD:
+      s->coord.x = q->coord.x;
+      s->coord.y = q->coord.y - PIXEL(36);
+      if (q->mode[0] > ENTITY_UPDATE) SET_ENEMY_ROUTINE(p, ENTITY_DISAPPEAR);
+      break;
+  }
+  UpdateEntityAnim(s);
 }
 
 // --------------------------------------------

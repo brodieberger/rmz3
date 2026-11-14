@@ -97,11 +97,13 @@ static const motion_t sPose[4][6] = {
 };
 // 0x0802acb4, 0x0802e538, 0x0802f650, 0x080308b0
 static const motion_t sEndPose[4] = {
-    [ZERO_GROUND] = MOTION(DM038_Z2_ZERO_CHAIN, 4),
+    [ZERO_GROUND] = MOTION(DM038_Z2_ZERO_CHAIN, 5),
     [ZERO_AIR] = MOTION(DM039_Z2_ZERO_CHAIN_AIR, 6),
     [ZERO_WALL] = MOTION(DM066_Z2_ZERO_CHAIN_WALL, 2),
     [ZERO_LADDER] = MOTION(DM067_Z2_ZERO_CHAIN_LADDER, 2),
 };
+// 0x0802affa
+#define PULL_POSE MOTION(DM038_Z2_ZERO_CHAIN, 4)
 // 0x083363d4
 static const u8 sTipAnim[5] = {2, 2, 1, 3, 0};
 
@@ -118,6 +120,14 @@ static void updateHand(struct Zero* z) {
   s32 x = sHand[sChain.stance][sChain.aim].x;
   sChain.hand.x = (z->s).coord.x + (FACING_RIGHT(z) ? -x : x);
   sChain.hand.y = (z->s).coord.y + sHand[sChain.stance][sChain.aim].y;
+}
+
+// 0x0803609c
+static void follow(struct Zero* z) {
+  Coords32 from = sChain.hand;
+  updateHand(z);
+  sChain.tip.x += sChain.hand.x - from.x;
+  sChain.tip.y += sChain.hand.y - from.y;
 }
 
 // 0x08035fb4
@@ -148,8 +158,22 @@ static bool8 createLinks(struct Zero* z) {
   return TRUE;
 }
 
+// Button as CountRodButton reads it: type B's sub weapon has its own, else main
 static bool8 isHeld(struct Zero* z) {
-  return ((z->input).val & ((z->unk_b4).mainCopy == WEAPON_CHAIN ? ZERO_INPUT_MAIN_WEAPON : ZERO_INPUT_SUB_WEAPON)) != 0;
+  KEY_INPUT key = (z->input).mapping.main;
+  if ((z->unk_b4).mainCopy != WEAPON_CHAIN && (z->unk_b4).status.keyMap.attackMode == 1) key = (z->input).mapping.sub;
+  return ((z->input).raw & key) != 0;
+}
+
+// Holding on doesn't charge
+static void noCharge(struct Zero* z) {
+  if ((z->unk_b4).mainCopy == WEAPON_CHAIN) {
+    (z->unk_b4).status.charge[0] = 0;
+    z->mainChargeFrame = 0;
+  } else {
+    (z->unk_b4).status.charge[1] = 0;
+    z->subChargeFrame = 0;
+  }
 }
 
 // 0x08036b0c
@@ -246,9 +270,10 @@ static bool8 hangs(u8 angle) {
 
 static s32 stepTo(s32 at, s32 to) { return to > at + 0x100 ? at + 0x100 : (to < at - 0x100 ? at - 0x100 : to); }
 
-// 0x080361a8: back to surface, x then y, to tile edge or solid entity's
-static void snapTip(Coords32 from) {
-  s32 n, slot;
+// 0x080361a8: back to surface, x then y. Started inside or behind it, Zero too close: no hit
+static bool8 snapTip(Coords32 from) {
+  s32 n, slot, edge;
+  if (solidAt(from.x, from.y)) return FALSE;
   sChain.intoX = 0;
   sChain.intoY = 0;
   sChain.block = -1;
@@ -256,34 +281,37 @@ static void snapTip(Coords32 from) {
     n = stepTo(from.x, sChain.tip.x);
     slot = blockAt(n, from.y);
     if (slot >= 0) {
-      sChain.intoX = n > from.x ? 1 : -1;
-      sChain.block = HAZARD(slot)->id;
-      sChain.tip.x = HAZARD(slot)->center.x + (n > from.x ? -HAZARD(slot)->hw - 1 : HAZARD(slot)->hw);
-      return;
+      edge = HAZARD(slot)->center.x + (n > from.x ? -HAZARD(slot)->hw - 1 : HAZARD(slot)->hw);
+    } else if (GetGroundMetatileAttr(n, from.y) & 15) {
+      edge = n > from.x ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
+    } else {
+      from.x = n;
+      continue;
     }
-    if (GetGroundMetatileAttr(n, from.y) & 15) {
-      sChain.intoX = n > from.x ? 1 : -1;
-      sChain.tip.x = n > from.x ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
-      return;
-    }
-    from.x = n;
+    if ((edge - from.x) * (n - from.x) < 0) break;
+    sChain.intoX = n > from.x ? 1 : -1;
+    sChain.block = slot >= 0 ? HAZARD(slot)->id : -1;
+    sChain.tip.x = edge;
+    return TRUE;
   }
   while (from.y != sChain.tip.y) {
     n = stepTo(from.y, sChain.tip.y);
     slot = blockAt(sChain.tip.x, n);
     if (slot >= 0) {
-      sChain.intoY = n > from.y ? 1 : -1;
-      sChain.block = HAZARD(slot)->id;
-      sChain.tip.y = HAZARD(slot)->center.y + (n > from.y ? -HAZARD(slot)->hh - 1 : HAZARD(slot)->hh);
-      return;
+      edge = HAZARD(slot)->center.y + (n > from.y ? -HAZARD(slot)->hh - 1 : HAZARD(slot)->hh);
+    } else if (GetGroundMetatileAttr(sChain.tip.x, n) & 15) {
+      edge = n > from.y ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
+    } else {
+      from.y = n;
+      continue;
     }
-    if (GetGroundMetatileAttr(sChain.tip.x, n) & 15) {
-      sChain.intoY = n > from.y ? 1 : -1;
-      sChain.tip.y = n > from.y ? (n & ~0xFFF) - 1 : (n | 0xFFF) + 1;
-      return;
-    }
-    from.y = n;
+    if ((edge - from.y) * (n - from.y) < 0) return FALSE;
+    sChain.intoY = n > from.y ? 1 : -1;
+    sChain.block = slot >= 0 ? HAZARD(slot)->id : -1;
+    sChain.tip.y = edge;
+    return TRUE;
   }
+  return FALSE;
 }
 
 static void startSwing(struct Zero* z) {
@@ -328,7 +356,7 @@ void ApChainAttack(struct Zero* z) {
     if (*state >= CHAIN_SPIN_WIND) {
       sChain.pose = sSpinPose[sChain.stance][*state == CHAIN_SPIN_END];
     } else {
-      sChain.pose = (*state == CHAIN_END || *state == CHAIN_PULL) ? sEndPose[sChain.stance] : sPose[sChain.stance][sChain.aim];
+      sChain.pose = *state == CHAIN_PULL ? PULL_POSE : (*state == CHAIN_END ? sEndPose[sChain.stance] : sPose[sChain.stance][sChain.aim]);
     }
     GotoMotion(&z->s, sChain.pose, z->motionCmdIdx, z->motionDuration);
   } else if (*state != CHAIN_START) {
@@ -363,6 +391,9 @@ void ApChainAttack(struct Zero* z) {
       if ((z->s).motion.cmdIdx != 1 || (z->s).motion.duration > 1) break;
       updateHand(z);
       placeTip(z, 0);
+      from.x = (z->s).coord.x;
+      from.y = sChain.hand.y;
+      sChain.hit = snapTip(from);
       if (!createLinks(z)) {
         finish(z);
         break;
@@ -388,29 +419,30 @@ void ApChainAttack(struct Zero* z) {
       from = sChain.tip;
       updateHand(z);
       placeTip(z, FIRE_FRAMES - sChain.timer);
-      if (solidAt(sChain.tip.x, sChain.tip.y)) {
-        snapTip(from);
+      if (solidAt(sChain.tip.x, sChain.tip.y) && snapTip(from)) {
         sChain.hit = TRUE;
         // 0x0802e30a
         if (sChain.stance == ZERO_AIR && isHeld(z) && hookable()) startSwing(z);
       }
       break;
     case CHAIN_HOLD:
-      updateHand(z);
+      follow(z);
       if (--sChain.timer != 0) break;
       startReel(z);
       break;
     case CHAIN_LATCH:
       updateHand(z);
+      noCharge(z);
       if (!isHeld(z) || callHook(1, 0, 0) == 0) {
         startReel(z);
       } else if (input & (FACING_RIGHT(z) ? DPAD_LEFT : DPAD_RIGHT)) {
-        setPose(z, sEndPose[sChain.stance]);
+        setPose(z, PULL_POSE);
         *state = CHAIN_PULL;
       }
       break;
     case CHAIN_PULL:
       updateHand(z);
+      noCharge(z);
       if (isHeld(z)) {
         pull(z);
       } else {
@@ -418,7 +450,7 @@ void ApChainAttack(struct Zero* z) {
       }
       break;
     case CHAIN_REEL:
-      updateHand(z);
+      follow(z);
       sChain.tip.x = sChain.hand.x + (sChain.tip.x - sChain.hand.x) * (sChain.timer - 1) / sChain.timer;
       sChain.tip.y = sChain.hand.y + (sChain.tip.y - sChain.hand.y) * (sChain.timer - 1) / sChain.timer;
       if (--sChain.timer != 0) break;
@@ -831,10 +863,14 @@ void ApChainSwingInput(struct Zero* z) {
     sChain.tip.x += HAZARD(slot)->center.x - HAZARD(slot)->unk_10.x;
     sChain.tip.y += HAZARD(slot)->center.y - HAZARD(slot)->unk_10.y;
   }
+  noCharge(z);
   if (isHeld(z) && sChain.out && hookable()) return;
+  // Falls keeping swing's d.y, Zero 2's hop off an upswing
   (z->s).mode[1] = ZERO_AIR;
   (z->s).mode[2] = 2;
-  (z->s).mode[3] = 0;
+  (z->s).mode[3] = 1;
+  (z->s).d.x = CalcDx(z);
+  SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 4));
 }
 
 // --------------------------------------------
@@ -972,26 +1008,40 @@ static void Chain_Update(struct Weapon* p) {
   UpdateSpriteAnimation(p);
 }
 
+// Zero 2's, in its own palette 9 order
 static const u32 sMenuIcon[4][8] = {
-    {0x55566660, 0x11111116, 0xBBB89916, 0xBB89A916, 0xB89A9916, 0xB8998B16, 0x9BBBBB15, 0xBBBBBB15},
-    {0x04555555, 0x44111111, 0x4BBBBBBB, 0x4BBBBBBB, 0x4BBBBBBB, 0x4BBBBBBB, 0x4BBBBBBB, 0x4BBBBBB8},
-    {0xBBBBBB15, 0xBBBBBB15, 0xBBBBBB15, 0xBBBBBB15, 0xBBBBBB15, 0xBBBBBB15, 0xBBBBB124, 0x44444440},
-    {0x4BBBBB9B, 0x4BBBB8BB, 0x4BB44BBB, 0x4B4664BB, 0xB4664BBB, 0x3344BBBB, 0x3BBBBBBB, 0x03344444}
+    {0xDDDFFFF0, 0x2222222F, 0xBBBBB62F, 0x9FFB632F, 0x9FB6332F, 0x7B63332F, 0x6633332D, 0x3333332D},
+    {0x09DDDDDD, 0x99222222, 0x93333336, 0x93333333, 0x9333369F, 0x9336FB77, 0x93796333, 0x939F3333},
+    {0x3333332D, 0xBF33332D, 0x66B3332D, 0x3993332D, 0xF773332D, 0x6333332D, 0x33333259, 0x99999990},
+    {0x9379BF99, 0x93376677, 0x93333333, 0x93333333, 0x939BF99B, 0x73766776, 0x73333333, 0x27799999}
 };
 
 static const u32 sHudIcon[6][8] = {
-    {0xFF110000, 0x33F10000, 0xEE310000, 0x66310000, 0x16310000, 0x99310000, 0xEE310000, 0xEE310000},
-    {0x11FFFFFF, 0x1F333333, 0x1EEEEEEE, 0x1EEEEEE9, 0x1EEEEEE9, 0x1EEEEE77, 0x1EEEE9EE, 0x1EEE7EEE},
-    {0xEE310000, 0xEE310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
-    {0x1EE9EEEE, 0x11FEEEEE, 0x11EEEEEE, 0x11EEEEEE, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
-    {0xEE310000, 0xEE310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
-    {0x1EE9EEEE, 0x11FEEEEE, 0x11EEEEEE, 0xF1EEEEEE, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000}
+    {0xFF110000, 0x33F10000, 0x66310000, 0x6E310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
+    {0x11FFFFFF, 0x1F333333, 0x13EE7666, 0x1EEEF919, 0x1EE7FF66, 0x1EE66E6E, 0x1EF1EEEE, 0x1EFF1F1E},
+    {0x7E310000, 0x6E310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
+    {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
+    {0x7E310000, 0x6E310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
+    {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000}
 };
 
 #define HUD_TILE 0xD6
 #define HUD_MAP(n) (u16)(0x1000 | (0x200 + HUD_TILE + (n)))
 
-void ApLoadChainMenuIcon(u32 tile) { MemCopy32(sMenuIcon, (void*)(VRAM + 0x10000 + (tile + 20) * 32), sizeof(sMenuIcon)); }
+// Zero 2's palette 9 to chip_icon's
+static const u8 sMenuColors[16] = {0, 0, 1, 11, 7, 2, 8, 3, 12, 4, 13, 9, 14, 5, 10, 6};
+
+void ApLoadChainMenuIcon(u32 tile) {
+  u32* dst = (u32*)(VRAM + 0x10000 + (tile + 20) * 32);
+  u32 w, out;
+  u8 i, k;
+  for (i = 0; i < 32; i++) {
+    w = sMenuIcon[i / 8][i % 8];
+    out = 0;
+    for (k = 0; k < 32; k += 4) out |= (u32)sMenuColors[(w >> k) & 15] << k;
+    dst[i] = out;
+  }
+}
 
 void ApLoadChainHudIcon(void) { MemCopy32(sHudIcon, (void*)(VRAM + 0xC000 + HUD_TILE * 32), sizeof(sHudIcon)); }
 

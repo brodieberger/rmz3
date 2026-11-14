@@ -12,11 +12,19 @@
 .section .rodata
 
 #include "../ap_stage/z2_opening/data.inc"
+#include "../ap_stage/z2_ice/data.inc"
+#include "../ap_stage/z2_train/data.inc"
+#include "../ap_stage/z2_plant/data.inc"
 #include "../ap_stage/z2_jungle/data.inc"
 #include "../ap_stage/z2_naold1/data.inc"
+#include "../ap_stage/z2_bomber/data.inc"
+#include "../ap_stage/z2_jungle2/data.inc"
+#include "../ap_stage/z2_ice2/data.inc"
 #include "../ap_stage/z2_bomber2/data.inc"
+#include "../ap_stage/z2_plant2/data.inc"
 #include "../ap_stage/z2_naold2/data.inc"
 #include "../ap_stage/z2_na1/data.inc"
 #include "../ap_stage/z2_na2/data.inc"
+#include "../ap_stage/z2_na3/data.inc"
 
 .endif

@@ -1220,6 +1220,16 @@ gGraphic_OpeningAnim2:: @ Gfx131 in 0x08547CBC
 		.2byte 0 @ bytesize
 		.byte 0, 2 @ lz77(bool8), dst = PaletteID
 
+.if AP
+	@ Gfx134: Zero 2's 71, Dark Elf, in Temple of Wind's data
+	.4byte gApZ2PictureDarkElf-.
+	.4byte 22088 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureDarkElf_Pal-.
+		.2byte 224
+		.byte 0, 2
+.endif
+
 gGraphicData::
 
 Capcom_Tiles:

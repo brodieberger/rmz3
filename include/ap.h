@@ -397,7 +397,7 @@ void ApInit(void);
 void ApUpdate(void);
 
 /* Rows of gApImportedStages */
-#define AP_IMPORT_COUNT 7
+#define AP_IMPORT_COUNT 15
 #define AP_IMPORT_TILESETS_MAX 16
 #define AP_IMPORT_PRELOADS_MAX 16
 
@@ -420,11 +420,18 @@ extern struct PreloadEntity gApSlot0Preloads[];
 void ApImportSelect(u8 n);
 u8 ApImportCount(void);
 const char_t* ApImportName(u8 n);
-u8 ApImportElvesFound(void);
+u8 ApImportElvesFound(u8 import);
+u8 ApImportElfTotal(u8 import);
 u8 ApImportZ2Stage(u8 import);
 bool32 ApImportOpen(u8 import);
 void ApImportResetKills(void);
 void ApImportHottalookKilled(void);
+void ApImportSignaloidKilled(void);
+void ApImportSnowballerKilled(void);
+void ApImportWolfKilled(void);
+void ApImportFlopperKilled(void);
+void ApImportFloorMineKilled(void);
+void ApImportShieldGuardKilled(void);
 void ApImportHopperKilled(void);
 void ApImportTowerKilled(void);
 void ApImportSpikeballKilled(void);
@@ -437,9 +444,21 @@ void ApChainSwing(struct Zero* z);
 void ApChainSwingInput(struct Zero* z);
 void ApImportRingCannonKilled(void);
 void ApImportBeeKilled(void);
+void ApImportHunterKilled(void);
+void ApImportBarrierShipKilled(void);
+void ApImportFishKilled(void);
+void ApImportDozerKilled(void);
+void ApImportCrawlerKilled(void);
+void ApImportSpikingKilled(void);
+void ApImportCrabKilled(void);
+void ApImportMineKilled(void);
+void ApImportCopterKilled(void);
+void ApImportGeneratorKilled(void);
 void ApImportCarrierKilled(void);
 void ApImportMoleKilled(void);
 void ApImportSpiderKilled(void);
+void ApImportLeaperKilled(void);
+void ApImportTreeFrogKilled(void);
 struct StageRun;
 s16 ApImportUpdate(struct StageRun* p);
 extern u8 gApImportSelected;

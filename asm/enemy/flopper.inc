@@ -64,6 +64,9 @@ _0806BFAA:
 	adds r0, r4, #0
 	adds r1, r6, #0
 	bl TryDropZakoDisk
+.if AP
+	bl ApImportFlopperKilled
+.endif
 	ldr r1, _0806BFD4 @ =gEnemyFnTable
 	ldrb r0, [r4, #9]
 	lsls r0, r0, #2

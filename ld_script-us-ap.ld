@@ -195,6 +195,36 @@ SECTIONS {
 		src/ap_z2_fish.o (.rodata);
 		src/ap_z2_box.o (.text);
 		src/ap_z2_box.o (.rodata);
+		src/ap_z2_snake.o (.text);
+		src/ap_z2_snake.o (.rodata);
+		src/ap_z2_raptor.o (.text);
+		src/ap_z2_raptor.o (.rodata);
+		src/ap_z2_vent.o (.text);
+		src/ap_z2_vent.o (.rodata);
+		src/ap_z2_crawler.o (.text);
+		src/ap_z2_crawler.o (.rodata);
+		src/ap_z2_bear.o (.text);
+		src/ap_z2_bear.o (.rodata);
+		src/ap_z2_panter.o (.text);
+		src/ap_z2_panter.o (.rodata);
+		src/ap_z2_reactor.o (.text);
+		src/ap_z2_reactor.o (.rodata);
+		src/ap_z2_fortress.o (.text);
+		src/ap_z2_fortress.o (.rodata);
+		src/ap_z2_magnion.o (.text);
+		src/ap_z2_magnion.o (.rodata);
+		src/ap_z2_machine.o (.text);
+		src/ap_z2_machine.o (.rodata);
+		src/ap_z2_craft.o (.text);
+		src/ap_z2_craft.o (.rodata);
+		src/ap_z2_fefnir_foot.o (.text);
+		src/ap_z2_fefnir_foot.o (.rodata);
+		src/ap_z2_floor_mine.o (.text);
+		src/ap_z2_floor_mine.o (.rodata);
+		src/ap_z2_leviathan_first.o (.text);
+		src/ap_z2_leviathan_first.o (.rodata);
+		src/ap_z2_frog.o (.text);
+		src/ap_z2_frog.o (.rodata);
 		src/ap_z2_recoil.o (.text);
 		src/ap_z2_recoil.o (.rodata);
 		src/ap_import_elf.o (.text);
@@ -204,9 +234,9 @@ SECTIONS {
 		src/ap_save.o (.text);
 		src/ap_import_stages.o (.rodata);
 		src/data/texts/ap_import.o (.rodata);
+		INCLUDE "linker/ap_imports.txt"
 		src/data/ap_z2_songs.o (.rodata);
 		src/data/ap_import_stages.o (.rodata);
-		INCLUDE "linker/ap_imports.txt"
 		. = ALIGN(4);
 		__ap_rom_end = .;
 	} >rom = 0x00

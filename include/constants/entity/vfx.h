@@ -116,7 +116,21 @@
 #define VFX_Z2_ICE_BURST 111  // Zero 2 VFX 41, her ice breaking
 #define VFX_Z2_FROST_BREATH 112  // Zero 2 VFX 39
 #define VFX_Z2_WATER_SPLASH 113  // Zero 2 VFX 44
-#define VFX_COUNT (VFX_Z2_WATER_SPLASH + 1)
+#define VFX_Z2_STREAK 114  // Zero 2 VFX 30, the vortex's streaks
+#define VFX_Z2_RAPTOR_TRAIL 115  // Zero 2 VFX 31, the raptor's jet trail, glow and debris
+#define VFX_Z2_FROST_CLOUD 116  // Zero 2 VFX 52, a vent's frost
+#define VFX_Z2_CRAWLER_BIT 117  // Zero 2 VFX 27, the crawler's shells, halves and debris
+#define VFX_Z2_BEAR_ICE 118  // Zero 2 VFX 26, the bear's frost and ice chunks
+#define VFX_Z2_ELF_SPARKLE 119  // Zero 2 VFX 60, sparkles off the Dark Elf and the Baby Elves
+#define VFX_Z2_PANTER_HELD 120  // Zero 2 VFX 29, claws in Panter's hands
+#define VFX_Z2_FORTRESS_JET 121  // Zero 2 VFX 50, the fortress's thrusters and sparks
+#define VFX_Z2_MAGNION_FX 122  // Zero 2 VFX 33, Magnion's afterimages and rings
+#define VFX_Z2_MACHINE_BIT 123  // Zero 2 VFX 58, a drone's wreck and frozen magma's frost
+#define VFX_Z2_FEFNIR_AURA 124  // Zero 2 VFX 38, Fefnir powered up
+#define VFX_Z2_FEFNIR_EX 125  // Zero 2 VFX 65, his and Leviathan's EX flames
+#define VFX_Z2_LEAF 126  // Zero 2 VFX 35 work0 1, a leaf off a tree frog's canopy
+#define VFX_Z2_FROG_DUST 127  // Zero 2 VFX 35 work0 0, the frog's landing dust
+#define VFX_COUNT (VFX_Z2_FROG_DUST + 1)
 #else
 #define VFX_COUNT VFX_UNK_084 + 1
 #endif

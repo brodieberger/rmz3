@@ -80,7 +80,29 @@
 #define SOLID_Z2_WALL_SHELF 74  // Zero 2 solid 10, the Jungle's wall machine's shelf
 #define SOLID_Z2_WALL_ARM 75  // Zero 2 solid 11, its arm and spikes
 #define SOLID_Z2_BOX 76  // Zero 2 solid 14 work0 0, box the Chain Rod drags
-#define SOLID_ENTITY_COUNT (SOLID_Z2_BOX + 1)
+#define SOLID_Z2_SNAKE_BLOCK 77  // Zero 2 solid 1, a block of the Jungle snake's body
+#define SOLID_Z2_SNAKE_RIDER 78  // Zero 2 solid 5 work0 28, the snake waiting before its fight
+#define SOLID_Z2_SNAKE_PIECE 79  // Zero 2 solid 5 work0 29, a piece of its body then
+#define SOLID_Z2_COOLER 80  // Zero 2 solid 6, the Computer Zone's cooling systems
+#define SOLID_Z2_VENT 81  // Zero 2 solid 17, its freezing vents
+#define SOLID_Z2_BEAR_BLOCK 82  // Zero 2 solid 3, the bear's ice block
+#define SOLID_Z2_WIND_HARPUIA 83  // Zero 2 solid 5 work0 0x30, Harpuia in the Temple of Wind's scene
+#define SOLID_Z2_ELPIZO 84  // Zero 2 solid 5 work0 0x31
+#define SOLID_Z2_DARK_BOLT 85  // Zero 2 solid 5 work0 0x32, Elpizo's bolt on Harpuia
+#define SOLID_Z2_BABY_ELVES 86  // Zero 2 solid 5 work0 0x33, one of Elpizo's Baby Elves
+#define SOLID_Z2_DARK_ELF 87  // Zero 2 solid 24 work0 0
+#define SOLID_Z2_SUPPLIES 88  // Zero 2 solid 20, the Train's crates
+#define SOLID_Z2_GANTRY 89  // Zero 2 solid 21, gantries over its roof
+#define SOLID_Z2_CAR_FRONT 90  // Zero 2 solid 5 work0 55, front of a car in the Train's boss room
+#define SOLID_Z2_MAGMA 91  // Zero 2 solid 19, the machine room's magma
+#define SOLID_Z2_MAGMA_DROPPER 92  // Zero 2 solid 27, lets it out
+#define SOLID_Z2_DOOR_3D 93  // Zero 2 solid 7 work0 1, the Power Room's 3D doors
+#define SOLID_Z2_CRAFT 94    // Zero 2 solid 2, the Bombardment Aircraft's flying craft
+#define SOLID_Z2_FOREST_ELPIZO 95  // Zero 2 solid 5 work0 33, Elpizo in the Forest of Notus
+#define SOLID_Z2_SCRIPT_DOOR 96  // Zero 2 solid 5 work0 34, the frog's door Elpizo opens
+#define SOLID_Z2_SEAL_ELPIZO 97  // Zero 2 solid 5 work0 35, Elpizo breaking the Dark Elf's seal
+#define SOLID_Z2_X_GLOW 98  // Zero 2 solid 5 work0 36, X as a cyber elf in the Forest of Notus's clear
+#define SOLID_ENTITY_COUNT (SOLID_Z2_X_GLOW + 1)
 #else
 #define SOLID_ENTITY_COUNT 56
 #endif

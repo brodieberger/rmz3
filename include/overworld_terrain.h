@@ -128,6 +128,13 @@ struct Overworld {
     struct WeilLaboState weilLabo;
     struct ResistanceBaseState resistanceBase;
 #if AP
+    struct ApZ2BomberState {
+      u16 pylons[8];  // countdowns (src/ap_z2_pylon.c)
+      bool8 beams;    // 0x10, every pylon up
+      u8 _[3];
+      u32 time;
+      struct Entity* defenders[6];  // defence's slots, until each dies
+    } apZ2Bomber;
     struct ApZ2Bomber2State {
       u8 _[0x20];
       bool8 lit[2];  // Red and blue crystal layers lit this frame
@@ -157,13 +164,58 @@ struct Overworld {
       u8 music;  // as Temple of Ice's
     } apZ2CircuitShrine;
     struct ApZ2CircuitShrineState apZ2RuinedShrine;
+    struct ApZ2CircuitShrineState apZ2ComputerZone2;
     struct ApZ2JungleState {
       u16 timer;  // 0..255, crusher's
       u8 flash;   // 0..189, sky's
       u8 music;   // 0 stage's, 1 fading, 2 corridor's
       bool8 returning;  // started at corridor, short intro
       bool8 fight;
+      bool8 burnt;  // canopy patched, redraw whole layer
+      bool8 intro;  // snake laid out before its fight
+      struct Solid* leaf;
     } apZ2Jungle;
+    struct ApZ2Jungle2State {
+      u8 flash;         // 0..189, sky's
+      bool8 burnt;      // canopy patched, redraw whole layer
+      u8 music;         // 0 stage's, 1 fading, 2 room's
+      bool8 returning;  // started at boss's checkpoint, short intro
+      bool8 fight;
+      bool8 scene;      // clear scene started past the frog's door
+      struct Solid* leaf;
+    } apZ2Jungle2;
+    struct ApZ2TrainState {
+      u32 time;
+      u8 scenery;     // roof's passing scenery, 72 frames round
+      u8 rumble;      // shake every 48 frames on roof
+      u8 frontEdge;   // boss's room: front car's left on screen
+      u8 rearEdge;    // rear car's
+      s32 split;      // window between them, eased
+      Coords32 cars[2];
+    } apZ2Train;
+    struct ApZ2PlantState {
+      u8 anims;  // 1: tileset 0's palette animations on, 2: tileset 4's
+      u8 time;   // 45 frames round
+    } apZ2Plant;
+    struct ApZ2Plant2State {
+      u16 clock;  // 96 frames round, magma droppers'
+      u8 music;   // 0 stage's, 1 fading, 2 room's, 3 fight started
+      u8 time;    // 45 frames round
+    } apZ2Plant2;
+    struct ApZ2ComputerZoneState {
+      u8 music;      // 0 stage's, 1 fading, 2 room's, 3 fight started
+      bool8 swept;   // enemies cleared ahead of Golem
+    } apZ2ComputerZone;
+    struct ApZ2WindShrineState {
+      u8 pylons[16];  // countdowns, in pairs 4 apart (src/ap_z2_pylon.c)
+      bool8 beams;    // 0x10, every pylon up
+      u8 music;       // 0 stage's, 1 fading, 2 room's
+      u8 bg;          // raptor on BG2: 0 none, 1 whole, 2 wings, 3 wings flipped
+      u8 angle;
+      u16 scale;      // 256 is 1:1
+      struct Entity* raptor;
+      Coords32 center;
+    } apZ2WindShrine;
 #endif
   } work;  // ステージごとに用途が変わる
 };  // 184624 bytes

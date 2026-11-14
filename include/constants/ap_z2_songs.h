@@ -100,7 +100,69 @@
 #define SE_Z2_WALL_OPEN (SE_Z2_RING_BOUNCE + 1)  // Zero 2 228: wall machine's arm dropping
 #define SE_Z2_BOX_DRAG (SE_Z2_WALL_OPEN + 1)  // Zero 2 66: box dragged by Chain Rod
 #define SE_Z2_BOX_LAND (SE_Z2_BOX_DRAG + 1)  // Zero 2 65: box landing
+#define SE_Z2_SNAKE_CRAWL (SE_Z2_BOX_LAND + 1)  // Zero 2 71: snake's rider crawling along it
+#define SE_Z2_SNAKE_LASH (SE_Z2_SNAKE_CRAWL + 1)  // Zero 2 72: snake's rider lashing out
+#define SE_Z2_SNAKE_HEAVE (SE_Z2_SNAKE_LASH + 1)  // Zero 2 242: snake's body heaving
+#define BGM_Z2_WIND_SHRINE (SE_Z2_SNAKE_HEAVE + 1)  // Zero 2 179: NA-3 stage theme
+#define SE_Z2_BEAM_HUM (BGM_Z2_WIND_SHRINE + 1)  // Zero 2 245: pylons' beams humming, looped
+#define SE_Z2_HARPUIA_RISE (SE_Z2_BEAM_HUM + 1)  // Zero 2 110: Harpuia rising into his bubble
+#define SE_Z2_RAPTOR_CRY (SE_Z2_HARPUIA_RISE + 1)  // Zero 2 223: raptor at low health
+#define SE_Z2_RAPTOR_BURN (SE_Z2_RAPTOR_CRY + 1)  // Zero 2 224: raptor caught by an element
+#define SE_Z2_RAPTOR_HATCH (SE_Z2_RAPTOR_BURN + 1)  // Zero 2 109: raptor's hatch opening
+#define SE_Z2_RAPTOR_SWOOP (SE_Z2_RAPTOR_HATCH + 1)  // Zero 2 95: raptor's swoop at full size
+#define SE_Z2_DRONE_DIVE (SE_Z2_RAPTOR_SWOOP + 1)  // Zero 2 244: raptor's drones diving
+#define BGM_Z2_COMPUTER_ZONE (SE_Z2_DRONE_DIVE + 1)  // Zero 2 169: ICE stage theme
+#define SE_Z2_BEAR_ROAR (BGM_Z2_COMPUTER_ZONE + 1)  // Zero 2 79: bear roaring
+#define SE_Z2_BEAR_STOMP (SE_Z2_BEAR_ROAR + 1)  // Zero 2 80: bear's charge stomping
+#define BGM_Z2_ELPIZO (SE_Z2_BEAR_STOMP + 1)  // Zero 2 192: Elpizo with the Dark Elf
+#define BGM_Z2_BABY_ELVES (BGM_Z2_ELPIZO + 1)  // Zero 2 163: Baby Elves taking Harpuia
+#define SE_Z2_ELPIZO_LAUGH (BGM_Z2_BABY_ELVES + 1)  // Zero 2 211: Elpizo laughing
+#define SE_Z2_DARK_BOLT (SE_Z2_ELPIZO_LAUGH + 1)  // Zero 2 265: Elpizo's bolt striking Harpuia
+#define BGM_Z2_TRAIN (SE_Z2_DARK_BOLT + 1)  // Zero 2 171: Train stage theme
+#define BGM_Z2_POWER_ROOM (BGM_Z2_TRAIN + 1)  // Zero 2 170: Power Room stage theme
+#define SE_Z2_REACTOR_HUM (BGM_Z2_POWER_ROOM + 1)  // Zero 2 234: Power Room reactor running, looped
+#define SE_Z2_TRAIN_RUMBLE (SE_Z2_REACTOR_HUM + 1)  // Zero 2 98: train rolling, looped
+#define SE_Z2_CARRIER_GRAB (SE_Z2_TRAIN_RUMBLE + 1)  // Zero 2 144: crate carrier latching on
+#define SE_Z2_GANTRY (SE_Z2_CARRIER_GRAB + 1)  // Zero 2 94: gantry rushing over the train
+#define SE_Z2_GANTRY_SIDE (SE_Z2_GANTRY + 1)  // Zero 2 93: gantry's side piece passing
+#define SE_Z2_PANTER_ROAR (SE_Z2_GANTRY_SIDE + 1)  // Zero 2 75: Panter Flauclaws roaring
+#define SE_Z2_PANTER_LEAP (SE_Z2_PANTER_ROAR + 1)  // Zero 2 76: Panter leaping between cars
+#define SE_Z2_PANTER_THROW (SE_Z2_PANTER_LEAP + 1)  // Zero 2 77: Panter throwing a claw
+#define SE_Z2_PANTER_SPIN (SE_Z2_PANTER_THROW + 1)  // Zero 2 84: Panter's spin, looped
+#define SE_Z2_FORTRESS_SHOTS (SE_Z2_PANTER_SPIN + 1)  // Zero 2 149: Power Room fortress releasing its shots
+#define SE_Z2_FORTRESS_CLANG (SE_Z2_FORTRESS_SHOTS + 1)  // Zero 2 229: fortress arm striking
+#define SE_Z2_FORTRESS_SINK (SE_Z2_FORTRESS_CLANG + 1)  // Zero 2 230: fortress falling into the lava
+#define SE_Z2_MAGNION_CRY (SE_Z2_FORTRESS_SINK + 1)  // Zero 2 136: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY1 (SE_Z2_MAGNION_CRY + 1)  // Zero 2 137: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY2 (SE_Z2_MAGNION_CRY1 + 1)  // Zero 2 138: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY3 (SE_Z2_MAGNION_CRY2 + 1)  // Zero 2 139: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY4 (SE_Z2_MAGNION_CRY3 + 1)  // Zero 2 140: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY5 (SE_Z2_MAGNION_CRY4 + 1)  // Zero 2 141: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_CRY6 (SE_Z2_MAGNION_CRY5 + 1)  // Zero 2 142: Phoenix Magnion's cry
+#define SE_Z2_MAGNION_APPEAR (SE_Z2_MAGNION_CRY6 + 1)  // Zero 2 143: Magnion appearing
+#define SE_Z2_MAGNION_FLARE (SE_Z2_MAGNION_APPEAR + 1)  // Zero 2 146: Magnion's rings flaring
+#define SE_Z2_MAGNION_ERUPT (SE_Z2_MAGNION_FLARE + 1)  // Zero 2 235: lava erupting from the floor
+#define SE_Z2_MAGNION_FIREBALL (SE_Z2_MAGNION_ERUPT + 1)  // Zero 2 260: Magnion's fireball
+#define BGM_Z2_BOMBER (SE_Z2_MAGNION_FIREBALL + 1)  // Zero 2 172: Bombardment Aircraft stage theme
+#define SE_Z2_OUTSIDE (BGM_Z2_BOMBER + 1)  // Zero 2 87: Bombardment Aircraft, looped outside the ship
+#define SE_Z2_GENERATOR_CORE (SE_Z2_OUTSIDE + 1)  // Zero 2 206: machine room generator's core coming out
+#define SE_Z2_GENERATOR_BLAST (SE_Z2_GENERATOR_CORE + 1)  // Zero 2 207: its core destroyed
+#define BGM_Z2_SHUTTLE_FACTORY (SE_Z2_GENERATOR_BLAST + 1)  // Zero 2 174: Shuttle Factory stage theme
+#define SE_Z2_FEFNIR_SLAM (BGM_Z2_SHUTTLE_FACTORY + 1)  // Zero 2 114: Fefnir slamming Zero down, his EX's pillars
+#define SE_Z2_FEFNIR_DIVE (SE_Z2_FEFNIR_SLAM + 1)  // Zero 2 115: Fefnir diving fist first
+#define BGM_Z2_COMPUTER_ZONE_2 (SE_Z2_FEFNIR_DIVE + 1)  // Zero 2 173: Computer Zone 2 stage theme
+#define SE_Z2_LEVIATHAN_THRUST (BGM_Z2_COMPUTER_ZONE_2 + 1)  // Zero 2 123: Leviathan's lance thrust
+#define SE_Z2_LEVIATHAN_WHIRL (SE_Z2_LEVIATHAN_THRUST + 1)  // Zero 2 126: Leviathan's whirlpool turning toward Zero
+#define SE_Z2_LEVIATHAN_BACK (SE_Z2_LEVIATHAN_WHIRL + 1)  // Zero 2 127: Leviathan darting back
+#define BGM_Z2_SEAL (SE_Z2_LEVIATHAN_BACK + 1)  // Zero 2 195: Elpizo breaking the Dark Elf's seal
+#define SE_Z2_LEAVES (BGM_Z2_SEAL + 1)  // Zero 2 236: tree frog rustling in the canopy
+#define SE_Z2_FROG_SPIT (SE_Z2_LEAVES + 1)  // Zero 2 51: frog spitting globs
+#define SE_Z2_FROG_CHEW (SE_Z2_FROG_SPIT + 1)  // Zero 2 147: frog's tongue chewing Zero
+#define SE_Z2_FROG_CROAK (SE_Z2_FROG_CHEW + 1)  // Zero 2 150: frog croaking, small
+#define SE_Z2_FROG_CROAK_MID (SE_Z2_FROG_CROAK + 1)  // Zero 2 151: frog croaking, grown once
+#define SE_Z2_FROG_CROAK_BIG (SE_Z2_FROG_CROAK_MID + 1)  // Zero 2 152: frog croaking, grown twice
+#define SE_Z2_FROG_MOUTH (SE_Z2_FROG_CROAK_BIG + 1)  // Zero 2 153: frog opening its mouth
 
-#define AP_Z2_SONG_LAST SE_Z2_BOX_LAND
+#define AP_Z2_SONG_LAST SE_Z2_FROG_MOUTH
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

@@ -52,10 +52,27 @@ u32 ApImportArea(Coords32* c);
 // ofs moves where it paints, as StartPaletteAnimation's does
 void ApStartPaletteAnimation(u16 id, const PlttAnimData* data, const AnimCmd* const* script, u16 ofs);
 
-struct Entity* ApZ2CreateBubble(const Coords32* at, bool8 blue);
+struct Entity* ApZ2CreateBubble(const Coords32* at, u8 kind);
 void ApZ2CreateSpark(const Coords32* at, u8 angle);
+void ApZ2CreateHarpuiaSpark(const Coords32* at, u8 n);
 void ApZ2CreateExplosion(struct Entity* parent, const Coords32* at, u8 kind, u8 roll);
+void ApZ2CreateIceBurst(struct Entity* parent, u8 kind, u8 n);
+struct Entity* ApZ2CreateEx(struct Entity* boss, u8 kind);
+void ApZ2PushZero(s32 dx);
+void ApZ2CreateElfSparkle(const Coords32* at, u8 kind);
 void ApZ2CreateGolemFeet(struct Entity* golem, u8 kind);
 void ApZ2GolemDie(struct Entity* s, motion_t stand);
+u8 ApZ2CoolersDown(void);
+u8 ApZ2SoldiersSaved(void);
+u8 ApZ2CratesStolen(void);
+struct StageRun;
+void ApZ2PlantCellGone(const Coords32* at);
+void ApZ2PlantBreakReactor(u8 reactor);
+void ApZ2Plant2CellGone(const Coords32* at);
+s16 ApZ2PlantUpdate(struct StageRun* p);
+s16 ApZ2BomberUpdate(struct StageRun* p);
+struct Solid* ApZ2CreateCraft(const Coords32* at, u8 kind);
+void ApZ2DeleteCraft(struct Solid* p);
+void ApImportMissionPoint(void);
 
 #endif  // GUARD_RMZ3_AP_IMPORT_H

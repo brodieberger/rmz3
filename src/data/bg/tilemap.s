@@ -38,6 +38,9 @@ gBgMapOffsets: @ 0x085222A0
   .4byte Tilemap_129-. @ 129
   .4byte Tilemap_130-., Tilemap_131-., Tilemap_132-. @ 130, 131, 132
   .4byte Tilemap_133-. @ 133
+.if AP
+  .4byte gApZ2PictureDarkElf_Map-. @ 134: Zero 2's 71, Dark Elf, in Temple of Wind's data
+.endif
 
 .global gTilemapData
 gTilemapData:

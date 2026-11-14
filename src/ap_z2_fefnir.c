@@ -96,7 +96,7 @@ static void Fefnir_Disappear(struct Fefnir* p);
 static void onCollision(struct Body* body, Coords32* r1, Coords32* r2);
 static struct Entity* createPart(struct Fefnir* boss, u8 n);
 static struct Entity* createWheels(struct Fefnir* boss);
-struct Entity* ApZ2CreateBubble(const Coords32* at, bool8 blue);
+struct Entity* ApZ2CreateBubble(const Coords32* at, u8 kind);
 void ApZ2CreateSpark(const Coords32* at, u8 angle);
 static struct Entity* createFire(struct Entity* parent, const Coords32* ofs, u8 kind, u8 n);
 static void createBall(const Coords32* at, u8 n, u8 work1);
@@ -275,7 +275,7 @@ static void Fefnir_Summon(struct Fefnir* p) {
       if (!IsSpriteAnimEnd(p)) break;
       at.x = s->coord.x;
       at.y = s->coord.y - PIXEL(16);
-      s->unk_28 = ApZ2CreateBubble(&at, FALSE);
+      s->unk_28 = ApZ2CreateBubble(&at, 2);
       s->work[2] = 0;
       ApLoadSheet(&sSummonSheet);
       PlaySound(SE_Z2_FEFNIR_BUBBLE);
@@ -958,7 +958,11 @@ static void Wheels_Update(struct Enemy* p) {
 
 // --------------------------------------------
 /*
-  Zero 2's VFX 22 work0 2, bubble tank appears in. Circle is Zero 3's VFX 39.
+  Zero 2's VFX 22, bubble a boss changes in. Circle is Zero 3's VFX 39.
+  work0:
+    1: green, Harpuia's
+    2: red, Fefnir's tank
+    3: blue, Leviathan's armor, bigger
 */
 
 struct Bubble {
@@ -990,12 +994,12 @@ const VFXRoutine gApZ2FefnirBubbleRoutine = {
 // clang-format on
 
 // 0x080b1d74
-struct Entity* ApZ2CreateBubble(const Coords32* at, bool8 blue) {
+struct Entity* ApZ2CreateBubble(const Coords32* at, u8 kind) {
   struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
   if (p != NULL) {
     INIT_VFX_ROUTINE(p, VFX_Z2_FEFNIR_BUBBLE);
     p->coord = *at;
-    p->work[0] = blue;
+    p->work[0] = kind;
   }
   return p;
 }
@@ -1008,7 +1012,7 @@ static void Bubble_Init(struct VFX* p) {
   Bubble_Update(p);
 }
 
-// 0x080b214e: white, then bigger red, whitening as it holds
+// 0x080b214e: white, then bigger color, whitening as it holds
 static void drawCircle(struct Bubble* b) {
   struct Entity* s = &b->s;
   struct Circle* c = (struct Circle*)s->unk_28;
@@ -1019,9 +1023,9 @@ static void drawCircle(struct Bubble* b) {
     c->rgb[0] = c->rgb[1] = c->rgb[2] = 31;
   } else {
     c->radius = b->radius + PIXEL(4);
-    c->rgb[0] = s->work[0] ? g : 31;
-    c->rgb[1] = g;
-    c->rgb[2] = s->work[0] ? 31 : g;
+    c->rgb[0] = s->work[0] == 1 ? (g + 10 > 31 ? 31 : g + 10) : s->work[0] == 2 ? 31 : g;
+    c->rgb[1] = s->work[0] == 1 ? 31 : g;
+    c->rgb[2] = s->work[0] == 3 ? 31 : g;
   }
 }
 
@@ -1038,7 +1042,7 @@ static void Bubble_Update(struct VFX* p) {
   switch (s->mode[3]) {
     case 0:
       b->radius += 128;
-      if (b->radius > (s->work[0] ? 0x4FFF : 0x3FFF)) {
+      if (b->radius > (s->work[0] == 3 ? 0x4FFF : 0x3FFF)) {
         s->work[3] = 0;
         s->mode[3]++;
       }
@@ -1229,7 +1233,12 @@ static void Fire_Update(struct Projectile* p) {
 static void Fire_Die(struct Projectile* p) { SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT); }
 
 // --------------------------------------------
-// Zero 2's VFX 67 work0 0, summon's sparks
+/*
+  Zero 2's VFX 67, summon's sparks.
+  work0:
+    0: Fefnir's and Leviathan's, fly in from all round
+    1: Harpuia's, two above and two below wind in
+*/
 
 static void Spark_Init(struct VFX* p);
 static void Spark_Update(struct VFX* p);
@@ -1254,7 +1263,18 @@ void ApZ2CreateSpark(const Coords32* at, u8 angle) {
   }
 }
 
-// 0x080bdb84: starts 24 steps out
+// work1: 0, 1 above, 2, 3 below
+void ApZ2CreateHarpuiaSpark(const Coords32* at, u8 n) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_Z2_FEFNIR_SPARK);
+    p->coord = *at;
+    p->work[0] = 1;
+    p->work[1] = n;
+  }
+}
+
+// 0x080bdb84: starts 24 steps out. 0x080bdc98
 static void Spark_Init(struct VFX* p) {
   struct Entity* s = (struct Entity*)p;
   s32 i;
@@ -1264,6 +1284,14 @@ static void Spark_Init(struct VFX* p) {
   SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_FEFNIR_SUMMON, 0));
   UpdateSpriteAnimation(p);
   SET_XFLIP(p, FALSE);
+  if (s->work[0] == 1) {
+    s->unk_coord = s->coord;
+    s->work[2] = 45;
+    s->work[3] = s->work[1] << 7;
+    SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+    Spark_Update(p);
+    return;
+  }
   s->d.x = s->d.y = 0;
   if (s->work[1] & 1) {
     s->unk_coord.x = COS(s->work[1]) / 6;
@@ -1283,10 +1311,18 @@ static void Spark_Init(struct VFX* p) {
   Spark_Update(p);
 }
 
-// 0x080bdefc: blinks, retraces way in, shrinking
+// 0x080bdefc: blinks, retraces way in, shrinking. 0x080bdfa8
 static void Spark_Update(struct VFX* p) {
   struct Entity* s = (struct Entity*)p;
   UpdateSpriteAnimation(p);
+  if (s->work[0] == 1) {
+    (s->spr).mag.x = (s->spr).mag.y = s->work[2] * 5;
+    s->coord.y = s->unk_coord.y + (s->work[1] <= 1 ? -(s->work[2] << 9) : s->work[2] << 9);
+    s->coord.x = s->unk_coord.x + SIN(s->work[3]) * s->work[2];
+    s->work[3] += 12;
+    if (--s->work[2] == 0) SET_VFX_ROUTINE(p, ENTITY_DIE);
+    return;
+  }
   if (s->mode[1] == 0) {
     (s->spr).mag.x = (s->spr).mag.y = 224;
     s->flags = (s->work[2] & 1) ? (s->flags & ~DISPLAY) : (s->flags | DISPLAY);
@@ -1594,7 +1630,12 @@ static void Ball_Die(struct Ball* p) {
 
 // --------------------------------------------
 /*
-  Zero 2's solid 5 work0 37, work1 0, Fefnir beaten in clear scene
+  Zero 2's solid 5 work0 37, Guardian beaten in clear scene
+  work1:
+    0: Fefnir
+    1: Leviathan
+    2: Harpuia
+    3: Residential Area's captive, beams out on flag 0
 */
 
 static void Beaten_Init(struct Solid* p);
@@ -1609,6 +1650,11 @@ const SolidRoutine gApZ2BeatenFefnirRoutine = {
     [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
 };
 // clang-format on
+
+// 0x08348dd6, 0x08348ddc
+static const motion_t sKneel[4] = {FEFNIR(0), MOTION(DM202_Z2_LEVIATHAN, 17), MOTION(DM200_Z2_HARPUIA, 3),
+                                   MOTION(DM205_Z2_ELPIZO, 25)};
+static const motion_t sGetUp[3] = {FEFNIR(23), MOTION(DM202_Z2_LEVIATHAN, 18), MOTION(DM200_Z2_HARPUIA, 14)};
 
 // 0x080c6518
 static void Beaten_Init(struct Solid* p) {
@@ -1626,18 +1672,18 @@ static void Beaten_Update(struct Solid* p) {
   struct Entity* s = &p->s;
   switch (s->mode[1]) {
     case 0:
-      SetSpriteAnimation(p, s->work[1] == 2 ? MOTION(DM205_Z2_CAPTIVE, 25) : s->work[1] != 0 ? MOTION(DM202_Z2_LEVIATHAN, 17) : FEFNIR(0));
+      SetSpriteAnimation(p, sKneel[s->work[1]]);
       s->mode[1]++;
       FALLTHROUGH;
     case 1:
       UpdateSpriteAnimation(p);
       if (!(s->scriptEntity->flags & 1)) break;
-      if (s->work[1] == 2) {
+      if (s->work[1] == 3) {
         s->work[2] = 30;
         s->mode[1] = 3;
         break;
       }
-      SetSpriteAnimation(p, s->work[1] != 0 ? MOTION(DM202_Z2_LEVIATHAN, 18) : FEFNIR(23));
+      SetSpriteAnimation(p, sGetUp[s->work[1]]);
       s->mode[1]++;
       break;
     case 2:

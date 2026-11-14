@@ -217,7 +217,7 @@ gApZ2Na2_BossScript:
 	set_chase_mode 2
 	set_camera_target_x 5792*PX
 	wait 90
-	message 1, 0, 0x1426
+	message 1, 0, 0x1451
 	wait_msgbox_end
 	wait 60
 	cutscene_end
@@ -301,12 +301,12 @@ gApZ2Na2_ClearScript:
 	play_bgm BGM_Z2_GUARDIAN_RETREAT
 	entityflag 3, 0, TRUE
 	wait 30
-	message 1, 0, 0x1427
+	message 1, 0, 0x1452
 	wait_msgbox_end
 	wait 30
 	entityflag 3, 1, TRUE
 	wait 120
-	message 1, 0, 0x1428
+	message 1, 0, 0x1453
 	wait_msgbox_end
 	wait 60
 	force 4, 0, 0

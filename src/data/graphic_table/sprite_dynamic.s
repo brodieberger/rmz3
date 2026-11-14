@@ -266,7 +266,14 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_z2_leviathan-.
   .4byte gGraphicHeader_Sprite_z2_leviathan_armor-.
   .4byte gGraphicHeader_Sprite_z2_blob-.
-  .4byte gGraphicHeader_Sprite_z2_captive-.
+  .4byte gGraphicHeader_Sprite_z2_elpizo-.
+  .4byte gGraphicHeader_Sprite_z2_snake-.
+  .4byte gGraphicHeader_Sprite_z2_bear-.
+  .4byte gGraphicHeader_Sprite_z2_panter-.
+  .4byte gGraphicHeader_Sprite_z2_magnion-.
+  .4byte gGraphicHeader_Sprite_z2_door_3d-.
+  .4byte gGraphicHeader_Sprite_z2_fefnir_ex-.
+  .4byte gGraphicHeader_Sprite_z2_frog-.
 .endif
 
 .include "sprites/dynamic/zero/idle/sheet/header.inc"
@@ -438,7 +445,14 @@ gDynamicMotionGraphicOffsets:
 .include "sprites/dynamic/z2_leviathan/sheet/header.inc"
 .include "sprites/dynamic/z2_leviathan_armor/sheet/header.inc"
 .include "sprites/dynamic/z2_blob/sheet/header.inc"
-.include "sprites/dynamic/z2_captive/sheet/header.inc"
+.include "sprites/dynamic/z2_elpizo/sheet/header.inc"
+.include "sprites/dynamic/z2_snake/sheet/header.inc"
+.include "sprites/dynamic/z2_bear/sheet/header.inc"
+.include "sprites/dynamic/z2_panter/sheet/header.inc"
+.include "sprites/dynamic/z2_magnion/sheet/header.inc"
+.include "sprites/dynamic/z2_door_3d/sheet/header.inc"
+.include "sprites/dynamic/z2_fefnir_ex/sheet/header.inc"
+.include "sprites/dynamic/z2_frog/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain_air/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain_wall/sheet/header.inc"

@@ -118,6 +118,14 @@ extern const ProjectileRoutine gApZ2BlobDropRoutine, gApZ2BlobSplatRoutine;
 extern const ProjectileRoutine gApZ2GolemFireRoutine, gApZ2GolemJetRoutine;
 extern const ProjectileRoutine gApZ2DragonTailRoutine;
 extern const ProjectileRoutine gApZ2WallRingRoutine;
+extern const ProjectileRoutine gApZ2SnakeShotRoutine;
+extern const ProjectileRoutine gApZ2TornadoRoutine, gApZ2RaptorClawRoutine;
+extern const ProjectileRoutine gApZ2FrostRoutine, gApZ2IceBallRoutine;
+extern const ProjectileRoutine gApZ2PanterClawRoutine, gApZ2PanterSlashRoutine, gApZ2EnergyBallRoutine;
+extern const ProjectileRoutine gApZ2FortressBallRoutine, gApZ2MagnionShotRoutine, gApZ2DroneShotRoutine,
+    gApZ2FefnirShotRoutine, gApZ2FefnirWaveRoutine, gApZ2FefnirJumpFireRoutine, gApZ2FefnirPillarRoutine,
+    gApZ2FloorMineRoutine, gApZ2LeviathanLanceRoutine, gApZ2IceMineRoutine, gApZ2FrogSpitRoutine,
+    gApZ2FrogLinkRoutine;
 extern const ProjectileRoutine gApZ2PylonHazardRoutine;
 #endif
 
@@ -198,6 +206,26 @@ const ProjectileRoutine *const gProjectileFnTable[PROJECTILE_ENTITY_COUNT] = {
     [PROJECTILE_Z2_GOLEM_JET] =     &gApZ2GolemJetRoutine,
     [PROJECTILE_Z2_DRAGON_TAIL] = &gApZ2DragonTailRoutine,
     [PROJECTILE_Z2_WALL_RING] = &gApZ2WallRingRoutine,
+    [PROJECTILE_Z2_SNAKE_SHOT] = &gApZ2SnakeShotRoutine,
+    [PROJECTILE_Z2_TORNADO] = &gApZ2TornadoRoutine,
+    [PROJECTILE_Z2_RAPTOR_CLAW] = &gApZ2RaptorClawRoutine,
+    [PROJECTILE_Z2_FROST] = &gApZ2FrostRoutine,
+    [PROJECTILE_Z2_ICE_BALL] = &gApZ2IceBallRoutine,
+    [PROJECTILE_Z2_PANTER_CLAW] = &gApZ2PanterClawRoutine,
+    [PROJECTILE_Z2_PANTER_SLASH] = &gApZ2PanterSlashRoutine,
+    [PROJECTILE_Z2_ENERGY_BALL] = &gApZ2EnergyBallRoutine,
+    [PROJECTILE_Z2_FORTRESS_BALL] = &gApZ2FortressBallRoutine,
+    [PROJECTILE_Z2_MAGNION_SHOT] = &gApZ2MagnionShotRoutine,
+    [PROJECTILE_Z2_DRONE_SHOT] = &gApZ2DroneShotRoutine,
+    [PROJECTILE_Z2_FEFNIR_SHOT] = &gApZ2FefnirShotRoutine,
+    [PROJECTILE_Z2_FEFNIR_WAVE] = &gApZ2FefnirWaveRoutine,
+    [PROJECTILE_Z2_FEFNIR_JUMP_FIRE] = &gApZ2FefnirJumpFireRoutine,
+    [PROJECTILE_Z2_FEFNIR_PILLAR] = &gApZ2FefnirPillarRoutine,
+    [PROJECTILE_Z2_FLOOR_MINE] = &gApZ2FloorMineRoutine,
+    [PROJECTILE_Z2_LEVIATHAN_LANCE] = &gApZ2LeviathanLanceRoutine,
+    [PROJECTILE_Z2_ICE_MINE] = &gApZ2IceMineRoutine,
+    [PROJECTILE_Z2_FROG_SPIT] = &gApZ2FrogSpitRoutine,
+    [PROJECTILE_Z2_FROG_LINK] = &gApZ2FrogLinkRoutine,
     [PROJECTILE_Z2_PYLON_HAZARD] = &gApZ2PylonHazardRoutine,
 #endif
 };

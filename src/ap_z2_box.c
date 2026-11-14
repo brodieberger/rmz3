@@ -46,7 +46,7 @@ const SolidRoutine gApZ2BoxRoutine = {
 // 0x08349434
 static const struct Collision sCollision = {DRP, FACTION_ENEMY, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, NO_DAMAGE | HARDNESS_B3, 0x00, 0, 0xFFFF03FF, {0, -6144, 12288, 12288}};
 // 0x0834955c
-static const struct Rect sSize = {0, -6400, 12288, 12288};
+static const struct Rect sSize = {0, -6399, 12288, 12288};
 
 // 0x080cd02c
 static bool8 onFloor(s32 x, s32 y) {

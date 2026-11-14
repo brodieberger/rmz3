@@ -1,0 +1,54 @@
+{
+  "label": "gStaticMetaSprite_boss_z2_reactor",
+  "data": [
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 0,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": -64,
+          "y": -32
+        },
+        {
+          "tileNum": 0,
+          "xflip": true,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": 0,
+          "y": -32
+        },
+        {
+          "tileNum": 32,
+          "xflip": false,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": -64,
+          "y": 0
+        },
+        {
+          "tileNum": 32,
+          "xflip": true,
+          "yflip": false,
+          "size": [
+            64,
+            32
+          ],
+          "x": 0,
+          "y": 0
+        }
+      ]
+    }
+  ]
+}

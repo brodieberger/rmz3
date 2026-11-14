@@ -614,6 +614,54 @@ gGraphics_MsgBox:: @ Gfx57
 		.4byte gApZ2MugshotSoldier_Pal-.
 		.2byte 32
 		.byte 0, 0
+	@ Zero 2's bear, in Computer Zone's data
+	.4byte gApZ2MugshotBear-.
+	.4byte 874 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotBear_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's Elpizo, in Temple of Wind's data
+	.4byte gApZ2MugshotElpizo-.
+	.4byte 1024 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotElpizo_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's Panter Flauclaws, in Train's data
+	.4byte gApZ2MugshotPanter-.
+	.4byte 851 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotPanter_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's Phoenix Magnion, in Power Room's data
+	.4byte gApZ2MugshotMagnion-.
+	.4byte 847 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotMagnion_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's Kuwagust Anchus, in Bombardment Aircraft's data
+	.4byte gApZ2MugshotKuwagust-.
+	.4byte 998 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotKuwagust_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's frog, then Baby Elves, in Forest of Notus's data
+	.4byte gApZ2MugshotFrog-.
+	.4byte 940 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotFrog_Pal-.
+		.2byte 32
+		.byte 0, 0
+	.4byte gApZ2MugshotBabyElves-.
+	.4byte 1159 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotBabyElves_Pal-.
+		.2byte 32
+		.byte 0, 0
 	.endif
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

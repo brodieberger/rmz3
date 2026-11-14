@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "element.h"
 #include "enemy.h"
@@ -264,14 +265,15 @@ static u16 Guard_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
   p->recallMace = TRUE;
   s->mode[1] = GUARD_PULLED;
   s->mode[2] = 0;
-  if (p->shielded) {
-    if (dx == 0 && dy == 0) return 1;
+  if (p->shielded && (dx != 0 || dy != 0)) {
     p->shielded = FALSE;
     s->mode[2] = 2;
     return 0;
   }
-  s->coord.x += dx;
-  s->coord.y += dy;
+  if (!p->shielded) {
+    s->coord.x += dx;
+    s->coord.y += dy;
+  }
   if (pulling && FUN_080098a4(s->coord.x, s->coord.y) == 0) return 1;
   s->mode[1] = s->unk_2c != NULL ? GUARD_ELEMENT_HIT : GUARD_FALL;
   return 0;
@@ -543,6 +545,7 @@ static void finish(struct Guard* p) {
   TryDropItem(4, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
+  ApImportShieldGuardKilled();
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

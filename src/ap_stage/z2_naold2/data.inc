@@ -177,7 +177,7 @@ gApZ2Naold2_ClearScript:
 	entityflag 1, 7, TRUE
 	cmd08_wait_set 1
 	wait 90
-	message 1, 0, 0x1422
+	message 1, 0, 0x144d
 	wait_msgbox_end
 	wait 60
 	force 4, 0, 0

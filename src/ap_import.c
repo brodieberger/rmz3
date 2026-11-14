@@ -4,6 +4,7 @@
 #include "gba/gba.h"
 #include "global.h"
 #include "overworld.h"
+#include "score.h"
 #include "script.h"
 #include "spawn.h"
 #include "stagerun.h"
@@ -107,10 +108,16 @@ static u8 midBossAt(const struct ApImportedStage* imp, struct Zero* z) {
   return i;
 }
 
+extern const StageFunc gApZ2Ice_StageRoutines[4], gApZ2Jungle_StageRoutines[4], gApZ2Train_StageRoutines[4],
+    gApZ2Plant_StageRoutines[4], gApZ2Bomber_StageRoutines[4];
+
 s16 ApImportUpdate(struct StageRun* p) {
   const struct ApImportedStage* imp = &gApImportedStages[gApImportSelected];
   struct Zero* z = (struct Zero*)(p->vm).entities[0].entity;
   u8 midBoss;
+
+  if (imp->fns == gApZ2Plant_StageRoutines) return ApZ2PlantUpdate(p);
+  if (imp->fns == gApZ2Bomber_StageRoutines) return ApZ2BomberUpdate(p);
 
   if (p->stageEventPhase == 0) {
     gStageRun.MID_BOSSES_BEATEN &= ~((1 << imp->midBossCount) - 1);
@@ -181,5 +188,14 @@ u32 ApImportArea(Coords32* c) { return gApImportedStages[gApImportSelected].area
 const struct SpawnTemplate* ApImportTemplates(void) { return gApImportedStages[gApImportSelected].templates; }
 
 const struct SpawnPoint* ApImportPoints(void) { return gApImportedStages[gApImportSelected].points; }
+
+// 0x0801cefc: in Zero 2 two stages' mission points are what Zero did there
+void ApImportMissionPoint(void) {
+  const StageFunc* fns = gApImportedStages[gApImportSelected].fns;
+  if (gScore.stageID != STAGE_NONE) return;
+  if (fns == gApZ2Ice_StageRoutines) gScore.missionPoint = 5 * ApZ2CoolersDown();
+  if (fns == gApZ2Jungle_StageRoutines) gScore.missionPoint = 4 * ApZ2SoldiersSaved();
+  if (fns == gApZ2Train_StageRoutines) gScore.missionPoint = 20 - 2 * ApZ2CratesStolen();
+}
 
 #endif /* AP */

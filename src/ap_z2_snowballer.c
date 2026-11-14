@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -315,6 +316,7 @@ static void finish(struct Snowball* p, u8 dropTable) {
   TryDropItem(dropTable, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
+  if ((p->s).work[0] == 0) ApImportSnowballerKilled();
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

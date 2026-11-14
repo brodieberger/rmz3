@@ -41,6 +41,9 @@ extern const ColorGraphic gApZ2Jungle_TileAnim[3];
 extern const u16 gApZ2Jungle_Water0Map[], gApZ2Jungle_Water1Map[];
 extern const TextID gApZ2Jungle_RescueTexts[5];
 extern const GameCommand gApZ2Jungle_FightScript[], gApZ2Jungle_FightReturnScript[];
+struct ScriptEntityTemplate;
+extern struct ScriptEntityTemplate gApZ2Jungle_SnakeRider;
+void CreateScriptEntity(u8 n, struct ScriptEntityTemplate* template);
 struct Entity* ApZ2CreateSplash(const Coords32* at, u8 kind);
 
 #define PLTT_ANIM_ID(n) (0x8000 | (n))
@@ -66,11 +69,15 @@ static void Stage_Init(Coords32* _ UNUSED) {
   w->music = gStageRun.checkpoint == 2 ? 2 : 0;
   w->returning = gStageRun.checkpoint == 2;
   w->fight = FALSE;
+  w->burnt = FALSE;
+  w->intro = FALSE;
+  w->leaf = NULL;
   gOverworld.state[0] = 0;
 }
 
 /*
-  0x0800af8c, 0x080166b8: x 6224 music goes, 6256 corridor's plays, 6448 camera holds, 6480 fight
+  0x0800af8c, 0x080166b8: x 6224 music goes, 6256 corridor's plays, 6448 snake laid out and camera holds,
+  6480 fight
 */
 static void Stage_Update(Coords32* _ UNUSED) {
   struct ApZ2JungleState* w = &gOverworld.work.apZ2Jungle;
@@ -78,25 +85,25 @@ static void Stage_Update(Coords32* _ UNUSED) {
 
   if (++w->timer == 256) w->timer = 0;
 
-  ANIMATE(TILESET(1) == 0x202, 106);
-  ANIMATE(TILESET(1) == 0x202, 107);
-  ANIMATE(TILESET(1) == 0x202, 108);
-  ANIMATE(TILESET(1) == 0x202, 109);
-  ANIMATE(TILESET(1) == 0x202, 110);
-  ANIMATE(TILESET(1) == 0x202, 111);
-  ANIMATE(TILESET(0) == 0x203, 112);
-  ANIMATE(TILESET(0) == 0x203, 113);
-  ANIMATE(TILESET(0) == 0x203, 114);
-  ANIMATE(TILESET(0) == 0x200, 102);
-  ANIMATE(TILESET(0) == 0x200, 104);
-  ANIMATE(TILESET(0) == 0x200, 105);
-  if (TILESET(0) == 0x200) {
+  ANIMATE(TILESET(1) == 2, 106);
+  ANIMATE(TILESET(1) == 2, 107);
+  ANIMATE(TILESET(1) == 2, 108);
+  ANIMATE(TILESET(1) == 2, 109);
+  ANIMATE(TILESET(1) == 2, 110);
+  ANIMATE(TILESET(1) == 2, 111);
+  ANIMATE(TILESET(0) == 3, 112);
+  ANIMATE(TILESET(0) == 3, 113);
+  ANIMATE(TILESET(0) == 3, 114);
+  ANIMATE(TILESET(0) == 0, 102);
+  ANIMATE(TILESET(0) == 0, 104);
+  ANIMATE(TILESET(0) == 0, 105);
+  if (TILESET(0) == 0) {
     if (++w->flash == 190) w->flash = 0;
   } else {
     w->flash = 0;
   }
-  ANIMATE(TILESET(1) == 0x201, 101);
-  ANIMATE(TILESET(1) == 0x201, 103);
+  ANIMATE(TILESET(1) == 1, 101);
+  ANIMATE(TILESET(1) == 1, 103);
 
   if (w->music == 0 && zero > PIXEL(6223)) {
     FadeOutBGM(gStageRun.vm.bgm);
@@ -107,10 +114,20 @@ static void Stage_Update(Coords32* _ UNUSED) {
     gStageRun.vm.bgm = BGM_GUARDER_ROOM;
     w->music = 2;
   }
+  if (gStageRun.stageEventPhase == 3 && !w->intro && zero > PIXEL(6447)) {
+    CreateScriptEntity(3, &gApZ2Jungle_SnakeRider);
+    Camera_SetMode(&gStageRun.vm.camera, 6);
+    gStageRun.vm.camera.left = 0;
+    gStageRun.vm.camera.right = PIXEL(15360);
+    gStageRun.vm.camera.top = 0;
+    gStageRun.vm.camera.bottom = PIXEL(480);
+    w->intro = TRUE;
+  }
   if (gStageRun.stageEventPhase == 3 && !w->fight && zero > PIXEL(6479)) {
     SetScript(&gStageRun.vm, w->returning ? gApZ2Jungle_FightReturnScript : gApZ2Jungle_FightScript);
     w->fight = TRUE;
   }
+  if (w->leaf == NULL) w->leaf = CreateLeafBurn(1);
 }
 
 // 0x0800b258: sky flashes, three frames on timer
@@ -120,7 +137,7 @@ static void Stage_Draw(Coords32* _ UNUSED) {
   u16 i = 0;
   const ColorGraphic* g;
 
-  if (TILESET(0) != 0x200) return;
+  if (TILESET(0) != 0) return;
   while (t > sFlashes[i][0]) i++;
   g = &gApZ2Jungle_TileAnim[sFlashes[i][1]];
   RequestGraphicTransfer(&g->g, BG_CHAR_OFFSET(1));
@@ -129,6 +146,7 @@ static void Stage_Draw(Coords32* _ UNUSED) {
 
 // 0x0800b2e8
 static void Stage_Exit(Coords32* _ UNUSED) {
+  struct Solid* leaf = gOverworld.work.apZ2Jungle.leaf;
   REMOVE(101);
   REMOVE(102);
   REMOVE(103);
@@ -143,6 +161,47 @@ static void Stage_Exit(Coords32* _ UNUSED) {
   REMOVE(112);
   REMOVE(113);
   REMOVE(114);
+  if (leaf != NULL) {
+    (leaf->s).flags &= ~DISPLAY;
+    (leaf->s).flags &= ~FLIPABLE;
+    EXIT_BODY(leaf);
+    SET_SOLID_ROUTINE(leaf, ENTITY_DISAPPEAR);
+  }
+}
+
+metatile_attr_t FUN_08010cd0(s32 x, s32 y);
+void FUN_08010d20(s32 x, s32 y);
+
+extern const StageFunc gApZ2Jungle2_StageRoutines[4];
+metatile_attr_t ApZ2Jungle2Canopy(s32 x, s32 y);
+void ApZ2Jungle2Burn(s32 x, s32 y);
+
+static bool8 inNotus(void) { return gApImportedStages[gApImportSelected].fns == gApZ2Jungle2_StageRoutines; }
+
+// 0x0800bb24, Anatre's own outside slot 0
+metatile_attr_t ApZ2JungleCanopy(s32 x, s32 y) {
+  u16* map = gOverworld.terrain.tilemap;
+  if (gStageRun.id != STAGE_NONE) return FUN_08010cd0(x, y);
+  if (inNotus()) return ApZ2Jungle2Canopy(x, y);
+  if ((u32)x > PIXEL(3840) - 1 || y < PIXEL(640) || y > PIXEL(960) - 1) return 0;
+  return map[MAP_OFFSET(map, x >> 12, (y - PIXEL(640)) >> 12)];
+}
+
+// 0x0800bb78
+void ApZ2JungleBurn(s32 x, s32 y) {
+  static const u16 sBurnt[3] = {1, 1, 0};
+  if (gStageRun.id != STAGE_NONE) {
+    FUN_08010d20(x, y);
+    return;
+  }
+  if (inNotus()) {
+    ApZ2Jungle2Burn(x, y);
+    return;
+  }
+  if ((u32)x > PIXEL(3840) - 1 || y < PIXEL(640) || y > PIXEL(960) - 1) return;
+  gOverworld.work.apZ2Jungle.burnt = TRUE;
+  PatchMetatileMap(x >> 12, (y - PIXEL(640)) >> 12, sBurnt);
+  gOverworld.terrain.tilemap_duty = FALSE;
 }
 
 const StageFunc gApZ2Jungle_StageRoutines[4] = {
@@ -249,11 +308,12 @@ static void Canopy_Draw(struct StageLayer* l, const struct Stage* _ UNUSED) {
   u32 dy = l->viewportLeftTopPixel.y - l->prevViewportLeftTopPixel.y + 15;
   c.x = (l->drawPivotOffset.x >> 8) + l->viewportLeftTopPixel.x;
   c.y = (l->drawPivotOffset.y >> 8) + l->viewportLeftTopPixel.y - 640;
-  if (dx >= 31 || dy >= 31) {
+  if (dx >= 31 || dy >= 31 || gOverworld.work.apZ2Jungle.burnt) {
     FUN_08006ae0(g, &c, SCREEN_ADDR(l->bgIdx >> 4), gOverworld.terrain.tilemap);
   } else {
     FUN_08006bb4(g, &c, SCREEN_ADDR(l->bgIdx >> 4), gOverworld.terrain.tilemap);
   }
+  gOverworld.work.apZ2Jungle.burnt = FALSE;
   UpdateBGOFS(g, BGOFS(l->bgIdx >> 4));
 }
 
@@ -514,7 +574,19 @@ ROUTINE(gApZ2LiftRoutine, Lift_Init, Lift_Update);
 */
 #define SOLDIERS_SAVED gStageRun.unk_0a  // bit 0 is the mid-boss's
 
-extern const struct Collision Collision_ARRAY_083713b0[2];
+// 0x08348fa4: talk box 32 px ahead
+static const struct Collision sRescueCollisions[2] = {
+    {DDP, FACTION_NEUTRAL, CHATABLE, 255, 0, 0, 0, 0, 0, 0, 0, 1, 0x00000001, {-0x2000, 0, 0x1000, 0x100}},
+    {DRP, FACTION_NEUTRAL, CHATABLE, 255, 0xff, 0xff, 0xff, 0xff, 0, 0, 0, 0, 0x00000000, {0, 0, 0, 0}},
+};
+
+u8 ApZ2SoldiersSaved(void) {
+  u8 n = 0, i;
+  for (i = 0; i < 5; i++) {
+    if (SOLDIERS_SAVED & (2 << i)) n++;
+  }
+  return n;
+}
 
 static void Rescue_Update(struct Solid* p) {
   struct Entity* s = &p->s;
@@ -591,7 +663,7 @@ static void Rescue_Init(struct Solid* p) {
   }
   setUp(p, MOTION(AP_SHEET_Z2_RESCUE, 2));
   s->flags |= COLLIDABLE;
-  INIT_BODY(p, Collision_ARRAY_083713b0, 0, NULL);
+  INIT_BODY(p, sRescueCollisions, 0, NULL);
   s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   Rescue_Update(p);
@@ -637,7 +709,7 @@ ROUTINE(gApZ2ScoutRoutine, Scout_Init, Scout_Update);
 /*
   Zero 2's solid 5 work0 30, soldier who took Baby Elf
 */
-static const struct PreloadEntity sThiefSheet = {AP_SHEET_Z2_RESCUE, 0, 768, 8, 0, AP_PRELOAD_SHEET, 0};
+static const struct PreloadEntity sThiefSheet = {AP_SHEET_Z2_RESCUE, 0, 870, 8, 0, AP_PRELOAD_SHEET, 0};
 static const struct PreloadEntity sThiefRunSheet = {AP_SHEET_Z2_RESCUE_RUN, 0, 224, 9, 0, AP_PRELOAD_SHEET, 0};
 
 static void Thief_Update(struct Solid* p) {
@@ -664,10 +736,8 @@ static void Thief_Update(struct Solid* p) {
 
 // 0x080c5700
 static void Thief_Init(struct Solid* p) {
-  struct Entity* s = &p->s;
   ApLoadSheet(&sThiefSheet);
   setUp(p, MOTION(AP_SHEET_Z2_RESCUE, 0));
-  s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   Thief_Update(p);
 }
@@ -675,39 +745,109 @@ static void Thief_Init(struct Solid* p) {
 ROUTINE(gApZ2ThiefRoutine, Thief_Init, Thief_Update);
 
 /*
-  Zero 2's solid 5 work0 31, Baby Elf
+  Zero 2's solid 5 work0 31, Baby Elf, beside whoever the script linked it to
+  work1: 0 one side, 1 the other
+  flags: 0x80 closer and lower, 1 beams out
 */
 static const struct PreloadEntity sElfSheet = {AP_SHEET_Z2_BABY_ELF, 0, 976, 7, 0, AP_PRELOAD_SHEET, 0};
 
+// 0x080c4c90
+static void follow(struct Entity* s) {
+  struct Entity* leader = s->scriptEntity->unk_04;
+  s32 lag, x, y;
+  if (s->d.x != 0) s->d.x--;
+  lag = (s->d.x * 5 << 11) >> 5;
+  x = ((leader->flags & X_FLIP) != 0) == (s->work[1] == 0) ? PIXEL(20) - lag : lag - PIXEL(20);
+  if (s->scriptEntity->flags & 0x80) {
+    x = leader->coord.x + x / 3;
+    y = leader->coord.y - PIXEL(16);
+  } else {
+    x += leader->coord.x;
+    y = leader->coord.y - PIXEL(48);
+  }
+  s->work[3]++;
+  y -= SIN(s->work[3] * 2) * 8;
+  x += COS(s->work[3]) * 16;
+  y -= (x - s->coord.x < 0 ? s->coord.x - x : x - s->coord.x) >> 1;
+  s->coord.x = (s->coord.x * 31 + x) >> 5;
+  s->coord.y = (s->coord.y * 31 + y) >> 5;
+}
+
+// 0x080c5954
 static void BabyElf_Update(struct Solid* p) {
   struct Entity* s = &p->s;
-  UpdateSpriteAnimation(p);
+  Coords32 at;
   switch (s->mode[1]) {
     case 0:
-      s->coord.y += SIN(s->work[3] * 4) >> 6;
-      s->work[3]++;
+      SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_BABY_ELF, 0));
+      s->d.x = 0;
+      s->work[3] = s->work[1] << 6;
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 1:
+      UpdateSpriteAnimation(p);
+      follow(s);
+      if ((s->work[3] & 31) == 0) {
+        at.x = s->coord.x;
+        at.y = s->coord.y + PIXEL(8);
+        ApZ2CreateElfSparkle(&at, 4);
+      }
       if (!(s->scriptEntity->flags & 1)) break;
       s->work[2] = 30;
       s->mode[1]++;
       break;
-    case 1:
+    case 2:
+      UpdateSpriteAnimation(p);
+      follow(s);
       if (s->work[2] & 1) {
         PaintEntityWhite(s);
       } else {
         UpdateEntityPaletteID(s);
       }
       if (--s->work[2] != 0) break;
-      PlaySound(SE_TENSOU_BACK);
+      s->work[2] = 8;
+      s->mode[1]++;
+      break;
+    case 3:
+      UpdateSpriteAnimation(p);
+      follow(s);
+      PaintEntityWhite(s);
+      (s->spr).mag.x = 288 - s->work[2] * 4;
+      (s->spr).mag.y = s->work[2] * 4 + 224;
+      if (--s->work[2] != 0) break;
+      s->work[2] = 4;
+      s->mode[1]++;
+      break;
+    case 4:
+      UpdateSpriteAnimation(p);
+      follow(s);
+      PaintEntityWhite(s);
+      (s->spr).mag.x = s->work[2] * 64 + 32;
+      (s->spr).mag.y = 352 - s->work[2] * 32;
+      if (--s->work[2] != 0) break;
+      s->d.y = -0xC00;
+      s->mode[1]++;
+      break;
+    case 5:
+      UpdateSpriteAnimation(p);
+      PaintEntityWhite(s);
+      (s->spr).mag.x = 32;
+      s->d.y -= 64;
+      s->coord.y += s->d.y;
+      if (Camera_GetDistance(&gStageRun.vm.camera, &s->coord) <= 0x3000) break;
       s->flags &= ~DISPLAY;
-      SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
+      s->mode[1]++;
       break;
   }
 }
 
 // 0x080c58c8
 static void BabyElf_Init(struct Solid* p) {
+  struct Entity* s = &p->s;
+  s->flags |= DISPLAY | FLIPABLE;
+  InitScalerotMotion1(s);
+  s->texture = TEXTURE_AP_SHEET;
   ApLoadSheet(&sElfSheet);
-  setUp(p, MOTION(AP_SHEET_Z2_BABY_ELF, 0));
   SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
   BabyElf_Update(p);
 }

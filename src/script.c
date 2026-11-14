@@ -1,3 +1,4 @@
+#include "definition.h"
 #include "entity.h"
 #include "gfx.h"
 #include "global.h"
@@ -477,8 +478,9 @@ static void UpdatePlayerMovableArea(struct VM* vm) {
     if (c2.y > gOverworld.range.bottom) c2.y = gOverworld.range.bottom;
 #if AP
     // Makes the screen edge be the room edge. Prevents Zero fgrom being able to walljump
-    // Skipped during cutscenes.
-    if (gStageRun.id == STAGE_NONE && cam->mode != CM1 && !(gStageRun.vm.active & VM_ACTIVE)) {
+    // Skipped during cutscenes, 3D doors and fades.
+    if (gStageRun.id == STAGE_NONE && cam->mode != CM1 && !(gStageRun.vm.active & VM_ACTIVE) && !gIsUsingDoor3D &&
+        gStageRun.vm.transition == TRANSITION_NONE) {
       s32 left = cam->viewport.x - PIXEL(DISPLAY_WIDTH / 2);
       s32 right = cam->viewport.x + PIXEL(DISPLAY_WIDTH / 2);
       if (c1.x < left) c1.x = left;

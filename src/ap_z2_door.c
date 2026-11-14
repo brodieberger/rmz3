@@ -1,5 +1,6 @@
 #include "anim_loader.h"
 #include "ap.h"
+#include "camera.h"
 #include "collision.h"
 #include "definition.h"
 #include "entity.h"
@@ -18,6 +19,7 @@
 #include "constants/ap_z2_songs.h"
 #include "constants/flag.h"
 #include "constants/motion/ap_sheet.h"
+#include "constants/motion/dynamic.h"
 #include "constants/motion/static.h"
 
 #if AP
@@ -252,9 +254,257 @@ static void Door_Die(struct Door* p) {
 
 // clang-format off
 static const struct Collision sCollisions[2] = {
-    /* 0x834917c */ {DDP, FACTION_ENEMY, 0, 255, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0, 0x00000001, {0, -0x2000, 0x2000, 0x4200}},
+    /* 0x834917c */ {DDP, FACTION_ENEMY, 0, 255, 0x00, 0x00, 0x80, 0x00, 0x00, 0x00, 0x00, 0, 0x00000001, {0, -0x2000, 0x2200, 0x4200}},
     /* 0x8349194 */ {DRP, FACTION_ENEMY, 0, 255, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0, 0x00000000, {0, 0, 0, 0}},
 };
 // clang-format on
+
+// --------------------------------------------
+/*
+  Zero 2's solid 5 work0 34, the Forest of Notus's door Elpizo opens. Opens on script's flag 1, shuts on 2.
+  work1: 1 for far side
+*/
+
+static void ScriptDoor_Init(struct Door* p);
+static void ScriptDoor_Update(struct Door* p);
+
+// clang-format off
+const SolidRoutine gApZ2ScriptDoorRoutine = {
+    [ENTITY_INIT] =      (SolidFunc)ScriptDoor_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)ScriptDoor_Update,
+    [ENTITY_DIE] =       (SolidFunc)Door_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteSolid,
+    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+};
+// clang-format on
+
+// 0x080c6020
+static void ScriptDoor_Init(struct Door* p) {
+  struct Entity* s = &p->s;
+  struct Entity* q;
+  struct PreloadEntity sheet = {AP_SHEET_Z2_DOOR, 0, 0, 0, 0, AP_PRELOAD_SHEET, 0};
+  s->flags |= DISPLAY | FLIPABLE;
+  InitNonAffineMotion(s);
+  s->texture = TEXTURE_AP_SHEET;
+  s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+  if (s->work[1] == 0) {
+    q = AllocEntityLast(gSolidHeaderPtr);
+    if (q != NULL) {
+      INIT_SOLID_ROUTINE(q, SOLID_Z2_SCRIPT_DOOR);
+      q->work[1] = 1;
+      q->coord = s->coord;
+      q->unk_28 = s;
+    }
+    sheet.tileBase = wStaticGraphicTilenums[SM018_DOOR_2D_BLUE];
+    sheet.palID = wStaticMotionPalIDs[SM018_DOOR_2D_BLUE];
+    ApLoadSheet(&sheet);
+  } else {
+    SET_XFLIP(p, TRUE);
+  }
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  ScriptDoor_Update(p);
+}
+
+// 0x080c60e0
+static void ScriptDoor_Update(struct Door* p) {
+  struct Entity* s = &p->s;
+  struct Entity* near = s->work[1] != 0 ? s->unk_28 : s;
+  struct PreloadEntity sheet = {AP_SHEET_Z2_DOOR_OPEN, 0, 380, 0, 0, AP_PRELOAD_SHEET, 0};
+  if (s->work[1] != 0 && near->mode[0] > ENTITY_UPDATE) {
+    s->flags &= ~DISPLAY;
+    SET_SOLID_ROUTINE(p, ENTITY_DISAPPEAR);
+    return;
+  }
+  switch (s->mode[1]) {
+    case 0:
+      SetSpriteAnimation(p, DOOR(0));
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 1:
+      animate(p, 0);
+      if (!(near->scriptEntity->flags & 1)) break;
+      if (s->work[1] == 0) {
+        sheet.palID = wStaticMotionPalIDs[SM018_DOOR_2D_BLUE];
+        ApLoadSheet(&sheet);
+      }
+      SetSpriteAnimation(p, DOOR(2));
+      PlaySound(SE_Z2_GATE_SINK);
+      s->mode[1]++;
+      break;
+    case 2:
+      animate(p, 2);
+      if (!(near->scriptEntity->flags & 2)) break;
+      SetSpriteAnimation(p, DOOR_OPEN(3));
+      PlaySound(SE_Z2_GATE_SINK);
+      s->work[2] = 32;
+      s->mode[1]++;
+      break;
+    case 3:
+      animate(p, 3);
+      if (--s->work[2] != 0) break;
+      PlaySound(SE_Z2_GATE_RISE);
+      s->mode[1]++;
+      break;
+    case 4:
+      animate(p, 3);
+      break;
+  }
+}
+
+// --------------------------------------------
+/*
+  Zero 2's 3D door, solid 7 work0 1, the Power Room's pair. Up takes Zero to the other.
+*/
+
+#define DOOR3D(n) MOTION(DM210_Z2_DOOR_3D, (n))
+#define AT_DOOR (1 << 30)
+
+enum { DOOR3D_IDLE, DOOR3D_ARRIVE };
+enum { IDLE_SET, IDLE_WAIT, IDLE_OPEN, IDLE_WARP, IDLE_LEAVE, IDLE_SCRIPT };
+
+static void Door3D_Init(struct Solid* p);
+static void Door3D_Update(struct Solid* p);
+
+// clang-format off
+const SolidRoutine gApZ2Door3DRoutine = {
+    [ENTITY_INIT] =      (SolidFunc)Door3D_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)Door3D_Update,
+    [ENTITY_DIE] =       (SolidFunc)Door_Die,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteSolid,
+    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+};
+
+static const struct Collision sDoor3D = /* 0x8348e94 */ {DDP, FACTION_ENEMY, DOOR_3D, 255, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0, 0x00000001, {0x0, -0x400, 0x800, 0x800}};
+static const struct Collision sDoor3DShut = /* 0x8348ef4 */ {DRP, FACTION_ENEMY, 0, 0, 0xff, 0xff, 0xff, 0xff, 0x00, 0x00, 0x00, 0, 0x00000000, {0x0, 0x0, 0x0, 0x0}};
+// clang-format on
+
+static const Coords32 sWest = {PIXEL(4176), PIXEL(608)};
+static const Coords32 sEast = {PIXEL(7344), PIXEL(608)};
+
+static bool8 zeroAt(struct Entity* s) {
+  return (u32)((pZero2->s).coord.x - s->coord.x + PIXEL(32)) <= PIXEL(64) &&
+         (u32)((pZero2->s).coord.y - s->coord.y + PIXEL(32)) <= PIXEL(64);
+}
+
+// 0x080c8ea4
+static void Door3D_Init(struct Solid* p) {
+  struct Entity* s = &p->s;
+  InitNonAffineMotion(s);
+  ResetDynamicMotion(s);
+  (s->spr).oam.priority = 3;
+  s->flags |= DISPLAY | FLIPABLE;
+  INIT_BODY(p, &sDoor3D, 0, NULL);
+  s->coord.x += PIXEL(8);
+  s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y) + PIXEL(1);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  s->mode[1] = zeroAt(s) ? DOOR3D_ARRIVE : DOOR3D_IDLE;
+  Door3D_Update(p);
+}
+
+// 0x080c905c
+static void Door3D_Idle(struct Solid* p) {
+  struct Entity* s = &p->s;
+  const Coords32* to;
+  switch (s->mode[2]) {
+    case IDLE_SET:
+      SetSpriteAnimation(p, DOOR3D(3));
+      UpdateSpriteAnimation(p);
+      SetDDP(&p->body, &sDoor3D);
+      s->mode[2]++;
+      break;
+    case IDLE_WAIT:
+      if (s->mode[3] == 0) {
+        if (Camera_GetDistance(&gStageRun.vm.camera, &s->coord) <= 0x3000) {
+          s->texture = 0xFF;
+          s->mode[3] = 1;
+        }
+      } else if (Camera_GetDistance(&gStageRun.vm.camera, &s->coord) > 0x3000) {
+        s->mode[3] = 0;
+      }
+      UpdateSpriteAnimation(p);
+      if (gStageRun.missionStatus & MISSION_B1) {
+        SetDDP(&p->body, &sDoor3DShut);
+        s->mode[2] = IDLE_SCRIPT;
+        break;
+      }
+      if (!gIsUsingDoor3D && !(gStageRun.vm.unk_004 & 1)) break;
+      if (!((pZero2->body).status & AT_DOOR)) {
+        s->mode[2] = IDLE_LEAVE;
+        break;
+      }
+      SetSpriteAnimation(p, DOOR3D(0));
+      PlaySound(SE_Z2_GATE_SINK);
+      s->mode[2]++;
+      break;
+    case IDLE_OPEN:
+      UpdateSpriteAnimation(p);
+      if (s->motion.state != ANIM_END) break;
+      if (!((pZero2->body).status & AT_DOOR)) {
+        s->mode[1] = DOOR3D_ARRIVE;
+        s->mode[2] = s->mode[3] = 0;
+        break;
+      }
+      SetSpriteAnimation(p, DOOR3D(1));
+      gStageRun.vm.transition = TRANSITION_BLACKOUT;
+      s->mode[2]++;
+      break;
+    case IDLE_WARP:
+      UpdateSpriteAnimation(p);
+      if (gStageRun.vm.transition != TRANSITION_NONE) break;
+      gIsUsingDoor3D = FALSE;
+      gStageRun.vm.transition = TRANSITION_REVERSE;
+      to = s->coord.x < PIXEL(5744) ? &sEast : &sWest;
+      (pZero2->s).coord = *to;
+      SET_XFLIP(pZero2, (to->x >> 8) % 240 < 120);
+      resetSateliteElfPosition(pZero2);
+      gStageRun.vm.camera.chaseMode = CHASE_MODE_B3;
+      gStageRun.vm.camera.counter = 0;
+      s->mode[2] = IDLE_SET;
+      break;
+    case IDLE_LEAVE:
+      if (gIsUsingDoor3D || (gStageRun.vm.unk_004 & 1)) break;
+      s->mode[1] = zeroAt(s) ? DOOR3D_ARRIVE : DOOR3D_IDLE;
+      s->mode[2] = s->mode[3] = 0;
+      break;
+    case IDLE_SCRIPT:
+      if (gStageRun.missionStatus & MISSION_B1) break;
+      SetDDP(&p->body, &sDoor3D);
+      s->mode[2] = IDLE_SET;
+      break;
+  }
+}
+
+// 0x080c931c: shuts behind Zero
+static void Door3D_Arrive(struct Solid* p) {
+  struct Entity* s = &p->s;
+  switch (s->mode[2]) {
+    case 0:
+      SetSpriteAnimation(p, DOOR3D(1));
+      s->work[2] = 30;
+      s->mode[2]++;
+    case 1:
+      UpdateSpriteAnimation(p);
+      if (--s->work[2] != 0) break;
+      PlaySound(SE_Z2_GATE_SINK);
+      SetSpriteAnimation(p, DOOR3D(2));
+      s->mode[2]++;
+      break;
+    case 2:
+      UpdateSpriteAnimation(p);
+      if (s->motion.state != ANIM_END) break;
+      s->mode[1] = DOOR3D_IDLE;
+      s->mode[2] = s->mode[3] = 0;
+      break;
+  }
+}
+
+// 0x080c8fe0
+static void Door3D_Update(struct Solid* p) {
+  if ((p->s).mode[1] == DOOR3D_IDLE) {
+    Door3D_Idle(p);
+  } else {
+    Door3D_Arrive(p);
+  }
+}
 
 #endif

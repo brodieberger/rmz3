@@ -10,6 +10,12 @@
   ただし、Solid のスロットに余裕がないときは VFX29 を代わりに生成
 */
 
+#if AP
+// Zero 2's jungle
+#define FUN_08010cd0 ApZ2JungleCanopy
+#define FUN_08010d20 ApZ2JungleBurn
+#endif
+
 void FUN_0800e2c4(s32 x, s32 y);
 void FUN_08010d20(s32 x, s32 y);
 

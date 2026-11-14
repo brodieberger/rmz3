@@ -35,7 +35,27 @@
 #define PROJECTILE_Z2_GOLEM_FIRE 72  // Zero 2 projectile 51
 #define PROJECTILE_Z2_GOLEM_JET 73  // Zero 2 projectile 52
 #define PROJECTILE_Z2_WALL_RING 74  // Zero 2 projectile 44
-#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_WALL_RING + 1)
+#define PROJECTILE_Z2_SNAKE_SHOT 75  // Zero 2 projectile 19, the Jungle snake's bolts and sparks
+#define PROJECTILE_Z2_TORNADO 76  // Zero 2 projectile 24, the raptor's
+#define PROJECTILE_Z2_RAPTOR_CLAW 77  // Zero 2 projectile 25, claw and chain
+#define PROJECTILE_Z2_FROST 78  // Zero 2 projectile 48, ice a vent freezes Zero in
+#define PROJECTILE_Z2_ICE_BALL 79  // Zero 2 projectile 18 work0 0, the bear's ice ball
+#define PROJECTILE_Z2_PANTER_CLAW 80  // Zero 2 projectile 16, Panter's thrown claws
+#define PROJECTILE_Z2_PANTER_SLASH 81  // Zero 2 projectile 17, Panter's slashes
+#define PROJECTILE_Z2_ENERGY_BALL 82  // Zero 2 projectile 63, the reactors' bouncing shots
+#define PROJECTILE_Z2_FORTRESS_BALL 83  // Zero 2 projectile 47, the fortress's shots
+#define PROJECTILE_Z2_MAGNION_SHOT 84  // Zero 2 projectile 28, Magnion's attacks
+#define PROJECTILE_Z2_DRONE_SHOT 85  // Zero 2 projectile 50, the machine room's drones' shot
+#define PROJECTILE_Z2_FEFNIR_SHOT 86  // Zero 2 projectile 34, Fefnir's shots in the Shuttle Factory
+#define PROJECTILE_Z2_FEFNIR_WAVE 87  // Zero 2 projectile 35, his punch's flames along the floor
+#define PROJECTILE_Z2_FEFNIR_JUMP_FIRE 88  // Zero 2 projectile 36, fire around him as he jumps
+#define PROJECTILE_Z2_FEFNIR_PILLAR 89  // Zero 2 projectile 37, his EX's pillars
+#define PROJECTILE_Z2_FLOOR_MINE 90  // Zero 2 projectile 54, Computer Zone 2's floor mines
+#define PROJECTILE_Z2_LEVIATHAN_LANCE 91  // Zero 2 projectile 40, Leviathan's lance shots and ice lances
+#define PROJECTILE_Z2_ICE_MINE 92  // Zero 2 projectile 41, her ice mines and whirl
+#define PROJECTILE_Z2_FROG_SPIT 93  // Zero 2 projectile 31, the frog's globs, bubbles and swallowed tree frogs
+#define PROJECTILE_Z2_FROG_LINK 94  // Zero 2 projectile 32, its arms' links and its touch
+#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_FROG_LINK + 1)
 #else
 #define PROJECTILE_ENTITY_COUNT 48
 #endif

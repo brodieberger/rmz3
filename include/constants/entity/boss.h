@@ -39,7 +39,16 @@
 #define BOSS_Z2_FROST_GOLEM 32  // Zero 2 boss 21. Last fight of the Residential Area
 #define BOSS_Z2_WALL 33  // Zero 2 boss 18. The Jungle's mid-boss, a machine in the wall
 #define BOSS_Z2_SNAKE 34  // Zero 2 boss 1. The Jungle's boss
-#define BOSS_ENTITY_COUNT (BOSS_Z2_SNAKE + 1)
+#define BOSS_Z2_RAPTOR 35  // Zero 2 boss 10, Harpuia under the Dark Elf. Boss of the Temple of Wind
+#define BOSS_Z2_BEAR 36  // Zero 2 boss 4, boss of the Computer Zone
+#define BOSS_Z2_PANTER 37  // Zero 2 boss 3, Panter Flauclaws. Boss of the Train
+#define BOSS_Z2_REACTOR 38  // Zero 2 boss 24, the Power Room's reactor cores
+#define BOSS_Z2_FORTRESS 39  // Zero 2 boss 20, the Power Room's two mini-bosses
+#define BOSS_Z2_MAGNION 40  // Zero 2 boss 13, Phoenix Magnion. Boss of the Power Room
+#define BOSS_Z2_FEFNIR_FOOT 41  // Zero 2 boss 14, Fefnir on foot. Boss of the Shuttle Factory
+#define BOSS_Z2_LEVIATHAN_FIRST 42  // Zero 2 boss 16, Leviathan's first fight. Boss of Computer Zone 2
+#define BOSS_Z2_FROG 43  // Zero 2 boss 12, Burble Hekelot. Boss of the Forest of Notus
+#define BOSS_ENTITY_COUNT (BOSS_Z2_FROG + 1)
 #else
 #define BOSS_ENTITY_COUNT 25
 #endif

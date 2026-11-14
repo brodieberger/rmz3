@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -817,6 +818,7 @@ static void countKill(struct Wolf* p) {
   TryDropItem(1, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
+  ApImportWolfKilled();
 }
 
 // 0x0808d370: three pieces

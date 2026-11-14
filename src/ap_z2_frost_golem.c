@@ -147,7 +147,7 @@ static void Frost_Update(struct FrostGolem* p) {
     return;
   }
   if (((p->body).status & BODY_STATUS_WHITE) && s->unk_2c == NULL) {
-    s->unk_2c = ApplyElementEffect(14, (Object*)p, &sElementCoord);
+    s->unk_2c = ApplyElementEffect(10, (Object*)p, &sElementCoord);
   }
   if (s->unk_2c != NULL && IsDead(s->unk_2c)) s->unk_2c = NULL;
   (sStates[s->mode[1]])((struct Boss*)p);

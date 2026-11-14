@@ -314,7 +314,7 @@ gApZ2Naold1_BossReturnScript:
 	end
 
 gApZ2Naold1_Captive:
-	.byte ENTITY_SOLID, SOLID_Z2_BEATEN_FEFNIR, 42, 2
+	.byte ENTITY_SOLID, SOLID_Z2_BEATEN_FEFNIR, 42, 3
 	.4byte 7040*PX, 448*PX
 	.4byte DIR_LEFT
 
@@ -353,52 +353,52 @@ gApZ2Naold1_ClearScript:
 	wait 90
 	entityflag 8, 0, TRUE
 	wait 60
-	message 1, 0, 0x1411
+	message 1, 0, 0x141f
 	wait_msgbox_end
 	wait 15
 	entityflag 7, 0, TRUE
 	wait 45
-	message 1, 0, 0x1412
+	message 1, 0, 0x1420
 	wait_msgbox_end
 	wait 15
 	entityflag 6, 0, TRUE
 	wait 30
-	message 1, 0, 0x1413
+	message 1, 0, 0x1421
 	wait_msgbox_end
 	wait 15
 	entityflag 7, 1, TRUE
 	wait 30
-	message 1, 0, 0x1414
+	message 1, 0, 0x1422
 	wait_msgbox_end
 	wait 15
 	entityflag 6, 1, TRUE
 	wait 30
-	message 1, 0, 0x1415
+	message 1, 0, 0x1423
 	wait_msgbox_end
 	wait 15
 	force 2, 0, 0
 	wait 90
-	message 1, 0, 0x1416
+	message 1, 0, 0x1424
 	wait_msgbox_end
 	wait 15
 	stop_bgm
 	play_se SE_Z2_RUIN_CALL
-	message 1, 0, 0x1417
+	message 1, 0, 0x1425
 	wait_msgbox_end
 	wait 15
 	force 3, 0, 0
 	wait 60
 	entityflag 8, 1, TRUE
 	wait 60
-	message 1, 0, 0x1418
+	message 1, 0, 0x1426
 	wait_msgbox_end
 	emotion_bubble 0, 16, -40, 0
 	play_bgm BGM_Z2_RUIN_ESCAPE
 	wait 60
-	message 1, 0, 0x1419
+	message 1, 0, 0x1427
 	wait_msgbox_end
 	wait 15
-	message 1, 0, 0x141a
+	message 1, 0, 0x1428
 	wait_msgbox_end
 	wait 30
 	force 4, 0, 0
@@ -407,7 +407,7 @@ gApZ2Naold1_ClearScript:
 	wait 20
 	force 5, 0, 0
 	wait 120
-	message 1, 0, 0x141b
+	message 1, 0, 0x1429
 	wait_msgbox_end
 	wait 60
 	stop_bgm

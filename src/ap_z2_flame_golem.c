@@ -152,7 +152,7 @@ static void Flame_Update(struct FlameGolem* p) {
     return;
   }
   if (((p->body).status & BODY_STATUS_WHITE) && s->unk_2c == NULL) {
-    s->unk_2c = ApplyElementEffect(13, (Object*)p, &sElementCoord);
+    s->unk_2c = ApplyElementEffect(9, (Object*)p, &sElementCoord);
   }
   if (s->unk_2c != NULL && IsDead(s->unk_2c)) s->unk_2c = NULL;
   (sStates[s->mode[1]])((struct Boss*)p);

@@ -1,4 +1,5 @@
 #include "ap.h"
+#include "ap_import.h"
 #include "score.h"
 
 #include "game.h"
@@ -149,6 +150,9 @@ NON_MATCH_AP void CalcMissionScore(void) {
   if ((m->total)->clearCount < 255) (m->total)->clearCount++;
   (m->total)->missionDones |= 1 << m->stageID;
   (m->total)->lastStage = m->stageID;
+#if AP
+  ApImportMissionPoint();
+#endif
   m->eachScore[0] = m->missionPoint;
   (m->total)->unusedClearCount++;
   (m->total)->unusedMissionDones |= 1 << m->stageID;

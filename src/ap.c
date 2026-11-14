@@ -323,12 +323,20 @@ static const struct ApStageClear sApStageClears[AP_STAGE_COUNT] = {
 // Legacy stages share STAGE_NONE, go by import
 static const struct ApStageClear sApImportClears[AP_IMPORT_COUNT] = {
     {400, 0, 401},  // Z2 Sand Wilderness
+    {416, 0, 417},  // Z2 Computer Zone
+    {432, 0, 433},  // Z2 Train
+    {448, 0, 449},  // Z2 Power Room
     {464, 0, 465},  // Z2 Forest of Dysis
     {480, 0, 481},  // Z2 Residential Area
+    {496, 0, 497},  // Z2 Bombardment Aircraft
+    {512, 0, 513},  // Z2 Forest of Notus
+    {528, 0, 529},  // Z2 Computer Zone 2
     {544, 0, 545},  // Z2 Crystal Cave
+    {560, 0, 561},  // Z2 Shuttle Factory
     {576, 0, 577},  // Z2 Neo Arcadia Temple
     {592, 0, 593},  // Z2 Temple of Flame
     {608, 0, 609},  // Z2 Temple of Ice
+    {624, 0, 625},  // Z2 Temple of Wind
 };
 
 u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_IMPORT_FIRST) / 16; }

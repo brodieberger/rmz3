@@ -137,7 +137,7 @@ gApZ2Bomber2_Script:
 	play_bgm BGM_Z2_CRYSTAL_CAVE
 	cutscene_start CS_UNK_48
 	wait 90
-	message 1, 0, 0x141c
+	message 1, 0, 0x1444
 	wait_msgbox_end
 	cutscene_end
 	indicator 1, 0, 0
@@ -246,7 +246,7 @@ gApZ2Bomber2_WarningScript:
 	set_camera_target_x 3696*PX
 	set_camera_target_y 1760*PX
 	wait 90
-	message 1, 0, 0x141d
+	message 1, 0, 0x1445
 	wait_msgbox_end
 	change_camera_mode 3
 	set_chase_mode 4
@@ -284,7 +284,7 @@ gApZ2Bomber2_BossScript:
 	forcekeyinput DPAD_RIGHT
 	wait 80
 	lock
-	message 1, 0, 0x141e
+	message 1, 0, 0x1446
 	wait_msgbox_end
 	cutscene_end
 	entityflag 1, 0, TRUE
@@ -294,7 +294,7 @@ gApZ2Bomber2_BossScript:
 	reset_camera gApZ2Bomber2_BossCamera
 	wait_indicator_end
 	release
-	triumphant_message 0, 0x141f
+	triumphant_message 0, 0x1447
 	play_bgm BGM_Z2_HARPUIA
 	resume 1
 	end
@@ -322,7 +322,7 @@ gApZ2Bomber2_BossReturnScript:
 	reset_camera gApZ2Bomber2_BossCamera
 	wait_indicator_end
 	release
-	triumphant_message 0, 0x141f
+	triumphant_message 0, 0x1447
 	play_bgm BGM_Z2_HARPUIA
 	resume 1
 	end
@@ -341,12 +341,12 @@ gApZ2Bomber2_ClearScript:
 	wait 120
 	play_bgm BGM_X
 	wait 60
-	message 1, 0, 0x1420
+	message 1, 0, 0x1448
 	wait_msgbox_end
 	entityflag 1, 7, TRUE
 	cmd08_wait_set 1
 	wait 120
-	message 1, 0, 0x1421
+	message 1, 0, 0x1449
 	wait_msgbox_end
 	force 4, 0, 0
 	wait 8

@@ -38,6 +38,10 @@ extern const BossRoutine gApZ2BlobRoutine;
 extern const BossRoutine gApZ2FlameGolemRoutine;
 extern const BossRoutine gApZ2FrostGolemRoutine;
 extern const BossRoutine gApZ2WallRoutine;
+extern const BossRoutine gApZ2SnakeRoutine;
+extern const BossRoutine gApZ2RaptorRoutine, gApZ2BearRoutine, gApZ2PanterRoutine, gApZ2ReactorRoutine;
+extern const BossRoutine gApZ2FortressRoutine, gApZ2MagnionRoutine, gApZ2FefnirFootRoutine, gApZ2LeviathanFirstRoutine,
+    gApZ2FrogRoutine;
 #endif
 
 // clang-format off
@@ -77,7 +81,16 @@ const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
     [BOSS_Z2_FLAME_GOLEM] =     &gApZ2FlameGolemRoutine,
     [BOSS_Z2_FROST_GOLEM] =     &gApZ2FrostGolemRoutine,
     [BOSS_Z2_WALL] =            &gApZ2WallRoutine,
-    [BOSS_Z2_SNAKE] =           &gApZ2GolemRoutine,
+    [BOSS_Z2_SNAKE] =           &gApZ2SnakeRoutine,
+    [BOSS_Z2_RAPTOR] =          &gApZ2RaptorRoutine,
+    [BOSS_Z2_BEAR] =            &gApZ2BearRoutine,
+    [BOSS_Z2_PANTER] =          &gApZ2PanterRoutine,
+    [BOSS_Z2_REACTOR] =         &gApZ2ReactorRoutine,
+    [BOSS_Z2_FORTRESS] =        &gApZ2FortressRoutine,
+    [BOSS_Z2_MAGNION] =         &gApZ2MagnionRoutine,
+    [BOSS_Z2_FEFNIR_FOOT] =     &gApZ2FefnirFootRoutine,
+    [BOSS_Z2_LEVIATHAN_FIRST] = &gApZ2LeviathanFirstRoutine,
+    [BOSS_Z2_FROG] = &gApZ2FrogRoutine,
 #endif
 };
 // clang-format on

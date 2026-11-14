@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "definition.h"
 #include "element.h"
@@ -355,6 +356,7 @@ static void dropAndCount(struct Signaloid* p) {
   TryDropItem(4, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
+  ApImportSignaloidKilled();
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

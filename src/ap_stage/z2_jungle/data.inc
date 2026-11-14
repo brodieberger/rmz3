@@ -109,7 +109,7 @@ gApZ2Jungle_Script:
 	wait 60
 	turn_left 3
 	wait 15
-	message 1, 0, 0x140b
+	message 1, 0, 0x1419
 	wait_msgbox_end
 	stop_bgm
 	wait 15
@@ -118,7 +118,7 @@ gApZ2Jungle_Script:
 	entityflag 3, 1, TRUE
 	wait 30
 	play_bgm BGM_Z2_JUNGLE
-	message 1, 0, 0x1403
+	message 1, 0, 0x1411
 	wait_msgbox_end
 	cutscene_end
 	indicator 1, 1, 0
@@ -246,17 +246,29 @@ gApZ2Jungle_MidBoss0Script:
 	resume 1
 	end
 
+gApZ2Jungle_HollowElf:
+	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 73, 1
+	.4byte 4384*PX, 688*PX
+	.4byte DIR_RIGHT
+
 .global gApZ2Jungle_MidBoss0ClearScript
 gApZ2Jungle_MidBoss0ClearScript:
 	adjust_camera 0, 0, 3
 	adjust_camera 1, 0, 4
 	cmd08_wait_set 1
+	spawn 9, gApZ2Jungle_HollowElf
 	destroy 1
 	end
 
 gApZ2Jungle_Snake:
 	.byte ENTITY_BOSS, BOSS_Z2_SNAKE, 0, 1
 	.4byte 6720*PX, 800*PX
+	.4byte DIR_LEFT
+
+.global gApZ2Jungle_SnakeRider
+gApZ2Jungle_SnakeRider:
+	.byte ENTITY_SOLID, SOLID_Z2_SNAKE_RIDER, 0, 0
+	.4byte 6912*PX, 448*PX
 	.4byte DIR_LEFT
 
 gApZ2Jungle_Thief:
@@ -307,11 +319,12 @@ gApZ2Jungle_FightScript:
 	adjust_camera 1, 0, 2
 	adjust_camera 3, 0, 0x1AB000
 	spawn 5, gApZ2Jungle_Elf
+	cmd0f 5, 4, 0
 	wait 60
-	message 1, 0, 0x140c
+	message 1, 0, 0x141a
 	wait_msgbox_end
 	force 9, 0, 0x1A6000
-	message 1, 0, 0x140d
+	message 1, 0, 0x141b
 	wait_msgbox_end
 	wait 10
 	emotion_bubble 4, 12, -40, 0
@@ -321,7 +334,7 @@ gApZ2Jungle_FightScript:
 	wait 20
 	entityflag 4, 1, TRUE
 	wait 60
-	message 1, 0, 0x1404
+	message 1, 0, 0x1412
 	wait_msgbox_end
 	destroy 4
 	destroy 5
@@ -404,7 +417,7 @@ gApZ2Jungle_ClearScript:
 	lock
 	cutscene_start CS_UNK_48
 	force 8, 0, 0
-	message 1, 0, 0x1405
+	message 1, 0, 0x1413
 	wait_msgbox_end
 	entityflag 1, 7, TRUE
 	cmd08_wait_set 1
@@ -429,19 +442,19 @@ gApZ2Jungle_ClearScript:
 	emotion_bubble 0, 16, -40, 0
 	spawn 3, gApZ2Jungle_X
 	wait 300
-	message 1, 0, 0x140e
+	message 1, 0, 0x141c
 	wait_msgbox_end
 	wait 30
 	entityflag 3, 0, TRUE
 	wait 15
-	message 1, 0, 0x140f
+	message 1, 0, 0x141d
 	wait_msgbox_end
 	wait 15
 	entityflag 3, 1, TRUE
 	wait 60
 	stop_bgm
 	wait 120
-	message 1, 0, 0x1410
+	message 1, 0, 0x141e
 	wait_msgbox_end
 	wait 90
 	force 4, 0, 0
@@ -846,11 +859,11 @@ gApZ2MugshotSoldier_Pal:
 
 .global gApZ2Jungle_RescueTexts
 gApZ2Jungle_RescueTexts:
-	.2byte 0x1406
-	.2byte 0x1407
-	.2byte 0x1408
-	.2byte 0x1409
-	.2byte 0x140a
+	.2byte 0x1414
+	.2byte 0x1415
+	.2byte 0x1416
+	.2byte 0x1417
+	.2byte 0x1418
 	.balign 4, 0
 
 .global gApZ2Jungle_Water0Map

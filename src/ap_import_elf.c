@@ -5,9 +5,12 @@
 #include "global.h"
 #include "motion.h"
 #include "pickup.h"
+#include "stagerun.h"
+#include "trig.h"
 #include "zero.h"
 
 #include "constants/song.h"
+#include "constants/stage_id.h"
 
 #if AP
 
@@ -52,6 +55,24 @@ static bool32 checked(u16 loc) {
 #define ELF_CARRIERS 70
 #define ELF_MOLES 71
 #define ELF_SPIDERS 72
+#define ELF_HUNTERS 228  // Temple of Wind
+#define ELF_SHIPS 229
+#define ELF_FISH 21  // Computer Zone
+#define ELF_DOZERS 22
+#define ELF_CRAWLERS 23
+#define ELF_SPIKINGS 36  // Train
+#define ELF_CRABS 37
+#define ELF_MINES 55  // Power Room
+#define ELF_COPTERS 56
+#define ELF_GENERATOR 57
+#define ELF_SIGNALOIDS 164  // Shuttle Factory
+#define ELF_GUARDS 165
+#define ELF_TREE_FROGS 120  // Forest of Notus
+#define ELF_LEAPERS 121
+#define ELF_SNOWBALLERS 132  // Computer Zone 2
+#define ELF_WOLVES 133
+#define ELF_FLOPPERS 134
+#define ELF_FLOOR_MINES 135
 
 EWRAM_DATA static u8 sHottalookKills = 0;
 EWRAM_DATA static u8 sHopperKills = 0;
@@ -64,11 +85,28 @@ EWRAM_DATA static u8 sBeeKills = 0;
 EWRAM_DATA static u8 sCarrierKills = 0;
 EWRAM_DATA static u8 sMoleKills = 0;
 EWRAM_DATA static u8 sSpiderKills = 0;
+EWRAM_DATA static u8 sHunterKills = 0;
+EWRAM_DATA static u8 sShipKills = 0;
+EWRAM_DATA static u8 sFishKills = 0;
+EWRAM_DATA static u8 sDozerKills = 0;
+EWRAM_DATA static u8 sCrawlerKills = 0;
+EWRAM_DATA static u8 sSpikingKills = 0;
+EWRAM_DATA static u8 sCrabKills = 0;
+EWRAM_DATA static u8 sMineKills = 0;
+EWRAM_DATA static u8 sCopterKills = 0;
+EWRAM_DATA static u8 sSignaloidKills = 0;
+EWRAM_DATA static u8 sGuardKills = 0;
+EWRAM_DATA static u8 sSnowballerKills = 0;
+EWRAM_DATA static u8 sWolfKills = 0;
+EWRAM_DATA static u8 sFlopperKills = 0;
+EWRAM_DATA static u8 sFloorMineKills = 0;
+EWRAM_DATA static u8 sLeaperKills = 0;
+EWRAM_DATA static u8 sTreeFrogKills = 0;
 
 static void giveElf(u8 n) {
   struct Entity* p;
 
-  if (n / 16 != ApImportZ2Stage(gApImportSelected)) return;
+  if (gStageRun.id != STAGE_NONE || n / 16 != ApImportZ2Stage(gApImportSelected)) return;
   if (checked(AP_LOC_IMPORT_FIRST + n)) return;
   p = AllocEntityLast(gPickupHeaderPtr);
   if (p == NULL) return;
@@ -90,6 +128,23 @@ void ApImportResetKills(void) {
   sCarrierKills = 0;
   sMoleKills = 0;
   sSpiderKills = 0;
+  sHunterKills = 0;
+  sShipKills = 0;
+  sFishKills = 0;
+  sDozerKills = 0;
+  sCrawlerKills = 0;
+  sSpikingKills = 0;
+  sCrabKills = 0;
+  sMineKills = 0;
+  sCopterKills = 0;
+  sSignaloidKills = 0;
+  sGuardKills = 0;
+  sSnowballerKills = 0;
+  sWolfKills = 0;
+  sFlopperKills = 0;
+  sFloorMineKills = 0;
+  sLeaperKills = 0;
+  sTreeFrogKills = 0;
 }
 
 void ApImportHottalookKilled(void) {
@@ -137,12 +192,86 @@ void ApImportSpiderKilled(void) {
   if (++sSpiderKills == 3) giveElf(ELF_SPIDERS);
 }
 
-u8 ApImportElvesFound(void) {
-  u8 n = 0;
-  u16 i;
+void ApImportHunterKilled(void) {
+  if (++sHunterKills == 8) giveElf(ELF_HUNTERS);
+}
 
-  for (i = AP_LOC_IMPORT_FIRST; i <= AP_MAX_LOCATION_ID; i++) {
-    if ((i - AP_LOC_IMPORT_FIRST) % 16 >= 2 && checked(i)) n++;
+void ApImportBarrierShipKilled(void) {
+  if (++sShipKills == 5) giveElf(ELF_SHIPS);
+}
+
+void ApImportFishKilled(void) {
+  if (++sFishKills == 5) giveElf(ELF_FISH);
+}
+
+void ApImportDozerKilled(void) {
+  if (++sDozerKills == 4) giveElf(ELF_DOZERS);
+}
+
+void ApImportCrawlerKilled(void) {
+  if (++sCrawlerKills == 4) giveElf(ELF_CRAWLERS);
+}
+
+void ApImportSpikingKilled(void) {
+  if (++sSpikingKills == 10) giveElf(ELF_SPIKINGS);
+}
+
+void ApImportCrabKilled(void) {
+  if (++sCrabKills == 4) giveElf(ELF_CRABS);
+}
+
+void ApImportMineKilled(void) {
+  if (++sMineKills == 4) giveElf(ELF_MINES);
+}
+
+void ApImportCopterKilled(void) {
+  if (++sCopterKills == 7) giveElf(ELF_COPTERS);
+}
+
+void ApImportGeneratorKilled(void) { giveElf(ELF_GENERATOR); }
+
+void ApImportSignaloidKilled(void) {
+  if (++sSignaloidKills == 3) giveElf(ELF_SIGNALOIDS);
+}
+
+void ApImportShieldGuardKilled(void) {
+  if (++sGuardKills == 3) giveElf(ELF_GUARDS);
+}
+
+void ApImportSnowballerKilled(void) {
+  if (++sSnowballerKills == 5) giveElf(ELF_SNOWBALLERS);
+}
+
+void ApImportWolfKilled(void) {
+  if (++sWolfKills == 4) giveElf(ELF_WOLVES);
+}
+
+void ApImportFlopperKilled(void) {
+  if (++sFlopperKills == 3) giveElf(ELF_FLOPPERS);
+}
+
+void ApImportFloorMineKilled(void) {
+  if (++sFloorMineKills == 20) giveElf(ELF_FLOOR_MINES);
+}
+
+void ApImportLeaperKilled(void) {
+  if (++sLeaperKills == 6) giveElf(ELF_LEAPERS);
+}
+
+void ApImportTreeFrogKilled(void) {
+  if (++sTreeFrogKills == 5) giveElf(ELF_TREE_FROGS);
+}
+
+// By import, placed and kill elves, from block's third id on
+static const u8 sElves[AP_IMPORT_COUNT] = {4, 6, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4};
+
+u8 ApImportElfTotal(u8 import) { return sElves[import]; }
+
+u8 ApImportElvesFound(u8 import) {
+  u16 first = AP_LOC_IMPORT_FIRST + ApImportZ2Stage(import) * 16 + 2;
+  u8 n = 0, i;
+  for (i = 0; i < sElves[import]; i++) {
+    if (checked(first + i)) n++;
   }
   return n;
 }
@@ -151,6 +280,19 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
   Pickup* p = (Pickup*)body->parent;
   struct Entity* q = body->enemy->parent;
   if (q->kind == ENTITY_PLAYER) p->z = (void*)q;
+}
+
+// 0x080d68b8: bobs about home, home's y creeps to Zero's
+static void drift(Pickup* p) {
+  s32 dy = (pZero2->s).coord.y - (p->unk_coord).y;
+  if (dy >= -32 && dy <= 32) {
+    (p->unk_coord).y += dy;
+  } else {
+    (p->unk_coord).y += dy > 0 ? 32 : -32;
+  }
+  if (++p->work[2] == 160) p->work[2] = 0;
+  (p->coord).x = (p->unk_coord).x + SIN(p->work[2] * 256 / 160) * 12;
+  (p->coord).y = (p->unk_coord).y - SIN((p->work[2] % 80) * 256 / 80) * 4;
 }
 
 static void ImportElf_Init(Pickup* p) {
@@ -164,11 +306,13 @@ static void ImportElf_Init(Pickup* p) {
   p->flags |= DISPLAY | FLIPABLE;
   INIT_BODY(p, &sCollision, 64, onCollision);
   p->z = NULL;
+  p->unk_coord = p->coord;
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
   ImportElf_Update(p);
 }
 
 static void ImportElf_Update(Pickup* p) {
+  if (p->work[1] != 0) drift(p);
   UpdateSpriteAnimation(p);
   if (((p->body).status & BODY_STATUS_B2) && p->z != NULL) {
     ApMarkLocationChecked(LOCATION(p));

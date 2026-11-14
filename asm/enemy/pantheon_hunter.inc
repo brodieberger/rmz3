@@ -14,6 +14,9 @@ PantheonHunter_Die: @ 0x08064ACC
 	ldrb r5, [r4, #0xe]
 	cmp r5, #0
 	bne _08064B5E
+.if AP
+	bl ApImportHunterKilled
+.endif
 	ldr r0, [r4, #0x54]
 	ldr r1, [r4, #0x58]
 	movs r2, #0x80
