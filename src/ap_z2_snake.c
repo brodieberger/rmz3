@@ -30,6 +30,7 @@
 /*
   Zero 2's boss 1, the Jungle's snake. Its body is the floor, eight blocks tail to head.
   The rider on it is the boss.
+  work0: 1 in Yggdrasil, its body laid in that stage's metatiles
 */
 struct Snake {
   OBJECT_HDR;
@@ -965,6 +966,9 @@ static const BossFunc sStates[29] = {
 
 static const u16 sBodyPatch[2 + 4] = {2, 2, 0x128, 0x129, 0x138, 0x139};
 static const u16 sEndPatch[2 + 4] = {2, 2, 0x126, 0x127, 0x136, 0x137};
+// 0x08320e54, 0x08320e48
+static const u16 sYggBodyPatch[2 + 4] = {2, 2, 0x302, 0x303, 0x312, 0x313};
+static const u16 sYggEndPatch[2 + 4] = {2, 2, 0x300, 0x301, 0x310, 0x311};
 static const u16 sClearPatch[2 + 4] = {2, 2, 0, 0, 0, 0};
 static const struct Rect sBlockSize = {0, 0xFFF, PIXEL(32), PIXEL(32)};
 
@@ -1019,12 +1023,12 @@ static void Block_Update(struct SnakeBlock* p) {
   }
   switch (p->patch) {
     case PATCH_BODY:
-      patchAt(&s->coord, sBodyPatch);
+      patchAt(&s->coord, (RIDER(p)->s).work[0] != 0 ? sYggBodyPatch : sBodyPatch);
       s->flags2 &= ~ENTI_PHYSICS;
       p->patch = 0;
       break;
     case PATCH_END:
-      patchAt(&s->coord, sEndPatch);
+      patchAt(&s->coord, (RIDER(p)->s).work[0] != 0 ? sYggEndPatch : sEndPatch);
       s->flags2 &= ~ENTI_PHYSICS;
       p->patch = 0;
       break;

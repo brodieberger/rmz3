@@ -1228,6 +1228,62 @@ gGraphic_OpeningAnim2:: @ Gfx131 in 0x08547CBC
 		.4byte gApZ2PictureDarkElf_Pal-.
 		.2byte 224
 		.byte 0, 2
+
+	@ Gfx135: Zero 2's 56, Yggdrasil's data
+	.4byte gApZ2PictureSealBreak-.
+	.4byte 19904 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureSealBreak_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx136: Zero 2's 57, Yggdrasil's data
+	.4byte gApZ2PictureZeroRage-.
+	.4byte 11236 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureZeroRage_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx137: Zero 2's 58, Yggdrasil's data
+	.4byte gApZ2PictureMerge0-.
+	.4byte 11148 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureMerge0_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx138: Zero 2's 59, Yggdrasil's data
+	.4byte gApZ2PictureMerge1-.
+	.4byte 10520 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureMerge1_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx139: Zero 2's 60, Yggdrasil's data
+	.4byte gApZ2PictureMerge2-.
+	.4byte 11716 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureMerge2_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx140: Zero 2's 61, Yggdrasil's data
+	.4byte gApZ2PictureMerge3-.
+	.4byte 13004 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureMerge3_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx141: Zero 2's 62, Yggdrasil's data
+	.4byte gApZ2PictureElpizoReborn-.
+	.4byte 28696 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureElpizoReborn_Pal-.
+		.2byte 224
+		.byte 0, 2
 .endif
 
 gGraphicData::

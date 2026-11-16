@@ -55,7 +55,20 @@
 #define PROJECTILE_Z2_ICE_MINE 92  // Zero 2 projectile 41, her ice mines and whirl
 #define PROJECTILE_Z2_FROG_SPIT 93  // Zero 2 projectile 31, the frog's globs, bubbles and swallowed tree frogs
 #define PROJECTILE_Z2_FROG_LINK 94  // Zero 2 projectile 32, its arms' links and its touch
-#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_FROG_LINK + 1)
+#define PROJECTILE_Z2_ROCKET 95  // Zero 2 projectile 8, the gunship's rockets and their fire
+#define PROJECTILE_Z2_BOMB 96  // Zero 2 projectile 9, its bombs and their fire
+#define PROJECTILE_Z2_HORN_BOMB 97  // Zero 2 projectile 22, Kuwagust's horn bombs and their chains
+#define PROJECTILE_Z2_WHIRLWIND 98  // Zero 2 projectile 23, his whirlwinds
+#define PROJECTILE_Z2_SPARK_MINE 99  // Zero 2 projectile 29, sparks he leaves flying
+#define PROJECTILE_Z2_ANCHOR 100  // Zero 2 projectile 33, the Anchus brothers' anchor and its chain
+#define PROJECTILE_Z2_ANCHUS_GUN 101  // Zero 2 projectile 30, the brother's horn guns
+#define PROJECTILE_Z2_ELPIZO_SLASH 102  // Zero 2 projectile 55, Elpizo's slash wave, bolts and flame
+#define PROJECTILE_Z2_ELPIZO_DRAIN 103  // Zero 2 projectile 56, his air shot and the orbs draining Zero
+#define PROJECTILE_Z2_ELPIZO_BLAST 104  // Zero 2 projectile 57, the Dark Elf blast's orb and pillar
+#define PROJECTILE_Z2_ELPIZO_PORTAL 105  // Zero 2 projectile 58, his summoning portal
+#define PROJECTILE_Z2_DARK_RING 106  // Zero 2 projectile 53, Elpizo's ring holding Zero at the seal
+#define PROJECTILE_Z2_ELPIZO_FINAL_FIRE 107  // Zero 2 projectile 45, the last form's tentacles, flames, top and shots
+#define PROJECTILE_ENTITY_COUNT (PROJECTILE_Z2_ELPIZO_FINAL_FIRE + 1)
 #else
 #define PROJECTILE_ENTITY_COUNT 48
 #endif

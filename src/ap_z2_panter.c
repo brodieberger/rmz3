@@ -30,7 +30,7 @@
 
 /*
   Zero 2's boss 3, Panter Flauclaws, on the Train's two cars.
-  work0: 0 Train, 1 Yggdrasil's refight, not ported
+  work0: 0 Train, 1 Yggdrasil's refight
   Stands on fourteen spots, 0..6 back from the right car's edge, 7..13 the left's.
 */
 
@@ -323,7 +323,7 @@ static void Panter_Init(struct Panter* p) {
   p->airborne = FALSE;
   p->_e0 = 0;
   p->element = NULL;
-  s->HOME_X = PIXEL(416);
+  s->HOME_X = s->work[0] == 0 ? PIXEL(416) : PIXEL(1856);
   s->HOME_Y = PIXEL(416);
   findEdges(p, PIXEL(32));
   ResetBossBody((struct Boss*)p, sBody, 64);

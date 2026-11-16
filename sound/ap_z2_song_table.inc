@@ -114,6 +114,25 @@
     song bgm_z2_elpizo, 0, 0 @ BGM_Z2_ELPIZO
     song bgm_z2_baby_elves, 0, 0 @ BGM_Z2_BABY_ELVES
     song se_z2_elpizo_laugh, 4, 4 @ SE_Z2_ELPIZO_LAUGH
+    song se_z2_elpizo_guard, 4, 4 @ SE_Z2_ELPIZO_GUARD
+    song se_z2_elpizo_summon, 4, 4 @ SE_Z2_ELPIZO_SUMMON
+    song se_z2_elpizo_slash, 4, 4 @ SE_Z2_ELPIZO_SLASH
+    song se_z2_elpizo_shot, 4, 4 @ SE_Z2_ELPIZO_SHOT
+    song se_z2_elpizo_blast, 4, 4 @ SE_Z2_ELPIZO_BLAST
+    song se_z2_elpizo_pillar, 10, 10 @ SE_Z2_ELPIZO_PILLAR
+    song se_z2_seal_strike, 10, 10 @ SE_Z2_SEAL_STRIKE
+    song se_z2_seal_whiteout, 10, 10 @ SE_Z2_SEAL_WHITEOUT
+    song se_z2_dark_elf_wake, 3, 3 @ SE_Z2_DARK_ELF_WAKE
+    song se_z2_dark_merge, 10, 10 @ SE_Z2_DARK_MERGE
+    song se_z2_final_appear, 4, 4 @ SE_Z2_FINAL_APPEAR
+    song se_z2_final_petal, 10, 10 @ SE_Z2_FINAL_PETAL
+    song se_z2_final_call, 4, 4 @ SE_Z2_FINAL_CALL
+    song se_z2_final_charge, 4, 4 @ SE_Z2_FINAL_CHARGE
+    song se_z2_final_fade, 4, 4 @ SE_Z2_FINAL_FADE
+    song se_z2_final_warp, 3, 3 @ SE_Z2_FINAL_WARP
+    song se_z2_final_orbs, 4, 4 @ SE_Z2_FINAL_ORBS
+    song se_z2_final_claws, 3, 3 @ SE_Z2_FINAL_CLAWS
+    song se_z2_final_top, 3, 3 @ SE_Z2_FINAL_TOP
     song se_z2_dark_bolt, 11, 11 @ SE_Z2_DARK_BOLT
     song bgm_z2_train, 0, 0 @ BGM_Z2_TRAIN
     song bgm_z2_power_room, 0, 0 @ BGM_Z2_POWER_ROOM
@@ -153,9 +172,15 @@
     song se_z2_leviathan_back, 4, 4 @ SE_Z2_LEVIATHAN_BACK
     song bgm_z2_seal, 0, 0 @ BGM_Z2_SEAL
     song se_z2_leaves, 6, 6 @ SE_Z2_LEAVES
-    song se_z2_frog_spit, 4, 4 @ SE_Z2_FROG_SPIT
+    song se_z2_launch, 4, 4 @ SE_Z2_LAUNCH
     song se_z2_frog_chew, 3, 3 @ SE_Z2_FROG_CHEW
     song se_z2_frog_croak, 4, 4 @ SE_Z2_FROG_CROAK
     song se_z2_frog_croak_mid, 4, 4 @ SE_Z2_FROG_CROAK_MID
     song se_z2_frog_croak_big, 4, 4 @ SE_Z2_FROG_CROAK_BIG
     song se_z2_frog_mouth, 4, 4 @ SE_Z2_FROG_MOUTH
+    song se_z2_ciel_hurt, 9, 9 @ SE_Z2_CIEL_HURT
+    song bgm_z2_yggdrasil, 0, 0 @ BGM_Z2_YGGDRASIL
+    song bgm_z2_elpizo_battle, 0, 0 @ BGM_Z2_ELPIZO_BATTLE
+    song bgm_z2_elpizo_final, 0, 0 @ BGM_Z2_ELPIZO_FINAL
+    song bgm_z2_ending, 0, 0 @ BGM_Z2_ENDING
+    song bgm_z2_staff_roll, 0, 0 @ BGM_Z2_STAFF_ROLL

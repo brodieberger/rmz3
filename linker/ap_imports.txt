@@ -13,6 +13,7 @@
 		src/ap_stage/z2_na1/layer.o (.text);
 		src/ap_stage/z2_na2/layer.o (.text);
 		src/ap_stage/z2_na3/layer.o (.text);
+		src/ap_stage/z2_yggdrasil/layer.o (.text);
 		__ap_code_end = .;
 		src/ap_stage/z2_opening/landscape.o (.rodata);
 		src/ap_stage/z2_opening/spawn.o (.rodata);
@@ -59,3 +60,6 @@
 		src/ap_stage/z2_na3/landscape.o (.rodata);
 		src/ap_stage/z2_na3/spawn.o (.rodata);
 		src/ap_stage/z2_na3/layer.o (.rodata);
+		src/ap_stage/z2_yggdrasil/landscape.o (.rodata);
+		src/ap_stage/z2_yggdrasil/spawn.o (.rodata);
+		src/ap_stage/z2_yggdrasil/layer.o (.rodata);

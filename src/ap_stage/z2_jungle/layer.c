@@ -172,17 +172,22 @@ static void Stage_Exit(Coords32* _ UNUSED) {
 metatile_attr_t FUN_08010cd0(s32 x, s32 y);
 void FUN_08010d20(s32 x, s32 y);
 
-extern const StageFunc gApZ2Jungle2_StageRoutines[4];
+extern const StageFunc gApZ2Jungle2_StageRoutines[4], gApZ2Yggdrasil_StageRoutines[4];
 metatile_attr_t ApZ2Jungle2Canopy(s32 x, s32 y);
 void ApZ2Jungle2Burn(s32 x, s32 y);
+metatile_attr_t ApZ2YggdrasilCanopy(s32 x, s32 y);
+void ApZ2YggdrasilBurn(s32 x, s32 y);
 
 static bool8 inNotus(void) { return gApImportedStages[gApImportSelected].fns == gApZ2Jungle2_StageRoutines; }
+
+static bool8 inYggdrasil(void) { return gApImportedStages[gApImportSelected].fns == gApZ2Yggdrasil_StageRoutines; }
 
 // 0x0800bb24, Anatre's own outside slot 0
 metatile_attr_t ApZ2JungleCanopy(s32 x, s32 y) {
   u16* map = gOverworld.terrain.tilemap;
   if (gStageRun.id != STAGE_NONE) return FUN_08010cd0(x, y);
   if (inNotus()) return ApZ2Jungle2Canopy(x, y);
+  if (inYggdrasil()) return ApZ2YggdrasilCanopy(x, y);
   if ((u32)x > PIXEL(3840) - 1 || y < PIXEL(640) || y > PIXEL(960) - 1) return 0;
   return map[MAP_OFFSET(map, x >> 12, (y - PIXEL(640)) >> 12)];
 }
@@ -196,6 +201,10 @@ void ApZ2JungleBurn(s32 x, s32 y) {
   }
   if (inNotus()) {
     ApZ2Jungle2Burn(x, y);
+    return;
+  }
+  if (inYggdrasil()) {
+    ApZ2YggdrasilBurn(x, y);
     return;
   }
   if ((u32)x > PIXEL(3840) - 1 || y < PIXEL(640) || y > PIXEL(960) - 1) return;

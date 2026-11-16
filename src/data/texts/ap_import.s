@@ -174,6 +174,17 @@ gApImportStartText14:
 		.string "  START MISSION\n"
 		.string "  CANCEL$"
 
+.global gApImportName15
+gApImportName15:
+	.string "Z2 YGGDRASIL$"
+
+.global gApImportStartText15
+gApImportStartText15:
+	.string "{WINDOW 0x62}"
+		.string "{RED}Z2 YGGDRASIL{RED_END}?\n"
+		.string "  START MISSION\n"
+		.string "  CANCEL$"
+
 .balign 4
 .global gApImportStartTexts
 gApImportStartTexts:
@@ -192,6 +203,7 @@ gApImportStartTexts:
 	.4byte gApImportStartText12
 	.4byte gApImportStartText13
 	.4byte gApImportStartText14
+	.4byte gApImportStartText15
 
 .global TextOfs_ApImport
 TextOfs_ApImport:
@@ -291,6 +303,37 @@ TextOfs_ApImport:
 	.2byte (Text_ApImport_93-Text_ApImport)
 	.2byte (Text_ApImport_94-Text_ApImport)
 	.2byte (Text_ApImport_95-Text_ApImport)
+	.2byte (Text_ApImport_96-Text_ApImport)
+	.2byte (Text_ApImport_97-Text_ApImport)
+	.2byte (Text_ApImport_98-Text_ApImport)
+	.2byte (Text_ApImport_99-Text_ApImport)
+	.2byte (Text_ApImport_100-Text_ApImport)
+	.2byte (Text_ApImport_101-Text_ApImport)
+	.2byte (Text_ApImport_102-Text_ApImport)
+	.2byte (Text_ApImport_103-Text_ApImport)
+	.2byte (Text_ApImport_104-Text_ApImport)
+	.2byte (Text_ApImport_105-Text_ApImport)
+	.2byte (Text_ApImport_106-Text_ApImport)
+	.2byte (Text_ApImport_107-Text_ApImport)
+	.2byte (Text_ApImport_108-Text_ApImport)
+	.2byte (Text_ApImport_109-Text_ApImport)
+	.2byte (Text_ApImport_110-Text_ApImport)
+	.2byte (Text_ApImport_111-Text_ApImport)
+	.2byte (Text_ApImport_112-Text_ApImport)
+	.2byte (Text_ApImport_113-Text_ApImport)
+	.2byte (Text_ApImport_114-Text_ApImport)
+	.2byte (Text_ApImport_115-Text_ApImport)
+	.2byte (Text_ApImport_116-Text_ApImport)
+	.2byte (Text_ApImport_117-Text_ApImport)
+	.2byte (Text_ApImport_118-Text_ApImport)
+	.2byte (Text_ApImport_119-Text_ApImport)
+	.2byte (Text_ApImport_120-Text_ApImport)
+	.2byte (Text_ApImport_121-Text_ApImport)
+	.2byte (Text_ApImport_122-Text_ApImport)
+	.2byte (Text_ApImport_123-Text_ApImport)
+	.2byte (Text_ApImport_124-Text_ApImport)
+	.2byte (Text_ApImport_125-Text_ApImport)
+	.2byte (Text_ApImport_126-Text_ApImport)
 
 .global Text_ApImport
 Text_ApImport:
@@ -1222,5 +1265,270 @@ Text_ApImport_95: @ 0x145f, Zero 2's 0x110c
 	.string "anytime you want...▼"
 	.string "So please return to the▼"
 	.string "base once. Please... Zero.$"
+Text_ApImport_96: @ 0x1460, Zero 2's 0x1200
+	.string "{WINDOW 0x85}"
+	.string "With Master Elpizo\n"
+	.string "and ... Master\n"
+	.string "Dark Elf, the new▼"
+	.string "world is... Ready\n"
+	.string "to start...$"
+Text_ApImport_97: @ 0x1461, Zero 2's 0x1201
+	.string "{WINDOW 0x84}"
+	.string "The new world...\n"
+	.string "The new order...\n"
+	.string "The new peace...▼"
+	.string "Master Elpizo,\n"
+	.string "forever!$"
+Text_ApImport_98: @ 0x1462, Zero 2's 0x1202
+	.string "{WINDOW 0x84}"
+	.string "Where... where\n"
+	.string "am I?!▼"
+	.string "Elpizo came...\n"
+	.string "and Baby Elf\n"
+	.string "came...▼"
+	.string "What I'm doing...?▼"
+	.string "Hissssss!$"
+Text_ApImport_99: @ 0x1463, Zero 2's 0x1203
+	.string "{WINDOW 0x89}"
+	.string "Bwooooh!\n"
+	.string "Master Elpizo...\n"
+	.string "Master Dark Elf...▼"
+	.string "The new world...\n"
+	.string "It's ready...$"
+Text_ApImport_100: @ 0x1464, Zero 2's 0x1204
+	.string "{WINDOW 0x88}"
+	.string "The new world...\n"
+	.string "The new order...\n"
+	.string "The new peace...▼"
+	.string "Master Elpizo,\n"
+	.string "forever.\n"
+	.string "Bobobobhfa....!$"
+Text_ApImport_101: @ 0x1465, Zero 2's 0x1205
+	.string "{WINDOW 0x88}"
+	.string "Bwooooh!...!?▼"
+	.string "Where is Elpizo!▼"
+	.string "What?▼"
+	.string "What... am I doing?▼"
+	.string "So hot...\n"
+	.string "Bwooooh!?$"
+Text_ApImport_102: @ 0x1466, Zero 2's 0x1206
+	.string "{WINDOW 0x8F}"
+	.string "With the\n"
+	.string "combination of\n"
+	.string "Master Elpizo▼"
+	.string "and Master Dark\n"
+	.string "Elf, the new\n"
+	.string "world is... Ready▼"
+	.string "to begin...$"
+Text_ApImport_103: @ 0x1467, Zero 2's 0x1207
+	.string "{WINDOW 0x8E}"
+	.string "The new world...\n"
+	.string "The new order...\n"
+	.string "The new peace...▼"
+	.string "Master Elpizo,\n"
+	.string "forever!$"
+Text_ApImport_104: @ 0x1468, Zero 2's 0x1208
+	.string "{WINDOW 0x8E}"
+	.string "Ugh...\n"
+	.string "It can't be...▼"
+	.string "I didn't think my\n"
+	.string "heart could be\n"
+	.string "tricked by them...▼"
+	.string "Foolish...$"
+Text_ApImport_105: @ 0x1469, Zero 2's 0x1209
+	.string "{WINDOW 0x8D}"
+	.string "The greatest thing\n"
+	.string "ever will soon...▼"
+	.string "awaken in this\n"
+	.string "world...▼"
+	.string "Master Elpizo,\n"
+	.string "forever!$"
+Text_ApImport_106: @ 0x146a, Zero 2's 0x120a
+	.string "{WINDOW 0x8C}"
+	.string "Another chapter in\n"
+	.string "history is about\n"
+	.string "to unfold...▼"
+	.string "Master Elpizo,\n"
+	.string "forever!$"
+Text_ApImport_107: @ 0x146b, Zero 2's 0x120b
+	.string "{WINDOW 0x8C}"
+	.string "What?!▼"
+	.string "It can't be!? Hey!!\n"
+	.string "What am I doing...!?▼"
+	.string "Guhhha....h!$"
+Text_ApImport_108: @ 0x146c, Zero 2's 0x120c
+	.string "{WINDOW 0x91}"
+	.string "The greatest thing\n"
+	.string "ever is ready to▼"
+	.string "awaken...▼"
+	.string "{WINDOW 0x96}"
+	.string "Another chapter in\n"
+	.string "our glorious\n"
+	.string "history begins...▼"
+	.string "Master Elpizo,\n"
+	.string "forever...▼"
+	.string "Let's go, little\n"
+	.string "brother...▼"
+	.string "{WINDOW 0x91}"
+	.string "Yes, brother!$"
+Text_ApImport_109: @ 0x146d, Zero 2's 0x120d
+	.string "{WINDOW 0x90}"
+	.string "History is about\n"
+	.string "to be written...▼"
+	.string "{WINDOW 0x96}"
+	.string "Master Elpizo,\n"
+	.string "forever...▼"
+	.string "And the bond\n"
+	.string "between the\n"
+	.string "Anchus▼"
+	.string "brothers shall\n"
+	.string "live forever...$"
+Text_ApImport_110: @ 0x146e, Zero 2's 0x120e
+	.string "{WINDOW 0x90}"
+	.string "What... what\n"
+	.string "happened?▼"
+	.string "Brother!!▼"
+	.string "{WINDOW 0x96}"
+	.string "It can't be!!▼"
+	.string "We were\n"
+	.string "manipulated!!!!▼"
+	.string "Uggggg!!$"
+Text_ApImport_111: @ 0x146f, Zero 2's 0x120f
+	.string "{WINDOW 0x93}"
+	.string "The greatest\n"
+	.string "thing...\n"
+	.string "Ribbid!▼"
+	.string "is going to awaken\n"
+	.string "again... in this\n"
+	.string "world. Ribbid...▼"
+	.string "Our story is about\n"
+	.string "to unfold...▼"
+	.string "Master Elpizo,\n"
+	.string "forever... Ribbid!$"
+Text_ApImport_112: @ 0x1470, Zero 2's 0x1210
+	.string "{WINDOW 0x92}"
+	.string "We are ready to\n"
+	.string "define our\n"
+	.string "destiny...▼"
+	.string "Master Elpizo,\n"
+	.string "forever...\n"
+	.string "Ribbid!$"
+Text_ApImport_113: @ 0x1471, Zero 2's 0x1211
+	.string "{WINDOW 0x92}"
+	.string "Ribbbbid!!▼"
+	.string "Where am I?!\n"
+	.string "What am I??▼"
+	.string "Ribbbbbbbbbbid!!$"
+Text_ApImport_114: @ 0x1472, Zero 2's 0x1212
+	.string "{WINDOW 0x8B}"
+	.string "Hee hee hee. I've\n"
+	.string "been waiting for\n"
+	.string "you, Zero. Nothing▼"
+	.string "is worse than\n"
+	.string "having a show that\n"
+	.string "no one comes to▼"
+	.string "watch. Once I\n"
+	.string "destroy the\n"
+	.string "original X, I▼"
+	.string "will be invincible!$"
+Text_ApImport_115: @ 0x1473, Zero 2's 0x1213
+	.string "{WINDOW 0x8B}"
+	.string "Hee hee hee. I've\n"
+	.string "been waiting for\n"
+	.string "you, Zero. Nothing▼"
+	.string "is worse than\n"
+	.string "having a show that\n"
+	.string "no one comes to▼"
+	.string "watch. Once I\n"
+	.string "destroy the\n"
+	.string "original X, I▼"
+	.string "will be invincible!$"
+Text_ApImport_116: @ 0x1474, Zero 2's 0x1214
+	.string "{WINDOW 0x8B}"
+	.string "Hee hee hee. I've\n"
+	.string "been waiting for\n"
+	.string "you, Zero. Nothing▼"
+	.string "is worse than\n"
+	.string "having a show that\n"
+	.string "no one comes to▼"
+	.string "watch. Once I\n"
+	.string "destroy the\n"
+	.string "original X, I▼"
+	.string "will be invincible!$"
+Text_ApImport_117: @ 0x1475, Zero 2's 0x1215
+	.string "{WINDOW 0x04}"
+	.string "I won't let that\n"
+	.string "happen!$"
+Text_ApImport_118: @ 0x1476, Zero 2's 0x1216
+	.string "{WINDOW 0x04}"
+	.string "What the...$"
+Text_ApImport_119: @ 0x1477, Zero 2's 0x1217
+	.string "{WINDOW 0x8B}"
+	.string "Hee hee hee.\n"
+	.string "Thank you for\n"
+	.string "coming to my show.▼"
+	.string "But, I'm afraid\n"
+	.string "that... this is\n"
+	.string "the real▼"
+	.string "{0xE9}retirement{0xE9} of\n"
+	.string "your friend.$"
+Text_ApImport_120: @ 0x1478, Zero 2's 0x1218
+	.string "{WINDOW 0x8B}"
+	.string "Hee hee hee!\n"
+	.string "Time to die,\n"
+	.string "X...▼"
+	.string "And release the\n"
+	.string "Dark Elf!$"
+Text_ApImport_121: @ 0x1479, Zero 2's 0x1219
+	.string "{WINDOW 0x8B}"
+	.string "Ha...\n"
+	.string "Ha ha ha...\n"
+	.string "Gha ha ha ha ha!▼"
+	.string "I did it!\n"
+	.string "I did it at last!$"
+Text_ApImport_122: @ 0x147a, Zero 2's 0x121a
+	.string "{WINDOW 0x8B}"
+	.string "I terminated the\n"
+	.string "legendary hero!▼"
+	.string "I destroyed X at\n"
+	.string "last!$"
+Text_ApImport_123: @ 0x147b, Zero 2's 0x121b
+	.string "{WINDOW 0x8B}"
+	.string "Arghhhhhh!!$"
+Text_ApImport_124: @ 0x147c, Zero 2's 0x121c
+	.string "{WINDOW 0x98}"
+	.string "... ... ... ...▼"
+	.string "... ...▼"
+	.string "Sorry to have kept\n"
+	.string "you waiting Zero.\n"
+	.string "I'm going to▼"
+	.string "terminate you,\n"
+	.string "destroy all Neo\n"
+	.string "Arcadia, and▼"
+	.string "exterminate all the\n"
+	.string "human beings.▼"
+	.string "What do you say?\n"
+	.string "A world without\n"
+	.string "humans... The world▼"
+	.string "only for Reploids...\n"
+	.string "Don't you think it\n"
+	.string "will be paradise!?$"
+Text_ApImport_125: @ 0x147d, Zero 2's 0x121d
+	.string "{WINDOW 0x98}"
+	.string "This can't be... I\n"
+	.string "am supposed to have\n"
+	.string "become▼"
+	.string "invincible...▼"
+	.string "I'm supposed to\n"
+	.string "have obtained the\n"
+	.string "power that had▼"
+	.string "nearly brought the\n"
+	.string "world to\n"
+	.string "destruction...$"
+Text_ApImport_126: @ 0x147e, Zero 2's 0x121e
+	.string "{WINDOW 0x98}"
+	.string "It was not enough,\n"
+	.string "Dark Elf! Give me\n"
+	.string "more strength!!$"
 
 .endif

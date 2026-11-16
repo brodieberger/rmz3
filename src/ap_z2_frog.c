@@ -183,7 +183,7 @@ const BossRoutine gApZ2FrogRoutine = {
 };
 // clang-format on
 
-metatile_attr_t ApZ2Jungle2Canopy(s32 x, s32 y);
+metatile_attr_t ApZ2JungleCanopy(s32 x, s32 y);
 u8 makeZeroSlower(struct Zero* z, u8 val);
 static struct Entity* createTreeFrog(struct Entity* boss, const Coords32* at, u8 kind, u8 n);
 static struct Entity* createTongue(struct Entity* parent, const Coords32* at, u8 kind, u8 n);
@@ -243,7 +243,7 @@ static void gravity(struct Entity* s) {
 }
 
 // 0x08057a70
-static bool8 inCanopy(struct Frog* p) { return ApZ2Jungle2Canopy((p->s).coord.x, p->floor - PIXEL(128)) != 0; }
+static bool8 inCanopy(struct Frog* p) { return ApZ2JungleCanopy((p->s).coord.x, p->floor - PIXEL(128)) != 0; }
 
 static void leaf(s32 x, s32 y) {
   Coords32 at;
@@ -481,22 +481,22 @@ static void pickSmall(struct Frog* p) {
   } else if (gScore.total->rank > 4) {
     if (p->last != m) {
       r = (RANDOM(RNG_0202f388) & 0x7FFF) % 20;
-      next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_CANOPY : r <= 9 ? FROG_TONGUE : FROG_SUMMON;
+      next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_CANOPY : r <= 9 ? FROG_SUMMON : FROG_TONGUE;
     } else if (m == FROG_IDLE) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 3 ? FROG_SUMMON : r <= 7 ? FROG_TONGUE : FROG_CANOPY;
+      next = r <= 3 ? FROG_SUMMON : r <= 7 ? FROG_CANOPY : FROG_TONGUE;
     } else if (m == FROG_CANOPY) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? FROG_IDLE : r <= 6 ? FROG_TONGUE : FROG_SUMMON;
+      next = r <= 1 ? FROG_IDLE : r <= 6 ? FROG_SUMMON : FROG_TONGUE;
     } else if (m == FROG_SUMMON) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? FROG_IDLE : r <= 6 ? FROG_TONGUE : FROG_CANOPY;
+      next = r <= 1 ? FROG_IDLE : r <= 6 ? FROG_CANOPY : FROG_TONGUE;
     } else if (m == FROG_TONGUE) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? FROG_IDLE : r <= 8 ? FROG_CANOPY : FROG_SUMMON;
+      next = r <= 1 ? FROG_IDLE : r <= 8 ? FROG_SUMMON : FROG_CANOPY;
     } else {
       r = (RANDOM(RNG_0202f388) & 0x7FFF) % 22;
-      next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_CANOPY : r <= 9 ? FROG_SUMMON : r <= 13 ? FROG_TONGUE : FROG_EAT;
+      next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_CANOPY : r <= 9 ? FROG_SUMMON : r <= 13 ? FROG_EAT : FROG_TONGUE;
     }
   } else if (p->last == m && m == FROG_IDLE) {
     next = (RANDOM(RNG_0202f388) & 15) > 7 ? FROG_CANOPY : FROG_SUMMON;
@@ -506,7 +506,7 @@ static void pickSmall(struct Frog* p) {
     next = (RANDOM(RNG_0202f388) & 7) <= 1 ? FROG_IDLE : FROG_CANOPY;
   } else {
     r = (RANDOM(RNG_0202f388) & 0x7FFF) % 10;
-    next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_CANOPY : FROG_SUMMON;
+    next = r <= 1 ? FROG_IDLE : r <= 5 ? FROG_SUMMON : FROG_CANOPY;
   }
   if (!ate && p->frogs != 0 && p->frogNear && (RANDOM(RNG_0202f388) & 3)) {
     p->resume = m;
@@ -552,25 +552,25 @@ static void pickGrown(struct Frog* p) {
   } else if (gScore.total->rank > 4) {
     if (p->last != m) {
       r = (RANDOM(RNG_0202f388) & 0x7FFF) % 20;
-      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SPIT : r <= 9 ? GROWN_TONGUE : GROWN_SUMMON;
+      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SPIT : r <= 9 ? GROWN_SUMMON : GROWN_TONGUE;
     } else if (m == GROWN_IDLE) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 3 ? GROWN_SUMMON : r <= 7 ? GROWN_TONGUE : GROWN_SPIT;
+      next = r <= 3 ? GROWN_SUMMON : r <= 7 ? GROWN_SPIT : GROWN_TONGUE;
     } else if (m == GROWN_SPIT) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? GROWN_IDLE : r <= 6 ? GROWN_TONGUE : GROWN_SUMMON;
+      next = r <= 1 ? GROWN_IDLE : r <= 6 ? GROWN_SUMMON : GROWN_TONGUE;
     } else if (m == GROWN_SUMMON) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? GROWN_IDLE : r <= 6 ? GROWN_TONGUE : GROWN_SPIT;
+      next = r <= 1 ? GROWN_IDLE : r <= 6 ? GROWN_SPIT : GROWN_TONGUE;
     } else if (m == GROWN_TONGUE) {
       r = RANDOM(RNG_0202f388) & 15;
-      next = r <= 1 ? GROWN_IDLE : r <= 8 ? GROWN_SPIT : GROWN_SUMMON;
+      next = r <= 1 ? GROWN_IDLE : r <= 8 ? GROWN_SUMMON : GROWN_SPIT;
     } else if (m == GROWN_EAT) {
       r = (RANDOM(RNG_0202f388) & 0x7FFF) % 18;
-      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SUMMON : r <= 9 ? GROWN_TONGUE : GROWN_SPIT;
+      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SUMMON : r <= 9 ? GROWN_SPIT : GROWN_TONGUE;
     } else {
       r = (RANDOM(RNG_0202f388) & 0x7FFF) % 20;
-      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SPIT : r <= 9 ? GROWN_TONGUE : GROWN_SUMMON;
+      next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SPIT : r <= 9 ? GROWN_SUMMON : GROWN_TONGUE;
     }
   } else if (p->last == m && m == GROWN_IDLE) {
     next = (RANDOM(RNG_0202f388) & 15) > 7 ? GROWN_SPIT : GROWN_SUMMON;
@@ -580,7 +580,7 @@ static void pickGrown(struct Frog* p) {
     next = (RANDOM(RNG_0202f388) & 7) <= 1 ? GROWN_IDLE : GROWN_SPIT;
   } else {
     r = (RANDOM(RNG_0202f388) & 0x7FFF) % 10;
-    next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SPIT : GROWN_SUMMON;
+    next = r <= 1 ? GROWN_IDLE : r <= 5 ? GROWN_SUMMON : GROWN_SPIT;
   }
   if (!ate && p->frogs != 0 && p->frogNear && (RANDOM(RNG_0202f388) & 3)) {
     p->resume = m;
@@ -1556,7 +1556,7 @@ static void Spit_Globs(struct Frog* p) {
   UpdateEntityAnim(s);
   switch (++s->work[2]) {
     case 2:
-      PlaySound(SE_Z2_FROG_SPIT);
+      PlaySound(SE_Z2_LAUNCH);
       spit(p, 0, PIXEL(4), PIXEL(28));
       break;
     case 10:
@@ -2168,7 +2168,7 @@ static struct Entity* createTreeFrog(struct Entity* boss, const Coords32* at, u8
 
 // 0x0807a694
 static bool8 inLeaves(struct Entity* s) {
-  return ApZ2Jungle2Canopy(s->coord.x - PIXEL(32), s->coord.y + PIXEL(32)) != 0;
+  return ApZ2JungleCanopy(s->coord.x - PIXEL(32), s->coord.y + PIXEL(32)) != 0;
 }
 
 static void rustle(struct Entity* s) {

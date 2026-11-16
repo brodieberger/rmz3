@@ -41,7 +41,7 @@ const struct SpawnTemplate gApZ2Na1_Templates[32] = {
     [6] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_GRAY_H, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_HATCH, 0, 0),
         },
     [7] =
         {

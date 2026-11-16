@@ -306,8 +306,7 @@ const StageLayerRoutine gApZ2Na3_LayerRoutines[5] = {
 #define PARENT (s->scriptEntity->unk_04)
 
 static const struct PreloadEntity sBoltSheet = {AP_SHEET_Z2_DARK_BOLT, 0, 576, 8, 0, AP_PRELOAD_SHEET, 0};
-static const struct PreloadEntity sDarkElfSheet = {AP_SHEET_Z2_DARK_ELF, 0, 640, 5, 0, AP_PRELOAD_SHEET, 0};
-static const struct PreloadEntity sBabyElfSheet = {AP_SHEET_Z2_BABY_ELF, 0, 704, 7, 0, AP_PRELOAD_SHEET, 0};
+static const struct PreloadEntity sBabyElfSheet = {AP_SHEET_Z2_BABY_ELF, 0, 768, 7, 0, AP_PRELOAD_SHEET, 0};
 
 static void standOnFloor(struct Solid* p, motion_t m) {
   struct Entity* s = &p->s;
@@ -600,61 +599,6 @@ static void BabyElf_Init(struct Solid* p) {
 }
 
 SCENE_ROUTINE(gApZ2BabyElvesRoutine, BabyElf_Init, BabyElf_Update, DeleteEntity);
-
-/*
-  Zero 2's solid 24 work0 0, the Dark Elf, over Elpizo
-  Flickers and sheds sparkles. Its scene never sets a flag, so its other states are not ported.
-*/
-static const s32 sSparkleX[5] = {PIXEL(-8), PIXEL(4), PIXEL(-4), PIXEL(0), PIXEL(8)};
-
-#define BOB (p->buffer[4])
-
-static void DarkElf_Update(struct Solid* p) {
-  struct Entity* s = &p->s;
-  Coords32 at;
-  StepPaletteAnimation(PLTT_ANIM_ID(75));
-  UpdateSpriteAnimation(p);
-  s->coord.x = PARENT->coord.x + PIXEL(32);
-  s->coord.y = PARENT->coord.y - PIXEL(64) + SIN(BOB) * 8;
-  BOB += 2;
-  if ((s->work[2]++ & 15) == 0) {
-    at.x = s->coord.x + sSparkleX[s->work[3]];
-    at.y = s->coord.y + PIXEL(8);
-    ApZ2CreateElfSparkle(&at, (RANDOM(RNG_0202f388) & 0x7FFF) % 3 + 1);
-    s->work[3] = (s->work[3] + 1) % 5;
-  }
-  if (s->mode[3]++ & 1) {
-    s->flags |= DISPLAY;
-  } else {
-    s->flags &= ~DISPLAY;
-  }
-}
-
-// 0x080cf62c
-static void DarkElf_Init(struct Solid* p) {
-  struct Entity* s = &p->s;
-  ApLoadSheet(&sDarkElfSheet);
-  InitRotatableMotion(s);
-  s->flags |= DISPLAY | FLIPABLE;
-  s->texture = TEXTURE_AP_SHEET;
-  SetSpriteAnimation(p, DARK_ELF(0));
-  ApStartPaletteAnimation(PLTT_ANIM_ID(75), &gApZ2Na3_PlttAnim75, gApZ2Na3_PlttAnimScript75, 0x200 | 5 << 5);
-  SET_XFLIP(p, FALSE);
-  s->renderPrio = 23;
-  BOB = 0;
-  s->work[2] = s->work[3] = 0;
-  (s->spr).mag.x = (s->spr).mag.y = 256;
-  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
-  DarkElf_Update(p);
-}
-
-// 0x080cf610
-static void DarkElf_Disappear(struct Solid* p) {
-  RemovePaletteAnimation(PLTT_ANIM_ID(75));
-  DeleteEntity(&p->s);
-}
-
-SCENE_ROUTINE(gApZ2DarkElfRoutine, DarkElf_Init, DarkElf_Update, DarkElf_Disappear);
 
 /*
   Zero 2's VFX 60, a sparkle falling off an elf

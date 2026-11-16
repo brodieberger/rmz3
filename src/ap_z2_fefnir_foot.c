@@ -1957,7 +1957,7 @@ static void Aura_Die(struct Entity* p) {
 // --------------------------------------------
 /*
   Zero 2's VFX 65, flames about him through his EX.
-  work0: 1 Fefnir's, 2 Leviathan's
+  work0: 1 Fefnir's, 2 Leviathan's, 3 Elpizo's
 */
 
 static void Ex_Init(struct Entity* p);
@@ -1974,9 +1974,10 @@ const VFXRoutine gApZ2FefnirExRoutine = {
 };
 // clang-format on
 
-extern const PlttAnimData gApZ2Plant2_PlttAnim91, gApZ2Ice2_PlttAnim92;
+extern const PlttAnimData gApZ2Plant2_PlttAnim91, gApZ2Ice2_PlttAnim92, gApZ2Yggdrasil_PlttAnim93;
 extern const AnimCmd* const gApZ2Plant2_PlttAnimScript91[];
 extern const AnimCmd* const gApZ2Ice2_PlttAnimScript92[];
+extern const AnimCmd* const gApZ2Yggdrasil_PlttAnimScript93[];
 
 #define EX_PLTT_ANIM(p) (0x8000 | (90 + (p)->work[0]))
 
@@ -1999,7 +2000,9 @@ static void Ex_Init(struct Entity* p) {
   ResetDynamicMotion(p);
   SetMotion(p, MOTION(DM211_Z2_FEFNIR_EX, 0));
   SET_XFLIP(p, FALSE);
-  if (p->work[0] == 2) {
+  if (p->work[0] == 3) {
+    ApStartPaletteAnimation(EX_PLTT_ANIM(p), &gApZ2Yggdrasil_PlttAnim93, gApZ2Yggdrasil_PlttAnimScript93, 0x340);
+  } else if (p->work[0] == 2) {
     ApStartPaletteAnimation(EX_PLTT_ANIM(p), &gApZ2Ice2_PlttAnim92, gApZ2Ice2_PlttAnimScript92, 0x340);
   } else {
     ApStartPaletteAnimation(EX_PLTT_ANIM(p), &gApZ2Plant2_PlttAnim91, gApZ2Plant2_PlttAnimScript91, 0x340);

@@ -963,11 +963,13 @@ static void Wheels_Update(struct Enemy* p) {
     1: green, Harpuia's
     2: red, Fefnir's tank
     3: blue, Leviathan's armor, bigger
+    5: black, round Elpizo as he falls, pulsing till he lets it go
 */
 
 struct Bubble {
   struct Entity s;
-  u8 _74[12];
+  const Coords32* follow;  // 0x74, kind 5's
+  u8 _78[8];
   s32 radius;  // 0x80
 };
 
@@ -1004,6 +1006,18 @@ struct Entity* ApZ2CreateBubble(const Coords32* at, u8 kind) {
   return p;
 }
 
+// 0x080b1dcc
+struct Entity* ApZ2CreateElpizoBubble(const Coords32* at) {
+  struct Bubble* p = (struct Bubble*)AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(&p->s, VFX_Z2_FEFNIR_BUBBLE);
+    p->follow = at;
+    (p->s).coord = *at;
+    (p->s).work[0] = 5;
+  }
+  return &p->s;
+}
+
 // 0x080b1e24
 static void Bubble_Init(struct VFX* p) {
   struct Entity* s = (struct Entity*)p;
@@ -1029,6 +1043,41 @@ static void drawCircle(struct Bubble* b) {
   }
 }
 
+// 0x080b23bc
+static void elpizoBubble(struct Bubble* b) {
+  struct Entity* s = &b->s;
+  struct Circle* c = (struct Circle*)s->unk_28;
+  s->coord = *b->follow;
+  switch (s->mode[3]) {
+    case 0:
+      b->radius += 256;
+      if (b->radius > 0x3FFF) {
+        s->work[3] = 0;
+        s->mode[3]++;
+      }
+      if (b->radius == PIXEL(24)) PlaySound(SE_Z2_FEFNIR_BUBBLE_GROW);
+      break;
+    case 1:
+    case 2:
+      s->work[3] += 2;
+      b->radius = SIN(s->work[3]) * 8 + 0x4000;
+      if (s->mode[3] == 2 && (s->work[3] & 127) == 0) s->mode[3]++;
+      break;
+    default:
+      b->radius -= 256;
+      if (b->radius <= 0) {
+        if (c != NULL) c->done = TRUE;
+        SET_VFX_ROUTINE(s, ENTITY_DIE);
+        return;
+      }
+      break;
+  }
+  if (c == NULL) return;
+  (c->s).coord = s->coord;
+  c->radius = (s->work[2]++ & 1) ? b->radius : b->radius + PIXEL(4);
+  c->rgb[0] = c->rgb[1] = c->rgb[2] = 0;
+}
+
 // 0x080b2094
 static void Bubble_Update(struct VFX* p) {
   struct Entity* s = (struct Entity*)p;
@@ -1038,6 +1087,10 @@ static void Bubble_Update(struct VFX* p) {
     b->radius = 0;
     s->mode[3] = 0;
     s->mode[2]++;
+  }
+  if (s->work[0] == 5) {
+    elpizoBubble(b);
+    return;
   }
   switch (s->mode[3]) {
     case 0:
@@ -1238,6 +1291,7 @@ static void Fire_Die(struct Projectile* p) { SET_PROJECTILE_ROUTINE(p, ENTITY_EX
   work0:
     0: Fefnir's and Leviathan's, fly in from all round
     1: Harpuia's, two above and two below wind in
+    3: Elpizo's, as 0 with own sparkle
 */
 
 static void Spark_Init(struct VFX* p);
@@ -1263,6 +1317,16 @@ void ApZ2CreateSpark(const Coords32* at, u8 angle) {
   }
 }
 
+void ApZ2CreateElpizoSpark(const Coords32* at, u8 angle) {
+  struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
+  if (p != NULL) {
+    INIT_VFX_ROUTINE(p, VFX_Z2_FEFNIR_SPARK);
+    p->coord = *at;
+    p->work[0] = 3;
+    p->work[1] = angle;
+  }
+}
+
 // work1: 0, 1 above, 2, 3 below
 void ApZ2CreateHarpuiaSpark(const Coords32* at, u8 n) {
   struct Entity* p = AllocEntityLast(gVFXHeaderPtr);
@@ -1281,7 +1345,7 @@ static void Spark_Init(struct VFX* p) {
   InitRotatableMotion(s);
   useApSheets(p);
   s->flags |= DISPLAY | FLIPABLE;
-  SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_FEFNIR_SUMMON, 0));
+  SetSpriteAnimation(p, MOTION(AP_SHEET_Z2_FEFNIR_SUMMON, s->work[0] == 3 ? 1 : 0));
   UpdateSpriteAnimation(p);
   SET_XFLIP(p, FALSE);
   if (s->work[0] == 1) {

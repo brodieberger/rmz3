@@ -662,6 +662,20 @@ gGraphics_MsgBox:: @ Gfx57
 		.4byte gApZ2MugshotBabyElves_Pal-.
 		.2byte 32
 		.byte 0, 0
+	@ Zero 2's other Anchus brother, in Yggdrasil's data
+	.4byte gApZ2MugshotAnchus-.
+	.4byte 744 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotAnchus_Pal-.
+		.2byte 32
+		.byte 0, 0
+	@ Zero 2's Elpizo with the Dark Elf in him, in Yggdrasil's data
+	.4byte gApZ2MugshotDarkElpizo-.
+	.4byte 1068 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotDarkElpizo_Pal-.
+		.2byte 32
+		.byte 0, 0
 	.endif
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

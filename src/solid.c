@@ -98,6 +98,10 @@ extern const SolidRoutine gApZ2WindHarpuiaRoutine, gApZ2ElpizoRoutine, gApZ2Dark
     gApZ2DarkElfRoutine, gApZ2SuppliesRoutine, gApZ2GantryRoutine, gApZ2CarFrontRoutine;
 extern const SolidRoutine gApZ2MagmaRoutine, gApZ2MagmaDropperRoutine, gApZ2Door3DRoutine, gApZ2CraftRoutine;
 extern const SolidRoutine gApZ2ForestElpizoRoutine, gApZ2ScriptDoorRoutine, gApZ2SealElpizoRoutine, gApZ2XGlowRoutine;
+extern const SolidRoutine gApZ2DefenceCielRoutine, gApZ2CargoRoutine, gApZ2TeleporterRoutine;
+extern const SolidRoutine gApZ2YggElpizoRoutine, gApZ2SealBoltRoutine, gApZ2YggSealRoutine, gApZ2SealPartRoutine,
+    gApZ2DarkWingRoutine, gApZ2DarkWingTipRoutine, gApZ2DarkElfTwinRoutine, gApZ2ElpizoFinalRockRoutine,
+    gApZ2HatchRoutine;
 #endif
 
 // clang-format off
@@ -202,6 +206,18 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_Z2_SCRIPT_DOOR] =            &gApZ2ScriptDoorRoutine,
     [SOLID_Z2_SEAL_ELPIZO] =            &gApZ2SealElpizoRoutine,
     [SOLID_Z2_X_GLOW] =                 &gApZ2XGlowRoutine,
+    [SOLID_Z2_DEFENCE_CIEL] =           &gApZ2DefenceCielRoutine,
+    [SOLID_Z2_CARGO] =                  &gApZ2CargoRoutine,
+    [SOLID_Z2_TELEPORTER] =             &gApZ2TeleporterRoutine,
+    [SOLID_Z2_YGG_ELPIZO] =             &gApZ2YggElpizoRoutine,
+    [SOLID_Z2_SEAL_BOLT] =              &gApZ2SealBoltRoutine,
+    [SOLID_Z2_YGG_SEAL] =               &gApZ2YggSealRoutine,
+    [SOLID_Z2_SEAL_PART] =              &gApZ2SealPartRoutine,
+    [SOLID_Z2_DARK_WING] =              &gApZ2DarkWingRoutine,
+    [SOLID_Z2_DARK_WING_TIP] =          &gApZ2DarkWingTipRoutine,
+    [SOLID_Z2_DARK_ELF_TWIN] =          &gApZ2DarkElfTwinRoutine,
+    [SOLID_Z2_ELPIZO_FINAL_ROCK] =      &gApZ2ElpizoFinalRockRoutine,
+    [SOLID_Z2_HATCH] =                  &gApZ2HatchRoutine,
 #endif
 };
 // clang-format on

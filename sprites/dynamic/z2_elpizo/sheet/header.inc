@@ -42,8 +42,8 @@ gGraphicHeader_Sprite_z2_elpizo:
 
 	@ Graphic 4
 	.4byte gGraphicHeader_Sprite_z2_elpizo_4-. @ src
-	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
-	.2byte 168, BPP4 	@ rowsize(unused), props
+	.4byte 608 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 152, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gGraphicHeader_Sprite_z2_elpizo_4_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -51,8 +51,8 @@ gGraphicHeader_Sprite_z2_elpizo:
 
 	@ Graphic 5
 	.4byte gGraphicHeader_Sprite_z2_elpizo_5-. @ src
-	.4byte 384 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
-	.2byte 96, BPP4 	@ rowsize(unused), props
+	.4byte 640 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 160, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gGraphicHeader_Sprite_z2_elpizo_5_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -60,10 +60,64 @@ gGraphicHeader_Sprite_z2_elpizo:
 
 	@ Graphic 6
 	.4byte gGraphicHeader_Sprite_z2_elpizo_6-. @ src
+	.4byte 928 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 232, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_6_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 7
+	.4byte gGraphicHeader_Sprite_z2_elpizo_7-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_7_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 8
+	.4byte gGraphicHeader_Sprite_z2_elpizo_8-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_8_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 9
+	.4byte gGraphicHeader_Sprite_z2_elpizo_9-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_9_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 10
+	.4byte gGraphicHeader_Sprite_z2_elpizo_10-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_10_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 11
+	.4byte gGraphicHeader_Sprite_z2_elpizo_11-. @ src
+	.4byte 384 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 96, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gGraphicHeader_Sprite_z2_elpizo_11_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Graphic 12
+	.4byte gGraphicHeader_Sprite_z2_elpizo_12-. @ src
 	.4byte 704 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
 	.2byte 176, BPP4 	@ rowsize(unused), props
 		@ Palette
-		.4byte gGraphicHeader_Sprite_z2_elpizo_6_Palettes-. @ src offset
+		.4byte gGraphicHeader_Sprite_z2_elpizo_12_Palettes-. @ src offset
 		.2byte 32 @ bytesize
 		.byte 0, 4 @ lz77(bool8), dst = PaletteID
 
@@ -101,6 +155,36 @@ gGraphicHeader_Sprite_z2_elpizo_6:
 	.incbin "sprites/dynamic/z2_elpizo/sheet/6.4bpp"
 	gGraphicHeader_Sprite_z2_elpizo_6_Palettes:
 	.incbin "sprites/dynamic/z2_elpizo/sheet/6.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_7:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/7.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_7_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/7.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_8:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/8.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_8_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/8.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_9:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/9.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_9_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/9.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_10:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/10.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_10_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/10.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_11:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/11.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_11_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/11.gbapal"
+
+gGraphicHeader_Sprite_z2_elpizo_12:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/12.4bpp"
+	gGraphicHeader_Sprite_z2_elpizo_12_Palettes:
+	.incbin "sprites/dynamic/z2_elpizo/sheet/12.gbapal"
 
 .global gGraphicHeader_Sprite_z2_elpizo_End
 gGraphicHeader_Sprite_z2_elpizo_End:

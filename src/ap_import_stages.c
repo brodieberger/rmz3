@@ -422,6 +422,28 @@ extern const struct PreloadEntity gApZ2Na3_Preloads[];
 static const struct ApImportMidBoss gApZ2Na3_MidBosses[0] = {
 };
 
+extern const struct Stage gApZ2Yggdrasil_Stage;
+extern const MetatileMapSelfRelPtr gApZ2Yggdrasil_Terrain;
+extern const ColorGraphic gApZ2Yggdrasil_Tilesets[];
+extern const StageFunc gApZ2Yggdrasil_StageRoutines[];
+u8 gApZ2Yggdrasil_Area(Coords32* c);
+extern const StageLayerRoutine gApZ2Yggdrasil_LayerRoutines[];
+extern const GameCommand gApZ2Yggdrasil_Script[];
+extern const GameCommand gApZ2Yggdrasil_CheckpointScript[];
+extern const GameCommand gApZ2Yggdrasil_BossRestartScript[];
+extern const GameCommand gApZ2Yggdrasil_BossReturnScript[];
+extern const GameCommand gApZ2Yggdrasil_AgainScript[];
+extern const GameCommand gApZ2Yggdrasil_ResultScript[];
+extern const GameCommand gApZ2Yggdrasil_BossScript[];
+extern const GameCommand gApZ2Yggdrasil_ClearScript[];
+extern const char_t gApImportName15[];
+extern const struct SpawnTemplate gApZ2Yggdrasil_Templates[];
+extern const struct SpawnPoint gApZ2Yggdrasil_Points[];
+extern const struct PreloadEntity gApZ2Yggdrasil_Preloads[];
+
+static const struct ApImportMidBoss gApZ2Yggdrasil_MidBosses[0] = {
+};
+
 const struct ApImportedStage gApImportedStages[] = {
     {
       stage : &gApZ2Opening_Stage,
@@ -813,6 +835,32 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Na3_Templates,
       points : gApZ2Na3_Points,
       preloads : gApZ2Na3_Preloads,
+    },
+    {
+      stage : &gApZ2Yggdrasil_Stage,
+      terrain : &gApZ2Yggdrasil_Terrain,
+      tilesets : gApZ2Yggdrasil_Tilesets,
+      tilesetCount : 4,
+      fns : gApZ2Yggdrasil_StageRoutines,
+      area : gApZ2Yggdrasil_Area,
+      layers : gApZ2Yggdrasil_LayerRoutines,
+      script : gApZ2Yggdrasil_Script,
+      checkpointScript : gApZ2Yggdrasil_CheckpointScript,
+      checkpointDoor : {MAX_X, MAX_Y},
+      warningScript : NULL,
+      bossScript : gApZ2Yggdrasil_BossScript,
+      clearScript : gApZ2Yggdrasil_ClearScript,
+      bossRestartScript : gApZ2Yggdrasil_BossRestartScript,
+      bossReturnScript : gApZ2Yggdrasil_BossReturnScript,
+      againScript : gApZ2Yggdrasil_AgainScript,
+      resultScript : gApZ2Yggdrasil_ResultScript,
+      midBosses : gApZ2Yggdrasil_MidBosses,
+      midBossCount : 0,
+      bossDoor : {MAX_X, MAX_Y},
+      name : gApImportName15,
+      templates : gApZ2Yggdrasil_Templates,
+      points : gApZ2Yggdrasil_Points,
+      preloads : gApZ2Yggdrasil_Preloads,
     },
 };
 

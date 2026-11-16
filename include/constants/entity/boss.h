@@ -48,7 +48,13 @@
 #define BOSS_Z2_FEFNIR_FOOT 41  // Zero 2 boss 14, Fefnir on foot. Boss of the Shuttle Factory
 #define BOSS_Z2_LEVIATHAN_FIRST 42  // Zero 2 boss 16, Leviathan's first fight. Boss of Computer Zone 2
 #define BOSS_Z2_FROG 43  // Zero 2 boss 12, Burble Hekelot. Boss of the Forest of Notus
-#define BOSS_ENTITY_COUNT (BOSS_Z2_FROG + 1)
+#define BOSS_Z2_GUNSHIP 44  // Zero 2 boss 2, the gunship. Mid-boss of the Bombardment Aircraft
+#define BOSS_Z2_KUWAGUST 45  // Zero 2 boss 5, Kuwagust Anchus. Boss of the Bombardment Aircraft
+#define BOSS_Z2_KUWAGUST2 46  // Zero 2 boss 6, Kuwagust again in Yggdrasil
+#define BOSS_Z2_ANCHUS_BROTHER 47  // Zero 2 boss 7, his brother beside him
+#define BOSS_Z2_ELPIZO 48  // Zero 2 boss 23, Elpizo. Boss of Yggdrasil
+#define BOSS_Z2_ELPIZO_FINAL 49  // Zero 2 boss 19, Elpizo's last form
+#define BOSS_ENTITY_COUNT (BOSS_Z2_ELPIZO_FINAL + 1)
 #else
 #define BOSS_ENTITY_COUNT 25
 #endif

@@ -109,7 +109,7 @@ static u8 midBossAt(const struct ApImportedStage* imp, struct Zero* z) {
 }
 
 extern const StageFunc gApZ2Ice_StageRoutines[4], gApZ2Jungle_StageRoutines[4], gApZ2Train_StageRoutines[4],
-    gApZ2Plant_StageRoutines[4], gApZ2Bomber_StageRoutines[4];
+    gApZ2Plant_StageRoutines[4], gApZ2Bomber_StageRoutines[4], gApZ2Yggdrasil_StageRoutines[4];
 
 s16 ApImportUpdate(struct StageRun* p) {
   const struct ApImportedStage* imp = &gApImportedStages[gApImportSelected];
@@ -118,6 +118,7 @@ s16 ApImportUpdate(struct StageRun* p) {
 
   if (imp->fns == gApZ2Plant_StageRoutines) return ApZ2PlantUpdate(p);
   if (imp->fns == gApZ2Bomber_StageRoutines) return ApZ2BomberUpdate(p);
+  if (imp->fns == gApZ2Yggdrasil_StageRoutines) return ApZ2YggdrasilUpdate(p);
 
   if (p->stageEventPhase == 0) {
     gStageRun.MID_BOSSES_BEATEN &= ~((1 << imp->midBossCount) - 1);

@@ -263,7 +263,7 @@ void ApImportTreeFrogKilled(void) {
 }
 
 // By import, placed and kill elves, from block's third id on
-static const u8 sElves[AP_IMPORT_COUNT] = {4, 6, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4};
+static const u8 sElves[AP_IMPORT_COUNT] = {4, 6, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
 
 u8 ApImportElfTotal(u8 import) { return sElves[import]; }
 

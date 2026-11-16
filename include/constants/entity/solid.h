@@ -102,7 +102,19 @@
 #define SOLID_Z2_SCRIPT_DOOR 96  // Zero 2 solid 5 work0 34, the frog's door Elpizo opens
 #define SOLID_Z2_SEAL_ELPIZO 97  // Zero 2 solid 5 work0 35, Elpizo breaking the Dark Elf's seal
 #define SOLID_Z2_X_GLOW 98  // Zero 2 solid 5 work0 36, X as a cyber elf in the Forest of Notus's clear
-#define SOLID_ENTITY_COUNT (SOLID_Z2_X_GLOW + 1)
+#define SOLID_Z2_DEFENCE_CIEL 99  // Zero 2 solid 5 work0 44, Ciel in the Bombardment Aircraft's defence
+#define SOLID_Z2_CARGO 100  // Zero 2 solid 30, the Bombardment Aircraft's cargo
+#define SOLID_Z2_TELEPORTER 101  // Zero 2 solid 23, Yggdrasil's teleporters
+#define SOLID_Z2_YGG_ELPIZO 102  // Zero 2 solid 5 work0 17, Elpizo at Yggdrasil's seal
+#define SOLID_Z2_SEAL_BOLT 103  // Zero 2 solid 5 work0 18, his bolt on it
+#define SOLID_Z2_YGG_SEAL 104  // Zero 2 solid 5 work0 19, the Dark Elf's seal
+#define SOLID_Z2_SEAL_PART 105  // Zero 2 solid 5 work0 20..22, its pieces
+#define SOLID_Z2_DARK_WING 106  // Zero 2 solid 24 work0 3, a Dark Elf wing
+#define SOLID_Z2_DARK_WING_TIP 107  // Zero 2 solid 24 work0 4, its tip
+#define SOLID_Z2_DARK_ELF_TWIN 108  // Zero 2 solid 24 work0 6, the Dark Elf freed from the seal
+#define SOLID_Z2_ELPIZO_FINAL_ROCK 109  // Zero 2 solid 13, the last form's rocks, seekers and walls
+#define SOLID_Z2_HATCH 110  // Zero 2 solid 22, a floor hatch Zero passes through
+#define SOLID_ENTITY_COUNT (SOLID_Z2_HATCH + 1)
 #else
 #define SOLID_ENTITY_COUNT 56
 #endif

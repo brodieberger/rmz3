@@ -274,6 +274,11 @@ gDynamicMotionGraphicOffsets:
   .4byte gGraphicHeader_Sprite_z2_door_3d-.
   .4byte gGraphicHeader_Sprite_z2_fefnir_ex-.
   .4byte gGraphicHeader_Sprite_z2_frog-.
+  .4byte gGraphicHeader_Sprite_z2_kuwagust-.
+  .4byte gGraphicHeader_Sprite_z2_ciel-.
+  .4byte gGraphicHeader_Sprite_z2_anchus_brother-.
+  .4byte gGraphicHeader_Sprite_z2_elpizo_boss-.
+  .4byte gGraphicHeader_Sprite_z2_elpizo_final-.
 .endif
 
 .include "sprites/dynamic/zero/idle/sheet/header.inc"
@@ -453,6 +458,11 @@ gDynamicMotionGraphicOffsets:
 .include "sprites/dynamic/z2_door_3d/sheet/header.inc"
 .include "sprites/dynamic/z2_fefnir_ex/sheet/header.inc"
 .include "sprites/dynamic/z2_frog/sheet/header.inc"
+.include "sprites/dynamic/z2_kuwagust/sheet/header.inc"
+.include "sprites/dynamic/z2_ciel/sheet/header.inc"
+.include "sprites/dynamic/z2_anchus_brother/sheet/header.inc"
+.include "sprites/dynamic/z2_elpizo_boss/sheet/header.inc"
+.include "sprites/dynamic/z2_elpizo_final/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain_air/sheet/header.inc"
 .include "sprites/dynamic/z2_zero_chain_wall/sheet/header.inc"

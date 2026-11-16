@@ -148,7 +148,9 @@ extern const EnemyRoutine gApZ2HottalookRoutine;
 extern const EnemyRoutine gApZ2SoldierRoutine;
 extern const EnemyRoutine gApZ2CarryarmRoutine, gApZ2CrateCarrierRoutine, gApZ2PanterHalfRoutine;
 extern const EnemyRoutine gApZ2FortressArmRoutine, gApZ2GeneratorRoutine, gApZ2DroneRoutine, gApZ2FefnirBombRoutine;
-extern const EnemyRoutine gApZ2WhirlPieceRoutine, gApZ2LanceTipRoutine, gApZ2TreeFrogRoutine, gApZ2FrogTongueRoutine;
+extern const EnemyRoutine gApZ2WhirlPieceRoutine, gApZ2LanceTipRoutine, gApZ2TreeFrogRoutine, gApZ2FrogTongueRoutine,
+    gApZ2GunshipPartRoutine, gApZ2KuwagustPartRoutine, gApZ2KuwagustMissileRoutine, gApZ2RaiderRoutine,
+    gApZ2AnchorMarkRoutine, gApZ2ElpizoRockRoutine, gApZ2ElpizoFinalBodyRoutine;
 extern const EnemyRoutine gApZ2SignaloidRoutine;
 extern const EnemyRoutine gApZ2GolemArmRoutine;
 extern const EnemyRoutine gApZ2HarpuiaBladeRoutine;
@@ -286,6 +288,14 @@ const EnemyRoutine* const gEnemyFnTable[ENEMY_COUNT] = {
   [ENEMY_Z2_LANCE_TIP] = &gApZ2LanceTipRoutine,
   [ENEMY_Z2_TREE_FROG] = &gApZ2TreeFrogRoutine,
   [ENEMY_Z2_FROG_TONGUE] = &gApZ2FrogTongueRoutine,
+  [ENEMY_Z2_GUNSHIP_ENGINE] = &gApZ2GunshipPartRoutine,
+  [ENEMY_Z2_GUNSHIP_GUN] = &gApZ2GunshipPartRoutine,
+  [ENEMY_Z2_KUWAGUST_PART] = &gApZ2KuwagustPartRoutine,
+  [ENEMY_Z2_KUWAGUST_MISSILE] = &gApZ2KuwagustMissileRoutine,
+  [ENEMY_Z2_RAIDER] = &gApZ2RaiderRoutine,
+  [ENEMY_Z2_ANCHOR_MARK] = &gApZ2AnchorMarkRoutine,
+  [ENEMY_Z2_ELPIZO_ROCK] = &gApZ2ElpizoRockRoutine,
+  [ENEMY_Z2_ELPIZO_FINAL_BODY] = &gApZ2ElpizoFinalBodyRoutine,
   [ENEMY_Z2_SIGNALOID] = &gApZ2SignaloidRoutine,
   [ENEMY_Z2_GOLEM_ARM] = &gApZ2GolemArmRoutine,
   [ENEMY_Z2_HARPUIA_BLADE] = &gApZ2HarpuiaBladeRoutine,

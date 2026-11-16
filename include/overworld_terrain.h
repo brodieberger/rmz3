@@ -216,6 +216,19 @@ struct Overworld {
       struct Entity* raptor;
       Coords32 center;
     } apZ2WindShrine;
+    struct ApZ2YggdrasilState {
+      s32 farX;  // sky's anchor once the finale opens it
+      s32 farY;
+      bool8 altBackdrop;
+      bool8 burnt;     // frog's canopy patched, redraw whole layer
+      u8 _[2];
+      u32 sway;        // Panter's cars' clock
+      Coords32 cars[2];  // their hazards
+      struct Solid* leaf;
+      s16 fade;        // sky's, layer routine 2
+      bool8 reloadSky;  // after a menu, next frame
+      struct Entity* anchor;  // the sky follows Elpizo's last form
+    } apZ2Yggdrasil;
 #endif
   } work;  // ステージごとに用途が変わる
 };  // 184624 bytes

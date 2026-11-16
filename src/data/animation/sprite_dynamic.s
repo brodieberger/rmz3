@@ -274,6 +274,11 @@ gDynamicMotionMetaspriteTable:
   .word gMetaSprite_z2_door_3d
   .word gMetaSprite_z2_fefnir_ex
   .word gMetaSprite_z2_frog
+  .word gMetaSprite_z2_kuwagust
+  .word gMetaSprite_z2_ciel
+  .word gMetaSprite_z2_anchus_brother
+  .word gMetaSprite_z2_elpizo_boss
+  .word gMetaSprite_z2_elpizo_final
 .endif
 
 
@@ -714,6 +719,11 @@ gDynamicMotionCmdTable:
   .word gAnimationSequence_z2_door_3d
   .word gAnimationSequence_z2_fefnir_ex
   .word gAnimationSequence_z2_frog
+  .word gAnimationSequence_z2_kuwagust
+  .word gAnimationSequence_z2_ciel
+  .word gAnimationSequence_z2_anchus_brother
+  .word gAnimationSequence_z2_elpizo_boss
+  .word gAnimationSequence_z2_elpizo_final
 .endif
 
 
@@ -908,6 +918,16 @@ gDynamicMotionCmdTable:
 .include "sprites/dynamic/z2_fefnir_ex/sequence.inc"
 .include "sprites/dynamic/z2_frog/metasprite.inc"
 .include "sprites/dynamic/z2_frog/sequence.inc"
+.include "sprites/dynamic/z2_kuwagust/metasprite.inc"
+.include "sprites/dynamic/z2_kuwagust/sequence.inc"
+.include "sprites/dynamic/z2_ciel/metasprite.inc"
+.include "sprites/dynamic/z2_ciel/sequence.inc"
+.include "sprites/dynamic/z2_anchus_brother/metasprite.inc"
+.include "sprites/dynamic/z2_anchus_brother/sequence.inc"
+.include "sprites/dynamic/z2_elpizo_boss/metasprite.inc"
+.include "sprites/dynamic/z2_elpizo_boss/sequence.inc"
+.include "sprites/dynamic/z2_elpizo_final/metasprite.inc"
+.include "sprites/dynamic/z2_elpizo_final/sequence.inc"
 .include "sprites/dynamic/z2_zero_chain/metasprite.inc"
 .include "sprites/dynamic/z2_zero_chain/sequence.inc"
 .include "sprites/dynamic/z2_zero_chain_air/metasprite.inc"

@@ -489,17 +489,17 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [88] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(6, 30, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_CARGO, 0, 0),
         },
     [89] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(6, 30, 1, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_CARGO, 1, 0),
         },
     [90] =
         {
             .flag = 0x01,
-            .kind = SpawnEntity(ENTITY_SOLID, SOLID_DOOR_2D_GRAY_H, 0, 0),
+            .kind = SpawnEntity(ENTITY_SOLID, SOLID_Z2_HATCH, 0, 0),
         },
 };
 

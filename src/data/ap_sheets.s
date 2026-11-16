@@ -812,8 +812,8 @@ gApSheetGraphics:
 
 	@ Sheet 89: solid/z2_dark_elf, Zero 2 SM132
 	.4byte gApSheet_89-. @ src
-	.4byte 1888 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
-	.2byte 472, BPP4 	@ rowsize(unused), props
+	.4byte 3936 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 984, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gApSheet_89_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1062,6 +1062,177 @@ gApSheetGraphics:
 		.2byte 32 @ bytesize
 		.byte 0, 4 @ lz77(bool8), dst = PaletteID
 
+	@ Sheet 117: boss/z2_gunship, Zero 2 SM14
+	.4byte gApSheet_117-. @ src
+	.4byte 6880 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1720, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_117_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 118: boss/z2_gunship/far, Zero 2 SM15
+	.4byte gApSheet_118-. @ src
+	.4byte 4032 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1008, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_118_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 119: boss/z2_gunship/fire, Zero 2 SM16
+	.4byte gApSheet_119-. @ src
+	.4byte 3520 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 880, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_119_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 120: boss/z2_kuwagust, Zero 2 SM57
+	.4byte gApSheet_120-. @ src
+	.4byte 4384 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1096, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_120_Palettes-. @ src offset
+		.2byte 64 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 121: boss/z2_kuwagust/wind, Zero 2 SM61
+	.4byte gApSheet_121-. @ src
+	.4byte 4096 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1024, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_121_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 122: enemy/z2_raider, Zero 2 SM22
+	.4byte gApSheet_122-. @ src
+	.4byte 2208 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 552, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_122_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 123: solid/z2_cargo, Zero 2 SM153
+	.4byte gApSheet_123-. @ src
+	.4byte 3648 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 912, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_123_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 124: solid/z2_teleporter, Zero 2 SM130
+	.4byte gApSheet_124-. @ src
+	.4byte 2880 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 720, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_124_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 125: boss/z2_elpizo/pillar, Zero 2 SM138
+	.4byte gApSheet_125-. @ src
+	.4byte 3232 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 808, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_125_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 126: boss/z2_elpizo/orb, Zero 2 SM139
+	.4byte gApSheet_126-. @ src
+	.4byte 8192 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 2048, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_126_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 127: boss/z2_elpizo_final/parts, Zero 2 SM105
+	.4byte gApSheet_127-. @ src
+	.4byte 9376 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 2344, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_127_Palettes-. @ src offset
+		.2byte 64 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 128: boss/z2_elpizo_final/fx, Zero 2 SM106
+	.4byte gApSheet_128-. @ src
+	.4byte 2080 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 520, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_128_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 129: projectile/z2_dark_ring, Zero 2 SM134
+	.4byte gApSheet_129-. @ src
+	.4byte 1056 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 264, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_129_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 130: solid/z2_seal_bolt, Zero 2 SM136
+	.4byte gApSheet_130-. @ src
+	.4byte 640 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 160, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_130_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 131: solid/z2_seal, Zero 2 SM137
+	.4byte gApSheet_131-. @ src
+	.4byte 1984 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 496, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_131_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 132: solid/z2_hatch, Zero 2 SM131
+	.4byte gApSheet_132-. @ src
+	.4byte 1024 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 256, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_132_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 133: solid/z2_hatch/open, Zero 2 SM131
+	.4byte gApSheet_133-. @ src
+	.4byte 1280 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 320, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_133_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 134: solid/z2_hatch/plate, Zero 2 SM129
+	.4byte gApSheet_134-. @ src
+	.4byte 672 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 168, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_134_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
+	@ Sheet 135: solid/z2_hatch/plate_open, Zero 2 SM129
+	.4byte gApSheet_135-. @ src
+	.4byte 1312 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 328, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_135_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
 .global gApSheetMetaspriteTable
 gApSheetMetaspriteTable:
   .word gStaticMetaSprite_enemy_z2_hopper
@@ -1181,6 +1352,25 @@ gApSheetMetaspriteTable:
   .word gStaticMetaSprite_enemy_z2_tree_frog
   .word gStaticMetaSprite_boss_z2_frog_bubble
   .word gStaticMetaSprite_boss_z2_frog_tint
+  .word gStaticMetaSprite_boss_z2_gunship
+  .word gStaticMetaSprite_boss_z2_gunship_far
+  .word gStaticMetaSprite_boss_z2_gunship_fire
+  .word gStaticMetaSprite_boss_z2_kuwagust
+  .word gStaticMetaSprite_boss_z2_kuwagust_wind
+  .word gStaticMetaSprite_enemy_z2_raider
+  .word gStaticMetaSprite_solid_z2_cargo
+  .word gStaticMetaSprite_solid_z2_teleporter
+  .word gStaticMetaSprite_boss_z2_elpizo_pillar
+  .word gStaticMetaSprite_boss_z2_elpizo_orb
+  .word gStaticMetaSprite_boss_z2_elpizo_final_parts
+  .word gStaticMetaSprite_boss_z2_elpizo_final_fx
+  .word gStaticMetaSprite_projectile_z2_dark_ring
+  .word gStaticMetaSprite_solid_z2_seal_bolt
+  .word gStaticMetaSprite_solid_z2_seal
+  .word gStaticMetaSprite_solid_z2_hatch
+  .word gStaticMetaSprite_solid_z2_hatch_open
+  .word gStaticMetaSprite_solid_z2_hatch_plate
+  .word gStaticMetaSprite_solid_z2_hatch_plate_open
 
 .global gApSheetCmdTable
 gApSheetCmdTable:
@@ -1301,6 +1491,25 @@ gApSheetCmdTable:
   .word gStaticAnimationSequence_enemy_z2_tree_frog
   .word gStaticAnimationSequence_boss_z2_frog_bubble
   .word gStaticAnimationSequence_boss_z2_frog_tint
+  .word gStaticAnimationSequence_boss_z2_gunship
+  .word gStaticAnimationSequence_boss_z2_gunship_far
+  .word gStaticAnimationSequence_boss_z2_gunship_fire
+  .word gStaticAnimationSequence_boss_z2_kuwagust
+  .word gStaticAnimationSequence_boss_z2_kuwagust_wind
+  .word gStaticAnimationSequence_enemy_z2_raider
+  .word gStaticAnimationSequence_solid_z2_cargo
+  .word gStaticAnimationSequence_solid_z2_teleporter
+  .word gStaticAnimationSequence_boss_z2_elpizo_pillar
+  .word gStaticAnimationSequence_boss_z2_elpizo_orb
+  .word gStaticAnimationSequence_boss_z2_elpizo_final_parts
+  .word gStaticAnimationSequence_boss_z2_elpizo_final_fx
+  .word gStaticAnimationSequence_projectile_z2_dark_ring
+  .word gStaticAnimationSequence_solid_z2_seal_bolt
+  .word gStaticAnimationSequence_solid_z2_seal
+  .word gStaticAnimationSequence_solid_z2_hatch
+  .word gStaticAnimationSequence_solid_z2_hatch_open
+  .word gStaticAnimationSequence_solid_z2_hatch_plate
+  .word gStaticAnimationSequence_solid_z2_hatch_plate_open
 
 .include "sprites/static/enemy/z2_hopper/metasprite.inc"
 .include "sprites/static/enemy/z2_hopper/sequence.inc"
@@ -2354,5 +2563,176 @@ gApSheet_116:
 	.incbin "sprites/static/boss/z2_frog/tint/sheet.4bpp"
 gApSheet_116_Palettes:
 	.incbin "sprites/static/boss/z2_frog/tint/sheet.gbapal"
+
+.include "sprites/static/boss/z2_gunship/metasprite.inc"
+.include "sprites/static/boss/z2_gunship/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_117:
+	.incbin "sprites/static/boss/z2_gunship/sheet.4bpp"
+gApSheet_117_Palettes:
+	.incbin "sprites/static/boss/z2_gunship/sheet.gbapal"
+
+.include "sprites/static/boss/z2_gunship/far/metasprite.inc"
+.include "sprites/static/boss/z2_gunship/far/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_118:
+	.incbin "sprites/static/boss/z2_gunship/far/sheet.4bpp"
+gApSheet_118_Palettes:
+	.incbin "sprites/static/boss/z2_gunship/far/sheet.gbapal"
+
+.include "sprites/static/boss/z2_gunship/fire/metasprite.inc"
+.include "sprites/static/boss/z2_gunship/fire/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_119:
+	.incbin "sprites/static/boss/z2_gunship/fire/sheet.4bpp"
+gApSheet_119_Palettes:
+	.incbin "sprites/static/boss/z2_gunship/fire/sheet.gbapal"
+
+.include "sprites/static/boss/z2_kuwagust/metasprite.inc"
+.include "sprites/static/boss/z2_kuwagust/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_120:
+	.incbin "sprites/static/boss/z2_kuwagust/sheet.4bpp"
+gApSheet_120_Palettes:
+	.incbin "sprites/static/boss/z2_kuwagust/palettes.bin"
+
+.include "sprites/static/boss/z2_kuwagust/wind/metasprite.inc"
+.include "sprites/static/boss/z2_kuwagust/wind/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_121:
+	.incbin "sprites/static/boss/z2_kuwagust/wind/sheet.4bpp"
+gApSheet_121_Palettes:
+	.incbin "sprites/static/boss/z2_kuwagust/wind/sheet.gbapal"
+
+.include "sprites/static/enemy/z2_raider/metasprite.inc"
+.include "sprites/static/enemy/z2_raider/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_122:
+	.incbin "sprites/static/enemy/z2_raider/sheet.4bpp"
+gApSheet_122_Palettes:
+	.incbin "sprites/static/enemy/z2_raider/sheet.gbapal"
+
+.include "sprites/static/solid/z2_cargo/metasprite.inc"
+.include "sprites/static/solid/z2_cargo/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_123:
+	.incbin "sprites/static/solid/z2_cargo/sheet.4bpp"
+gApSheet_123_Palettes:
+	.incbin "sprites/static/solid/z2_cargo/sheet.gbapal"
+
+.include "sprites/static/solid/z2_teleporter/metasprite.inc"
+.include "sprites/static/solid/z2_teleporter/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_124:
+	.incbin "sprites/static/solid/z2_teleporter/sheet.4bpp"
+gApSheet_124_Palettes:
+	.incbin "sprites/static/solid/z2_teleporter/sheet.gbapal"
+
+.include "sprites/static/boss/z2_elpizo/pillar/metasprite.inc"
+.include "sprites/static/boss/z2_elpizo/pillar/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_125:
+	.incbin "sprites/static/boss/z2_elpizo/pillar/sheet.4bpp"
+gApSheet_125_Palettes:
+	.incbin "sprites/static/boss/z2_elpizo/pillar/sheet.gbapal"
+
+.include "sprites/static/boss/z2_elpizo/orb/metasprite.inc"
+.include "sprites/static/boss/z2_elpizo/orb/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_126:
+	.incbin "sprites/static/boss/z2_elpizo/orb/sheet.4bpp"
+gApSheet_126_Palettes:
+	.incbin "sprites/static/boss/z2_elpizo/orb/sheet.gbapal"
+
+.include "sprites/static/boss/z2_elpizo_final/parts/metasprite.inc"
+.include "sprites/static/boss/z2_elpizo_final/parts/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_127:
+	.incbin "sprites/static/boss/z2_elpizo_final/parts/sheet.4bpp"
+gApSheet_127_Palettes:
+	.incbin "sprites/static/boss/z2_elpizo_final/parts/palettes.bin"
+
+.include "sprites/static/boss/z2_elpizo_final/fx/metasprite.inc"
+.include "sprites/static/boss/z2_elpizo_final/fx/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_128:
+	.incbin "sprites/static/boss/z2_elpizo_final/fx/sheet.4bpp"
+gApSheet_128_Palettes:
+	.incbin "sprites/static/boss/z2_elpizo_final/fx/sheet.gbapal"
+
+.include "sprites/static/projectile/z2_dark_ring/metasprite.inc"
+.include "sprites/static/projectile/z2_dark_ring/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_129:
+	.incbin "sprites/static/projectile/z2_dark_ring/sheet.4bpp"
+gApSheet_129_Palettes:
+	.incbin "sprites/static/projectile/z2_dark_ring/sheet.gbapal"
+
+.include "sprites/static/solid/z2_seal_bolt/metasprite.inc"
+.include "sprites/static/solid/z2_seal_bolt/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_130:
+	.incbin "sprites/static/solid/z2_seal_bolt/sheet.4bpp"
+gApSheet_130_Palettes:
+	.incbin "sprites/static/solid/z2_seal_bolt/sheet.gbapal"
+
+.include "sprites/static/solid/z2_seal/metasprite.inc"
+.include "sprites/static/solid/z2_seal/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_131:
+	.incbin "sprites/static/solid/z2_seal/sheet.4bpp"
+gApSheet_131_Palettes:
+	.incbin "sprites/static/solid/z2_seal/sheet.gbapal"
+
+.include "sprites/static/solid/z2_hatch/metasprite.inc"
+.include "sprites/static/solid/z2_hatch/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_132:
+	.incbin "sprites/static/solid/z2_hatch/sheet.4bpp"
+gApSheet_132_Palettes:
+	.incbin "sprites/static/solid/z2_hatch/sheet.gbapal"
+
+.include "sprites/static/solid/z2_hatch/open/metasprite.inc"
+.include "sprites/static/solid/z2_hatch/open/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_133:
+	.incbin "sprites/static/solid/z2_hatch/open/sheet.4bpp"
+gApSheet_133_Palettes:
+	.incbin "sprites/static/solid/z2_hatch/open/sheet.gbapal"
+
+.include "sprites/static/solid/z2_hatch/plate/metasprite.inc"
+.include "sprites/static/solid/z2_hatch/plate/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_134:
+	.incbin "sprites/static/solid/z2_hatch/plate/sheet.4bpp"
+gApSheet_134_Palettes:
+	.incbin "sprites/static/solid/z2_hatch/plate/sheet.gbapal"
+
+.include "sprites/static/solid/z2_hatch/plate_open/metasprite.inc"
+.include "sprites/static/solid/z2_hatch/plate_open/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_135:
+	.incbin "sprites/static/solid/z2_hatch/plate_open/sheet.4bpp"
+gApSheet_135_Palettes:
+	.incbin "sprites/static/solid/z2_hatch/plate_open/sheet.gbapal"
 
 .endif

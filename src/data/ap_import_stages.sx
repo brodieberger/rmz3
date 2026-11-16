@@ -26,5 +26,6 @@
 #include "../ap_stage/z2_na1/data.inc"
 #include "../ap_stage/z2_na2/data.inc"
 #include "../ap_stage/z2_na3/data.inc"
+#include "../ap_stage/z2_yggdrasil/data.inc"
 
 .endif

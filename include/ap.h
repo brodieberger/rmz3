@@ -397,7 +397,7 @@ void ApInit(void);
 void ApUpdate(void);
 
 /* Rows of gApImportedStages */
-#define AP_IMPORT_COUNT 15
+#define AP_IMPORT_COUNT 16
 #define AP_IMPORT_TILESETS_MAX 16
 #define AP_IMPORT_PRELOADS_MAX 16
 

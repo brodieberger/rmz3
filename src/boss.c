@@ -41,7 +41,8 @@ extern const BossRoutine gApZ2WallRoutine;
 extern const BossRoutine gApZ2SnakeRoutine;
 extern const BossRoutine gApZ2RaptorRoutine, gApZ2BearRoutine, gApZ2PanterRoutine, gApZ2ReactorRoutine;
 extern const BossRoutine gApZ2FortressRoutine, gApZ2MagnionRoutine, gApZ2FefnirFootRoutine, gApZ2LeviathanFirstRoutine,
-    gApZ2FrogRoutine;
+    gApZ2FrogRoutine, gApZ2GunshipRoutine, gApZ2KuwagustRoutine, gApZ2Kuwagust2Routine,
+    gApZ2AnchusBrotherRoutine, gApZ2ElpizoBossRoutine, gApZ2ElpizoFinalRoutine;
 #endif
 
 // clang-format off
@@ -91,6 +92,12 @@ const BossRoutine* const gBossFnTable[BOSS_ENTITY_COUNT] = {
     [BOSS_Z2_FEFNIR_FOOT] =     &gApZ2FefnirFootRoutine,
     [BOSS_Z2_LEVIATHAN_FIRST] = &gApZ2LeviathanFirstRoutine,
     [BOSS_Z2_FROG] = &gApZ2FrogRoutine,
+    [BOSS_Z2_GUNSHIP] = &gApZ2GunshipRoutine,
+    [BOSS_Z2_KUWAGUST] = &gApZ2KuwagustRoutine,
+    [BOSS_Z2_KUWAGUST2] = &gApZ2Kuwagust2Routine,
+    [BOSS_Z2_ANCHUS_BROTHER] = &gApZ2AnchusBrotherRoutine,
+    [BOSS_Z2_ELPIZO] = &gApZ2ElpizoBossRoutine,
+    [BOSS_Z2_ELPIZO_FINAL] = &gApZ2ElpizoFinalRoutine,
 #endif
 };
 // clang-format on

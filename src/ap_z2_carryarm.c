@@ -22,6 +22,7 @@
 
 /*
   Zero 2 Carryarm and Spiking
+  work0: 0 Carryarm, 2 Spiking it carries, 4 Spiking alone, 6 Elpizo's. Odd ones face right
 */
 
 struct Carryarm {
@@ -130,9 +131,23 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
   if (body->status & BODY_STATUS_B15) p->cut |= 2;
 }
 
+// 0x0808d62c, Elpizo's: rolls out of his circle
+struct Entity* ApZ2CreateSpiking(s32 x, s32 y, bool8 left) {
+  struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
+  if (p != NULL) {
+    INIT_ENEMY_ROUTINE(p, ENEMY_Z2_CARRYARM);
+    p->work[0] = left ? 6 : 7;
+    p->coord.x = x;
+    p->coord.y = y;
+  }
+  return p;
+}
+
 // 0x0808d8cc
 static void Carryarm_Init(struct Carryarm* p) {
   struct Entity* s = &p->s;
+  bool8 summoned = s->work[0] >= 6;
+  if (summoned) s->work[0] -= 2;
   SET_ENEMY_ROUTINE(p, ENTITY_UPDATE);
   s->flags |= FLIPABLE;
   InitNonAffineMotion(s);
@@ -141,22 +156,29 @@ static void Carryarm_Init(struct Carryarm* p) {
   p->cut = 0;
   if (FACES_RIGHT(s)) {
     SET_XFLIP(p, TRUE);
-    s->coord.x = gStageRun.vm.camera.viewport.x - PIXEL(152);
+    if (!summoned) s->coord.x = gStageRun.vm.camera.viewport.x - PIXEL(152);
   }
   if (IS_SPIKING(s)) {
-    struct Entity* q = AllocEntityLast(gEnemyHeaderPtr);
-    if (q != NULL) {
-      INIT_ENEMY_ROUTINE(q, ENEMY_Z2_CARRYARM);
-      q->coord.x = s->coord.x;
-      q->coord.y = s->coord.y - PIXEL(22);
-      q->work[0] = s->work[0] - 2;
-      q->unk_28 = s;
+    if (s->work[0] <= 3) {
+      struct Entity* q = AllocEntityLast(gEnemyHeaderPtr);
+      if (q != NULL) {
+        INIT_ENEMY_ROUTINE(q, ENEMY_Z2_CARRYARM);
+        q->coord.x = s->coord.x;
+        q->coord.y = s->coord.y - PIXEL(22);
+        q->work[0] = s->work[0] - 2;
+        q->unk_28 = s;
+      }
+      s->unk_2c = q;
+      s->mode[1] = SPIKING_CARRIED;
+    } else {
+      s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+      s->unk_2c = NULL;
+      s->d.x = s->work[0] == 4 ? -0x20A : 0x20A;
+      s->mode[1] = SPIKING_ROLL;
     }
-    s->unk_2c = q;
     INIT_BODY(p, sSpikingCollisions, 10, onCollision);
     (p->body).unk_28 = (u32)Carryarm_Pull;
     SetMotion(s, ANIM_ROLL(0));
-    s->mode[1] = SPIKING_CARRIED;
   } else {
     INIT_BODY(p, sCarryarmCollisions, 8, onCollision);
     (p->body).unk_28 = (u32)Carryarm_Pull;

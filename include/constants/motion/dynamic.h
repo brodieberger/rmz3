@@ -182,6 +182,11 @@
 #define DM210_Z2_DOOR_3D 210
 #define DM211_Z2_FEFNIR_EX 211
 #define DM212_Z2_FROG 212
+#define DM213_Z2_KUWAGUST 213
+#define DM214_Z2_CIEL 214
+#define DM215_Z2_ANCHUS_BROTHER 215
+#define DM216_Z2_ELPIZO_BOSS 216
+#define DM217_Z2_ELPIZO_FINAL 217
 #define DM038_Z2_ZERO_CHAIN 38  // Zero with the Chain Rod, on the ground
 #define DM039_Z2_ZERO_CHAIN_AIR 39
 #define DM065_Z2_CHAIN 65  // the Chain Rod

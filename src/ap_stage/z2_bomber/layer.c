@@ -10,6 +10,7 @@
 #include "enemy.h"
 #include "global.h"
 #include "gpu_regs.h"
+#include "hud.h"
 #include "metatile.h"
 #include "overworld.h"
 #include "overworld_layer.h"
@@ -24,6 +25,8 @@
 #include "text_window.h"
 #include "zero.h"
 #include "constants/ap_z2_songs.h"
+#include "constants/motion/dynamic.h"
+#include "constants/song.h"
 
 #if AP
 
@@ -382,12 +385,12 @@ static const Coords32 sRaiderAt[5] = {
     {PIXEL(5104), PIXEL(2800)}, {PIXEL(5168), PIXEL(2768)},
 };
 
-static struct Entity* createHopper(const Coords32* at) {
+static struct Entity* createHopper(void) {
   struct Entity* p = AllocEntityLast(gEnemyHeaderPtr);
   if (p != NULL) {
     INIT_ENEMY_ROUTINE(p, ENEMY_Z2_HOPPER);
     p->unk_28 = gStageRun.vm.entities[1].entity;
-    p->coord = *at;
+    p->coord = sHopperAt;
   }
   return p;
 }
@@ -413,12 +416,17 @@ static void defend(struct StageRun* p) {
     gCollisionManager.disabled |= COLLMAN_DISABLED;
     start(p, gApZ2Bomber_DefenceClearScript, 9);
     p->remainingTimeFrame = -1;
+    gHUD.timeLeft = NULL;
     return;
   }
   if ((p->remainingTimeFrame & 63) == 0) {
     for (i = 0; i < 6; i++) {
       if (w->defenders[i] == NULL) {
-        w->defenders[i] = createHopper((i & 1) ? &sHopperAt : &sRaiderAt[RANDOM(RNG_0202f388) % 5]);
+        if (i & 1) {
+          w->defenders[i] = createHopper();
+        } else {
+          w->defenders[i] = ApZ2CreateRaider(gStageRun.vm.entities[1].entity, &sRaiderAt[RANDOM(RNG_0202f388) % 5], 0);
+        }
         break;
       }
     }
@@ -535,6 +543,7 @@ s16 ApZ2BomberUpdate(struct StageRun* p) {
     case 7:
       for (i = 0; i < 6; i++) w->defenders[i] = NULL;
       p->remainingTimeFrame = 5400;
+      gHUD.timeLeft = (s32*)&p->remainingTimeFrame;
       w->defenders[0] = gStageRun.vm.entities[6].entity;
       gOverworld.state[0] = 1;
       p->stageEventPhase = 8;
@@ -601,5 +610,215 @@ s16 ApZ2BomberUpdate(struct StageRun* p) {
   }
   return 0;
 }
+
+/*
+  Zero 2's solid 5 work0 44, Ciel in the defence. Beams in, walks to the fuse, beams out.
+  Each hit costs 2 mission points.
+  flags: 1 walks to the fuse, 2 done with it, 4 beams out
+*/
+#define CIEL(n) MOTION(DM214_Z2_CIEL, (n))
+#define FLAGS (s->scriptEntity->flags)
+
+// clang-format off
+// 0x08348d28
+static const struct Collision sCiel[2] = {
+    {DRP, FACTION_ALLY, 1, 0, 0xff, 0xff, 0xff, 0xff, 0x01, NO_DAMAGE, 0, 0, 0x00000000, {0x0, -0x1000, 0xc00, 0x2000}},
+    {DDP, FACTION_ALLY, 0, 40, 0x00, 0x00, 0x00, 0x00, 0x01, 0, 0, 1, 0x00000001, {0xa00, -0x400, 0x2200, 0x2400}},
+};
+// clang-format on
+
+static void flicker(struct Entity* s, bool8 whiteOnOdd) {
+  if ((s->work[2] & 1) == whiteOnOdd) {
+    PaintEntityWhite(s);
+  } else {
+    UpdateEntityPaletteID(s);
+  }
+}
+
+static void beamShape(struct Entity* s, bool8 wide) {
+  if (wide) {
+    (s->spr).mag.x = s->work[2] * 64 + 32;
+    (s->spr).mag.y = 352 - s->work[2] * 32;
+  } else {
+    (s->spr).mag.x = 288 - s->work[2] * 4;
+    (s->spr).mag.y = s->work[2] * 4 + 224;
+  }
+}
+
+// 0x080c7340
+static void DefenceCiel_Update(struct Solid* p) {
+  struct Entity* s = &p->s;
+  switch (s->mode[1]) {
+    case 0:
+      INIT_BODY(p, sCiel, 64, NULL);
+      SetMotion(s, CIEL(1));
+      (s->spr).mag.x = 32;
+      (s->spr).mag.y = 512;
+      s->coord.y = gStageRun.vm.camera.viewport.y - PIXEL(96);
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 1:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      s->coord.y += 0x1C00;
+      if (s->coord.y <= s->unk_coord.y) break;
+      s->coord.y = s->unk_coord.y;
+      PlaySound(SE_TENSOU_BACK);
+      s->work[2] = 1;
+      s->mode[1]++;
+      break;
+    case 2:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      beamShape(s, TRUE);
+      if (++s->work[2] <= 4) break;
+      s->work[2] = 1;
+      s->mode[1]++;
+      break;
+    case 3:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      beamShape(s, FALSE);
+      if (++s->work[2] <= 8) break;
+      s->mode[1]++;
+      break;
+    case 4:
+      InitNonAffineMotion(s);
+      ResetDynamicMotion(s);
+      SetMotion(s, CIEL(1));
+      s->work[2] = 30;
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 5:
+      UpdateEntityAnim(s);
+      flicker(s, FALSE);
+      if (--s->work[2] != 0) break;
+      s->work[2] = 30;
+      s->mode[1]++;
+      break;
+    case 6:
+      UpdateEntityAnim(s);
+      if (--s->work[2] != 0) break;
+      SetMotion(s, CIEL(0));
+      s->mode[1]++;
+      break;
+    case 7:
+      UpdateEntityAnim(s);
+      if (!(FLAGS & 1)) break;
+      SET_XFLIP(p, TRUE);
+      s->work[2] = 8;
+      s->mode[1]++;
+      break;
+    case 8:
+      UpdateEntityAnim(s);
+      if (--s->work[2] != 0) break;
+      SetMotion(s, CIEL(2));
+      s->mode[1]++;
+      break;
+    case 9:
+      UpdateEntityAnim(s);
+      s->coord.x += PIXEL(1);
+      if (s->coord.x <= PIXEL(5232)) break;
+      s->coord.x = PIXEL(5232);
+      SetMotion(s, CIEL(9));
+      s->mode[1]++;
+      break;
+    case 10:
+      UpdateEntityAnim(s);
+      if ((s->motion).state != ANIM_END) break;
+      SetMotion(s, CIEL(10));
+      s->mode[1]++;
+      break;
+    case 11:
+      UpdateEntityAnim(s);
+      if (!(FLAGS & 2)) break;
+      SetMotion(s, CIEL(9));
+      s->mode[1]++;
+      break;
+    case 12:
+      UpdateEntityAnim(s);
+      if ((s->motion).state != ANIM_END) break;
+      SetMotion(s, CIEL(0));
+      s->work[2] = 8;
+      s->mode[1]++;
+      break;
+    case 13:
+      UpdateEntityAnim(s);
+      if (--s->work[2] != 0) break;
+      SET_XFLIP(p, FALSE);
+      s->mode[1]++;
+      break;
+    case 14:
+      UpdateEntityAnim(s);
+      if (FLAGS & 4) s->mode[1]++;
+      break;
+    case 15:
+      InitScalerotMotion1(s);
+      ResetDynamicMotion(s);
+      SetMotion(s, CIEL(0));
+      s->work[2] = 30;
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 16:
+      UpdateEntityAnim(s);
+      flicker(s, TRUE);
+      if (--s->work[2] != 0) break;
+      PlaySound(SE_TENSOU_BACK);
+      s->work[2] = 8;
+      s->mode[1]++;
+      break;
+    case 17:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      beamShape(s, FALSE);
+      if (--s->work[2] != 0) break;
+      s->work[2] = 4;
+      s->mode[1]++;
+      break;
+    case 18:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      beamShape(s, TRUE);
+      if (--s->work[2] != 0) break;
+      s->d.y = -0xC00;
+      s->mode[1]++;
+      break;
+    case 19:
+      UpdateEntityAnim(s);
+      PaintEntityWhite(s);
+      (s->spr).mag.x = 32;
+      s->d.y -= 64;
+      s->coord.y += s->d.y;
+      if (Camera_GetDistance(&gStageRun.vm.camera, &s->coord) <= 0x3000) break;
+      s->flags &= ~DISPLAY;
+      s->mode[1]++;
+      break;
+  }
+  if ((p->body).status & BODY_STATUS_WHITE) {
+    gScore.missionPoint = gScore.missionPoint > 2 ? gScore.missionPoint - 2 : 0;
+    PlaySound(SE_Z2_CIEL_HURT);
+  }
+}
+
+// 0x080c72f8
+static void DefenceCiel_Init(struct Solid* p) {
+  struct Entity* s = &p->s;
+  s->flags |= DISPLAY | FLIPABLE;
+  InitScalerotMotion1(s);
+  ResetDynamicMotion(s);
+  s->unk_coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  DefenceCiel_Update(p);
+}
+
+// clang-format off
+const SolidRoutine gApZ2DefenceCielRoutine = {
+    [ENTITY_INIT] =      (SolidFunc)DefenceCiel_Init,
+    [ENTITY_UPDATE] =    (SolidFunc)DefenceCiel_Update,
+    [ENTITY_DIE] =       (SolidFunc)DeleteEntity,
+    [ENTITY_DISAPPEAR] = (SolidFunc)DeleteEntity,
+    [ENTITY_EXIT] =      (SolidFunc)DeleteEntity,
+};
+// clang-format on
 
 #endif  // AP

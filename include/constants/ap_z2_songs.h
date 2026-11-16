@@ -117,7 +117,26 @@
 #define BGM_Z2_ELPIZO (SE_Z2_BEAR_STOMP + 1)  // Zero 2 192: Elpizo with the Dark Elf
 #define BGM_Z2_BABY_ELVES (BGM_Z2_ELPIZO + 1)  // Zero 2 163: Baby Elves taking Harpuia
 #define SE_Z2_ELPIZO_LAUGH (BGM_Z2_BABY_ELVES + 1)  // Zero 2 211: Elpizo laughing
-#define SE_Z2_DARK_BOLT (SE_Z2_ELPIZO_LAUGH + 1)  // Zero 2 265: Elpizo's bolt striking Harpuia
+#define SE_Z2_ELPIZO_GUARD (SE_Z2_ELPIZO_LAUGH + 1)  // Zero 2 212: Elpizo guarding or hopping back
+#define SE_Z2_ELPIZO_SUMMON (SE_Z2_ELPIZO_GUARD + 1)  // Zero 2 214: Elpizo calling up a Pantheon or a Spiking
+#define SE_Z2_ELPIZO_SLASH (SE_Z2_ELPIZO_SUMMON + 1)  // Zero 2 215: Elpizo's slash
+#define SE_Z2_ELPIZO_SHOT (SE_Z2_ELPIZO_SLASH + 1)  // Zero 2 216: Elpizo's shot from the air
+#define SE_Z2_ELPIZO_BLAST (SE_Z2_ELPIZO_SHOT + 1)  // Zero 2 217: Elpizo's Dark Elf blast
+#define SE_Z2_ELPIZO_PILLAR (SE_Z2_ELPIZO_BLAST + 1)  // Zero 2 243: the Dark Elf blast's pillar bursting up
+#define SE_Z2_SEAL_STRIKE (SE_Z2_ELPIZO_PILLAR + 1)  // Zero 2 272: Elpizo's bolt striking Yggdrasil's seal
+#define SE_Z2_SEAL_WHITEOUT (SE_Z2_SEAL_STRIKE + 1)  // Zero 2 254: the seal's room whiting out
+#define SE_Z2_DARK_ELF_WAKE (SE_Z2_SEAL_WHITEOUT + 1)  // Zero 2 241: the Dark Elf spreading its wings
+#define SE_Z2_DARK_MERGE (SE_Z2_DARK_ELF_WAKE + 1)  // Zero 2 255: a flash of the Dark Elf merging with Elpizo
+#define SE_Z2_FINAL_APPEAR (SE_Z2_DARK_MERGE + 1)  // Zero 2 218: Elpizo's last form appearing
+#define SE_Z2_FINAL_PETAL (SE_Z2_FINAL_APPEAR + 1)  // Zero 2 257: a petal of light round him as he forms
+#define SE_Z2_FINAL_CALL (SE_Z2_FINAL_PETAL + 1)  // Zero 2 221: his last form calling up an attack
+#define SE_Z2_FINAL_CHARGE (SE_Z2_FINAL_CALL + 1)  // Zero 2 219: his last form charging its claws
+#define SE_Z2_FINAL_FADE (SE_Z2_FINAL_CHARGE + 1)  // Zero 2 220: his last form fading out
+#define SE_Z2_FINAL_WARP (SE_Z2_FINAL_FADE + 1)  // Zero 2 210: his last form reappearing elsewhere
+#define SE_Z2_FINAL_ORBS (SE_Z2_FINAL_WARP + 1)  // Zero 2 222: his last form loosing its orbs
+#define SE_Z2_FINAL_CLAWS (SE_Z2_FINAL_ORBS + 1)  // Zero 2 261: his last form's claws striking
+#define SE_Z2_FINAL_TOP (SE_Z2_FINAL_CLAWS + 1)  // Zero 2 256: his last form's spinning top
+#define SE_Z2_DARK_BOLT (SE_Z2_FINAL_TOP + 1)  // Zero 2 265: Elpizo's bolt striking Harpuia
 #define BGM_Z2_TRAIN (SE_Z2_DARK_BOLT + 1)  // Zero 2 171: Train stage theme
 #define BGM_Z2_POWER_ROOM (BGM_Z2_TRAIN + 1)  // Zero 2 170: Power Room stage theme
 #define SE_Z2_REACTOR_HUM (BGM_Z2_POWER_ROOM + 1)  // Zero 2 234: Power Room reactor running, looped
@@ -156,13 +175,19 @@
 #define SE_Z2_LEVIATHAN_BACK (SE_Z2_LEVIATHAN_WHIRL + 1)  // Zero 2 127: Leviathan darting back
 #define BGM_Z2_SEAL (SE_Z2_LEVIATHAN_BACK + 1)  // Zero 2 195: Elpizo breaking the Dark Elf's seal
 #define SE_Z2_LEAVES (BGM_Z2_SEAL + 1)  // Zero 2 236: tree frog rustling in the canopy
-#define SE_Z2_FROG_SPIT (SE_Z2_LEAVES + 1)  // Zero 2 51: frog spitting globs
-#define SE_Z2_FROG_CHEW (SE_Z2_FROG_SPIT + 1)  // Zero 2 147: frog's tongue chewing Zero
+#define SE_Z2_LAUNCH (SE_Z2_LEAVES + 1)  // Zero 2 51: launching: the frog's globs, the gunship's rockets
+#define SE_Z2_FROG_CHEW (SE_Z2_LAUNCH + 1)  // Zero 2 147: frog's tongue chewing Zero
 #define SE_Z2_FROG_CROAK (SE_Z2_FROG_CHEW + 1)  // Zero 2 150: frog croaking, small
 #define SE_Z2_FROG_CROAK_MID (SE_Z2_FROG_CROAK + 1)  // Zero 2 151: frog croaking, grown once
 #define SE_Z2_FROG_CROAK_BIG (SE_Z2_FROG_CROAK_MID + 1)  // Zero 2 152: frog croaking, grown twice
 #define SE_Z2_FROG_MOUTH (SE_Z2_FROG_CROAK_BIG + 1)  // Zero 2 153: frog opening its mouth
+#define SE_Z2_CIEL_HURT (SE_Z2_FROG_MOUTH + 1)  // Zero 2 264: Ciel hit in the Bombardment Aircraft's defence
+#define BGM_Z2_YGGDRASIL (SE_Z2_CIEL_HURT + 1)  // Zero 2 180: Yggdrasil stage theme
+#define BGM_Z2_ELPIZO_BATTLE (BGM_Z2_YGGDRASIL + 1)  // Zero 2 164: Elpizo's first fight
+#define BGM_Z2_ELPIZO_FINAL (BGM_Z2_ELPIZO_BATTLE + 1)  // Zero 2 165: Elpizo's last fight
+#define BGM_Z2_ENDING (BGM_Z2_ELPIZO_FINAL + 1)  // Zero 2 193: the ending scene
+#define BGM_Z2_STAFF_ROLL (BGM_Z2_ENDING + 1)  // Zero 2 197: the staff roll
 
-#define AP_Z2_SONG_LAST SE_Z2_FROG_MOUTH
+#define AP_Z2_SONG_LAST BGM_Z2_STAFF_ROLL
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

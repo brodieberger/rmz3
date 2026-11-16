@@ -144,7 +144,15 @@
 #define ENEMY_Z2_LANCE_TIP 138  // Zero 2 enemy 59, her lance's splash and its shards
 #define ENEMY_Z2_TREE_FROG 139  // Zero 2 enemy 34, the Forest of Notus's tree frogs
 #define ENEMY_Z2_FROG_TONGUE 140  // Zero 2 enemy 32, the frog's arms, tongues and cut half
-#define ENEMY_COUNT (ENEMY_Z2_FROG_TONGUE + 1)
+#define ENEMY_Z2_GUNSHIP_ENGINE 141  // Zero 2 enemy 11, the gunship's engine
+#define ENEMY_Z2_GUNSHIP_GUN 142  // Zero 2 enemy 12, its gun
+#define ENEMY_Z2_KUWAGUST_PART 143  // Zero 2 enemy 33, Kuwagust's grip effects and cut half
+#define ENEMY_Z2_KUWAGUST_MISSILE 144  // Zero 2 enemy 30, missiles off his horn bombs
+#define ENEMY_Z2_RAIDER 145  // Zero 2 enemy 31, the Bombardment Aircraft's defence raiders
+#define ENEMY_Z2_ANCHOR_MARK 146  // Zero 2 enemy 37, where the Anchus brothers' anchor strikes
+#define ENEMY_Z2_ELPIZO_ROCK 147  // Zero 2 enemy 76, rocks thrown up by the blast's pillar
+#define ENEMY_Z2_ELPIZO_FINAL_BODY 148  // Zero 2 enemy 57, the last form's body and claws
+#define ENEMY_COUNT (ENEMY_Z2_ELPIZO_FINAL_BODY + 1)
 #else
 #define ENEMY_COUNT (ENEMY_72 + 1)
 #endif

@@ -40,6 +40,13 @@ gBgMapOffsets: @ 0x085222A0
   .4byte Tilemap_133-. @ 133
 .if AP
   .4byte gApZ2PictureDarkElf_Map-. @ 134: Zero 2's 71, Dark Elf, in Temple of Wind's data
+  .4byte gApZ2PictureSealBreak_Map-. @ 135: Zero 2's 56, Yggdrasil's data
+  .4byte gApZ2PictureZeroRage_Map-. @ 136: Zero 2's 57, Yggdrasil's data
+  .4byte gApZ2PictureMerge0_Map-. @ 137: Zero 2's 58, Yggdrasil's data
+  .4byte gApZ2PictureMerge1_Map-. @ 138: Zero 2's 59, Yggdrasil's data
+  .4byte gApZ2PictureMerge2_Map-. @ 139: Zero 2's 60, Yggdrasil's data
+  .4byte gApZ2PictureMerge3_Map-. @ 140: Zero 2's 61, Yggdrasil's data
+  .4byte gApZ2PictureElpizoReborn_Map-. @ 141: Zero 2's 62, Yggdrasil's data
 .endif
 
 .global gTilemapData

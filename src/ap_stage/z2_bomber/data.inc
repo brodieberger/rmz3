@@ -299,7 +299,7 @@ gApZ2Bomber_FightZero:
 	.4byte DIR_RIGHT
 
 gApZ2Bomber_MidBoss:
-	.byte ENTITY_BOSS, BOSS_Z2_GOLEM, 1, 0
+	.byte ENTITY_BOSS, BOSS_Z2_GUNSHIP, 0, 0
 	.4byte 3120*PX, 1440*PX
 	.4byte DIR_LEFT
 
@@ -309,7 +309,7 @@ gApZ2Bomber_Golem:
 	.4byte DIR_RIGHT
 
 gApZ2Bomber_Boss:
-	.byte ENTITY_BOSS, BOSS_Z2_GOLEM, 1, 0
+	.byte ENTITY_BOSS, BOSS_Z2_KUWAGUST, 0, 0
 	.4byte 3648*PX, 4000*PX
 	.4byte DIR_LEFT
 
@@ -333,6 +333,11 @@ gApZ2Bomber_OpenDoors0:
 gApZ2Bomber_OpenDoors1:
 	.byte ENTITY_SOLID, SOLID_Z2_DOOR, 1, 0
 	.4byte 4792*PX, 2832*PX
+	.4byte DIR_LEFT
+
+gApZ2Bomber_Ciel:
+	.byte ENTITY_SOLID, SOLID_Z2_DEFENCE_CIEL, 0, 0
+	.4byte 5184*PX, 2848*PX
 	.4byte DIR_LEFT
 
 gApZ2Bomber_DefenceHopper:
@@ -541,10 +546,12 @@ gApZ2Bomber_DefenceScript:
 	message 1, 0, 0x142d
 	wait_msgbox_end
 	wait 60
+	spawn 1, gApZ2Bomber_Ciel
 	wait 120
 	message 1, 0, 0x142e
 	wait_msgbox_end
 	wait 15
+	entityflag 1, 0, TRUE
 	wait 90
 	message 1, 0, 0x142f
 	wait_msgbox_end
@@ -578,10 +585,12 @@ gApZ2Bomber_DefenceClearScript:
 	force 9, 0, 0x141000
 	change_entity_val 0, 2, 1
 	wait 15
+	entityflag 1, 1, TRUE
 	wait 60
 	message 1, 0, 0x1431
 	wait_msgbox_end
 	wait 15
+	entityflag 1, 2, TRUE
 	wait 90
 	quake 0, 0, 5
 	emotion_bubble 0, 16, -40, 0
