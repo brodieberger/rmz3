@@ -8,6 +8,10 @@ const u32 gApMarkerTiles[AP_MARKER_SMALL_TILES][8] = {
     {0x000FF000, 0x0FFBBFF0, 0xF33BBDDF, 0xF33FFDDF, 0xF99FF55F, 0xF99CC55F, 0x0FFCCFF0, 0x000FF000,},  /* 8x8 */
 };
 
+const u32 gApMarkerLockedTile[8] = {
+    0x00088000, 0x08844880, 0x84444448, 0x84488448, 0x84488448, 0x84444448, 0x08844880, 0x00088000,
+};
+
 const struct ApMarkerSprite gApMarkerSprite = {
     hdr : {
       {ofs : 8, subspriteCount : 1, texture : 0},  /* small */

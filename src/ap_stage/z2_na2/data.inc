@@ -427,6 +427,15 @@ gApZ2Na2_Chunks:
 	.incbin "data/ap/z2_na2/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Na2_Portrait
+gApZ2Na2_Portrait:
+	.incbin "data/ap/z2_na2/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Na2_PortraitPal
+gApZ2Na2_PortraitPal:
+	.incbin "data/ap/z2_na2/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Na2_WaterMap
 gApZ2Na2_WaterMap:
 	.incbin "data/ap/z2_na2/water_map.bin"

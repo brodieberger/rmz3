@@ -1088,6 +1088,15 @@ gApZ2MugshotMagnion_Pal:
 	.incbin "data/ap/z2_plant/mugshot_magnion.gbapal"
 	.balign 4, 0
 
+.global gApZ2Plant_Portrait
+gApZ2Plant_Portrait:
+	.incbin "data/ap/z2_plant/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Plant_PortraitPal
+gApZ2Plant_PortraitPal:
+	.incbin "data/ap/z2_plant/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Plant_Ts0_Tiles:
 	.incbin "data/ap/z2_plant/tileset0.4bpp"
 	.balign 4, 0

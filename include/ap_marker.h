@@ -28,6 +28,7 @@ struct ApMarkerSprite {
 };
 
 extern const u32 gApMarkerTiles[AP_MARKER_SMALL_TILES][8];
+extern const u32 gApMarkerLockedTile[8]; /* gray for locked npc dialogues */
 extern const struct ApMarkerSprite gApMarkerSprite;
 extern const s8 gApMarkerBob[AP_MARKER_BOB_PERIOD];
 
@@ -51,5 +52,9 @@ extern const u16 gApMarkerTile[AP_MARKER_STAGES][AP_MARKER_AREAS];
 extern const u16 gApPillarTile[AP_MARKER_STAGES][AP_MARKER_AREAS];
 u16 ApMarkerWindow(void);
 u16 ApPillarWindow(void);
+
+struct Entity;
+struct SpawnedEntity* ApSpawnOf(const struct Entity* e);
+u8 ApSpriteReach(const struct Entity* e);
 
 #endif  // GUARD_RMZ3_AP_MARKER_H

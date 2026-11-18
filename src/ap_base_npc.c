@@ -23,7 +23,7 @@
 
 extern const struct Collision Collision_ARRAY_083713b0[2];
 
-static bool32 cerveauIsAway(void) {
+bool32 ApCerveauAway(void) {
   if (!FLAG(gCurStory.s.gameflags, FLAG_LATER4_DONE)) {
     return FALSE;
   }
@@ -55,7 +55,7 @@ static void becomeGuide(struct Solid* p) {
 bool32 ApCerveauGuideUpdate(struct Solid* p) {
   switch ((p->s).mode[1]) {
     case 0: {
-      if (!cerveauIsAway()) {
+      if (!ApCerveauAway()) {
         return FALSE;
       }
       becomeGuide(p);
@@ -64,7 +64,7 @@ bool32 ApCerveauGuideUpdate(struct Solid* p) {
 
     case AP_CERVEAU_GUIDE_IDLE: {
       UpdateEntityAnim(&p->s);
-      if (!cerveauIsAway()) {
+      if (!ApCerveauAway()) {
         (p->s).mode[1] = 0;
         return TRUE;
       }

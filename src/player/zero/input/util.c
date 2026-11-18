@@ -1,4 +1,5 @@
 #include "global.h"
+#include "ap.h"
 #include "motion.h"
 #include "overworld.h"
 #include "weapon.h"
@@ -1228,9 +1229,12 @@ _080336F6:\n\
 }
 
 // コマンドダッシュ(十字キー2回押し)
-NON_MATCH static void tryCommandDash(struct Zero* z) {
-#if MODERN || CBODY
+NON_MATCH_AP static void tryCommandDash(struct Zero* z) {
+#if MODERN || AP || CBODY
   u8 i, j;
+#if AP
+  if (!gApSeedConfig.doubleTapDash) return;
+#endif
   if ((z->input).commandDashTimer > 0) {
     (z->input).commandDashTimer--;
     (z->input).history[0] |= COMMAND_DASH;
@@ -1253,8 +1257,8 @@ NON_MATCH static void tryCommandDash(struct Zero* z) {
         return;
       }
       if (pressed & DPAD_RIGHT) {
-        for (j = 0; j < 10; j++) {
-          if (!((z->input).history[i + j] & DPAD_RIGHT)) {
+        for (j = i; j < i + 10; j++) {
+          if (!((z->input).history[j] & DPAD_RIGHT)) {
             (z->input).history[0] |= COMMAND_DASH;
             (z->input).val |= ZERO_INPUT_PRESS_DASH;
             (z->input).commandDashTimer = 28;
@@ -1264,7 +1268,7 @@ NON_MATCH static void tryCommandDash(struct Zero* z) {
       }
     }
   } else if ((z->input).pressed & DPAD_LEFT) {
-    for (i = 1; i < 10; i++) {
+    for (i = 1; i < 11; i++) {
       KEY_INPUT pressed = (z->input).history[i];
       if (pressed & COMMAND_DASH) {
         return;
@@ -1273,8 +1277,8 @@ NON_MATCH static void tryCommandDash(struct Zero* z) {
         return;
       }
       if (pressed & DPAD_LEFT) {
-        for (j = 0; j < 10; j++) {
-          if (!((z->input).history[i + j] & DPAD_LEFT)) {
+        for (j = i; j < i + 11; j++) {
+          if (!((z->input).history[j] & DPAD_LEFT)) {
             (z->input).history[0] |= COMMAND_DASH;
             (z->input).val |= ZERO_INPUT_PRESS_DASH;
             (z->input).commandDashTimer = 28;

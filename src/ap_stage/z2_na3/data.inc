@@ -691,6 +691,15 @@ gApZ2MugshotElpizo_Pal:
 	.incbin "data/ap/z2_na3/mugshot_elpizo.gbapal"
 	.balign 4, 0
 
+.global gApZ2Na3_Portrait
+gApZ2Na3_Portrait:
+	.incbin "data/ap/z2_na3/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Na3_PortraitPal
+gApZ2Na3_PortraitPal:
+	.incbin "data/ap/z2_na3/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2PictureDarkElf
 gApZ2PictureDarkElf:
 	.incbin "data/ap/z2_na3/picture_darkelf.8bpp.lz"

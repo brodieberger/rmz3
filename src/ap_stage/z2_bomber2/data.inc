@@ -529,6 +529,15 @@ gApZ2Bomber2_Chunks:
 	.incbin "data/ap/z2_bomber2/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Bomber2_Portrait
+gApZ2Bomber2_Portrait:
+	.incbin "data/ap/z2_bomber2/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Bomber2_PortraitPal
+gApZ2Bomber2_PortraitPal:
+	.incbin "data/ap/z2_bomber2/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Bomber2_Ts0_Tiles:
 	.incbin "data/ap/z2_bomber2/tileset0.4bpp"
 	.balign 4, 0

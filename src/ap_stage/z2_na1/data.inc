@@ -518,6 +518,15 @@ gApZ2Na1_Chunks:
 	.incbin "data/ap/z2_na1/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Na1_Portrait
+gApZ2Na1_Portrait:
+	.incbin "data/ap/z2_na1/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Na1_PortraitPal
+gApZ2Na1_PortraitPal:
+	.incbin "data/ap/z2_na1/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Na1_TankMap
 gApZ2Na1_TankMap:
 	.incbin "data/ap/z2_na1/tank_map.bin"

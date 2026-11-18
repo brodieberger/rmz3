@@ -671,6 +671,15 @@ gApZ2Naold1_Chunks:
 	.incbin "data/ap/z2_naold1/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Naold1_Portrait
+gApZ2Naold1_Portrait:
+	.incbin "data/ap/z2_naold1/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Naold1_PortraitPal
+gApZ2Naold1_PortraitPal:
+	.incbin "data/ap/z2_naold1/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Naold1_Ts0_Tiles:
 	.incbin "data/ap/z2_naold1/tileset0.4bpp.lz"
 	.balign 4, 0

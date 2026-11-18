@@ -678,6 +678,15 @@ gApZ2Opening_Chunks:
 	.incbin "data/ap/z2_opening/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Opening_Portrait
+gApZ2Opening_Portrait:
+	.incbin "data/ap/z2_opening/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Opening_PortraitPal
+gApZ2Opening_PortraitPal:
+	.incbin "data/ap/z2_opening/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Opening_SkyMap
 gApZ2Opening_SkyMap:
 	.incbin "data/ap/z2_opening/sky_map.bin"

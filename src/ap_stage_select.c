@@ -1,5 +1,6 @@
 #include "ap.h"
 
+#include "ap_import.h"
 #include "ap_mugshot.h"
 #include "constants/flag.h"
 #include "constants/game.h"
@@ -33,8 +34,6 @@ void FUN_080c5f98(struct Entity* p);
 */
 #define AP_SELECT_PAGE_COUNT (AP_SELECT_OWN_PAGES + ((ApImportCount() + AP_SELECT_PAGE_SIZE - 1) / AP_SELECT_PAGE_SIZE))
 #define ApSelectMissionAt(g, slot) (((g)->unk_006 * AP_SELECT_PAGE_SIZE) + (slot))
-#define ApSelectIsImport(mission) ((mission) >= AP_SELECT_MISSION_COUNT)
-#define ApSelectImportOf(mission) ((u8)((mission) - AP_SELECT_MISSION_COUNT))
 
 /*
   CreateStageBossMugshots work[0]
@@ -65,9 +64,22 @@ static const u8 sApMissionStage[AP_SELECT_MISSION_COUNT] = {
     2, 3, 4, 5, 7, 8, 9, 10, 11, 12, 13, 14, 1, 6, 15, 16,
 };
 
-#define ApSelectStageOf(mission) (ApSelectIsImport(mission) ? STAGE_NONE : sApMissionStage[mission])
-#define ApSelectStageAt(g, slot) ApSelectStageOf(ApSelectMissionAt(g, slot))
-#define ApSelectSelectedStage(g) ApSelectStageAt(g, (g)->frames)
+/* The import a mission shows: the legacy page's, or one in a Zero 3 stage's slot. AP_SLOT_OWN if none. */
+static u8 ApSelectImportOf(s16 mission) {
+  u8 stageID;
+
+  if (mission >= AP_SELECT_MISSION_COUNT) {
+    return (u8)(mission - AP_SELECT_MISSION_COUNT);
+  }
+  stageID = sApMissionStage[mission];
+  if (stageID == AP_STAGE_FINAL) {
+    return AP_SLOT_OWN;
+  }
+  return gApSeedConfig.slotImport[stageID - 1];
+}
+
+#define ApSelectStageOf(mission) ((ApSelectImportOf(mission) != AP_SLOT_OWN) ? STAGE_NONE : sApMissionStage[mission])
+#define ApSelectSelectedStage(g) ApSelectStageOf(ApSelectMissionAt(g, (g)->frames))
 #define ApSelectHandle(g) ((struct Entity**)(g)->sceneState.raw)
 #define ApSelectPageOf(g) ((g)->unk_006)
 
@@ -231,26 +243,51 @@ static void ApSelectLoadNamelessArt(void) {
   }
 }
 
+#define AP_PORTRAIT_SIZE 6  // tiles a side
+
+EWRAM_DATA static u32 sApSelectPortrait[AP_PORTRAIT_SIZE * AP_PORTRAIT_SIZE][8] = {0};
+
 /*
-  The legacy page's portrait, over slot 0
+  An import's Zero 2 portrait over a slot
 */
-static void ApSelectLoadImportArt(void) {
-  MemCopy32(gApImportMugshotTiles, (void*)(VRAM + BG_VRAM_SIZE + (AP_MUGSHOT_TILE * 32)),
-            sizeof(gApImportMugshotTiles));
-  MemCopy32(gApImportMugshotPalette, &gPaletteManager.buf[(16 + AP_MUGSHOT_PAL) * 16],
-            sizeof(gApImportMugshotPalette));
+static void ApSelectLoadPortrait(u8 slot, u8 import) {
+  const struct ApImportedStage* imp = &gApImportedStages[import];
+  u32(*cell)[8] = (u32(*)[8])(VRAM + BG_VRAM_SIZE + ((AP_MUGSHOT_TILE + (slot * AP_MUGSHOT_TILES)) * 32));
+  u8 x = (u8)((slot & 1) * (AP_MUGSHOT_SHIFT / 8));
+  u8 y = (u8)((slot >> 1) * (AP_MUGSHOT_SHIFT / 8));
+  u8 tile, row;
+  u32 v;
+
+  LZ77UnCompWram(imp->portrait, sApSelectPortrait);
+  CpuFill32(0, cell, AP_MUGSHOT_TILES * 32);
+  for (tile = 0; tile < AP_PORTRAIT_SIZE * AP_PORTRAIT_SIZE; tile++) {
+    for (row = 0; row < 8; row++) {
+      v = sApSelectPortrait[tile][row];
+      v = ((v >> 4) & 0x0F0F0F0F) | ((v & 0x0F0F0F0F) << 4);
+      v = ((v >> 8) & 0x00FF00FF) | ((v & 0x00FF00FF) << 8);
+      cell[(((tile / AP_PORTRAIT_SIZE) + y) * 8) + x + (AP_PORTRAIT_SIZE - 1 - (tile % AP_PORTRAIT_SIZE))][row] =
+          (v >> 16) | (v << 16);
+    }
+  }
+  MemCopy32(imp->portraitPalette, &gPaletteManager.buf[(16 + AP_MUGSHOT_PAL + slot) * 16], 16 * sizeof(u16));
 }
 
-static void ApSelectLoadPageArt(s16 page) {
-  if (page >= AP_SELECT_OWN_PAGES) {
-    ApSelectLoadImportArt();
-    return;
-  }
-  if (page >= AP_SELECT_ART_PAGES) {
+static void ApSelectLoadPageArt(struct GameState* g) {
+  s16 page = ApSelectPageOf(g);
+  u8 import;
+  u8 slot;
+
+  if (page < AP_SELECT_ART_PAGES) {
+    LOAD_STATIC_GRAPHIC(sApSelectPageSheet[page]);
+  } else if (page == AP_SELECT_ART_PAGES) {
     ApSelectLoadNamelessArt();
-    return;
   }
-  LOAD_STATIC_GRAPHIC(sApSelectPageSheet[page]);
+  for (slot = 0; slot <= g->unk_008[0]; slot++) {
+    import = ApSelectImportOf(ApSelectMissionAt(g, slot));
+    if (import != AP_SLOT_OWN) {
+      ApSelectLoadPortrait(slot, import);
+    }
+  }
 }
 
 /*
@@ -301,6 +338,7 @@ static void ApSelectStyleRow(struct GameState* g) {
   struct EntityHeader* h = gVFXHeaderPtr;
   struct Entity* p = h->head;
   s16 mission;
+  u8 import;
   bool32 open;
 
   while (p != (struct Entity*)&h->tail) {
@@ -310,8 +348,8 @@ static void ApSelectStyleRow(struct GameState* g) {
         p->flags &= ~DISPLAY;
       } else if (p->mode[1] != 0) {
         mission = ApSelectMissionAt(g, p->work[1]);
-        open = ApSelectIsImport(mission) ? ApImportOpen(ApSelectImportOf(mission))
-                                         : ApStageUnlocked(sApMissionStage[mission]);
+        import = ApSelectImportOf(mission);
+        open = (import != AP_SLOT_OWN) ? ApImportOpen(import) : ApStageUnlocked(sApMissionStage[mission]);
         ApSelectStylePortrait(p, p->work[1], open);
       }
     }
@@ -370,6 +408,7 @@ static void ApSelectTurnPage(struct GameState* g, s16 step) {
 void ApStageSelect(struct GameState* g) {
   struct Entity** handle = ApSelectHandle(g);
   TextWindowText* w = &gTextWindow.text;
+  u8 import;
   u8 stageID;
 
   switch (g->mode[3]) {
@@ -423,7 +462,7 @@ void ApStageSelect(struct GameState* g) {
           g->mode[3] = AP_SELECT_EXIT_STATE;  // out of entities: leave rather than retry forever
           return;
         }
-        ApSelectLoadPageArt(ApSelectPageOf(g));
+        ApSelectLoadPageArt(g);
         PrintOptionMessage1(0x13);  // Which mission?
         sApSelectBuilt = TRUE;
         g->unk_008[1] = AP_SELECT_OPEN_DELAY;
@@ -454,8 +493,9 @@ void ApStageSelect(struct GameState* g) {
       }
 
       sApSelectSlot = g->frames;
-      if (ApSelectIsImport(ApSelectMissionAt(g, g->frames))) {
-        gApImportSelected = ApSelectImportOf(ApSelectMissionAt(g, g->frames));
+      import = ApSelectImportOf(ApSelectMissionAt(g, g->frames));
+      if (import != AP_SLOT_OWN) {
+        gApImportSelected = import;
       }
       stageID = ApSelectSelectedStage(g);
       PrintString(gApSelectStageLabel, AP_SELECT_LABEL_X, AP_SELECT_NAME_Y);

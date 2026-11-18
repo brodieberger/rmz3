@@ -152,6 +152,8 @@ NON_MATCH_AP void CalcMissionScore(void) {
   (m->total)->lastStage = m->stageID;
 #if AP
   ApImportMissionPoint();
+  // Cameras can be randomized away. Sloppy fix.
+  if (m->stageID == STAGE_REPAIR_FACTORY && gApSeedConfig.randomEnemies) m->missionPoint = 20;
 #endif
   m->eachScore[0] = m->missionPoint;
   (m->total)->unusedClearCount++;

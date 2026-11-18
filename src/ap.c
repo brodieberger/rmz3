@@ -62,6 +62,12 @@ const struct ApSeedConfig gApSeedConfig = {
     FALSE,
     0,
     TRUE,
+    FALSE,
+    0,
+    FALSE,
+    TRUE,
+    {AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN,
+     AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN},
 };
 
 bool32 ApInDemo(void) {
@@ -130,8 +136,9 @@ void ApFixEquippedWeapons(struct ZeroStatus* status) {
   }
 }
 
-void ApApplyStartingWeapons(struct ZeroStatus* status) {
+void ApApplyStartingStatus(struct ZeroStatus* status) {
   status->unlockedWeapon = gApSeedConfig.startingWeapons;
+  (status->keyMap).attackMode = gApSeedConfig.attackMode;
   ApFixEquippedWeapons(status);
 }
 
@@ -344,18 +351,38 @@ u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_I
 
 bool32 ApImportOpen(u8 import) { return gApSavedata.importOpen[ApImportZ2Stage(import)]; }
 
+/* The Zero 3 stage whose slot holds an import, STAGE_NONE if none does. */
+static u8 ApImportSlot(u8 import) {
+  u8 stage;
+
+  for (stage = STAGE_SPACE_CRAFT; stage <= AP_SLOT_COUNT; stage++) {
+    if (gApSeedConfig.slotImport[stage - 1] == import) {
+      return stage;
+    }
+  }
+  return STAGE_NONE;
+}
+
 /*
   The final stage has no access item.
   It opens on every other stage cleared while holding the seed's disk required amount.
 */
 static bool32 ApFinalStageOpen(void) {
   u8 stage;
+  u8 import;
+  u8 rank;
+
   if (gApSeedConfig.finalStageRank != AP_FINAL_RANK_NONE) {
     for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
-      if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
+      import = gApSeedConfig.slotImport[stage - 1];
+      if (import != AP_SLOT_OWN) {
+        rank = gApSavedata.importRank[import];
+      } else if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
         return FALSE;
+      } else {
+        rank = ApStageBestRank(stage);
       }
-      if (ApStageBestRank(stage) <= gApSeedConfig.finalStageRank) {
+      if (rank <= gApSeedConfig.finalStageRank) {
         return FALSE;
       }
     }
@@ -1243,6 +1270,7 @@ void ApUpdate(void) {
   ApSetHarpuiaScene();
   ApTrapUpdate();
   ApUpdateEnemyMarkers();
+  ApUpdateNpcMarkers();
 
   if (!canAcceptItems) {
     return;
@@ -1406,6 +1434,65 @@ void ApMarkLocationChecked(u16 locationID) {
 }
 
 
+/* Zero 2's forms: Energy, Erase, Defense, Rise, Power, Active, X */
+static const u8 sApFormGoals[AP_FORM_COUNT] = {25, 30, 20, 10, 30, 20, 50};
+
+void ApCountForm(u8 form) {
+  u8* count = &gApSavedata.formCount[form];
+
+  if (ApInDemo() || (gApSeedConfig.legacyStages == AP_LEGACY_OFF)) {
+    return;
+  }
+  if (*count < sApFormGoals[form]) {
+    (*count)++;
+  }
+  if (*count == sApFormGoals[form]) {
+    ApMarkLocationChecked(AP_LOC_FORM_FIRST + form);
+  }
+}
+
+/* An enemy's last hitter */
+void ApCountFormKill(const struct Body* killer) {
+  const struct Entity* w;
+
+  if ((killer == NULL) || (killer->parent == NULL)) {
+    return;
+  }
+  w = killer->parent;
+  if (w->kind != ENTITY_WEAPON) {
+    return;
+  }
+  switch (w->id) {
+    case WEAPON_MOVE_Z_BUSTER:
+    case WEAPON_MOVE_REFLECT_LASER:
+    case WEAPON_MOVE_SOUL_LANCHER:
+    case WEAPON_MOVE_BURST_SHOT:
+    case WEAPON_MOVE_BLIZZARD_ARROW:
+      ApCountForm(AP_FORM_X);
+      break;
+    case WEAPON_MOVE_SHIELD_FLY:
+      if (w->work[1] != 0) {  // charged throw
+        ApCountForm(AP_FORM_DEFENSE);
+      }
+      break;
+    case WEAPON_MOVE_Z_SABER:
+      switch (w->work[0]) {
+        case SABER_DASH:
+        case SABER_REPUGEKI:
+        case SABER_UNK_19:
+        case SABER_DASH_ROLLING:
+          ApCountForm(AP_FORM_ACTIVE);
+          break;
+        case SABER_AIR:
+        case SABER_CHARGE_AIR:
+        case SABER_AIR_ROLLING:
+          ApCountForm(AP_FORM_RISE);
+          break;
+      }
+      break;
+  }
+}
+
 static void ApRebuildCheckedLocations(void) {
   const u8* disks = gGameState.save.disk;
   u32 missionDones;
@@ -1450,6 +1537,13 @@ static void ApRebuildCheckedLocations(void) {
   for (i = 0; i < AP_IMPORT_COUNT; i++) {
     if (gApSavedata.importRank[i] != AP_RANK_NONE) {
       ApMarkLocationChecked(sApImportClears[i].clear);
+      ApMarkLocationChecked(sApStageClears[ApImportSlot(i)].chip);
+    }
+  }
+
+  for (i = 0; i < AP_FORM_COUNT; i++) {
+    if (gApSavedata.formCount[i] >= sApFormGoals[i]) {
+      ApMarkLocationChecked(AP_LOC_FORM_FIRST + i);
     }
   }
 
@@ -1567,6 +1661,9 @@ void ApMarkStageCleared(void) {
   ApMarkLocationChecked(stage->clear);
   if (stage->chip != 0) {
     ApMarkLocationChecked(stage->chip);
+  }
+  if (gStageRun.id == STAGE_NONE) {
+    ApMarkLocationChecked(sApStageClears[ApImportSlot(gApImportSelected)].chip);
   }
   missionRank = CalcScoreRank(gScore.resultScore);
   if (gAp.rankElfUsed) {

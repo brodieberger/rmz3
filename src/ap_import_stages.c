@@ -33,6 +33,8 @@ extern const char_t gApImportName0[];
 extern const struct SpawnTemplate gApZ2Opening_Templates[];
 extern const struct SpawnPoint gApZ2Opening_Points[];
 extern const struct PreloadEntity gApZ2Opening_Preloads[];
+extern const u32 gApZ2Opening_Portrait[];
+extern const u16 gApZ2Opening_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Opening_MidBosses[2] = {
     {
@@ -69,6 +71,8 @@ extern const char_t gApImportName1[];
 extern const struct SpawnTemplate gApZ2Ice_Templates[];
 extern const struct SpawnPoint gApZ2Ice_Points[];
 extern const struct PreloadEntity gApZ2Ice_Preloads[];
+extern const u32 gApZ2Ice_Portrait[];
+extern const u16 gApZ2Ice_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Ice_MidBosses[1] = {
     {
@@ -99,6 +103,8 @@ extern const char_t gApImportName2[];
 extern const struct SpawnTemplate gApZ2Train_Templates[];
 extern const struct SpawnPoint gApZ2Train_Points[];
 extern const struct PreloadEntity gApZ2Train_Preloads[];
+extern const u32 gApZ2Train_Portrait[];
+extern const u16 gApZ2Train_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Train_MidBosses[1] = {
     {
@@ -127,6 +133,8 @@ extern const char_t gApImportName3[];
 extern const struct SpawnTemplate gApZ2Plant_Templates[];
 extern const struct SpawnPoint gApZ2Plant_Points[];
 extern const struct PreloadEntity gApZ2Plant_Preloads[];
+extern const u32 gApZ2Plant_Portrait[];
+extern const u16 gApZ2Plant_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Plant_MidBosses[0] = {
 };
@@ -151,6 +159,8 @@ extern const char_t gApImportName4[];
 extern const struct SpawnTemplate gApZ2Jungle_Templates[];
 extern const struct SpawnPoint gApZ2Jungle_Points[];
 extern const struct PreloadEntity gApZ2Jungle_Preloads[];
+extern const u32 gApZ2Jungle_Portrait[];
+extern const u16 gApZ2Jungle_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Jungle_MidBosses[1] = {
     {
@@ -185,6 +195,8 @@ extern const char_t gApImportName5[];
 extern const struct SpawnTemplate gApZ2Naold1_Templates[];
 extern const struct SpawnPoint gApZ2Naold1_Points[];
 extern const struct PreloadEntity gApZ2Naold1_Preloads[];
+extern const u32 gApZ2Naold1_Portrait[];
+extern const u16 gApZ2Naold1_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Naold1_MidBosses[3] = {
     {
@@ -225,6 +237,8 @@ extern const char_t gApImportName6[];
 extern const struct SpawnTemplate gApZ2Bomber_Templates[];
 extern const struct SpawnPoint gApZ2Bomber_Points[];
 extern const struct PreloadEntity gApZ2Bomber_Preloads[];
+extern const u32 gApZ2Bomber_Portrait[];
+extern const u16 gApZ2Bomber_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Bomber_MidBosses[0] = {
 };
@@ -249,6 +263,8 @@ extern const char_t gApImportName7[];
 extern const struct SpawnTemplate gApZ2Jungle2_Templates[];
 extern const struct SpawnPoint gApZ2Jungle2_Points[];
 extern const struct PreloadEntity gApZ2Jungle2_Preloads[];
+extern const u32 gApZ2Jungle2_Portrait[];
+extern const u16 gApZ2Jungle2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Jungle2_MidBosses[1] = {
     {
@@ -277,6 +293,8 @@ extern const char_t gApImportName8[];
 extern const struct SpawnTemplate gApZ2Ice2_Templates[];
 extern const struct SpawnPoint gApZ2Ice2_Points[];
 extern const struct PreloadEntity gApZ2Ice2_Preloads[];
+extern const u32 gApZ2Ice2_Portrait[];
+extern const u16 gApZ2Ice2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Ice2_MidBosses[0] = {
 };
@@ -302,6 +320,8 @@ extern const char_t gApImportName9[];
 extern const struct SpawnTemplate gApZ2Bomber2_Templates[];
 extern const struct SpawnPoint gApZ2Bomber2_Points[];
 extern const struct PreloadEntity gApZ2Bomber2_Preloads[];
+extern const u32 gApZ2Bomber2_Portrait[];
+extern const u16 gApZ2Bomber2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Bomber2_MidBosses[1] = {
     {
@@ -330,6 +350,8 @@ extern const char_t gApImportName10[];
 extern const struct SpawnTemplate gApZ2Plant2_Templates[];
 extern const struct SpawnPoint gApZ2Plant2_Points[];
 extern const struct PreloadEntity gApZ2Plant2_Preloads[];
+extern const u32 gApZ2Plant2_Portrait[];
+extern const u16 gApZ2Plant2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Plant2_MidBosses[0] = {
 };
@@ -352,6 +374,8 @@ extern const char_t gApImportName11[];
 extern const struct SpawnTemplate gApZ2Naold2_Templates[];
 extern const struct SpawnPoint gApZ2Naold2_Points[];
 extern const struct PreloadEntity gApZ2Naold2_Preloads[];
+extern const u32 gApZ2Naold2_Portrait[];
+extern const u16 gApZ2Naold2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Naold2_MidBosses[0] = {
 };
@@ -374,6 +398,8 @@ extern const char_t gApImportName12[];
 extern const struct SpawnTemplate gApZ2Na1_Templates[];
 extern const struct SpawnPoint gApZ2Na1_Points[];
 extern const struct PreloadEntity gApZ2Na1_Preloads[];
+extern const u32 gApZ2Na1_Portrait[];
+extern const u16 gApZ2Na1_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Na1_MidBosses[0] = {
 };
@@ -396,6 +422,8 @@ extern const char_t gApImportName13[];
 extern const struct SpawnTemplate gApZ2Na2_Templates[];
 extern const struct SpawnPoint gApZ2Na2_Points[];
 extern const struct PreloadEntity gApZ2Na2_Preloads[];
+extern const u32 gApZ2Na2_Portrait[];
+extern const u16 gApZ2Na2_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Na2_MidBosses[0] = {
 };
@@ -418,6 +446,8 @@ extern const char_t gApImportName14[];
 extern const struct SpawnTemplate gApZ2Na3_Templates[];
 extern const struct SpawnPoint gApZ2Na3_Points[];
 extern const struct PreloadEntity gApZ2Na3_Preloads[];
+extern const u32 gApZ2Na3_Portrait[];
+extern const u16 gApZ2Na3_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Na3_MidBosses[0] = {
 };
@@ -440,6 +470,8 @@ extern const char_t gApImportName15[];
 extern const struct SpawnTemplate gApZ2Yggdrasil_Templates[];
 extern const struct SpawnPoint gApZ2Yggdrasil_Points[];
 extern const struct PreloadEntity gApZ2Yggdrasil_Preloads[];
+extern const u32 gApZ2Yggdrasil_Portrait[];
+extern const u16 gApZ2Yggdrasil_PortraitPal[];
 
 static const struct ApImportMidBoss gApZ2Yggdrasil_MidBosses[0] = {
 };
@@ -470,6 +502,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Opening_Templates,
       points : gApZ2Opening_Points,
       preloads : gApZ2Opening_Preloads,
+      portrait : gApZ2Opening_Portrait,
+      portraitPalette : gApZ2Opening_PortraitPal,
     },
     {
       stage : &gApZ2Ice_Stage,
@@ -496,6 +530,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Ice_Templates,
       points : gApZ2Ice_Points,
       preloads : gApZ2Ice_Preloads,
+      portrait : gApZ2Ice_Portrait,
+      portraitPalette : gApZ2Ice_PortraitPal,
     },
     {
       stage : &gApZ2Train_Stage,
@@ -522,6 +558,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Train_Templates,
       points : gApZ2Train_Points,
       preloads : gApZ2Train_Preloads,
+      portrait : gApZ2Train_Portrait,
+      portraitPalette : gApZ2Train_PortraitPal,
     },
     {
       stage : &gApZ2Plant_Stage,
@@ -548,6 +586,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Plant_Templates,
       points : gApZ2Plant_Points,
       preloads : gApZ2Plant_Preloads,
+      portrait : gApZ2Plant_Portrait,
+      portraitPalette : gApZ2Plant_PortraitPal,
     },
     {
       stage : &gApZ2Jungle_Stage,
@@ -574,6 +614,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Jungle_Templates,
       points : gApZ2Jungle_Points,
       preloads : gApZ2Jungle_Preloads,
+      portrait : gApZ2Jungle_Portrait,
+      portraitPalette : gApZ2Jungle_PortraitPal,
     },
     {
       stage : &gApZ2Naold1_Stage,
@@ -600,6 +642,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Naold1_Templates,
       points : gApZ2Naold1_Points,
       preloads : gApZ2Naold1_Preloads,
+      portrait : gApZ2Naold1_Portrait,
+      portraitPalette : gApZ2Naold1_PortraitPal,
     },
     {
       stage : &gApZ2Bomber_Stage,
@@ -626,6 +670,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Bomber_Templates,
       points : gApZ2Bomber_Points,
       preloads : gApZ2Bomber_Preloads,
+      portrait : gApZ2Bomber_Portrait,
+      portraitPalette : gApZ2Bomber_PortraitPal,
     },
     {
       stage : &gApZ2Jungle2_Stage,
@@ -652,6 +698,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Jungle2_Templates,
       points : gApZ2Jungle2_Points,
       preloads : gApZ2Jungle2_Preloads,
+      portrait : gApZ2Jungle2_Portrait,
+      portraitPalette : gApZ2Jungle2_PortraitPal,
     },
     {
       stage : &gApZ2Ice2_Stage,
@@ -678,6 +726,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Ice2_Templates,
       points : gApZ2Ice2_Points,
       preloads : gApZ2Ice2_Preloads,
+      portrait : gApZ2Ice2_Portrait,
+      portraitPalette : gApZ2Ice2_PortraitPal,
     },
     {
       stage : &gApZ2Bomber2_Stage,
@@ -705,6 +755,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Bomber2_Templates,
       points : gApZ2Bomber2_Points,
       preloads : gApZ2Bomber2_Preloads,
+      portrait : gApZ2Bomber2_Portrait,
+      portraitPalette : gApZ2Bomber2_PortraitPal,
     },
     {
       stage : &gApZ2Plant2_Stage,
@@ -731,6 +783,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Plant2_Templates,
       points : gApZ2Plant2_Points,
       preloads : gApZ2Plant2_Preloads,
+      portrait : gApZ2Plant2_Portrait,
+      portraitPalette : gApZ2Plant2_PortraitPal,
     },
     {
       stage : &gApZ2Naold2_Stage,
@@ -757,6 +811,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Naold2_Templates,
       points : gApZ2Naold2_Points,
       preloads : gApZ2Naold2_Preloads,
+      portrait : gApZ2Naold2_Portrait,
+      portraitPalette : gApZ2Naold2_PortraitPal,
     },
     {
       stage : &gApZ2Na1_Stage,
@@ -783,6 +839,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Na1_Templates,
       points : gApZ2Na1_Points,
       preloads : gApZ2Na1_Preloads,
+      portrait : gApZ2Na1_Portrait,
+      portraitPalette : gApZ2Na1_PortraitPal,
     },
     {
       stage : &gApZ2Na2_Stage,
@@ -809,6 +867,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Na2_Templates,
       points : gApZ2Na2_Points,
       preloads : gApZ2Na2_Preloads,
+      portrait : gApZ2Na2_Portrait,
+      portraitPalette : gApZ2Na2_PortraitPal,
     },
     {
       stage : &gApZ2Na3_Stage,
@@ -835,6 +895,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Na3_Templates,
       points : gApZ2Na3_Points,
       preloads : gApZ2Na3_Preloads,
+      portrait : gApZ2Na3_Portrait,
+      portraitPalette : gApZ2Na3_PortraitPal,
     },
     {
       stage : &gApZ2Yggdrasil_Stage,
@@ -861,6 +923,8 @@ const struct ApImportedStage gApImportedStages[] = {
       templates : gApZ2Yggdrasil_Templates,
       points : gApZ2Yggdrasil_Points,
       preloads : gApZ2Yggdrasil_Preloads,
+      portrait : gApZ2Yggdrasil_Portrait,
+      portraitPalette : gApZ2Yggdrasil_PortraitPal,
     },
 };
 

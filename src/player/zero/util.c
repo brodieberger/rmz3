@@ -38,7 +38,7 @@ void ClearZeroStatus(struct ZeroStatus* p) {
   p->dying = FALSE;
   p->menuZeroColor = MZC_NORMAL;
   // AP
-  ApApplyStartingWeapons(p);
+  ApApplyStartingStatus(p);
 }
 
 void ClearZeroStatusHard(struct ZeroStatus* p) {
@@ -67,7 +67,7 @@ void ClearZeroStatusHard(struct ZeroStatus* p) {
   p->dying = FALSE;
   p->menuZeroColor = MZC_HARD;
   // Hard mode
-  ApApplyStartingWeapons(p);
+  ApApplyStartingStatus(p);
 }
 
 void ClearZeroStatusUltimate(struct ZeroStatus* p) {

@@ -438,6 +438,7 @@ void ApChainAttack(struct Zero* z) {
       } else if (input & (FACING_RIGHT(z) ? DPAD_LEFT : DPAD_RIGHT)) {
         setPose(z, PULL_POSE);
         *state = CHAIN_PULL;
+        ApCountForm(AP_FORM_POWER);
       }
       break;
     case CHAIN_PULL:

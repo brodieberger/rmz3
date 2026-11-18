@@ -44,6 +44,8 @@ struct ApImportedStage {
   const struct SpawnTemplate* templates;
   const struct SpawnPoint* points;
   const struct PreloadEntity* preloads;
+  const u32* portrait;                    // Stage select, LZ77 compressed
+  const u16* portraitPalette;
 };
 
 extern const struct ApImportedStage gApImportedStages[];

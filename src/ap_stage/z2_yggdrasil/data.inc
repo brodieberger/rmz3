@@ -1684,6 +1684,15 @@ gApZ2MugshotDarkElpizo_Pal:
 	.incbin "data/ap/z2_yggdrasil/mugshot_darkelpizo.gbapal"
 	.balign 4, 0
 
+.global gApZ2Yggdrasil_Portrait
+gApZ2Yggdrasil_Portrait:
+	.incbin "data/ap/z2_yggdrasil/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Yggdrasil_PortraitPal
+gApZ2Yggdrasil_PortraitPal:
+	.incbin "data/ap/z2_yggdrasil/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2PictureSealBreak
 gApZ2PictureSealBreak:
 	.incbin "data/ap/z2_yggdrasil/picture_sealbreak.8bpp.lz"

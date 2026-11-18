@@ -415,6 +415,15 @@ gApZ2Ice2_Chunks:
 	.incbin "data/ap/z2_ice2/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Ice2_Portrait
+gApZ2Ice2_Portrait:
+	.incbin "data/ap/z2_ice2/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Ice2_PortraitPal
+gApZ2Ice2_PortraitPal:
+	.incbin "data/ap/z2_ice2/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Ice2_Ts0_Tiles:
 	.incbin "data/ap/z2_ice2/tileset0.4bpp"
 	.balign 4, 0

@@ -474,6 +474,15 @@ gApZ2MugshotPanter_Pal:
 	.incbin "data/ap/z2_train/mugshot_panter.gbapal"
 	.balign 4, 0
 
+.global gApZ2Train_Portrait
+gApZ2Train_Portrait:
+	.incbin "data/ap/z2_train/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Train_PortraitPal
+gApZ2Train_PortraitPal:
+	.incbin "data/ap/z2_train/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Train_FrontCarMap
 gApZ2Train_FrontCarMap:
 	.incbin "data/ap/z2_train/frontcar_map.bin"

@@ -447,6 +447,9 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
     if (ApPickupIsLocation(p->work[0])) {
       ApMarkPickupCollected(p);
     }
+    if (p->work[0] <= ITEM_LIFE_L) {
+      ApCountForm(AP_FORM_ENERGY);
+    }
 #endif
     p->flags &= ~DISPLAY;
     p->flags &= ~FLIPABLE;

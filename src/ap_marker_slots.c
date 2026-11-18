@@ -22,7 +22,7 @@ const u16 gApMarkerTile[AP_MARKER_STAGES][AP_MARKER_AREAS] = {
     {1019, 1019, 0, 0, 0, 0, 0, 1019},
     {1019, 1019, 0, 0, 0, 0, 0, 0},
     {1019, 1019, 1019, 0, 0, 0, 1019, 1019},
-    {0, 0, 0, 0, 0, 0, 0, 0},
+    {0, 1018, 1018, 1018, 1018, 1018, 0, 0},
 };
 
 const u16 gApPillarTile[AP_MARKER_STAGES][AP_MARKER_AREAS] = {

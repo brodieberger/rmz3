@@ -95,6 +95,9 @@ NON_MATCH_AP void TryDropZakoDisk(struct Enemy* p, Coords32* c) {
   u8* count;
   s32 diskID;
 
+#if AP
+  ApCountFormKill(p->body.enemy);
+#endif
   if (FLAG(gCurStory.s.gameflags, IN_CYBERSPACE)) return;
 #if AP
   d = ApDiskDrop(&p->s, ApDropMarkOf(&p->s));

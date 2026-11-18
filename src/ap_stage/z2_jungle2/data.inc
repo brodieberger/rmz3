@@ -846,6 +846,15 @@ gApZ2MugshotBabyElves_Pal:
 	.incbin "data/ap/z2_jungle2/mugshot_babyelves.gbapal"
 	.balign 4, 0
 
+.global gApZ2Jungle2_Portrait
+gApZ2Jungle2_Portrait:
+	.incbin "data/ap/z2_jungle2/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Jungle2_PortraitPal
+gApZ2Jungle2_PortraitPal:
+	.incbin "data/ap/z2_jungle2/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Jungle2_Ts0_Tiles:
 	.incbin "data/ap/z2_jungle2/tileset0.4bpp"
 	.balign 4, 0

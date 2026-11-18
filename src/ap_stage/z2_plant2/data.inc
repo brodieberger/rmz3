@@ -416,6 +416,15 @@ gApZ2Plant2_Chunks:
 	.incbin "data/ap/z2_plant2/screen.bin"
 	.balign 4, 0
 
+.global gApZ2Plant2_Portrait
+gApZ2Plant2_Portrait:
+	.incbin "data/ap/z2_plant2/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Plant2_PortraitPal
+gApZ2Plant2_PortraitPal:
+	.incbin "data/ap/z2_plant2/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Plant2_Ts0_Tiles:
 	.incbin "data/ap/z2_plant2/tileset0.4bpp"
 	.balign 4, 0

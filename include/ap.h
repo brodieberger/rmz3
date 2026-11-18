@@ -126,6 +126,16 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   2..: cyber elves
 */
 #define AP_LOC_IMPORT_FIRST 400
+/* Zero 2's forms */
+#define AP_LOC_FORM_FIRST 383
+#define AP_FORM_ENERGY 0
+#define AP_FORM_ERASE 1
+#define AP_FORM_DEFENSE 2
+#define AP_FORM_RISE 3
+#define AP_FORM_POWER 4
+#define AP_FORM_ACTIVE 5
+#define AP_FORM_X 6
+#define AP_FORM_COUNT 7
 #define AP_IMPORT_ELF_COUNT 28
 #define AP_PICKUP_PLACE_NONE 0xFF
 #define ApPickupIsLocation(kind) ((kind) <= ITEM_EXLIFE)
@@ -169,6 +179,7 @@ extern const struct ApPickupPlace gApPickupPlaces[AP_PICKUP_PLACE_COUNT];
 /* ZeroStatus.subtankHP[] entry for a tank the player does not own (Doesnt render in the menu). */
 #define AP_SUBTANK_NONE 0xFF
 #define AP_STAGE_COUNT 18
+#define AP_SLOT_COUNT 15
 
 // Weil's lab is currently the goal. This probably wont be changed.
 #define AP_STAGE_FINAL STAGE_WEILS_LABO
@@ -311,11 +322,19 @@ struct ApSeedConfig {
   u8 infiniteLives;
   u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
   u8 enemyDiskMarkers; // enemy marker
-  u8 legacyStages;     // Legacy stages are in the seed, each unlocked by its own access item
-  u8 unused[2];
+  u8 legacyStages;     // AP_LEGACY_*, each legacy stage unlocked by its own access item
+  u8 attackMode;       // ZeroStatus.keyMap.attackMode a new game starts with, 0 type A, 1 type B
+  u8 randomEnemies;    // the enemy randomizer is enabled
+  u8 doubleTapDash;    // tapping left or right twice dashes
+  u8 slotImport[AP_SLOT_COUNT];  // import in each Zero 3 stage's slot, by stage ID - 1, or AP_SLOT_OWN
 };
 
 #define AP_FINAL_RANK_NONE 0xFF
+
+#define AP_LEGACY_OFF 0
+#define AP_LEGACY_SHUFFLE 1
+#define AP_LEGACY_ALL 2
+#define AP_SLOT_OWN 0xFF
 
 /* The secret disks that hold cyber elves. */
 #define AP_DISK_ELF_FIRST 0x14
@@ -335,7 +354,7 @@ struct ApSeedConfig {
 #define AP_SELECT_CYCLE_FOOT_CHIP 4
 #define AP_SELECT_USE_SUBTANK 5
 
-static_assert(sizeof(struct ApSeedConfig) == 16);
+static_assert(sizeof(struct ApSeedConfig) == 32);
 
 /*
   Cost of each shop item. Inserted into ROM when AP world generates
@@ -406,6 +425,7 @@ struct ApSavedata {
   u8 importOpen[AP_Z2_STAGE_COUNT];  // access item received, by game order
   u8 importRank[AP_IMPORT_COUNT];  // best rank + 1, like AP_RANK_BYTE
   u8 chainLevel;                   // Progressive Chain Rod copies
+  u8 formCount[AP_FORM_COUNT];     // toward each form's location, stops at its goal
 };
 extern struct ApSavedata gApSavedata;
 void ApClearSavedata(void);
@@ -459,6 +479,9 @@ void ApImportMoleKilled(void);
 void ApImportSpiderKilled(void);
 void ApImportLeaperKilled(void);
 void ApImportTreeFrogKilled(void);
+void ApCountForm(u8 form);
+struct Body;
+void ApCountFormKill(const struct Body* killer);
 struct StageRun;
 s16 ApImportUpdate(struct StageRun* p);
 extern u8 gApImportSelected;
@@ -473,7 +496,7 @@ void ApMarkStageCleared(void);
 void ApSetRankElf(void);
 void ApResetMissionFlags(void);
 void ApOnZeroDied(void);
-void ApApplyStartingWeapons(struct ZeroStatus* status);
+void ApApplyStartingStatus(struct ZeroStatus* status);
 void ApFixEquippedWeapons(struct ZeroStatus* status);
 void ApRequestMissionRerun(u8 stageID);
 bool32 ApTakeMissionRerun(u8 stageID);
@@ -527,6 +550,7 @@ void ApMarkPickupCollected(struct Pickup* p);
 struct Entity;
 u8 ApDropMarkOf(const struct Entity* e);
 void ApUpdateEnemyMarkers(void);
+void ApUpdateNpcMarkers(void);
 #define AP_CHUTE_ENEMIES 2
 void ApChuteDrop(s32 x, s32 y, u8 kind);
 #define AP_NEST_ENEMIES 3
@@ -535,6 +559,7 @@ struct SpawnedEntity* ApAllocStageEntity(void);
 u8 ApDropDisk(const struct Entity* e, u8 mark);
 
 struct Solid;
+bool32 ApCerveauAway(void);
 bool32 ApCerveauGuideUpdate(struct Solid* p);
 
 /* ap_disk_menu.c. For the analysis screen's SELECT open-all, and Cerveau's shop page. */
@@ -587,12 +612,13 @@ void ApFrameHook(bool32 b);
 #define ApInit() ((void)0)
 #define ApUpdate() ((void)0)
 #define ApMarkLocationChecked(locationID) ((void)0)
+#define ApCountForm(form) ((void)0)
 #define ApMarkNpcDialogueChecked(textID) ((void)0)
 #define ApMarkStageCleared() ((void)0)
 #define ApSetRankElf() ((void)0)
 #define ApResetMissionFlags() ((void)0)
 #define ApOnZeroDied() ((void)0)
-#define ApApplyStartingWeapons(status) ((void)0)
+#define ApApplyStartingStatus(status) ((void)0)
 #define ApFixEquippedWeapons(status) ((void)0)
 #define ApHasWeaponAbility(bit) (1)
 #define ApChargeTier(weapon) (FULL_CHARGE)

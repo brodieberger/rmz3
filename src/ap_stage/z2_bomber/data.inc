@@ -1055,6 +1055,15 @@ gApZ2MugshotKuwagust_Pal:
 	.incbin "data/ap/z2_bomber/mugshot_kuwagust.gbapal"
 	.balign 4, 0
 
+.global gApZ2Bomber_Portrait
+gApZ2Bomber_Portrait:
+	.incbin "data/ap/z2_bomber/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Bomber_PortraitPal
+gApZ2Bomber_PortraitPal:
+	.incbin "data/ap/z2_bomber/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Bomber_Layer3Map
 gApZ2Bomber_Layer3Map:
 	.incbin "data/ap/z2_bomber/layer3_map.bin"

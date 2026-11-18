@@ -63,8 +63,8 @@ void ApImportSelect(u8 n) {
   }
 }
 
-// 0 unless the legacy stage option is enabled.
-u8 ApImportCount(void) { return gApSeedConfig.legacyStages ? AP_IMPORT_COUNT : 0; }
+// Imports on the stage select's legacy page.
+u8 ApImportCount(void) { return (gApSeedConfig.legacyStages == AP_LEGACY_ALL) ? AP_IMPORT_COUNT : 0; }
 
 const char_t* ApImportName(u8 n) { return gApImportedStages[n].name; }
 

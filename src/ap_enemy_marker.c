@@ -35,7 +35,7 @@ static u8 ApDropMarkOfSpawn(const struct SpawnedEntity* s) {
   return gSpawnManager.template[gSpawnManager.points[s->sid].idx].attr >> AP_DROP_MARK_SHIFT;
 }
 
-static struct SpawnedEntity* ApSpawnOf(const struct Entity* e) {
+struct SpawnedEntity* ApSpawnOf(const struct Entity* e) {
   struct SpawnedEntity* s;
 
   for (s = gSpawnManager.list; s != NULL; s = s->next) {
@@ -74,7 +74,7 @@ static bool32 ApEnemyLive(const struct Entity* e) {
 }
 
 /* How far the enemy's current frame reaches above the start. */
-static u8 ApSpriteReach(const struct Entity* e) {
+u8 ApSpriteReach(const struct Entity* e) {
   const struct MetaspriteHeader* hdr;
   const struct Subsprite* part;
   s32 i, top, reach = 0;

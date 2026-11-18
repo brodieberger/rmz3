@@ -857,6 +857,15 @@ gApZ2MugshotSoldier_Pal:
 	.incbin "data/ap/z2_jungle/mugshot_soldier.gbapal"
 	.balign 4, 0
 
+.global gApZ2Jungle_Portrait
+gApZ2Jungle_Portrait:
+	.incbin "data/ap/z2_jungle/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Jungle_PortraitPal
+gApZ2Jungle_PortraitPal:
+	.incbin "data/ap/z2_jungle/portrait.gbapal"
+	.balign 4, 0
+
 .global gApZ2Jungle_RescueTexts
 gApZ2Jungle_RescueTexts:
 	.2byte 0x1414

@@ -495,6 +495,15 @@ gApZ2MugshotBear_Pal:
 	.incbin "data/ap/z2_ice/mugshot_bear.gbapal"
 	.balign 4, 0
 
+.global gApZ2Ice_Portrait
+gApZ2Ice_Portrait:
+	.incbin "data/ap/z2_ice/portrait.4bpp.lz"
+	.balign 4, 0
+.global gApZ2Ice_PortraitPal
+gApZ2Ice_PortraitPal:
+	.incbin "data/ap/z2_ice/portrait.gbapal"
+	.balign 4, 0
+
 gApZ2Ice_Ts0_Tiles:
 	.incbin "data/ap/z2_ice/tileset0.4bpp"
 	.balign 4, 0

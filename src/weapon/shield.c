@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "collision.h"
 #include "global.h"
 #include "motion.h"
@@ -384,6 +385,9 @@ static void onCollision(struct Body* body, Coords32* c1 UNUSED, Coords32* c2 UNU
       struct WeaponCommon* p = (struct WeaponCommon*)body->parent;
       (p->s).unk_coord = q->coord;
       (&p->props)->props[1][1]++;
+#if AP
+      ApCountForm(AP_FORM_ERASE);
+#endif
     }
   }
 }

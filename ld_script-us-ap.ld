@@ -111,6 +111,8 @@ SECTIONS {
 		src/ap_pickup_marker.o (.rodata);
 		src/ap_enemy_marker.o (.text);
 		src/ap_enemy_marker.o (.rodata);
+		src/ap_npc_marker.o (.text);
+		src/ap_npc_marker.o (.rodata);
 		src/ap_marker_data.o (.rodata);
 		src/ap_pickup_places.o (.rodata);
 		src/ap_marker_slots.o (.rodata);
