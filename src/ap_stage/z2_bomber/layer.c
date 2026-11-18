@@ -506,6 +506,7 @@ s16 ApZ2BomberUpdate(struct StageRun* p) {
       if (!beaten()) break;
       gCollisionManager.disabled |= COLLMAN_DISABLED;
       gCollisionManager.sweep |= 1 << FACTION_ENEMY;
+      ApMarkLocationChecked(670);  // Tentolancer
       start(p, gApZ2Bomber_MidBossClearScript, 4);
       setStageCheckpoint(2);
       return 0;
@@ -523,6 +524,7 @@ s16 ApZ2BomberUpdate(struct StageRun* p) {
   if (p->stageEventPhase == 10 && beaten()) {
     start(p, gApZ2Bomber_GolemClearScript, 5);
     gStageRun.GOLEM_BEATEN |= 1;
+    ApMarkLocationChecked(671);  // Golem Type E
     return 0;
   }
 

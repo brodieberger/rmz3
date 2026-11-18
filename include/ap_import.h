@@ -16,6 +16,7 @@ struct ApImportMidBoss {
   const GameCommand* clearScript;  // Defeated
   Coords32 box[2];                 // Entering it starts the fight, once per life
   u8 lastCheckpoint;               // Only fires up to this checkpoint
+  u16 location;                    // Sent on its kill, 0 for none
 };
 
 struct ApImportedStage {

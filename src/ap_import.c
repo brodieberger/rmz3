@@ -149,6 +149,7 @@ s16 ApImportUpdate(struct StageRun* p) {
     gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= MISSION_STAY;
     gStageRun.MID_BOSSES_BEATEN |= 1 << sMidBoss;
+    ApMarkLocationChecked(imp->midBosses[sMidBoss].location);
     p->stageEventPhase = 1;
 
   } else if (p->stageEventPhase == 1 && isPast(z, &imp->checkpointDoor)) {

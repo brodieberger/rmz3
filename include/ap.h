@@ -21,7 +21,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 655
+#define AP_MAX_LOCATION_ID 673
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -126,6 +126,9 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   2..: cyber elves
 */
 #define AP_LOC_IMPORT_FIRST 400
+/* Legacy stages' minibosses, in Zero 2's game order */
+#define AP_LOC_IMPORT_MINIBOSS_FIRST 656
+#define AP_IMPORT_MINIBOSS_COUNT 18
 /* Zero 2's forms */
 #define AP_LOC_FORM_FIRST 383
 #define AP_FORM_ENERGY 0
@@ -305,7 +308,7 @@ struct ApState {
   u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 220);
+static_assert(sizeof(struct ApState) == 228);
 
 extern struct ApState gAp;
 

@@ -344,7 +344,7 @@ static const struct ApStageClear sApImportClears[AP_IMPORT_COUNT] = {
     {592, 0, 593},  // Z2 Temple of Flame
     {608, 0, 609},  // Z2 Temple of Ice
     {624, 0, 625},  // Z2 Temple of Wind
-    {640, 655, 641},  // Z2 Yggdrasil, and Proto Form
+    {640, 390, 641},  // Z2 Yggdrasil, and Proto Form
 };
 
 u8 ApImportZ2Stage(u8 import) { return (sApImportClears[import].clear - AP_LOC_IMPORT_FIRST) / 16; }

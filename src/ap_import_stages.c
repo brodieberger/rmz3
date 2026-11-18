@@ -42,12 +42,14 @@ static const struct ApImportMidBoss gApZ2Opening_MidBosses[2] = {
       clearScript : gApZ2Opening_MidBoss0ClearScript,
       box : {{PIXEL(3167), PIXEL(0)}, {PIXEL(3376), PIXEL(800)}},
       lastCheckpoint : 0,
+      location : 656,
     },
     {
       script : gApZ2Opening_MidBoss1Script,
       clearScript : gApZ2Opening_MidBoss1ClearScript,
       box : {{PIXEL(4127), PIXEL(0)}, {PIXEL(4320), PIXEL(800)}},
       lastCheckpoint : 0,
+      location : 657,
     },
 };
 
@@ -80,6 +82,7 @@ static const struct ApImportMidBoss gApZ2Ice_MidBosses[1] = {
       clearScript : gApZ2Ice_MidBoss0ClearScript,
       box : {{PIXEL(6239), PIXEL(0)}, {PIXEL(7184), PIXEL(2048)}},
       lastCheckpoint : 0,
+      location : 658,
     },
 };
 
@@ -112,6 +115,7 @@ static const struct ApImportMidBoss gApZ2Train_MidBosses[1] = {
       clearScript : gApZ2Train_MidBoss0ClearScript,
       box : {{PIXEL(7840), PIXEL(0)}, {PIXEL(8064), PIXEL(2048)}},
       lastCheckpoint : 0,
+      location : 0,
     },
 };
 
@@ -168,6 +172,7 @@ static const struct ApImportMidBoss gApZ2Jungle_MidBosses[1] = {
       clearScript : gApZ2Jungle_MidBoss0ClearScript,
       box : {{PIXEL(4319), PIXEL(640)}, {PIXEL(4561), PIXEL(2048)}},
       lastCheckpoint : 0,
+      location : 666,
     },
 };
 
@@ -204,18 +209,21 @@ static const struct ApImportMidBoss gApZ2Naold1_MidBosses[3] = {
       clearScript : gApZ2Naold1_MidBoss0ClearScript,
       box : {{PIXEL(5760), PIXEL(0)}, {PIXEL(6000), PIXEL(800)}},
       lastCheckpoint : 1,
+      location : 667,
     },
     {
       script : gApZ2Naold1_MidBoss1Script,
       clearScript : gApZ2Naold1_MidBoss1ClearScript,
       box : {{PIXEL(6000), PIXEL(0)}, {PIXEL(6240), PIXEL(800)}},
       lastCheckpoint : 1,
+      location : 668,
     },
     {
       script : gApZ2Naold1_MidBoss2Script,
       clearScript : gApZ2Naold1_MidBoss2ClearScript,
       box : {{PIXEL(6240), PIXEL(0)}, {PIXEL(6960), PIXEL(800)}},
       lastCheckpoint : 1,
+      location : 669,
     },
 };
 
@@ -272,6 +280,7 @@ static const struct ApImportMidBoss gApZ2Jungle2_MidBosses[1] = {
       clearScript : gApZ2Jungle2_MidBoss0ClearScript,
       box : {{PIXEL(4799), PIXEL(0)}, {PIXEL(4959), PIXEL(2048)}},
       lastCheckpoint : 0,
+      location : 672,
     },
 };
 
@@ -329,6 +338,7 @@ static const struct ApImportMidBoss gApZ2Bomber2_MidBosses[1] = {
       clearScript : gApZ2Bomber2_MidBoss0ClearScript,
       box : {{PIXEL(944), PIXEL(2080)}, {PIXEL(1440), PIXEL(2240)}},
       lastCheckpoint : 1,
+      location : 673,
     },
 };
 

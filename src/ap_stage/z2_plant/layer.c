@@ -378,6 +378,7 @@ s16 ApZ2PlantUpdate(struct StageRun* p) {
       DeleteScriptEntity(1);
       gStageRun.vm.active &= ~VM_FLAG1;
       gStageRun.BEATEN |= p->stageEventPhase == 2 ? 1 : 2;
+      ApMarkLocationChecked(p->stageEventPhase == 2 ? 659 : 660);  // Gazamir, 1st and 2nd room
       freeCamera();
       p->stageEventPhase = 1;
       break;
@@ -391,6 +392,7 @@ s16 ApZ2PlantUpdate(struct StageRun* p) {
       if (!beaten()) break;
       gStageRun.vm.active &= ~VM_FLAG1;
       gStageRun.BEATEN |= 4;
+      ApMarkLocationChecked(661);  // Golem Type F
       start(p, gApZ2Plant_GolemClearScript, 1);
       break;
     case 6:
@@ -399,6 +401,7 @@ s16 ApZ2PlantUpdate(struct StageRun* p) {
       start(p, sReactorClearScripts[p->ROOM], 7);
       setStageCheckpoint(p->ROOM + 2);
       gStageRun.BEATEN |= 8 << p->ROOM;
+      ApMarkLocationChecked(662 + p->ROOM);  // Power Reactor, by room
       break;
     case 7:
       // The last reactor's clear scene gives way to Magnion at once, as in Zero 2
