@@ -246,7 +246,14 @@ static void handle_saber_input(struct Zero* z) {
     (z->unk_b4).attackState8[2] = 0;
     air_charge_saber(z);
   } else {
+#if AP
+    bool32 spin = FALSE;
+    if (gApSeedConfig.airSpinSlash == AP_AIR_SPIN_HOLD_UP) spin = (z->input).val & ZERO_INPUT_DPAD_UP;
+    if (gApSeedConfig.airSpinSlash == AP_AIR_SPIN_JUMP_SLASH) spin = !((z->input).val & (ZERO_INPUT_DPAD_UP | ZERO_INPUT_DPAD_DOWN));
+    if (spin && isElfUsed_2(z, ELF_MALTHAS)) {
+#else
     if (((&z->input)->val & ZERO_INPUT_DPAD_UP) && (isElfUsed_2(z, ELF_MALTHAS))) {
+#endif
       (z->unk_b4).attackState8[1] = 6;
       (z->unk_b4).attackState8[2] = 0;
       air_rolling_saber(z);
@@ -265,6 +272,13 @@ static void handle_saber_input(struct Zero* z) {
   }
 }
 
+#if AP
+static bool32 doubleTapped(struct Zero* z) {
+  u32 press = (z->unk_b4).status.weapons[0] == WEAPON_SABER ? ZERO_INPUT_PRESS_MAIN_WEAPON : ZERO_INPUT_PRESS_SUB_WEAPON;
+  return gApSeedConfig.airSpinSlash == AP_AIR_SPIN_DOUBLE_TAP && ((z->input).val & press) && isElfUsed_2(z, ELF_MALTHAS);
+}
+#endif
+
 static void air_saber(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
     SetSpriteAnimation(z, MOTION(DM025_ZERO_SABER_AIR, 0x00));
@@ -274,7 +288,18 @@ static void air_saber(struct Zero* z) {
   }
 
   KeepMotion(z, MOTION(DM025_ZERO_SABER_AIR, 0x00));
+#if AP
+  // Second press queues spin.
+  if (doubleTapped(z)) (z->unk_b4).attackState8[2] = 2;
+#endif
   if (((z->s).motion.cmdIdx == 5) && ((z->s).motion.duration < 2)) {
+#if AP
+    if ((z->unk_b4).attackState8[2] == 2) {
+      (z->unk_b4).attackState8[1] = 6;  // air_rolling_saber
+      (z->unk_b4).attackState8[2] = 0;
+      return;
+    }
+#endif
     if ((z->input).val & DPAD_DOWN) {
       (z->unk_b4).attackState8[1] = 2;
     } else {
@@ -299,11 +324,23 @@ void air_saber_hold(struct Zero* z) {
 
 static void air_saber_end(struct Zero* z) {
   if ((z->unk_b4).attackState8[2] == 0) {
+#if AP
+    // Plain slash leaves spin open.
+    if (MOTION_VALUE(z) == MOTION(DM025_ZERO_SABER_AIR, 0)) (z->unk_b4).attackState8[2] = 1;
+#endif
     SetSpriteAnimation(z, MOTION(DM025_ZERO_SABER_AIR, 1));
     (z->unk_b4).attackState8[2]++;
   } else {
     KeepMotion(z, MOTION(DM025_ZERO_SABER_AIR, 0x01));
   }
+#if AP
+  if ((z->unk_b4).attackState8[2] == 2 && doubleTapped(z)) {
+    (z->unk_b4).attackState8[1] = 6;
+    (z->unk_b4).attackState8[2] = 0;
+    air_rolling_saber(z);
+    return;
+  }
+#endif
 
   if (IsSpriteAnimEnd(z)) {
     if ((z->s).mode[2] == 1) {

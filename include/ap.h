@@ -339,6 +339,7 @@ struct ApSeedConfig {
   u8 attackMode;       // ZeroStatus.keyMap.attackMode a new game starts with, 0 type A, 1 type B
   u8 randomEnemies;    // the enemy randomizer is enabled
   u8 doubleTapDash;    // tapping left or right twice dashes
+  u8 airSpinSlash;     // AP_AIR_SPIN_*, what starts the air spin slash
   u8 slotImport[AP_SLOT_COUNT];  // import in each Zero 3 stage's slot, by stage ID - 1, or AP_SLOT_OWN
   u8 requiredStages;   // Stages cleared at finalStageRank to open the final stage
 };
@@ -357,6 +358,11 @@ struct ApSeedConfig {
 #define AP_ELVES_VANILLA 0
 #define AP_ELVES_NO_PENALTY 1
 #define AP_ELVES_AUTO 2 
+
+/* What starts the spin slash in the air. Set by player option. */
+#define AP_AIR_SPIN_HOLD_UP 0
+#define AP_AIR_SPIN_JUMP_SLASH 1
+#define AP_AIR_SPIN_DOUBLE_TAP 2
 
 /* What SELECT does. Set by player option. */
 #define AP_SELECT_CYCLE_SUB_WEAPON 0
