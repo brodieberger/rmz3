@@ -1,22 +1,36 @@
 #include "ap.h"
 
+#include "ap_marker.h"
 #include "collision.h"
+#include "definition.h"
 #include "entity.h"
+#include "gfx.h"
 #include "global.h"
 #include "motion.h"
 #include "pickup.h"
+#include "sound.h"
 #include "stagerun.h"
 #include "trig.h"
+#include "vfx.h"
 #include "zero.h"
 
+#include "constants/motion/ap_sheet.h"
+#include "constants/motion/dynamic.h"
 #include "constants/song.h"
 #include "constants/stage_id.h"
 
 #if AP
 
 /*
-  A cyber elf pickup in a Zero 2 level. Temporary implemenattion. Just spawns as an archipelago logo for now.
+  Zero 2's cyber elf entity.
+  work0: location, from AP_LOC_IMPORT_FIRST
+  work1: type
+    0: nurse
+    1: animal
+    2: hacker
 */
+
+enum { NURSE, ANIMAL, HACKER };
 
 static const struct Collision sCollision;
 
@@ -41,8 +55,6 @@ static bool32 checked(u16 loc) {
 
 /*
   Elves Zero 2 gives for kills in the stage, table at 0x08333482.
-  Elves themselves aren't actually implemented.
-  They are just given to Zero immediately.
 */
 #define ELF_BIRFLOW 150  // Crystal Cave
 #define ELF_BEEHITT 151
@@ -103,17 +115,30 @@ EWRAM_DATA static u8 sFloorMineKills = 0;
 EWRAM_DATA static u8 sLeaperKills = 0;
 EWRAM_DATA static u8 sTreeFrogKills = 0;
 
-static void giveElf(u8 n) {
-  struct Entity* p;
-
-  if (gStageRun.id != STAGE_NONE || n / 16 != ApImportZ2Stage(gApImportSelected)) return;
-  if (checked(AP_LOC_IMPORT_FIRST + n)) return;
-  p = AllocEntityLast(gPickupHeaderPtr);
+void ApCreateImportElf(u8 n, u8 type, const Coords32* at) {
+  struct Entity* p = AllocEntityLast(gPickupHeaderPtr);
   if (p == NULL) return;
   INIT_ITEM_ROUTINE(p, ITEM_AP_IMPORT_ELF);
-  (p->coord).x = (pZero2->s).coord.x;
-  (p->coord).y = (pZero2->s).coord.y - PIXEL(16);
+  p->coord = *at;
   p->work[0] = n;
+  p->work[1] = type;
+}
+
+// 0x0801de2c: rises where the last one died
+static void giveElf(u8 n, u8 type, const Coords32* at) {
+  if (gStageRun.id != STAGE_NONE || n / 16 != ApImportZ2Stage(gApImportSelected)) return;
+  if (checked(AP_LOC_IMPORT_FIRST + n)) return;
+  ApCreateImportElf(n, type, at);
+}
+
+// Checked, or out of its capsule already
+bool32 ApImportElfOut(u8 n) {
+  struct Entity* p;
+  if (checked(AP_LOC_IMPORT_FIRST + n)) return TRUE;
+  for (p = gPickupHeaderPtr->head; p != (struct Entity*)&gPickupHeaderPtr->tail; p = p->next) {
+    if (p->id == ITEM_AP_IMPORT_ELF && p->work[0] == n) return TRUE;
+  }
+  return FALSE;
 }
 
 void ApImportResetKills(void) {
@@ -147,123 +172,123 @@ void ApImportResetKills(void) {
   sTreeFrogKills = 0;
 }
 
-void ApImportHottalookKilled(void) {
-  if (++sHottalookKills == 12) giveElf(ELF_BIRFLOW);
+void ApImportHottalookKilled(const Coords32* at) {
+  if (++sHottalookKills == 12) giveElf(ELF_BIRFLOW, ANIMAL, at);
 }
 
-void ApImportHopperKilled(void) {
-  if (++sHopperKills == 3) giveElf(ELF_BEEHITT);
+void ApImportHopperKilled(const Coords32* at) {
+  if (++sHopperKills == 3) giveElf(ELF_BEEHITT, ANIMAL, at);
 }
 
-void ApImportTowerKilled(void) {
-  if (++sTowerKills == 3) giveElf(ELF_TOWERS);
+void ApImportTowerKilled(const Coords32* at) {
+  if (++sTowerKills == 3) giveElf(ELF_TOWERS, HACKER, at);
 }
 
-void ApImportSpikeballKilled(void) {
-  if (++sSpikeballKills == 4) giveElf(ELF_SPIKEBALLS);
+void ApImportSpikeballKilled(const Coords32* at) {
+  if (++sSpikeballKills == 4) giveElf(ELF_SPIKEBALLS, HACKER, at);
 }
 
 // Vultures, not perches
-void ApImportVultureKilled(void) {
-  if (++sVultureKills == 5) giveElf(ELF_VULTURES);
+void ApImportVultureKilled(const Coords32* at) {
+  if (++sVultureKills == 5) giveElf(ELF_VULTURES, ANIMAL, at);
 }
 
-void ApImportShellKilled(void) {
-  if (++sShellKills == 5) giveElf(ELF_SHELLS);
+void ApImportShellKilled(const Coords32* at) {
+  if (++sShellKills == 5) giveElf(ELF_SHELLS, ANIMAL, at);
 }
 
-void ApImportRingCannonKilled(void) {
-  if (++sCannonKills == 3) giveElf(ELF_CANNONS);
+void ApImportRingCannonKilled(const Coords32* at) {
+  if (++sCannonKills == 3) giveElf(ELF_CANNONS, ANIMAL, at);
 }
 
-void ApImportBeeKilled(void) {
-  if (++sBeeKills == 10) giveElf(ELF_BEES);
+void ApImportBeeKilled(const Coords32* at) {
+  if (++sBeeKills == 10) giveElf(ELF_BEES, ANIMAL, at);
 }
 
-void ApImportCarrierKilled(void) {
-  if (++sCarrierKills == 3) giveElf(ELF_CARRIERS);
+void ApImportCarrierKilled(const Coords32* at) {
+  if (++sCarrierKills == 3) giveElf(ELF_CARRIERS, ANIMAL, at);
 }
 
-void ApImportMoleKilled(void) {
-  if (++sMoleKills == 4) giveElf(ELF_MOLES);
+void ApImportMoleKilled(const Coords32* at) {
+  if (++sMoleKills == 4) giveElf(ELF_MOLES, HACKER, at);
 }
 
-void ApImportSpiderKilled(void) {
-  if (++sSpiderKills == 3) giveElf(ELF_SPIDERS);
+void ApImportSpiderKilled(const Coords32* at) {
+  if (++sSpiderKills == 3) giveElf(ELF_SPIDERS, ANIMAL, at);
 }
 
-void ApImportHunterKilled(void) {
-  if (++sHunterKills == 8) giveElf(ELF_HUNTERS);
+void ApImportHunterKilled(const Coords32* at) {
+  if (++sHunterKills == 8) giveElf(ELF_HUNTERS, ANIMAL, at);
 }
 
-void ApImportBarrierShipKilled(void) {
-  if (++sShipKills == 5) giveElf(ELF_SHIPS);
+void ApImportBarrierShipKilled(const Coords32* at) {
+  if (++sShipKills == 5) giveElf(ELF_SHIPS, ANIMAL, at);
 }
 
-void ApImportFishKilled(void) {
-  if (++sFishKills == 5) giveElf(ELF_FISH);
+void ApImportFishKilled(const Coords32* at) {
+  if (++sFishKills == 5) giveElf(ELF_FISH, ANIMAL, at);
 }
 
-void ApImportDozerKilled(void) {
-  if (++sDozerKills == 4) giveElf(ELF_DOZERS);
+void ApImportDozerKilled(const Coords32* at) {
+  if (++sDozerKills == 4) giveElf(ELF_DOZERS, ANIMAL, at);
 }
 
-void ApImportCrawlerKilled(void) {
-  if (++sCrawlerKills == 4) giveElf(ELF_CRAWLERS);
+void ApImportCrawlerKilled(const Coords32* at) {
+  if (++sCrawlerKills == 4) giveElf(ELF_CRAWLERS, ANIMAL, at);
 }
 
-void ApImportSpikingKilled(void) {
-  if (++sSpikingKills == 10) giveElf(ELF_SPIKINGS);
+void ApImportSpikingKilled(const Coords32* at) {
+  if (++sSpikingKills == 10) giveElf(ELF_SPIKINGS, ANIMAL, at);
 }
 
-void ApImportCrabKilled(void) {
-  if (++sCrabKills == 4) giveElf(ELF_CRABS);
+void ApImportCrabKilled(const Coords32* at) {
+  if (++sCrabKills == 4) giveElf(ELF_CRABS, HACKER, at);
 }
 
-void ApImportMineKilled(void) {
-  if (++sMineKills == 4) giveElf(ELF_MINES);
+void ApImportMineKilled(const Coords32* at) {
+  if (++sMineKills == 4) giveElf(ELF_MINES, ANIMAL, at);
 }
 
-void ApImportCopterKilled(void) {
-  if (++sCopterKills == 7) giveElf(ELF_COPTERS);
+void ApImportCopterKilled(const Coords32* at) {
+  if (++sCopterKills == 7) giveElf(ELF_COPTERS, ANIMAL, at);
 }
 
-void ApImportGeneratorKilled(void) { giveElf(ELF_GENERATOR); }
+void ApImportGeneratorKilled(const Coords32* at) { giveElf(ELF_GENERATOR, HACKER, at); }
 
-void ApImportSignaloidKilled(void) {
-  if (++sSignaloidKills == 3) giveElf(ELF_SIGNALOIDS);
+void ApImportSignaloidKilled(const Coords32* at) {
+  if (++sSignaloidKills == 3) giveElf(ELF_SIGNALOIDS, HACKER, at);
 }
 
-void ApImportShieldGuardKilled(void) {
-  if (++sGuardKills == 3) giveElf(ELF_GUARDS);
+void ApImportShieldGuardKilled(const Coords32* at) {
+  if (++sGuardKills == 3) giveElf(ELF_GUARDS, ANIMAL, at);
 }
 
-void ApImportSnowballerKilled(void) {
-  if (++sSnowballerKills == 5) giveElf(ELF_SNOWBALLERS);
+void ApImportSnowballerKilled(const Coords32* at) {
+  if (++sSnowballerKills == 5) giveElf(ELF_SNOWBALLERS, ANIMAL, at);
 }
 
-void ApImportWolfKilled(void) {
-  if (++sWolfKills == 4) giveElf(ELF_WOLVES);
+void ApImportWolfKilled(const Coords32* at) {
+  if (++sWolfKills == 4) giveElf(ELF_WOLVES, ANIMAL, at);
 }
 
-void ApImportFlopperKilled(void) {
-  if (++sFlopperKills == 3) giveElf(ELF_FLOPPERS);
+void ApImportFlopperKilled(const Coords32* at) {
+  if (++sFlopperKills == 3) giveElf(ELF_FLOPPERS, ANIMAL, at);
 }
 
-void ApImportFloorMineKilled(void) {
-  if (++sFloorMineKills == 20) giveElf(ELF_FLOOR_MINES);
+void ApImportFloorMineKilled(const Coords32* at) {
+  if (++sFloorMineKills == 20) giveElf(ELF_FLOOR_MINES, ANIMAL, at);
 }
 
-void ApImportLeaperKilled(void) {
-  if (++sLeaperKills == 6) giveElf(ELF_LEAPERS);
+void ApImportLeaperKilled(const Coords32* at) {
+  if (++sLeaperKills == 6) giveElf(ELF_LEAPERS, ANIMAL, at);
 }
 
-void ApImportTreeFrogKilled(void) {
-  if (++sTreeFrogKills == 5) giveElf(ELF_TREE_FROGS);
+void ApImportTreeFrogKilled(const Coords32* at) {
+  if (++sTreeFrogKills == 5) giveElf(ELF_TREE_FROGS, ANIMAL, at);
 }
 
 // By import, placed and kill elves, from block's third id on
-static const u8 sElves[AP_IMPORT_COUNT] = {4, 6, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
+static const u8 sElves[AP_IMPORT_COUNT] = {5, 7, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
 
 u8 ApImportElfTotal(u8 import) { return sElves[import]; }
 
@@ -295,25 +320,42 @@ static void drift(Pickup* p) {
   (p->coord).y = (p->unk_coord).y - SIN((p->work[2] % 80) * 256 / 80) * 4;
 }
 
+// Zero 3's own nurse, animal and hacker, frame 0, which are Zero 2's floating ones
+static const struct {
+  struct MetaspriteHeader hdr;
+  struct Subsprite part;
+} sSprite = {
+  hdr : {ofs : 4, subspriteCount : 1, texture : 0},
+  part : {tileNum : 0, size : 1, shape : 0, x : -8, y : -8},
+};
+
+// 0x080d6804
 static void ImportElf_Init(Pickup* p) {
+  const ColorGraphic* g = SELF_REL_PTR(&gDynamicMotionGraphicOffsets[DM144_CYBERELF_NURSE + p->work[1]]);
+  u16 tile = AP_ELF_TILE + p->work[1] * 4;
   if (checked(LOCATION(p))) {
     p->flags &= ~(DISPLAY | FLIPABLE);
     SET_ITEM_ROUTINE(p, ENTITY_DISAPPEAR);
     return;
   }
+  LoadGraphic(&g->g, (void*)((tile - (g->g).tileId) * 32 + 0x10000));
+  LoadPalette(&g->pal, PLTT_SIZE / 2);
   InitNonAffineMotion((void*)p);
-  SetSpriteAnimation(p, MOTION(SM176_RESULT_DISK, 11));
+  (p->spr).sprites = (struct MetaspriteHeader*)&sSprite.hdr;
+  (p->spr).spriteIdx = 0;
+  (p->spr).oam.tileNum = tile;
+  p->savedPalID = (g->pal).dst;
   p->flags |= DISPLAY | FLIPABLE;
   INIT_BODY(p, &sCollision, 64, onCollision);
   p->z = NULL;
   p->unk_coord = p->coord;
+  ApAttachElfMarker((struct Entity*)p);
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
   ImportElf_Update(p);
 }
 
 static void ImportElf_Update(Pickup* p) {
-  if (p->work[1] != 0) drift(p);
-  UpdateSpriteAnimation(p);
+  drift(p);
   if (((p->body).status & BODY_STATUS_B2) && p->z != NULL) {
     ApMarkLocationChecked(LOCATION(p));
     PlaySound(SE_NOTIFICATION);

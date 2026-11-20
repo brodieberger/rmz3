@@ -13,10 +13,6 @@
 #define AP_ICON_TILES 4
 #define AP_ICON_PAL 11
 
-
-#define AP_ICON_STAGES 18
-#define AP_ICON_AREAS 8  /* a preload area mask is 8 bits */
-
 enum {
   AP_ICON_BUSTER,
   AP_ICON_SABER,
@@ -71,7 +67,6 @@ struct ApIconSprite {
 };
 
 extern const u32 gApIconTiles[AP_ICON_COUNT][AP_ICON_TILES][8];
-extern const u16 gApIconTile[AP_ICON_STAGES][AP_ICON_AREAS];
 extern const struct ApIconSprite gApIconSprite;
 
 #endif  // GUARD_RMZ3_AP_ICON_H

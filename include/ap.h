@@ -3,6 +3,7 @@
 
 #include "gba/gba.h"
 #include "ap_icon.h"
+#include "common.h"
 #include "types.h"
 
 /*  
@@ -21,7 +22,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 673
+#define AP_MAX_LOCATION_ID 696
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -41,6 +42,8 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_ITEM_SUBTANK_2 222
 #define AP_LOC_SUBTANK_1 221
 #define AP_LOC_SUBTANK_2 222
+/* Legacy stages' sub tanks: Forest of Dysis's, then Forest of Notus's */
+#define AP_LOC_IMPORT_SUBTANK_FIRST 695
 
 //197 Ice     198 Thunder   199 Flame         200 Light   201 Absorber
 #define AP_ITEM_BODY_CHIP_FIRST 197
@@ -118,7 +121,12 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 */
 #define AP_LOC_ITEMSANITY_FIRST 301
 #define AP_ITEMSANITY_COUNT 82
-#define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT)
+/* Legacy stages' 1-UPs, in Zero 2's game order */
+#define AP_LOC_IMPORT_EXLIFE_FIRST 674
+#define AP_IMPORT_EXLIFE_COUNT 21
+#define AP_PICKUP_PLACE_COUNT (AP_EXLIFE_COUNT + AP_ITEMSANITY_COUNT + AP_IMPORT_EXLIFE_COUNT)
+/* gApPickupPlaces' stageID for a legacy stage, which all share STAGE_NONE */
+#define AP_PICKUP_IMPORT 0x80
 /*
   Legacy stage locations, 16 ids a stage, in Zero 2's game order, ported or not.
   0: clear
@@ -222,6 +230,8 @@ extern const char_t gApShopSoldText[];
 #define AP_TAKEN_BYTE 8
 #define AP_TAKEN_SUBTANK1 (1 << 0)
 #define AP_TAKEN_SUBTANK2 (1 << 1)
+#define AP_TAKEN_Z2_SUBTANK1 (1 << 2)
+#define AP_TAKEN_Z2_SUBTANK2 (1 << 3)
 
 // Stages Archipelago has opened.
 #define AP_UNLOCK_BYTE 12
@@ -308,7 +318,7 @@ struct ApState {
   u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
 };
 
-static_assert(sizeof(struct ApState) == 228);
+static_assert(sizeof(struct ApState) == 232);
 
 extern struct ApState gAp;
 
@@ -323,16 +333,15 @@ struct ApSeedConfig {
   u8 cyberElves;       // Passive cyber-elves option
   u8 diskNamePopup;    // name a received secret disk in the inline message box
   u8 infiniteLives;
-  u8 finalStageRank;   // Every other stage's best clear must be this or better to open the final stage
+  u8 finalStageRank;   // Rank a stage clear needs to count toward requiredStages
   u8 enemyDiskMarkers; // enemy marker
   u8 legacyStages;     // AP_LEGACY_*, each legacy stage unlocked by its own access item
   u8 attackMode;       // ZeroStatus.keyMap.attackMode a new game starts with, 0 type A, 1 type B
   u8 randomEnemies;    // the enemy randomizer is enabled
   u8 doubleTapDash;    // tapping left or right twice dashes
   u8 slotImport[AP_SLOT_COUNT];  // import in each Zero 3 stage's slot, by stage ID - 1, or AP_SLOT_OWN
+  u8 requiredStages;   // Stages cleared at finalStageRank to open the final stage
 };
-
-#define AP_FINAL_RANK_NONE 0xFF
 
 #define AP_LEGACY_OFF 0
 #define AP_LEGACY_SHUFFLE 1
@@ -357,7 +366,7 @@ struct ApSeedConfig {
 #define AP_SELECT_CYCLE_FOOT_CHIP 4
 #define AP_SELECT_USE_SUBTANK 5
 
-static_assert(sizeof(struct ApSeedConfig) == 32);
+static_assert(sizeof(struct ApSeedConfig) == 36);
 
 /*
   Cost of each shop item. Inserted into ROM when AP world generates
@@ -447,41 +456,45 @@ u8 ApImportElvesFound(u8 import);
 u8 ApImportElfTotal(u8 import);
 u8 ApImportZ2Stage(u8 import);
 bool32 ApImportOpen(u8 import);
+void ApCreateImportElf(u8 n, u8 type, const Coords32* at);
+bool32 ApImportElfOut(u8 n);
+#define AP_ELF_TILE 386     /* legacy elves: nurse, animal, hacker, 4 tiles each */
+#define AP_ELF_BOX_TILE 473 /* their capsule, in the secret disk's tiles */
 void ApImportResetKills(void);
-void ApImportHottalookKilled(void);
-void ApImportSignaloidKilled(void);
-void ApImportSnowballerKilled(void);
-void ApImportWolfKilled(void);
-void ApImportFlopperKilled(void);
-void ApImportFloorMineKilled(void);
-void ApImportShieldGuardKilled(void);
-void ApImportHopperKilled(void);
-void ApImportTowerKilled(void);
-void ApImportSpikeballKilled(void);
-void ApImportVultureKilled(void);
-void ApImportShellKilled(void);
+void ApImportHottalookKilled(const Coords32* at);
+void ApImportSignaloidKilled(const Coords32* at);
+void ApImportSnowballerKilled(const Coords32* at);
+void ApImportWolfKilled(const Coords32* at);
+void ApImportFlopperKilled(const Coords32* at);
+void ApImportFloorMineKilled(const Coords32* at);
+void ApImportShieldGuardKilled(const Coords32* at);
+void ApImportHopperKilled(const Coords32* at);
+void ApImportTowerKilled(const Coords32* at);
+void ApImportSpikeballKilled(const Coords32* at);
+void ApImportVultureKilled(const Coords32* at);
+void ApImportShellKilled(const Coords32* at);
 struct Zero;
 typedef u16 (*ApChainHook)(struct Entity* p, u16 pulling, s32 dx, s32 dy);
 void ApChainAttack(struct Zero* z);
 void ApChainSwing(struct Zero* z);
 void ApChainSwingInput(struct Zero* z);
-void ApImportRingCannonKilled(void);
-void ApImportBeeKilled(void);
-void ApImportHunterKilled(void);
-void ApImportBarrierShipKilled(void);
-void ApImportFishKilled(void);
-void ApImportDozerKilled(void);
-void ApImportCrawlerKilled(void);
-void ApImportSpikingKilled(void);
-void ApImportCrabKilled(void);
-void ApImportMineKilled(void);
-void ApImportCopterKilled(void);
-void ApImportGeneratorKilled(void);
-void ApImportCarrierKilled(void);
-void ApImportMoleKilled(void);
-void ApImportSpiderKilled(void);
-void ApImportLeaperKilled(void);
-void ApImportTreeFrogKilled(void);
+void ApImportRingCannonKilled(const Coords32* at);
+void ApImportBeeKilled(const Coords32* at);
+void ApImportHunterKilled(const Coords32* at);
+void ApImportBarrierShipKilled(const Coords32* at);
+void ApImportFishKilled(const Coords32* at);
+void ApImportDozerKilled(const Coords32* at);
+void ApImportCrawlerKilled(const Coords32* at);
+void ApImportSpikingKilled(const Coords32* at);
+void ApImportCrabKilled(const Coords32* at);
+void ApImportMineKilled(const Coords32* at);
+void ApImportCopterKilled(const Coords32* at);
+void ApImportGeneratorKilled(const Coords32* at);
+void ApImportCarrierKilled(const Coords32* at);
+void ApImportMoleKilled(const Coords32* at);
+void ApImportSpiderKilled(const Coords32* at);
+void ApImportLeaperKilled(const Coords32* at);
+void ApImportTreeFrogKilled(const Coords32* at);
 void ApCountForm(u8 form);
 struct Body;
 void ApCountFormKill(const struct Body* killer);
@@ -512,7 +525,9 @@ u8 ApWeaponLevel(u8 weapon);
 void ApPrintWeaponStars(u8 weapon);
 const char_t* ApWeaponName(u8 weapon);
 u8 ApChainBonus(struct Zero* z);
+u8 ApChainAngle(struct Zero* z);
 void ApLoadChainMenuIcon(u32 tile);
+void ApChainIconTile(u32* dst, u8 tile, u8 clear);
 void ApLoadChainHudIcon(void);
 void ApDrawChainHudIcon(u16* bg0, struct Zero* z);
 
@@ -527,6 +542,7 @@ void ApStageSelect(struct GameState* g);
 
 /* ap_stage_select.c */
 bool32 ApStageUnlocked(u8 stageID);
+u8 ApStagesCleared(void);
 
 bool32 ApServerChecked(u16 locationID);
 
@@ -537,6 +553,8 @@ u8 ApPickupPlaceIndex(u8 stageID, s32 coordX, s32 coordY);
 struct Pickup;
 void ApInitPickupLocation(struct Pickup* p);
 void ApMarkPickupCollected(struct Pickup* p);
+u8 ApSubtankTakenBit(u8 n);
+void ApTakeSubtank(u8 n);
 
 /*
   Disk drops by enemy spawn point (ap_enemy_marker.c)

@@ -818,7 +818,7 @@ static void countKill(struct Wolf* p) {
   TryDropItem(1, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
-  ApImportWolfKilled();
+  ApImportWolfKilled(&(p->s).coord);
 }
 
 // 0x0808d370: three pieces

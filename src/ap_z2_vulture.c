@@ -726,7 +726,7 @@ static void countKill(struct Vulture* p) {
   struct Entity* s = &p->s;
   TryDropItem(1, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportVultureKilled();
+  ApImportVultureKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
 }
 

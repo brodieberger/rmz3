@@ -118,7 +118,6 @@ SECTIONS {
 		src/ap_marker_slots.o (.rodata);
 		src/ap_mugshot_data.o (.rodata);
 		src/ap_icon_data.o (.rodata);
-		src/ap_icon_slots.o (.rodata);
 		src/ap_spawn.o (.rodata);
 		src/ap_sheets.o (.text);
 		src/data/ap_sheets.o (.rodata);
@@ -250,6 +249,8 @@ SECTIONS {
 		src/ap_z2_recoil.o (.rodata);
 		src/ap_import_elf.o (.text);
 		src/ap_import_elf.o (.rodata);
+		src/ap_z2_elf_box.o (.text);
+		src/ap_z2_elf_box.o (.rodata);
 		src/ap_import.o (.text);
 		src/ap_import.o (.rodata);
 		src/ap_save.o (.text);

@@ -68,6 +68,7 @@ const struct ApSeedConfig gApSeedConfig = {
     TRUE,
     {AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN,
      AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN, AP_SLOT_OWN},
+    15,
 };
 
 bool32 ApInDemo(void) {
@@ -364,30 +365,44 @@ static u8 ApImportSlot(u8 import) {
 }
 
 /*
-  The final stage has no access item.
-  It opens on every other stage cleared while holding the seed's disk required amount.
+  Stages cleared at the seed's final stage rank: Zero 3's slots, and with all, every legacy stage.
+  Best ranks are stored + 1, so any clear beats RANK_F.
 */
-static bool32 ApFinalStageOpen(void) {
+u8 ApStagesCleared(void) {
+  u8 count = 0;
   u8 stage;
   u8 import;
   u8 rank;
 
-  if (gApSeedConfig.finalStageRank != AP_FINAL_RANK_NONE) {
-    for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
-      import = gApSeedConfig.slotImport[stage - 1];
-      if (import != AP_SLOT_OWN) {
-        rank = gApSavedata.importRank[import];
-      } else if (!(gGameState.save.playinfo.missionDones & (1 << stage))) {
-        return FALSE;
-      } else {
-        rank = ApStageBestRank(stage);
-      }
-      if (rank <= gApSeedConfig.finalStageRank) {
-        return FALSE;
+  for (stage = 1; stage < AP_STAGE_FINAL; stage++) {
+    import = gApSeedConfig.slotImport[stage - 1];
+    if (import != AP_SLOT_OWN) {
+      rank = gApSavedata.importRank[import];
+    } else if (gGameState.save.playinfo.missionDones & (1 << stage)) {
+      rank = ApStageBestRank(stage);
+    } else {
+      rank = AP_RANK_NONE;
+    }
+    if (rank > gApSeedConfig.finalStageRank) {
+      count++;
+    }
+  }
+  if (gApSeedConfig.legacyStages == AP_LEGACY_ALL) {
+    for (import = 0; import < AP_IMPORT_COUNT; import++) {
+      if (gApSavedata.importRank[import] > gApSeedConfig.finalStageRank) {
+        count++;
       }
     }
   }
-  return ApCountDisks() >= gApSeedConfig.requiredDisks;
+  return count;
+}
+
+/*
+  The final stage has no access item.
+  It opens on the seed's required stage clears and disks.
+*/
+static bool32 ApFinalStageOpen(void) {
+  return (ApStagesCleared() >= gApSeedConfig.requiredStages) && (ApCountDisks() >= gApSeedConfig.requiredDisks);
 }
 
 bool32 ApStageUnlocked(u8 stageID) {
@@ -901,7 +916,7 @@ static void ApKeepPickupPalette(void) {
   bool8 now = (bool8)AP_IN_GAMEPLAY(gGameState.mode);
 
   if (now && !sApWasInGameplay) {
-    LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+    LOAD_STATIC_GRAPHIC(SM167_LIFE_ENERGY + gSystemSavedata.lifeEnergy);
   }
   sApWasInGameplay = now;
 }
@@ -996,22 +1011,23 @@ u8 ApIconOf(u16 apItemID) {
 /*
   Figure out where to place the sprite based on stage and area of that stage
 */
-static u16 ApIconWindow(void) {
-  if ((u32)gStageRun.id >= AP_ICON_STAGES || (u32)gSpawnManager.area >= AP_ICON_AREAS) {
-    return 0;
-  }
-  return gApIconTile[gStageRun.id][gSpawnManager.area];
-}
-
+/*
+  The icon borrows the emotion bubble's tiles, resident in every stage.
+  The popup reloads the bubble when it goes.
+*/
 static void ApDrawItemIcon(struct Entity* p) {
-  u16 tile = ApIconWindow();
+  u16 tile = gStaticMotionGraphics[SM003_EMOTION_BUBBLE].g.tileId;
   u8 icon = p->work[1];
+  u8 n;
 
-  if (tile == 0) {
-    return;  /* No free tiles, cant draw anything */
+  if (icon == AP_ICON_CHAIN) {
+    for (n = 0; n < AP_ICON_TILES; n++) {
+      ApChainIconTile((u32*)(VRAM + BG_VRAM_SIZE + ((tile + n) * 32)), n, 0);
+    }
+  } else {
+    MemCopy32(gApIconTiles[icon], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
+              sizeof(gApIconTiles[icon]));
   }
-  MemCopy32(gApIconTiles[icon], (void*)(VRAM + BG_VRAM_SIZE + (tile * 32)),
-            sizeof(gApIconTiles[icon]));
 
   (p->spr).sprites = (struct MetaspriteHeader*)gApIconSprite.hdr;
   (p->spr).spriteIdx = 0;
@@ -1058,6 +1074,9 @@ static void ApItemPopupUpdate(struct Entity* p) {
 
   left = --p->work[2];
   if (left == 0) {
+    if (p->work[1] != AP_ICON_NONE) {
+      LOAD_STATIC_GRAPHIC(SM003_EMOTION_BUBBLE);
+    }
     p->flags &= ~DISPLAY;
     SET_VFX_ROUTINE(p, ENTITY_DISAPPEAR);  /* VFX_EMOTION_BUBBLE's slot is DeleteVFX */
     return;
@@ -1081,7 +1100,7 @@ static void ApShowItemPopup(u16 apItemID) {
   (p->coord).x = (gGameState.z2->s).coord.x;
   (p->coord).y = (gGameState.z2->s).coord.y + AP_POPUP_OFFSET_Y;
   p->work[0] = 0;
-  p->work[1] = ApIconWindow() ? ApIconOf(apItemID) : AP_ICON_NONE;
+  p->work[1] = ApIconOf(apItemID);
   p->work[3] = 0;  /* how far it has risen above his head */
   InitNonAffineMotion(p);
   if (p->work[1] == AP_ICON_NONE) {
@@ -1314,7 +1333,7 @@ static_assert(AP_STAGE_COUNT == STAGE_COUNT);
 */
 
 static bool32 ApPickupPlaceEnabled(u16 loc) {
-  if (loc >= AP_LOC_ITEMSANITY_FIRST) {
+  if (loc >= AP_LOC_ITEMSANITY_FIRST && loc < AP_LOC_ITEMSANITY_FIRST + AP_ITEMSANITY_COUNT) {
     return gApSeedConfig.itemsanity;
   }
   return gApSeedConfig.exLifeSanity;
@@ -1560,6 +1579,22 @@ static void ApRebuildCheckedLocations(void) {
   if (taken & AP_TAKEN_SUBTANK2) {
     ApMarkLocationChecked(AP_LOC_SUBTANK_2);
   }
+  if (taken & AP_TAKEN_Z2_SUBTANK1) {
+    ApMarkLocationChecked(AP_LOC_IMPORT_SUBTANK_FIRST);
+  }
+  if (taken & AP_TAKEN_Z2_SUBTANK2) {
+    ApMarkLocationChecked(AP_LOC_IMPORT_SUBTANK_FIRST + 1);
+  }
+}
+
+/* Zero 2's two sub tanks are their own checks */
+u8 ApSubtankTakenBit(u8 n) {
+  return (u8)(((gStageRun.id == STAGE_NONE) ? AP_TAKEN_Z2_SUBTANK1 : AP_TAKEN_SUBTANK1) << n);
+}
+
+void ApTakeSubtank(u8 n) {
+  ApMarkLocationChecked((u16)(((gStageRun.id == STAGE_NONE) ? AP_LOC_IMPORT_SUBTANK_FIRST : AP_LOC_SUBTANK_1) + n));
+  gGameState.save.unused_240[AP_TAKEN_BYTE] |= ApSubtankTakenBit(n);
 }
 
 void ApRequestMissionRerun(u8 stageID) {

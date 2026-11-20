@@ -156,22 +156,22 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [26] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 147, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 147, 0),
         },
     [27] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 149, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 149, 0),
         },
     [28] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 148, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 148, 2),
         },
     [29] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 146, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 146, 2),
         },
     [30] =
         {
@@ -464,22 +464,22 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
     [83] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 14, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 14, 0),
         },
     [84] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 15, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 15, 0),
         },
     [85] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 16, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 16, 0),
         },
     [86] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 17, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 17, 0),
         },
     [87] =
         {

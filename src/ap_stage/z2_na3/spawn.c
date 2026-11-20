@@ -228,12 +228,12 @@ const struct SpawnTemplate gApZ2Na3_Templates[42] = {
     [40] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 227, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 227, 2),
         },
     [41] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 226, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 226, 2),
         },
 };
 

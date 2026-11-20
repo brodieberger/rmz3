@@ -163,17 +163,17 @@ const struct SpawnTemplate gApZ2Plant_Templates[31] = {
     [27] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 51, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 51, 0),
         },
     [28] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 52, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 52, 0),
         },
     [29] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 50, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 50, 2),
         },
     [30] =
         {

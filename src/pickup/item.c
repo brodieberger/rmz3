@@ -149,7 +149,7 @@ NON_MATCH_AP static void MapItem_Init(Pickup* p) {
     }
 #if AP
     // The taken flag stops the pickup coming back when you re enter the stage
-    if (gGameState.save.unused_240[AP_TAKEN_BYTE] & (AP_TAKEN_SUBTANK1 << n)) {
+    if (gGameState.save.unused_240[AP_TAKEN_BYTE] & ApSubtankTakenBit(n)) {
 #else
     if (pZero2->unk_b4.status.subtankHP[n] != 0xFF) {
 #endif
@@ -427,16 +427,14 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
       PlaySound(SE_NOTIFICATION);
     } else if (p->work[0] == ITEM_SUBTANK1) {
 #if AP
-      ApMarkLocationChecked(AP_LOC_SUBTANK_1);
-      gGameState.save.unused_240[AP_TAKEN_BYTE] |= AP_TAKEN_SUBTANK1;
+      ApTakeSubtank(0);
 #else
       ((&pZero2->unk_b4)->status).subtankHP[0] = 0;
       PrintTextWindow(0x102, 0x5A);
 #endif
     } else if (p->work[0] == ITEM_SUBTANK2) {
 #if AP
-      ApMarkLocationChecked(AP_LOC_SUBTANK_2);
-      gGameState.save.unused_240[AP_TAKEN_BYTE] |= AP_TAKEN_SUBTANK2;
+      ApTakeSubtank(1);
 #else
       ((&pZero2->unk_b4)->status).subtankHP[1] = 0;
       PrintTextWindow(0x102, 0x5A);

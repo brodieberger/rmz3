@@ -63,6 +63,10 @@ gApSelectElvesLabel:
 gApSelectRankLabel:
 	.string "Highest Rank:$"
 
+.global gApSelectClearsLabel
+gApSelectClearsLabel:
+	.string "Clears:$"
+
 .global gApSelectLocked
 gApSelectLocked:
 	.string "LOCKED$"

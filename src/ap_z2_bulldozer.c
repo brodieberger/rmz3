@@ -585,7 +585,7 @@ static void countKill(struct Dozer* p) {
   s->flags &= ~DISPLAY;
   TryDropItem(3, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportDozerKilled();
+  ApImportDozerKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

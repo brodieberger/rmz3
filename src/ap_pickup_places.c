@@ -97,6 +97,27 @@ const struct ApPickupPlace gApPickupPlaces[AP_PICKUP_PLACE_COUNT] = {
     {STAGE_GIANT_ELEVATOR, 183, 287, 380},  /* Giant Elevator: Life Capsule (medium) */
     {STAGE_SUB_ARCADIA, 18, 51, 381},  /* Sub Arcadia: E-Crystal (large) */
     {STAGE_SUB_ARCADIA, 156, 166, 382},  /* Sub Arcadia: Life Capsule (medium) */
+    {AP_PICKUP_IMPORT + 0, 28, 388, 674},  /* Sand Wilderness: 1-UP */
+    {AP_PICKUP_IMPORT + 1, 76, 147, 675},  /* Computer Zone: 1-UP */
+    {AP_PICKUP_IMPORT + 1, 55, 507, 676},  /* Computer Zone: 1-UP */
+    {AP_PICKUP_IMPORT + 3, 74, 258, 677},  /* Power Room: 1-UP */
+    {AP_PICKUP_IMPORT + 3, 107, 412, 678},  /* Power Room: 1-UP */
+    {AP_PICKUP_IMPORT + 4, 43, 162, 679},  /* Forest of Dysis: 1-UP */
+    {AP_PICKUP_IMPORT + 4, 87, 234, 680},  /* Forest of Dysis: 1-UP */
+    {AP_PICKUP_IMPORT + 6, 113, 207, 681},  /* Bombardment Aircraft: 1-UP */
+    {AP_PICKUP_IMPORT + 7, 49, 147, 682},  /* Forest of Notus: 1-UP */
+    {AP_PICKUP_IMPORT + 7, 11, 181, 683},  /* Forest of Notus: 1-UP */
+    {AP_PICKUP_IMPORT + 8, 114, 507, 684},  /* Computer Zone 2: 1-UP */
+    {AP_PICKUP_IMPORT + 9, 47, 146, 685},  /* Crystal Cave: 1-UP */
+    {AP_PICKUP_IMPORT + 11, 41, 171, 686},  /* Neo Arcadia Temple: 1-UP */
+    {AP_PICKUP_IMPORT + 12, 35, 163, 687},  /* Temple of Flame: 1-UP */
+    {AP_PICKUP_IMPORT + 13, 56, 177, 688},  /* Temple of Ice: 1-UP */
+    {AP_PICKUP_IMPORT + 13, 22, 297, 689},  /* Temple of Ice: 1-UP */
+    {AP_PICKUP_IMPORT + 14, 46, 82, 690},  /* Temple of Wind: 1-UP */
+    {AP_PICKUP_IMPORT + 14, 71, 96, 691},  /* Temple of Wind: 1-UP */
+    {AP_PICKUP_IMPORT + 14, 111, 107, 692},  /* Temple of Wind: 1-UP */
+    {AP_PICKUP_IMPORT + 14, 103, 129, 693},  /* Temple of Wind: 1-UP */
+    {AP_PICKUP_IMPORT + 15, 85, 59, 694},  /* Yggdrasil: 1-UP */
 };
 
 #endif /* AP */

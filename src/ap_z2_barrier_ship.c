@@ -327,7 +327,7 @@ static void finish(struct Ship* p) {
   PlaySound(SE_ZAKO_EXPLODE);
   TryDropItem(0, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportBarrierShipKilled();
+  ApImportBarrierShipKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

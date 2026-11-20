@@ -687,7 +687,11 @@ NON_MATCH_AP static void FUN_08018848(u8 stageID, u8 area) {
     LOAD_STATIC_GRAPHIC(SM167_LIFE_ENERGY + gSystemSavedata.lifeEnergy);
     LOAD_STATIC_GRAPHIC(SM170_ECRYSTAL + gSystemSavedata.crystal);
     LOAD_STATIC_GRAPHIC(SM173_EXLIFE + gSystemSavedata.extraLife);
+#if AP
+    if (stageID != STAGE_NONE) LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+#else
     LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+#endif
     CpuFastFill(0xFFFFFFFF, (void*)&gPaletteManager.buf[(16 + 13) * 16], 32);  // fill OBP13 with white
     gSpawnManager.area = 0xFE;
   }

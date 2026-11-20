@@ -5,8 +5,9 @@
 #define ITEM_GENERAL 0
 #define ITEM_DISK 1
 #if AP
-#define ITEM_AP_IMPORT_ELF 2  // Cyber elf in an imported stage
-#define PICKUP_COUNT 3
+#define ITEM_AP_IMPORT_ELF 2      // Cyber elf in an imported stage
+#define ITEM_AP_IMPORT_ELF_BOX 3  // capsule box
+#define PICKUP_COUNT 4
 #else
 #define PICKUP_COUNT 2
 #endif

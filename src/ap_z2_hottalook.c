@@ -606,7 +606,7 @@ static void Hottalook_Die(struct Hottalook* p) {
   CreateSmoke(2, &s->coord);
   TryDropItem(2, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportHottalookKilled();
+  ApImportHottalookKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

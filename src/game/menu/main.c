@@ -15,6 +15,12 @@
 #include "score.h"
 #include "zero.h"
 
+#if AP
+// Codename tiles, removed in AP
+#define AP_MENU_CLEARS_TILE 0x300
+extern const u32 gApMenuClearsLabel[4][8];
+#endif
+
 // 08547280 のidx
 const u8 u8_ARRAY_08386378[16] = {
     24, 25, 26, 27, 28, 29, 30, 31, 32, 31, 30, 29, 28, 27, 26, 25,
@@ -153,6 +159,10 @@ NON_MATCH_AP static void MainMenuLoop_Init(struct GameState* g) {
   LoadGraphic(BG_GRAPHIC(BG_MAIN_MENU), CHAR_BASE(1));
   LoadPalette(BG_PALETTE(BG_MAIN_MENU), 0);
   LoadGraphic(&gGraphic_CodeName, CHAR_BASE(1));
+#if AP
+  MemCopy32(gApMenuClearsLabel, (void*)(VRAM + (u32)CHAR_BASE(1) + (AP_MENU_CLEARS_TILE * 32)),
+            sizeof(gApMenuClearsLabel));
+#endif
   LoadPalette(&gPalette_CodeName, 0);
   CpuFastCopy(BGMAP(BG_MAIN_MENU), g->menuBgMap1, 960 * 2);
 
@@ -241,23 +251,42 @@ NON_MATCH_AP static void MainMenuLoop_Init(struct GameState* g) {
   }
 #else
 	// Replace codename prefix with disk count
+  // Two columns right of the tilemap's own slash, to line up with the clears below
   v = gAp.disksOwned;
-  map[146] = (v % 10 + 0x174) | 0x6000;
-  if (v > 9) map[145] = (v / 10 % 10 + 0x174) | 0x6000;
-  if (v > 99) map[144] = (v / 100 % 10 + 0x174) | 0x6000;
+  map[147] = 0x029 | 0x4000;
+  map[148] = (v % 10 + 0x174) | 0x6000;
+  if (v > 9) map[147] = (v / 10 % 10 + 0x174) | 0x6000;
+  if (v > 99) map[146] = (v / 100 % 10 + 0x174) | 0x6000;
+  map[149] = 0xED | 0x6000;
 
   v = gApSeedConfig.requiredDisks;
 
   // Get numbers into the right spot
   if (v > 99) {
-    map[148] = (v / 100 % 10 + 0x174) | 0x6000;
-    map[149] = (v / 10 % 10 + 0x174) | 0x6000;
-    map[150] = (v % 10 + 0x174) | 0x6000;
+    map[150] = (v / 100 % 10 + 0x174) | 0x6000;
+    map[151] = (v / 10 % 10 + 0x174) | 0x6000;
+    map[152] = (v % 10 + 0x174) | 0x6000;
   } else if (v > 9) {
-    map[148] = (v / 10 % 10 + 0x174) | 0x6000;
-    map[149] = (v % 10 + 0x174) | 0x6000;
+    map[150] = (v / 10 % 10 + 0x174) | 0x6000;
+    map[151] = (v % 10 + 0x174) | 0x6000;
   } else {
-    map[148] = (v + 0x174) | 0x6000;
+    map[150] = (v + 0x174) | 0x6000;
+  }
+
+  // "Clears" and the stage count, on the line below
+  for (i = 0; i < 4; i++) {
+    map[175 + i] = (AP_MENU_CLEARS_TILE + i) | 0x4000;
+  }
+  v = ApStagesCleared();
+  map[180] = (v % 10 + 0x174) | 0x6000;
+  if (v > 9) map[179] = (v / 10 + 0x174) | 0x6000;
+  map[181] = 0xED | 0x6000;
+  v = gApSeedConfig.requiredStages;
+  if (v > 9) {
+    map[182] = (v / 10 + 0x174) | 0x6000;
+    map[183] = (v % 10 + 0x174) | 0x6000;
+  } else {
+    map[182] = (v + 0x174) | 0x6000;
   }
 #endif
 

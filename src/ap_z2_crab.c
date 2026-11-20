@@ -776,7 +776,7 @@ static void countKill(struct Crab* p) {
   TryDropItem(1, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
-  ApImportCrabKilled();
+  ApImportCrabKilled(&(p->s).coord);
 }
 
 static void burstSound(struct Entity* s) {

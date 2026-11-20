@@ -13,14 +13,8 @@ const u32 gApMarkerLockedTile[8] = {
 };
 
 const struct ApMarkerSprite gApMarkerSprite = {
-    hdr : {
-      {ofs : 8, subspriteCount : 1, texture : 0},  /* small */
-      {ofs : 12, subspriteCount : 1, texture : 0},  /* big */
-    },
-    part : {
-      {tileNum : 0, size : 0, shape : 0, x : -4, y : -4},
-      {tileNum : 0, size : 1, shape : 0, x : -8, y : -8},
-    },
+    hdr : {ofs : 4, subspriteCount : 1, texture : 0},
+    part : {tileNum : 0, size : 0, shape : 0, x : -4, y : -4},
 };
 
 const u32 gApPillarTiles[AP_PILLAR_TILES][8] = {

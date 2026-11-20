@@ -113,12 +113,12 @@ const struct SpawnTemplate gApZ2Ice2_Templates[20] = {
     [18] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 130, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 130, 0),
         },
     [19] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 131, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 131, 0),
         },
 };
 

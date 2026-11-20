@@ -466,7 +466,7 @@ static void Mole_Die(struct Mole* p) {
   CreateSmoke(1, &c);
   PlaySound(SE_ZAKO_EXPLODE);
   TryDropItem(3, (struct Coord*)&s->coord);
-  ApImportMoleKilled();
+  ApImportMoleKilled(&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);

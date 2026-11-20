@@ -15,6 +15,7 @@ PantheonHunter_Die: @ 0x08064ACC
 	cmp r5, #0
 	bne _08064B5E
 .if AP
+	adds r0, #0x54
 	bl ApImportHunterKilled
 .endif
 	ldr r0, [r4, #0x54]

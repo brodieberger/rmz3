@@ -6,25 +6,19 @@
 #include "motion.h"
 
 /*
-  The Archipelago logo that floats over an unchecked pickup.
-
-  1-UPs 16x16 sprite
-  Other itemsanity 8x8 sprite
+  The Archipelago logo that floats over an unchecked pickup, 8x8.
 */
 
 #define AP_MARKER_SMALL_TILES 1
-#define AP_MARKER_BIG_MOTION SM176_RESULT_DISK
 #define AP_MARKER_PAL 11
-#define AP_MARKER_SMALL 0
-#define AP_MARKER_BIG 1
-#define AP_MARKER_FRAMES 2
+#define AP_MARKER_LEGACY_TILE 479 /* every legacy stage, past the secret disk */
 #define AP_MARKER_BOB_PERIOD 64
 #define AP_MARKER_BOB_AMPLITUDE 2
 #define AP_MARKER_CENTER_Y (-24)
 
 struct ApMarkerSprite {
-  struct MetaspriteHeader hdr[AP_MARKER_FRAMES];
-  struct Subsprite part[AP_MARKER_FRAMES];
+  struct MetaspriteHeader hdr;
+  struct Subsprite part;
 };
 
 extern const u32 gApMarkerTiles[AP_MARKER_SMALL_TILES][8];
@@ -54,6 +48,7 @@ u16 ApMarkerWindow(void);
 u16 ApPillarWindow(void);
 
 struct Entity;
+void ApAttachElfMarker(struct Entity* parent);
 struct SpawnedEntity* ApSpawnOf(const struct Entity* e);
 u8 ApSpriteReach(const struct Entity* e);
 

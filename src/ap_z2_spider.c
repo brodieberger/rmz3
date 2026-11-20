@@ -1119,7 +1119,7 @@ static void Spider_Die(struct Spider* p) {
       s->work[2] = 4;
       if (p->homeY != 0) {
         TryDropItem(4, (struct Coord*)&s->coord);
-        ApImportSpiderKilled();
+        ApImportSpiderKilled(&(p->s).coord);
         if (gScore.enemyCount < 9999) gScore.enemyCount++;
         TryDropZakoDisk((struct Enemy*)p, &s->coord);
       }

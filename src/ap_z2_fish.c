@@ -795,7 +795,7 @@ static void countKill(struct Fish* p) {
   struct Entity* s = &p->s;
   TryDropItem(3, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportFishKilled();
+  ApImportFishKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }

@@ -7,6 +7,7 @@ extern const PickupRoutine gPickupItemRoutine;
 extern const PickupRoutine gPickupDiskRoutine;
 #if AP
 extern const PickupRoutine gApImportElfRoutine;
+extern const PickupRoutine gApImportElfBoxRoutine;
 #endif
 
 // 0x08371a10
@@ -15,6 +16,7 @@ const PickupRoutine* const gPickupFnTable[PICKUP_COUNT] = {
     &gPickupDiskRoutine,
 #if AP
     &gApImportElfRoutine,
+    &gApImportElfBoxRoutine,
 #endif
 };
 

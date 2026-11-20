@@ -176,9 +176,9 @@ static bool32 ApCreateEnemyMarker(struct Entity* e, s32 sid, u8 disk) {
   m->AP_ENEMY_MARKER_DISK = disk;
 
   InitNonAffineMotion(m);
-  (m->spr).sprites = (struct MetaspriteHeader*)gApMarkerSprite.hdr;
+  (m->spr).sprites = (struct MetaspriteHeader*)&gApMarkerSprite.hdr;
   (m->spr).oam.paletteNum = AP_MARKER_PAL;
-  (m->spr).spriteIdx = AP_MARKER_SMALL;
+  (m->spr).spriteIdx = 0;
   (m->spr).oam.tileNum = ApMarkerWindow();
   return TRUE;
 }

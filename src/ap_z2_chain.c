@@ -130,10 +130,14 @@ static void follow(struct Zero* z) {
   sChain.tip.y += sChain.hand.y - from.y;
 }
 
+u8 ApChainAngle(struct Zero* z) {
+  u8 angle = sAngle[sChain.aim];
+  return FACING_RIGHT(z) == (sChain.stance == ZERO_WALL) ? (u8)(128 - angle) : angle;
+}
+
 // 0x08035fb4
 static void placeTip(struct Zero* z, u8 done) {
-  u8 angle = sAngle[sChain.aim];
-  if (FACING_RIGHT(z) == (sChain.stance == ZERO_WALL)) angle = 128 - angle;
+  u8 angle = ApChainAngle(z);
   sChain.tip.x = sChain.hand.x + (((COS(angle) * REACH) >> 8) * done) / FIRE_FRAMES;
   sChain.tip.y = sChain.hand.y + (((SIN(angle) * REACH) >> 8) * done) / FIRE_FRAMES;
 }
@@ -1044,6 +1048,24 @@ void ApLoadChainMenuIcon(u32 tile) {
   }
 }
 
+// Zero 2's palette 9 to the pickup palette, OBJ 11
+static const u8 sPickupColors[16] = {0, 2, 7, 9, 1, 4, 1, 8, 12, 8, 8, 3, 13, 15, 14, 15};
+
+// Popup and shop icon. Transparent pixels become clear.
+void ApChainIconTile(u32* dst, u8 tile, u8 clear) {
+  u32 w, out;
+  u8 i, k, z;
+  for (i = 0; i < 8; i++) {
+    w = sMenuIcon[tile][i];
+    out = 0;
+    for (k = 0; k < 32; k += 4) {
+      z = (w >> k) & 15;
+      out |= (u32)(z ? sPickupColors[z] : clear) << k;
+    }
+    dst[i] = out;
+  }
+}
+
 void ApLoadChainHudIcon(void) { MemCopy32(sHudIcon, (void*)(VRAM + 0xC000 + HUD_TILE * 32), sizeof(sHudIcon)); }
 
 void ApDrawChainHudIcon(u16* bg0, struct Zero* z) {
@@ -1138,7 +1160,7 @@ static void Spin_Update(struct Weapon* p) {
 
 #define HITBOX(x, y) \
   { \
-    {DDP, FACTION_ALLY, 1, 4, ATK_ROD, 0x00, 0x10, 0x00, 0xFF, 0x00, 0x00, 1, 0x00000400, {(x), (y), 2048, 2048}}, \
+    {DDP, FACTION_ALLY, 1, 4, ATK_ROD, 0x00, 0x10, 0x01, 0xFF, 0x00, 0x00, 1, 0x00000400, {(x), (y), 2048, 2048}}, \
     {DRP, FACTION_ALLY, 1, 4, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0x00, 0x00, 0, 0x00000000, {(x), (y), 2048, 2048}}, \
   }
 

@@ -196,7 +196,7 @@ static void killed(struct Carryarm* p, bool8 spiking) {
   s->d.y = 0;
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
-  ApImportSpikingKilled();
+  ApImportSpikingKilled(&(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_DIE);
   s->mode[1] = spiking ? DEATH_SPIKING : DEATH_CARRYARM;
   Carryarm_Die(p);

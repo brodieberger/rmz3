@@ -2445,7 +2445,7 @@ static void TreeFrog_Die(struct TreeFrog* p) {
   EXIT_BODY(p);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
-  ApImportTreeFrogKilled();
+  ApImportTreeFrogKilled(&(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

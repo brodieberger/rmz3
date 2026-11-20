@@ -423,6 +423,11 @@ gApZ2Opening_Golem1:
 	.4byte 4256*PX, 464*PX
 	.4byte DIR_LEFT
 
+gApZ2Opening_Golem1Elf:
+	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 6, 2
+	.4byte 4256*PX, 400*PX
+	.4byte DIR_RIGHT
+
 gApZ2Opening_Golem1Camera:
 	.byte 4, 4, 0, 0
 	.4byte 0*PX, 0*PX
@@ -460,6 +465,7 @@ gApZ2Opening_MidBoss1ClearScript:
 	adjust_camera 13, 0, 0
 	change_camera_mode 6
 	set_chase_mode 4
+	spawn 9, gApZ2Opening_Golem1Elf
 	start_transition 5
 	wait_transition_end
 	force 1, 0, 0

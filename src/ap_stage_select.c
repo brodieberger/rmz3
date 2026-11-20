@@ -95,6 +95,7 @@ static u8 ApSelectImportOf(s16 mission) {
 #define AP_SELECT_DISKS_X 9
 #define AP_SELECT_STATUS_X 20
 #define AP_SELECT_RANK_X 16
+#define AP_SELECT_CLEARS_X 10
 
 #define AP_SELECT_NAME_Y 13
 #define AP_SELECT_DISKS_Y 15
@@ -107,6 +108,7 @@ extern const char_t gApSelectStageLabel[];
 extern const char_t gApSelectDisksLabel[];
 extern const char_t gApSelectElvesLabel[];
 extern const char_t gApSelectRankLabel[];
+extern const char_t gApSelectClearsLabel[];
 extern const char_t gApSelectLocked[];
 extern const char_t gApSelectOpen[];
 extern const char_t gApSelectCleared[];
@@ -138,8 +140,11 @@ static void ApSelectPrintName(u8 stageID, u32 x, u32 y) {
 }
 
 static char_t* ApSelectPutNumber(char_t* p, u8 n) {
+  if (n >= 100) {
+    *p++ = (char_t)(AP_CHAR_ZERO + (n / 100));
+  }
   if (n >= 10) {
-    *p++ = (char_t)(AP_CHAR_ZERO + (n / 10));
+    *p++ = (char_t)(AP_CHAR_ZERO + ((n / 10) % 10));
   }
   *p++ = (char_t)(AP_CHAR_ZERO + (n % 10));
   return p;
@@ -155,7 +160,7 @@ static bool32 ApSelectCleared(u8 stageID) {
 
 /*
   "Disks: 6/10" and, further along the same line, LOCKED / OPEN / CLEARED.
-  Legacy stages say elves instead.
+  Legacy stages say elves instead, and the final stage the disks held of those it needs.
 */
 static void ApSelectPrintDisks(u8 stageID) {
   char_t* p = sApSelectStatus;
@@ -167,6 +172,10 @@ static void ApSelectPrintDisks(u8 stageID) {
     p = ApSelectPutNumber(p, ApImportElvesFound(gApImportSelected));
     *p++ = AP_CHAR_SLASH;
     p = ApSelectPutNumber(p, ApImportElfTotal(gApImportSelected));
+  } else if (stageID == AP_STAGE_FINAL) {
+    p = ApSelectPutNumber(p, (u8)gAp.disksOwned);
+    *p++ = AP_CHAR_SLASH;
+    p = ApSelectPutNumber(p, (u8)gApSeedConfig.requiredDisks);
   } else {
     p = ApSelectPutNumber(p, ApDisksInStage(stageID));
     *p++ = AP_CHAR_SLASH;
@@ -186,6 +195,21 @@ static void ApSelectPrintDisks(u8 stageID) {
   PrintString(label, AP_SELECT_LABEL_X, AP_SELECT_DISKS_Y);
   PrintString(sApSelectStatus, AP_SELECT_DISKS_X, AP_SELECT_DISKS_Y);
   PrintString(status, AP_SELECT_STATUS_X, AP_SELECT_DISKS_Y);
+}
+
+/*
+  The final stage's third line: stages cleared at the seed's rank, of those it needs.
+*/
+static void ApSelectPrintClears(void) {
+  char_t* p = sApSelectRankLine;
+
+  p = ApSelectPutNumber(p, ApStagesCleared());
+  *p++ = AP_CHAR_SLASH;
+  p = ApSelectPutNumber(p, gApSeedConfig.requiredStages);
+  *p = AP_CHAR_END;
+
+  PrintString(gApSelectClearsLabel, AP_SELECT_LABEL_X, AP_SELECT_RANK_Y);
+  PrintString(sApSelectRankLine, AP_SELECT_CLEARS_X, AP_SELECT_RANK_Y);
 }
 
 /*
@@ -373,7 +397,7 @@ static void ApSelectSetPage(struct GameState* g, s16 page) {
   Fix for Boss portraits stealing the palette used by the AP item pop up sprites.
 */
 static void ApSelectRestorePickupPalette(void) {
-  LOAD_STATIC_GRAPHIC(SM176_RESULT_DISK + gSystemSavedata.disk);
+  LOAD_STATIC_GRAPHIC(SM167_LIFE_ENERGY + gSystemSavedata.lifeEnergy);
 }
 
 static void ApSelectTearDown(struct GameState* g) {
@@ -501,7 +525,11 @@ void ApStageSelect(struct GameState* g) {
       PrintString(gApSelectStageLabel, AP_SELECT_LABEL_X, AP_SELECT_NAME_Y);
       ApSelectPrintName(stageID, AP_SELECT_NAME_X, AP_SELECT_NAME_Y);
       ApSelectPrintDisks(stageID);
-      ApSelectPrintRank(stageID);
+      if (stageID == AP_STAGE_FINAL) {
+        ApSelectPrintClears();
+      } else {
+        ApSelectPrintRank(stageID);
+      }
 
       if (g->unk_008[1] != 0) {
         g->unk_008[1]--;

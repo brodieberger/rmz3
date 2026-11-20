@@ -64,13 +64,20 @@ static void blitTiles(const u32 (*art)[8], u16 tile, u8 count) {
   }
 }
 
+// Panel behind an icon
+#define SHOP_ICON_BG 6
+
 static void blitCellIcon(u8 cell, u8 icon) {
   u8 i;
 
   for (i = 0; i < AP_ICON_TILES; i++) {
-    MemCopy32(gApShopIcons[icon][i],
-              (void*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32),
-              sizeof(gApShopIcons[icon][i]));
+    if (icon == AP_ICON_CHAIN) {
+      ApChainIconTile((u32*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32), i, SHOP_ICON_BG);
+    } else {
+      MemCopy32(gApShopIcons[icon][i],
+                (void*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32),
+                sizeof(gApShopIcons[icon][i]));
+    }
   }
 }
 

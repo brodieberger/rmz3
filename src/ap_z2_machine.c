@@ -188,7 +188,7 @@ static void Generator_Die(struct Generator* p) {
   s->flags &= ~DISPLAY;
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &s->coord);
-  ApImportGeneratorKilled();
+  ApImportGeneratorKilled(&(p->s).coord);
   s->mode[2]++;
 }
 

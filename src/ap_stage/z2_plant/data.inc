@@ -250,7 +250,7 @@ gApZ2Plant_Golem:
 	.4byte DIR_LEFT
 
 gApZ2Plant_GolemElf:
-	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 53, 1
+	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 53, 2
 	.4byte 6408*PX, 1680*PX
 	.4byte DIR_RIGHT
 

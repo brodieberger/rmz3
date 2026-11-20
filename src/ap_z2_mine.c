@@ -318,7 +318,38 @@ static void Mine_Burn(struct Mine* p) {
   if (--s->work[2] == 0) explode(p);
 }
 
-// 0x08091ef8: shots knock it level, blades away from Zero
+// Stab's direction, by rod move
+static u8 rodAngle(struct Entity* rod) {
+  u8 a;
+  switch (rod->work[0]) {
+    case 2:
+    case 3:
+    case 7:
+      a = 224;
+      break;
+    case 4:
+    case 5:
+    case 8:
+      a = 32;
+      break;
+    case 12:
+    case 15:
+      a = 192;
+      break;
+    case 13:
+    case 16:
+    case 19:
+    case 20:
+      a = 64;
+      break;
+    default:
+      a = 0;
+      break;
+  }
+  return (rod->flags & X_FLIP) ? a : (u8)(128 - a);
+}
+
+// 0x08091ef8: shots knock it level, rods along their aim, blades away from Zero
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Mine* p = (struct Mine*)body->parent;
   struct Entity* s = &p->s;
@@ -339,13 +370,20 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
     case WEAPON_MOVE_REFLECT_LASER:
       s->d.x = s->coord.x < (pZero2->s).coord.x ? -PIXEL(4) : PIXEL(4);
       s->d.y = 0;
+      setMode(p, MINE_KNOCKED);
+      return;
+    case WEAPON_MOVE_Z2_CHAIN:
+      a = ApChainAngle(pZero2);
+      break;
+    case WEAPON_MOVE_RECOIL_ROD:
+      a = rodAngle(by);
       break;
     default:
       a = CalcAngle(s->coord.x - (pZero2->s).coord.x, s->coord.y - (pZero2->s).coord.y + PIXEL(14));
-      s->d.x = COS(a) * 4;
-      s->d.y = SIN(a) * 4;
       break;
   }
+  s->d.x = COS(a) * 4;
+  s->d.y = SIN(a) * 4;
   setMode(p, MINE_KNOCKED);
 }
 
@@ -389,7 +427,7 @@ static void Mine_Die(struct Mine* p) {
     if (p->hit) {
       if (gScore.enemyCount < 9999) gScore.enemyCount++;
       TryDropZakoDisk((struct Enemy*)p, &s->coord);
-      ApImportMineKilled();
+      ApImportMineKilled(&(p->s).coord);
     }
     EXIT_BODY(p);
     SET_ENEMY_ROUTINE(p, ENTITY_EXIT);

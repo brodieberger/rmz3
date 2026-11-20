@@ -263,7 +263,7 @@ static void finish(struct Copter* p) {
   TryDropItem(1, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
-  ApImportCopterKilled();
+  ApImportCopterKilled(&(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
 

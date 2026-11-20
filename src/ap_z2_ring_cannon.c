@@ -314,7 +314,7 @@ static bool8 breakUp(struct Cannon* p, u8 step) {
 static void Cannon_Die(struct Cannon* p) {
   struct Entity* s = &p->s;
   if (s->mode[3] == 0) {
-    ApImportRingCannonKilled();
+    ApImportRingCannonKilled(&(p->s).coord);
     SetMotion(s, ANIM(8));
     s->work[2] = 0;
     if (s->mode[1] == 1) {

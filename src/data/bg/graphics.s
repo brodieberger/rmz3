@@ -1592,3 +1592,10 @@ _gfx_085740FC:
 .else
 .incbin "graphics/bg/bg.bin"
 .endif
+
+.if AP
+.balign 4
+.global gApMenuClearsLabel
+gApMenuClearsLabel:
+.incbin "graphics/bg/menu_clears-ap.4bpp"
+.endif

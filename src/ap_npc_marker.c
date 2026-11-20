@@ -134,9 +134,9 @@ static bool32 ApCreateNpcMarker(const struct SpawnedEntity* s) {
   m->AP_NPC_MARKER_REACH = 0;
 
   InitNonAffineMotion(m);
-  (m->spr).sprites = (struct MetaspriteHeader*)gApMarkerSprite.hdr;
+  (m->spr).sprites = (struct MetaspriteHeader*)&gApMarkerSprite.hdr;
   (m->spr).oam.paletteNum = AP_MARKER_PAL;
-  (m->spr).spriteIdx = AP_MARKER_SMALL;
+  (m->spr).spriteIdx = 0;
   return TRUE;
 }
 

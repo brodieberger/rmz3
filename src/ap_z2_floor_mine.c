@@ -132,7 +132,7 @@ static void Mine_Die(struct Mine* p) {
   at.x = s->coord.x;
   at.y = s->coord.y - PIXEL(8);
   createBlast(&at);
-  ApImportFloorMineKilled();
+  ApImportFloorMineKilled(&(p->s).coord);
   SET_PROJECTILE_ROUTINE(p, ENTITY_EXIT);
 }
 

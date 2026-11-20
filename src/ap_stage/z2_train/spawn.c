@@ -83,12 +83,12 @@ const struct SpawnTemplate gApZ2Train_Templates[15] = {
     [13] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 34, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 34, 0),
         },
     [14] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 35, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 35, 2),
         },
 };
 
@@ -175,7 +175,7 @@ const struct PreloadEntity gApZ2Train_Preloads[7] = {
     {
         AP_SHEET_Z2_GANTRY_SIDE,
         B8(00000011),
-        380,
+        960,
         6,
         1,
         AP_PRELOAD_SHEET | 1,

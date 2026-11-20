@@ -190,7 +190,7 @@ gApZ2Ice_FrostCamera:
 	.4byte 6360*PX, 6720*PX, 0*PX, 1328*PX
 
 gApZ2Ice_GolemElf:
-	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 19, 0
+	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 24, 2
 	.4byte 6608*PX, 1248*PX
 	.4byte DIR_RIGHT
 

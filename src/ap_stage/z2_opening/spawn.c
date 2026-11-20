@@ -90,7 +90,7 @@ const struct SpawnTemplate gApZ2Opening_Templates[16] = {
     [15] =
         {
             .flag = 0x02,
-            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 2, 0),
+            .kind = SpawnEntity(ENTITY_ITEM, ITEM_AP_IMPORT_ELF_BOX, 2, 0),
         },
 };
 

@@ -458,7 +458,7 @@ static void burstInThree(struct Entity* s, const struct SlashedEnemy* gibs, bool
 static void countKill(struct Entity* s, bool8 drop) {
   if (drop) TryDropItem(3, (struct Coord*)&s->coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportSpikeballKilled();
+  ApImportSpikeballKilled(&s->coord);
   TryDropZakoDisk((struct Enemy*)s, &s->coord);
   SET_ENEMY_ROUTINE(s, ENTITY_EXIT);
 }

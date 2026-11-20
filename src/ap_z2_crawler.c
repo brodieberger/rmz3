@@ -433,7 +433,7 @@ static void burst(struct Crawler* p, bool8 bits) {
 static void finish(struct Crawler* p) {
   TryDropItem(2, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
-  ApImportCrawlerKilled();
+  ApImportCrawlerKilled(&(p->s).coord);
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
   SET_ENEMY_ROUTINE(p, ENTITY_EXIT);
 }
