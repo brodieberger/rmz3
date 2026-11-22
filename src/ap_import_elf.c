@@ -63,6 +63,8 @@ static bool32 checked(u16 loc) {
 #define ELF_VULTURES 5
 #define ELF_SHELLS 196  // Temple of Flame
 #define ELF_CANNONS 180  // Neo Arcadia Temple
+#define ELF_EYES 84  // Residential Area
+#define ELF_GUARDIANS 85
 #define ELF_BEES 69  // Forest of Dysis
 #define ELF_CARRIERS 70
 #define ELF_MOLES 71
@@ -93,6 +95,8 @@ EWRAM_DATA static u8 sSpikeballKills = 0;
 EWRAM_DATA static u8 sVultureKills = 0;
 EWRAM_DATA static u8 sShellKills = 0;
 EWRAM_DATA static u8 sCannonKills = 0;
+EWRAM_DATA static u8 sEyeKills = 0;
+EWRAM_DATA static u8 sGuardianKills = 0;
 EWRAM_DATA static u8 sBeeKills = 0;
 EWRAM_DATA static u8 sCarrierKills = 0;
 EWRAM_DATA static u8 sMoleKills = 0;
@@ -149,6 +153,8 @@ void ApImportResetKills(void) {
   sVultureKills = 0;
   sShellKills = 0;
   sCannonKills = 0;
+  sEyeKills = 0;
+  sGuardianKills = 0;
   sBeeKills = 0;
   sCarrierKills = 0;
   sMoleKills = 0;
@@ -199,6 +205,14 @@ void ApImportShellKilled(const Coords32* at) {
 
 void ApImportRingCannonKilled(const Coords32* at) {
   if (++sCannonKills == 3) giveElf(ELF_CANNONS, ANIMAL, at);
+}
+
+void ApImportEyeKilled(const Coords32* at) {
+  if (++sEyeKills == 5) giveElf(ELF_EYES, ANIMAL, at);
+}
+
+void ApImportGuardianKilled(const Coords32* at) {
+  if (++sGuardianKills == 8) giveElf(ELF_GUARDIANS, ANIMAL, at);
 }
 
 void ApImportBeeKilled(const Coords32* at) {
@@ -288,7 +302,7 @@ void ApImportTreeFrogKilled(const Coords32* at) {
 }
 
 // By import, placed and kill elves, from block's third id on
-static const u8 sElves[AP_IMPORT_COUNT] = {5, 7, 4, 8, 8, 2, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
+static const u8 sElves[AP_IMPORT_COUNT] = {5, 7, 4, 8, 8, 4, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
 
 u8 ApImportElfTotal(u8 import) { return sElves[import]; }
 

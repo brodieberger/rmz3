@@ -305,6 +305,11 @@ _08063A8C: @ jump table
 	.4byte _08063BA0 @ case 10
 	.4byte _08063D14 @ case 11
 _08063ABC:
+.if AP
+	adds r0, r4, #0
+	adds r0, #0x54
+	bl ApImportGuardianKilled
+.endif
 	ldr r1, _08063AF0 @ =0x00001404
 	adds r0, r4, #0
 	bl SetMotion

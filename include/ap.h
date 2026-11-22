@@ -474,6 +474,8 @@ void ApImportWolfKilled(const Coords32* at);
 void ApImportFlopperKilled(const Coords32* at);
 void ApImportFloorMineKilled(const Coords32* at);
 void ApImportShieldGuardKilled(const Coords32* at);
+void ApImportEyeKilled(const Coords32* at);
+void ApImportGuardianKilled(const Coords32* at);
 void ApImportHopperKilled(const Coords32* at);
 void ApImportTowerKilled(const Coords32* at);
 void ApImportSpikeballKilled(const Coords32* at);

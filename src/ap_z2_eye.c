@@ -1,3 +1,4 @@
+#include "ap.h"
 #include "camera.h"
 #include "collision.h"
 #include "element.h"
@@ -411,6 +412,7 @@ static void finish(struct Eye* p) {
   TryDropItem(4, (struct Coord*)&(p->s).coord);
   if (gScore.enemyCount < 9999) gScore.enemyCount++;
   TryDropZakoDisk((struct Enemy*)p, &(p->s).coord);
+  ApImportEyeKilled(&(p->s).coord);
 }
 
 // 0x08092f60
