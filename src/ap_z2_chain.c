@@ -265,6 +265,35 @@ static bool8 hookable(void) {
   return (attr & 15) && !(attr & 0x400) && (attr & ~0x80) != 15 && (attr & ~0x80) != 14;
 }
 
+// Pulls the coffin objects in the same way the recoil rod can push it.
+static u16 pullCoffin(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  s32 gap = (*pZero2).s.coord.x - s->coord.x;
+  s32 dist;
+  if (s->mode[1] != 1) return 0;
+  if (dx == 0 && dy == 0) return 1;
+  dist = (gap < 0 ? -gap : gap) - PIXEL(40 + 12);
+  if (gap < 0 && dist > s->coord.x - s->unk_coord.y) dist = s->coord.x - s->unk_coord.y;
+  if (dist > 0x440 * 16) dist = 0x440 * 16;
+  if (dist <= 0x40 * 16) return 0;
+  s->d.x = gap > 0 ? dist / 16 : -dist / 16;
+  s->unk_coord.x = gap > 0 ? PIXEL(42) : -PIXEL(42);
+  s->work[2] = 0;
+  s->mode[1] = 2;
+  return 0;
+}
+
+static void latchCoffin(void) {
+  struct Entity* p = StartEntityListIteration(gSolidHeaderPtr);
+  while (p != (void*)&gSolidHeaderPtr->tail) {
+    if (p->uniqueID == sChain.block && p->id == SOLID_VOLCANO_COFFIN) {
+      sChain.target = p;
+      sChain.targetId = p->id;
+      sChain.hook = pullCoffin;
+    }
+    p = GetNextEntity(gSolidHeaderPtr);
+  }
+}
+
 // 0x08032f24, tip level or above
 static bool8 hangs(u8 angle) {
   u8 side = angle + 128;
@@ -409,6 +438,7 @@ void ApChainAttack(struct Zero* z) {
       *state = CHAIN_FIRE;
       break;
     case CHAIN_FIRE:
+      if (sChain.hit && sChain.target == NULL) latchCoffin();
       if (sChain.target != NULL && isHeld(z) && sChain.stance == ZERO_GROUND) {
         PlaySound(SE_Z2_CHAIN_LATCH);
         *state = CHAIN_LATCH;
