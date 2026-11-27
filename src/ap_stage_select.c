@@ -51,10 +51,10 @@ void FUN_080c5f98(struct Entity* p);
 
 /* Vanilla game uses a lockout before state 7 takes input, so a held A does not fall through. */
 #define AP_SELECT_OPEN_DELAY 0x3C
-/*
-  Frames between destroying a page and creating the next one.
-*/
+/* Frames before the portraits are created */
 #define AP_SELECT_CREATE_DELAY 2
+/* Static between pages */
+#define AP_SELECT_SWAP_FRAMES 8
 
 /*
   Mission index -> stage ID.
@@ -120,13 +120,15 @@ extern const char_t gApSelectRankLetters[];
 EWRAM_DATA static char_t sApSelectStatus[20] = {0};
 EWRAM_DATA static char_t sApSelectRankLine[12] = {0};
 
-/* Set once the current page is up. Cleared by every page increment. */
+/* Set once the portraits are up */
 EWRAM_DATA static bool8 sApSelectBuilt = FALSE;
 
 /*
   The slot the cursor is on.
 */
 EWRAM_DATA static s16 sApSelectSlot = 0;
+
+EWRAM_DATA static u8 sApSelectSwap = 0;
 
 /* The final stage is the one with no entry in the game's own free-run name table. */
 static void ApSelectPrintName(u8 stageID, u32 x, u32 y) {
@@ -341,6 +343,7 @@ static void ApSelectStylePortrait(struct Entity* p, u8 slot, bool32 open) {
   if (p->motionID != (motion_id_t)(want >> 8)) {
     p->palID = (u8)((want == AP_MUGSHOT_STATIC) ? 0 : slot);
     SetMotion(p, want);
+    UpdateEntityAnim(p);
   }
   (p->d).x = (s32)want;
 
@@ -374,7 +377,8 @@ static void ApSelectStyleRow(struct GameState* g) {
         mission = ApSelectMissionAt(g, p->work[1]);
         import = ApSelectImportOf(mission);
         open = (import != AP_SLOT_OWN) ? ApImportOpen(import) : ApStageUnlocked(sApMissionStage[mission]);
-        ApSelectStylePortrait(p, p->work[1], open);
+        p->flags |= DISPLAY;
+        ApSelectStylePortrait(p, p->work[1], open && sApSelectSwap == 0);
       }
     }
     p = p->next;
@@ -418,12 +422,12 @@ static void ApSelectTurnPage(struct GameState* g, s16 step) {
   s16 page = (s16)((ApSelectPageOf(g) + step + AP_SELECT_PAGE_COUNT) % AP_SELECT_PAGE_COUNT);
 
   PlaySound(SE_CURSOR);
-  ApSelectTearDown(g);
   ApSelectSetPage(g, page);
   if (step < 0) {
     g->frames = sApSelectSlot = g->unk_008[0];
   }
-  g->unk_008[1] = AP_SELECT_CREATE_DELAY;
+  sApSelectSwap = AP_SELECT_SWAP_FRAMES;
+  g->unk_008[1] = AP_SELECT_SWAP_FRAMES;
 }
 
 /*
@@ -445,6 +449,7 @@ void ApStageSelect(struct GameState* g) {
 
       *handle = NULL;
       sApSelectBuilt = FALSE;
+      sApSelectSwap = 0;
       ApSelectSetPage(g, 0);
       g->unk_008[1] = AP_SELECT_CREATE_DELAY;
       g->mode[3]++;
@@ -465,6 +470,13 @@ void ApStageSelect(struct GameState* g) {
 
     case 7: {
       if (sApSelectBuilt) {
+        // Static up first, so old sprites never draw new art
+        if (sApSelectSwap == AP_SELECT_SWAP_FRAMES - 1) {
+          ApSelectLoadPageArt(g);
+        }
+        if (sApSelectSwap != 0) {
+          sApSelectSwap--;
+        }
         ApSelectStyleRow(g);
       }
 
@@ -494,26 +506,22 @@ void ApStageSelect(struct GameState* g) {
 
       if (gJoypad[0].pressed & R_BUTTON) {
         ApSelectTurnPage(g, 1);
-        return;
-      }
-      if (gJoypad[0].pressed & L_BUTTON) {
+      } else if (gJoypad[0].pressed & L_BUTTON) {
         ApSelectTurnPage(g, -1);
-        return;
-      }
-      if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
+      } else if (gJoypad[0].field3_0x6 & DPAD_RIGHT) {
         if (g->frames >= g->unk_008[0]) {
           ApSelectTurnPage(g, 1);
-          return;
+        } else {
+          PlaySound(SE_CURSOR);
+          g->frames++;
         }
-        PlaySound(SE_CURSOR);
-        g->frames++;
       } else if (gJoypad[0].field3_0x6 & DPAD_LEFT) {
         if (g->frames <= 0) {
           ApSelectTurnPage(g, -1);
-          return;
+        } else {
+          PlaySound(SE_CURSOR);
+          g->frames--;
         }
-        PlaySound(SE_CURSOR);
-        g->frames--;
       }
 
       sApSelectSlot = g->frames;
