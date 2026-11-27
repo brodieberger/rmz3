@@ -144,7 +144,7 @@ static void placeTip(struct Zero* z, u8 done) {
 
 // 0x08039ddc
 static bool8 createLinks(struct Zero* z) {
-  u8 slot = (z->unk_b4).mainCopy == WEAPON_CHAIN ? 0 : 1;
+  u8 slot = (z->unk_b4).status.weapons[0] == WEAPON_CHAIN ? 0 : 1;
   u8 i;
   KillAllWeapons(DeleteSaber);
   SetWeaponElement(slot, WEAPON_COLOR_NORMAL);
@@ -165,13 +165,13 @@ static bool8 createLinks(struct Zero* z) {
 // Button as CountRodButton reads it: type B's sub weapon has its own, else main
 static bool8 isHeld(struct Zero* z) {
   KEY_INPUT key = (z->input).mapping.main;
-  if ((z->unk_b4).mainCopy != WEAPON_CHAIN && (z->unk_b4).status.keyMap.attackMode == 1) key = (z->input).mapping.sub;
+  if ((z->unk_b4).status.weapons[0] != WEAPON_CHAIN && (z->unk_b4).status.keyMap.attackMode == 1) key = (z->input).mapping.sub;
   return ((z->input).raw & key) != 0;
 }
 
 // Holding on doesn't charge
 static void noCharge(struct Zero* z) {
-  if ((z->unk_b4).mainCopy == WEAPON_CHAIN) {
+  if ((z->unk_b4).status.weapons[0] == WEAPON_CHAIN) {
     (z->unk_b4).status.charge[0] = 0;
     z->mainChargeFrame = 0;
   } else {
@@ -222,7 +222,7 @@ static void pull(struct Zero* z) {
 
 // 0x0803d46c
 static void createSpin(struct Zero* z) {
-  u8 slot = (z->unk_b4).mainCopy == WEAPON_CHAIN ? 0 : 1;
+  u8 slot = (z->unk_b4).status.weapons[0] == WEAPON_CHAIN ? 0 : 1;
   struct Entity* p;
   KillAllWeapons(DeleteSaber);
   SetWeaponElement(slot, (z->unk_b4).status.element);
@@ -367,7 +367,17 @@ static void finish(struct Zero* z) {
   } else if (sChain.stance == ZERO_WALL) {
     GotoMotion(&z->s, MOTION(DM005_ZERO_WALL, 0), 4, 1);
   } else if (sChain.stance == ZERO_LADDER) {
-    GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 0), 0, 1);
+    if ((z->s).mode[2] == 0) {
+      if ((z->s).mode[3] == 2) {
+        GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 2), 1, 1);
+      } else {
+        SetSpriteAnimation(z, MOTION(DM007_ZERO_LADDER, 1));
+      }
+    } else if ((z->s).mode[3] == 3) {
+      GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 5), 1, 1);
+    } else {
+      GotoMotion(&z->s, MOTION(DM007_ZERO_LADDER, 4), 4, 1);
+    }
   } else {
     SetSpriteAnimation(z, GetDefaultMotion(z));
   }
@@ -405,7 +415,7 @@ void ApChainAttack(struct Zero* z) {
       sChain.stance = (z->s).mode[1];
       if (sChain.stance == ZERO_LADDER && (input & DPAD_RIGHT)) SET_PLAYER_XFLIP(z, TRUE);
       if (sChain.stance == ZERO_LADDER && (input & DPAD_LEFT)) SET_PLAYER_XFLIP(z, FALSE);
-      if (GetWeaponCharge(z, (z->unk_b4).mainCopy != WEAPON_CHAIN) == FULL_CHARGE) {
+      if (GetWeaponCharge(z, (z->unk_b4).status.weapons[0] != WEAPON_CHAIN) == FULL_CHARGE) {
         sChain.timer = 5;
         setPose(z, sSpinPose[sChain.stance][0]);
         *state = CHAIN_SPIN_WIND;
@@ -1009,11 +1019,8 @@ static bool8 isNativePullable(struct Entity* s) {
 static void onHit(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   struct Body* e = body->enemy;
   if (!(body->status & (BODY_STATUS_B2 | BODY_STATUS_B5))) return;
-  if (body->status & BODY_STATUS_B2) {
-    if (e->status & BODY_STATUS_BLOCKED) return;
-  } else {
-    sChain.hit = TRUE;
-  }
+  if ((body->status & BODY_STATUS_B2) && (e->status & BODY_STATUS_BLOCKED)) return;
+  sChain.hit = TRUE;
   if (sChain.target == NULL && ((e->processing->hardness & HARDNESS_B3) || isNativePullable(e->parent))) {
     sChain.target = e->parent;
     sChain.targetId = e->parent->id;
@@ -1191,6 +1198,7 @@ static void Spin_SetHit(struct Weapon* p) {
   s8 cmd = (s->motion).cmdIdx;
   if (s->work[1] != 0 || cmd < 1 || cmd > 4) {
     s->flags &= ~COLLIDABLE;
+    (p->body).collisions = NULL;
     return;
   }
   s->flags |= COLLIDABLE;
@@ -1206,6 +1214,7 @@ static void Spin_Init(struct Weapon* p) {
   s->flags |= DISPLAY | FLIPABLE;
   SetSpriteAnimation(p, MOTION(sSpinMotion[s->work[0]], 0));
   INIT_BODY(p, sChainSpinHits[s->work[0]][0], 1, NULL);
+  Spin_SetHit(p);
   PlaySound(SE_Z2_CHAIN_SPIN);
   Spin_Update(p);
 }

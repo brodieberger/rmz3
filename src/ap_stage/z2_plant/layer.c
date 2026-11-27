@@ -329,6 +329,7 @@ s16 ApZ2PlantUpdate(struct StageRun* p) {
   switch (p->stageEventPhase) {
     case 0:
       gStageRun.missionStatus |= MISSION_STAY;
+      CLEAR_FLAG(gCurStory.s.gameflags, FLAG_2);
       if (gStageRun.checkpoint == 0) {
         SetScript(&gStageRun.vm, gApZ2Plant_Script);
         setStageCheckpoint(1);

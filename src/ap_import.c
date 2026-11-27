@@ -123,6 +123,7 @@ s16 ApImportUpdate(struct StageRun* p) {
   if (p->stageEventPhase == 0) {
     gStageRun.MID_BOSSES_BEATEN &= ~((1 << imp->midBossCount) - 1);
     gStageRun.missionStatus |= MISSION_STAY;
+    CLEAR_FLAG(gCurStory.s.gameflags, FLAG_2);
     if (gStageRun.checkpoint == 0) {
       SetScript(&gStageRun.vm, sStarted ? imp->againScript : imp->script);
       sStarted = TRUE;
