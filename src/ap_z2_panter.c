@@ -1529,7 +1529,7 @@ struct Entity* ApZ2CreatePanterClaw(struct Entity* boss, const Coords32* at, u8 
 static void hide(struct Entity* s, u8 routine) {
   s->flags &= ~(DISPLAY | FLIPABLE);
   EXIT_BODY(s);
-  s->mode[0] = routine;
+  SET_PROJECTILE_ROUTINE(s, routine);
 }
 
 // 0x0809bd74
@@ -1838,7 +1838,7 @@ static void Slash_Update(struct Entity* s) {
   if ((boss->s).mode[0] > ENTITY_UPDATE) {
     s->flags &= ~DISPLAY;
     EXIT_BODY(s);
-    s->mode[0] = ENTITY_EXIT;
+    SET_PROJECTILE_ROUTINE(s, ENTITY_EXIT);
     return;
   }
   if (s->work[0] == 0) {

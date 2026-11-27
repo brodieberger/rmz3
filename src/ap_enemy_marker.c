@@ -25,7 +25,7 @@
 #define AP_ENEMY_MARKER_ID work[0]      /* the enemy's id that needs the marker */
 #define AP_ENEMY_MARKER_PHASE work[1]
 #define AP_ENEMY_MARKER_REACH work[2] /* px the enemy's sprite has reached above its origin */
-#define AP_ENEMY_MARKER_DISK work[3]
+#define AP_ENEMY_MARKER_LOCATION unk_coord.y
 #define AP_ENEMY_MARKER_GAP 6        /* px between the top of the sprite and the logo's center */
 #define AP_ENEMY_MARKER_SLICE 2
 
@@ -63,9 +63,10 @@ u8 ApDropMarkOf(const struct Entity* e) {
 }
 
 static bool32 ApEnemyLive(const struct Entity* e) {
+  const struct EntityHeader* h = e->kind == ENTITY_PROJECTILE ? gProjectileHeaderPtr : gEnemyHeaderPtr;
   const struct Entity* p;
 
-  for (p = gEnemyHeaderPtr->head; p != (struct Entity*)&gEnemyHeaderPtr->tail; p = p->next) {
+  for (p = h->head; p != (struct Entity*)&h->tail; p = p->next) {
     if (p == e) {
       return TRUE;
     }
@@ -114,7 +115,7 @@ static void ApEnemyMarkerUpdate(struct Entity* m) {
       return;
     }
   }
-  if (e->mode[0] >= ENTITY_DIE || ApServerChecked(m->AP_ENEMY_MARKER_DISK)) {
+  if (e->mode[0] >= ENTITY_DIE || ApServerChecked(m->AP_ENEMY_MARKER_LOCATION)) {
     /* swap marker */
     if (s != NULL) {
       s->flag &= ~AP_SPAWN_HAS_MARKER;
@@ -156,7 +157,7 @@ static bool32 ApHasEnemyMarker(const struct Entity* e) {
   return FALSE;
 }
 
-static bool32 ApCreateEnemyMarker(struct Entity* e, s32 sid, u8 disk) {
+static bool32 ApCreateEnemyMarker(struct Entity* e, s32 sid, u16 location) {
   struct Entity* m = (struct Entity*)AllocEntityLast(gVFXHeaderPtr);
 
   if (m == NULL) {
@@ -173,7 +174,7 @@ static bool32 ApCreateEnemyMarker(struct Entity* e, s32 sid, u8 disk) {
   m->AP_ENEMY_MARKER_ID = e->id;
   m->AP_ENEMY_MARKER_PHASE = 0;
   m->AP_ENEMY_MARKER_REACH = 0;
-  m->AP_ENEMY_MARKER_DISK = disk;
+  m->AP_ENEMY_MARKER_LOCATION = location;
 
   InitNonAffineMotion(m);
   (m->spr).sprites = (struct MetaspriteHeader*)&gApMarkerSprite.hdr;
@@ -192,7 +193,8 @@ static void ApMarkCountingEnemies(void) {
   const struct SpawnedEntity* s;
   struct Entity* e;
   s32 i;
-  u8 mark, disk;
+  u8 mark;
+  u16 location;
 
   for (i = 0; i < AP_ENEMY_MARKER_SLICE; i++) {
     e = (struct Entity*)((u8*)h->arr
@@ -206,10 +208,20 @@ static void ApMarkCountingEnemies(void) {
     if (mark != AP_DROP_MARK_NONE && (s->e == e || ((s->e)->flags & DISPLAY))) {
       continue;
     }
-    disk = ApDropDisk(e, mark);
-    if (disk != 0 && !ApServerChecked(disk) && !ApHasEnemyMarker(e)) {
-      ApCreateEnemyMarker(e, AP_ENEMY_MARKER_NO_SID, disk);
+    location = ApDropDisk(e, mark);
+    if (location == 0) location = ApImportKillElf(e);
+    if (location != 0 && !ApServerChecked(location) && !ApHasEnemyMarker(e)) {
+      ApCreateEnemyMarker(e, AP_ENEMY_MARKER_NO_SID, location);
     }
+  }
+}
+
+// Computer Zone 2's floor mines, projectiles
+void ApMarkFloorMine(struct Entity* e) {
+  u16 location = ApImportKillElf(e);
+
+  if (location != 0 && !ApServerChecked(location)) {
+    ApCreateEnemyMarker(e, AP_ENEMY_MARKER_NO_SID, location);
   }
 }
 

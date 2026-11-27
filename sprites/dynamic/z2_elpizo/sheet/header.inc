@@ -105,8 +105,8 @@ gGraphicHeader_Sprite_z2_elpizo:
 
 	@ Graphic 11
 	.4byte gGraphicHeader_Sprite_z2_elpizo_11-. @ src
-	.4byte 384 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
-	.2byte 96, BPP4 	@ rowsize(unused), props
+	.4byte 896 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 224, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gGraphicHeader_Sprite_z2_elpizo_11_Palettes-. @ src offset
 		.2byte 32 @ bytesize

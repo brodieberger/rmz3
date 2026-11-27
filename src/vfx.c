@@ -149,7 +149,7 @@ extern const VFXRoutine gApZ2FrostCloudRoutine, gApZ2CrawlerBitRoutine, gApZ2Bea
 extern const VFXRoutine gApZ2ElfSparkleRoutine, gApZ2PanterHeldRoutine, gApZ2FortressJetRoutine;
 extern const VFXRoutine gApZ2MagnionFxRoutine, gApZ2MachineBitRoutine, gApZ2FefnirAuraRoutine, gApZ2FefnirExRoutine,
     gApZ2LeafRoutine, gApZ2FrogDustRoutine, gApZ2WhirlDustRoutine, gApZ2ElpizoAuraRoutine, gApZ2SealBlastRoutine,
-    gApZ2ElpizoFinalLightRoutine;
+    gApZ2ElpizoFinalLightRoutine, gApZ2ElfTrailRoutine;
 extern const VFXRoutine gApZ2IceBurstRoutine;
 extern const VFXRoutine gApZ2DozerTopRoutine;
 extern const VFXRoutine gApZ2FishBitRoutine;
@@ -287,6 +287,7 @@ const VFXRoutine* const gVFXFnTable[VFX_COUNT] = {
     [VFX_Z2_ELPIZO_AURA] = &gApZ2ElpizoAuraRoutine,
     [VFX_Z2_SEAL_BLAST] = &gApZ2SealBlastRoutine,
     [VFX_Z2_ELPIZO_FINAL_LIGHT] = &gApZ2ElpizoFinalLightRoutine,
+    [VFX_Z2_ELF_TRAIL] = &gApZ2ElfTrailRoutine,
     [VFX_Z2_ICE_BURST] = &gApZ2IceBurstRoutine,
     [VFX_Z2_DOZER_TOP] = &gApZ2DozerTopRoutine,
     [VFX_Z2_FISH_BIT] = &gApZ2FishBitRoutine,

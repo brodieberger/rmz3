@@ -257,6 +257,7 @@ gApZ2Jungle_MidBoss0ClearScript:
 	adjust_camera 1, 0, 4
 	cmd08_wait_set 1
 	spawn 9, gApZ2Jungle_HollowElf
+	detach_entity 9
 	destroy 1
 	end
 

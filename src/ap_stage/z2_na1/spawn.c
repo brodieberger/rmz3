@@ -276,7 +276,7 @@ const struct SpawnPoint gApZ2Na1_Points[85] = {
     [84] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApZ2Na1_Preloads[10] = {
+const struct PreloadEntity gApZ2Na1_Preloads[11] = {
     {
         AP_SHEET_Z2_GATE,
         B8(00000001),
@@ -354,6 +354,15 @@ const struct PreloadEntity gApZ2Na1_Preloads[10] = {
         B8(00000010),
         624,
         9,
+        1,
+        AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
+        AP_SHEET_Z2_HATCH,
+        B8(00000100),
+        736,
+        7,
         1,
         AP_PRELOAD_SHEET | 1,
         0,

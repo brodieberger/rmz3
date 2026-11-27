@@ -81,7 +81,7 @@ gApZ2Bomber_TileAnim: @ ColorGraphic[9]
 gApZ2Bomber_Anim0:
 	.4byte gApZ2Bomber_Anim0_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim0_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -89,7 +89,7 @@ gApZ2Bomber_Anim0:
 gApZ2Bomber_Anim1:
 	.4byte gApZ2Bomber_Anim1_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim1_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -97,7 +97,7 @@ gApZ2Bomber_Anim1:
 gApZ2Bomber_Anim2:
 	.4byte gApZ2Bomber_Anim2_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim2_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -105,7 +105,7 @@ gApZ2Bomber_Anim2:
 gApZ2Bomber_Anim3:
 	.4byte gApZ2Bomber_Anim3_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim3_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -113,7 +113,7 @@ gApZ2Bomber_Anim3:
 gApZ2Bomber_Anim4:
 	.4byte gApZ2Bomber_Anim4_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim4_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -121,7 +121,7 @@ gApZ2Bomber_Anim4:
 gApZ2Bomber_Anim5:
 	.4byte gApZ2Bomber_Anim5_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim5_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -129,7 +129,7 @@ gApZ2Bomber_Anim5:
 gApZ2Bomber_Anim6:
 	.4byte gApZ2Bomber_Anim6_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim6_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -137,7 +137,7 @@ gApZ2Bomber_Anim6:
 gApZ2Bomber_Anim7:
 	.4byte gApZ2Bomber_Anim7_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim7_Pal-.
 		.2byte 32
 		.byte 0, 7
@@ -145,7 +145,7 @@ gApZ2Bomber_Anim7:
 gApZ2Bomber_Anim8:
 	.4byte gApZ2Bomber_Anim8_Tiles-.
 	.4byte 640 | (448 << 22)
-	.2byte 256, BPP4
+	.2byte 320, (MAP2D | BPP4)
 		.4byte gApZ2Bomber_Anim8_Pal-.
 		.2byte 32
 		.byte 0, 7

@@ -587,6 +587,7 @@ static void hub(struct StageRun* p, const GameCommand* clear, const GameCommand*
     gStageRun.vm.active &= ~VM_FLAG1;
     gStageRun.missionStatus |= MISSION_STAY;
     gStageRun.BEATEN |= 1 << (p->FIGHT - 1);
+    ApMarkLocationChecked(AP_LOC_IMPORT_REFIGHT_FIRST + p->FIGHT - 1);
     p->FIGHT = BACK;
     if ((gStageRun.BEATEN & all) == all) {
       start(p, done, next);
@@ -756,6 +757,12 @@ s16 ApZ2YggdrasilUpdate(struct StageRun* p) {
       gStageRun.vm.active &= ~VM_FLAG1;
       gStageRun.missionStatus |= MISSION_STAY;
       start(p, gApZ2Yggdrasil_FinalDownScript, 17);
+      break;
+    case 17:
+      gCollisionManager.disabled &= ~COLLMAN_DISABLED;
+      sweep(FALSE);
+      gStageRun.missionStatus &= ~MISSION_STAY;
+      p->stageEventPhase = 18;
       break;
   }
   return 0;

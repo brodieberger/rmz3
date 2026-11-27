@@ -305,7 +305,9 @@ gApZ2Na3_BossScript:
 	pause
 	wait 75
 	forcekeyinput 0x2010
-	wait 60
+	wait 40
+	forcekeyinput DPAD_RIGHT
+	wait 20
 	walkto 2768*PX
 	emotion_bubble 0, 16, -40, 0
 	stop_bgm
@@ -439,7 +441,9 @@ gApZ2Na3_BossReturnScript:
 	wait 75
 	forcekeyinput 0x2010
 	stop_bgm
-	wait 60
+	wait 40
+	forcekeyinput DPAD_RIGHT
+	wait 20
 	walkto 2768*PX
 	play_bgm BGM_X
 	lock

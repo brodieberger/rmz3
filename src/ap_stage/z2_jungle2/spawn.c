@@ -331,7 +331,7 @@ const struct SpawnPoint gApZ2Jungle2_Points[130] = {
     [129] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApZ2Jungle2_Preloads[16] = {
+const struct PreloadEntity gApZ2Jungle2_Preloads[17] = {
     {
         AP_SHEET_Z2_BABY_ELF,
         B8(10000000),
@@ -441,6 +441,15 @@ const struct PreloadEntity gApZ2Jungle2_Preloads[16] = {
         0,
     },
     {
+        AP_SHEET_Z2_BLOCK,
+        B8(00000100),
+        512,
+        9,
+        1,
+        AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
         AP_SHEET_Z2_COPTER,
         B8(00000100),
         821,
@@ -453,7 +462,7 @@ const struct PreloadEntity gApZ2Jungle2_Preloads[16] = {
         AP_SHEET_Z2_SHIELD_GUARD,
         B8(00000110),
         879,
-        4,
+        8,
         1,
         AP_PRELOAD_SHEET | 1,
         0,

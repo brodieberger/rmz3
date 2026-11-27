@@ -3,8 +3,10 @@
 #include "definition.h"
 #include "entity.h"
 #include "global.h"
+#include "enemy.h"
 #include "metatile.h"
 #include "overworld.h"
+#include "random.h"
 #include "solid.h"
 #include "sound.h"
 #include "vfx.h"
@@ -15,8 +17,11 @@
 #if AP
 
 /*
-  Zero 2's solid 14 work0 0, box the Chain Rod drags.
-  mode1:
+  Zero 2's solid 14.
+  work0:
+    0: box Chain Rod drags
+    1: block that breaks, never moves
+  mode1 (box):
     0: resting
     1: falling
     2: sliding off edge or into wall
@@ -45,8 +50,32 @@ const SolidRoutine gApZ2BoxRoutine = {
 
 // 0x08349434
 static const struct Collision sCollision = {DRP, FACTION_ENEMY, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, NO_DAMAGE | HARDNESS_B3, 0x00, 0, 0xFFFF03FF, {0, -6144, 12288, 12288}};
+// 0x08349464
+static const struct Collision sBlockCollision = {DRP, FACTION_ENEMY, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF, 0x01, 0x00, 0x00, 0, 0x00000000, {0, -6144, 12288, 12288}};
 // 0x0834955c
 static const struct Rect sSize = {0, -6399, 12288, 12288};
+
+#define BLOCK(n) MOTION(AP_SHEET_Z2_BLOCK, (n))
+
+// 0x0834947c, 0x083494ec
+static const struct SlashedEnemy sPieces[2][4] = {
+    {
+        {BLOCK(2), {0xff, 0x51}, {0, 0}, {-384, -1024}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(3), {0xff, 0x51}, {0, 0}, {32, -1280}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(4), {0xff, 0x51}, {0, 0}, {-256, -1152}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(5), {0xff, 0x51}, {0, 0}, {-128, -1024}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+    },
+    {
+        {BLOCK(2), {0xff, 0x51}, {0, 0}, {-576, -1536}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(3), {0xff, 0x51}, {0, 0}, {48, -1920}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(4), {0xff, 0x51}, {0, 0}, {-256, -1536}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+        {BLOCK(5), {0xff, 0x51}, {0, 0}, {-128, -1344}, {255, 255}, {0, 64}, {0x200, 0x200}, {0}},
+    },
+};
+
+static void useApSheets(void* p) {
+  if (p != NULL) ((struct Entity*)p)->texture = TEXTURE_AP_SHEET;
+}
 
 // 0x080cd02c
 static bool8 onFloor(s32 x, s32 y) {
@@ -166,6 +195,29 @@ static u16 Box_Pull(struct Entity* s, u16 pulling, s32 dx, s32 dy UNUSED) {
   return 0;
 }
 
+// 0x080cccfc, 0x080cce50
+static void breakBlock(struct Solid* p) {
+  struct Entity* s = &p->s;
+  u32 status = (p->body).status;
+  bool8 slashed = (status & BODY_STATUS_SLASHED) && (status & BODY_STATUS_B15);
+  Coords32 c;
+  u8 i;
+  PlaySound(SE_Z2_BLOCK_BREAK);
+  c.x = s->coord.x - PIXEL(14);
+  c.y = s->coord.y - PIXEL(32);
+  for (i = 0; i < 4; i++) useApSheets(CreateSlashedEnemy(&c, &sPieces[slashed][i], 0, 0));
+  for (i = 1; i <= 2; i++) {
+    c.x = s->coord.x + (((RANDOM(RNG_0202f388) & 15) - 8) << 8);
+    c.y = s->coord.y - PIXEL(32) + (((RANDOM(RNG_0202f388) & 15) - 8) << 8);
+    CreateSmoke(i, &c);
+  }
+  s->flags &= ~COLLIDABLE;
+  s->flags2 &= ~ENTI_PHYSICS;
+  if (gScore.enemyCount < 9999) gScore.enemyCount++;
+  TryDropZakoDisk((struct Enemy*)p, &s->coord);
+  SET_SOLID_ROUTINE(p, ENTITY_EXIT);
+}
+
 // 0x080cc8dc
 static void Box_Init(struct Solid* p) {
   struct Box* b = (struct Box*)p;
@@ -173,18 +225,26 @@ static void Box_Init(struct Solid* p) {
   InitNonAffineMotion(s);
   s->texture = TEXTURE_AP_SHEET;
   SET_XFLIP(p, FALSE);
-  s->flags |= DISPLAY | FLIPABLE | COLLIDABLE;
-  s->coord.y = floorY(s);
-  s->unk_coord.x = s->unk_coord.y = 0;
-  b->prev = s->coord;
-  s->d.x = s->d.y = 0;
-  s->work[2] = 0;
-  b->dragging = FALSE;
-  INIT_BODY(p, &sCollision, 32, NULL);
-  (p->body).unk_28 = (u32)Box_Pull;
-  s->flags2 &= ~WHITE_PAINTABLE;
-  s->invincibleID = s->uniqueID;
-  SetMotion(s, MOTION(AP_SHEET_Z2_BOX, 0));
+  if (s->work[0] == 1) {
+    s->flags |= DISPLAY | COLLIDABLE;
+    s->coord.y += PIXEL(25);
+    s->d.x = s->d.y = 0;
+    INIT_BODY(p, &sBlockCollision, 16, NULL);
+    SetMotion(s, BLOCK(1));
+  } else {
+    s->flags |= DISPLAY | FLIPABLE | COLLIDABLE;
+    s->coord.y = floorY(s);
+    s->unk_coord.x = s->unk_coord.y = 0;
+    b->prev = s->coord;
+    s->d.x = s->d.y = 0;
+    s->work[2] = 0;
+    b->dragging = FALSE;
+    INIT_BODY(p, &sCollision, 32, NULL);
+    (p->body).unk_28 = (u32)Box_Pull;
+    s->flags2 &= ~WHITE_PAINTABLE;
+    s->invincibleID = s->uniqueID;
+    SetMotion(s, MOTION(AP_SHEET_Z2_BOX, 0));
+  }
   s->flags2 |= ENTI_PHYSICS;
   s->size = &sSize;
   s->physicsAttr = 0x2001;
@@ -197,6 +257,10 @@ static void Box_Update(struct Solid* p) {
   struct Box* b = (struct Box*)p;
   struct Entity* s = &p->s;
   UpdateEntityAnim(s);
+  if (s->work[0] == 1) {
+    if ((p->body).status & BODY_STATUS_DEAD) breakBlock(p);
+    return;
+  }
   s->work[2]--;
   switch (s->mode[1]) {
     case 0:

@@ -217,6 +217,8 @@ SECTIONS {
 		src/ap_z2_magnion.o (.rodata);
 		src/ap_z2_machine.o (.text);
 		src/ap_z2_machine.o (.rodata);
+		src/ap_z2_score.o (.text);
+		src/ap_z2_score.o (.rodata);
 		src/ap_z2_craft.o (.text);
 		src/ap_z2_craft.o (.rodata);
 		src/ap_z2_fefnir_foot.o (.text);

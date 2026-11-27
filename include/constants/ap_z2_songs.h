@@ -187,7 +187,8 @@
 #define BGM_Z2_ELPIZO_FINAL (BGM_Z2_ELPIZO_BATTLE + 1)  // Zero 2 165: Elpizo's last fight
 #define BGM_Z2_ENDING (BGM_Z2_ELPIZO_FINAL + 1)  // Zero 2 193: the ending scene
 #define BGM_Z2_STAFF_ROLL (BGM_Z2_ENDING + 1)  // Zero 2 197: the staff roll
+#define SE_Z2_BLOCK_BREAK (BGM_Z2_STAFF_ROLL + 1)  // Zero 2 86: breakable block bursting
 
-#define AP_Z2_SONG_LAST BGM_Z2_STAFF_ROLL
+#define AP_Z2_SONG_LAST SE_Z2_BLOCK_BREAK
 
 #endif  // GUARD_RMZ3_CONST_AP_Z2_SONGS_H

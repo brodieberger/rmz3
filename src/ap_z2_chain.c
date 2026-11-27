@@ -268,13 +268,17 @@ static bool8 hookable(void) {
 // Pulls the coffin objects in the same way the recoil rod can push it.
 static u16 pullCoffin(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
   s32 gap = (*pZero2).s.coord.x - s->coord.x;
-  s32 dist;
+  s32 dist, end;
   if (s->mode[1] != 1) return 0;
   if (dx == 0 && dy == 0) return 1;
   dist = (gap < 0 ? -gap : gap) - PIXEL(40 + 12);
   if (gap < 0 && dist > s->coord.x - s->unk_coord.y) dist = s->coord.x - s->unk_coord.y;
   if (dist > 0x440 * 16) dist = 0x440 * 16;
   if (dist <= 0x40 * 16) return 0;
+  if (s->work[0] == 0) {
+    end = gap > 0 ? s->coord.x + dist : s->coord.x - dist;
+    if (end > s->unk_coord.y && end < s->unk_coord.y + PIXEL(68)) return 0;
+  }
   s->d.x = gap > 0 ? dist / 16 : -dist / 16;
   s->unk_coord.x = gap > 0 ? PIXEL(42) : -PIXEL(42);
   s->work[2] = 0;
@@ -399,6 +403,8 @@ void ApChainAttack(struct Zero* z) {
   switch (*state) {
     case CHAIN_START:
       sChain.stance = (z->s).mode[1];
+      if (sChain.stance == ZERO_LADDER && (input & DPAD_RIGHT)) SET_PLAYER_XFLIP(z, TRUE);
+      if (sChain.stance == ZERO_LADDER && (input & DPAD_LEFT)) SET_PLAYER_XFLIP(z, FALSE);
       if (GetWeaponCharge(z, (z->unk_b4).mainCopy != WEAPON_CHAIN) == FULL_CHARGE) {
         sChain.timer = 5;
         setPose(z, sSpinPose[sChain.stance][0]);
@@ -900,11 +906,23 @@ void ApChainSwingInput(struct Zero* z) {
   }
   noCharge(z);
   if (isHeld(z) && sChain.out && hookable()) return;
-  // Falls keeping swing's d.y, Zero 2's hop off an upswing
   (z->s).mode[1] = ZERO_AIR;
+  (z->s).d.x = CalcDx(z);
+  // 0x08032130: hop off upswing
+  if (sChain.angle * sChain.dir > 0) {
+    u8 n = ((sChain.angle + 0x4080) >> 8) + sChain.dir * 64;
+    s32 dy = (SIN(n) * ((((0x1C0 * sChain.length) >> 14) + 0x100) * 2)) >> 8;
+    if (dy < 0) {
+      (z->s).mode[2] = 1;
+      (z->s).mode[3] = 3;
+      (z->s).d.y = dy;
+      SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 3));
+      return;
+    }
+  }
   (z->s).mode[2] = 2;
   (z->s).mode[3] = 1;
-  (z->s).d.x = CalcDx(z);
+  (z->s).d.y = 64;
   SetSpriteAnimation(z, MOTION(DM004_ZERO_AIR, 4));
 }
 
@@ -1051,13 +1069,39 @@ static const u32 sMenuIcon[4][8] = {
     {0x9379BF99, 0x93376677, 0x93333333, 0x93333333, 0x939BF99B, 0x73766776, 0x73333333, 0x27799999}
 };
 
-static const u32 sHudIcon[6][8] = {
-    {0xFF110000, 0x33F10000, 0x66310000, 0x6E310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
-    {0x11FFFFFF, 0x1F333333, 0x13EE7666, 0x1EEEF919, 0x1EE7FF66, 0x1EE66E6E, 0x1EF1EEEE, 0x1EFF1F1E},
-    {0x7E310000, 0x6E310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
-    {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
-    {0x7E310000, 0x6E310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
-    {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000}
+static const u32 sHudIcon[4][6][8] = {
+    {
+        {0xFF110000, 0x33F10000, 0x66310000, 0x6E310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
+        {0x11FFFFFF, 0x1F333333, 0x13EE7666, 0x1EEEF919, 0x1EE7FF66, 0x1EE66E6E, 0x1EF1EEEE, 0x1EFF1F1E},
+        {0x7E310000, 0x6E310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
+        {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
+        {0x7E310000, 0x6E310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
+        {0x1EE76FF6, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000},
+    },
+    {
+        {0xFF110000, 0x33F10000, 0x56310000, 0x6E310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
+        {0x11FFFFFF, 0x1F333333, 0x13EE6555, 0x1EEEF515, 0x1EE6FF56, 0x1EE55E6E, 0x1EF1EEEE, 0x1EFF1F1E},
+        {0x6E310000, 0x5E310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
+        {0x1EE65FF5, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
+        {0x6E310000, 0x5E310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
+        {0x1EE65FF5, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000},
+    },
+    {
+        {0xFF110000, 0x33F10000, 0x44310000, 0x4E310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
+        {0x11FFFFFF, 0x1F333333, 0x13EEC444, 0x1EEEF515, 0x1EECFF54, 0x1EE44E4E, 0x1EF1EEEE, 0x1EFF1F1E},
+        {0xCE310000, 0x4E310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
+        {0x1EEC4FF4, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
+        {0xCE310000, 0x4E310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
+        {0x1EEC4FF4, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000},
+    },
+    {
+        {0xFF110000, 0x33F10000, 0xAA310000, 0xAE310000, 0xEE310000, 0xEE310000, 0xEE310000, 0xEE310000},
+        {0x11FFFFFF, 0x1F333333, 0x13EEAAAA, 0x1EEEF919, 0x1EEAFF9A, 0x1EEAAEAE, 0x1EF1EEEE, 0x1EFF1F1E},
+        {0xAE310000, 0xAE310000, 0xEE310000, 0xE3110000, 0x111F0000, 0x11F00000, 0xFFF00000, 0x111F0000},
+        {0x1EEAAFFA, 0x1EEEEEE1, 0x1EEEEEF1, 0x11EEEEFF, 0xF1111111, 0x0FFFFFF1, 0x0F111FFF, 0xF1111111},
+        {0xAE310000, 0xAE310000, 0xEE310000, 0xE31F0000, 0x11F00000, 0xFF000000, 0x00000000, 0x00000000},
+        {0x1EEAAFFA, 0x1EEEEEE1, 0x1EEEEEF1, 0xF1EEEEFF, 0x0F111111, 0x00FFFFFF, 0x00000000, 0x00000000},
+    },
 };
 
 #define HUD_TILE 0xD6
@@ -1096,10 +1140,13 @@ void ApChainIconTile(u32* dst, u8 tile, u8 clear) {
   }
 }
 
-void ApLoadChainHudIcon(void) { MemCopy32(sHudIcon, (void*)(VRAM + 0xC000 + HUD_TILE * 32), sizeof(sHudIcon)); }
+void ApLoadChainHudIcon(void) { MemCopy32(sHudIcon[0], (void*)(VRAM + 0xC000 + HUD_TILE * 32), sizeof(sHudIcon[0])); }
 
 void ApDrawChainHudIcon(u16* bg0, struct Zero* z) {
   struct ZeroStatus* status = &(z->unk_b4).status;
+  if (status->weapons[0] == WEAPON_CHAIN || status->weapons[1] == WEAPON_CHAIN) {
+    MemCopy32(sHudIcon[status->element & 3], (void*)(VRAM + 0xC000 + HUD_TILE * 32), sizeof(sHudIcon[0]));
+  }
   if (status->weapons[0] == WEAPON_CHAIN) {
     bg0[0x180] = HUD_MAP(0);
     bg0[0x181] = HUD_MAP(1);
@@ -1168,6 +1215,7 @@ static void Spin_Update(struct Weapon* p) {
   struct Entity* s = &p->s;
   struct Zero* z = (struct Zero*)s->unk_28;
   s8 cmd = (s->motion).cmdIdx;
+  u8 stance = s->work[0];
   if ((z->unk_b4).attackState8[0] != 3 || z->usingWeapon != WEAPON_CHAIN || (z->unk_b4).attackState8[1] < CHAIN_SPIN) {
     EXIT_BODY(p);
     s->flags &= ~DISPLAY;
@@ -1185,7 +1233,7 @@ static void Spin_Update(struct Weapon* p) {
   s->coord = (z->s).coord;
   SET_XFLIP(p, FACING_RIGHT(z));
   UpdateSpriteAnimation(p);
-  if ((s->motion).cmdIdx != cmd || (s->flags & COLLIDABLE) == 0) Spin_SetHit(p);
+  if ((s->motion).cmdIdx != cmd || s->work[0] != stance || (s->flags & COLLIDABLE) == 0) Spin_SetHit(p);
 }
 
 #define HITBOX(x, y) \

@@ -184,3 +184,4 @@
     song bgm_z2_elpizo_final, 0, 0 @ BGM_Z2_ELPIZO_FINAL
     song bgm_z2_ending, 0, 0 @ BGM_Z2_ENDING
     song bgm_z2_staff_roll, 0, 0 @ BGM_Z2_STAFF_ROLL
+    song se_z2_block_break, 2, 2 @ SE_Z2_BLOCK_BREAK

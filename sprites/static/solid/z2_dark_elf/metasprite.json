@@ -117,22 +117,6 @@
       "sheetIdx": 0,
       "subsprites": [
         {
-          "tileNum": 0,
-          "xflip": false,
-          "yflip": false,
-          "size": [
-            32,
-            32
-          ],
-          "x": -16,
-          "y": -16
-        }
-      ]
-    },
-    {
-      "sheetIdx": 0,
-      "subsprites": [
-        {
           "tileNum": 112,
           "xflip": false,
           "yflip": false,
@@ -153,6 +137,22 @@
           "xflip": false,
           "yflip": false,
           "size": [
+            16,
+            16
+          ],
+          "x": -8,
+          "y": -7
+        }
+      ]
+    },
+    {
+      "sheetIdx": 0,
+      "subsprites": [
+        {
+          "tileNum": 120,
+          "xflip": false,
+          "yflip": false,
+          "size": [
             8,
             8
           ],
@@ -165,7 +165,7 @@
       "sheetIdx": 0,
       "subsprites": [
         {
-          "tileNum": 117,
+          "tileNum": 121,
           "xflip": false,
           "yflip": false,
           "size": [
@@ -181,7 +181,7 @@
       "sheetIdx": 0,
       "subsprites": [
         {
-          "tileNum": 118,
+          "tileNum": 122,
           "xflip": false,
           "yflip": false,
           "size": [
@@ -197,7 +197,7 @@
       "sheetIdx": 0,
       "subsprites": [
         {
-          "tileNum": 119,
+          "tileNum": 123,
           "xflip": false,
           "yflip": false,
           "size": [
@@ -213,7 +213,7 @@
       "sheetIdx": 0,
       "subsprites": [
         {
-          "tileNum": 121,
+          "tileNum": 125,
           "xflip": false,
           "yflip": false,
           "size": [

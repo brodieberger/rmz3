@@ -334,6 +334,16 @@ TextOfs_ApImport:
 	.2byte (Text_ApImport_124-Text_ApImport)
 	.2byte (Text_ApImport_125-Text_ApImport)
 	.2byte (Text_ApImport_126-Text_ApImport)
+	.2byte (Text_ApImport_127-Text_ApImport)
+	.2byte (Text_ApImport_128-Text_ApImport)
+	.2byte (Text_ApImport_129-Text_ApImport)
+	.2byte (Text_ApImport_130-Text_ApImport)
+	.2byte (Text_ApImport_131-Text_ApImport)
+	.2byte (Text_ApImport_132-Text_ApImport)
+	.2byte (Text_ApImport_133-Text_ApImport)
+	.2byte (Text_ApImport_134-Text_ApImport)
+	.2byte (Text_ApImport_135-Text_ApImport)
+	.2byte (Text_ApImport_136-Text_ApImport)
 
 .global Text_ApImport
 Text_ApImport:
@@ -1530,5 +1540,85 @@ Text_ApImport_126: @ 0x147e, Zero 2's 0x121e
 	.string "It was not enough,\n"
 	.string "Dark Elf! Give me\n"
 	.string "more strength!!$"
+Text_ApImport_127: @ 0x147f, Zero 2's 0x1220
+	.string "{WINDOW 0x9F}"
+	.string "Thank you... Zero...\n"
+	.string "Thank you for\n"
+	.string "stopping me... You▼"
+	.string "saved me. I almost\n"
+	.string "did something...\n"
+	.string "That can't be▼"
+	.string "forgiven...\n"
+	.string "Thank you so\n"
+	.string "much...$"
+Text_ApImport_128: @ 0x1480, Zero 2's 0x1222
+	.string "{WINDOW 0x9A}"
+	.string "{BOTTOM}"
+	.string "I was so\n"
+	.string "weak-minded... I\n"
+	.string "was so pathetic...▼"
+	.string "Accepting your\n"
+	.string "failures in life is\n"
+	.string "a very difficult▼"
+	.string "thing... I think\n"
+	.string "that I've become a\n"
+	.string "little stronger▼"
+	.string "from this lesson...\n"
+	.string "Time to say\n"
+	.string "goodbye, Zero.▼"
+	.string "Tell Ciel, I'm\n"
+	.string "sorry...$"
+Text_ApImport_129: @ 0x1481, Zero 2's 0x1223
+	.string "{WINDOW 0x95}"
+	.string "Me...?▼"
+	.string "Meeeee!$"
+Text_ApImport_130: @ 0x1482, Zero 2's 0x1224
+	.string "{WINDOW 0x9F}"
+	.string "I feel warm...\n"
+	.string "Ahhh...$"
+Text_ApImport_131: @ 0x1483, Zero 2's 0x1225
+	.string "{WINDOW 0x9F}"
+	.string "It appears that\n"
+	.string "she... saved me.▼"
+	.string "She is not evil...▼"
+	.string "Thank you.\n"
+	.string "Zero.▼"
+	.string "And goodbye...$"
+Text_ApImport_132: @ 0x1484, Zero 2's 0x1226
+	.string "{WINDOW 0x9C}"
+	.string "{BOTTOM}"
+	.string "Zer...▼"
+	.string "Z...Zero...▼"
+	.string "... ...$"
+Text_ApImport_133: @ 0x1485, Zero 2's 0x1227
+	.string "{WINDOW 0x04}"
+	.string "!?$"
+Text_ApImport_134: @ 0x1486, Zero 2's 0x1228
+	.string "{WINDOW 0x35}"
+	.string "She wasn't always\n"
+	.string "called the {0xE9}Dark\n"
+	.string "Elf{0xE9}... When she▼"
+	.string "was born, she had\n"
+	.string "a mission to save\n"
+	.string "the world, and had▼"
+	.string "another name.\n"
+	.string "However, when her\n"
+	.string "ability became a▼"
+	.string "threat of world\n"
+	.string "destruction, they\n"
+	.string "began to call her▼"
+	.string "the {0xE9}Dark Elf...{0xE9}\n"
+	.string "Since someone\n"
+	.string "called Dr. Weil▼"
+	.string "placed a curse on\n"
+	.string "her...$"
+Text_ApImport_135: @ 0x1487, Zero 2's 0x1229
+	.string "{WINDOW 0x04}"
+	.string "I... I feel that\n"
+	.string "I know her...$"
+Text_ApImport_136: @ 0x1488, Zero 2's 0x122a
+	.string "{WINDOW 0x04}"
+	.string "Dark...Elf...▼"
+	.string "... ...$"
 
 .endif

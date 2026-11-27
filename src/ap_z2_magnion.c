@@ -178,7 +178,7 @@ static bool8 alive(struct Zero* z) { return z != NULL && !((z->body).status & BO
 // 0x08057cf4
 static void Magnion_Init(struct Magnion* p) {
   struct Entity* s = &p->s;
-  static const u8 sFirstMode[5] = {MAGNION_INTRO, MAGNION_INTRO, MAGNION_FOUR_WAY, MAGNION_SHADOW, MAGNION_HALF};
+  static const u8 sFirstMode[5] = {MAGNION_INTRO, MAGNION_INTRO, MAGNION_APPEAR, MAGNION_SHADOW, MAGNION_HALF};
   SET_BOSS_ROUTINE(p, ENTITY_UPDATE);
   s->mode[1] = sFirstMode[s->work[0]];
   s->flags |= FLIPABLE;
@@ -800,10 +800,15 @@ static void Magnion_Recover(struct Magnion* p) {
   }
 }
 
+static void holdZero(struct Magnion* p) {
+  struct Zero* z = p->zero;
+  (z->s).coord.x = (p->s).coord.x;
+  if ((z->s).coord.y - (p->s).coord.y > PIXEL(28)) (z->s).coord.y = (p->s).coord.y + PIXEL(28);
+}
+
 // 0x08059018: carries Zero to the middle of the room
 static void Magnion_Carry(struct Magnion* p) {
   struct Entity* s = &p->s;
-  struct Zero* z = p->zero;
   s32 tx, ty, ux, uy;
   u32 len;
   switch (s->mode[2]) {
@@ -815,8 +820,7 @@ static void Magnion_Carry(struct Magnion* p) {
       s->mode[2]++;
       // fallthrough
     case 1:
-      (z->s).coord.x = s->coord.x;
-      if ((z->s).coord.y - s->coord.y > PIXEL(28)) (z->s).coord.y = s->coord.y + PIXEL(28);
+      holdZero(p);
       tx = p->centerX - s->coord.x;
       ty = p->groundY - PIXEL(96) - s->coord.y;
       len = (u16)Sqrt((u32)(tx * tx + ty * ty));
@@ -849,6 +853,7 @@ static void Magnion_Blast(struct Magnion* p) {
       s->mode[2]++;
       // fallthrough
     case 2:
+      if (alive(z) && (s->work[2] < 4 || s->work[3] > 15)) holdZero(p);
       s->work[3]--;
       if (s->work[2] == 4) {
         if (s->work[3] == 15) SetDDP(&p->body, sBody);
@@ -1622,12 +1627,12 @@ static void Ring(struct Entity* s) {
         s->flags &= ~DISPLAY;
       }
       to = cam->viewport.x - 1;
-      s->coord.x += (to - s->coord.x) * 2 * sSpeed[s->work[1]] / 256;
+      s->coord.x = (boss->s).coord.x + (to - (boss->s).coord.x) * 2 * sSpeed[s->work[1]] / 256;
       to = cam->viewport.y - 1;
       if (boss->signal & RINGS_LOW) {
-        s->coord.y += (to + PIXEL(28) - s->coord.y) * 2 * sSpeed[s->work[1]] / 256 - PIXEL(28);
+        s->coord.y = (boss->s).coord.y + (to + PIXEL(28) - (boss->s).coord.y) * 2 * sSpeed[s->work[1]] / 256 - PIXEL(28);
       } else {
-        s->coord.y += (to - s->coord.y) * 2 * sSpeed[s->work[1]] / 256;
+        s->coord.y = (boss->s).coord.y + (to - (boss->s).coord.y) * 2 * sSpeed[s->work[1]] / 256;
       }
       UpdateSpriteAnimation(s);
       break;

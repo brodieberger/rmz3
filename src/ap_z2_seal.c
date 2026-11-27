@@ -974,4 +974,379 @@ static void Twin_Init(struct DarkElf* p) {
 
 SCENE_ROUTINE(gApZ2DarkElfTwinRoutine, Twin_Init, Twin_Update, DeleteEntity);
 
+// --------------------------------------------
+/*
+  Yggdrasil's ending (Zero 2's script 19)
+*/
+
+static const struct PreloadEntity sRubbleSheet = {AP_SHEET_Z2_SEAL_BOLT, 0, 912, 10, 0, AP_PRELOAD_SHEET, 0};
+static const struct PreloadEntity sBabyElfSheet = {AP_SHEET_Z2_BABY_ELF, 0, 932, 7, 0, AP_PRELOAD_SHEET, 0};
+
+extern const PlttAnimData gApZ2Yggdrasil_PlttAnim76, gApZ2Yggdrasil_PlttAnim77, gApZ2Yggdrasil_PlttAnim78;
+extern const AnimCmd* const gApZ2Yggdrasil_PlttAnimScript76[];
+extern const AnimCmd* const gApZ2Yggdrasil_PlttAnimScript77[];
+extern const AnimCmd* const gApZ2Yggdrasil_PlttAnimScript78[];
+
+/*
+  Zero 2's solid 5 work0 23, Elpizo fallen, his soul leaving him as an elf
+  flags: 1 lifts his head, 2 fades into the elf, 4 sends it to Zero, 8 off to the left
+*/
+
+static void Soul_Update(struct Solid* p) {
+  struct Entity* s = &p->s;
+  struct Entity* zero = PARENT;
+  s32 x, y;
+  switch (s->mode[1]) {
+    case 0:
+      SetMotion(s, ELPIZO(23));
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 1:
+      UpdateEntityAnim(s);
+      if (!(FLAGS & 1)) break;
+      SetMotion(s, ELPIZO(24));
+      s->mode[1]++;
+      break;
+    case 2:
+      UpdateEntityAnim(s);
+      if (!(FLAGS & 2)) break;
+      s->work[2] = 255;
+      s->mode[1]++;
+      break;
+    case 3:
+      InitScalerotMotion1(s);
+      ResetDynamicMotion(s);
+      if ((s8)s->work[2] >= 0 && (s->work[2] & 1)) {
+        SetMotion(s, MOTION(DM144_CYBERELF_NURSE, 0));
+        UpdateEntityAnim(s);
+        (s->spr).mag.x = (s->spr).mag.y = (128 - s->work[2]) * 4;
+        if (--s->work[2] > 63) break;
+        (s->spr).c = (struct Coord*)&s->unk_coord;
+        s->work[2] = 0;
+        s->work[3] = 8;
+        s->mode[1]++;
+        break;
+      }
+      SetMotion(s, ELPIZO(24));
+      UpdateEntityAnim(s);
+      if ((s->work[2] & 3) == 0) {
+        PaintEntityWhite(s);
+      } else {
+        UpdateEntityPaletteID(s);
+      }
+      (s->spr).mag.x = (s->spr).mag.y = s->work[2] - (s->work[2] & 1) * 64;
+      s->work[2]--;
+      break;
+    case 4:
+      UpdateEntityAnim(s);
+      if (s->coord.y > PIXEL(432)) s->coord.y -= 48;
+      if (!(FLAGS & 4)) break;
+      s->d.x = 32;
+      s->mode[1]++;
+      break;
+    case 5:
+      x = zero->coord.x + PIXEL(20);
+      y = zero->coord.y - PIXEL(48);
+      if (FLAGS & 8) {
+        s->d.x += s->d.x >> 3;
+        x = zero->coord.x - (s->d.x - PIXEL(20));
+        if (x < PIXEL(480)) x = s->d.x = PIXEL(480);
+      }
+      y -= abs(x - s->coord.x) >> 1;
+      s->coord.x = (s->coord.x * 31 + x) >> 5;
+      s->coord.y = (s->coord.y * 31 + y) >> 5;
+      UpdateEntityAnim(s);
+      break;
+  }
+  if (s->mode[1] <= 3) return;
+  s->work[2]++;
+  s->unk_coord.x = s->coord.x + COS(s->work[2]) * 4;
+  s->unk_coord.y = s->coord.y - SIN((u8)(s->work[2] * 2)) * 2;
+}
+
+// 0x080c4c48
+static void Soul_Init(struct Solid* p) {
+  struct Entity* s = &p->s;
+  wDynamicGraphicTilenums[DM205_Z2_ELPIZO] = 608;
+  wDynamicMotionPalIDs[DM205_Z2_ELPIZO] = 11;
+  s->flags |= DISPLAY | FLIPABLE;
+  InitNonAffineMotion(s);
+  ResetDynamicMotion(s);
+  s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  Soul_Update(p);
+}
+
+SCENE_ROUTINE(gApZ2YggSoulRoutine, Soul_Init, Soul_Update, DeleteEntity);
+
+/*
+  Zero 2's solid 5 work0 25, what is left of the bolt on the seal
+*/
+
+static void Rubble_Update(struct Solid* p) { UpdateEntityAnim(&p->s); }
+
+// 0x080c5008
+static void Rubble_Init(struct Solid* p) {
+  struct Entity* s = &p->s;
+  s->flags |= DISPLAY | FLIPABLE;
+  InitNonAffineMotion(s);
+  s->texture = TEXTURE_AP_SHEET;
+  ApLoadSheet(&sRubbleSheet);
+  SetMotion(s, BOLT(0));
+  s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  Rubble_Update(p);
+}
+
+SCENE_ROUTINE(gApZ2YggRubbleRoutine, Rubble_Init, Rubble_Update, DeleteEntity);
+
+/*
+  Zero 2's solid 24 work0 2, the Dark Elf over Elpizo with the Baby Elves
+  flags: 32 shakes and turns to light, 64 sends the Baby Elves off and sparkles, 1 ends that, 2 pulses,
+         4 darkens again, 8 spreads its wings, 16 flies off
+*/
+
+struct EndElf {
+  OBJECT_HDR;
+  s32 baseY;  // 0xB4
+  u8 bob;     // 0xB8
+  u8 anim;    // 0xB9
+  u8 timer;   // 0xBA
+  u8 _bb[9];
+};
+static_assert(sizeof(struct EndElf) == sizeof(struct Solid));
+
+static void recolor(struct EndElf* p, u8 anim) {
+  RemovePaletteAnimation(PLTT_ANIM_ID(p->anim));
+  p->anim = anim;
+  switch (anim) {
+    case 75:
+      ApStartPaletteAnimation(PLTT_ANIM_ID(75), &gApZ2Na3_PlttAnim75, gApZ2Na3_PlttAnimScript75, 0x200 | 5 << 5);
+      break;
+    case 76:
+      ApStartPaletteAnimation(PLTT_ANIM_ID(76), &gApZ2Yggdrasil_PlttAnim76, gApZ2Yggdrasil_PlttAnimScript76,
+                              0x200 | 5 << 5);
+      break;
+    case 77:
+      ApStartPaletteAnimation(PLTT_ANIM_ID(77), &gApZ2Yggdrasil_PlttAnim77, gApZ2Yggdrasil_PlttAnimScript77,
+                              0x200 | 5 << 5);
+      break;
+    case 78:
+      ApStartPaletteAnimation(PLTT_ANIM_ID(78), &gApZ2Yggdrasil_PlttAnim78, gApZ2Yggdrasil_PlttAnimScript78,
+                              0x200 | 5 << 5);
+      break;
+  }
+}
+
+static void shake(struct Entity* s) {
+  s->coord.x = s->unk_coord.x + COS(RANDOM(RNG_0202f388) & 0xFF) * 2;
+  s->coord.y = s->unk_coord.y + SIN(RANDOM(RNG_0202f388) & 0xFF) * 2;
+}
+
+static void EndElf_Update(struct EndElf* p) {
+  struct Entity* s = &p->s;
+  Coords32 at;
+  u32 state = StepPaletteAnimation(PLTT_ANIM_ID(p->anim));
+  UpdateEntityAnim(s);
+  if (s->mode[1] >= 1 && s->mode[1] <= 10) {
+    s->coord.y = p->baseY + SIN(p->bob) * 4;
+    p->bob += 2;
+  }
+  switch (s->mode[1]) {
+    case 0:
+      (s->spr).mag.x = (s->spr).mag.y = 256;
+      s->coord.y = p->baseY = PARENT->coord.y - PIXEL(64);
+      s->mode[1]++;
+      FALLTHROUGH;
+    case 1:
+      if (!(FLAGS & 32)) break;
+      s->unk_coord = s->coord;
+      p->timer = 192;
+      s->mode[1]++;
+      break;
+    case 2:
+      shake(s);
+      if (--p->timer == 0xFF) s->mode[1]++;
+      break;
+    case 3:
+      recolor(p, 77);
+      s->mode[1]++;
+      break;
+    case 4:
+      if (state != ANIM_END) break;
+      recolor(p, 76);
+      p->timer = 255;
+      s->mode[1]++;
+      break;
+    case 5:
+      if (!(FLAGS & 64)) break;
+      if (p->timer != 0) {
+        p->timer--;
+        break;
+      }
+      if ((s->work[2]++ & 15) == 0) {
+        at.x = s->coord.x + sSparkleX[s->work[3]];
+        at.y = s->coord.y + PIXEL(8);
+        ApZ2CreateElfSparkle(&at, 0);
+        s->work[3] = (s->work[3] + 1) % 5;
+      }
+      if (FLAGS & 1) s->mode[1]++;
+      break;
+    case 6:
+      if (!(FLAGS & 2)) break;
+      s->work[2] = 1;
+      s->mode[1]++;
+      break;
+    case 7:
+      s->work[2]++;
+      if (s->work[2] == 1) {
+        recolor(p, 76);
+      } else if (s->work[2] == 16) {
+        recolor(p, 77);
+      } else if (s->work[2] == 20) {
+        s->work[2] = 0;
+      }
+      if (FLAGS & 4) s->mode[1]++;
+      break;
+    case 8:
+      recolor(p, 78);
+      s->mode[1]++;
+      break;
+    case 9:
+      if (state != ANIM_END) break;
+      recolor(p, 75);
+      s->mode[1]++;
+      break;
+    case 10:
+      if (FLAGS & 8) {
+        createSolid(s, SOLID_Z2_DARK_WING, 3, 1);
+        createSolid(s, SOLID_Z2_DARK_WING, 3, 0);
+        s->mode[1]++;
+      }
+      FALLTHROUGH;
+    case 11:
+      if (!(FLAGS & 16)) break;
+      s->work[2] = 192;
+      s->d.x = 48;
+      s->d.y = 64;
+      s->mode[1]++;
+      break;
+    case 12:
+      if (--s->work[2] == 0xFF) s->mode[1]++;
+      break;
+    case 13:
+      s->coord.y -= s->d.y;
+      s->coord.x += s->d.x;
+      break;
+  }
+}
+
+// 0x080cf828
+static void EndElf_Init(struct EndElf* p) {
+  struct Entity* s = &p->s;
+  ApLoadSheet(&sDarkElfSheet);
+  ApLoadSheet(&sBabyElfSheet);
+  InitScalerotMotion1(s);
+  s->flags |= DISPLAY | FLIPABLE;
+  s->texture = TEXTURE_AP_SHEET;
+  SetMotion(s, DARK_ELF(0));
+  p->anim = 75;
+  ApStartPaletteAnimation(PLTT_ANIM_ID(75), &gApZ2Na3_PlttAnim75, gApZ2Na3_PlttAnimScript75, 0x200 | 5 << 5);
+  SET_XFLIP(s, FALSE);
+  s->renderPrio = 23;
+  p->bob = 0;
+  s->work[2] = 0;
+  (s->spr).mag.x = (s->spr).mag.y = 0;
+  s->coord = PARENT->coord;
+  createSolid(s, SOLID_Z2_BABY_ELF_TRAIL, 5, 0);
+  createSolid(s, SOLID_Z2_BABY_ELF_TRAIL, 5, 1);
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  EndElf_Update(p);
+}
+
+static void EndElf_Disappear(struct EndElf* p) {
+  RemovePaletteAnimation(PLTT_ANIM_ID(p->anim));
+  DeleteEntity(&p->s);
+}
+
+SCENE_ROUTINE(gApZ2DarkElfEndRoutine, EndElf_Init, EndElf_Update, EndElf_Disappear);
+
+/*
+  Zero 2's solid 24 work0 5, a Baby Elf beside the Dark Elf. Drifts out from it, shakes once it turns to light,
+  and flies off on its flag 64.
+  work1: 1 the left one
+*/
+
+struct Trail {
+  OBJECT_HDR;
+  u8 _b4[5];
+  u8 sparkle;  // 0xB9
+  u8 side;     // 0xBA
+  u8 _bb[9];
+};
+static_assert(sizeof(struct Trail) == sizeof(struct Solid));
+
+static void Trail_Update(struct Trail* p) {
+  struct Entity* s = &p->s;
+  struct Entity* elf = s->unk_28;
+  Coords32 at;
+  UpdateEntityAnim(s);
+  if (s->mode[1] == 3 && (p->sparkle++ & 15) == 0) {
+    at.x = s->coord.x;
+    at.y = s->coord.y + PIXEL(8);
+    ApZ2CreateElfSparkle(&at, 4);
+  }
+  (s->spr).mag.x = (elf->spr).mag.x;
+  (s->spr).mag.y = (elf->spr).mag.y;
+  switch (s->mode[1]) {
+    case 0:
+      if (s->d.x < 0x1800) {
+        s->d.x += 64;
+        s->d.y += 64;
+      }
+      s->coord.x = elf->coord.x + SIN(p->side) * s->d.x / 256;
+      s->coord.y = elf->coord.y + (s->work[1] != 0 ? -SIN(p->side) : SIN(p->side)) * s->d.y / 256;
+      if (elf->mode[1] > 1) s->mode[1]++;
+      break;
+    case 1:
+      if (elf->mode[1] <= 4) break;
+      s->unk_coord = s->coord;
+      s->work[2] = 64;
+      s->mode[1]++;
+      break;
+    case 2:
+      shake(s);
+      if (!(elf->scriptEntity->flags & 64)) break;
+      s->d.x = 0x600;
+      s->d.y = -0x140;
+      s->unk_coord.x = s->work[1] != 0 ? -32 : -48;
+      s->work[2] = 128;
+      s->mode[1]++;
+      break;
+    case 3:
+      s->d.x += s->unk_coord.x;
+      s->coord.x += s->d.x;
+      s->coord.y += s->d.y;
+      if (--s->work[2] == 0xFF) die((struct Solid*)p);
+      break;
+  }
+}
+
+// 0x080cfad8
+static void Trail_Init(struct Trail* p) {
+  struct Entity* s = &p->s;
+  InitScalerotMotion1(s);
+  s->flags |= DISPLAY | FLIPABLE;
+  s->texture = TEXTURE_AP_SHEET;
+  SetMotion(s, MOTION(AP_SHEET_Z2_BABY_ELF, 0));
+  (s->spr).mag.x = (s->spr).mag.y = 256;
+  s->renderPrio = 23;
+  p->side = s->work[1] != 0 ? 192 : 64;
+  s->d.x = s->d.y = 0;
+  SET_SOLID_ROUTINE(p, ENTITY_UPDATE);
+  Trail_Update(p);
+}
+
+SCENE_ROUTINE(gApZ2BabyElfTrailRoutine, Trail_Init, Trail_Update, DeleteEntity);
+
 #endif  // AP

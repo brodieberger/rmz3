@@ -228,6 +228,7 @@ gApZ2Ice_MidBoss0ClearScript:
 	adjust_camera 0, 0, 3
 	adjust_camera 1, 0, 4
 	spawn 9, gApZ2Ice_GolemElf
+	detach_entity 9
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE

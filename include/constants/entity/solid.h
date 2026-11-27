@@ -114,7 +114,11 @@
 #define SOLID_Z2_DARK_ELF_TWIN 108  // Zero 2 solid 24 work0 6, the Dark Elf freed from the seal
 #define SOLID_Z2_ELPIZO_FINAL_ROCK 109  // Zero 2 solid 13, the last form's rocks, seekers and walls
 #define SOLID_Z2_HATCH 110  // Zero 2 solid 22, a floor hatch Zero passes through
-#define SOLID_ENTITY_COUNT (SOLID_Z2_HATCH + 1)
+#define SOLID_Z2_YGG_SOUL 111  // Zero 2 solid 5 work0 23, Elpizo fallen, his soul leaving him
+#define SOLID_Z2_YGG_RUBBLE 112  // Zero 2 solid 5 work0 25, what is left of the bolt
+#define SOLID_Z2_DARK_ELF_END 113  // Zero 2 solid 24 work0 2, the Dark Elf in the ending
+#define SOLID_Z2_BABY_ELF_TRAIL 114  // Zero 2 solid 24 work0 5, a Baby Elf beside it
+#define SOLID_ENTITY_COUNT (SOLID_Z2_BABY_ELF_TRAIL + 1)
 #else
 #define SOLID_ENTITY_COUNT 56
 #endif

@@ -81,6 +81,7 @@ static void Mine_Init(struct Mine* p) {
     s->coord.y = FUN_08009f6c(s->coord.x, s->coord.y);
     p->touched = FALSE;
     INIT_BODY(p, sMine, 64, onTouch);
+    ApMarkFloorMine(s);
   } else {
     s->palID = 0;
     SetSpriteAnimation(p, MOTION(SM000_BATTLE_EFFECT, 1));

@@ -96,14 +96,12 @@ static void setSolid(struct Entity* s, const struct Rect* size) {
 static void Hatch_Init(struct Hatch* p) {
   struct Entity* s = &p->s;
   struct Entity* q;
-  struct PreloadEntity sheet = {AP_SHEET_Z2_HATCH, 0, 0, 0, 0, AP_PRELOAD_SHEET, 0};
   InitNonAffineMotion(s);
   s->texture = TEXTURE_AP_SHEET;
   if (s->work[1] == 0) {
     s->coord.x = FUN_0800a31c(s->coord.x, s->coord.y);
     if (PLATE(s)) {
       s->coord.y += PIXEL(9);
-      sheet.id = AP_SHEET_Z2_HATCH_PLATE;
     } else {
       s->coord.y += PIXEL(8);
       q = AllocEntityLast(gSolidHeaderPtr);
@@ -117,9 +115,6 @@ static void Hatch_Init(struct Hatch* p) {
       q->coord.x = s->coord.x - PIXEL(1);
       q->coord.y = s->coord.y;
     }
-    sheet.tileBase = wStaticGraphicTilenums[SM120_DOOR_2D_GRAY_H];
-    sheet.palID = wStaticMotionPalIDs[SM120_DOOR_2D_GRAY_H];
-    ApLoadSheet(&sheet);
   } else {
     SetMotion(s, MOTION(AP_SHEET_Z2_HATCH, 0));
     SET_YFLIP(s, TRUE);
@@ -174,8 +169,12 @@ static void Hatch_Pass(struct Hatch* p) {
     case 0:
       EXIT_BODY(p);
       s->flags2 &= ~ENTI_PHYSICS;
-      if (PLATE(s)) sheet.id = AP_SHEET_Z2_HATCH_PLATE_OPEN;
-      sheet.palID = wStaticMotionPalIDs[SM120_DOOR_2D_GRAY_H];
+      if (PLATE(s)) {
+        sheet.id = AP_SHEET_Z2_HATCH_PLATE_OPEN;
+        sheet.palID = gApSheetPalIDs[AP_SHEET_Z2_HATCH_PLATE];
+      } else {
+        sheet.palID = gApSheetPalIDs[AP_SHEET_Z2_HATCH];
+      }
       ApLoadSheet(&sheet);
       SetMotion(s, shut(s, 2));
       PlaySound(SE_Z2_GATE_SINK);

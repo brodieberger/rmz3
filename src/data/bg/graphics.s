@@ -1284,6 +1284,30 @@ gGraphic_OpeningAnim2:: @ Gfx131 in 0x08547CBC
 		.4byte gApZ2PictureElpizoReborn_Pal-.
 		.2byte 224
 		.byte 0, 2
+
+	@ Gfx142: Zero 2's 63, Yggdrasil's data
+	.4byte gApZ2PictureElpizoRegret-.
+	.4byte 15968 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureElpizoRegret_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx143: Zero 2's 64, Yggdrasil's data
+	.4byte gApZ2PictureDarkElfCalm-.
+	.4byte 13480 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureDarkElfCalm_Pal-.
+		.2byte 224
+		.byte 0, 2
+
+	@ Gfx144: Zero 2's 65, Yggdrasil's data
+	.4byte gApZ2PictureZeroSky-.
+	.4byte 26028 | (0 << 22)
+	.2byte 256, (LZ77 | BPP8)
+		.4byte gApZ2PictureZeroSky_Pal-.
+		.2byte 224
+		.byte 0, 2
 .endif
 
 gGraphicData::

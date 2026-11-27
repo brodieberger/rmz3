@@ -134,7 +134,8 @@
 #define VFX_Z2_ELPIZO_AURA 129  // Zero 2 VFX 62, Elpizo's aura and the pillar's column and sparks
 #define VFX_Z2_SEAL_BLAST 130  // Zero 2 VFX 61, a blast drawn on BG0 as the seal's room blows
 #define VFX_Z2_ELPIZO_FINAL_LIGHT 131  // Zero 2 VFX 46, the last form's petals, orbs and sparks
-#define VFX_COUNT (VFX_Z2_ELPIZO_FINAL_LIGHT + 1)
+#define VFX_Z2_ELF_TRAIL 132  // Zero 2 VFX 70 work0 0, sparkles falling off a floating elf
+#define VFX_COUNT (VFX_Z2_ELF_TRAIL + 1)
 #else
 #define VFX_COUNT VFX_UNK_084 + 1
 #endif

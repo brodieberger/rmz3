@@ -676,6 +676,25 @@ gGraphics_MsgBox:: @ Gfx57
 		.4byte gApZ2MugshotDarkElpizo_Pal-.
 		.2byte 32
 		.byte 0, 0
+	@ Zero 2's Elpizo sorry, the Dark Elf and Elpizo fallen, in Yggdrasil's data
+	.4byte gApZ2MugshotElpizoSorry-.
+	.4byte 1070 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotElpizoSorry_Pal-.
+		.2byte 32
+		.byte 0, 0
+	.4byte gApZ2MugshotDarkElfFace-.
+	.4byte 1135 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotDarkElfFace_Pal-.
+		.2byte 32
+		.byte 0, 0
+	.4byte gApZ2MugshotElpizoFallen-.
+	.4byte 1058 | (0 << 22)
+	.2byte 48, (LZ77 | BPP4)
+		.4byte gApZ2MugshotElpizoFallen_Pal-.
+		.2byte 32
+		.byte 0, 0
 	.endif
 
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

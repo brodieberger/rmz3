@@ -466,6 +466,7 @@ gApZ2Opening_MidBoss1ClearScript:
 	change_camera_mode 6
 	set_chase_mode 4
 	spawn 9, gApZ2Opening_Golem1Elf
+	detach_entity 9
 	start_transition 5
 	wait_transition_end
 	force 1, 0, 0

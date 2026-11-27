@@ -462,7 +462,7 @@ static void Crate_Update(struct Crate* p) {
       break;
     case 2:
       s->coord.y -= PIXEL(1);
-      if (s->coord.y >= p->baseY - PIXEL(80)) break;
+      if (s->coord.y >= p->baseY - PIXEL(320)) break;
       SET_SOLID_ROUTINE(p, ENTITY_DIE);
       Supplies_Die((struct Supplies*)p);
       break;

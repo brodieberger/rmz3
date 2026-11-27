@@ -13,6 +13,11 @@
 #include "zero.h"
 
 static const struct Collision sCollision;
+#if AP
+#define PULLED _[0]
+static const struct Collision sChainCollisions[2];
+static u16 pullItem(struct Entity* s, u16 pulling, s32 dx, s32 dy);
+#endif
 extern const motion_t gMapItemMotions[9];
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED);
 
@@ -177,7 +182,13 @@ NON_MATCH_AP static void MapItem_Init(Pickup* p) {
   SetSpriteAnimation(p, m);
   p->flags |= DISPLAY;
   p->flags |= FLIPABLE;
+#if AP
+  INIT_BODY(p, sChainCollisions, 64, onCollision);
+  (p->body).unk_28 = (u32)pullItem;
+  p->PULLED = FALSE;
+#else
   INIT_BODY(p, &sCollision, 64, onCollision);
+#endif
   p->y = (p->coord).y;
   p->z = NULL;
 
@@ -459,6 +470,11 @@ NON_MATCH_AP static void MapItem_Update(Pickup* p) {
       SET_ITEM_ROUTINE(p, ENTITY_DIE);
     }
 
+#if AP
+    if (p->PULLED) {
+      p->PULLED = FALSE;
+    } else
+#endif
     if (p->mode[1] == 0) {
       // 落下中
       if ((p->coord.y >= p->y) && (FUN_080098a4(p->coord.x, p->coord.y) != 0)) {
@@ -905,6 +921,16 @@ static void MapItem_Die(struct Entity* p) {
   SET_ITEM_ROUTINE(p, ENTITY_EXIT);
 }
 
+#if AP
+// 0x080d4eb4: reeled in by the Chain Rod
+static u16 pullItem(struct Entity* s, u16 pulling, s32 dx, s32 dy) {
+  ((Pickup*)s)->PULLED = TRUE;
+  s->coord.x += dx;
+  s->coord.y += dy;
+  return pulling && s->mode[0] <= ENTITY_UPDATE;
+}
+#endif
+
 static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNUSED) {
   Pickup* p = (Pickup*)body->parent;
   struct Entity* q = body->enemy->parent;
@@ -936,3 +962,13 @@ static const struct Collision sCollision = {
   layer : 0x00000001,
   range : {PIXEL(0), -PIXEL(6), PIXEL(12), PIXEL(12)},
 };
+
+#if AP
+// clang-format off
+// 0x0834a0d4
+static const struct Collision sChainCollisions[2] = {
+    {DDP, FACTION_ENEMY, 0, 255, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 1, 0x00000001, {0, -0x600, 0xC00, 0xC00}},
+    {DRP, FACTION_ENEMY, 0, 0, 0x00, 0x04, 0x00, 0x00, 0x01, NO_DAMAGE | HARDNESS_B3, 0x00, 0, 0x00000000, {0, -0x600, 0xC00, 0xC00}},
+};
+// clang-format on
+#endif

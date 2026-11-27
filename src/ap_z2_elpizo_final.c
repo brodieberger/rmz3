@@ -1916,7 +1916,7 @@ static void solidOffZero(struct Entity* s) {
   s32 h = (r->h + s->size->h) / 2 + PIXEL(2);
   s32 dx = (pZero2->s).coord.x + r->x - (s->coord.x + s->size->x);
   s32 dy = (pZero2->s).coord.y + r->y - (s->coord.y + s->size->y);
-  if ((u32)(dx + w) < (u32)(w * 2) && (u32)(dy + h) < (u32)(h * 2)) {
+  if ((u32)(dx + w) < (u32)(w * 2) && dy > PIXEL(6) - h && dy < h) {
     s->flags2 &= ~ENTI_PHYSICS;
   } else {
     s->flags2 |= ENTI_PHYSICS;

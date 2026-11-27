@@ -12022,6 +12022,16 @@ bgm_z2_staff_roll:
 	.4byte bgm_z2_staff_roll_data+0x2ad1
 	.4byte bgm_z2_staff_roll_data+0x309b
 
+@ Zero 2 song 86: breakable block bursting
+se_z2_block_break_data:
+	.byte 0xBC, 0x00, 0xBB, 0x3C, 0xBD, 0x56, 0xBE, 0x7F, 0xBF, 0x40, 0xEF, 0x2D, 0x7F, 0xA0, 0xB1
+.balign 4
+.global se_z2_block_break
+se_z2_block_break:
+	.byte 1, 0, 20, 0
+	.4byte gApZ2Voicegroup_0ffd7c
+	.4byte se_z2_block_break_data+0x0
+
 .balign 4
 gApZ2Wave_11360c:
 	.incbin "sound/direct_sound_samples/ap_z2/11360c.bin"

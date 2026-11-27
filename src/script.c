@@ -9,6 +9,10 @@
 #include "text.h"
 #include "zero.h"
 
+#if AP
+#include "ap_import.h"
+#endif
+
 extern const Coords32 gMaxCoords;
 
 static bool32 RunScript(struct VM* vm);
@@ -480,7 +484,7 @@ static void UpdatePlayerMovableArea(struct VM* vm) {
     // Makes the screen edge be the room edge. Prevents Zero fgrom being able to walljump
     // Skipped during cutscenes, 3D doors and fades.
     if (gStageRun.id == STAGE_NONE && cam->mode != CM1 && !(gStageRun.vm.active & VM_ACTIVE) && !gIsUsingDoor3D &&
-        gStageRun.vm.transition == TRANSITION_NONE) {
+        gStageRun.vm.transition == TRANSITION_NONE && !ApZ2JungleInHollow(&(player->s).coord)) {
       s32 left = cam->viewport.x - PIXEL(DISPLAY_WIDTH / 2);
       s32 right = cam->viewport.x + PIXEL(DISPLAY_WIDTH / 2);
       if (c1.x < left) c1.x = left;

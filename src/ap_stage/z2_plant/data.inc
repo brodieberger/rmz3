@@ -298,8 +298,8 @@ gApZ2Plant_GolemClearScript:
 	wait_transition_end
 	wait 32
 	destroy 1
-	lockmenu
 	spawn 9, gApZ2Plant_GolemElf
+	detach_entity 9
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE
@@ -312,7 +312,7 @@ gApZ2Plant_Reactor0:
 
 gApZ2Plant_ReactorElf0:
 	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 54, 1
-	.4byte 3840*PX, 1248*PX
+	.4byte 3840*PX, 1312*PX
 	.4byte DIR_RIGHT
 
 gApZ2Plant_Magnion0:
@@ -339,8 +339,8 @@ gApZ2Plant_Reactor0ClearScript:
 	wait_transition_end
 	wait 32
 	spawn 9, gApZ2Plant_ReactorElf0
+	detach_entity 9
 	destroy 1
-	lockmenu
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE
@@ -467,7 +467,7 @@ gApZ2Plant_Reactor1:
 
 gApZ2Plant_ReactorElf1:
 	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 54, 1
-	.4byte 4800*PX, 448*PX
+	.4byte 4800*PX, 512*PX
 	.4byte DIR_RIGHT
 
 gApZ2Plant_Magnion1:
@@ -494,8 +494,8 @@ gApZ2Plant_Reactor1ClearScript:
 	wait_transition_end
 	wait 32
 	spawn 9, gApZ2Plant_ReactorElf1
+	detach_entity 9
 	destroy 1
-	lockmenu
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE
@@ -622,7 +622,7 @@ gApZ2Plant_Reactor2:
 
 gApZ2Plant_ReactorElf2:
 	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 54, 1
-	.4byte 5760*PX, 1088*PX
+	.4byte 5760*PX, 1152*PX
 	.4byte DIR_RIGHT
 
 gApZ2Plant_Magnion2:
@@ -649,8 +649,8 @@ gApZ2Plant_Reactor2ClearScript:
 	wait_transition_end
 	wait 32
 	spawn 9, gApZ2Plant_ReactorElf2
+	detach_entity 9
 	destroy 1
-	lockmenu
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE
@@ -777,7 +777,7 @@ gApZ2Plant_Reactor3:
 
 gApZ2Plant_ReactorElf3:
 	.byte ENTITY_ITEM, ITEM_AP_IMPORT_ELF, 54, 1
-	.4byte 6720*PX, 448*PX
+	.4byte 6720*PX, 512*PX
 	.4byte DIR_RIGHT
 
 gApZ2Plant_Magnion3:
@@ -804,8 +804,8 @@ gApZ2Plant_Reactor3ClearScript:
 	wait_transition_end
 	wait 32
 	spawn 9, gApZ2Plant_ReactorElf3
+	detach_entity 9
 	destroy 1
-	lockmenu
 	start_transition 5
 	wait_transition_end
 	gameflag FLAG_2, FALSE

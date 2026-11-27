@@ -1,6 +1,7 @@
 #include "ap.h"
 
 #include "ap_marker.h"
+#include "camera.h"
 #include "collision.h"
 #include "definition.h"
 #include "entity.h"
@@ -14,6 +15,7 @@
 #include "vfx.h"
 #include "zero.h"
 
+#include "constants/entity/enemy.h"
 #include "constants/motion/ap_sheet.h"
 #include "constants/motion/dynamic.h"
 #include "constants/song.h"
@@ -301,6 +303,52 @@ void ApImportTreeFrogKilled(const Coords32* at) {
   if (++sTreeFrogKills == 5) giveElf(ELF_TREE_FROGS, ANIMAL, at);
 }
 
+// Location of kill elf enemy counts toward, 0 if none
+u16 ApImportKillElf(const struct Entity* e) {
+  u8 n;
+  if (gStageRun.id != STAGE_NONE) return 0;
+  if (e->kind == ENTITY_PROJECTILE) {
+    n = ELF_FLOOR_MINES;
+  } else switch (e->id) {
+    case ENEMY_Z2_HOTTALOOK: n = ELF_BIRFLOW; break;
+    case ENEMY_Z2_HOPPER: n = ELF_BEEHITT; break;
+    case ENEMY_Z2_TOWER: n = ELF_TOWERS; break;
+    case ENEMY_Z2_SPIKEBALL: n = ELF_SPIKEBALLS; break;
+    case ENEMY_Z2_VULTURE: n = ELF_VULTURES; break;
+    case ENEMY_Z2_SHELL: n = ELF_SHELLS; break;
+    case ENEMY_Z2_RING_CANNON: n = ELF_CANNONS; break;
+    case ENEMY_Z2_EYE: n = ELF_EYES; break;
+    case ENEMY_P_GUARDIAN: n = ELF_GUARDIANS; break;
+    case ENEMY_Z2_BEE: n = ELF_BEES; break;
+    case ENEMY_Z2_BEE_CARRIER: n = ELF_CARRIERS; break;
+    case ENEMY_Z2_MOLE: n = ELF_MOLES; break;
+    case ENEMY_Z2_SPIDER: n = ELF_SPIDERS; break;
+    case ENEMY_P_HUNTER: n = ELF_HUNTERS; break;
+    case ENEMY_Z2_BARRIER_SHIP: n = ELF_SHIPS; break;
+    case ENEMY_Z2_FISH: n = ELF_FISH; break;
+    case ENEMY_Z2_DOZER: n = ELF_DOZERS; break;
+    case ENEMY_Z2_CRAWLER: n = ELF_CRAWLERS; break;
+    case ENEMY_Z2_CARRYARM: n = ELF_SPIKINGS; break;
+    case ENEMY_Z2_CRAB: n = ELF_CRABS; break;
+    case ENEMY_Z2_MINE: n = ELF_MINES; break;
+    case ENEMY_Z2_COPTER: n = ELF_COPTERS; break;
+    case ENEMY_Z2_GENERATOR: n = ELF_GENERATOR; break;
+    case ENEMY_Z2_SIGNALOID: n = ELF_SIGNALOIDS; break;
+    case ENEMY_Z2_SHIELD_GUARD: n = ELF_GUARDS; break;
+    case ENEMY_Z2_SNOWBALLER:
+      if (e->work[0] != 0) return 0;
+      n = ELF_SNOWBALLERS;
+      break;
+    case ENEMY_Z2_WOLF: n = ELF_WOLVES; break;
+    case ENEMY_FLOPPER: n = ELF_FLOPPERS; break;
+    case ENEMY_Z2_LEAPER: n = ELF_LEAPERS; break;
+    case ENEMY_Z2_TREE_FROG: n = ELF_TREE_FROGS; break;
+    default: return 0;
+  }
+  if (n / 16 != ApImportZ2Stage(gApImportSelected)) return 0;
+  return AP_LOC_IMPORT_FIRST + n;
+}
+
 // By import, placed and kill elves, from block's third id on
 static const u8 sElves[AP_IMPORT_COUNT] = {5, 7, 4, 8, 8, 4, 4, 8, 6, 6, 4, 3, 3, 3, 4, 0};
 
@@ -321,20 +369,22 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
   if (q->kind == ENTITY_PLAYER) p->z = (void*)q;
 }
 
-// 0x080d68b8: bobs about home, home's y creeps to Zero's
+// 0x080d68b8: bobs about home, home's y creeps to Zero's chest outside scripts
 static void drift(Pickup* p) {
-  s32 dy = (pZero2->s).coord.y - (p->unk_coord).y;
-  if (dy >= -32 && dy <= 32) {
-    (p->unk_coord).y += dy;
-  } else {
-    (p->unk_coord).y += dy > 0 ? 32 : -32;
+  s32 dy = (pZero2->s).coord.y - PIXEL(21) - (p->unk_coord).y;
+  if (!(gStageRun.vm.active & VM_ACTIVE)) {
+    if (dy >= -32 && dy <= 32) {
+      (p->unk_coord).y += dy;
+    } else {
+      (p->unk_coord).y += dy > 0 ? 32 : -32;
+    }
   }
   if (++p->work[2] == 160) p->work[2] = 0;
   (p->coord).x = (p->unk_coord).x + SIN(p->work[2] * 256 / 160) * 12;
   (p->coord).y = (p->unk_coord).y - SIN((p->work[2] % 80) * 256 / 80) * 4;
 }
 
-// Zero 3's own nurse, animal and hacker, frame 0, which are Zero 2's floating ones
+// Zero 3's own nurse, animal and hacker, which are Zero 2's floating ones
 static const struct {
   struct MetaspriteHeader hdr;
   struct Subsprite part;
@@ -362,14 +412,39 @@ static void ImportElf_Init(Pickup* p) {
   p->flags |= DISPLAY | FLIPABLE;
   INIT_BODY(p, &sCollision, 64, onCollision);
   p->z = NULL;
+  p->work[3] = 0;
   p->unk_coord = p->coord;
   ApAttachElfMarker((struct Entity*)p);
   SET_ITEM_ROUTINE(p, ENTITY_UPDATE);
   ImportElf_Update(p);
 }
 
+// Zero 2's four colourings, Zero 3's elf sheets 0..3, at Zero 3's elf pace
+static void glow(Pickup* p) {
+  const ColorGraphic* g = SELF_REL_PTR(&gDynamicMotionGraphicOffsets[DM144_CYBERELF_NURSE + p->work[1]]);
+  u16 tile = AP_ELF_TILE + p->work[1] * 4;
+  if (p->work[2] % 5 != 0) return;
+  g += (p->work[2] / 5) & 3;
+  LoadGraphic(&g->g, (void*)((tile - (g->g).tileId) * 32 + 0x10000));
+}
+
+// 0x080bed50
+static void sparkle(Pickup* p) {
+  struct Entity* q;
+  if (p->work[3] != 0 && --p->work[3] != 0) return;
+  if (Camera_GetDistance(&gStageRun.vm.camera, &p->coord) > 0x1FFF) return;
+  q = AllocEntityLast(gVFXHeaderPtr);
+  if (q != NULL) {
+    INIT_VFX_ROUTINE(q, VFX_Z2_ELF_TRAIL);
+    q->coord = p->coord;
+  }
+  p->work[3] = 14 + ((RANDOM(RNG_0202f388) & 7) + 1) / 2;
+}
+
 static void ImportElf_Update(Pickup* p) {
   drift(p);
+  glow(p);
+  sparkle(p);
   if (((p->body).status & BODY_STATUS_B2) && p->z != NULL) {
     ApMarkLocationChecked(LOCATION(p));
     PlaySound(SE_NOTIFICATION);
@@ -379,13 +454,79 @@ static void ImportElf_Update(Pickup* p) {
   }
 }
 
-// Same as the secret disk's (pickup/disk.c)
+/*
+  Zero 2's VFX 70 work0 0, three sparkles falling off a floating elf, on Zero 3's elf particle art
+  mode1: 0 shown, 1 and 2 blinking
+*/
+static void Trail_Init(struct VFX* p);
+static void Trail_Update(struct VFX* p);
+
+// clang-format off
+const VFXRoutine gApZ2ElfTrailRoutine = {
+    [ENTITY_INIT] =      Trail_Init,
+    [ENTITY_UPDATE] =    Trail_Update,
+    [ENTITY_DIE] =       (VFXFunc)DeleteEntity,
+    [ENTITY_DISAPPEAR] = (VFXFunc)DeleteVFX,
+    [ENTITY_EXIT] =      (VFXFunc)DeleteEntity,
+};
+// clang-format on
+
+// 0x083485a8: loops of each mode
+static const u8 sLoops[3] = {3, 2, 2};
+
+// 0x080be9c8
+static void Trail_Init(struct VFX* p) {
+  struct Entity* s = &p->s;
+  InitNonAffineMotion(s);
+  ResetDynamicMotion(s);
+  SET_XFLIP(p, RANDOM(RNG_0202f388) & 1);
+  SET_YFLIP(p, RANDOM(RNG_0202f388) & 1);
+  SetMotion(s, MOTION(DM147_CYBERELF_PARTICLE, 0));
+  (s->spr).oam.priority = 2;
+  s->flags |= DISPLAY;
+  s->d.y = 0;
+  s->unk_coord.x = s->coord.x;
+  s->work[2] = (RANDOM(RNG_0202f388) & 1) * 32;
+  s->work[3] = sLoops[0];
+  s->mode[1] = 0;
+  SET_VFX_ROUTINE(p, ENTITY_UPDATE);
+  Trail_Update(p);
+}
+
+// 0x080beb5c
+static void Trail_Update(struct VFX* p) {
+  struct Entity* s = &p->s;
+  if ((s->motion).state == ANIM_NEXT_GOTO) {
+    while (--s->work[3] == 0) {
+      if (++s->mode[1] == 3) {
+        SET_VFX_ROUTINE(p, ENTITY_DIE);
+        return;
+      }
+      s->work[3] = sLoops[s->mode[1]];
+    }
+  }
+  if (s->mode[1] == 1) {
+    s->flags = (s->flags & ~DISPLAY) | ((s->motion).duration & 1 ? DISPLAY : 0);
+  } else if (s->mode[1] == 2) {
+    s->flags = (s->flags & ~DISPLAY) | ((s->motion).duration == 1 ? DISPLAY : 0);
+  }
+  s->coord.x = s->unk_coord.x + SIN(s->work[2] * 4) * 2;
+  s->work[2] = (s->work[2] + 1) % 64;
+  s->coord.y += s->d.y++;
+  if (Camera_GetDistance(&gStageRun.vm.camera, &s->coord) > 0x1FFF) {
+    SET_VFX_ROUTINE(p, ENTITY_DIE);
+    return;
+  }
+  UpdateEntityAnim(s);
+}
+
+// 0x0834b2cc
 static const struct Collision sCollision = {
   kind : DDP,
   faction : FACTION_ENEMY,
   damage : 255,
   layer : 0x00000001,
-  range : {PIXEL(0), -PIXEL(8), PIXEL(16), PIXEL(16)},
+  range : {PIXEL(0), PIXEL(0), PIXEL(16), PIXEL(16)},
 };
 
 #endif  // AP

@@ -47,6 +47,10 @@ gBgMapOffsets: @ 0x085222A0
   .4byte gApZ2PictureMerge2_Map-. @ 139: Zero 2's 60, Yggdrasil's data
   .4byte gApZ2PictureMerge3_Map-. @ 140: Zero 2's 61, Yggdrasil's data
   .4byte gApZ2PictureElpizoReborn_Map-. @ 141: Zero 2's 62, Yggdrasil's data
+  .4byte gApZ2PictureElpizoRegret_Map-. @ 142: Zero 2's 63, Yggdrasil's data
+  .4byte gApZ2PictureDarkElfCalm_Map-. @ 143: Zero 2's 64, Yggdrasil's data
+  .4byte gApZ2PictureZeroSky_Map-. @ 144: Zero 2's 65, Yggdrasil's data
+  .4byte gApZ2Yggdrasil_ZeroSkyLowMap-. @ 145: Zero 2's 66, its lower half
 .endif
 
 .global gTilemapData

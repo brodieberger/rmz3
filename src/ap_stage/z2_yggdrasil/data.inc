@@ -329,6 +329,29 @@ gApZ2Yggdrasil_FreedElf:
 	.4byte 720*PX, 352*PX
 	.4byte DIR_LEFT
 
+gApZ2Yggdrasil_EndSoul:
+	.byte ENTITY_SOLID, SOLID_Z2_YGG_SOUL, 0, 0
+	.4byte 752*PX, 464*PX
+	.4byte DIR_LEFT
+
+gApZ2Yggdrasil_EndRubble:
+	.byte ENTITY_SOLID, SOLID_Z2_YGG_RUBBLE, 0, 0
+	.4byte 752*PX, 464*PX
+	.4byte DIR_LEFT
+
+gApZ2Yggdrasil_EndElf:
+	.byte ENTITY_SOLID, SOLID_Z2_DARK_ELF_END, 2, 0
+	.4byte 752*PX, 464*PX
+	.4byte DIR_LEFT
+
+gApZ2Yggdrasil_EndX:
+	.byte ENTITY_SOLID, SOLID_Z2_X, 0, 0
+	.4byte 752*PX, 444*PX
+	.4byte DIR_LEFT
+
+gApZ2Yggdrasil_EndZeroAt:
+	.4byte 688*PX, 464*PX - 1
+
 gApZ2Yggdrasil_FreeCamera:
 	.byte 6, 8, 0, 0
 	.4byte 0*PX, 0*PX
@@ -1141,6 +1164,128 @@ gApZ2Yggdrasil_FinalDownScript:
 	wait 30
 	destroy 1
 	stop_camera
+	wait 60
+	play_bgm BGM_Z2_ENDING
+	wait 60
+	spawn 3, gApZ2Yggdrasil_EndSoul
+	spawn 5, gApZ2Yggdrasil_EndRubble
+	spawn 6, gApZ2Yggdrasil_EndElf
+	cmd0f 3, 0, 0
+	cmd0f 6, 3, 0
+	reset_camera gApZ2Yggdrasil_Camera0832f9a0
+	set_entity_coords 0, gApZ2Yggdrasil_EndZeroAt
+	turn_right 0
+	force 2, 0, 0
+	backdrop_color 0x0000
+	start_transition 5
+	wait_transition_end
+	wait 60
+	message 1, 0, 0x147f
+	wait_msgbox_end
+	start_transition 2
+	wait_transition_end
+	stop_camera
+	wait 1
+	cmd06 142, 0, 0
+	start_transition 1
+	wait_transition_end
+	wait 60
+	message 1, 0, 0x1480
+	wait_msgbox_end
+	wait 15
+	start_transition 2
+	wait_transition_end
+	cmd06 0, 1, 0
+	reset_camera gApZ2Yggdrasil_Camera0832f9a0
+	start_transition 1
+	wait_transition_end
+	wait 60
+	entityflag 6, 5, TRUE
+	wait 240
+	message 1, 0, 0x1481
+	wait_msgbox_end
+	wait 30
+	entityflag 6, 6, TRUE
+	wait 300
+	entityflag 3, 0, TRUE
+	wait 60
+	message 1, 0, 0x1482
+	wait_msgbox_end
+	wait 15
+	entityflag 3, 1, TRUE
+	entityflag 6, 0, TRUE
+	wait 420
+	entityflag 3, 2, TRUE
+	wait 180
+	message 1, 0, 0x1483
+	wait_msgbox_end
+	wait 60
+	entityflag 3, 3, TRUE
+	wait 240
+	entityflag 6, 1, TRUE
+	wait 60
+	emotion_bubble 0, 8, -40, 0
+	wait 120
+	start_transition 2
+	wait_transition_end
+	stop_camera
+	wait 1
+	cmd06 143, 0, 0
+	start_transition 1
+	wait_transition_end
+	wait 60
+	message 1, 0, 0x1484
+	wait_msgbox_end
+	wait 15
+	start_transition 2
+	wait_transition_end
+	cmd06 0, 1, 0
+	reset_camera gApZ2Yggdrasil_Camera0832f9a0
+	start_transition 1
+	wait_transition_end
+	wait 180
+	entityflag 6, 2, TRUE
+	wait 30
+	message 1, 0, 0x1485
+	wait_msgbox_end
+	wait 60
+	entityflag 6, 3, TRUE
+	wait 180
+	entityflag 6, 4, TRUE
+	wait 900
+	destroy 6
+	wait 60
+	spawn 6, gApZ2Yggdrasil_EndX
+	wait 60
+	emotion_bubble 0, 8, -40, 0
+	wait 240
+	message 1, 0, 0x1486
+	wait_msgbox_end
+	wait 150
+	message 1, 0, 0x1487
+	wait_msgbox_end
+	wait 30
+	start_transition 2
+	wait_transition_end
+	stop_camera
+	wait 1
+	cmd06 144, 2, 0
+	start_transition 1
+	cmd06 144, 4, 0
+	wait_transition_end
+	wait 90
+	message 1, 0, 0x1488
+	wait_msgbox_end
+	wait 15
+	start_transition 6
+	wait_transition_end
+	backdrop_color 0xFFFF
+	cmd06 0, 1, 0
+	wait 240
+	stop_bgm
+	destroy 3
+	destroy 5
+	destroy 6
 	start_transition 5
 	wait 150
 	start_result_screen
@@ -1649,6 +1794,73 @@ gApZ2Yggdrasil_PlttAnimScript57_0:
 	.byte 0, 255
 	.balign 4, 0
 
+.global gApZ2Yggdrasil_PlttAnim76
+gApZ2Yggdrasil_PlttAnim76: @ Zero 2's palette animation 76
+	.byte 4, 0, 15, 0
+	.2byte 0x0000, 0x45F2, 0x4215, 0x3A39, 0x367C, 0x329F, 0x46FF, 0x5B5F, 0x6B9F, 0x7FFF, 0x7FFF, 0x7FFF, 0x02BF, 0x03BF, 0x2FFF, 0x7FFF
+	.2byte 0x0000, 0x41F2, 0x4235, 0x3A79, 0x36BC, 0x32FF, 0x473F, 0x5B7F, 0x6BBF, 0x7FFF, 0x7FFF, 0x7FFF, 0x0319, 0x03BF, 0x3BFD, 0x7FFF
+	.2byte 0x0000, 0x41F2, 0x4255, 0x3A99, 0x36FC, 0x333F, 0x477F, 0x5B9F, 0x6BDF, 0x7FFF, 0x7FFF, 0x7FFF, 0x0373, 0x03BF, 0x47FB, 0x7FFF
+	.2byte 0x0000, 0x41F2, 0x4275, 0x3AD9, 0x373C, 0x339F, 0x47BF, 0x5BDF, 0x6BFF, 0x7FFF, 0x7FFF, 0x7FFF, 0x03CD, 0x2BF3, 0x57F9, 0x7FFF
+	.balign 4, 0
+.global gApZ2Yggdrasil_PlttAnimScript76
+gApZ2Yggdrasil_PlttAnimScript76:
+	.4byte gApZ2Yggdrasil_PlttAnimScript76_0
+gApZ2Yggdrasil_PlttAnimScript76_0:
+	.byte 0, 8
+	.byte 1, 8
+	.byte 2, 8
+	.byte 3, 8
+	.byte 2, 8
+	.byte 1, 8
+	.byte 0, 254
+	.balign 4, 0
+
+.global gApZ2Yggdrasil_PlttAnim77
+gApZ2Yggdrasil_PlttAnim77: @ Zero 2's palette animation 77
+	.byte 6, 0, 15, 0
+	.2byte 0x0000, 0x30EE, 0x40F2, 0x4C97, 0x545B, 0x601F, 0x501A, 0x3C35, 0x2C4F, 0x1C4A, 0x498C, 0x5E73, 0x601F, 0x7E3F, 0x7F5F, 0x7FFF
+	.2byte 0x0000, 0x352F, 0x4133, 0x48F7, 0x50BB, 0x589F, 0x4CBB, 0x44D7, 0x38F2, 0x2D0E, 0x5610, 0x66D5, 0x4C9F, 0x669F, 0x6F7F, 0x7FFF
+	.2byte 0x0000, 0x3950, 0x4153, 0x4557, 0x493B, 0x4D1F, 0x4D3C, 0x4979, 0x4596, 0x41D2, 0x5E94, 0x6B18, 0x391F, 0x4EDF, 0x5F9F, 0x7FFF
+	.2byte 0x0000, 0x3D90, 0x4194, 0x4198, 0x419B, 0x459F, 0x49DD, 0x4E1B, 0x5259, 0x5697, 0x6B18, 0x737A, 0x259F, 0x331F, 0x4FBF, 0x7FFF
+	.2byte 0x0000, 0x41D1, 0x41D4, 0x3DF8, 0x3DFC, 0x3A1F, 0x465E, 0x52BD, 0x5EFC, 0x6B5B, 0x779B, 0x7BBD, 0x121F, 0x1B7F, 0x3FDF, 0x7FFF
+	.2byte 0x0000, 0x45F2, 0x4215, 0x3A39, 0x367C, 0x329F, 0x46FF, 0x5B5F, 0x6B9F, 0x7FFF, 0x7FFF, 0x7FFF, 0x02BF, 0x03BF, 0x2FFF, 0x7FFF
+	.balign 4, 0
+.global gApZ2Yggdrasil_PlttAnimScript77
+gApZ2Yggdrasil_PlttAnimScript77:
+	.4byte gApZ2Yggdrasil_PlttAnimScript77_0
+gApZ2Yggdrasil_PlttAnimScript77_0:
+	.byte 0, 6
+	.byte 1, 6
+	.byte 2, 6
+	.byte 3, 6
+	.byte 4, 6
+	.byte 5, 6
+	.byte 0, 255
+	.balign 4, 0
+
+.global gApZ2Yggdrasil_PlttAnim78
+gApZ2Yggdrasil_PlttAnim78: @ Zero 2's palette animation 78
+	.byte 6, 0, 15, 0
+	.2byte 0x0000, 0x30EE, 0x40F2, 0x4C97, 0x545B, 0x601F, 0x501A, 0x3C35, 0x2C4F, 0x1C4A, 0x498C, 0x5E73, 0x601F, 0x7E3F, 0x7F5F, 0x7FFF
+	.2byte 0x0000, 0x352F, 0x4133, 0x48F7, 0x50BB, 0x589F, 0x4CBB, 0x44D7, 0x38F2, 0x2D0E, 0x5610, 0x66D5, 0x4C9F, 0x669F, 0x6F7F, 0x7FFF
+	.2byte 0x0000, 0x3950, 0x4153, 0x4557, 0x493B, 0x4D1F, 0x4D3C, 0x4979, 0x4596, 0x41D2, 0x5E94, 0x6B18, 0x391F, 0x4EDF, 0x5F9F, 0x7FFF
+	.2byte 0x0000, 0x3D90, 0x4194, 0x4198, 0x419B, 0x459F, 0x49DD, 0x4E1B, 0x5259, 0x5697, 0x6B18, 0x737A, 0x259F, 0x331F, 0x4FBF, 0x7FFF
+	.2byte 0x0000, 0x41D1, 0x41D4, 0x3DF8, 0x3DFC, 0x3A1F, 0x465E, 0x52BD, 0x5EFC, 0x6B5B, 0x779B, 0x7BBD, 0x121F, 0x1B7F, 0x3FDF, 0x7FFF
+	.2byte 0x0000, 0x45F2, 0x4215, 0x3A39, 0x367C, 0x329F, 0x46FF, 0x5B5F, 0x6B9F, 0x7FFF, 0x7FFF, 0x7FFF, 0x02BF, 0x03BF, 0x2FFF, 0x7FFF
+	.balign 4, 0
+.global gApZ2Yggdrasil_PlttAnimScript78
+gApZ2Yggdrasil_PlttAnimScript78:
+	.4byte gApZ2Yggdrasil_PlttAnimScript78_0
+gApZ2Yggdrasil_PlttAnimScript78_0:
+	.byte 5, 6
+	.byte 4, 6
+	.byte 3, 6
+	.byte 2, 6
+	.byte 1, 6
+	.byte 0, 6
+	.byte 0, 255
+	.balign 4, 0
+
 @;@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 .global gApZ2Yggdrasil_Metatiles
@@ -1682,6 +1894,33 @@ gApZ2MugshotDarkElpizo:
 .global gApZ2MugshotDarkElpizo_Pal
 gApZ2MugshotDarkElpizo_Pal:
 	.incbin "data/ap/z2_yggdrasil/mugshot_darkelpizo.gbapal"
+	.balign 4, 0
+
+.global gApZ2MugshotElpizoSorry
+gApZ2MugshotElpizoSorry:
+	.incbin "data/ap/z2_yggdrasil/mugshot_elpizosorry.4bpp.lz"
+	.balign 4, 0
+.global gApZ2MugshotElpizoSorry_Pal
+gApZ2MugshotElpizoSorry_Pal:
+	.incbin "data/ap/z2_yggdrasil/mugshot_elpizosorry.gbapal"
+	.balign 4, 0
+
+.global gApZ2MugshotDarkElfFace
+gApZ2MugshotDarkElfFace:
+	.incbin "data/ap/z2_yggdrasil/mugshot_darkelfface.4bpp.lz"
+	.balign 4, 0
+.global gApZ2MugshotDarkElfFace_Pal
+gApZ2MugshotDarkElfFace_Pal:
+	.incbin "data/ap/z2_yggdrasil/mugshot_darkelfface.gbapal"
+	.balign 4, 0
+
+.global gApZ2MugshotElpizoFallen
+gApZ2MugshotElpizoFallen:
+	.incbin "data/ap/z2_yggdrasil/mugshot_elpizofallen.4bpp.lz"
+	.balign 4, 0
+.global gApZ2MugshotElpizoFallen_Pal
+gApZ2MugshotElpizoFallen_Pal:
+	.incbin "data/ap/z2_yggdrasil/mugshot_elpizofallen.gbapal"
 	.balign 4, 0
 
 .global gApZ2Yggdrasil_Portrait
@@ -1784,6 +2023,45 @@ gApZ2PictureElpizoReborn_Map:
 	.incbin "data/ap/z2_yggdrasil/picture_elpizoreborn_map.bin"
 	.balign 4, 0
 
+.global gApZ2PictureElpizoRegret
+gApZ2PictureElpizoRegret:
+	.incbin "data/ap/z2_yggdrasil/picture_elpizoregret.8bpp.lz"
+	.balign 4, 0
+.global gApZ2PictureElpizoRegret_Pal
+gApZ2PictureElpizoRegret_Pal:
+	.incbin "data/ap/z2_yggdrasil/picture_elpizoregret.gbapal"
+	.balign 4, 0
+.global gApZ2PictureElpizoRegret_Map
+gApZ2PictureElpizoRegret_Map:
+	.incbin "data/ap/z2_yggdrasil/picture_elpizoregret_map.bin"
+	.balign 4, 0
+
+.global gApZ2PictureDarkElfCalm
+gApZ2PictureDarkElfCalm:
+	.incbin "data/ap/z2_yggdrasil/picture_darkelfcalm.8bpp.lz"
+	.balign 4, 0
+.global gApZ2PictureDarkElfCalm_Pal
+gApZ2PictureDarkElfCalm_Pal:
+	.incbin "data/ap/z2_yggdrasil/picture_darkelfcalm.gbapal"
+	.balign 4, 0
+.global gApZ2PictureDarkElfCalm_Map
+gApZ2PictureDarkElfCalm_Map:
+	.incbin "data/ap/z2_yggdrasil/picture_darkelfcalm_map.bin"
+	.balign 4, 0
+
+.global gApZ2PictureZeroSky
+gApZ2PictureZeroSky:
+	.incbin "data/ap/z2_yggdrasil/picture_zerosky.8bpp.lz"
+	.balign 4, 0
+.global gApZ2PictureZeroSky_Pal
+gApZ2PictureZeroSky_Pal:
+	.incbin "data/ap/z2_yggdrasil/picture_zerosky.gbapal"
+	.balign 4, 0
+.global gApZ2PictureZeroSky_Map
+gApZ2PictureZeroSky_Map:
+	.incbin "data/ap/z2_yggdrasil/picture_zerosky_map.bin"
+	.balign 4, 0
+
 .global gApZ2Yggdrasil_Layer3Map
 gApZ2Yggdrasil_Layer3Map:
 	.incbin "data/ap/z2_yggdrasil/layer3_map.bin"
@@ -1795,6 +2073,10 @@ gApZ2Yggdrasil_PlatformMap:
 .global gApZ2Yggdrasil_SkyMap
 gApZ2Yggdrasil_SkyMap:
 	.incbin "data/ap/z2_yggdrasil/sky_map.bin"
+
+.global gApZ2Yggdrasil_ZeroSkyLowMap
+gApZ2Yggdrasil_ZeroSkyLowMap:
+	.incbin "data/ap/z2_yggdrasil/zeroskylow_map.bin"
 
 .global gApZ2Yggdrasil_SkyTiles
 gApZ2Yggdrasil_SkyTiles:

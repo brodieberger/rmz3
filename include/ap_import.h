@@ -41,6 +41,7 @@ struct ApImportedStage {
   Coords32 bossDoor;                      // the fight starts to the right and below of the boss door
   const struct ApImportMidBoss* midBosses;
   u8 midBossCount;
+  u8 z2Stage;
   const char_t* name;
   const struct SpawnTemplate* templates;
   const struct SpawnPoint* points;
@@ -70,6 +71,7 @@ void ApZ2CreateGolemFeet(struct Entity* golem, u8 kind);
 void ApZ2GolemDie(struct Entity* s, motion_t stand);
 u8 ApZ2CoolersDown(void);
 u8 ApZ2SoldiersSaved(void);
+bool8 ApZ2JungleInHollow(const Coords32* c);
 u8 ApZ2CratesStolen(void);
 struct StageRun;
 void ApZ2PlantCellGone(const Coords32* at);

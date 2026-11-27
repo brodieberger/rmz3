@@ -92,6 +92,8 @@ static void unused_08019790(void) {}
 // ------------------------------------------------------------------------------------------------------------------------------------
 
 #if AP
+extern const s32 gApZ2ClearTimes[17];
+extern const s32 gApZ2EnemyCounts[17];
 static const s32 gClearTimeTable[17] = {240, 130, 220, 220, 210, 240, 200, 200, 180, 200, 220, 340, 180, 260, 300, 250, 700};
 static const s32 gEnemyCountTable[17] = {37, 20, 40, 25, 50, 40, 45, 50, 30, 45, 35, 40, 30, 25, 80, 40, 35};
 #else
@@ -141,6 +143,9 @@ NON_MATCH_AP void CalcMissionScore(void) {
   s32 total_damage;
   s32 retry;
   s32 elf_score;
+#if AP
+  s32 clear_time, enemy_par;
+#endif
 #if !AP
   s32 average;
   s32 rank;
@@ -159,7 +164,17 @@ NON_MATCH_AP void CalcMissionScore(void) {
   (m->total)->unusedClearCount++;
   (m->total)->unusedMissionDones |= 1 << m->stageID;
 
+#if AP
+  clear_time = gClearTimeTable[m->stageID];
+  enemy_par = gEnemyCountTable[m->stageID];
+  if (m->stageID == STAGE_NONE) {
+    clear_time = gApZ2ClearTimes[gApImportedStages[gApImportSelected].z2Stage];
+    enemy_par = gApZ2EnemyCounts[gApImportedStages[gApImportSelected].z2Stage];
+  }
+  timeover = (m->clearTime / 60) - clear_time;
+#else
   timeover = (m->clearTime / 60) - gClearTimeTable[m->stageID];
+#endif
   if (timeover < 1) {
     m->eachScore[1] = 20;
   } else if (timeover < 200) {
@@ -172,7 +187,11 @@ NON_MATCH_AP void CalcMissionScore(void) {
   if (enemy_count == 0) {
     m->eachScore[2] = 0;
   } else {
+#if AP
+    s32 n = (enemy_par * 10) / enemy_count;
+#else
     s32 n = (gEnemyCountTable[m->stageID] * 10) / enemy_count;
+#endif
     if (n <= 10) {
       m->eachScore[2] = 15;
     } else if (n > 24) {

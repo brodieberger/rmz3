@@ -1,4 +1,7 @@
 #include "ap.h"
+#if AP
+#include "ap_import.h"
+#endif
 #include "collision.h"
 #include "game.h"
 #include "global.h"
@@ -144,7 +147,7 @@ void ClearStageRun(Renderer* r) {
   ResetLandscape(gStageID32s[id], &gStageRun.vm.camera.viewport);
 
 #if AP
-  if (ApInMissionRerun() || !(gMissionDones & (1 << gStageMissionBitTable[id]))) {
+  if (id == STAGE_NONE || ApInMissionRerun() || !(gMissionDones & (1 << gStageMissionBitTable[id]))) {
 #else
   if (!(gMissionDones & (1 << gStageMissionBitTable[id]))) {
 #endif
@@ -365,6 +368,15 @@ static bool32 CheckMissionFail(struct StageRun* p) {
 
 static void trySkipEventScene(void* _) {
   struct GameState* g = &gGameState;
+#if AP
+  const struct ApImportedStage* imp = &gApImportedStages[gApImportSelected];
+
+  // Legacy boss intros play through
+  if (gStageRun.id == STAGE_NONE &&
+      (gStageRun.vm.start == imp->bossScript || gStageRun.vm.start == imp->bossReturnScript)) {
+    return;
+  }
+#endif
 
   if ((gJoypad[0].pressed & START_BUTTON) && (gStageRun.missionStatus & SKIPPABLE_CUTSCENE)) {
     if (gStageRun.checkpointResultScreen != 0xFF) {

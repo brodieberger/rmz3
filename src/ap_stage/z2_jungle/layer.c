@@ -597,6 +597,12 @@ u8 ApZ2SoldiersSaved(void) {
   return n;
 }
 
+// Pinofeel's hollow: wall-slide down what's left of it, past the screen's edge, to the 1-UP
+bool8 ApZ2JungleInHollow(const Coords32* c) {
+  return gApImportedStages[gApImportSelected].fns == gApZ2Jungle_StageRoutines && c->x >= PIXEL(4280) &&
+         c->x < PIXEL(4360) && c->y >= PIXEL(776) && c->y < PIXEL(1504);
+}
+
 static void Rescue_Update(struct Solid* p) {
   struct Entity* s = &p->s;
   UpdateSpriteAnimation(p);

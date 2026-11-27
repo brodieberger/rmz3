@@ -821,8 +821,8 @@ gApSheetGraphics:
 
 	@ Sheet 90: solid/z2_dark_elf, Zero 2 SM132
 	.4byte gApSheet_90-. @ src
-	.4byte 3936 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
-	.2byte 984, BPP4 	@ rowsize(unused), props
+	.4byte 4064 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 1016, BPP4 	@ rowsize(unused), props
 		@ Palette
 		.4byte gApSheet_90_Palettes-. @ src offset
 		.2byte 32 @ bytesize
@@ -1242,6 +1242,15 @@ gApSheetGraphics:
 		.2byte 32 @ bytesize
 		.byte 0, 4 @ lz77(bool8), dst = PaletteID
 
+	@ Sheet 137: solid/z2_block, Zero 2 SM108
+	.4byte gApSheet_137-. @ src
+	.4byte 1632 | (512 << 22) 	@ bit0..21: bytesize, bit22..31: dst (VRAM TileID)
+	.2byte 408, BPP4 	@ rowsize(unused), props
+		@ Palette
+		.4byte gApSheet_137_Palettes-. @ src offset
+		.2byte 32 @ bytesize
+		.byte 0, 4 @ lz77(bool8), dst = PaletteID
+
 .global gApSheetMetaspriteTable
 gApSheetMetaspriteTable:
   .word gStaticMetaSprite_enemy_z2_hopper
@@ -1381,6 +1390,7 @@ gApSheetMetaspriteTable:
   .word gStaticMetaSprite_solid_z2_hatch_open
   .word gStaticMetaSprite_solid_z2_hatch_plate
   .word gStaticMetaSprite_solid_z2_hatch_plate_open
+  .word gStaticMetaSprite_solid_z2_block
 
 .global gApSheetCmdTable
 gApSheetCmdTable:
@@ -1521,6 +1531,7 @@ gApSheetCmdTable:
   .word gStaticAnimationSequence_solid_z2_hatch_open
   .word gStaticAnimationSequence_solid_z2_hatch_plate
   .word gStaticAnimationSequence_solid_z2_hatch_plate_open
+  .word gStaticAnimationSequence_solid_z2_block
 
 .include "sprites/static/enemy/z2_hopper/metasprite.inc"
 .include "sprites/static/enemy/z2_hopper/sequence.inc"
@@ -2754,5 +2765,14 @@ gApSheet_136:
 	.incbin "sprites/static/solid/z2_hatch/plate_open/sheet.4bpp"
 gApSheet_136_Palettes:
 	.incbin "sprites/static/solid/z2_hatch/plate_open/sheet.gbapal"
+
+.include "sprites/static/solid/z2_block/metasprite.inc"
+.include "sprites/static/solid/z2_block/sequence.inc"
+.section .rodata
+.balign 4, 0
+gApSheet_137:
+	.incbin "sprites/static/solid/z2_block/sheet.4bpp"
+gApSheet_137_Palettes:
+	.incbin "sprites/static/solid/z2_block/sheet.gbapal"
 
 .endif

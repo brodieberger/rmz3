@@ -387,26 +387,36 @@ static void onCollision(struct Body* body, Coords32* r1 UNUSED, Coords32* r2 UNU
   setMode(p, MINE_KNOCKED);
 }
 
-// 0x0800fb84: rock in screen rows 3 and 4 breaks to metatile 8 screens below
-static void breakRock(const Coords32* c) {
+// Rock breaks to metatile some screens below
+// 0x0800d3b4 work1 0: rows 3, 6..12
+// 0x0800fb84 work1 1: rows 3, 4
+static void breakRock(struct Mine* p, const Coords32* c) {
   u16* map = gOverworld.terrain.tilemap;
   s32 x = METACOORD(c->x + 0x7FF);
   s32 y = METACOORD(c->y + 0x7FF);
+  s32 screen = y / 10;
+  s32 below;
   u16 patch[3];
-  if (y / 10 != 3 && y / 10 != 4) return;
+  if ((p->s).work[1] != 0) {
+    if (screen != 3 && screen != 4) return;
+    below = 80;
+  } else {
+    if (screen < 3 || screen > 12 || screen == 4 || screen == 5) return;
+    below = screen == 3 ? 90 : 70;
+  }
   patch[0] = patch[1] = 1;
-  patch[2] = map[MAP_OFFSET(map, x, y + 80)];
+  patch[2] = map[MAP_OFFSET(map, x, y + below)];
   if (map[MAP_OFFSET(map, x, y)] == patch[2]) return;
   PatchMetatileMap(x, y, patch);
   if (!isSoundPlaying(SE_Z2_DESERT_TAIL_SLAM)) PlaySound(SE_Z2_DESERT_TAIL_SLAM);
 }
 
-static void blast(s32 x, s32 y) {
+static void blast(struct Mine* p, s32 x, s32 y) {
   Coords32 c;
   c.x = x;
   c.y = y;
   createBlast(&c);
-  breakRock(&c);
+  breakRock(p, &c);
 }
 
 // 0x080918c8: grows in rings, four blasts every other frame, quake each
@@ -438,10 +448,10 @@ static void Mine_Die(struct Mine* p) {
     if (!(s->work[2] & 1)) {
       s32 along = PIXEL(8) * (p->ring / 2) - PIXEL(16) * (p->ringPoint - 1) - PIXEL(8);
       s32 out = PIXEL(8) * (p->ring - 1);
-      blast(s->coord.x - along, s->coord.y - out);
-      blast(s->coord.x + out, s->coord.y - along);
-      blast(s->coord.x + along, s->coord.y + out);
-      blast(s->coord.x - out, s->coord.y + along);
+      blast(p, s->coord.x - along, s->coord.y - out);
+      blast(p, s->coord.x + out, s->coord.y - along);
+      blast(p, s->coord.x + along, s->coord.y + out);
+      blast(p, s->coord.x - out, s->coord.y + along);
       AppendQuake(4, &s->coord);
       if (++p->ringPoint == p->ring) {
         if (p->ring == 4) {

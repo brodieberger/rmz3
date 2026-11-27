@@ -343,7 +343,7 @@ const struct SpawnPoint gApZ2Bomber_Points[102] = {
     [101] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApZ2Bomber_Preloads[13] = {
+const struct PreloadEntity gApZ2Bomber_Preloads[14] = {
     {
         AP_SHEET_Z2_GUNSHIP,
         B8(00000000),
@@ -435,6 +435,15 @@ const struct PreloadEntity gApZ2Bomber_Preloads[13] = {
         0,
     },
     {
+        AP_SHEET_Z2_HATCH,
+        B8(11000000),
+        768,
+        6,
+        1,
+        AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
         AP_SHEET_Z2_SHIELD_GUARD,
         B8(11010000),
         512,
@@ -446,7 +455,7 @@ const struct PreloadEntity gApZ2Bomber_Preloads[13] = {
     {
         AP_SHEET_Z2_CARGO,
         B8(11000000),
-        784,
+        800,
         4,
         1,
         AP_PRELOAD_SHEET | 1,

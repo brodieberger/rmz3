@@ -38,6 +38,7 @@ extern const char_t gApTrapMosaicText[];
 extern const char_t gApTrapSlipText[];
 
 void ApClearTraps(void) {
+  if (sApQuakeFrames != 0) StopSound(SE_UNK_10d);
   sApQuakeFrames = 0;
   sApMosaicFrames = 0;
   sApSlipFrames = 0;
@@ -113,7 +114,7 @@ void ApTrapUpdate(void) {
 
   if (sApQuakeFrames != 0) {
     AppendQuake(AP_QUAKE_POWER, &(gGameState.z2->s).coord);
-    sApQuakeFrames--;
+    if (--sApQuakeFrames == 0) StopSound(SE_UNK_10d);
   }
 
   if (sApMosaicFrames != 0) {

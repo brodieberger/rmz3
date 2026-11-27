@@ -101,7 +101,7 @@ extern const SolidRoutine gApZ2ForestElpizoRoutine, gApZ2ScriptDoorRoutine, gApZ
 extern const SolidRoutine gApZ2DefenceCielRoutine, gApZ2CargoRoutine, gApZ2TeleporterRoutine;
 extern const SolidRoutine gApZ2YggElpizoRoutine, gApZ2SealBoltRoutine, gApZ2YggSealRoutine, gApZ2SealPartRoutine,
     gApZ2DarkWingRoutine, gApZ2DarkWingTipRoutine, gApZ2DarkElfTwinRoutine, gApZ2ElpizoFinalRockRoutine,
-    gApZ2HatchRoutine;
+    gApZ2HatchRoutine, gApZ2YggSoulRoutine, gApZ2YggRubbleRoutine, gApZ2DarkElfEndRoutine, gApZ2BabyElfTrailRoutine;
 #endif
 
 // clang-format off
@@ -218,6 +218,10 @@ const SolidRoutine* const gSolidFnTable[SOLID_ENTITY_COUNT] = {
     [SOLID_Z2_DARK_ELF_TWIN] =          &gApZ2DarkElfTwinRoutine,
     [SOLID_Z2_ELPIZO_FINAL_ROCK] =      &gApZ2ElpizoFinalRockRoutine,
     [SOLID_Z2_HATCH] =                  &gApZ2HatchRoutine,
+    [SOLID_Z2_YGG_SOUL] =               &gApZ2YggSoulRoutine,
+    [SOLID_Z2_YGG_RUBBLE] =             &gApZ2YggRubbleRoutine,
+    [SOLID_Z2_DARK_ELF_END] =           &gApZ2DarkElfEndRoutine,
+    [SOLID_Z2_BABY_ELF_TRAIL] =         &gApZ2BabyElfTrailRoutine,
 #endif
 };
 // clang-format on

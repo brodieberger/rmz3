@@ -503,7 +503,7 @@ const struct SpawnTemplate gApZ2Bomber2_Templates[91] = {
         },
 };
 
-const struct SpawnPoint gApZ2Bomber2_Points[85] = {
+const struct SpawnPoint gApZ2Bomber2_Points[84] = {
     [0] = {-0x80000000, -0x8000, 0},
     [1] = {SpawnPixelCoords(720, 1680), 1},
     [2] = {SpawnPixelCoords(800, 576), 8},
@@ -580,15 +580,14 @@ const struct SpawnPoint gApZ2Bomber2_Points[85] = {
     [73] = {SpawnPixelCoords(5712, 992), 39},
     [74] = {SpawnPixelCoords(5744, 2352), 66},
     [75] = {SpawnPixelCoords(5792, 1200), 63},
-    [76] = {SpawnPixelCoords(5792, 2224), 90},
-    [77] = {SpawnPixelCoords(5808, 1200), 63},
-    [78] = {SpawnPixelCoords(5808, 2128), 61},
-    [79] = {SpawnPixelCoords(5984, 2352), 66},
-    [80] = {SpawnPixelCoords(6320, 960), 9},
-    [81] = {SpawnPixelCoords(6544, 992), 8},
-    [82] = {SpawnPixelCoords(6960, 1552), 3},
-    [83] = {SpawnPixelCoords(6976, 1552), 3},
-    [84] = {0x7FFFFFFF, 0x7FFF, 0},
+    [76] = {SpawnPixelCoords(5808, 1200), 63},
+    [77] = {SpawnPixelCoords(5808, 2128), 61},
+    [78] = {SpawnPixelCoords(5984, 2352), 66},
+    [79] = {SpawnPixelCoords(6320, 960), 9},
+    [80] = {SpawnPixelCoords(6544, 992), 8},
+    [81] = {SpawnPixelCoords(6960, 1552), 3},
+    [82] = {SpawnPixelCoords(6976, 1552), 3},
+    [83] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
 const struct PreloadEntity gApZ2Bomber2_Preloads[10] = {

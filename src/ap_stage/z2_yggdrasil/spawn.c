@@ -221,7 +221,7 @@ const struct SpawnPoint gApZ2Yggdrasil_Points[55] = {
     [54] = {0x7FFFFFFF, 0x7FFF, 0},
 };
 
-const struct PreloadEntity gApZ2Yggdrasil_Preloads[10] = {
+const struct PreloadEntity gApZ2Yggdrasil_Preloads[12] = {
     {
         AP_SHEET_Z2_FEFNIR_SUMMON,
         B8(00000000),
@@ -236,6 +236,15 @@ const struct PreloadEntity gApZ2Yggdrasil_Preloads[10] = {
         B8(00000111),
         512,
         5,
+        1,
+        AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
+        AP_SHEET_Z2_HATCH,
+        B8(00000111),
+        602,
+        4,
         1,
         AP_PRELOAD_SHEET | 1,
         0,
@@ -290,6 +299,15 @@ const struct PreloadEntity gApZ2Yggdrasil_Preloads[10] = {
         B8(00000100),
         858,
         7,
+        1,
+        AP_PRELOAD_SHEET | 1,
+        0,
+    },
+    {
+        AP_SHEET_Z2_HATCH_PLATE,
+        B8(00000100),
+        634,
+        8,
         1,
         AP_PRELOAD_SHEET | 1,
         0,

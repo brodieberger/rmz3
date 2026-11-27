@@ -166,7 +166,7 @@ static const u16 sMargin[3] = {0xc00, 0x1000, 0x1400};
 static const s32 sSpots[6] = {0x400, 0x2c00, 0x5400, 0x7c00, 0xa400, 0xcc00};
 
 static const struct PreloadEntity sTreeFrogSheet = {AP_SHEET_Z2_TREE_FROG, 0, 832, 9, 0, AP_PRELOAD_SHEET, 0};
-static const struct PreloadEntity sBubbleSheet = {AP_SHEET_Z2_FROG_BUBBLE, 0, 699, 10, 0, AP_PRELOAD_SHEET, 0};
+static const struct PreloadEntity sBubbleSheet = {AP_SHEET_Z2_FROG_BUBBLE, 0, 699, 8, 0, AP_PRELOAD_SHEET, 0};
 static const struct PreloadEntity sTintSheet = {AP_SHEET_Z2_FROG_TINT, 0, 763, 7, 0, AP_PRELOAD_SHEET, 0};
 
 static void Frog_Init(struct Frog* p);

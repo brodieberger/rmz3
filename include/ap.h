@@ -22,7 +22,7 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 696
+#define AP_MAX_LOCATION_ID 702
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
@@ -44,6 +44,8 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
 #define AP_LOC_SUBTANK_2 222
 /* Legacy stages' sub tanks: Forest of Dysis's, then Forest of Notus's */
 #define AP_LOC_IMPORT_SUBTANK_FIRST 695
+/* Yggdrasil's refights: snake, bear, Magnion, Panter, Anchus brothers, frog */
+#define AP_LOC_IMPORT_REFIGHT_FIRST 697
 
 //197 Ice     198 Thunder   199 Flame         200 Light   201 Absorber
 #define AP_ITEM_BODY_CHIP_FIRST 197
@@ -436,7 +438,7 @@ void ApUpdate(void);
 /* Rows of gApImportedStages */
 #define AP_IMPORT_COUNT 16
 #define AP_IMPORT_TILESETS_MAX 16
-#define AP_IMPORT_PRELOADS_MAX 16
+#define AP_IMPORT_PRELOADS_MAX 17
 
 // AP save information. TODO individual level data
 struct ApSavedata {
@@ -464,6 +466,8 @@ u8 ApImportZ2Stage(u8 import);
 bool32 ApImportOpen(u8 import);
 void ApCreateImportElf(u8 n, u8 type, const Coords32* at);
 bool32 ApImportElfOut(u8 n);
+u16 ApImportKillElf(const struct Entity* e);
+void ApMarkFloorMine(struct Entity* e);
 #define AP_ELF_TILE 386     /* legacy elves: nurse, animal, hacker, 4 tiles each */
 #define AP_ELF_BOX_TILE 473 /* their capsule, in the secret disk's tiles */
 void ApImportResetKills(void);
