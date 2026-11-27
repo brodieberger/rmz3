@@ -22,15 +22,15 @@ Archipelago stuff. This file and ap.c is growing absolutely huge and could proba
   Highest location ID the AP World defines
   Bit N of checkedLocations means location N has been checked.
 */
-#define AP_MAX_LOCATION_ID 702
+#define AP_MAX_LOCATION_ID 792
 #define AP_CHECKED_LOCATION_BYTES ((AP_MAX_LOCATION_ID / 8) + 1)
 
 /*
   Cerveau's shop stuff. Slot n is location AP_SHOP_LOCATION_FIRST + n, so already bought is
   the server's save of that location.
 */
-#define AP_SHOP_SLOTS_MAX 48
-#define AP_SHOP_LOCATION_FIRST 253
+#define AP_SHOP_SLOTS_MAX 90
+#define AP_SHOP_LOCATION_FIRST 703
 
 #define AP_ITEM_INBOX_LEN 16
 #define AP_ITEM_INBOX_MASK (AP_ITEM_INBOX_LEN - 1)
@@ -208,6 +208,8 @@ extern const char_t gApDiskOpenAllText[];
 extern const char_t gApDiskOpenAllShopText[];
 extern const char_t gApDiskShopHintText[];
 extern const char_t gApShopPromptText[];
+extern const char_t gApShopHintPromptText[];
+extern const char_t gApShopHintedText[];
 extern const char_t gApShopEcText[];
 extern const char_t gApShopBuyText[];
 extern const char_t gApShopPoorText[];
@@ -317,10 +319,10 @@ struct ApState {
 
   u8 canAcceptItems;
 
-  u8 shopSeen[AP_SHOP_SLOTS_MAX / 8];  // shop slots the cursor has been on for client hints
+  u8 shopHinted[(AP_SHOP_SLOTS_MAX + 7) / 8];  // shop slots SELECT has hinted
 };
 
-static_assert(sizeof(struct ApState) == 232);
+static_assert(sizeof(struct ApState) == 264);
 
 extern struct ApState gAp;
 
@@ -405,16 +407,20 @@ static_assert(sizeof(struct ApShopItem) == 68);
 extern const struct ApShopItem gApShopItems[AP_SHOP_SLOTS_MAX];
 
 /*
-  The shop's icon palettes: plain, progression, trap, 
-  then a greyed one for a slot the player cannot afford. 
+  The shop's palettes: the logo, one grey ramp that dims any icon, the pickup palette and
+  four for the bosses' faces. Index 1 of each is the panel.
 */
-#define AP_SHOP_PAL_COUNT 4
 #define AP_SHOP_PAL_FIRST 9
+#define AP_SHOP_PAL_COUNT 7
+#define AP_SHOP_PAL_LOGO 9
+#define AP_SHOP_PAL_DIM 10
 
 extern const u16 gApShopPalettes[AP_SHOP_PAL_COUNT][16];
 #define AP_SHOP_CELLS 30
 
 extern const u32 gApShopIcons[AP_ICON_COUNT][AP_ICON_TILES][8];
+extern const u8 gApShopIconPal[AP_ICON_COUNT];
+extern const u8 gApShopPickupIndex[16];
 extern const u16 gApShopCellTiles[AP_SHOP_CELLS][AP_ICON_TILES];
 
 /*
@@ -422,7 +428,7 @@ extern const u16 gApShopCellTiles[AP_SHOP_CELLS][AP_ICON_TILES];
 */
 #define AP_SHOP_BANNER_W 12
 extern const u32 gApShopBanner[AP_SHOP_BANNER_W][8];
-extern const u32 gApShopLogo[AP_ICON_TILES][8];
+extern const u32 gApShopLogo[4][AP_ICON_TILES][8];  // plain, progression, trap, cannot afford
 extern const u16 gApShopBannerTile;
 extern const u16 gApShopLogoTile;
 

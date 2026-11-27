@@ -942,8 +942,8 @@ void ApInit(void) {
     gAp.checkedLocations[i] = 0;
     gAp.serverChecked[i] = 0;
   }
-  for (i = 0; i < AP_SHOP_SLOTS_MAX / 8; i++) {
-    gAp.shopSeen[i] = 0;
+  for (i = 0; i < sizeof(gAp.shopHinted); i++) {
+    gAp.shopHinted[i] = 0;
   }
 
   gAp.version = AP_VERSION;
@@ -991,6 +991,9 @@ u8 ApIconOf(u16 apItemID) {
   }
   if (apItemID == AP_ITEM_STORY_MID || apItemID == AP_ITEM_STORY_LATE) {
     return AP_ICON_STORY;
+  }
+  if (apItemID >= AP_ITEM_IMPORT_ACCESS_FIRST && apItemID < AP_ITEM_IMPORT_ACCESS_FIRST + AP_Z2_STAGE_COUNT) {
+    return (u8)(AP_ICON_LEGACY_0 + (apItemID - AP_ITEM_IMPORT_ACCESS_FIRST));
   }
 
   if (apItemID >= AP_ITEM_PROGRESSIVE_WEAPON_FIRST &&

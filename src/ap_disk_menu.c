@@ -54,8 +54,6 @@ static const u16 sIconSold[4] = {0x80ED, 0x80EE, 0x810D, 0x810E};
 static const u16 sIconAbsent[4] = {GRID_EMPTY_TILE, GRID_EMPTY_TILE,
                                    GRID_EMPTY_TILE, GRID_EMPTY_TILE};
 
-#define LOGO_PAL_DIM (AP_SHOP_PAL_FIRST + 3)
-
 static void blitTiles(const u32 (*art)[8], u16 tile, u8 count) {
   u8 i;
 
@@ -64,19 +62,22 @@ static void blitTiles(const u32 (*art)[8], u16 tile, u8 count) {
   }
 }
 
-// Panel behind an icon
-#define SHOP_ICON_BG 6
-
 static void blitCellIcon(u8 cell, u8 icon) {
+  u32* dst;
   u8 i;
+  u8 k;
 
   for (i = 0; i < AP_ICON_TILES; i++) {
+    dst = (u32*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32);
     if (icon == AP_ICON_CHAIN) {
-      ApChainIconTile((u32*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32), i, SHOP_ICON_BG);
+      // Drawn in pickup palette order, remapped to the shop's copy
+      ApChainIconTile(dst, i, 0);
+      for (k = 0; k < 64; k++) {
+        u32 shift = (k & 7) * 4;
+        dst[k >> 3] = (dst[k >> 3] & ~(15u << shift)) | ((u32)gApShopPickupIndex[(dst[k >> 3] >> shift) & 15] << shift);
+      }
     } else {
-      MemCopy32(gApShopIcons[icon][i],
-                (void*)(VRAM + 0x4000 + gApShopCellTiles[cell][i] * 32),
-                sizeof(gApShopIcons[icon][i]));
+      MemCopy32(gApShopIcons[icon][i], dst, sizeof(gApShopIcons[icon][i]));
     }
   }
 }
@@ -135,7 +136,7 @@ static void buildShopPage(struct GameState* g) {
   u8 tx;
   u8 ty;
   blitTiles(gApShopBanner, gApShopBannerTile, AP_SHOP_BANNER_W);
-  blitTiles(gApShopLogo, gApShopLogoTile, AP_ICON_TILES);
+  blitTiles(gApShopLogo[0], gApShopLogoTile, 4 * AP_ICON_TILES);
 
   for (i = 0; i < 1024; i++) {
     dst[i] = src[i];
@@ -168,15 +169,13 @@ static u8 shopSlots(void);
 static u16 shopPrice(u8 slot);
 static bool32 shopSold(u8 slot);
 
-static bool32 paintCell(u16* map, u16 at, const u16* art) {
-  if (map[at] == art[0]) {
-    return FALSE;
-  }
-  map[at] = art[0];
-  map[at + 1] = art[1];
-  map[at + 32] = art[2];
-  map[at + 33] = art[3];
-  return TRUE;
+static void paintCell(u16* map, u16 at, const u16* art) {
+  u16* vram = (u16*)(VRAM + SCREEN_BASE(1)) + 1024;
+
+  map[at] = vram[at] = art[0];
+  map[at + 1] = vram[at + 1] = art[1];
+  map[at + 32] = vram[at + 32] = art[2];
+  map[at + 33] = vram[at + 33] = art[3];
 }
 
 /*
@@ -186,7 +185,6 @@ static void paintSlotGrid(struct GameState* g) {
   u16* map = g->menuBgMap2;
   u8 slots = shopSlots();
   u16 ec = (g->z2->unk_b4).status.EC;
-  bool32 changed = FALSE;
   u16 logo[4];
   u8 i;
   u8 n;
@@ -201,17 +199,15 @@ static void paintSlotGrid(struct GameState* g) {
     } else if (shopSold(slot)) {
       art = sIconSold;
     } else {
-      u8 kind = gApShopItems[slot].kind;
       bool32 poor = shopPrice(slot) > ec;
-
-      u8 bank = (u8)(poor ? LOGO_PAL_DIM
-                          : (AP_SHOP_PAL_FIRST + (kind & AP_SHOP_KIND_MASK)));
       u8 icon = ApIconOf(gApShopItems[slot].apItemCode);
 
       if (icon == AP_ICON_NONE) {
-        // Another world's item, or one of mmzero3 with no icon of its own.
-        cellArt(logo, gApShopLogoTile, bank);
+        // Another world's item, or one of mmzero3 with no icon of its own
+        u8 variant = (u8)(poor ? 3 : (gApShopItems[slot].kind & AP_SHOP_KIND_MASK));
+        cellArt(logo, (u16)(gApShopLogoTile + variant * AP_ICON_TILES), poor ? AP_SHOP_PAL_DIM : AP_SHOP_PAL_LOGO);
       } else {
+        u8 bank = poor ? AP_SHOP_PAL_DIM : gApShopIconPal[icon];
         blitCellIcon(i, icon);
         for (n = 0; n < AP_ICON_TILES; n++) {
           logo[n] = (u16)((bank << 12) | gApShopCellTiles[i][n]);
@@ -219,12 +215,7 @@ static void paintSlotGrid(struct GameState* g) {
       }
       art = logo;
     }
-    if (paintCell(map, at, art)) {
-      changed = TRUE;
-    }
-  }
-  if (changed) {
-    (g->sceneState).disk.redraw = 1;
+    paintCell(map, at, art);
   }
 }
 
@@ -381,9 +372,22 @@ static void buy(struct GameState* g, u8 slot) {
   PlaySound(14);
 }
 
+static bool32 shopHinted(u8 slot) {
+  return gAp.shopHinted[slot >> 3] & (1 << (slot & 7));
+}
+
+static void hint(u8 slot) {
+  if (shopSold(slot) || shopHinted(slot)) {
+    PlaySound(4);
+    return;
+  }
+  gAp.shopHinted[slot >> 3] |= 1 << (slot & 7);
+  PlaySound(14);
+}
+
 /*
   Runs before the grid sub-loop, and returning TRUE is what stops that sub-loop running.
-  WIP: while the shop is up it takes over the d-pad and the A and B buttons. This is temporary.
+  WIP: while the shop is up it takes over the d-pad and the A, B and SELECT buttons. This is temporary.
 */
 bool32 ApDiskShopUpdate(struct GameState* g) {
   u8 slots = shopSlots();
@@ -449,6 +453,8 @@ bool32 ApDiskShopUpdate(struct GameState* g) {
     moved = (u8)(slot - SGRID_COLS);
   } else if (pressed & A_BUTTON) {
     buy(g, slot);
+  } else if (pressed & SELECT_BUTTON) {
+    hint(slot);
   }
 
   if (moved != slot) {
@@ -484,8 +490,6 @@ static void drawShop(struct GameState* g) {
   u8 slot = SHOP_SLOT(g);
   u8 i;
 
-  gAp.shopSeen[slot >> 3] |= 1 << (slot & 7);
-
   /* The box says whether you can buy it. */
   if (shopSold(slot)) {
     PrintString(gApShopSoldText, PANEL_X, 1);
@@ -509,7 +513,13 @@ static void drawShop(struct GameState* g) {
     PrintString(item->player[i], PANEL_X, (u8)(12 + i * 2));
   }
 
-  PrintString(gApShopPromptText, 1, PROMPT_Y);
+  if (shopSold(slot)) {
+    PrintString(gApShopPromptText, 1, PROMPT_Y);
+  } else if (shopHinted(slot)) {
+    PrintString(gApShopHintedText, 1, PROMPT_Y);
+  } else {
+    PrintString(gApShopHintPromptText, 1, PROMPT_Y);
+  }
 }
 
 /*

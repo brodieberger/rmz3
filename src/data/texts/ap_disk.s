@@ -21,6 +21,14 @@ gApDiskShopHintText:
 gApShopPromptText:
 	.string "A: Buy  L/R: Disks.$"
 
+.global gApShopHintPromptText
+gApShopHintPromptText:
+	.string "A: Buy  SELECT: Hint$"
+
+.global gApShopHintedText
+gApShopHintedText:
+	.string "A: Buy  Hinted.  L/R: Disks.$"
+
 @ The right hand panel, printed at x 0x11. Thirteen characters of room.
 .global gApShopEcText
 gApShopEcText:
