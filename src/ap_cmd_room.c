@@ -66,6 +66,24 @@ void ApCmdRoomTalk(struct GameState* g) {
       g->mode[3] = 1;
       return;
     }
+    case 1: {
+      if ((w->mode != 0) && (w->mode != TEXT_MODE_OPTION)) {
+        return;
+      }
+      if ((ans = handleWrapTwoChoice(g)) == 0) {
+        return;
+      }
+      if (ans > 0) {
+        w->flag |= TEXT_FLAG_TERMINATE;
+        g->mode[3] = 6;
+      } else if (ans == -1) {  // Ciel
+        g->mode[3] = 3;
+      } else {
+        PlaySound(SE_NO);
+        g->mode[3] = 2;
+      }
+      return;
+    }
 
     /*
       Skip straight the mission select screen.
