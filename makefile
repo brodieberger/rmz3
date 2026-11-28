@@ -288,7 +288,7 @@ ifeq ($(MODERN),1)
 else
 	$(CPP) $(CPPFLAGS) $< | $(AGBCC) $(CFLAGS) -o $(BUILD_DIR)/$(subst .c,.s,$<)
 	@echo ".text\n\t.align\t2, 0\n" >> $(BUILD_DIR)/$(subst .c,.s,$<)
-	$(AS) $(ASFLAGS) $(BUILD_DIR)/$(subst .c,.s,$<) -o $@ 
+	awk -f tools/rom_addresses.awk $(BUILD_DIR)/$(subst .c,.s,$<) | $(AS) $(ASFLAGS) -o $@ -
 endif
 
 # 依存関係ファイル (.d), agbcc には依存関係を生成する機能がないっぽいため、 scaninc ツールを使って生成する

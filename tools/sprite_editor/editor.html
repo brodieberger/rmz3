@@ -1,0 +1,613 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Zero Sprite Editor</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Silkscreen&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: tools left, the frame being painted in the middle with every frame under it, preview and tile space right. */
+:root {
+  --bg: #eceef3; --panel: #ffffff; --ink: #1a1e29; --muted: #5b6274; --line: #d3d8e2;
+  --accent: #c41f3a; --accent-ink: #ffffff; --accent-soft: #fbe3e7;
+  --ok: #1b7f54; --warn: #a76a10; --bad: #b42318;
+  --checker-a: #dfe3ea; --checker-b: #f3f4f7; --focus: #3a6ff7;
+  --font-display: "Silkscreen", "Courier New", monospace;
+  --font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12141a; --panel: #1b1e26; --ink: #e7e9ef; --muted: #9aa1b3; --line: #2b303c;
+    --accent: #ff4b62; --accent-ink: #1a0a0d; --accent-soft: #3a1a20;
+    --ok: #3ccf8e; --warn: #f0b24a; --bad: #ff6b6b;
+    --checker-a: #222631; --checker-b: #2a2e3a; --focus: #7aa2ff; color-scheme: dark;
+  }
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--font-body); display: grid; grid-template-rows: auto 1fr; }
+h1, h2 { font-family: var(--font-display); font-weight: 400; margin: 0; }
+h1 { font-size: 22px; white-space: nowrap; }
+h1 span { color: var(--accent); }
+h2 { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+button, select { font: 500 13px/1 var(--font-body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 8px 11px; cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--muted); }
+button:disabled { opacity: 0.45; cursor: not-allowed; }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button[aria-pressed="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; color: var(--accent); }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; color: var(--muted); }
+.mono { font-family: var(--font-mono); font-size: 12px; }
+.muted { color: var(--muted); }
+
+.top { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); }
+.top .spacer { flex: 1; }
+.status { font-size: 13px; color: var(--muted); min-width: 0; }
+.status.bad { color: var(--bad); font-weight: 600; }
+.status.ok { color: var(--ok); }
+
+.app { display: grid; grid-template-columns: 220px minmax(0, 1fr) 280px; gap: 12px; padding: 12px; min-height: 0; }
+@media (max-width: 1000px) { .app { grid-template-columns: 1fr; } }
+.side { display: grid; gap: 12px; align-content: start; min-width: 0; overflow: auto; }
+.box { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px; display: grid; gap: 10px; align-content: start; }
+
+.tools { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.tools button { display: flex; justify-content: space-between; align-items: center; gap: 6px; padding: 8px; }
+.swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 5px; }
+.swatch { aspect-ratio: 1; border-radius: 5px; border: 1px solid var(--line); padding: 0; position: relative; }
+.swatch span { position: absolute; right: 3px; bottom: 1px; font: 10px var(--font-mono); color: #fff; text-shadow: 0 0 2px #000, 0 0 2px #000; }
+.swatch.clear { background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 10px 10px; }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--panel), 0 0 0 4px var(--accent); }
+.toggles { display: grid; gap: 6px; }
+.toggles label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+.toggles input { accent-color: var(--accent); }
+.row { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.middle { display: grid; grid-template-rows: minmax(0, 1fr) auto; gap: 12px; min-width: 0; min-height: 0; }
+.scroller { overflow: auto; border-radius: 10px; border: 1px solid var(--line); min-height: 320px;
+  background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 16px 16px; display: grid; }
+#board { margin: auto; display: block; image-rendering: pixelated; cursor: crosshair; touch-action: none; }
+.strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+.thumb { flex: none; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); padding: 4px; display: grid; gap: 2px; justify-items: center; font-size: 12px; font-variant-numeric: tabular-nums; cursor: pointer; }
+.thumb canvas { image-rendering: pixelated; background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 8px 8px; border-radius: 4px; }
+.thumb[aria-current="true"] { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+.thumb .dot { width: 7px; height: 7px; border-radius: 2px; background: var(--accent); display: inline-block; margin-left: 4px; }
+
+.stage { display: grid; place-items: center; border-radius: 8px; padding: 8px; min-height: 160px;
+  background: repeating-conic-gradient(var(--checker-a) 0 25%, var(--checker-b) 0 50%) 0 0 / 12px 12px; }
+.stage canvas { image-rendering: pixelated; max-width: 100%; }
+.meter { display: grid; gap: 4px; }
+.meter .head { display: flex; justify-content: space-between; gap: 8px; font-variant-numeric: tabular-nums; }
+.meter .track { height: 8px; border-radius: 3px; background: var(--bg); border: 1px solid var(--line); position: relative; overflow: hidden; }
+.meter .fill { position: absolute; inset: 0 auto 0 0; background: var(--ok); }
+.meter[data-level="near"] .fill { background: var(--warn); }
+.meter[data-level="over"] .fill { background: var(--bad); }
+.meter .note { font-size: 12px; color: var(--muted); }
+.meter[data-level="over"] .note { color: var(--bad); font-weight: 600; }
+.keys { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px; color: var(--muted); }
+.keys kbd { justify-self: start; }
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Zero <span>Sprite</span> Editor</h1>
+  <select id="anim" aria-label="Animation"></select>
+  <span class="status" id="status" aria-live="polite">Loading…</span>
+  <span class="spacer"></span>
+  <button id="revertFrame" title="Put this frame back as it is on disk">Revert frame</button>
+  <button id="revertAll">Revert all</button>
+  <button class="primary" id="save" disabled title="Write the changes into the decomp (Ctrl+S)">Save</button>
+</header>
+
+<main class="app">
+  <aside class="side">
+    <div class="box">
+      <h2>Tools</h2>
+      <div class="tools" id="tools">
+        <button data-tool="pencil">Pencil <kbd>B</kbd></button>
+        <button data-tool="eraser">Eraser <kbd>E</kbd></button>
+        <button data-tool="fill">Fill <kbd>G</kbd></button>
+        <button data-tool="pick">Pick <kbd>I</kbd></button>
+      </div>
+      <div class="row">
+        <button id="undo" title="Ctrl+Z">Undo</button>
+        <button id="redo" title="Ctrl+Y">Redo</button>
+      </div>
+    </div>
+    <div class="box">
+      <h2>Colours</h2>
+      <div class="swatches" id="swatches"></div>
+      <p class="muted" style="margin:0;font-size:12px">Zero's 16 colours. 0 is see-through. Right-click paints 0.</p>
+    </div>
+    <div class="box">
+      <h2>View</h2>
+      <div class="row">
+        <button id="zoomOut" aria-label="Zoom out">−</button>
+        <span class="mono" id="zoomLabel"></span>
+        <button id="zoomIn" aria-label="Zoom in">+</button>
+      </div>
+      <div class="toggles">
+        <label><input type="checkbox" id="grid" checked> Pixel grid</label>
+        <label><input type="checkbox" id="boxes" checked> The game's boxes</label>
+        <label><input type="checkbox" id="onion"> Previous frame, faint</label>
+        <label><input type="checkbox" id="feet" checked> Zero's feet</label>
+      </div>
+    </div>
+    <div class="box">
+      <h2>Swap with another editor</h2>
+      <div class="row">
+        <button id="exportPng">Export PNG</button>
+        <button id="importPng">Import PNG</button>
+        <input type="file" id="importFile" accept=".png" hidden>
+      </div>
+      <p class="muted" style="margin:0;font-size:12px">For Aseprite and the like: export this frame, edit it there, import it back. Keep its size and palette.</p>
+    </div>
+  </aside>
+
+  <section class="middle">
+    <div class="scroller" id="scroller"><canvas id="board"></canvas></div>
+    <div class="strip" id="strip"></div>
+  </section>
+
+  <aside class="side">
+    <div class="box">
+      <div class="row" style="justify-content:space-between">
+        <h2>Preview</h2>
+        <div class="row">
+          <select id="motion" aria-label="Which version to play"></select>
+          <button id="play">Pause</button>
+        </div>
+      </div>
+      <div class="stage"><canvas id="preview"></canvas></div>
+      <div class="toggles"><label><input type="checkbox" id="faceRight"> Face right, as in most of the game</label></div>
+    </div>
+    <div class="box">
+      <h2>Tile space</h2>
+      <div id="sheets" style="display:grid;gap:12px"></div>
+    </div>
+    <div class="box">
+      <h2>Keys</h2>
+      <div class="keys">
+        <kbd>B E G I</kbd><span>pencil, eraser, fill, pick</span>
+        <kbd>Alt</kbd><span>hold to pick a colour</span>
+        <kbd>← →</kbd><span>previous, next frame</span>
+        <kbd>Shift + arrows</kbd><span>move the whole frame 1 pixel</span>
+        <kbd>+ −</kbd><span>zoom</span>
+        <kbd>Ctrl Z / Y</kbd><span>undo, redo</span>
+        <kbd>Ctrl S</kbd><span>save</span>
+      </div>
+    </div>
+  </aside>
+</main>
+
+<script src="core.js"></script>
+<script>
+(() => {
+  const $ = id => document.getElementById(id);
+  const LIMIT = 48, MARGIN = 32, ZOOMS = [2, 3, 4, 6, 8, 10, 12, 16, 20];
+  const BOX_COLOURS = ['#ff5a5a', '#3fc46a', '#4c8dff', '#ffb020', '#d35cff', '#22c7c7', '#ff7ac8', '#9bd14b', '#ff8a3d', '#8f7bff'];
+  const inflate = async z => new Uint8Array(await new Response(new Blob([z]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
+
+  const S = { cur: 0, tool: 'pencil', ink: 1, zoom: 8, playing: true, motion: 0, undo: [], redo: [], packed: null, packId: 0, packing: false };
+
+  function status(text, kind) { const s = $('status'); s.textContent = text; s.className = 'status' + (kind ? ' ' + kind : ''); }
+  const get = async path => { const r = await fetch(path); if (!r.ok) throw new Error(`${path}: ${r.status}`); return r; };
+  const clone = im => ({ w: im.w, h: im.h, px: im.px.slice() });
+  const same = (a, b) => a.px.every((v, i) => v === b.px[i]);
+  const dirty = i => !same(S.frames[i], S.base[i]);
+  const anyDirty = () => S.frames.some((_, i) => dirty(i));
+
+  // ---- Loading ---------------------------------------------------------------------------------
+
+  async function start() {
+    const list = await (await get('animations.json')).json();
+    S.spritesDir = list.sprites;
+    $('anim').replaceChildren(...list.animations.map(d => {
+      const o = document.createElement('option'); o.value = d; o.textContent = d.slice('dynamic/zero/'.length).replace(/_/g, ' '); return o;
+    }));
+    $('anim').value = list.animations.includes('dynamic/zero/idle') ? 'dynamic/zero/idle' : list.animations[0];
+    const coreText = await (await get('core.js')).text();
+    S.worker = new Worker(URL.createObjectURL(new Blob([coreText, `
+      onmessage = e => {
+        const { id, frames, origin, sheetOf, sheetCount } = e.data;
+        const r = Core.pack(frames, origin, sheetOf, sheetCount);
+        postMessage({ id, data: r.data, sheets: r.sheets });
+      };`], { type: 'text/javascript' })));
+    S.worker.onmessage = e => packed(e.data);
+    await load($('anim').value);
+  }
+
+  async function load(dir, keepFrame) {
+    status('Loading…');
+    const meta = JSON.parse(await (await get(`file/${dir}/metasprite.json`)).text());
+    const seqRes = await fetch(`file/${dir}/sequence.json`);
+    const seq = seqRes.ok ? JSON.parse(await seqRes.text()) : null;
+    const header = await (await get(`file/${dir}/sheet/header.inc`)).text();
+    const mk = await (await get('file/sprites.mk')).text();
+    const sheets = [];
+    for (let n = 0; ; n++) {
+      const r = await fetch(`file/${dir}/sheet/${n}.png`);
+      if (!r.ok) break;
+      const png = await Core.decodePNG(new Uint8Array(await r.arrayBuffer()), inflate);
+      sheets.push({ w: png.width, h: png.height, px: png.pixels, palette: png.palette });
+    }
+    const built = sheets.map((s, n) => Core.builtTiles(mk, dir, n, (s.w / 8) * (s.h / 8)));
+    const before = Core.headerSizes(header).map((b, n) => Math.min(b / 32, built[n] ?? 0));
+    const un = Core.unpack(meta, sheets, MARGIN);
+    Object.assign(S, { dir, meta, seq, header, mk, sheets, before, un, palette: sheets[0].palette,
+      base: un.frames.map(clone), frames: un.frames.map(clone), packed: null, motion: 0 });
+    S.undo = S.frames.map(() => []); S.redo = S.frames.map(() => []);
+    S.cur = keepFrame !== undefined && keepFrame < S.frames.length ? keepFrame : 0;
+    const room = $('scroller').getBoundingClientRect(), w = S.frames[0].w, h = S.frames[0].h;
+    S.zoom = [...ZOOMS].reverse().find(z => w * z <= room.width - 16 && h * z <= room.height - 16) || ZOOMS[0];
+    const count = seq ? seq.data.length : 1;
+    $('motion').replaceChildren(...Array.from({ length: count }, (_, i) => { const o = document.createElement('option'); o.value = i; o.textContent = count > 1 ? `Version ${i + 1} of ${count}` : 'Animation'; return o; }));
+    $('motion').hidden = count < 2;
+    renderSwatches(); renderStrip(); renderBoard(); renderSheets(); restartPreview(); refresh();
+    status(`${S.frames.length} frames from ${S.spritesDir}/${dir}`);
+  }
+
+  $('anim').addEventListener('change', e => {
+    if (anyDirty() && !confirm('You have unsaved changes in this animation. Switch anyway and lose them?')) { e.target.value = S.dir; return; }
+    load(e.target.value);
+  });
+  addEventListener('beforeunload', e => { if (S.frames && anyDirty()) e.preventDefault(); });
+
+  // ---- Drawing ---------------------------------------------------------------------------------
+
+  function toImage(im, palette) {
+    const data = new ImageData(im.w, im.h);
+    for (let i = 0; i < im.px.length; i++) {
+      const v = im.px[i]; if (!v) continue;
+      const c = palette[v] || [255, 0, 255];
+      data.data[i * 4] = c[0]; data.data[i * 4 + 1] = c[1]; data.data[i * 4 + 2] = c[2]; data.data[i * 4 + 3] = 255;
+    }
+    const c = document.createElement('canvas'); c.width = im.w; c.height = im.h;
+    c.getContext('2d').putImageData(data, 0, 0);
+    return c;
+  }
+
+  function boxesOf(i) { return (S.packed ? S.packed.data[i] : S.meta.data[i]).subsprites; }
+
+  function renderBoard() {
+    const im = S.frames[S.cur], z = S.zoom, board = $('board'), g = board.getContext('2d');
+    board.width = im.w * z; board.height = im.h * z;
+    g.imageSmoothingEnabled = false;
+    if ($('onion').checked && S.cur > 0) {
+      g.globalAlpha = 0.28; g.drawImage(toImage(S.frames[S.cur - 1], S.palette), 0, 0, board.width, board.height); g.globalAlpha = 1;
+    }
+    g.drawImage(toImage(im, S.palette), 0, 0, board.width, board.height);
+    if ($('grid').checked && z >= 6) {
+      g.strokeStyle = 'rgba(128,128,140,0.25)'; g.lineWidth = 1; g.beginPath();
+      for (let x = 1; x < im.w; x++) { g.moveTo(x * z + 0.5, 0); g.lineTo(x * z + 0.5, board.height); }
+      for (let y = 1; y < im.h; y++) { g.moveTo(0, y * z + 0.5); g.lineTo(board.width, y * z + 0.5); }
+      g.stroke();
+    }
+    const [ox, oy] = S.un.origin;
+    if ($('boxes').checked) {
+      g.lineWidth = 2;
+      boxesOf(S.cur).forEach((s, k) => {
+        g.strokeStyle = BOX_COLOURS[k % BOX_COLOURS.length];
+        g.strokeRect((ox + s.x) * z + 1, (oy + s.y) * z + 1, s.size[0] * z - 2, s.size[1] * z - 2);
+      });
+    }
+    if ($('feet').checked) {
+      const x = ox * z, y = oy * z;
+      g.strokeStyle = '#ffffff'; g.lineWidth = 3; g.beginPath(); g.moveTo(x - 10, y); g.lineTo(x + 10, y); g.moveTo(x, y - 10); g.lineTo(x, y + 10); g.stroke();
+      g.strokeStyle = '#111111'; g.lineWidth = 1; g.beginPath(); g.moveTo(x - 9, y); g.lineTo(x + 9, y); g.moveTo(x, y - 9); g.lineTo(x, y + 9); g.stroke();
+    }
+    $('zoomLabel').textContent = `${z}×`;
+  }
+
+  function renderStrip() {
+    $('strip').replaceChildren(...S.frames.map((im, i) => {
+      const b = document.createElement('button'); b.className = 'thumb'; b.type = 'button';
+      b.setAttribute('aria-current', i === S.cur ? 'true' : 'false');
+      const c = document.createElement('canvas'); c.width = im.w; c.height = im.h;
+      c.style.width = `${Math.round(im.w * 0.9)}px`;
+      c.getContext('2d').drawImage(toImage(im, S.palette), 0, 0);
+      const label = document.createElement('span'); label.textContent = `${i}`;
+      if (dirty(i)) { const d = document.createElement('span'); d.className = 'dot'; d.title = 'Changed'; label.append(d); }
+      b.append(c, label);
+      b.addEventListener('click', () => select(i));
+      return b;
+    }));
+  }
+
+  function renderThumb(i) {
+    const b = $('strip').children[i]; if (!b) return;
+    const c = b.querySelector('canvas'), g = c.getContext('2d');
+    g.clearRect(0, 0, c.width, c.height); g.drawImage(toImage(S.frames[i], S.palette), 0, 0);
+    const label = b.querySelector('span'), dot = label.querySelector('.dot');
+    if (dirty(i) && !dot) { const d = document.createElement('span'); d.className = 'dot'; label.append(d); }
+    if (!dirty(i) && dot) dot.remove();
+  }
+
+  function renderSwatches() {
+    $('swatches').replaceChildren(...S.palette.slice(0, 16).map((c, i) => {
+      const b = document.createElement('button'); b.className = 'swatch' + (i === 0 ? ' clear' : ''); b.type = 'button';
+      if (i) b.style.background = `rgb(${c[0]},${c[1]},${c[2]})`;
+      b.title = i ? `Colour ${i}` : 'Colour 0: see-through';
+      b.setAttribute('aria-pressed', i === S.ink ? 'true' : 'false');
+      const n = document.createElement('span'); n.textContent = i; b.append(n);
+      b.addEventListener('click', () => { S.ink = i; if (S.tool === 'eraser' || S.tool === 'pick') S.tool = 'pencil'; refresh(); });
+      return b;
+    }));
+  }
+
+  function renderSheets() {
+    $('sheets').replaceChildren(...S.sheets.map((sh, n) => {
+      const after = S.packed && S.packed.sheets[n] ? S.packed.sheets[n].length : S.before[n];
+      const level = after > LIMIT ? 'over' : after > LIMIT - 4 ? 'near' : 'ok';
+      const m = document.createElement('div'); m.className = 'meter'; m.dataset.level = level;
+      const head = document.createElement('div'); head.className = 'head';
+      const l = document.createElement('b'); l.textContent = `Sheet ${n}`;
+      const r = document.createElement('span'); r.textContent = after !== S.before[n] ? `${S.before[n]} → ${after} of ${LIMIT}` : `${after} of ${LIMIT}`;
+      head.append(l, r);
+      const track = document.createElement('div'); track.className = 'track';
+      const fill = document.createElement('div'); fill.className = 'fill'; fill.style.width = `${Math.min(100, after / LIMIT * 100)}%`;
+      track.append(fill);
+      const frames = S.un.sheets.map((s, i) => s === n ? i : null).filter(i => i !== null);
+      const note = document.createElement('div'); note.className = 'note';
+      note.textContent = level === 'over' ? `${after - LIMIT} tiles too many. Frames ${frames.join(', ')} share this sheet: reuse more of the same pixels between them, or trim the art.` : `Frames ${frames.join(', ')}`;
+      m.append(head, track, note);
+      return m;
+    }));
+  }
+
+  // ---- Preview ---------------------------------------------------------------------------------
+
+  let raf = null;
+  function restartPreview() {
+    cancelAnimationFrame(raf);
+    // Duration 255: end, hold last frame. 254: jump to step frameIdx.
+    const steps = S.seq && S.seq.data[S.motion] && S.seq.data[S.motion].length ? S.seq.data[S.motion]
+      : S.frames.map((_, i) => ({ frameIdx: i, duration: 8 })).concat({ frameIdx: 0, duration: 254 });
+    let k = 0, ticks = 0, held = false, last = performance.now();
+    const c = $('preview'), scale = 3;
+    const show = () => {
+      const im = S.frames[steps[k].frameIdx]; if (!im) return;
+      c.width = im.w * scale; c.height = im.h * scale;
+      const g = c.getContext('2d'); g.imageSmoothingEnabled = false;
+      g.save();
+      if ($('faceRight').checked) { g.translate(c.width, 0); g.scale(-1, 1); }
+      g.drawImage(toImage(im, S.palette), 0, 0, c.width, c.height);
+      g.restore();
+    };
+    show();
+    const tick = now => {
+      if (S.playing) {
+        ticks += (now - last) * 60 / 1000;
+        let wait;
+        while (ticks >= (wait = held ? 60 : Math.max(1, steps[k].duration))) {
+          ticks -= wait;
+          const next = steps[k + 1];
+          if (held) { held = false; k = 0; show(); }
+          else if (!next || next.duration === 255) held = true;
+          else { k = next.duration === 254 ? next.frameIdx : k + 1; show(); }
+        }
+      }
+      last = now; raf = requestAnimationFrame(tick);
+    };
+    S.showPreview = show;
+    raf = requestAnimationFrame(tick);
+  }
+  $('play').addEventListener('click', () => { S.playing = !S.playing; $('play').textContent = S.playing ? 'Pause' : 'Play'; });
+  $('motion').addEventListener('change', e => { S.motion = +e.target.value; restartPreview(); });
+  $('faceRight').addEventListener('change', () => S.showPreview && S.showPreview());
+
+  // ---- Painting --------------------------------------------------------------------------------
+
+  function pixelAt(e) {
+    const r = $('board').getBoundingClientRect(), im = S.frames[S.cur];
+    const x = Math.floor((e.clientX - r.left) / r.width * im.w), y = Math.floor((e.clientY - r.top) / r.height * im.h);
+    return x >= 0 && y >= 0 && x < im.w && y < im.h ? [x, y] : null;
+  }
+  function snapshot() { S.undo[S.cur].push(S.frames[S.cur].px.slice()); if (S.undo[S.cur].length > 200) S.undo[S.cur].shift(); S.redo[S.cur] = []; }
+  function set(x, y, v) { const im = S.frames[S.cur], i = y * im.w + x; if (im.px[i] === v) return false; im.px[i] = v; return true; }
+  function line(x0, y0, x1, y1, v) {
+    let changed = false;
+    const dx = Math.abs(x1 - x0), dy = -Math.abs(y1 - y0), sx = x0 < x1 ? 1 : -1, sy = y0 < y1 ? 1 : -1;
+    let err = dx + dy;
+    for (;;) {
+      changed = set(x0, y0, v) || changed;
+      if (x0 === x1 && y0 === y1) return changed;
+      const e2 = 2 * err;
+      if (e2 >= dy) { err += dy; x0 += sx; }
+      if (e2 <= dx) { err += dx; y0 += sy; }
+    }
+  }
+  function fill(x, y, v) {
+    const im = S.frames[S.cur], from = im.px[y * im.w + x];
+    if (from === v) return false;
+    const stack = [[x, y]];
+    while (stack.length) {
+      const [px, py] = stack.pop();
+      if (px < 0 || py < 0 || px >= im.w || py >= im.h || im.px[py * im.w + px] !== from) continue;
+      im.px[py * im.w + px] = v;
+      stack.push([px + 1, py], [px - 1, py], [px, py + 1], [px, py - 1]);
+    }
+    return true;
+  }
+  function edited() { renderBoard(); renderThumb(S.cur); refresh(); schedulePack(); }
+
+  let stroke = null;
+  const board = $('board');
+  board.addEventListener('contextmenu', e => e.preventDefault());
+  board.addEventListener('pointerdown', e => {
+    const p = pixelAt(e); if (!p) return;
+    const im = S.frames[S.cur];
+    if (e.altKey || S.tool === 'pick') { S.ink = im.px[p[1] * im.w + p[0]]; if (!e.altKey) S.tool = 'pencil'; refresh(); return; }
+    const v = e.button === 2 || S.tool === 'eraser' ? 0 : S.ink;
+    snapshot();
+    if (S.tool === 'fill') { if (fill(p[0], p[1], v)) edited(); else S.undo[S.cur].pop(); return; }
+    board.setPointerCapture(e.pointerId);
+    stroke = { v, last: p, changed: set(p[0], p[1], v) };
+    renderBoard();
+  });
+  board.addEventListener('pointermove', e => {
+    if (!stroke) return;
+    const p = pixelAt(e); if (!p) return;
+    if (line(stroke.last[0], stroke.last[1], p[0], p[1], stroke.v)) { stroke.changed = true; renderBoard(); }
+    stroke.last = p;
+  });
+  const endStroke = () => {
+    if (!stroke) return;
+    if (stroke.changed) edited(); else S.undo[S.cur].pop();
+    stroke = null;
+  };
+  board.addEventListener('pointerup', endStroke);
+  board.addEventListener('pointercancel', endStroke);
+
+  function nudge(dx, dy) {
+    const im = S.frames[S.cur], out = new Uint8Array(im.px.length);
+    for (let y = 0; y < im.h; y++) for (let x = 0; x < im.w; x++) {
+      const v = im.px[y * im.w + x]; if (!v) continue;
+      const nx = x + dx, ny = y + dy;
+      if (nx < 0 || ny < 0 || nx >= im.w || ny >= im.h) { status('The art is at the edge of the canvas, so it can\'t move that way.', 'bad'); return; }
+      out[ny * im.w + nx] = v;
+    }
+    snapshot(); im.px = out; edited();
+  }
+
+  function undoRedo(from, to) {
+    const stack = S[from][S.cur]; if (!stack.length) return;
+    S[to][S.cur].push(S.frames[S.cur].px.slice());
+    S.frames[S.cur].px = stack.pop();
+    edited();
+  }
+  $('undo').addEventListener('click', () => undoRedo('undo', 'redo'));
+  $('redo').addEventListener('click', () => undoRedo('redo', 'undo'));
+
+  function select(i) {
+    S.cur = Math.max(0, Math.min(S.frames.length - 1, i));
+    [...$('strip').children].forEach((b, k) => b.setAttribute('aria-current', k === S.cur ? 'true' : 'false'));
+    $('strip').children[S.cur].scrollIntoView({ block: 'nearest', inline: 'nearest' });
+    renderBoard(); refresh();
+  }
+
+  function setZoom(step) {
+    const k = Math.max(0, Math.min(ZOOMS.length - 1, ZOOMS.indexOf(S.zoom) + step));
+    S.zoom = ZOOMS[k]; renderBoard();
+  }
+  $('zoomIn').addEventListener('click', () => setZoom(1));
+  $('zoomOut').addEventListener('click', () => setZoom(-1));
+  $('scroller').addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); setZoom(e.deltaY < 0 ? 1 : -1); }, { passive: false });
+  for (const id of ['grid', 'boxes', 'onion', 'feet']) $(id).addEventListener('change', renderBoard);
+  $('tools').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.tool = b.dataset.tool; refresh(); } });
+
+  addEventListener('keydown', e => {
+    if (e.target.closest && e.target.closest('select, input')) return;
+    const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
+    if (mod && k === 's') { e.preventDefault(); if (!$('save').disabled) save(); return; }
+    if (mod && k === 'z') { e.preventDefault(); undoRedo(e.shiftKey ? 'redo' : 'undo', e.shiftKey ? 'undo' : 'redo'); return; }
+    if (mod && k === 'y') { e.preventDefault(); undoRedo('redo', 'undo'); return; }
+    if (mod) return;
+    const arrows = { arrowleft: [-1, 0], arrowright: [1, 0], arrowup: [0, -1], arrowdown: [0, 1] };
+    if (e.shiftKey && arrows[k]) { e.preventDefault(); nudge(...arrows[k]); return; }
+    if (k === 'arrowleft' || k === ',') { e.preventDefault(); select(S.cur - 1); return; }
+    if (k === 'arrowright' || k === '.') { e.preventDefault(); select(S.cur + 1); return; }
+    const tools = { b: 'pencil', e: 'eraser', g: 'fill', i: 'pick' };
+    if (tools[k]) { S.tool = tools[k]; refresh(); return; }
+    if (k === '+' || k === '=') setZoom(1);
+    if (k === '-') setZoom(-1);
+  });
+
+  // ---- Reverting, PNG in and out ---------------------------------------------------------------
+
+  $('revertFrame').addEventListener('click', () => {
+    if (!dirty(S.cur)) return;
+    snapshot(); S.frames[S.cur].px = S.base[S.cur].px.slice(); edited();
+  });
+  $('revertAll').addEventListener('click', () => {
+    if (!anyDirty() || !confirm('Put every frame back as it is on disk?')) return;
+    S.frames = S.base.map(clone); S.undo = S.frames.map(() => []); S.redo = S.frames.map(() => []);
+    S.packed = null; renderStrip(); renderBoard(); renderSheets(); refresh();
+  });
+  $('exportPng').addEventListener('click', () => {
+    const im = S.frames[S.cur], a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([Core.encodePNG(im.w, im.h, im.px, S.palette, true)], { type: 'image/png' }));
+    a.download = `${S.dir.split('/').slice(2).join('-')}-frame_${S.cur}.png`;
+    a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 60000);
+  });
+  $('importPng').addEventListener('click', () => $('importFile').click());
+  $('importFile').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    try {
+      const im = Core.toIndices(await Core.decodePNG(new Uint8Array(await f.arrayBuffer()), inflate), S.palette, f.name);
+      const cur = S.frames[S.cur];
+      if (im.w !== cur.w || im.h !== cur.h) { status(`${f.name} is ${im.w}×${im.h}. This animation's frames are ${cur.w}×${cur.h}: export a frame to get the right size.`, 'bad'); return; }
+      snapshot(); cur.px = im.px.slice(); edited();
+      status(`Imported ${f.name} into frame ${S.cur}.`, 'ok');
+    } catch (err) { status(err.message, 'bad'); }
+  });
+
+  // ---- Packing and saving ----------------------------------------------------------------------
+
+  let packTimer = null;
+  function schedulePack() {
+    clearTimeout(packTimer);
+    S.packing = true; refresh();
+    packTimer = setTimeout(() => {
+      if (!anyDirty()) { S.packing = false; S.packed = null; renderSheets(); renderBoard(); refresh(); return; }
+      S.worker.postMessage({ id: ++S.packId, frames: S.frames, origin: S.un.origin, sheetOf: S.un.sheets, sheetCount: S.sheets.length });
+    }, 350);
+  }
+
+  function packed({ id, data, sheets }) {
+    if (id !== S.packId) return;
+    // Sheets none of whose frames changed stay exactly as they are on disk.
+    const touched = new Set(S.frames.map((_, i) => i).filter(dirty).map(i => S.un.sheets[i]));
+    S.packed = {
+      data: data.map((f, i) => touched.has(S.un.sheets[i]) ? f : S.meta.data[i]),
+      sheets: sheets.map((t, n) => touched.has(n) ? t : null),
+    };
+    S.packing = false;
+    renderSheets(); renderBoard(); refresh();
+  }
+
+  function refresh() {
+    [...$('tools').children].forEach(b => b.setAttribute('aria-pressed', b.dataset.tool === S.tool ? 'true' : 'false'));
+    [...$('swatches').children].forEach((b, i) => b.setAttribute('aria-pressed', i === S.ink ? 'true' : 'false'));
+    $('undo').disabled = !S.undo[S.cur] || !S.undo[S.cur].length;
+    $('redo').disabled = !S.redo[S.cur] || !S.redo[S.cur].length;
+    $('revertFrame').disabled = !dirty(S.cur);
+    $('revertAll').disabled = !anyDirty();
+    const over = S.packed && S.packed.sheets.some(t => t && t.length > LIMIT);
+    const far = S.packed && S.packed.data.some(f => f.subsprites.some(s => s.x < -128 || s.x > 127 || s.y < -128 || s.y > 127));
+    $('save').disabled = !anyDirty() || S.packing || !S.packed || over || far;
+    if (S.packing) status('Working out tiles…');
+    else if (over) status('Some sheets need too many tiles. See Tile space.', 'bad');
+    else if (far) status("Some art is more than 127 pixels from Zero's feet, which the game can't place.", 'bad');
+    else if (anyDirty()) status(`${S.frames.filter((_, i) => dirty(i)).length} frame(s) changed, not saved.`);
+  }
+
+  function base64(bytes) {
+    let s = '';
+    for (let i = 0; i < bytes.length; i += 0x8000) s += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+    return btoa(s);
+  }
+
+  async function save() {
+    const p = S.packed, base = S.dir, text = t => new TextEncoder().encode(t), files = {};
+    const counts = p.sheets.map(t => t ? t.length : null);
+    p.sheets.forEach((tiles, n) => { if (!tiles) return; const s = Core.sheetImage(tiles); files[`${base}/sheet/${n}.png`] = base64(Core.encodePNG(s.w, s.h, s.px, S.palette, false)); });
+    files[`${base}/metasprite.json`] = base64(text(JSON.stringify({ ...S.meta, data: p.data }, null, 2) + '\n'));
+    files[`${base}/sheet/header.inc`] = base64(text(Core.rewriteHeader(S.header, counts)));
+    files['sprites.mk'] = base64(text(Core.rewriteGfxOpts(S.mk, S.dir, counts)));
+    status('Saving…');
+    const r = await fetch('save', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ files }) });
+    const res = await r.json().catch(() => ({ error: 'the editor server did not answer' }));
+    if (!r.ok || res.error) { status(`Not saved: ${res.error}`, 'bad'); return; }
+    await load(S.dir, S.cur);
+    status('Saved into the decomp. Build with make REGION=us or make REGION=jp.', 'ok');
+  }
+  $('save').addEventListener('click', save);
+
+  start().catch(err => status(`Couldn't load the sprites: ${err.message}. Is sprite_editor.py running?`, 'bad'));
+})();
+</script>
+</body>
+</html>
