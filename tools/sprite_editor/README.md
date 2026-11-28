@@ -7,12 +7,13 @@ straight back into the decomp. Each frame is one whole picture. On save, the pag
 Needs only Python 3. Nothing to install.
 
 ```
-python3 tools/sprite_editor/sprite_editor.py
+tools/sprite_editor/start.sh
 ```
 
-from the decomp's folder, then open <http://localhost:8766>. `--sprites` points it at another
-checkout's `sprites/`. On
-Windows, run it in WSL and open the address in a Windows browser.
+starts it and opens <http://localhost:8766> in your browser, from any folder. Ctrl+C stops it.
+If it is already running, it just opens the page. On Windows, run it in WSL: the page opens in
+the Windows browser. `--sprites` points it at another checkout's `sprites/`. The page's Help
+button has these steps too.
 
 - **Paint** with the pencil, eraser, fill and picker, in Zero's 16 colours. Colour 0 is
   see-through. Right-click paints 0.
@@ -25,9 +26,12 @@ Windows, run it in WSL and open the address in a Windows browser.
   did not touch stay as they are.
 - **Export/Import PNG** swaps one frame with Aseprite or another editor. Keep its size and
   palette.
+- **Build ROM** runs `make` for the region beside it and shows where the ROM landed, with the
+  end of make's output. It builds what is saved, so it waits until you save. `DEVKITARM` comes
+  from the shell that started the editor, or `/usr` if unset.
 
-Then build with `make REGION=us` or `make REGION=jp`. A `FAILED` checksum line is expected once
-sprites change. `git checkout sprites/` undoes everything.
+`make REGION=us` or `make REGION=jp` by hand does the same. A `FAILED` checksum line is expected
+once sprites change. `git checkout sprites/` undoes everything.
 
 Zero faces left in the editor, as the game stores him. Eight animations (teleport, Gale
 Attack, the smash, two rod charges, buster-air, `unk_51`) were packed by Capcom with

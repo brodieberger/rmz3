@@ -88,6 +88,14 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
 .meter[data-level="over"] .note { color: var(--bad); font-weight: 600; }
 .keys { display: grid; grid-template-columns: auto 1fr; gap: 4px 10px; font-size: 12px; color: var(--muted); }
 .keys kbd { justify-self: start; }
+dialog { max-width: min(620px, calc(100vw - 32px)); max-height: calc(100vh - 32px); overflow: auto; padding: 20px 22px;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--ink); }
+dialog::backdrop { background: rgb(0 0 0 / 0.45); }
+dialog h2 { font-size: 14px; color: var(--ink); margin-top: 6px; }
+dialog ol, dialog ul { padding-left: 20px; margin: 8px 0 14px; display: grid; gap: 6px; }
+dialog code { font: 12px var(--font-mono); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; }
+.log { font: 11px/1.4 var(--font-mono); white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow: auto;
+  margin: 0; padding: 8px; border-radius: 6px; background: var(--bg); border: 1px solid var(--line); }
 </style>
 </head>
 <body>
@@ -99,6 +107,12 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
   <button id="revertFrame" title="Put this frame back as it is on disk">Revert frame</button>
   <button id="revertAll">Revert all</button>
   <button class="primary" id="save" disabled title="Write the changes into the decomp (Ctrl+S)">Save</button>
+  <select id="region" aria-label="Which ROM to build">
+    <option value="us">USA</option>
+    <option value="jp">Japan</option>
+  </select>
+  <button id="build">Build ROM</button>
+  <button id="helpOpen">Help</button>
 </header>
 
 <main class="app">
@@ -167,6 +181,11 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
       <h2>Tile space</h2>
       <div id="sheets" style="display:grid;gap:12px"></div>
     </div>
+    <div class="box" id="buildBox" hidden>
+      <h2>Last build</h2>
+      <p class="mono" id="buildRom" style="margin:0;overflow-wrap:anywhere"></p>
+      <pre class="log" id="buildLog"></pre>
+    </div>
     <div class="box">
       <h2>Keys</h2>
       <div class="keys">
@@ -182,6 +201,29 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
   </aside>
 </main>
 
+<dialog id="help" aria-labelledby="helpTitle">
+  <h2 id="helpTitle">How to use it</h2>
+  <ol>
+    <li><b>Pick an animation</b> in the list at the top left. Every frame is in the strip under the canvas.</li>
+    <li><b>Paint</b> with the tools on the left in Zero's 16 colours. Colour 0 is see-through, and right-click paints it. The preview on the right plays the animation as the game does.</li>
+    <li><b>Save</b> writes your frames into the decomp's <code>sprites</code> folder. Only the animation you changed is touched.</li>
+    <li><b>Build ROM</b>: pick USA or Japan beside it, then click. When it finishes, <b>Last build</b> on the right shows where the ROM is. Open that file in an emulator.</li>
+  </ol>
+  <h2>Limits</h2>
+  <ul>
+    <li>Each sheet holds 48 tiles. <b>Tile space</b> shows how full each one is as you paint. Past 48, Save turns off until you trim.</li>
+    <li>Art more than 127 pixels from Zero's feet can't be placed by the game.</li>
+    <li>Teleport, Gale Attack, the smash, the two rod charges, buster-air and <code>unk_51</code> were packed tighter by Capcom than this editor packs, so redrawing them at full size runs out of tiles.</li>
+  </ul>
+  <h2>Undo and restart</h2>
+  <ul>
+    <li><b>Revert frame</b> and <b>Revert all</b> drop changes you haven't saved.</li>
+    <li>To undo everything you've saved, run <code>git checkout sprites/</code> in the decomp folder.</li>
+    <li>To start the editor again later, run <code>tools/sprite_editor/start.sh</code>. It opens this page by itself.</li>
+  </ul>
+  <form method="dialog" style="display:flex;justify-content:flex-end"><button class="primary">Got it</button></form>
+</dialog>
+
 <script src="core.js"></script>
 <script>
 (() => {
@@ -190,7 +232,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
   const BOX_COLOURS = ['#ff5a5a', '#3fc46a', '#4c8dff', '#ffb020', '#d35cff', '#22c7c7', '#ff7ac8', '#9bd14b', '#ff8a3d', '#8f7bff'];
   const inflate = async z => new Uint8Array(await new Response(new Blob([z]).stream().pipeThrough(new DecompressionStream('deflate'))).arrayBuffer());
 
-  const S = { cur: 0, tool: 'pencil', ink: 1, zoom: 8, playing: true, motion: 0, undo: [], redo: [], packed: null, packId: 0, packing: false };
+  const S = { cur: 0, tool: 'pencil', ink: 1, zoom: 8, playing: true, motion: 0, undo: [], redo: [], packed: null, packId: 0, packing: false, building: false };
 
   function status(text, kind) { const s = $('status'); s.textContent = text; s.className = 'status' + (kind ? ' ' + kind : ''); }
   const get = async path => { const r = await fetch(path); if (!r.ok) throw new Error(`${path}: ${r.status}`); return r; };
@@ -499,6 +541,7 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
   $('tools').addEventListener('click', e => { const b = e.target.closest('button'); if (b) { S.tool = b.dataset.tool; refresh(); } });
 
   addEventListener('keydown', e => {
+    if ($('help').open) return;
     if (e.target.closest && e.target.closest('select, input')) return;
     const k = e.key.toLowerCase(), mod = e.ctrlKey || e.metaKey;
     if (mod && k === 's') { e.preventDefault(); if (!$('save').disabled) save(); return; }
@@ -578,6 +621,8 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
     const over = S.packed && S.packed.sheets.some(t => t && t.length > LIMIT);
     const far = S.packed && S.packed.data.some(f => f.subsprites.some(s => s.x < -128 || s.x > 127 || s.y < -128 || s.y > 127));
     $('save').disabled = !anyDirty() || S.packing || !S.packed || over || far;
+    $('build').disabled = anyDirty() || S.building;
+    $('build').title = anyDirty() ? 'Save first: the build uses what is saved' : 'Run make for this region';
     if (S.packing) status('Working out tiles…');
     else if (over) status('Some sheets need too many tiles. See Tile space.', 'bad');
     else if (far) status("Some art is more than 127 pixels from Zero's feet, which the game can't place.", 'bad');
@@ -602,9 +647,40 @@ kbd { font: 11px var(--font-mono); border: 1px solid var(--line); border-bottom-
     const res = await r.json().catch(() => ({ error: 'the editor server did not answer' }));
     if (!r.ok || res.error) { status(`Not saved: ${res.error}`, 'bad'); return; }
     await load(S.dir, S.cur);
-    status('Saved into the decomp. Build with make REGION=us or make REGION=jp.', 'ok');
+    status('Saved into the decomp. Build ROM makes a playable ROM.', 'ok');
   }
   $('save').addEventListener('click', save);
+
+  async function build() {
+    const region = $('region').value;
+    S.building = true; refresh();
+    status(`Building the ${region === 'us' ? 'USA' : 'Japanese'} ROM… a first build takes a few minutes.`);
+    let res;
+    try {
+      const r = await fetch('build', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ region }) });
+      res = await r.json();
+    } catch (err) {
+      res = { error: 'the editor server did not answer' };
+    }
+    S.building = false; refresh();
+    if (res.error) { status(`Not built: ${res.error}`, 'bad'); return; }
+    $('buildBox').hidden = false;
+    $('buildLog').textContent = res.log;
+    $('buildLog').hidden = res.built;
+    $('buildRom').textContent = res.built ? res.rom : '';
+    if (!res.built) status('Build failed. See Last build for make\'s output.', 'bad');
+    else if (res.matches) status('Built. Identical to the original game: no sprite changes in it.', 'ok');
+    else status('Built with your changes. The path is under Last build.', 'ok');
+  }
+  $('build').addEventListener('click', build);
+
+  $('helpOpen').addEventListener('click', () => $('help').showModal());
+  try {
+    if (!localStorage.getItem('spriteEditorHelpSeen')) {
+      $('help').showModal();
+      localStorage.setItem('spriteEditorHelpSeen', '1');
+    }
+  } catch (err) {}
 
   start().catch(err => status(`Couldn't load the sprites: ${err.message}. Is sprite_editor.py running?`, 'bad'));
 })();

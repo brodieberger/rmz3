@@ -4,7 +4,7 @@ OUTPUT_ARCH(arm)
 MEMORY {
     ewram   : ORIGIN = 0x02000000, LENGTH = 4M - 4k
     iwram   : ORIGIN = 0x03000000, LENGTH = 32k
-		rom     : ORIGIN = (0x08000000), LENGTH = 8M
+		rom     : ORIGIN = (0x08000000), LENGTH = 32M
 }
 
 gMaxLines = 0;
