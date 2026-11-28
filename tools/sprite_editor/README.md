@@ -17,6 +17,9 @@ button has these steps too.
 
 - **Paint** with the pencil, eraser, fill and picker, in Zero's 16 colours. Colour 0 is
   see-through. Right-click paints 0.
+- **Select** (M) moves part of a frame: drag a box, then drag inside it, or Shift + arrows. The
+  moved pixels float over the art under them until Esc or another tool drops them. Delete clears
+  the box.
 - **Shift + arrows** moves the whole frame a pixel. **Left/right** changes frame.
 - **Tile space** shows each sheet against its 48-tile limit as you paint. Past 48, Save is off
   and the sheet says which frames to trim. Moving one frame of a sheet costs tiles, because its
